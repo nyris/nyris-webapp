@@ -9,7 +9,7 @@ const renderDefault = (result: any) => {
         <div className="prdctItem">
             <a href={result.l} className="imageLink" title="Click the image so see similar products">
                 <div className="prdctImg">
-                    <div className="imgWrap"><img src={result.img && result.img.url + '?r=512x512' || noImageUrl }
+                    <div className="imgWrap"><img src={result.img && (result.img.url + '?r=512x512' || noImageUrl) }
                                                   crossOrigin="anonymous" alt=""/></div>
                 </div>
             </a>
@@ -31,7 +31,7 @@ const renderFashion = (result: any) => (
     <div className="prdctItem" >
     <a href={result.l} className="imageLink">
         <div className="prdctImg">
-            <div className="imgWrap"><img src={result.img && result.img.url  || noImageUrl } alt=""/></div>
+            <div className="imgWrap"><img src={result.img && (result.img.url  || noImageUrl) } alt=""/></div>
         </div>
     </a>
     <div className="prdctDetailsWrap">
@@ -51,7 +51,7 @@ const renderGs = (result: any) => (
     <a href={result.l} className="imageLink" title="Click the image so see similar products">
     <div className="prdctImg">
         <div className="imgWrap"><img
-             src={result.img && result.img.url + '?r=512x512' || noImageUrl }
+             src={result.img && (result.img.url + '?r=512x512' || noImageUrl) }
              crossOrigin="anonymous" alt=""/></div>
     </div>
     </a>
@@ -63,7 +63,7 @@ const renderSnr = (result: any) => (
     <a href={result.l} className="imageLink">
             <div className="prdctImg">
             <div className="imgWrap"><img
-                 src={result.img && result.img.url + '?r=512x512' || noImageUrl }
+                 src={result.img && (result.img.url + '?r=512x512' || noImageUrl) }
                  crossOrigin="anonymous" alt=""/>
     </div>
     </div>
@@ -74,7 +74,7 @@ const renderSnr = (result: any) => (
             <div className="prdctMeta" style={{height: '5em', whiteSpace: 'normal'}}>
                 {result.title}
             </div>
-            <a style={{backgroundImage: 'none', paddingLeft: '10px'}} className="prdctShopLink" href={result.l} target="_blank">Info</a>
+            <a style={{backgroundImage: 'none', paddingLeft: '10px'}} className="prdctShopLink" href={result.l} target="_blank" rel="noopener noreferrer">Info</a>
         </div>
     </div>
     </div>
@@ -85,7 +85,7 @@ const renderSnrMultilink = (result: any) => (
     <a href="{{result.l}}" className="imageLink">
             <div className="prdctImg">
             <div className="imgWrap"><img
-                 src={result.img && result.img.url + '?r=512x512' || noImageUrl }
+                 src={result.img && (result.img.url + '?r=512x512' || noImageUrl) }
                  crossOrigin="anonymous" alt=""/>
     </div>
     </div>
@@ -109,6 +109,14 @@ const renderSnrMultilink = (result: any) => (
 
 const Result = (props:any) => {
     switch (props.template) {
+        case "fashion":
+            return renderFashion(props);
+        case "gs":
+            return renderGs(props);
+        case "snr":
+            return renderSnr(props);
+        case "snrMultiLink": // TODO check proper value
+            return renderSnrMultilink(props);
         default:
             return renderDefault(props);
 

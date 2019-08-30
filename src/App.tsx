@@ -1,12 +1,16 @@
 import React from 'react';
 import './App.css';
 import Result from './Result';
+import Preview from './Preview';
 
 const stateEnum = {
     Search: 'search',
     Results: 'results',
     LoadingWithPreview: 'loadingWithPreview'
 };
+const previewDots:any[] = [];
+const displaySelection = {};
+
 const state = 'ba';
 const results: any[] = [
     { title: 'bla',
@@ -21,13 +25,13 @@ const duration = 0.1234;
 
 const filterOptions = [ "a"];
 const showCategoryFilter = (cats:any[]) => {
-    if (cats.length == 0) {
+    if (cats.length === 0) {
         return null;
     }
     return (
         <div id="catlist" style={{'textAlign':'center'}}>
             {
-                cats.map((s) => <a href="#">{s}</a>)
+                cats.map((s) => <a href="#">{s}</a>) // TODO fix link
             }
         </div>
     );
@@ -37,7 +41,7 @@ const showCategoryFilter = (cats:any[]) => {
 let feedbackState = 0;
 
 const showExampleImgs = (imgs: any[]) => {
-    if (imgs.length == 0) {
+    if (imgs.length === 0) {
         return null;
     }
     return (
@@ -45,17 +49,16 @@ const showExampleImgs = (imgs: any[]) => {
             You can also try one of these pictures:
             <div className="exampleImages">
                 <div className="exImagesWrap">
-                    {imgs.map((i) => (<img key={i} src={i} crossOrigin="anonymous"/>))}
+                    {imgs.map((i) => (<img key={i} src={i} alt="" crossOrigin="anonymous"/>))}
                 </div>
             </div>
         </section>
     );
 };
-const Preview = (props:any) => (<div>TODO: Preview</div>);
 
 const showPredictedCategories = (cs:any[]) => cs.map((c) =>
     <small>
-    { c.name == "" ? "No category" : c.name.split(" > ").slice(-1)[0] }:
+    { c.name === "" ? "No category" : c.name.split(" > ").slice(-1)[0] }:
     { (c.score * 100 ).toFixed(0) }%
 </small>
 );
@@ -104,8 +107,8 @@ const App: React.FC = () => {
                     <section id="branding"/>
                     <div id="menu" className="menuWrap" role="navigation">
                         <ul>
-                            <li><a href="https://nyris.io/imprint/#privacy" target="_blank">Privacy Policy</a></li>
-                            <li><a href="https://nyris.io/" target="_blank">Visit our Website</a></li>
+                            <li><a href="https://nyris.io/imprint/#privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
+                            <li><a href="https://nyris.io/" target="_blank" rel="noopener noreferrer">Visit our Website</a></li>
                         </ul>
                     </div>
                 </div>
@@ -148,8 +151,8 @@ const App: React.FC = () => {
             <div className="headerSeparatorBack"></div>
         </div>
 
-        <section className={['result',(results.length == 1 ? 'singleProduct' : 'multipleProducts') ].join(' ') }
-                 style={{height: (state != stateEnum.Search?"auto":"0"), minHeight: state != stateEnum.Search? "90vh": "0"}} >
+        <section className={['result',(results.length === 1 ? 'singleProduct' : 'multipleProducts') ].join(' ') }
+                 style={{height: (state !== stateEnum.Search?"auto":"0"), minHeight: state !== stateEnum.Search? "90vh": "0"}} >
         < div
     className = "errorMsg" >
         {errorMsg}
@@ -159,7 +162,7 @@ const App: React.FC = () => {
     <div className = "loadingOverlay">
         <div className = "loading"> </div>
     </div>
-    <Preview dots="previewDots" visible={(settings.preview || settings.regions) && (state == stateEnum.Results || state == stateEnum.LoadingWithPreview) } />
+    <Preview dots={previewDots} displaySelection={displaySelection} visible={(settings.preview || settings.regions) && (state === stateEnum.Results || state === stateEnum.LoadingWithPreview) } />
     <div className="predicted-categories">
         { showPredictedCategories(predicted_category)}
 </div>
@@ -171,9 +174,9 @@ const App: React.FC = () => {
 <div className="wrapper">
     { results.map((result) => <Result {...result} />)}
 
-    { results.length == 0 ? (
+    { results.length === 0 ? (
 
-        <div className="noResults">We did not find anything 😕 </div>
+        <div className="noResults">We did not find anything <span role="img" aria-label="sad face">😕</span></div>
     ): null}
 <br style={{clear:'both'}}/>
 </div>
@@ -187,7 +190,7 @@ const App: React.FC = () => {
 <section className="feedback">
 <div className="wrapper">
 {
-    feedbackState == 0? (
+    feedbackState === 0? (
     <div className="feedbackForm">
     <p>Did you find what you were looking for?</p>
     <div className="btn primary positiveFeedback" >Yes</div>
@@ -197,12 +200,12 @@ const App: React.FC = () => {
     ):null
 }
 {
-    feedbackState == 1 ? (
+    feedbackState === 1 ? (
         <div className="feedbackMessage positive">Great, thank you for your feedback!</div>
     ) : null
 }
 {
-    feedbackState == 2 ?  (
+    feedbackState === 2 ?  (
 <div className="feedbackMessage negative">We saved your request so we can track down the
 issue and impove the search experience. Your Feedback helps us to make our service better for everyone,
 thank you!<br/>
