@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import Result from './Result';
 import Preview from './Preview';
+import {connect} from "react-redux";
 
 const stateEnum = {
     Search: 'search',
@@ -70,35 +71,11 @@ const predicted_category = [
         score: 0.1324
     }
 ];
-const settings = {
-  "apiKey": "2cb25028c88b6ea01951374e",
-  "maxWidth": 500,
-  "maxHeight": 500,
-  "jpegQuality": 0.9,
-  "regions": true,
-  "preview": true,
-  "xOptions": "+estimated-category similarity.threshold=0.05 similarity.threshold.discard=0.05 exact.threshold.perfect=200 similarity.threshold.perfect=2 scoring.indicative-min-hits=1 scoring.promo-min-hits=20 scoring.interpolation-cutoff=0",
-  "imageMatchingUrl": "https://api.nyris.io/find/v1/",
-  "imageMatchingUrlBySku": "https://api.nyris.io/recommend/v1/",
-  "imageMatchingSubmitManualUrl": "https://api.nyris.io/find/v1/manual/",
-  "regionProposalUrl": "https://api.nyris.io/find/v1/regions/",
-  "feedbackUrl": "https://api.nyris.io/feedback/v1/",
-  "exampleImages": [
-    "https://img.nyris.io/demo/everybag/kissen.jpg",
-    "https://img.nyris.io/demo/everybag/aspirin.jpg",
-    "https://img.nyris.io/demo/everybag/lego.jpg",
-    "https://img.nyris.io/demo/everybag/wdr_add_2.jpg",
-    "https://img.nyris.io/demo/everybag/mb-dle-4.jpg",
-    "https://img.nyris.io/demo/everybag/1.jpg",
-    "https://img.nyris.io/demo/everybag/5.jpg",
-    "https://img.nyris.io/demo/everybag/6.jpg"
-  ]
-};
 
 const requestId = "resuest id";
 const errorMsg = "Some error message";
 
-const App: React.FC = () => {
+const App = ({results, settings}: {results: any[], settings: any}) => {
     return (
         <div>
         <div className="headSection" id="headSection">
@@ -221,6 +198,12 @@ thank you!<br/>
 </section>
         </div>
 );
-}
+};
 
-export default App;
+const mapStateToProps = (state: any) => ({
+    view: state.nyrisDesign.view,
+    results: state.search.results,
+    settings: state.settings
+});
+
+export default connect(mapStateToProps)(App);
