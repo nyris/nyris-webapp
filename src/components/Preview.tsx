@@ -230,7 +230,7 @@ export class PreviewComponent implements OnInit {
 const renderDots = (dots: any[], showClasses: boolean) => {
     console.log(dots);
     return dots.map((dot: any) => (
-        <a className="circle" style={{left: dot.x + 'px', top: dot.y + 'px'}} title="Click to select">{showClasses &&
+        <a href="#top" className="circle" style={{left: dot.x + 'px', top: dot.y + 'px'}} title="Click to select">{showClasses &&
         <span>dot.text</span>}</a>))
 };
 

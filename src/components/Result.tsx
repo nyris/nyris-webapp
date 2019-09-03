@@ -97,7 +97,7 @@ const renderSnrMultilink = (result: any) => (
                 {result.title}
             </div>
             { result.l.map((l:any) =>
-            <a style={{backgroundImage: 'none', paddingLeft: '10px'}} className="prdctShopLink" href={l.href} target="_blank">{ l.text }</a>
+            <a style={{backgroundImage: 'none', paddingLeft: '10px'}} className="prdctShopLink" href={l.href} target="_blank" rel="noopener noreferrer">{ l.text }</a>
             ) }
     </div>
     </div>

@@ -4,66 +4,83 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import {Provider} from 'react-redux';
-import {applyMiddleware, createStore} from 'redux';
-import thunk from 'redux-thunk';
+import {connect, Provider} from 'react-redux';
+import {AnyAction, applyMiddleware, combineReducers, createStore, Reducer} from 'redux';
+import thunk, {ThunkDispatch, ThunkMiddleware} from 'redux-thunk';
+import {
+    reducer as searchReducer, SearchState,
+    searchImage
+} from './actions/searchActions';
+import {fileOrImgToCanvas} from "./nyris";
+import {composeWithDevTools} from "redux-devtools-extension";
+import {SearchServiceSettings} from "./types";
 
-enum AppViews {
+export enum AppViews {
     Start,
     Camera,
     Results
 }
 
-const settings = {
-    "apiKey": "2cb25028c88b6ea01951374e",
-    "maxWidth": 500,
-    "maxHeight": 500,
-    "jpegQuality": 0.9,
-    "regions": true,
-    "preview": true,
-    "xOptions": "+estimated-category similarity.threshold=0.05 similarity.threshold.discard=0.05 exact.threshold.perfect=200 similarity.threshold.perfect=2 scoring.indicative-min-hits=1 scoring.promo-min-hits=20 scoring.interpolation-cutoff=0",
-    "imageMatchingUrl": "https://api.nyris.io/find/v1/",
-    "imageMatchingUrlBySku": "https://api.nyris.io/recommend/v1/",
-    "imageMatchingSubmitManualUrl": "https://api.nyris.io/find/v1/manual/",
-    "regionProposalUrl": "https://api.nyris.io/find/v1/regions/",
-    "feedbackUrl": "https://api.nyris.io/feedback/v1/",
-    "exampleImages": [
-        "https://img.nyris.io/demo/everybag/kissen.jpg",
-        "https://img.nyris.io/demo/everybag/aspirin.jpg",
-        "https://img.nyris.io/demo/everybag/lego.jpg",
-        "https://img.nyris.io/demo/everybag/wdr_add_2.jpg",
-        "https://img.nyris.io/demo/everybag/mb-dle-4.jpg",
-        "https://img.nyris.io/demo/everybag/1.jpg",
-        "https://img.nyris.io/demo/everybag/5.jpg",
-        "https://img.nyris.io/demo/everybag/6.jpg"
-    ]
-};
+declare var settings : SearchServiceSettings;
 
-const initialState = {
-    nyrisDesign: {
+
+const withConsoleLogger = (reducer: Reducer) => (
+    (state: any, action: any) => {
+        console.log("reducer called with action", action);
+        return reducer(state, action);
+    }
+);
+
+
+const rootReducer = (
+    combineReducers({
+    nyrisDesign: () => ({
         view: AppViews.Start
-    },
-    search: {
-        took: 0.123,
-        requestId: 'blabab',
-        results: [
-            { title: 'bla',
-                l: 'something',
-                img: {url: 'https://img.nyris.io/demo/everybag/kissen.jpg'}},
-            { title: 'bla',
-                l: 'something',
-                mer: 'blub',
-                img: {url: 'https://img.nyris.io/demo/everybag/kissen.jpg'}},
-        ],
-    },
-    settings
+    }),
+    settings: () => settings as SearchServiceSettings,
+    search: withConsoleLogger(searchReducer)
+}));
+
+
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk as ThunkMiddleware<any, any>)));
+
+
+type AppState = {
+    search: SearchState,
+    settings: SearchServiceSettings,
+    [key: string]: any // TODO
 };
 
-const dummyReducer = (state = initialState) => state;
 
-const store = createStore(dummyReducer, applyMiddleware(thunk));
+const mapStateToProps = (state: AppState) => ({
+    view: state.nyrisDesign.view,
+    search: {
+        results: state.search.results,
+        categoryPredictions: state.search.categoryPredictions,
+        filterOptions: state.search.filterOptions
+    },
+    settings: state.settings,
+    loading: state.search.fetchingRegions || state.search.fetchingResults
+});
 
-ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => ({
+    handlers: {
+        onPositiveFeedback: () => console.log('on positive feedback'),
+        onNegativeFeedback: () => console.log('on negative feedback'),
+        onSelectFile: async (file: File) => {
+            console.log('onSelectFile');
+            const canvas = await fileOrImgToCanvas(file);
+            console.log('onSelectFile', canvas);
+            await dispatch(searchImage(canvas));
+        },
+        onExampleImageClicked: () => console.log('on example image clicked'),
+    }
+});
+
+
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
+
+ReactDOM.render(<Provider store={store}><ConnectedApp/></Provider>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
