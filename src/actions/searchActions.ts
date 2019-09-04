@@ -40,6 +40,7 @@ export const searchImage = (canvas: HTMLCanvasElement) : ThunkAction<Promise<voi
             dispatch({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration });
         } catch (e) {
             dispatch({ type: 'SEARCH_REQUEST_FAIL', reason: e.message });
+            throw e;
         }
 
 

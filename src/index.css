@@ -642,6 +642,9 @@ a img.aligncenter {
   -ms-flex-pack: center;
   justify-content: center
 }
+.dragAndDropActionArea:focus {
+  outline: 0;
+}
 
 .contentWrap {
   -webkit-box-flex: 1;

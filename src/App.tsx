@@ -6,6 +6,9 @@ import ExampleImages from './components/ExampleImages';
 import Feedback from './components/Feedback';
 import CategoryFilter from "./components/CategoryFilter";
 import PredictedCategories from "./components/PredictedCategories";
+import { useDropzone } from "react-dropzone";
+import classNames from 'classnames';
+import {Animate, NodeGroup} from "react-move";
 
 const stateEnum = {
     Search: 'search',
@@ -22,13 +25,9 @@ let feedbackState = 0;
 
 
 const makeFileHandler = (action: any) => (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
     let file = (e.dataTransfer && e.dataTransfer.files[0]) || e.target.files[0];
     action(file);
 };
-
-
 
 
 
@@ -49,9 +48,8 @@ interface AppProps {
     loading: boolean
 }
 
-class App extends React.Component<AppProps> {
-    render() {
-        const {search: {results, requestId, duration, errorMessage, filterOptions, categoryPredictions }, settings, handlers, loading} = this.props;
+const App : React.FC<AppProps> = ({search: {results, requestId, duration, errorMessage, filterOptions, categoryPredictions }, settings, handlers, loading}) => {
+        const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: handlers.onFileDropped});
         return (
             <div>
                 <div className="headSection" id="headSection">
@@ -68,14 +66,14 @@ class App extends React.Component<AppProps> {
                             </div>
                         </div>
                     </div>
-                    <div className="wrapper dragAndDropActionArea fileIsHover">
+                    <div   {...getRootProps({onClick: e => {e.stopPropagation();console.log('drop box click')}})} className={classNames('wrapper', 'dragAndDropActionArea', {'fileIsHover': isDragActive})}>
                         <div className="contentWrap">
                             <section className="uploadImage">
                                 <input type="button" name="file" id="capture" className="inputfile" accept="image/*"
                                        capture="environment"/>
                                 <input type="file" name="file" id="capture_file" className="inputfile" accept="image/*"
                                        capture="environment"/>
-                                <input type="file" name="file" id="select_file" className="inputfile" accept="image/*"
+                                <input {...getInputProps()} type="file" name="file" id="select_file" className="inputfile" accept="image/*"
                                        onChange={makeFileHandler(handlers.onSelectFile)}
                                 />
                                 <div className="onDesktop">
@@ -95,7 +93,7 @@ class App extends React.Component<AppProps> {
                                 </label>
                                 <label htmlFor="capture" className="mobileUploadHandler onMobile"/>
                             </section>
-                            <ExampleImages imgs={settings.exampleImages} onExampleImageClicked={handlers.onExampleImageClicked}/>
+                            <ExampleImages images={settings.exampleImages} onExampleImageClicked={ (e: React.MouseEvent) => handlers.onExampleImageClicked(e.target) }/>
                         </div>
                     </div>
                     <div className="tryDifferent">
@@ -108,7 +106,7 @@ class App extends React.Component<AppProps> {
                     <div className="headerSeparatorBack"/>
                 </div>
 
-                <section className={['result', (results.length === 1 ? 'singleProduct' : 'multipleProducts')].join(' ')}
+                <section className={classNames('results', (results.length === 1 ? 'singleProduct' : 'multipleProducts'))}
                          style={{
                              height: (state !== stateEnum.Search ? "auto" : "0"),
                              minHeight: state !== stateEnum.Search ? "90vh" : "0"
@@ -118,11 +116,13 @@ class App extends React.Component<AppProps> {
                         <div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}><span>Make sure to include the request ID when reporting a problem: {requestId}</span>
                         </div>
                     </div>
-                    { loading && (
-                        <div className="loadingOverlay">
-                            <div className="loading"/>
-                        </div>
-                    ) }
+                    <Animate show={loading} start={{opacity: 0.0}} enter={{ opacity:  [1.0], timing: {duration: 300}}} leave={{opacity: [0.0], timing: {duration: 300}}}>
+                        { s =>
+                            <div className="loadingOverlay" style={{...s}}>
+                                <div className="loading"/>
+                            </div>
+                        }
+                    </Animate>
                     <Preview dots={previewDots} displaySelection={displaySelection}
                              visible={(settings.preview || settings.regions) && (state === stateEnum.Results || state === stateEnum.LoadingWithPreview)}/>
                     <div className="predicted-categories">
@@ -136,7 +136,13 @@ class App extends React.Component<AppProps> {
                     {requestId && <div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}>Request
                         identifier {requestId}</div>}
                     <div className="wrapper">
-                        {results.map((result) => <Result {...result} />)}
+                        <NodeGroup data={results}
+                                   keyAccessor={r => r.sku}
+                                   start={(r, i) => ({opacity: 0, translateX: -100})}
+                                   enter={(r, i) => ({opacity: [1], translateX: [0], timing: {delay: i*100, duration: 300}})}
+                            >
+                            {rs => <>{rs.map(({key, data, state}) => <Result key={key} result={data} style={{opacity: state.opacity, transform: `translateX(${state.translateX}%)`}}  />)}</>}
+                        </NodeGroup>
 
                         {results.length === 0 && (
 
@@ -156,8 +162,7 @@ class App extends React.Component<AppProps> {
             </div>
         );
 
-    }
-}
+    };
 
 
 

@@ -5,18 +5,25 @@ import axios, {AxiosInstance} from 'axios';
 interface SearchResult {
     results: any[],
     requestId: string,
+    categoryPredictions: { name: string, score: number}[],
     duration: number
 }
 
 export default class NyrisAPI {
-    private httpClient: AxiosInstance;
-    private imageMatchingUrl: string;
-    private regionProposalUrl: string;
+    private readonly httpClient: AxiosInstance;
+    private readonly imageMatchingUrl: string;
+    private readonly regionProposalUrl: string;
+    private readonly responseFormat: string;
+    private imageMatchingUrlBySku: string;
+    private imageMatchingSubmitManualUrl: string;
 
     constructor(private settings: SearchServiceSettings) {
         this.httpClient = axios.create();
-        this.imageMatchingUrl = this.settings.imageMatchingUrl || 'default'; // TODO propper defaults
-        this.regionProposalUrl = this.settings.regionProposalUrl || 'default'; // TODO propper defaults
+        this.imageMatchingUrl = this.settings.imageMatchingUrl || 'https://api.nyris.io/find/v1';
+        this.imageMatchingUrlBySku = this.settings.imageMatchingUrlBySku || 'https://api.nyris.io/recommend/v1/';
+        this.imageMatchingSubmitManualUrl = this.settings.imageMatchingSubmitManualUrl || 'https://api.nyris.io/find/v1/manual/';
+        this.regionProposalUrl = this.settings.regionProposalUrl || 'https://api.nyris.io/find/v1/regions/';
+        this.responseFormat = this.settings.responseFormat || 'application/offers.nyris+json';
     }
 
     private async prepareImage(canvas: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement, options: ImageSearchOptions): Promise<{bytes: Blob, region?: RegionData}> {
@@ -51,11 +58,11 @@ export default class NyrisAPI {
         if (this.settings.customSearchRequest)
             return this.settings.customSearchRequest(image.bytes, this.httpClient); // TODO check if the interface is ok for hooks
 
-        let headers : any = { // HttpHeaders is immutable
+        let headers : any = {
             'Content-Type': 'image/jpeg',
             'X-Api-Key': this.settings.apiKey,
             'Accept-Language': 'de,*;q=0.5',
-            'Accept': this.settings.responseFormat
+            'Accept': this.responseFormat
         };
         const xOptions = [];
         if (this.settings.xOptions)
@@ -70,7 +77,7 @@ export default class NyrisAPI {
             dist: options.geoLocation.dist.toString()
         } : {};
         console.log('p', params, image.bytes);
-        let res :any = this.httpClient.request<any>({
+        let res :any = await this.httpClient.request<any>({
             method: 'POST',
             url: this.imageMatchingUrl,
             data: image.bytes,
@@ -79,28 +86,22 @@ export default class NyrisAPI {
             responseType: 'json'
         });
         console.log(res);
-        if (res.predicted_category) {
-            res.predicted_category = Object.entries(res.predicted_category).map(([name, score]) => ({
-                name: name,
-                score: score as number
-            })).sort((a, b) => b.score - a.score);
-        }
+        const categoryPredictions = Object.entries(res.predicted_category || {}).map(([name, score]) => ({
+            name: name,
+            score: score as number
+        })).sort((a, b) => b.score - a.score);
 
-        if (this.settings.responseHook) {
-            res = await this.settings.responseHook(res);
-        } else {
-            res = res.data.offerInfos;
-        }
+        let results = this.settings.responseHook? (await this.settings.responseHook(res)) : res.data.offerInfos;
         const requestId = res.headers["X-Matching-Request"];
         const duration = res.data.durationSeconds;
-        return { results: res.data.offerInfos, requestId, duration };
+        return { results, requestId, duration, categoryPredictions };
     }
 
     async findBySku(sku: string, mid: string) {
         let headers: any = {
             'X-Api-Key': this.settings.apiKey,
             'Accept-Language': 'de,*;q=0.5',
-            'Accept': this.settings.responseFormat
+            'Accept': this.responseFormat
         };
         const url = this.settings.imageMatchingUrlBySku + encodeURIComponent(sku) + '/' + encodeURIComponent(mid);
         if (this.settings.xOptions)

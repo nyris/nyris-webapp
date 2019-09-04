@@ -162,11 +162,17 @@ export function fileToDataUrl(file: File): Promise<string> {
 }
 */
 
-export function fileOrImgToCanvas(file: File | HTMLImageElement | string): Promise<HTMLCanvasElement> {
-    return new Promise(resolve => {
+export function fileOrBlobToCanvas(file: File | string): Promise<HTMLCanvasElement> {
+    return new Promise((resolve, reject) => {
         // File can also be an image element
-        // @ts-ignore
-        loadImage(file, resolve, {
+        loadImage(file, (data => {
+            const c = data as HTMLCanvasElement;
+            if (c) {
+                resolve(c);
+            } else {
+                reject();
+            }
+        }), {
             canvas: true,
             orientation: true
         });

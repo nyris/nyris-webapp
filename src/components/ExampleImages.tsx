@@ -1,7 +1,12 @@
 import React from 'react';
 
-const ExampleImages = ({imgs, onExampleImageClicked}: {imgs: string[], onExampleImageClicked: (e: React.MouseEvent) => void}) => {
-    if (imgs.length === 0) {
+interface ExampleImagesProps {
+    images: string[],
+    onExampleImageClicked: (e: React.MouseEvent) => void
+}
+
+const ExampleImages : React.FC<ExampleImagesProps> = ({images, onExampleImageClicked}) => {
+    if (images.length === 0) {
         return null;
     }
     return (
@@ -9,7 +14,7 @@ const ExampleImages = ({imgs, onExampleImageClicked}: {imgs: string[], onExample
             You can also try one of these pictures:
             <div className="exampleImages">
                 <div className="exImagesWrap">
-                    {imgs.map((i) => (<img key={i} src={i} alt="" onClick={onExampleImageClicked} crossOrigin="anonymous"/>))}
+                    {images.map((i) => (<img key={i} src={i} alt="" onClick={onExampleImageClicked} crossOrigin="anonymous"/>))}
                 </div>
             </div>
         </section>

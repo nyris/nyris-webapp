@@ -11,14 +11,14 @@ import {
     reducer as searchReducer, SearchState,
     searchImage
 } from './actions/searchActions';
-import {fileOrImgToCanvas} from "./nyris";
+import {fileOrBlobToCanvas, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
 import {SearchServiceSettings} from "./types";
 
 export enum AppViews {
-    Start,
-    Camera,
-    Results
+    Start = 'START',
+    Camera = 'CAMERA',
+    Results = 'RESULTS'
 }
 
 declare var settings : SearchServiceSettings;
@@ -69,11 +69,27 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => ({
         onNegativeFeedback: () => console.log('on negative feedback'),
         onSelectFile: async (file: File) => {
             console.log('onSelectFile');
-            const canvas = await fileOrImgToCanvas(file);
+            const canvas = await fileOrBlobToCanvas(file);
             console.log('onSelectFile', canvas);
             await dispatch(searchImage(canvas));
         },
-        onExampleImageClicked: () => console.log('on example image clicked'),
+        onExampleImageClicked: async (img: HTMLImageElement) => {
+            console.log('on example image clicked', img);
+            try {
+                const canvas = await toCanvas(img);
+                console.log('-> on example image clicked', canvas);
+                await dispatch(searchImage(canvas));
+            } catch (e) {
+                console.error(e)
+
+            }
+        },
+        onFileDropped: async (file: File) => {
+            console.log('onFileDropped');
+            const canvas = await fileOrBlobToCanvas(file);
+            console.log('onSelectFile', canvas);
+            await dispatch(searchImage(canvas));
+        }
     }
 });
 
