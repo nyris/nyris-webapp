@@ -1,13 +1,14 @@
 import NyrisAPI from './../NyrisAPI';
-import {Region, RegionResult} from "../types";
+import {RegionResult} from "../types";
 import {ThunkAction} from "redux-thunk";
 
 
 type SearchAction =
     | { type: 'FEEDBACK_SUBMIT_POSITIVE' }
     | { type: 'FEEDBACK_SUBMIT_NEGATIVE' }
+    | { type: 'SELECT_IMAGE', image: HTMLCanvasElement }
     | { type: 'REGION_REQUEST_START' }
-    | { type: 'REGION_REQUEST_SUCCEED', regions: Region[] }
+    | { type: 'REGION_REQUEST_SUCCEED', regions: RegionResult[] }
     | { type: 'REGION_REQUEST_FAIL', reason: string }
     | { type: 'SEARCH_REQUEST_START' }
     | { type: 'SEARCH_REQUEST_SUCCEED', results: any[], requestId: string, duration: number }
@@ -15,26 +16,24 @@ type SearchAction =
 
 
 
-
-export const getRegions = (canvas: HTMLCanvasElement) : ThunkAction<Promise<void>, any, {}, SearchAction> => (
+export const searchImage = (canvas: HTMLCanvasElement) : ThunkAction<Promise<void>, any, any, SearchAction> => (
     async (dispatch, getState) => {
-        dispatch({ type: 'REGION_REQUEST_START'});
         const { settings } = getState();
         const api = new NyrisAPI(settings);
-        try {
-            const regions = await api.findRegions(canvas, settings);
-            dispatch({ type: 'REGION_REQUEST_SUCCEED', regions: regions.map((r: RegionResult)=> r.region) });
-        } catch (e) {
-            dispatch({ type: 'REGION_REQUEST_FAIL', reason: e.message });
+        dispatch({type: 'SELECT_IMAGE', image: canvas});
+
+        if (settings.regions) {
+            try {
+                dispatch({type: "REGION_REQUEST_START"});
+                let regions = await api.findRegions(canvas, settings);
+                dispatch({type: 'REGION_REQUEST_SUCCEED', regions });
+            } catch (e) {
+                dispatch({type: 'REGION_REQUEST_FAIL', reason: e.message});
+                console.error(e);
+            }
         }
-    }
-);
 
-export const searchImage = (canvas: HTMLCanvasElement) : ThunkAction<Promise<void>, any, {}, SearchAction> => (
-    async (dispatch, getState) => {
         dispatch({ type: 'SEARCH_REQUEST_START'});
-        const { settings } = getState();
-        const api = new NyrisAPI(settings);
         try {
             const {results, duration, requestId} = await api.findByImage(canvas, settings);
             dispatch({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration });
@@ -66,12 +65,14 @@ export interface SearchState {
     fetchingRegions: boolean,
     fetchingResults: boolean,
     filterOptions: string[],
+    requestImage?:  HTMLCanvasElement,
     categoryPredictions: CategoryPrediction[]
 }
 
 const initialState : SearchState = {
     results: [],
     requests: [],
+    requestImage: undefined,
     fetchingResults: false,
     fetchingRegions: false,
     filterOptions: [],
@@ -80,6 +81,12 @@ const initialState : SearchState = {
 
 export const reducer = (state : SearchState = initialState, action: SearchAction)  => {
     switch (action.type) {
+        case "SELECT_IMAGE":
+            let { image } = action;
+            return {
+                ...state,
+                requestImage: image
+            }
         case "SEARCH_REQUEST_START":
             return {
                 ...state,

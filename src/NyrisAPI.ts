@@ -124,7 +124,12 @@ export default class NyrisAPI {
             'X-Api-Key': this.settings.apiKey
         };
         let response = await
-            this.httpClient.post<RegionResult[]>(this.regionProposalUrl, blob, {headers})
+            this.httpClient.request<RegionResult[]>({
+                method: 'POST',
+                url: this.regionProposalUrl,
+                data: blob,
+                headers
+            });
         let regions :RegionResult[] = response.data;
         return regions.map(r => ({
                 className: r.className,
