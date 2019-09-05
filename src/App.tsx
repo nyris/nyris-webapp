@@ -123,7 +123,9 @@ const App : React.FC<AppProps> = ({search: {results, requestId, duration, errorM
                             </div>
                         }
                     </Animate>
-                    <Preview dots={previewDots} image={previewImage} />
+                    { previewImage &&
+                        <Preview dots={previewDots} image={previewImage} />
+                    }
                     <div className="predicted-categories">
                         <PredictedCategories cs={categoryPredictions}/>
                     </div>

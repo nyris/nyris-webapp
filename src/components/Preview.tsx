@@ -1,6 +1,7 @@
 import React from 'react';
-import {Layer, Stage, Image, Rect} from "react-konva";
+import {Layer, Stage, Image, Rect, Shape, Group} from "react-konva";
 import {Rect as RectType, RegionResult} from "../types";
+import Konva from 'konva';
 
 /*
 @Component({
@@ -238,16 +239,26 @@ const renderDots = (dots: any[], showClasses: boolean) => {
 
 interface PreviewProps {
     dots: RegionResult[],
-    image?: HTMLCanvasElement,
+    image: HTMLCanvasElement,
     displaySelection?: RectType
 }
 
 class Preview extends React.Component<PreviewProps,any> {
-    private canvasRef: React.RefObject<any>;
+    private readonly selectionRef: React.RefObject<any>;
+    private animation?: Konva.Animation;
 
     constructor(props: any) {
         super(props);
-        this.canvasRef = React.createRef();
+        this.selectionRef = React.createRef<Konva.Shape>();
+    }
+
+    componentDidMount(): void {
+        let speed = 40;
+        this.animation = new Konva.Animation((frame: {timeDiff: number, time: number}) => {
+            let angleDiff = (frame.time * speed) / 1000;
+            this.selectionRef.current.dashOffset(-angleDiff);
+        }, this.selectionRef.current.getLayer());
+        this.animation.start();
     }
 
 
@@ -263,8 +274,10 @@ class Preview extends React.Component<PreviewProps,any> {
                     <Image image={i}/>
                 </Layer>
                 <Layer>
-                    <Rect height={200} width={200} offset={{x: 100, y: 100}} stroke='white' strokeWidth={10} />
-                    <Rect height={200} width={200} offset={{x: 100, y: 100}} stroke='black' strokeWidth={10} dash={[15, 15]} />
+                    <Group height={200} width={200} x={100} y={100} draggable={true}>
+                        <Rect stroke='white' strokeWidth={5} />
+                        <Rect stroke='black' strokeWidth={5} dash={[15, 15]} ref={this.selectionRef} />
+                    </Group>
                 </Layer>
             </Stage>
 
