@@ -60,6 +60,7 @@ const mapStateToProps = (state: AppState) => ({
         filterOptions: state.search.filterOptions
     },
     settings: state.settings,
+    previewImage: state.search.requestImage,
     loading: state.search.fetchingRegions || state.search.fetchingResults
 });
 

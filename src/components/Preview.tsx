@@ -1,4 +1,6 @@
 import React from 'react';
+import {Layer, Stage, Image, Rect} from "react-konva";
+import {Rect as RectType, RegionResult} from "../types";
 
 /*
 @Component({
@@ -234,13 +236,41 @@ const renderDots = (dots: any[], showClasses: boolean) => {
         <span>dot.text</span>}</a>))
 };
 
-class Preview extends React.Component<any,any> {
+interface PreviewProps {
+    dots: RegionResult[],
+    image?: HTMLCanvasElement,
+    displaySelection?: RectType
+}
+
+class Preview extends React.Component<PreviewProps,any> {
     private canvasRef: React.RefObject<any>;
 
     constructor(props: any) {
         super(props);
         this.canvasRef = React.createRef();
     }
+
+
+    render() {
+        const i = this.props.image;
+        if (!i) {
+            return null;
+        }
+
+        return (
+            <Stage width={i.width} height={i.height}>
+                <Layer>
+                    <Image image={i}/>
+                </Layer>
+                <Layer>
+                    <Rect height={200} width={200} offset={{x: 100, y: 100}} stroke='white' strokeWidth={10} />
+                    <Rect height={200} width={200} offset={{x: 100, y: 100}} stroke='black' strokeWidth={10} dash={[15, 15]} />
+                </Layer>
+            </Stage>
+
+        );
+    }
+    /*
 
     render() {
         const props = this.props || {};
@@ -319,6 +349,8 @@ style={{top: 0, left: 0, width: '100%', height: props.displaySelection.y + 'px'}
 </div>)
 
 };
+
+     */
 
 
 

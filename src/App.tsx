@@ -16,7 +16,6 @@ const stateEnum = {
     LoadingWithPreview: 'loadingWithPreview'
 };
 const previewDots: any[] = [];
-const displaySelection = {};
 
 const state = 'ba';
 
@@ -43,12 +42,13 @@ interface AppProps {
         filterOptions: string[],
         errorMessage?: string
     },
+    previewImage?: HTMLCanvasElement,
     settings: any,
     handlers: any,
     loading: boolean
 }
 
-const App : React.FC<AppProps> = ({search: {results, requestId, duration, errorMessage, filterOptions, categoryPredictions }, settings, handlers, loading}) => {
+const App : React.FC<AppProps> = ({search: {results, requestId, duration, errorMessage, filterOptions, categoryPredictions }, settings, handlers, loading, previewImage}) => {
         const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: handlers.onFileDropped});
         return (
             <div>
@@ -123,8 +123,7 @@ const App : React.FC<AppProps> = ({search: {results, requestId, duration, errorM
                             </div>
                         }
                     </Animate>
-                    <Preview dots={previewDots} displaySelection={displaySelection}
-                             visible={(settings.preview || settings.regions) && (state === stateEnum.Results || state === stateEnum.LoadingWithPreview)}/>
+                    <Preview dots={previewDots} image={previewImage} />
                     <div className="predicted-categories">
                         <PredictedCategories cs={categoryPredictions}/>
                     </div>

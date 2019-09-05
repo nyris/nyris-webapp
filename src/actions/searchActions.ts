@@ -20,6 +20,7 @@ export const searchImage = (canvas: HTMLCanvasElement) : ThunkAction<Promise<voi
     async (dispatch, getState) => {
         const { settings } = getState();
         const api = new NyrisAPI(settings);
+        console.log("setting image", canvas);
         dispatch({type: 'SELECT_IMAGE', image: canvas});
 
         if (settings.regions) {
