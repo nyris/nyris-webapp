@@ -32,7 +32,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "mockserver": "mockserver -p 8080 -m api-mocks -q"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -50,6 +51,7 @@
     ]
   },
   "devDependencies": {
+    "mockserver": "^3.1.1",
     "redux-devtools-extension": "^2.13.8"
   }
 }
