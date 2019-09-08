@@ -9,13 +9,13 @@ import PredictedCategories from "./components/PredictedCategories";
 import { useDropzone } from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
+import {Region, RegionResult} from "./types";
 
 const stateEnum = {
     Search: 'search',
     Results: 'results',
     LoadingWithPreview: 'loadingWithPreview'
 };
-const previewDots: any[] = [];
 
 const state = 'ba';
 
@@ -40,7 +40,9 @@ interface AppProps {
         duration?: number,
         categoryPredictions: { name: string, score: number}[],
         filterOptions: string[],
-        errorMessage?: string
+        errorMessage?: string,
+        regions: RegionResult[],
+        selectedRegion: Region
     },
     previewImage?: HTMLCanvasElement,
     settings: any,
@@ -48,7 +50,7 @@ interface AppProps {
     loading: boolean
 }
 
-const App : React.FC<AppProps> = ({search: {results, requestId, duration, errorMessage, filterOptions, categoryPredictions }, settings, handlers, loading, previewImage}) => {
+const App : React.FC<AppProps> = ({search: {results, regions, selectedRegion, requestId, duration, errorMessage, filterOptions, categoryPredictions }, settings, handlers, loading, previewImage}) => {
         const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: handlers.onFileDropped});
         return (
             <div>
@@ -124,7 +126,7 @@ const App : React.FC<AppProps> = ({search: {results, requestId, duration, errorM
                         }
                     </Animate>
                     { previewImage &&
-                        <Preview dots={previewDots} image={previewImage} />
+                        <Preview regions={regions} displaySelection={selectedRegion}  image={previewImage} />
                     }
                     <div className="predicted-categories">
                         <PredictedCategories cs={categoryPredictions}/>

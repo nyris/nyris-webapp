@@ -1,5 +1,5 @@
 import NyrisAPI from './../NyrisAPI';
-import {RegionResult} from "../types";
+import {Region, RegionResult} from "../types";
 import {ThunkAction} from "redux-thunk";
 
 
@@ -31,7 +31,9 @@ export const searchImage = (canvas: HTMLCanvasElement) : ThunkAction<Promise<voi
             } catch (e) {
                 dispatch({type: 'REGION_REQUEST_FAIL', reason: e.message});
                 console.error(e);
+                throw e;
             }
+
         }
 
         dispatch({ type: 'SEARCH_REQUEST_START'});
@@ -63,6 +65,8 @@ interface CategoryPrediction {
 export interface SearchState {
     results: any[],
     requests: RequestInfo[],
+    regions: RegionResult[],
+    selectedRegion: Region,
     fetchingRegions: boolean,
     fetchingResults: boolean,
     filterOptions: string[],
@@ -73,6 +77,8 @@ export interface SearchState {
 const initialState : SearchState = {
     results: [],
     requests: [],
+    regions: [],
+    selectedRegion: {left: 0, right: 1, top: 0, bottom: 1},
     requestImage: undefined,
     fetchingResults: false,
     fetchingRegions: false,
@@ -87,7 +93,14 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
             return {
                 ...state,
                 requestImage: image
-            }
+            };
+
+        case "REGION_REQUEST_SUCCEED":
+            let { regions } = action;
+            return {
+                ...state,
+                regions
+            };
         case "SEARCH_REQUEST_START":
             return {
                 ...state,

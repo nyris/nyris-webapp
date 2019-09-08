@@ -1,7 +1,8 @@
 import React from 'react';
-import {Layer, Stage, Image, Rect, Shape, Group} from "react-konva";
-import {Rect as RectType, RegionResult} from "../types";
+import {Layer, Stage, Image, Rect, Group, Circle} from "react-konva";
+import {Region, RegionResult} from "../types";
 import Konva from 'konva';
+import {NodeGroup} from "react-move";
 
 /*
 @Component({
@@ -230,27 +231,52 @@ export class PreviewComponent implements OnInit {
 
  */
 
-const renderDots = (dots: any[], showClasses: boolean) => {
-    console.log(dots);
-    return dots.map((dot: any) => (
-        <a href="#top" className="circle" style={{left: dot.x + 'px', top: dot.y + 'px'}} title="Click to select">{showClasses &&
-        <span>dot.text</span>}</a>))
-};
+type PreviewElem =
+    | 'tl'
+    | 'tr'
+    | 'bl'
+    | 'br'
+    | 'rect';
 
 interface PreviewProps {
-    dots: RegionResult[],
     image: HTMLCanvasElement,
-    displaySelection?: RectType
+    displaySelection: Region,
+    regions: RegionResult[]
 }
 
-class Preview extends React.Component<PreviewProps,any> {
+interface PreviewState {
+    tlHover: boolean,
+    trHover: boolean,
+    blHover: boolean,
+    brHover: boolean,
+    x1: number,
+    x2: number,
+    y1: number,
+    y2: number,
+    initialRegion: Region
+}
+
+class Preview extends React.Component<PreviewProps,PreviewState> {
     private readonly selectionRef: React.RefObject<any>;
     private animation?: Konva.Animation;
 
-    constructor(props: any) {
+    constructor(props: PreviewProps) {
         super(props);
         this.selectionRef = React.createRef<Konva.Shape>();
+        this.state = {
+            tlHover: false,
+            trHover: false,
+            blHover: false,
+            brHover: false,
+            x1: 0,
+            y1: 0,
+            x2: 1,
+            y2: 1,
+            initialRegion: props.displaySelection
+        };
     }
+
+
 
     componentDidMount(): void {
         let speed = 40;
@@ -261,25 +287,124 @@ class Preview extends React.Component<PreviewProps,any> {
         this.animation.start();
     }
 
-
-    render() {
-        const i = this.props.image;
-        if (!i) {
-            return null;
+    handleDragMove(elem: PreviewElem, evt: Konva.KonvaEventObject<DragEvent>) {
+        let [minX, minY ] = [ 50, 50];
+        console.log('handledrag', evt.target, elem)
+        let { width, height } = this.props.image;
+        let {x1, x2, y1, y2} = this.scaleToImg(this.props.image, this.state);
+        if (evt.target instanceof Konva.Stage) {
+            return;
         }
 
-        return (
-            <Stage width={i.width} height={i.height}>
-                <Layer>
-                    <Image image={i}/>
+        let {x: newX, y: newY} = evt.target.getAbsolutePosition();
+        let {width: elemWidth, height: elemHeight} = evt.target.getSize();
+        switch (elem) {
+
+            case 'rect':
+                x1=Math.max(Math.min(newX, width), 0);
+                y1=Math.max(Math.min(newY, height), 0);
+                x2=Math.min(Math.max(newX, 0), width);
+                y2=Math.min(Math.max(newY, 0), height);
+
+                x1=Math.max(Math.min(newX, width-elemWidth), 0);
+                y1=Math.max(Math.min(newY, height-elemHeight), 0);
+                x2=Math.min(Math.max(newX+elemWidth, elemWidth), width);
+                y2=Math.min(Math.max(newY+elemHeight, elemHeight), height);
+
+                break;
+            case 'tl':
+                x1=Math.max(Math.min(newX, x2-minX), 0);
+                y1=Math.max(Math.min(newY, y2-minY), 0);
+                break;
+            case 'tr':
+                x2=Math.min(Math.max(newX, x1+minX), width);
+                y1=Math.max(Math.min(newY, y2-minY), 0);
+                break;
+            case 'bl':
+                x1=Math.max(Math.min(newX, x2-minX), 0);
+                y2=Math.min(Math.max(newY, y1+minY), height);
+                break;
+            case 'br':
+                x2=Math.min(Math.max(newX, x1+minX), width);
+                y2=Math.min(Math.max(newY, y1+minY), height);
+                break;
+
+        }
+        console.log('state', {newX, newY, x1, x2, y1,y2})
+        this.setState({
+            x1: x1/width,
+            x2: x2/width,
+            y1: y1/height,
+            y2: y2/height
+        });
+    }
+
+    scaleToImg({width, height}: {width: number, height: number}, {x1, x2, y1, y2} : { x1: number, x2: number, y1: number, y2:number}) {
+        return {
+            x1: x1*width,
+            x2: x2*width,
+            y1: y1*width,
+            y2: y2*width
+        };
+    }
+
+    static getDerivedStateFromProps(props: PreviewProps, state: PreviewState) {
+        return null;
+    }
+
+
+
+    render() {
+        const {image, regions, displaySelection} = this.props;
+        if (!image) {
+            return null;
+        }
+        const dots = regions.map(({region: {left, right, top, bottom}}, i) => ({
+            x: image.width* ((right-left)/2 + left),
+            y: image.height* ((bottom-top)/2+ top),
+            key: i
+        }));
+
+        const {x1, x2, y1, y2} = this.scaleToImg(image, this.state);
+
+        let gripSize = 40;
+        let gripOpacity = 0.3;
+        let gripOpacityOver = 0.6;
+        let darkOpacity = 0.3;
+
+        return (<div className="preview">
+            <Stage width={image.width} height={image.height}>
+                <Layer key='img'>
+                    <Image image={image}/>
                 </Layer>
-                <Layer>
-                    <Group height={200} width={200} x={100} y={100} draggable={true}>
-                        <Rect stroke='white' strokeWidth={5} />
-                        <Rect stroke='black' strokeWidth={5} dash={[15, 15]} ref={this.selectionRef} />
-                    </Group>
+                <Layer key='selection'>
+                    {/* Selection box */}
+                    <Rect stroke='white' strokeWidth={2} x={x1} y={y1} width={x2-x1} height={y2-y1} />
+                    <Rect stroke='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'rect')}  opacity={0.8} strokeWidth={2} x={x1} y={y1} width={x2-x1} height={y2-y1} dash={[15, 15]} ref={this.selectionRef} />
+                    {/* grips */}
+                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'tl')}
+                          onMouseOver={() => this.setState({tlHover: true})} onMouseOut={() => this.setState({tlHover: false})} opacity={this.state.tlHover ?  gripOpacityOver : gripOpacity} width={gripSize} height={gripSize} x={x1} y={y1} />
+                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'tr')}
+                          onMouseOver={() => this.setState({trHover: true})} onMouseOut={() => this.setState({trHover: false})} opacity={this.state.trHover ?  gripOpacityOver : gripOpacity} width={gripSize} height={gripSize} x={x2} y={y1} offsetX={gripSize} />
+                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'bl')}
+                          onMouseOver={() => this.setState({blHover: true})} onMouseOut={() => this.setState({blHover: false})} opacity={this.state.blHover ?  gripOpacityOver : gripOpacity} width={gripSize} height={gripSize} x={x1} y={y2} offsetY={gripSize} />
+                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'br')}
+                          onMouseOver={() => this.setState({brHover: true})} onMouseOut={() => this.setState({brHover: false})} opacity={this.state.brHover ?  gripOpacityOver : gripOpacity} width={gripSize} height={gripSize} x={x2} y={y2} offsetY={gripSize} offsetX={gripSize} />
+                    {/* Dark areas */}
+                    <Rect fill='black' opacity={darkOpacity} x={0} y={0} width={image.width} height={y1} />
+                    <Rect fill='black' opacity={darkOpacity} x={0} y={y2} width={image.width} height={image.height-y2} />
+                    <Rect fill='black' opacity={darkOpacity} x={0} y={y1} width={x1} height={y2-y1} />
+                    <Rect fill='black' opacity={darkOpacity} x={x2} y={y1} width={image.width - x2} height={y2-y1} />
                 </Layer>
+                <NodeGroup data={dots}
+                           keyAccessor={r => r.key}
+                           start={(d, i) => ({opacity: 0, x: -100, y: d.y})}
+                           enter={(d, i) => ({opacity: [1], x: [d.x], y: d.y, timing: {delay: i*100, duration: 300}})}
+                >
+                    {ds => <Layer key='dots'>{ds.map(({key, data, state: position}) => <Circle key={key} radius={7} {...position} stroke="#4C8F9F" fill="white" strokeWidth={4}/>)}</Layer>}
+                </NodeGroup>
             </Stage>
+            </div>
 
         );
     }

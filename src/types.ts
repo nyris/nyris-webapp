@@ -41,9 +41,7 @@ export interface Region {
     left: number,
     top: number,
     right: number,
-    bottom: number,
-    x2: number,
-    y2: number
+    bottom: number
 }
 
 export interface Dot {

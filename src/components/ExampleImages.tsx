@@ -14,7 +14,8 @@ const ExampleImages : React.FC<ExampleImagesProps> = ({images, onExampleImageCli
             You can also try one of these pictures:
             <div className="exampleImages">
                 <div className="exImagesWrap">
-                    {images.map((i) => (<img key={i} src={i} alt="" onClick={onExampleImageClicked} crossOrigin="anonymous"/>))}
+                    {/* note: crossOrigin has to be applied before src to work */}
+                    {images.map((i) => (<img key={i} crossOrigin="anonymous" src={i} alt="" onClick={onExampleImageClicked}/>))}
                 </div>
             </div>
         </section>

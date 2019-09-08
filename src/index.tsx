@@ -57,10 +57,12 @@ const mapStateToProps = (state: AppState) => ({
     search: {
         results: state.search.results,
         categoryPredictions: state.search.categoryPredictions,
-        filterOptions: state.search.filterOptions
+        filterOptions: state.search.filterOptions,
+        selectedRegion: state.search.selectedRegion,
+        regions: state.search.regions
     },
     settings: state.settings,
-    previewImage: state.search.requestImage,
+    previewImage: state.search.requestImage instanceof HTMLCanvasElement ? state.search.requestImage : undefined,
     loading: state.search.fetchingRegions || state.search.fetchingResults
 });
 
@@ -77,6 +79,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => ({
         onExampleImageClicked: async (img: HTMLImageElement) => {
             console.log('on example image clicked', img);
             try {
+                console.log('-> on example image clicked', img);
                 const canvas = await toCanvas(img);
                 console.log('-> on example image clicked', canvas);
                 await dispatch(searchImage(canvas));

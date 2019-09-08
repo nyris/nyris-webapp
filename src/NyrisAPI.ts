@@ -99,6 +99,7 @@ export default class NyrisAPI {
 
     async findBySku(sku: string, mid: string) {
         let headers: any = {
+            'Content-Type': 'image/jpeg',
             'X-Api-Key': this.settings.apiKey,
             'Accept-Language': 'de,*;q=0.5',
             'Accept': this.responseFormat
@@ -118,9 +119,9 @@ export default class NyrisAPI {
         let {w: scaledW, h: scaledH} = getThumbSizeArea(options.maxWidth, options.maxHeight, origW, origH);
         let resizedCroppedCanvas = toCanvas(canvas, {w: scaledW, h: scaledH});
         let blob = await canvasToJpgBlob(resizedCroppedCanvas, options.jpegQuality);
-        let s = origW / scaledW;
 
         const headers = {
+            'Content-Type': 'image/jpeg',
             'X-Api-Key': this.settings.apiKey
         };
         let response = await
@@ -135,12 +136,12 @@ export default class NyrisAPI {
                 className: r.className,
                 confidence: r.confidence,
                 region: {
-                    left: r.region.left * s,
-                    right: r.region.right * s,
-                    x2: r.region.right * s,
-                    top: r.region.top * s,
-                    bottom: r.region.bottom * s,
-                    y2: r.region.bottom * s
+                    left: r.region.left / scaledW,
+                    right: r.region.right / scaledW,
+                    x2: r.region.right / scaledW,
+                    top: r.region.top / scaledH,
+                    bottom: r.region.bottom / scaledH,
+                    y2: r.region.bottom / scaledH
                 }
             }));
     }
