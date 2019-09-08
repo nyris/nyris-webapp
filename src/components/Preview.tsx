@@ -241,18 +241,22 @@ type PreviewElem =
 interface PreviewProps {
     image: HTMLCanvasElement,
     displaySelection: Region,
-    regions: RegionResult[]
+    regions: RegionResult[],
+    onSelectionChange?: (r: Selection) => void
 }
 
-interface PreviewState {
-    tlHover: boolean,
-    trHover: boolean,
-    blHover: boolean,
-    brHover: boolean,
+interface Selection {
     x1: number,
     x2: number,
     y1: number,
     y2: number,
+}
+
+interface PreviewState extends Selection {
+    tlHover: boolean,
+    trHover: boolean,
+    blHover: boolean,
+    brHover: boolean,
     initialRegion: Region
 }
 
@@ -288,10 +292,8 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
     }
 
     handleDragMove(elem: PreviewElem, evt: Konva.KonvaEventObject<DragEvent>) {
-        let [minX, minY ] = [ 50, 50];
-        console.log('handledrag', evt.target, elem)
         let { width, height } = this.props.image;
-        let {x1, x2, y1, y2} = this.scaleToImg(this.props.image, this.state);
+        let {x1, x2, y1, y2} = Preview.scaleToImg(this.props.image, this.state);
         if (evt.target instanceof Konva.Stage) {
             return;
         }
@@ -301,45 +303,95 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         switch (elem) {
 
             case 'rect':
-                x1=Math.max(Math.min(newX, width), 0);
-                y1=Math.max(Math.min(newY, height), 0);
-                x2=Math.min(Math.max(newX, 0), width);
-                y2=Math.min(Math.max(newY, 0), height);
-
-                x1=Math.max(Math.min(newX, width-elemWidth), 0);
-                y1=Math.max(Math.min(newY, height-elemHeight), 0);
-                x2=Math.min(Math.max(newX+elemWidth, elemWidth), width);
-                y2=Math.min(Math.max(newY+elemHeight, elemHeight), height);
-
+                x1=newX;
+                y1=newY;
+                x2=newX+elemWidth;
+                y2=newY+elemHeight;
                 break;
             case 'tl':
-                x1=Math.max(Math.min(newX, x2-minX), 0);
-                y1=Math.max(Math.min(newY, y2-minY), 0);
+                x1=newX;
+                y1=newY;
                 break;
             case 'tr':
-                x2=Math.min(Math.max(newX, x1+minX), width);
-                y1=Math.max(Math.min(newY, y2-minY), 0);
+                x2=newX;
+                y1=newY;
                 break;
             case 'bl':
-                x1=Math.max(Math.min(newX, x2-minX), 0);
-                y2=Math.min(Math.max(newY, y1+minY), height);
+                x1=newX;
+                y2=newY;
                 break;
             case 'br':
-                x2=Math.min(Math.max(newX, x1+minX), width);
-                y2=Math.min(Math.max(newY, y1+minY), height);
+                x2=newX;
+                y2=newY;
                 break;
 
         }
         console.log('state', {newX, newY, x1, x2, y1,y2})
-        this.setState({
+        let newState = {
             x1: x1/width,
             x2: x2/width,
             y1: y1/height,
             y2: y2/height
-        });
+        };
+        this.setState(newState);
+        this.handleSelectionChanged(newState);
     }
 
-    scaleToImg({width, height}: {width: number, height: number}, {x1, x2, y1, y2} : { x1: number, x2: number, y1: number, y2:number}) {
+    handleDragBoundTl({x, y}: {x: number,y: number}) {
+        let [minX, minY ] = [ 100, 100];
+        let {x1, x2, y1, y2} = Preview.scaleToImg(this.props.image, this.state);
+        return {
+            x: Math.max(Math.min(x, x2-minX), 0),
+            y: Math.max(Math.min(y, y2-minY), 0)
+
+        };
+    }
+    handleDragBoundTr({x, y}: {x: number,y: number}) {
+        let [minX, minY ] = [ 100, 100];
+        let {x1, y2} = Preview.scaleToImg(this.props.image, this.state);
+        let { width} = this.props.image;
+        return {
+            x: Math.min(Math.max(x, x1+minX), width),
+            y: Math.max(Math.min(y, y2-minY), 0)
+
+        };
+    }
+    handleDragBoundBl({x, y}: {x: number,y: number}) {
+        let [minX, minY ] = [ 100, 100];
+        let { x2, y1 } = Preview.scaleToImg(this.props.image, this.state);
+        let {  height } = this.props.image;
+        return {
+            x: Math.max(Math.min(x, x2-minX), 0),
+            y: Math.min(Math.max(y, y1+minY), height)
+        };
+    }
+    handleDragBoundBr({x, y}: {x: number,y: number}) {
+        let [minX, minY ] = [ 100, 100];
+        let {x1, y1} = Preview.scaleToImg(this.props.image, this.state);
+        let { width, height } = this.props.image;
+        return {
+            x: Math.min(Math.max(x, x1+minX), width),
+            y: Math.min(Math.max(y, y1+minY), height)
+        };
+    }
+    handleDragBoundRect({x, y}: {x: number,y: number}) {
+        let {x1, x2, y1, y2} = Preview.scaleToImg(this.props.image, this.state);
+        let { width, height } = this.props.image;
+        let elemWidth = x2-x1;
+        let elemHeight = y2-y1;
+        return {
+            x: Math.max(Math.min(x, width-elemWidth), 0),
+            y: Math.max(Math.min(y, height-elemHeight), 0)
+        };
+    }
+
+    handleSelectionChanged(selection: Selection) {
+        if (this.props.onSelectionChange) {
+            this.props.onSelectionChange(selection);
+        }
+    }
+
+    static scaleToImg({width, height}: {width: number, height: number}, {x1, x2, y1, y2} : { x1: number, x2: number, y1: number, y2:number}) {
         return {
             x1: x1*width,
             x2: x2*width,
@@ -365,7 +417,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
             key: i
         }));
 
-        const {x1, x2, y1, y2} = this.scaleToImg(image, this.state);
+        const {x1, x2, y1, y2} = Preview.scaleToImg(image, this.state);
 
         let gripSize = 40;
         let gripOpacity = 0.3;
@@ -380,15 +432,16 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
                 <Layer key='selection'>
                     {/* Selection box */}
                     <Rect stroke='white' strokeWidth={2} x={x1} y={y1} width={x2-x1} height={y2-y1} />
-                    <Rect stroke='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'rect')}  opacity={0.8} strokeWidth={2} x={x1} y={y1} width={x2-x1} height={y2-y1} dash={[15, 15]} ref={this.selectionRef} />
+                    <Rect stroke='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'rect')} dragBoundFunc={this.handleDragBoundRect.bind(this)}
+                          opacity={0.8} strokeWidth={2} x={x1} y={y1} width={x2-x1} height={y2-y1} dash={[15, 15]} ref={this.selectionRef} />
                     {/* grips */}
-                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'tl')}
+                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'tl')} dragBoundFunc={this.handleDragBoundTl.bind(this)}
                           onMouseOver={() => this.setState({tlHover: true})} onMouseOut={() => this.setState({tlHover: false})} opacity={this.state.tlHover ?  gripOpacityOver : gripOpacity} width={gripSize} height={gripSize} x={x1} y={y1} />
-                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'tr')}
+                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'tr')} dragBoundFunc={this.handleDragBoundTr.bind(this)}
                           onMouseOver={() => this.setState({trHover: true})} onMouseOut={() => this.setState({trHover: false})} opacity={this.state.trHover ?  gripOpacityOver : gripOpacity} width={gripSize} height={gripSize} x={x2} y={y1} offsetX={gripSize} />
-                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'bl')}
+                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'bl')} dragBoundFunc={this.handleDragBoundBl.bind(this)}
                           onMouseOver={() => this.setState({blHover: true})} onMouseOut={() => this.setState({blHover: false})} opacity={this.state.blHover ?  gripOpacityOver : gripOpacity} width={gripSize} height={gripSize} x={x1} y={y2} offsetY={gripSize} />
-                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'br')}
+                    <Rect fill='black' draggable={true} onDragMove={this.handleDragMove.bind(this, 'br')} dragBoundFunc={this.handleDragBoundBr.bind(this)}
                           onMouseOver={() => this.setState({brHover: true})} onMouseOut={() => this.setState({brHover: false})} opacity={this.state.brHover ?  gripOpacityOver : gripOpacity} width={gripSize} height={gripSize} x={x2} y={y2} offsetY={gripSize} offsetX={gripSize} />
                     {/* Dark areas */}
                     <Rect fill='black' opacity={darkOpacity} x={0} y={0} width={image.width} height={y1} />
