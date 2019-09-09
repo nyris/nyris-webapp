@@ -1,5 +1,5 @@
 import React from 'react';
-import {Layer, Stage, Image, Rect, Group, Circle} from "react-konva";
+import {Layer, Stage, Image, Rect, Circle} from "react-konva";
 import {Region, RegionResult} from "../types";
 import Konva from 'konva';
 import {NodeGroup} from "react-move";
@@ -326,20 +326,18 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
                 break;
 
         }
-        console.log('state', {newX, newY, x1, x2, y1,y2})
         let newState = {
             x1: x1/width,
             x2: x2/width,
             y1: y1/height,
             y2: y2/height
         };
-        this.setState(newState);
-        this.handleSelectionChanged(newState);
+        this.setSelection(newState);
     }
 
     handleDragBoundTl({x, y}: {x: number,y: number}) {
         let [minX, minY ] = [ 100, 100];
-        let {x1, x2, y1, y2} = Preview.scaleToImg(this.props.image, this.state);
+        let {x2, y2} = Preview.scaleToImg(this.props.image, this.state);
         return {
             x: Math.max(Math.min(x, x2-minX), 0),
             y: Math.max(Math.min(y, y2-minY), 0)
@@ -386,6 +384,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
     }
 
     handleSelectionChanged(selection: Selection) {
+        this.setState(selection);
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(selection);
         }
@@ -404,18 +403,33 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         return null;
     }
 
+    setSelection(r: Region | Selection) { // TODO what is better here?
+        if ('left' in r) {
+            this.handleSelectionChanged({
+                x1: r.left, x2: r.right, y1: r.top, y2: r.bottom
+            });
+        }
+        if ('x1' in r) {
+            this.handleSelectionChanged(r);
+        }
+    }
+
 
 
     render() {
-        const {image, regions, displaySelection} = this.props;
+        const {image, regions} = this.props;
         if (!image) {
             return null;
         }
-        const dots = regions.map(({region: {left, right, top, bottom}}, i) => ({
-            x: image.width* ((right-left)/2 + left),
-            y: image.height* ((bottom-top)/2+ top),
-            key: i
-        }));
+        const dots = regions.map(({region}, i) => {
+            let {left, right, top, bottom} = region;
+            return {
+                region,
+                x: image.width* ((right-left)/2 + left),
+                y: image.height* ((bottom-top)/2+ top),
+                key: i
+            };
+        });
 
         const {x1, x2, y1, y2} = Preview.scaleToImg(image, this.state);
 
@@ -454,7 +468,8 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
                            start={(d, i) => ({opacity: 0, x: -100, y: d.y})}
                            enter={(d, i) => ({opacity: [1], x: [d.x], y: d.y, timing: {delay: i*100, duration: 300}})}
                 >
-                    {ds => <Layer key='dots'>{ds.map(({key, data, state: position}) => <Circle key={key} radius={7} {...position} stroke="#4C8F9F" fill="white" strokeWidth={4}/>)}</Layer>}
+                    {ds => <Layer key='dots'>{ds.map(({key, data, state: position}) =>
+                        <Circle onClick={() => this.setSelection(data.region)} key={key} radius={7} {...position} stroke="#4C8F9F" fill="white" strokeWidth={4}/>)}</Layer>}
                 </NodeGroup>
             </Stage>
             </div>

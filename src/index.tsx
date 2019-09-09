@@ -13,7 +13,9 @@ import {
 } from './actions/searchActions';
 import {fileOrBlobToCanvas, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {SearchServiceSettings} from "./types";
+import {Region, SearchServiceSettings} from "./types";
+import {Subject} from "rxjs";
+import {debounceTime} from "rxjs/operators";
 
 export enum AppViews {
     Start = 'START',
@@ -66,36 +68,45 @@ const mapStateToProps = (state: AppState) => ({
     loading: state.search.fetchingRegions || state.search.fetchingResults
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => ({
-    handlers: {
-        onPositiveFeedback: () => console.log('on positive feedback'),
-        onNegativeFeedback: () => console.log('on negative feedback'),
-        onSelectFile: async (file: File) => {
-            console.log('onSelectFile');
-            const canvas = await fileOrBlobToCanvas(file);
-            console.log('onSelectFile', canvas);
-            await dispatch(searchImage(canvas));
-        },
-        onExampleImageClicked: async (img: HTMLImageElement) => {
-            console.log('on example image clicked', img);
-            try {
-                console.log('-> on example image clicked', img);
-                const canvas = await toCanvas(img);
-                console.log('-> on example image clicked', canvas);
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => {
+    let changeEmitter = new Subject();
+    changeEmitter.pipe(debounceTime(600)).subscribe(e => {
+        console.log('selection changed', e);
+    });
+    return {
+        handlers: {
+            onPositiveFeedback: () => console.log('on positive feedback'),
+            onNegativeFeedback: () => console.log('on negative feedback'),
+            onSelectFile: async (file: File) => {
+                console.log('onSelectFile');
+                const canvas = await fileOrBlobToCanvas(file);
+                console.log('onSelectFile', canvas);
                 await dispatch(searchImage(canvas));
-            } catch (e) {
-                console.error(e)
+            },
+            onExampleImageClicked: async (img: HTMLImageElement) => {
+                console.log('on example image clicked', img);
+                try {
+                    console.log('-> on example image clicked', img);
+                    const canvas = await toCanvas(img);
+                    console.log('-> on example image clicked', canvas);
+                    await dispatch(searchImage(canvas));
+                } catch (e) {
+                    console.error(e)
 
+                }
+            },
+            onFileDropped: async (file: File) => {
+                console.log('onFileDropped');
+                const canvas = await fileOrBlobToCanvas(file);
+                console.log('onSelectFile', canvas);
+                await dispatch(searchImage(canvas));
+            },
+            onSelectionChange: (selection: Region) => {
+                changeEmitter.next(selection);
             }
-        },
-        onFileDropped: async (file: File) => {
-            console.log('onFileDropped');
-            const canvas = await fileOrBlobToCanvas(file);
-            console.log('onSelectFile', canvas);
-            await dispatch(searchImage(canvas));
         }
-    }
-});
+    };
+};
 
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
