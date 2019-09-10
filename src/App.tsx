@@ -126,7 +126,11 @@ const App : React.FC<AppProps> = ({search: {results, regions, selectedRegion, re
                         }
                     </Animate>
                     { previewImage &&
-                        <Preview onSelectionChange={handlers.onSelectionChange} regions={regions} displaySelection={selectedRegion}  image={previewImage} />
+                        <div className="preview">
+                            <Preview
+                                maxWidth={document.body.clientWidth} maxHeight={Math.floor(window.innerHeight * 0.45)} dotColor="#4C8F9F"
+                                onSelectionChange={handlers.onSelectionChange} regions={regions} displaySelection={selectedRegion}  image={previewImage} />
+                        </div>
                     }
                     <div className="predicted-categories">
                         <PredictedCategories cs={categoryPredictions}/>
