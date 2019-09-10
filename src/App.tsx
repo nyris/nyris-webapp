@@ -10,10 +10,7 @@ import { useDropzone } from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
 import {Region, RegionResult} from "./types";
-import {NyrisAppPart} from "./actions/nyrisAppActions";
-
-
-let feedbackState = 0;
+import {NyrisAppPart, NyrisFeedbackState} from "./actions/nyrisAppActions";
 
 
 const makeFileHandler = (action: any) => (e: any) => {
@@ -39,10 +36,14 @@ interface AppProps {
     settings: any,
     handlers: any,
     loading: boolean,
-    showPart: NyrisAppPart
+    showPart: NyrisAppPart,
+    feedbackState: NyrisFeedbackState
 }
 
-const App : React.FC<AppProps> = ({search: {results, regions, initialRegion, requestId, duration, errorMessage, filterOptions, categoryPredictions }, showPart, settings, handlers, loading, previewImage}) => {
+const App : React.FC<AppProps> = ({
+        search: {results, regions, initialRegion, requestId, duration, errorMessage, filterOptions, categoryPredictions },
+        showPart, settings, handlers, loading, previewImage, feedbackState
+    }) => {
         const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: handlers.onFileDropped});
         return (
             <div>
@@ -117,7 +118,7 @@ const App : React.FC<AppProps> = ({search: {results, regions, initialRegion, req
                     </Animate>
                     { previewImage &&
                         <div className="preview">
-                            <Preview key={previewImage.height * previewImage.width}
+                            <Preview key={regions.length}
                                 maxWidth={document.body.clientWidth} maxHeight={Math.floor(window.innerHeight * 0.45)} dotColor="#4C8F9F"
                                 onSelectionChange={handlers.onSelectionChange} regions={regions} initialRegion={initialRegion}  image={previewImage} />
                         </div>
@@ -140,8 +141,10 @@ const App : React.FC<AppProps> = ({search: {results, regions, initialRegion, req
                             >
                             {rs => <>{rs.map(({key, data, state}) => <Result
                                 key={key}
-                                onClickImage={(e: React.MouseEvent<HTMLImageElement>) => handlers.onImageClicked(e.target)}
-                                onLinkClicked={() => handlers.onLinkClicked(data)}
+                                noImageUrl={settings.noImageUrl}
+                                template={settings.resultTemplate}
+                                onImageClick={(e: React.MouseEvent<HTMLImageElement>) => handlers.onImageClicked(e.target)}
+                                onLinkClick={() => handlers.onLinkClicked(data)}
                                 result={data} style={{opacity: state.opacity, transform: `translateX(${state.translateX}%)`}}  />)}</>}
                         </NodeGroup>
 
@@ -159,7 +162,7 @@ const App : React.FC<AppProps> = ({search: {results, regions, initialRegion, req
                         © 2017 - 2019 <a href="https://nyris.io">nyris GmbH</a> - All rights reserved - <a href="https://nyris.io/imprint/">Imprint</a>
                     </div>
                 </section>
-                <Feedback feedbackState={feedbackState} onPositiveFeedback={handlers.onPositiveFeedback} onNegativeFeedback={handlers.onNegativeFeedback}/>
+                <Feedback feedbackState={feedbackState} onPositiveFeedback={handlers.onPositiveFeedback} onNegativeFeedback={handlers.onNegativeFeedback} onClose={handlers.onCloseFeedback}/> }
             </div>
         );
 

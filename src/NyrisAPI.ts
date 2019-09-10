@@ -28,31 +28,30 @@ export interface ClickData {
     product_ids: string[]
 }
 
-interface FeedbackEventBase {
-    request_id: string,
-    timestamp: Date,
-    session_id: string
-}
-
-interface SuccessEvent extends FeedbackEventBase {
+interface SuccessEventPayload  {
     event: 'feedback',
     data: FeedbackData
 }
 
-interface RegionEvent extends FeedbackEventBase {
+interface RegionEventPayload {
     event: 'region',
     data: RegionData
 }
-interface ClickEvent extends FeedbackEventBase {
+interface ClickEventPayload  {
     event: 'click',
     data: ClickData
 }
 
-type FeedbackEvent =
-    | SuccessEvent
-    | RegionEvent
-    | ClickEvent
+export type FeedbackEventPayload =
+    | SuccessEventPayload
+    | RegionEventPayload
+    | ClickEventPayload
 
+type FeedbackEvent = FeedbackEventPayload & {
+    request_id: string,
+    timestamp: Date,
+    session_id: string
+}
 
 export default class NyrisAPI {
     private readonly httpClient: AxiosInstance;
@@ -191,16 +190,22 @@ export default class NyrisAPI {
             }));
     }
 
-    async sendNegativeFeedback(requestId: string) {
+    async sendFeedback(sessionId: string, requestId: string, payload: FeedbackEventPayload) {
         const headers = {
-            'X-Api-Key': this.settings.apiKey
+            'X-Api-Key': this.settings.apiKey,
+            'Content-Type': 'application/json'
         };
-        const url = this.settings.imageMatchingSubmitManualUrl as string;
-        return await this.httpClient.post(url, null, {headers});
-    }
-
-    async sendFeedback(requestId: string, data: FeedbackEvent) {
-
+        const data : FeedbackEvent = {
+            request_id: requestId,
+            timestamp: new Date(),
+            session_id: sessionId,
+            ...payload
+        };
+        return await this.httpClient.request({
+            url: this.settings.feedbackUrl,
+            headers,
+            data
+        });
     }
 }
 

@@ -116,9 +116,9 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
             dotHover: false,
             rectHover: false,
             x1: left,
-            x2: 1-right,
+            x2: right,
             y1: top,
-            y2: 1-bottom
+            y2: bottom
         };
     }
 

@@ -1,9 +1,18 @@
 import React from 'react';
+import {NyrisFeedbackState} from "../actions/nyrisAppActions";
+import {Animate} from "react-move";
 
-const Feedback = ({feedbackState, onPositiveFeedback, onNegativeFeedback}: {feedbackState: any, onPositiveFeedback: any, onNegativeFeedback: any}) => {
-    let inner = null;
+interface FeedbackProps {
+    feedbackState: NyrisFeedbackState,
+    onPositiveFeedback?: () => void,
+    onNegativeFeedback?: () => void,
+    onClose?: () => void
+}
+
+const Feedback: React.FC<FeedbackProps> = ({feedbackState, onPositiveFeedback, onNegativeFeedback, onClose}) => {
+    let inner : any = null;
     switch (feedbackState) {
-        case 0:
+        case 'question':
             inner =
                 <div className="feedbackForm">
                     <p>Did you find what you were looking for?</p>
@@ -11,29 +20,35 @@ const Feedback = ({feedbackState, onPositiveFeedback, onNegativeFeedback}: {feed
                     <div className="btn secondary negativeFeedback" onClick={onNegativeFeedback}>No</div>
                 </div>;
             break;
-        case 1:
+        case 'positive':
             inner = <div className="feedbackMessage positive">Great, thank you for your feedback!</div>
             break;
-        case 2:
+        case 'negative':
             inner =
                 <div className="feedbackMessage negative">We saved your request so we can track down the
-                    issue and impove the search experience. Your Feedback helps us to make our service
+                    issue and improve the search experience. Your Feedback helps us to make our service
                     better for everyone,
                     thank you!<br/>
-                    <div className="btn dismiss">Dismiss</div>
+                    <div className="btn dismiss" onClick={onClose}>Dismiss</div>
                 </div>;
             break;
-
+        default:
+            inner = null;
+            break;
     }
     return (
-        <section className="feedback">
-            <div className="wrapper">
-                {inner}
-            </div>
-            <div className="closeFeedbackContainer">
-                <div className="closeFeedback"/>
-            </div>
-        </section>
+        <Animate show={feedbackState !== 'hidden'} start={{y: 100, opacity: 0}} enter={{y: [0], opacity: [1]}} leave={{y: [100], opacity: [0] }}>
+            {({y, opacity}) =>
+                <section className="feedback" style={{transform: `translateY(${y}%)`, opacity }}>
+                    <div className="wrapper">
+                        {inner}
+                    </div>
+                    <div className="closeFeedbackContainer">
+                        <div className="closeFeedback" onClick={onClose}/>
+                    </div>
+                </section>
+            }
+        </Animate>
     );
 };
 

@@ -1,20 +1,27 @@
 
 
 export type NyrisAppPart = 'start' | 'camera' | 'results';
+export type NyrisFeedbackState = 'hidden' | 'question' | 'positive' | 'negative';
 
 
 export interface NyrisAppState {
-    showPart: NyrisAppPart
+    showPart: NyrisAppPart,
+    feedbackState: NyrisFeedbackState
 }
 
 export type NyrisAction =
     | { type: 'SHOW_START' }
     | { type: 'SHOW_CAMERA' }
-    | { type: 'SHOW_RESULTS' };
+    | { type: 'SHOW_RESULTS' }
+    | { type: 'SHOW_FEEDBACK' }
+    | { type: 'HIDE_FEEDBACK' }
+    | { type: 'POSITIVE_FEEDBACK' }
+    | { type: 'NEGATIVE_FEEDBACK' }
 
 
 const initialNyrisState : NyrisAppState = {
-    showPart: 'start'
+    showPart: 'start',
+    feedbackState: 'hidden'
 };
 
 export function reducer(state : NyrisAppState = initialNyrisState, action: NyrisAction) : NyrisAppState {
@@ -33,6 +40,26 @@ export function reducer(state : NyrisAppState = initialNyrisState, action: Nyris
             return {
                 ...state,
                 showPart: 'results'
+            };
+        case 'SHOW_FEEDBACK':
+            return {
+                ...state,
+                feedbackState: 'question'
+            };
+        case 'HIDE_FEEDBACK':
+            return {
+                ...state,
+                feedbackState: 'hidden'
+            };
+        case 'POSITIVE_FEEDBACK':
+            return {
+                ...state,
+                feedbackState: 'positive'
+            };
+        case 'NEGATIVE_FEEDBACK':
+            return {
+                ...state,
+                feedbackState: 'negative'
             };
         default:
             return state;

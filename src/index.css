@@ -1138,11 +1138,8 @@ a img.aligncenter {
   right: 0;
   bottom: 0;
   left: 0;
-  -webkit-transform: translateY(100%);
-  -ms-transform: translateY(100%);
   transform: translateY(100%);
   opacity: 0;
-  visibility: hidden;
   background: #031F2B;
   z-index: 9999;
   font-size: 14px;

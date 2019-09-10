@@ -1,13 +1,20 @@
 import React from 'react';
 
-const noImageUrl = "TODO";
+// TODO this needs refactoring: Make it one block with parameters for first line, second line, image url ..
 
-const renderDefault = (result: any) => {
+interface Options {
+    result: any,
+    noImageUrl: string,
+    onImageClick: (r: any) => void,
+    onLinkClick: (r: any) => void
+}
+
+const renderDefault = ({result, noImageUrl, onImageClick, onLinkClick}: Options) => {
 
     const price = result.p ? '' + (result.p.vi / 100).toFixed(2) + ' ' + result.p.c : '';
     return (
         <>
-            <a href={result.l} className="imageLink" title="Click the image so see similar products">
+            <a href={result.l} className="imageLink" title="Click the image so see similar products" onClick={onImageClick}>
                 <div className="prdctImg">
                     <div className="imgWrap"><img src={result.img && (result.img.url + '?r=512x512' || noImageUrl) }
                                                   crossOrigin="anonymous" alt=""/></div>
@@ -20,13 +27,13 @@ const renderDefault = (result: any) => {
                         <span className="prdctPrice">{price}</span>
                         <span className="prdctShop"> at {result.mer}</span>
                     </div>
-                    <a className="prdctShopLink" href="{{result.l}}" target="_blank">Buy Now</a>
+                    <a onClick={onLinkClick} className="prdctShopLink" href={result.l} target="_blank">Buy Now</a>
                 </div>
             </div>
         </>);
 };
 
-const renderFashion = (result: any) => (
+const renderFashion = ({result, noImageUrl, onImageClick, onLinkClick}: Options) => (
     <>
         <a href={result.l} className="imageLink">
             <div className="prdctImg">
@@ -45,7 +52,7 @@ const renderFashion = (result: any) => (
     </>
 );
 
-const renderGs = (result: any) => (
+const renderGs = ({result, noImageUrl, onImageClick, onLinkClick}: Options) => (
     <>
         <a href={result.l} className="imageLink" title="Click the image so see similar products">
         <div className="prdctImg">
@@ -57,7 +64,7 @@ const renderGs = (result: any) => (
     </>
 );
 
-const renderSnr = (result: any) => (
+const renderSnr = ({result, noImageUrl, onImageClick, onLinkClick}: Options) => (
     <>
         <a href={result.l} className="imageLink">
                 <div className="prdctImg">
@@ -79,7 +86,7 @@ const renderSnr = (result: any) => (
     </>
 );
 
-const renderSnrMultilink = ({result}: any) => (
+const renderSnrMultilink = ({result, noImageUrl, onImageClick, onLinkClick}: Options) => (
     <>
         <a href={result.l} className="imageLink">
                 <div className="prdctImg">
@@ -103,25 +110,40 @@ const renderSnrMultilink = ({result}: any) => (
     </>
 );
 
+export interface ResultProps {
+    result: any,
+    style: any,
+    template?: string,
+    onImageClick: (r: any) => void,
+    onLinkClick: (r: any) => void,
+    noImageUrl: string
+}
 
-const Result = ({result, style, template}:any) => {
+const Result : React.FC<ResultProps> = ({result, style, template, onImageClick, onLinkClick, noImageUrl}) => {
+    let options: Options = {
+        onImageClick,
+        onLinkClick,
+        noImageUrl,
+        result
+    };
+
     let resultInner = null;
     switch (template) {
         case "fashion":
-            resultInner = renderFashion(result);
+            resultInner = renderFashion(options);
             break;
         case "gs":
-            resultInner = renderGs(result);
+            resultInner = renderGs(options);
             break;
         case "snr":
-            resultInner = renderSnr(result);
+            resultInner = renderSnr(options);
             break;
-        case "snr-multilink": // TODO check proper value
-            resultInner = renderSnrMultilink(result);
+        case "snr-multilink":
+            resultInner = renderSnrMultilink(options);
             break;
         case 'default':
         default:
-            resultInner = renderDefault(result);
+            resultInner = renderDefault(options);
             break;
     }
 

@@ -3,7 +3,7 @@ import {Region, RegionResult} from "../types";
 import {ThunkAction} from "redux-thunk";
 
 
-type SearchAction =
+export type SearchAction =
     | { type: 'FEEDBACK_SUBMIT_POSITIVE' }
     | { type: 'FEEDBACK_SUBMIT_NEGATIVE' }
     | { type: 'SELECT_IMAGE', image: HTMLCanvasElement }

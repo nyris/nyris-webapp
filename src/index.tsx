@@ -9,9 +9,9 @@ import {AnyAction, applyMiddleware, combineReducers, createStore, Reducer} from 
 import thunk, {ThunkDispatch, ThunkMiddleware} from 'redux-thunk';
 import {
     reducer as searchReducer, SearchState,
-    searchImage
+    searchImage, SearchAction
 } from './actions/searchActions';
-import { reducer as nyrisReducer } from './actions/nyrisAppActions';
+import {NyrisAction, reducer as nyrisReducer} from './actions/nyrisAppActions';
 import {fileOrBlobToCanvas, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
 import {Region, SearchServiceSettings} from "./types";
@@ -53,6 +53,10 @@ type AppState = {
     nyrisDesign: NyrisAppState
 };
 
+type AppAction =
+    | SearchAction
+    | NyrisAction
+
 
 const mapStateToProps = (state: AppState) => ({
     showPart: state.nyrisDesign.showPart,
@@ -67,10 +71,13 @@ const mapStateToProps = (state: AppState) => ({
     },
     settings: state.settings,
     previewImage: state.search.requestImage instanceof HTMLCanvasElement ? state.search.requestImage : undefined,
-    loading: state.search.fetchingRegions || state.search.fetchingResults
+    loading: state.search.fetchingRegions || state.search.fetchingResults,
+    feedbackState: state.nyrisDesign.feedbackState
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => {
+const feedbackTimeout = 4000;
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  => {
     let changeEmitter = new Subject();
     changeEmitter.pipe(debounceTime(600)).subscribe(e => {
         console.log('selection changed', e);
@@ -93,6 +100,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => {
                     console.log('-> on example image clicked', canvas);
                     await dispatch(searchImage(canvas));
                     dispatch(({ type: 'SHOW_RESULTS'}));
+                    setTimeout(() => { dispatch({type: 'SHOW_FEEDBACK'})},feedbackTimeout)
                 } catch (e) {
                     console.error(e)
 
@@ -104,6 +112,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => {
                 console.log('onSelectFile', canvas);
                 await dispatch(searchImage(canvas));
                 dispatch(({ type: 'SHOW_RESULTS'}));
+                setTimeout(() => { dispatch({type: 'SHOW_FEEDBACK'})},feedbackTimeout)
             },
             onSelectionChange: (selection: Region) => {
                 changeEmitter.next(selection);
@@ -111,6 +120,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => {
             onShowStart: () => {
                 dispatch({type: 'SHOW_START'});
                 scrollTop();
+            },
+            onCloseFeedback: () => {
+                dispatch({type: 'HIDE_FEEDBACK'});
             }
         }
     };
