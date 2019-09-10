@@ -52,10 +52,6 @@ export const searchImage = (canvas: HTMLCanvasElement) : ThunkAction<Promise<voi
 
 
 
-interface RequestInfo {
-    duration: number,
-    id: string
-}
 
 interface CategoryPrediction {
     name: string,
@@ -64,7 +60,8 @@ interface CategoryPrediction {
 
 export interface SearchState {
     results: any[],
-    requests: RequestInfo[],
+    duration?: number,
+    requestId?: string,
     regions: RegionResult[],
     selectedRegion: Region,
     fetchingRegions: boolean,
@@ -76,7 +73,6 @@ export interface SearchState {
 
 const initialState : SearchState = {
     results: [],
-    requests: [],
     regions: [],
     selectedRegion: {left: 0, right: 1, top: 0, bottom: 1},
     requestImage: undefined,
@@ -112,10 +108,8 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
                 ...state,
                 results,
                 fetchingResults: false,
-                requests: [
-                    ...state.requests,
-                    { id: requestId, duration }
-                ]
+                requestId,
+                duration
             };
         case "SEARCH_REQUEST_FAIL":
             return {

@@ -1,5 +1,18 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## TODO
+
+* [ ] Add feedback API
+* [ ] Implement feedback api events
+* [ ] handle region selection
+* [ ] check request errors
+* [ ] add material design settings
+* [ ] add material design layout
+* [ ] solve todos in code
+* [ ] check if it still works with google chrome plugin
+* [ ] implement basic test
+
+
 ## Available Scripts
 
 In the project directory, you can run:

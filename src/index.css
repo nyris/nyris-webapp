@@ -557,7 +557,13 @@ a img.aligncenter {
   height: 90vh;
   height: -webkit-calc(100vh - 30px);
   height: calc(100vh - 30px);
-  background: #031F2B
+  background: #031F2B;
+  transition: height 300ms;
+}
+
+.headSection.hidden {
+  height: 110px;
+
 }
 
 @media only screen and (max-width: 530px) {
@@ -778,8 +784,6 @@ a img.aligncenter {
   position: absolute;
   bottom: 0px;
   left: 50%;
-  -webkit-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
   transform: translateX(-50%);
   width: 18.5%;
   height: 90px;
@@ -791,7 +795,10 @@ a img.aligncenter {
   font-size: 14px;
   color: #fff;
   max-width: 240px;
-  -webkit-tap-highlight-color: transparent
+  transition: bottom 500ms;
+}
+.tryDifferent.hidden {
+  bottom: -80px;
 }
 
 @media only screen and (min-width: 900px) and (max-width: 1120px) {
@@ -845,14 +852,16 @@ a img.aligncenter {
 
 .results {
   position: relative;
-  height: 0;
+}
+.results.resultsActive {
+  height: auto;
+  min-height: 90vh;
 }
 
 .results .wrapper {
   max-width: -webkit-calc(1200px + 1.5%);
   max-width: calc(1200px + 1.5%);
   width: 97.5%;
-  min-height: 400px
 }
 
 @media only screen and (max-width: 530px) {

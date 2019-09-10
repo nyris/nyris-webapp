@@ -1,4 +1,4 @@
-import {ImageSearchOptions, RegionData, RegionResult, SearchServiceSettings} from "./types";
+import {ImageSearchOptions, Region, RegionData, RegionResult, SearchServiceSettings} from "./types";
 import {canvasToJpgBlob, getElementSize, getThumbSizeArea, toCanvas} from "./nyris";
 import axios, {AxiosInstance} from 'axios';
 
@@ -8,6 +8,51 @@ interface SearchResult {
     categoryPredictions: { name: string, score: number}[],
     duration: number
 }
+
+
+export interface RegionData {
+    rect: {
+        x: number,
+        y: number,
+        w: number,
+        h: number
+    }
+}
+
+export interface FeedbackData {
+    success: boolean
+}
+
+export interface ClickData {
+    positions: number[],
+    product_ids: string[]
+}
+
+interface FeedbackEventBase {
+    request_id: string,
+    timestamp: Date,
+    session_id: string
+}
+
+interface SuccessEvent extends FeedbackEventBase {
+    event: 'feedback',
+    data: FeedbackData
+}
+
+interface RegionEvent extends FeedbackEventBase {
+    event: 'region',
+    data: RegionData
+}
+interface ClickEvent extends FeedbackEventBase {
+    event: 'click',
+    data: ClickData
+}
+
+type FeedbackEvent =
+    | SuccessEvent
+    | RegionEvent
+    | ClickEvent
+
 
 export default class NyrisAPI {
     private readonly httpClient: AxiosInstance;
@@ -152,6 +197,10 @@ export default class NyrisAPI {
         };
         const url = this.settings.imageMatchingSubmitManualUrl as string;
         return await this.httpClient.post(url, null, {headers});
+    }
+
+    async sendFeedback(requestId: string, data: FeedbackEvent) {
+
     }
 }
 

@@ -2,7 +2,7 @@ import React from 'react';
 
 interface ExampleImagesProps {
     images: string[],
-    onExampleImageClicked: (e: React.MouseEvent) => void
+    onExampleImageClicked: (e: React.MouseEvent<HTMLImageElement>) => void
 }
 
 const ExampleImages : React.FC<ExampleImagesProps> = ({images, onExampleImageClicked}) => {

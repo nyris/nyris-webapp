@@ -10,14 +10,7 @@ import { useDropzone } from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
 import {Region, RegionResult} from "./types";
-
-const stateEnum = {
-    Search: 'search',
-    Results: 'results',
-    LoadingWithPreview: 'loadingWithPreview'
-};
-
-const state = 'ba';
+import {NyrisAppPart} from "./actions/nyrisAppActions";
 
 
 let feedbackState = 0;
@@ -31,8 +24,6 @@ const makeFileHandler = (action: any) => (e: any) => {
 
 
 
-
-
 interface AppProps {
     search: {
         results: any[],
@@ -42,19 +33,20 @@ interface AppProps {
         filterOptions: string[],
         errorMessage?: string,
         regions: RegionResult[],
-        selectedRegion: Region
+        initialRegion: Region
     },
     previewImage?: HTMLCanvasElement,
     settings: any,
     handlers: any,
-    loading: boolean
+    loading: boolean,
+    showPart: NyrisAppPart
 }
 
-const App : React.FC<AppProps> = ({search: {results, regions, selectedRegion, requestId, duration, errorMessage, filterOptions, categoryPredictions }, settings, handlers, loading, previewImage}) => {
+const App : React.FC<AppProps> = ({search: {results, regions, initialRegion, requestId, duration, errorMessage, filterOptions, categoryPredictions }, showPart, settings, handlers, loading, previewImage}) => {
         const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: handlers.onFileDropped});
         return (
             <div>
-                <div className="headSection" id="headSection">
+                <div className={classNames('headSection', {hidden: showPart === 'results'})} id="headSection">
                     <div className="navWrap">
                         <div className="wrapper">
                             <section id="branding"/>
@@ -95,10 +87,10 @@ const App : React.FC<AppProps> = ({search: {results, regions, selectedRegion, re
                                 </label>
                                 <label htmlFor="capture" className="mobileUploadHandler onMobile"/>
                             </section>
-                            <ExampleImages images={settings.exampleImages} onExampleImageClicked={ (e: React.MouseEvent) => handlers.onExampleImageClicked(e.target) }/>
+                            <ExampleImages images={settings.exampleImages} onExampleImageClicked={ (e: React.MouseEvent<HTMLImageElement>) => handlers.onImageClicked(e.target) }/>
                         </div>
                     </div>
-                    <div className="tryDifferent">
+                    <div className={classNames('tryDifferent', {hidden: showPart !== 'results'})} onClick={handlers.onShowStart}>
                         <div className="icIcon">
                         </div>
                         <div className="textDesc"> Try a different image</div>
@@ -108,16 +100,14 @@ const App : React.FC<AppProps> = ({search: {results, regions, selectedRegion, re
                     <div className="headerSeparatorBack"/>
                 </div>
 
-                <section className={classNames('results', (results.length === 1 ? 'singleProduct' : 'multipleProducts'))}
-                         style={{
-                             height: (state !== stateEnum.Search ? "auto" : "0"),
-                             minHeight: state !== stateEnum.Search ? "90vh" : "0"
-                         }}>
-                    <div className="errorMsg">
-                        {errorMessage}
-                        <div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}><span>Make sure to include the request ID when reporting a problem: {requestId}</span>
+                <section className={classNames('results', {resultsActive: showPart === 'results'}, (results.length === 1 ? 'singleProduct' : 'multipleProducts'))}>
+                    {errorMessage &&
+                        <div className="errorMsg">
+                            {errorMessage}
+                            <div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}><span>Make sure to include the request ID when reporting a problem: {requestId}</span>
+                            </div>
                         </div>
-                    </div>
+                    }
                     <Animate show={loading} start={{opacity: 0.0}} enter={{ opacity:  [1.0], timing: {duration: 300}}} leave={{opacity: [0.0], timing: {duration: 300}}}>
                         { s =>
                             <div className="loadingOverlay" style={{...s}}>
@@ -127,9 +117,9 @@ const App : React.FC<AppProps> = ({search: {results, regions, selectedRegion, re
                     </Animate>
                     { previewImage &&
                         <div className="preview">
-                            <Preview
+                            <Preview key={previewImage.height * previewImage.width}
                                 maxWidth={document.body.clientWidth} maxHeight={Math.floor(window.innerHeight * 0.45)} dotColor="#4C8F9F"
-                                onSelectionChange={handlers.onSelectionChange} regions={regions} displaySelection={selectedRegion}  image={previewImage} />
+                                onSelectionChange={handlers.onSelectionChange} regions={regions} initialRegion={initialRegion}  image={previewImage} />
                         </div>
                     }
                     <div className="predicted-categories">
@@ -148,10 +138,14 @@ const App : React.FC<AppProps> = ({search: {results, regions, selectedRegion, re
                                    start={(r, i) => ({opacity: 0, translateX: -100})}
                                    enter={(r, i) => ({opacity: [1], translateX: [0], timing: {delay: i*100, duration: 300}})}
                             >
-                            {rs => <>{rs.map(({key, data, state}) => <Result key={key} result={data} style={{opacity: state.opacity, transform: `translateX(${state.translateX}%)`}}  />)}</>}
+                            {rs => <>{rs.map(({key, data, state}) => <Result
+                                key={key}
+                                onClickImage={(e: React.MouseEvent<HTMLImageElement>) => handlers.onImageClicked(e.target)}
+                                onLinkClicked={() => handlers.onLinkClicked(data)}
+                                result={data} style={{opacity: state.opacity, transform: `translateX(${state.translateX}%)`}}  />)}</>}
                         </NodeGroup>
 
-                        {results.length === 0 && (
+                        {results.length === 0 && showPart === 'results' && !loading && (
 
                             <div className="noResults">We did not find anything <span role="img"
                                                                                       aria-label="sad face">😕</span></div>

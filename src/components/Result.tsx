@@ -79,9 +79,9 @@ const renderSnr = (result: any) => (
     </>
 );
 
-const renderSnrMultilink = ({result, style}: any) => (
+const renderSnrMultilink = ({result}: any) => (
     <>
-        <a href="{{result.l}}" className="imageLink">
+        <a href={result.l} className="imageLink">
                 <div className="prdctImg">
                 <div className="imgWrap"><img
                      src={result.img && (result.img.url + '?r=512x512' || noImageUrl) }
@@ -104,8 +104,6 @@ const renderSnrMultilink = ({result, style}: any) => (
 );
 
 
-
-
 const Result = ({result, style, template}:any) => {
     let resultInner = null;
     switch (template) {
@@ -118,9 +116,10 @@ const Result = ({result, style, template}:any) => {
         case "snr":
             resultInner = renderSnr(result);
             break;
-        case "snrMultiLink": // TODO check proper value
+        case "snr-multilink": // TODO check proper value
             resultInner = renderSnrMultilink(result);
             break;
+        case 'default':
         default:
             resultInner = renderDefault(result);
             break;

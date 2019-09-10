@@ -11,17 +11,14 @@ import {
     reducer as searchReducer, SearchState,
     searchImage
 } from './actions/searchActions';
+import { reducer as nyrisReducer } from './actions/nyrisAppActions';
 import {fileOrBlobToCanvas, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
 import {Region, SearchServiceSettings} from "./types";
 import {Subject} from "rxjs";
 import {debounceTime} from "rxjs/operators";
+import {NyrisAppState} from "./actions/nyrisAppActions";
 
-export enum AppViews {
-    Start = 'START',
-    Camera = 'CAMERA',
-    Results = 'RESULTS'
-}
 
 declare var settings : SearchServiceSettings;
 
@@ -34,34 +31,39 @@ const withConsoleLogger = (reducer: Reducer) => (
 );
 
 
-const rootReducer = (
-    combineReducers({
-    nyrisDesign: () => ({
-        view: AppViews.Start
-    }),
+const rootReducer = combineReducers({
     settings: () => settings as SearchServiceSettings,
+    nyrisDesign: nyrisReducer,
     search: withConsoleLogger(searchReducer)
-}));
+});
 
 
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk as ThunkMiddleware<any, any>)));
 
 
+function scrollTop() {
+    // TODO might require polyfil for ios and edge
+    window.scrollTo({top: 0,  left: 0, behavior: "smooth"});
+}
+
+
 type AppState = {
     search: SearchState,
     settings: SearchServiceSettings,
-    [key: string]: any // TODO
+    nyrisDesign: NyrisAppState
 };
 
 
 const mapStateToProps = (state: AppState) => ({
-    view: state.nyrisDesign.view,
+    showPart: state.nyrisDesign.showPart,
     search: {
         results: state.search.results,
         categoryPredictions: state.search.categoryPredictions,
         filterOptions: state.search.filterOptions,
-        selectedRegion: state.search.selectedRegion,
-        regions: state.search.regions
+        initialRegion: state.search.regions.length > 0 ? state.search.regions[0].region : { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1  },
+        regions: state.search.regions,
+        duration: state.search.duration,
+        requestId: state.search.requestId
     },
     settings: state.settings,
     previewImage: state.search.requestImage instanceof HTMLCanvasElement ? state.search.requestImage : undefined,
@@ -83,13 +85,14 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => {
                 console.log('onSelectFile', canvas);
                 await dispatch(searchImage(canvas));
             },
-            onExampleImageClicked: async (img: HTMLImageElement) => {
+            onImageClicked: async (img: HTMLImageElement) => {
                 console.log('on example image clicked', img);
                 try {
                     console.log('-> on example image clicked', img);
                     const canvas = await toCanvas(img);
                     console.log('-> on example image clicked', canvas);
                     await dispatch(searchImage(canvas));
+                    dispatch(({ type: 'SHOW_RESULTS'}));
                 } catch (e) {
                     console.error(e)
 
@@ -100,9 +103,14 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<any, {}, AnyAction>)  => {
                 const canvas = await fileOrBlobToCanvas(file);
                 console.log('onSelectFile', canvas);
                 await dispatch(searchImage(canvas));
+                dispatch(({ type: 'SHOW_RESULTS'}));
             },
             onSelectionChange: (selection: Region) => {
                 changeEmitter.next(selection);
+            },
+            onShowStart: () => {
+                dispatch({type: 'SHOW_START'});
+                scrollTop();
             }
         }
     };

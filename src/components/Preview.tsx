@@ -15,7 +15,7 @@ type PreviewElem =
 
 interface PreviewProps {
     image: HTMLCanvasElement,
-    displaySelection: Region,
+    initialRegion: Region,
     regions: RegionResult[],
     onSelectionChange?: (r: Selection) => void,
     maxWidth: number,
@@ -36,8 +36,7 @@ interface PreviewState extends Selection {
     blHover: boolean,
     brHover: boolean,
     dotHover: boolean,
-    rectHover: boolean,
-    initialRegion: Region
+    rectHover: boolean
 }
 
 class Preview extends React.Component<PreviewProps,PreviewState> {
@@ -97,9 +96,18 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         };
     };
 
+    private handleSelectionChanged(selection: Selection) {
+        this.setState(selection);
+        if (this.props.onSelectionChange) {
+            this.props.onSelectionChange(selection);
+        }
+    }
+
     constructor(props: PreviewProps) {
         super(props);
         this.selectionRef = React.createRef<Konva.Shape>();
+        let { top, left, right, bottom } = props.initialRegion;
+        console.log('constr', props.initialRegion);
         this.state = {
             tlHover: false,
             trHover: false,
@@ -107,31 +115,14 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
             brHover: false,
             dotHover: false,
             rectHover: false,
-            x1: 0,
-            y1: 0,
-            x2: 1,
-            y2: 1,
-            initialRegion: props.displaySelection
+            x1: left,
+            x2: 1-right,
+            y1: top,
+            y2: 1-bottom
         };
     }
 
-    handleSelectionChanged(selection: Selection) {
-        this.setState(selection);
-        if (this.props.onSelectionChange) {
-            this.props.onSelectionChange(selection);
-        }
-    }
-
-    componentDidMount(): void {
-        let speed = 40;
-        this.animation = new Konva.Animation((frame: {timeDiff: number, time: number}) => {
-            let angleDiff = (frame.time * speed) / 1000;
-            this.selectionRef.current.dashOffset(-angleDiff);
-        }, this.selectionRef.current.getLayer());
-        this.animation.start();
-    }
-
-    handleDragMove(elem: PreviewElem, evt: Konva.KonvaEventObject<DragEvent>) {
+    private handleDragMove(elem: PreviewElem, evt: Konva.KonvaEventObject<DragEvent>) {
         let {x1, x2, y1, y2, width, height} = this.scaleToPreviewPixels(this.state);
         if (evt.target instanceof Konva.Stage) {
             return;
@@ -172,7 +163,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         this.setSelection(newState);
     }
 
-    scaleToPreviewPixels({x1, x2, y1, y2} : Selection) {
+    private scaleToPreviewPixels({x1, x2, y1, y2} : Selection) {
         let { w: width, h: height } = getThumbSizeLongestEdge(this.props.maxWidth, this.props.maxHeight, this.props.image.width, this.props.image.height);
         return {
             x1: x1*width,
@@ -184,8 +175,18 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         };
     }
 
-    static getDerivedStateFromProps(props: PreviewProps, state: PreviewState) {
-        return null;
+
+    componentDidMount(): void {
+        let speed = 40;
+        this.animation = new Konva.Animation((frame: {timeDiff: number, time: number}) => {
+            let angleDiff = (frame.time * speed) / 1000;
+            this.selectionRef.current.dashOffset(-angleDiff);
+        }, this.selectionRef.current.getLayer());
+        this.animation.start();
+    }
+
+    componentWillUnmount(): void {
+        this.animation && this.animation.stop();
     }
 
     setSelection(r: Region | Selection) { // TODO what is better here?
