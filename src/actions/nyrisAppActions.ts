@@ -1,3 +1,4 @@
+import {AppAction} from "../types";
 
 
 export type NyrisAppPart = 'start' | 'camera' | 'results';
@@ -15,8 +16,6 @@ export type NyrisAction =
     | { type: 'SHOW_RESULTS' }
     | { type: 'SHOW_FEEDBACK' }
     | { type: 'HIDE_FEEDBACK' }
-    | { type: 'POSITIVE_FEEDBACK' }
-    | { type: 'NEGATIVE_FEEDBACK' }
 
 
 const initialNyrisState : NyrisAppState = {
@@ -24,7 +23,7 @@ const initialNyrisState : NyrisAppState = {
     feedbackState: 'hidden'
 };
 
-export function reducer(state : NyrisAppState = initialNyrisState, action: NyrisAction) : NyrisAppState {
+export function reducer(state : NyrisAppState = initialNyrisState, action: AppAction) : NyrisAppState {
     switch (action.type) {
         case 'SHOW_START':
             return {
@@ -51,12 +50,12 @@ export function reducer(state : NyrisAppState = initialNyrisState, action: Nyris
                 ...state,
                 feedbackState: 'hidden'
             };
-        case 'POSITIVE_FEEDBACK':
+        case 'FEEDBACK_SUBMIT_POSITIVE':
             return {
                 ...state,
                 feedbackState: 'positive'
             };
-        case 'NEGATIVE_FEEDBACK':
+        case 'FEEDBACK_SUBMIT_NEGATIVE':
             return {
                 ...state,
                 feedbackState: 'negative'

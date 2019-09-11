@@ -8,16 +8,15 @@ import {connect, Provider} from 'react-redux';
 import {applyMiddleware, combineReducers, createStore, Reducer} from 'redux';
 import thunk, {ThunkDispatch, ThunkMiddleware} from 'redux-thunk';
 import {
-    reducer as searchReducer, SearchState, searchOffersForImage, selectImage,
-    SearchAction, selectionChanged
+    reducer as searchReducer, selectImage,
+    selectionChanged
 } from './actions/searchActions';
-import {NyrisAction, reducer as nyrisReducer} from './actions/nyrisAppActions';
+import {reducer as nyrisReducer} from './actions/nyrisAppActions';
 import {fileOrBlobToCanvas, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {RectCoords, Region, SearchServiceSettings} from "./types";
+import {AppAction, AppState, RectCoords, Region, SearchServiceSettings} from "./types";
 import {Subject} from "rxjs";
-import {debounceTime, ignoreElements, mergeMap, switchMap, tap, withLatestFrom} from "rxjs/operators";
-import {NyrisAppState} from "./actions/nyrisAppActions";
+import {debounceTime, ignoreElements, tap, withLatestFrom} from "rxjs/operators";
 import {combineEpics, createEpicMiddleware, Epic, ofType} from "redux-observable";
 import NyrisAPI from "./NyrisAPI";
 
@@ -31,16 +30,6 @@ function scrollTop() {
     window.scrollTo({top: 0,  left: 0, behavior: "smooth"});
 }
 
-
-type AppState = {
-    search: SearchState,
-    settings: SearchServiceSettings,
-    nyrisDesign: NyrisAppState
-};
-
-type AppAction =
-    | SearchAction
-    | NyrisAction
 
 
 // feedback api
@@ -56,8 +45,24 @@ const feedbackSuccessEpic : Epic<AppAction, AppAction, AppState> = (action$, sta
     ignoreElements()
 );
 
+const feedbackRegionEpic : Epic<AppAction, AppAction, AppState> = (action$, state$, { api }) => action$.pipe(
+    ofType('REGION_CHANGED'),
+    withLatestFrom(state$),
+    tap(async ([action, state]) => {
+        console.log('region changed')
+        if (action.type === 'REGION_CHANGED') {
+            let { region: {x1, x2, y1, y2} } =  action;
+            await api.sendFeedback(state.search.sessionId, state.search.requestId, {
+                event: 'region', data: { rect: { x: x1, y: y1, w: x2-x1, h: y2-y1 } }
+            });
+        }
+    }),
+    ignoreElements()
+);
+
 const rootEpic = combineEpics(
-    feedbackSuccessEpic
+    feedbackSuccessEpic,
+    feedbackRegionEpic
 );
 
 let api = new NyrisAPI(settings);
@@ -115,11 +120,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
         handlers: {
             onPositiveFeedback: () => {
                 dispatch({ type: 'FEEDBACK_SUBMIT_POSITIVE'});
-                dispatch({ type: 'POSITIVE_FEEDBACK'});
             },
             onNegativeFeedback: () => {
                 dispatch({ type: 'FEEDBACK_SUBMIT_NEGATIVE'});
-                dispatch({ type: 'NEGATIVE_FEEDBACK'});
             },
             onSelectFile: async (file: File) => {
                 console.log('onSelectFile');
@@ -131,11 +134,11 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
                 let img = e.target as HTMLImageElement;
                 console.log('on example image clicked', img);
                 try {
+                    dispatch(({ type: 'SHOW_RESULTS'}));
                     console.log('-> on example image clicked', img);
                     const canvas = await toCanvas(img);
                     console.log('-> on example image clicked', canvas);
                     await dispatch(selectImage(canvas));
-                    dispatch(({ type: 'SHOW_RESULTS'}));
                     setTimeout(() => { dispatch({type: 'SHOW_FEEDBACK'})},feedbackTimeout)
                 } catch (e) {
                     console.error(e)
@@ -150,10 +153,10 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
             },
             onFileDropped: async (file: File) => {
                 console.log('onFileDropped');
+                dispatch(({ type: 'SHOW_RESULTS'}));
                 const canvas = await fileOrBlobToCanvas(file);
                 console.log('onSelectFile', canvas);
                 await dispatch(selectImage(canvas));
-                dispatch(({ type: 'SHOW_RESULTS'}));
                 setTimeout(() => { dispatch({type: 'SHOW_FEEDBACK'})},feedbackTimeout)
             },
             onSelectionChange: (selection: Region) => {

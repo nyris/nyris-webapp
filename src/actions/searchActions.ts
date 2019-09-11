@@ -14,6 +14,7 @@ export type SearchAction =
     | { type: 'SEARCH_REQUEST_START' }
     | { type: 'SEARCH_REQUEST_SUCCEED', results: any[], requestId: string, duration: number }
     | { type: 'SEARCH_REQUEST_FAIL', reason: string }
+    | { type: 'REGION_CHANGED', region: Region}
 
 interface CategoryPrediction {
     name: string,
@@ -63,6 +64,7 @@ export const selectImage = (canvas: HTMLCanvasElement): ThunkAction<Promise<void
 
 export const selectionChanged = (newSelection: RectCoords) : ThunkAction<Promise<void>, any, any, SearchAction> =>
     async (dispatch, getState) => {
+        await dispatch({ type: 'REGION_CHANGED', region: newSelection });
         let { search: { requestImage }} = getState();
         await dispatch(searchOffersForImage(requestImage, newSelection));
     };
@@ -123,15 +125,19 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
         case "SELECT_IMAGE":
             let { image } = action;
             return {
-                ...state,
+                ...initialState,
                 requestImage: image
             };
-
-        case "REGION_REQUEST_SUCCEED":
-            let { regions } = action;
+        case 'REGION_REQUEST_START':
             return {
                 ...state,
-                regions
+                fetchingRegions: true
+            };
+        case "REGION_REQUEST_SUCCEED":
+            return {
+                ...state,
+                fetchingRegions: false,
+                regions: action.regions
             };
         case "SEARCH_REQUEST_START":
             return {
@@ -143,8 +149,8 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
             return {
                 ...state,
                 results,
-                fetchingResults: false,
                 requestId,
+                fetchingResults: false,
                 sessionId: state.sessionId || requestId,
                 duration
             };
@@ -152,6 +158,7 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
             return {
                 ...state,
                 fetchingResults: false,
+                errorMessage: action.reason
             }
     }
     return state;

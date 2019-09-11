@@ -14,6 +14,7 @@ have tos:
 
 shoulds:
 
+* [ ] show separate loading overlays for regions and results
 * [ ] check request errors
 * [ ] add material design settings
 * [ ] add material design layout

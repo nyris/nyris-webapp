@@ -1,3 +1,6 @@
+import {SearchAction, SearchState} from "./actions/searchActions";
+import {NyrisAction, NyrisAppState} from "./actions/nyrisAppActions";
+
 export interface SearchServiceSettings {
     xOptions: boolean | string;
     customSearchRequest?: ((file: Blob, client: any) => Promise<any>);
@@ -43,3 +46,14 @@ export interface WH {
     w: number,
     h: number
 }
+
+export type AppState = {
+    search: SearchState,
+    settings: SearchServiceSettings,
+    nyrisDesign: NyrisAppState
+};
+
+export type AppAction =
+    | SearchAction
+    | NyrisAction
+
