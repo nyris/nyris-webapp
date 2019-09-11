@@ -87,7 +87,10 @@ const rootReducer = combineReducers({
 });
 
 
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(epicMiddleware), applyMiddleware(thunk as ThunkMiddleware<any, any>)));
+const store = createStore(rootReducer, composeWithDevTools(
+    applyMiddleware(thunk as ThunkMiddleware<any, any>),
+    applyMiddleware(epicMiddleware)
+));
 epicMiddleware.run(rootEpic);
 
 
