@@ -1,6 +1,6 @@
 import React from 'react';
-import {Layer, Stage, Image, Rect, Circle} from "react-konva";
-import {Region, RegionResult} from "../types";
+import {Layer, Stage, Image, Circle, Rect} from "react-konva";
+import {RectCoords, Region} from "../types";
 import Konva from 'konva';
 import {NodeGroup} from "react-move";
 import {getThumbSizeLongestEdge} from "../nyris";
@@ -16,21 +16,14 @@ type PreviewElem =
 interface PreviewProps {
     image: HTMLCanvasElement,
     initialRegion: Region,
-    regions: RegionResult[],
-    onSelectionChange?: (r: Selection) => void,
+    regions: Region[],
+    onSelectionChange?: (r: RectCoords) => void,
     maxWidth: number,
     maxHeight: number,
     dotColor: string
 }
 
-interface Selection {
-    x1: number,
-    x2: number,
-    y1: number,
-    y2: number,
-}
-
-interface PreviewState extends Selection {
+interface PreviewState extends RectCoords {
     tlHover: boolean,
     trHover: boolean,
     blHover: boolean,
@@ -96,7 +89,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         };
     };
 
-    private handleSelectionChanged(selection: Selection) {
+    private handleSelectionChanged(selection: RectCoords) {
         this.setState(selection);
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(selection);
@@ -106,8 +99,6 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
     constructor(props: PreviewProps) {
         super(props);
         this.selectionRef = React.createRef<Konva.Shape>();
-        let { top, left, right, bottom } = props.initialRegion;
-        console.log('constr', props.initialRegion);
         this.state = {
             tlHover: false,
             trHover: false,
@@ -115,10 +106,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
             brHover: false,
             dotHover: false,
             rectHover: false,
-            x1: left,
-            x2: right,
-            y1: top,
-            y2: bottom
+            ...props.initialRegion
         };
     }
 
@@ -163,7 +151,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         this.setSelection(newState);
     }
 
-    private scaleToPreviewPixels({x1, x2, y1, y2} : Selection) {
+    private scaleToPreviewPixels({x1, x2, y1, y2} : RectCoords) {
         let { w: width, h: height } = getThumbSizeLongestEdge(this.props.maxWidth, this.props.maxHeight, this.props.image.width, this.props.image.height);
         return {
             x1: x1*width,
@@ -189,12 +177,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         this.animation && this.animation.stop();
     }
 
-    setSelection(r: Region | Selection) { // TODO what is better here?
-        if ('left' in r) {
-            this.handleSelectionChanged({
-                x1: r.left, x2: r.right, y1: r.top, y2: r.bottom
-            });
-        }
+    setSelection(r: Region) {
         if ('x1' in r) {
             this.handleSelectionChanged(r);
         }
@@ -231,14 +214,13 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         }
 
         const {x1, x2, y1, y2 , width, height } = this.scaleToPreviewPixels(this.state);
-        //let { w: width, h: height } = getThumbSizeLongestEdge(this.props.maxWidth, this.props.maxHeight, image.width, image.height);
 
-        const dots = regions.map(({region}, i) => {
-            let {left, right, top, bottom} = region;
-            return {
+        const dots = regions.map((region, i) => {
+            let {x1, x2, y1, y2} = region;
+            return { // get middle of box and map to pixels
                 region,
-                x: width* ((right-left)/2 + left),
-                y: height* ((bottom-top)/2+ top),
+                x: width* ((x2-x1)/2 + x1),
+                y: height* ((y2-y1)/2+ y1),
                 key: i
             };
         });

@@ -9,7 +9,7 @@ import PredictedCategories from "./components/PredictedCategories";
 import { useDropzone } from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
-import {Region, RegionResult} from "./types";
+import {Region} from "./types";
 import {NyrisAppPart, NyrisFeedbackState} from "./actions/nyrisAppActions";
 
 
@@ -21,7 +21,7 @@ const makeFileHandler = (action: any) => (e: any) => {
 
 
 
-interface AppProps {
+export interface AppProps {
     search: {
         results: any[],
         requestId?: string,
@@ -29,15 +29,15 @@ interface AppProps {
         categoryPredictions: { name: string, score: number}[],
         filterOptions: string[],
         errorMessage?: string,
-        regions: RegionResult[],
+        regions: Region[],
         initialRegion: Region
     },
     previewImage?: HTMLCanvasElement,
     settings: any,
-    handlers: any,
     loading: boolean,
     showPart: NyrisAppPart,
-    feedbackState: NyrisFeedbackState
+    feedbackState: NyrisFeedbackState,
+    handlers: any
 }
 
 const App : React.FC<AppProps> = ({

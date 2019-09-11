@@ -18,16 +18,19 @@ export interface ImageSearchOptions {
     maxHeight: number;
     useRecommendations: boolean;
     jpegQuality: number;
-};
+}
 
-export interface Rect {
-    x: number,
-    y: number,
+export interface RectCoords {
+    x1: number,
+    y1: number,
     x2: number,
     y2: number
 }
 
-
+export type Region = {
+    className?: string,
+    confidence?: number
+} & RectCoords
 
 export interface Crop {
     x: number,
@@ -36,54 +39,7 @@ export interface Crop {
     h: number
 }
 
-
-export interface Region {
-    left: number,
-    top: number,
-    right: number,
-    bottom: number
+export interface WH {
+    w: number,
+    h: number
 }
-
-export interface Dot {
-    x: number,
-    y: number,
-    text: string
-}
-
-export interface RegionResult {
-    className: string,
-    region: Region,
-    confidence: number
-}
-
-export interface RegionData {
-    rect: {
-        x: number,
-        y: number,
-        w: number,
-        h: number
-    }
-};
-
-export interface FeedbackData {
-    success: boolean
-};
-
-export interface ClickData {
-    positions: number[],
-    product_ids: string[]
-};
-
-enum EventType {
-    click = "click",
-    feedback = "feedback",
-    region = "region"
-};
-
-interface EventData {
-    request_id: string,
-    timestamp: Date,
-    session_id: string,
-    event: EventType,
-    data: RegionData | FeedbackData | ClickData
-};

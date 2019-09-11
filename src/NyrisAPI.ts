@@ -1,4 +1,4 @@
-import {ImageSearchOptions, Region, RegionData, RegionResult, SearchServiceSettings} from "./types";
+import {ImageSearchOptions, Region, SearchServiceSettings} from "./types";
 import {canvasToJpgBlob, getElementSize, getThumbSizeArea, toCanvas} from "./nyris";
 import axios, {AxiosInstance} from 'axios';
 
@@ -7,6 +7,20 @@ interface SearchResult {
     requestId: string,
     categoryPredictions: { name: string, score: number}[],
     duration: number
+}
+
+
+interface NyrisRegion {
+    left: number,
+    top: number,
+    right: number,
+    bottom: number
+}
+
+interface NyrisRegionResult {
+    className: string,
+    region: NyrisRegion,
+    confidence: number
 }
 
 
@@ -158,7 +172,7 @@ export default class NyrisAPI {
         return r;
     }
 
-    async findRegions(canvas: HTMLCanvasElement | HTMLVideoElement | HTMLImageElement, options: ImageSearchOptions): Promise<RegionResult[]> {
+    async findRegions(canvas: HTMLCanvasElement | HTMLVideoElement | HTMLImageElement, options: ImageSearchOptions): Promise<Region[]> {
         let [origW, origH] = getElementSize(canvas);
         let {w: scaledW, h: scaledH} = getThumbSizeArea(options.maxWidth, options.maxHeight, origW, origH);
         let resizedCroppedCanvas = toCanvas(canvas, {w: scaledW, h: scaledH});
@@ -169,24 +183,20 @@ export default class NyrisAPI {
             'X-Api-Key': this.settings.apiKey
         };
         let response = await
-            this.httpClient.request<RegionResult[]>({
+            this.httpClient.request<NyrisRegionResult[]>({
                 method: 'POST',
                 url: this.regionProposalUrl,
                 data: blob,
                 headers
             });
-        let regions :RegionResult[] = response.data;
+        let regions :NyrisRegionResult[] = response.data;
         return regions.map(r => ({
                 className: r.className,
                 confidence: r.confidence,
-                region: {
-                    left: r.region.left / scaledW,
-                    right: r.region.right / scaledW,
-                    x2: r.region.right / scaledW,
-                    top: r.region.top / scaledH,
-                    bottom: r.region.bottom / scaledH,
-                    y2: r.region.bottom / scaledH
-                }
+                x1: r.region.left / scaledW,
+                x2: (r.region.right / scaledW),
+                y1: r.region.top / scaledH,
+                y2: (r.region.bottom / scaledH),
             }));
     }
 

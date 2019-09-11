@@ -1,5 +1,5 @@
 import NyrisAPI from './../NyrisAPI';
-import {Region, RegionResult} from "../types";
+import {Region} from "../types";
 import {ThunkAction} from "redux-thunk";
 
 
@@ -8,7 +8,7 @@ export type SearchAction =
     | { type: 'FEEDBACK_SUBMIT_NEGATIVE' }
     | { type: 'SELECT_IMAGE', image: HTMLCanvasElement }
     | { type: 'REGION_REQUEST_START' }
-    | { type: 'REGION_REQUEST_SUCCEED', regions: RegionResult[] }
+    | { type: 'REGION_REQUEST_SUCCEED', regions: Region[] }
     | { type: 'REGION_REQUEST_FAIL', reason: string }
     | { type: 'SEARCH_REQUEST_START' }
     | { type: 'SEARCH_REQUEST_SUCCEED', results: any[], requestId: string, duration: number }
@@ -62,7 +62,7 @@ export interface SearchState {
     results: any[],
     duration?: number,
     requestId?: string,
-    regions: RegionResult[],
+    regions: Region[],
     selectedRegion: Region,
     fetchingRegions: boolean,
     fetchingResults: boolean,
@@ -74,7 +74,7 @@ export interface SearchState {
 const initialState : SearchState = {
     results: [],
     regions: [],
-    selectedRegion: {left: 0, right: 1, top: 0, bottom: 1},
+    selectedRegion: {x1: 0, x2: 1, y1: 0, y2: 1},
     requestImage: undefined,
     fetchingResults: false,
     fetchingRegions: false,

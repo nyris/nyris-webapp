@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 import {connect, Provider} from 'react-redux';
-import {AnyAction, applyMiddleware, combineReducers, createStore, Reducer} from 'redux';
+import {applyMiddleware, combineReducers, createStore, Reducer} from 'redux';
 import thunk, {ThunkDispatch, ThunkMiddleware} from 'redux-thunk';
 import {
     reducer as searchReducer, SearchState,
@@ -64,7 +64,7 @@ const mapStateToProps = (state: AppState) => ({
         results: state.search.results,
         categoryPredictions: state.search.categoryPredictions,
         filterOptions: state.search.filterOptions,
-        initialRegion: state.search.regions.length > 0 ? state.search.regions[0].region : { left: 0.1, top: 0.1, right: 0.1, bottom: 0.1  },
+        initialRegion: state.search.regions.length > 0 ? state.search.regions[0] : { x1: 0.1, y1: 0.1, x2: 0.9, y2: 0.9  },
         regions: state.search.regions,
         duration: state.search.duration,
         requestId: state.search.requestId
