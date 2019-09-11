@@ -264,6 +264,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
                            enter={(d, i) => ({opacity: [1], x: [d.x], y: d.y, timing: {delay: i*100, duration: 300}})}>
                     {ds => <Layer key='dots'>{ds.map(({key, data, state: position}) =>
                         <Circle onClick={() => this.setSelection(data.region)}
+                                onTap={() => this.setSelection(data.region)}
                                 onMouseOver={() => this.setState({dotHover: true})}
                                 onMouseOut={() => this.setState({dotHover: false})}
                                 key={key} radius={7} {...position} stroke={this.props.dotColor} fill="white" strokeWidth={4}/>)}</Layer>}
