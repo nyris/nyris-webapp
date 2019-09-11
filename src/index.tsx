@@ -8,37 +8,22 @@ import {connect, Provider} from 'react-redux';
 import {applyMiddleware, combineReducers, createStore, Reducer} from 'redux';
 import thunk, {ThunkDispatch, ThunkMiddleware} from 'redux-thunk';
 import {
-    reducer as searchReducer, SearchState,
-    searchImage, SearchAction
+    reducer as searchReducer, SearchState, searchOffersForImage, selectImage,
+    SearchAction, selectionChanged
 } from './actions/searchActions';
 import {NyrisAction, reducer as nyrisReducer} from './actions/nyrisAppActions';
 import {fileOrBlobToCanvas, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {Region, SearchServiceSettings} from "./types";
+import {RectCoords, Region, SearchServiceSettings} from "./types";
 import {Subject} from "rxjs";
-import {debounceTime} from "rxjs/operators";
+import {debounceTime, ignoreElements, mergeMap, switchMap, tap, withLatestFrom} from "rxjs/operators";
 import {NyrisAppState} from "./actions/nyrisAppActions";
+import {combineEpics, createEpicMiddleware, Epic, ofType} from "redux-observable";
+import NyrisAPI from "./NyrisAPI";
 
 
 declare var settings : SearchServiceSettings;
 
-
-const withConsoleLogger = (reducer: Reducer) => (
-    (state: any, action: any) => {
-        console.log("reducer called with action", action);
-        return reducer(state, action);
-    }
-);
-
-
-const rootReducer = combineReducers({
-    settings: () => settings as SearchServiceSettings,
-    nyrisDesign: nyrisReducer,
-    search: withConsoleLogger(searchReducer)
-});
-
-
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk as ThunkMiddleware<any, any>)));
 
 
 function scrollTop() {
@@ -56,6 +41,49 @@ type AppState = {
 type AppAction =
     | SearchAction
     | NyrisAction
+
+
+// feedback api
+const feedbackSuccessEpic : Epic<AppAction, AppAction, AppState> = (action$, state$, { api }) => action$.pipe(
+    ofType('FEEDBACK_SUBMIT_POSITIVE', "FEEDBACK_SUBMIT_NEGATIVE"),
+    withLatestFrom(state$),
+    tap(async ([{ type }, state]) => {
+        const success = type === 'FEEDBACK_SUBMIT_POSITIVE';
+        await api.sendFeedback(state.search.sessionId, state.search.requestId, {
+            event: 'feedback', data: { success }
+        });
+    }),
+    ignoreElements()
+);
+
+const rootEpic = combineEpics(
+    feedbackSuccessEpic
+);
+
+let api = new NyrisAPI(settings);
+
+const epicMiddleware = createEpicMiddleware<AppAction,AppAction, AppState>({
+    dependencies: { api }
+});
+
+
+const withConsoleLogger = (reducer: Reducer) => (
+    (state: any, action: any) => {
+        console.log("reducer called with action", action);
+        return reducer(state, action);
+    }
+);
+
+
+const rootReducer = combineReducers({
+    settings: () => settings as SearchServiceSettings,
+    nyrisDesign: nyrisReducer,
+    search: withConsoleLogger(searchReducer)
+});
+
+
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(epicMiddleware), applyMiddleware(thunk as ThunkMiddleware<any, any>)));
+epicMiddleware.run(rootEpic);
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -81,24 +109,32 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
     let changeEmitter = new Subject();
     changeEmitter.pipe(debounceTime(600)).subscribe(e => {
         console.log('selection changed', e);
+        return dispatch(selectionChanged(e as RectCoords));
     });
     return {
         handlers: {
-            onPositiveFeedback: () => console.log('on positive feedback'),
-            onNegativeFeedback: () => console.log('on negative feedback'),
+            onPositiveFeedback: () => {
+                dispatch({ type: 'FEEDBACK_SUBMIT_POSITIVE'});
+                dispatch({ type: 'POSITIVE_FEEDBACK'});
+            },
+            onNegativeFeedback: () => {
+                dispatch({ type: 'FEEDBACK_SUBMIT_NEGATIVE'});
+                dispatch({ type: 'NEGATIVE_FEEDBACK'});
+            },
             onSelectFile: async (file: File) => {
                 console.log('onSelectFile');
                 const canvas = await fileOrBlobToCanvas(file);
                 console.log('onSelectFile', canvas);
-                await dispatch(searchImage(canvas));
+                await dispatch(selectImage(canvas));
             },
-            onImageClicked: async (img: HTMLImageElement) => {
+            onImageClick: async (e: Event) => {
+                let img = e.target as HTMLImageElement;
                 console.log('on example image clicked', img);
                 try {
                     console.log('-> on example image clicked', img);
                     const canvas = await toCanvas(img);
                     console.log('-> on example image clicked', canvas);
-                    await dispatch(searchImage(canvas));
+                    await dispatch(selectImage(canvas));
                     dispatch(({ type: 'SHOW_RESULTS'}));
                     setTimeout(() => { dispatch({type: 'SHOW_FEEDBACK'})},feedbackTimeout)
                 } catch (e) {
@@ -106,11 +142,17 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
 
                 }
             },
+            onLinkClick: async (result: any) => {
+                console.log('result clicked', result);
+                if (result.l) {
+                    window.open(result.l);
+                }
+            },
             onFileDropped: async (file: File) => {
                 console.log('onFileDropped');
                 const canvas = await fileOrBlobToCanvas(file);
                 console.log('onSelectFile', canvas);
-                await dispatch(searchImage(canvas));
+                await dispatch(selectImage(canvas));
                 dispatch(({ type: 'SHOW_RESULTS'}));
                 setTimeout(() => { dispatch({type: 'SHOW_FEEDBACK'})},feedbackTimeout)
             },

@@ -61,7 +61,7 @@ const App : React.FC<AppProps> = ({
                             </div>
                         </div>
                     </div>
-                    <div   {...getRootProps({onClick: e => {e.stopPropagation();console.log('drop box click')}})} className={classNames('wrapper', 'dragAndDropActionArea', {'fileIsHover': isDragActive})}>
+                    <div   {...getRootProps({onClick: e => {e.stopPropagation();}})} className={classNames('wrapper', 'dragAndDropActionArea', {'fileIsHover': isDragActive})}>
                         <div className="contentWrap">
                             <section className="uploadImage">
                                 <input type="button" name="file" id="capture" className="inputfile" accept="image/*"
@@ -88,7 +88,7 @@ const App : React.FC<AppProps> = ({
                                 </label>
                                 <label htmlFor="capture" className="mobileUploadHandler onMobile"/>
                             </section>
-                            <ExampleImages images={settings.exampleImages} onExampleImageClicked={ (e: React.MouseEvent<HTMLImageElement>) => handlers.onImageClicked(e.target) }/>
+                            <ExampleImages images={settings.exampleImages} onExampleImageClicked={handlers.onImageClick}/>
                         </div>
                     </div>
                     <div className={classNames('tryDifferent', {hidden: showPart !== 'results'})} onClick={handlers.onShowStart}>
@@ -143,8 +143,8 @@ const App : React.FC<AppProps> = ({
                                 key={key}
                                 noImageUrl={settings.noImageUrl}
                                 template={settings.resultTemplate}
-                                onImageClick={(e: React.MouseEvent<HTMLImageElement>) => handlers.onImageClicked(e.target)}
-                                onLinkClick={() => handlers.onLinkClicked(data)}
+                                onImageClick={handlers.onImageClick}
+                                onLinkClick={handlers.onLinkClick}
                                 result={data} style={{opacity: state.opacity, transform: `translateX(${state.translateX}%)`}}  />)}</>}
                         </NodeGroup>
 

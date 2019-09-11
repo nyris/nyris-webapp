@@ -14,9 +14,10 @@ const renderDefault = ({result, noImageUrl, onImageClick, onLinkClick}: Options)
     const price = result.p ? '' + (result.p.vi / 100).toFixed(2) + ' ' + result.p.c : '';
     return (
         <>
-            <a href={result.l} className="imageLink" title="Click the image so see similar products" onClick={onImageClick}>
+            <a href={result.l} className="imageLink" title="Click the image so see similar products">
                 <div className="prdctImg">
-                    <div className="imgWrap"><img src={result.img && (result.img.url + '?r=512x512' || noImageUrl) }
+                    <div className="imgWrap"><img onClick={onImageClick} onAuxClick={onImageClick}
+                        src={result.img && (result.img.url + '?r=512x512' || noImageUrl) }
                                                   crossOrigin="anonymous" alt=""/></div>
                 </div>
             </a>
@@ -27,7 +28,7 @@ const renderDefault = ({result, noImageUrl, onImageClick, onLinkClick}: Options)
                         <span className="prdctPrice">{price}</span>
                         <span className="prdctShop"> at {result.mer}</span>
                     </div>
-                    <a onClick={onLinkClick} className="prdctShopLink" href={result.l} target="_blank">Buy Now</a>
+                    { result.l  && <a onClick={onLinkClick} className="prdctShopLink" href={result.l} target="_blank" rel="noopener noreferrer">Buy Now</a> }
                 </div>
             </div>
         </>);

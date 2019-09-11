@@ -2,15 +2,24 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## TODO
 
+have tos:
+
+* [ ] Results: click image not working
+* [ ] url options
 * [ ] Add feedback API
-* [ ] Implement feedback api events
 * [ ] handle region selection
+* [ ] check if it still works with google chrome plugin
+* [ ] custom requests work (fashion)
+* [ ] response hooks work (konecranse)
+
+shoulds:
+
 * [ ] check request errors
 * [ ] add material design settings
 * [ ] add material design layout
 * [ ] solve todos in code
-* [ ] check if it still works with google chrome plugin
 * [ ] implement basic test
+* [ ] history state
 
 
 ## Available Scripts

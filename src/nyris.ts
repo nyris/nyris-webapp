@@ -1,5 +1,5 @@
 import loadImage from 'blueimp-load-image';
-import {Crop, WH} from "./types";
+import {Crop, RectCoords, WH} from "./types";
 
 
 
@@ -20,6 +20,14 @@ export function getUrlParam(name: string): string | boolean {
     return (results && true) // present but without value
         || false; // not present
 }
+
+export const rectToCrop = ({x1, x2, y1, y2}: RectCoords): Crop =>
+    ({
+        x: x1,
+        y: y1,
+        w: x2-x1,
+        h: y2-y1
+    });
 
 export function getThumbSizeLongestEdge(maxW: number, maxH: number, iW: number, iH: number): WH {
     let iR = iW / iH;
@@ -56,6 +64,7 @@ export function getElementSize(elem: HTMLImageElement | HTMLVideoElement | HTMLC
     ];
 }
 
+// TODO get rid of crop type
 export function toCanvas(elem: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement, newSize?: WH, canvas?: HTMLCanvasElement, crop?: Crop): HTMLCanvasElement {
     let [ow, oh] = getElementSize(elem);
     if (!crop) {

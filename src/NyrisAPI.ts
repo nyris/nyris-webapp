@@ -150,7 +150,7 @@ export default class NyrisAPI {
         })).sort((a, b) => b.score - a.score);
 
         let results = this.settings.responseHook? (await this.settings.responseHook(res)) : res.data.offerInfos;
-        const requestId = res.headers["X-Matching-Request"];
+        const requestId = res.headers["x-matching-request"];
         const duration = res.data.durationSeconds;
         return { results, requestId, duration, categoryPredictions };
     }
@@ -211,7 +211,8 @@ export default class NyrisAPI {
             session_id: sessionId,
             ...payload
         };
-        return await this.httpClient.request({
+        await this.httpClient.request({
+            method: 'POST',
             url: this.settings.feedbackUrl,
             headers,
             data
