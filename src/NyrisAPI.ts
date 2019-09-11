@@ -74,12 +74,14 @@ export default class NyrisAPI {
     private readonly responseFormat: string;
     private imageMatchingUrlBySku: string;
     private imageMatchingSubmitManualUrl: string;
+    private feedbackUrl: string;
 
     constructor(private settings: SearchServiceSettings) {
         this.httpClient = axios.create();
         this.imageMatchingUrl = this.settings.imageMatchingUrl || 'https://api.nyris.io/find/v1';
         this.imageMatchingUrlBySku = this.settings.imageMatchingUrlBySku || 'https://api.nyris.io/recommend/v1/';
         this.imageMatchingSubmitManualUrl = this.settings.imageMatchingSubmitManualUrl || 'https://api.nyris.io/find/v1/manual/';
+        this.feedbackUrl = this.settings.feedbackUrl || 'https://api.nyris.io/feedback/v1/';
         this.regionProposalUrl = this.settings.regionProposalUrl || 'https://api.nyris.io/find/v1/regions/';
         this.responseFormat = this.settings.responseFormat || 'application/offers.nyris+json';
     }
@@ -218,7 +220,7 @@ export default class NyrisAPI {
         };
         await this.httpClient.request({
             method: 'POST',
-            url: this.settings.feedbackUrl,
+            url: this.feedbackUrl,
             headers,
             data
         });

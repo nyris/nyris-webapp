@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
 import {Region} from "./types";
 import {NyrisAppPart, NyrisFeedbackState} from "./actions/nyrisAppActions";
+import Capture from "./components/Capture";
 
 
 const makeFileHandler = (action: any) => (e: any) => {
@@ -47,6 +48,7 @@ const App : React.FC<AppProps> = ({
         const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: handlers.onFileDropped});
         return (
             <div>
+                { showPart === 'camera' && <Capture onCaptureComplete={handlers.onCaptureComplete} onCaptureCanceled={handlers.onCaptureCanceled} onFileSelected={handlers.onSelectFile} useAppText='Use default camera app'/> }
                 <div className={classNames('headSection', {hidden: showPart === 'results'})} id="headSection">
                     <div className="navWrap">
                         <div className="wrapper">
@@ -65,7 +67,7 @@ const App : React.FC<AppProps> = ({
                         <div className="contentWrap">
                             <section className="uploadImage">
                                 <input type="button" name="file" id="capture" className="inputfile" accept="image/*"
-                                       capture="environment"/>
+                                       capture="environment" onClick={handlers.onCameraClick}/>
                                 <input type="file" name="file" id="capture_file" className="inputfile" accept="image/*"
                                        capture="environment"/>
                                 <input {...getInputProps()} type="file" name="file" id="select_file" className="inputfile" accept="image/*"
@@ -76,7 +78,7 @@ const App : React.FC<AppProps> = ({
                                     <div className="smallText">or</div>
                                 </div>
                                 <div className="onMobile camIcon">
-                                    <img src="images/ic_cam_large.svg" alt="Camera"/>
+                                    <img src="./images/ic_cam_large.svg" alt="Camera"/>
                                 </div>
                                 <label htmlFor="capture" className="btn primary onMobile"
                                        style={{marginBottom: '2em', width: '22em'}}>

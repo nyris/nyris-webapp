@@ -142,6 +142,16 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
             onNegativeFeedback: () => {
                 dispatch({ type: 'FEEDBACK_SUBMIT_NEGATIVE'});
             },
+            onCameraClick: () => {
+                dispatch({ type: 'SHOW_CAMERA'});
+            },
+            onCaptureCanceled: () => {
+                dispatch({ type: 'SHOW_START'});
+            },
+            onCaptureComplete: async (canvas: HTMLCanvasElement) => {
+                await dispatch({ type: 'SHOW_RESULTS'});
+                await dispatch(selectImage(canvas));
+            },
             onSelectFile: async (file: File) => {
                 console.log('onSelectFile');
                 const canvas = await fileOrBlobToCanvas(file);
