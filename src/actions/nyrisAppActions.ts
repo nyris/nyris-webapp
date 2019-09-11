@@ -1,4 +1,4 @@
-import {AppAction} from "../types";
+import {AppAction, Result} from "../types";
 
 
 export type NyrisAppPart = 'start' | 'camera' | 'results';
@@ -16,6 +16,8 @@ export type NyrisAction =
     | { type: 'SHOW_RESULTS' }
     | { type: 'SHOW_FEEDBACK' }
     | { type: 'HIDE_FEEDBACK' }
+    | { type: 'RESULT_LINK_CLICKED', result: Result}
+    | { type: 'RESULT_IMAGE_CLICKED', result: Result}
 
 
 const initialNyrisState : NyrisAppState = {

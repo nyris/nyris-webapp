@@ -1,9 +1,9 @@
-import {ImageSearchOptions, Region, SearchServiceSettings} from "./types";
+import {ImageSearchOptions, Region, Result, SearchServiceSettings} from "./types";
 import {canvasToJpgBlob, getElementSize, getThumbSizeArea, toCanvas} from "./nyris";
 import axios, {AxiosInstance} from 'axios';
 
 interface SearchResult {
-    results: any[],
+    results: Result[],
     requestId: string,
     categoryPredictions: { name: string, score: number}[],
     duration: number
@@ -39,7 +39,7 @@ export interface FeedbackData {
 
 export interface ClickData {
     positions: number[],
-    product_ids: string[]
+    product_ids?: string[]
 }
 
 interface SuccessEventPayload  {
@@ -149,7 +149,12 @@ export default class NyrisAPI {
             score: score as number
         })).sort((a, b) => b.score - a.score);
 
-        let results = this.settings.responseHook? (await this.settings.responseHook(res)) : res.data.offerInfos;
+        let results : Result[] =
+            (this.settings.responseHook? (await this.settings.responseHook(res)) : res.data.offerInfos).map((r: any, i: number) => ({
+                ...r,
+                position: i
+            }));
+
         const requestId = res.headers["x-matching-request"];
         const duration = res.data.durationSeconds;
         return { results, requestId, duration, categoryPredictions };

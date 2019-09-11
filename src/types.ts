@@ -57,3 +57,13 @@ export type AppAction =
     | SearchAction
     | NyrisAction
 
+
+export interface Result {
+    position: number,
+    sku?: string,
+    title?: string,
+    l?: string,
+    img?: { url?: string },
+    // There can be also any other ddata
+    [x: string]: any
+}

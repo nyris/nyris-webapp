@@ -49,7 +49,6 @@ const feedbackRegionEpic : Epic<AppAction, AppAction, AppState> = (action$, stat
     ofType('REGION_CHANGED'),
     withLatestFrom(state$),
     tap(async ([action, state]) => {
-        console.log('region changed')
         if (action.type === 'REGION_CHANGED') {
             let { region: {x1, x2, y1, y2} } =  action;
             await api.sendFeedback(state.search.sessionId, state.search.requestId, {
@@ -60,9 +59,25 @@ const feedbackRegionEpic : Epic<AppAction, AppAction, AppState> = (action$, stat
     ignoreElements()
 );
 
+const feedbackClickEpic : Epic<AppAction, AppAction, AppState> = (action$, state$, { api }) => action$.pipe(
+    ofType('RESULT_LINK_CLICKED', 'RESULT_IMAGE_CLICKED'),
+    withLatestFrom(state$),
+    tap(async ([action, state]) => {
+        if (action.type === 'RESULT_LINK_CLICKED' || action.type === 'RESULT_IMAGE_CLICKED') {
+            let { result } =  action;
+            await api.sendFeedback(state.search.sessionId, state.search.requestId, {
+                event: 'click', data: { positions: [result.position] }
+            });
+        }
+    }),
+    ignoreElements()
+);
+
+
 const rootEpic = combineEpics(
     feedbackSuccessEpic,
-    feedbackRegionEpic
+    feedbackRegionEpic,
+    feedbackClickEpic
 );
 
 let api = new NyrisAPI(settings);

@@ -4,20 +4,22 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 have tos:
 
-* [ ] Results: click image not working
-* [ ] url options
-* [ ] Add feedback API
-* [ ] handle region selection
-* [ ] check if it still works with google chrome plugin
-* [ ] custom requests work (fashion)
-* [ ] response hooks work (konecranse)
+* [ ] Results: click image not working & feedback
+
+* [ ] camera view
+
+* [ ] add material design settings
+* [ ] add material design layout
+
 
 shoulds:
 
+* [ ] custom requests work (fashion)
+* [ ] response hooks work (konecranse)
+* [ ] check if it still works with google chrome plugin
+* [ ] url options
 * [ ] show separate loading overlays for regions and results
 * [ ] check request errors
-* [ ] add material design settings
-* [ ] add material design layout
 * [ ] solve todos in code
 * [ ] implement basic test
 * [ ] history state

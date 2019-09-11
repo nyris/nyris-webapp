@@ -28,7 +28,7 @@ const renderDefault = ({result, noImageUrl, onImageClick, onLinkClick}: Options)
                         <span className="prdctPrice">{price}</span>
                         <span className="prdctShop"> at {result.mer}</span>
                     </div>
-                    { result.l  && <a onClick={onLinkClick} className="prdctShopLink" href={result.l} target="_blank" rel="noopener noreferrer">Buy Now</a> }
+                    <a onClick={onLinkClick} className="prdctShopLink" href={result.l} target="_blank" rel="noopener noreferrer">Buy Now</a>
                 </div>
             </div>
         </>);
@@ -122,8 +122,8 @@ export interface ResultProps {
 
 const Result : React.FC<ResultProps> = ({result, style, template, onImageClick, onLinkClick, noImageUrl}) => {
     let options: Options = {
-        onImageClick,
-        onLinkClick,
+        onImageClick: () => onImageClick(result),
+        onLinkClick: () => onLinkClick(result),
         noImageUrl,
         result
     };
