@@ -37,37 +37,6 @@ const renderDefault = ({result, noImageUrl, onImageClick, onLinkClick}: Options)
         </>);
 };
 
-const renderFashion = ({result, noImageUrl, onImageClick, onLinkClick}: Options) => (
-    <>
-        <a href={result.l} className="imageLink">
-            <div className="prdctImg">
-                <div className="imgWrap"><img src={result.img && (result.img.url  || noImageUrl) } alt=""/></div>
-            </div>
-        </a>
-        <div className="prdctDetailsWrap">
-            <div>
-                <div className="prdctTitle">{result.title}</div>
-                <div className="prdctMeta">
-                    <span className="prdctPrice"/>
-                    <span className="prdctShop"/>
-                </div>
-            </div>
-        </div>
-    </>
-);
-
-const renderGs = ({result, noImageUrl, onImageClick, onLinkClick}: Options) => (
-    <>
-        <a href={result.l} className="imageLink" title="Click the image so see similar products">
-        <div className="prdctImg">
-            <div className="imgWrap"><img
-                 src={result.img && (result.img.url + '?r=512x512' || noImageUrl) }
-                 crossOrigin="anonymous" alt=""/></div>
-        </div>
-        </a>
-    </>
-);
-
 const renderSnr = ({result, noImageUrl, onImageClick, onLinkClick}: Options) => (
     <>
         <a href={result.l} className="imageLink" onClick={onImageClick} onAuxClick={onLinkClick}>
@@ -135,12 +104,6 @@ const Result : React.FC<ResultProps> = ({result, style, template, onImageClick, 
 
     let resultInner = null;
     switch (template) {
-        case "fashion":
-            resultInner = renderFashion(options);
-            break;
-        case "gs":
-            resultInner = renderGs(options);
-            break;
         case "snr":
             resultInner = renderSnr(options);
             break;
