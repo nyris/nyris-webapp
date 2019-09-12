@@ -394,7 +394,7 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                         <Preview key={regions.length}
                                  maxWidth={document.body.clientWidth}
                                  maxHeight={Math.floor(window.innerHeight * 0.45)}
-                                 dotColor="#4C8F9F"
+                                 dotColor={mdSettings.primaryColor}
                                  onSelectionChange={handlers.onSelectionChange} regions={regions}
                                  initialRegion={initialRegion} image={previewImage}/>
                     </Card>
