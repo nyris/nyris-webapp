@@ -236,6 +236,14 @@ const useStyles = makeStyles(theme => ({
         paddingTop: theme.spacing(8),
         paddingBottom: theme.spacing(8),
         minHeight: 600,
+        transition: 'all 300ms',
+    },
+    cardGridCollapsed: {
+        height: 0,
+        opacity: 0,
+        minHeight: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
     },
     card: {
         height: '100%',
@@ -280,13 +288,13 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
             {showPart === 'camera' &&
             <Capture onCaptureComplete={handlers.onCaptureComplete} onCaptureCanceled={handlers.onCaptureCanceled}
                      onFileSelected={handlers.onSelectFile} useAppText='Use default camera app'/>}
-            <AppBar position={"relative"}>
+            <AppBar position={"relative"} style={{backgroundColor: '#ffffff'}}>
 
                 <Container maxWidth='md' style={{flexDirection: 'row', display: 'flex'}}>
                     <img src='images/testlogo.jpg' style={{height: '2em', minHeight: '64px', display: 'flex'}}/>
                     <Toolbar component="span">
                         <Typography>
-                            Product search (customizable)
+                            Page title (customizable)
                         </Typography>
                     </Toolbar>
                 </Container>
@@ -326,18 +334,16 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                         </div>
                     </Container>
                 </div>
-                <Container className={classes.cardGrid} maxWidth="md">
+                <Container className={classNames(classes.cardGrid, showPart !== 'results' && classes.cardGridCollapsed)} maxWidth="md">
 
                     {previewImage &&
                     <Card style={{marginBottom: '4em'}} raised={true}>
-                        <div className="preview" style={{textAlign: "center"}}>
                             <Preview key={regions.length}
                                      maxWidth={document.body.clientWidth}
                                      maxHeight={Math.floor(window.innerHeight * 0.45)}
                                      dotColor="#4C8F9F"
                                      onSelectionChange={handlers.onSelectionChange} regions={regions}
                                      initialRegion={initialRegion} image={previewImage}/>
-                        </div>
                     </Card>
                     }
 
@@ -380,7 +386,9 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                                                 {result.l &&
                                                 <CardActions>
                                                     <Button style={{marginLeft: 'auto'}} size="small" color="primary"
-                                                            onClick={() => handlers.onLinkClick(result)}>
+                                                            onClick={() => handlers.onLinkClick(result)}
+                                                            onAuxClick={() => handlers.onLinkClick(result)}
+                                                    >
                                                         Link (custom)
                                                     </Button>
                                                 </CardActions>
