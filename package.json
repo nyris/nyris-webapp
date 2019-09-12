@@ -28,6 +28,7 @@
     "redux-thunk": "^2.3.0",
     "rxjs": "^6.5.3",
     "source-map-explorer": "^2.0.1",
+    "typeface-roboto": "0.0.75",
     "typescript": "3.6.2"
   },
   "scripts": {

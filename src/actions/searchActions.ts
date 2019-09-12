@@ -1,5 +1,5 @@
 import NyrisAPI from './../NyrisAPI';
-import {ImageSearchOptions, RectCoords, Region} from "../types";
+import {ImageSearchOptions, RectCoords, Region, Result} from "../types";
 import {ThunkAction} from "redux-thunk";
 import {rectToCrop} from "../nyris";
 

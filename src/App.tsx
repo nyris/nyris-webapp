@@ -15,16 +15,16 @@ import Capture from "./components/Capture";
 import {
     AppBar,
     Button, Card, CardActions, CardContent,
-    CardMedia,
+    CardMedia, CircularProgress,
     Container,
-    CssBaseline,
+    CssBaseline, Fab,
     Grid,
     Link,
     makeStyles,
     Toolbar,
     Typography
 } from "@material-ui/core";
-import {PhotoCamera} from "@material-ui/icons";
+import {PhotoCamera, ArrowBack} from "@material-ui/icons";
 
 
 const makeFileHandler = (action: any) => (e: any) => {
@@ -205,7 +205,7 @@ function Copyright() {
 
         <Typography variant="body2" color="textSecondary" align="center">
             {'Powered by '}
-            <Link color="inherit" href="https://nyris.io/">
+            <Link color="inherit" href="https://nyris.io/" component='a'>
                 nyris.io
             </Link>
             {' visual search.'}
@@ -221,6 +221,13 @@ const useStyles = makeStyles(theme => ({
     heroContent: {
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(8, 0, 6),
+        transition: 'all 300ms',
+        overflow: 'hidden',
+        height: 500
+    },
+    heroContentClosed: {
+        height: 0,
+        padding: 0
     },
     heroButtons: {
         marginTop: theme.spacing(4),
@@ -228,6 +235,7 @@ const useStyles = makeStyles(theme => ({
     cardGrid: {
         paddingTop: theme.spacing(8),
         paddingBottom: theme.spacing(8),
+        minHeight: 600,
     },
     card: {
         height: '100%',
@@ -236,18 +244,35 @@ const useStyles = makeStyles(theme => ({
     },
     cardMedia: {
         paddingTop: '56.25%', // 16:9
+        backgroundSize: 'contain'
     },
     cardContent: {
         flexGrow: 1,
+        paddingBottom: 0
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(6),
     },
-}));
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    withElipsis: {
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap'
+    },
+    loading: {
+        margin: theme.spacing(2),
+    },
+    fabContainer: {
+        position: 'fixed',
+        bottom: theme.spacing(2),
 
-export const AppMD: React.FC<AppProps> = ({handlers, showPart, previewImage, search: {regions, initialRegion, requestId, duration}}) => {
+    },
+    fab: {
+        marginLeft: theme.spacing(2),
+    },
+}));
+
+export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, loading, search: {results, regions, initialRegion, requestId, duration}}) => {
     const classes = useStyles();
     return (
         <React.Fragment>
@@ -257,9 +282,9 @@ export const AppMD: React.FC<AppProps> = ({handlers, showPart, previewImage, sea
                      onFileSelected={handlers.onSelectFile} useAppText='Use default camera app'/>}
             <AppBar position={"relative"}>
 
-                <Container maxWidth='md'>
-                    <Toolbar>
-                        <img src='images/testlogo.jpg' style={{height: '2em', marginRight: '2em'}}/>
+                <Container maxWidth='md' style={{flexDirection: 'row', display: 'flex'}}>
+                    <img src='images/testlogo.jpg' style={{height: '2em', minHeight: '64px', display: 'flex'}}/>
+                    <Toolbar component="span">
                         <Typography>
                             Product search (customizable)
                         </Typography>
@@ -268,7 +293,8 @@ export const AppMD: React.FC<AppProps> = ({handlers, showPart, previewImage, sea
             </AppBar>
 
             <main>
-                <div className={classes.heroContent}>
+                <div
+                    className={classNames(classes.heroContent, showPart === 'results' ? classes.heroContentClosed : null)}>
                     <Container maxWidth='sm'>
                         <div>
                             <div style={{textAlign: 'center'}}>
@@ -315,43 +341,85 @@ export const AppMD: React.FC<AppProps> = ({handlers, showPart, previewImage, sea
                     </Card>
                     }
 
+                    {loading && <div style={{textAlign: 'center'}}>
+                        <CircularProgress className={classes.loading}/>
+                    </div>}
+
                     <Grid container spacing={4}>
-                        {cards.map(card => (
-                            <Grid item key={card} xs={12} sm={6} md={4}>
-                                <Card className={classes.card}>
-                                    <CardMedia
-                                        className={classes.cardMedia}
-                                        image="https://source.unsplash.com/random"
-                                        title="Image title"
-                                    />
-                                    <CardContent className={classes.cardContent}>
-                                        <Typography gutterBottom variant="h5" component="h5">
-                                            Title (custom)
-                                        </Typography>
-                                        <Typography>
-                                            1234abc (SKU custom)
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button style={{marginLeft: 'auto'}} size="small" color="primary">
-                                            Link (custom)
-                                        </Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        ))}
+                        <NodeGroup data={results}
+                                   keyAccessor={r => r.position + r.sku}
+                                   start={(r, i) => ({opacity: 0, translateX: -100})}
+                                   enter={(r, i) => ({
+                                       opacity: [1],
+                                       translateX: [0],
+                                       timing: {delay: i * 100, duration: 300}
+                                   })}>
+                            {rs =>
+                                <>
+                                    {rs.map(({key, data: result, state}) =>
+                                        <Grid item key={key} xs={12} sm={4} md={3}>
+                                            <Card className={classes.card} style={{
+                                                opacity: state.opacity,
+                                                position: 'relative',
+                                                transform: `translateX(${state.translateX}%)`
+                                            }}>
+                                                <CardMedia
+                                                    className={classes.cardMedia}
+                                                    image={(result.img && result.img.url) || settings.noImageUrl}
+                                                    title={result.title}
+                                                />
+                                                <CardContent className={classes.cardContent}>
+                                                    <Typography gutterBottom variant="subtitle2" component="h5"
+                                                                className={classes.withElipsis}>
+                                                        {result.title}
+                                                    </Typography>
+                                                    <Typography variant="body2" className={classes.withElipsis}>
+                                                        {result.sku}
+                                                    </Typography>
+                                                </CardContent>
+                                                {result.l &&
+                                                <CardActions>
+                                                    <Button style={{marginLeft: 'auto'}} size="small" color="primary"
+                                                            onClick={() => handlers.onLinkClick(result)}>
+                                                        Link (custom)
+                                                    </Button>
+                                                </CardActions>
+                                                }
+                                            </Card>
+                                        </Grid>
+                                    )}
+                                </>
+                            }
+
+                        </NodeGroup>
+
                     </Grid>
+
+                    {results.length === 0 && showPart === 'results' && !loading && (
+                        <Typography variant="h3" align="center">We did not find anything</Typography>
+                    )}
+
+
                 </Container>
+                {showPart !== 'start' &&
+                <Container maxWidth='lg' >
+                    <div className={classes.fabContainer}>
+                        <Fab aria-label='back' className={classes.fab} color='primary' onClick={handlers.onShowStart}>
+                            <ArrowBack/>
+                        </Fab>
+                    </div>
+                </Container>
+                }
 
             </main>
 
             <footer className={classes.footer}>
-                <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+                <Typography variant="subtitle1" align="center" color="textSecondary">
                     {duration && (<div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}>Search
                         took {duration.toFixed(2)} seconds</div>)}
                 </Typography>
 
-                <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+                <Typography variant="subtitle1" align="center" color="textSecondary">
                     {requestId && <div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}>Request
                         identifier {requestId}</div>}
                 </Typography>

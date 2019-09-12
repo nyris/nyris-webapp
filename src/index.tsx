@@ -20,6 +20,7 @@ import {debounceTime, ignoreElements, tap, withLatestFrom} from "rxjs/operators"
 import {combineEpics, createEpicMiddleware, Epic, ofType} from "redux-observable";
 import NyrisAPI from "./NyrisAPI";
 import {createMuiTheme, makeStyles, MuiThemeProvider} from "@material-ui/core";
+import 'typeface-roboto';
 
 
 declare var settings : SearchServiceSettings;
@@ -178,6 +179,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
             },
             onLinkClick: async (result: any) => {
                 console.log('result clicked', result);
+                dispatch({type: 'RESULT_LINK_CLICKED', result});
                 if (result.l) {
                     window.open(result.l);
                 }
