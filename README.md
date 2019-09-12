@@ -9,8 +9,6 @@ musts:
 * [ ] add to Nyris.Web.Demo.Server gitlab-ci deployment
 
 
-
-* [ ] check gs.nyris.io works
 * [ ] kclifttrucks.nyris.io works
 * [ ] konecranes.nyris.io works
 * [ ] liebherr.nyris.io works
