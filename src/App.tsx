@@ -223,10 +223,9 @@ function Copyright() {
 
         <Typography variant="body2" color="textSecondary" align="center">
             {'Powered by '}
-            <Link color="inherit" href="https://nyris.io/" component='a'>
+            <Link color="inherit" href="https://nyris.io/" component='a' target="_blank">
                 nyris.io
             </Link>
-            {' visual search.'}
         </Typography>
     );
 }
@@ -358,12 +357,12 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                                         <Image style={{fontSize: '20em', color: '#cccccc'}}/>
                                     </div>
                                     <div style={{textAlign: 'center'}}>
-                                        <Typography variant='body1'>
+                                        <Typography variant='body2'>
                                             DROP AN IMAGE
                                         </Typography>
                                     </div>
                                     <div style={{textAlign: 'center'}}>
-                                        <Typography>
+                                        <Typography variant="subtitle2">
                                             or
                                         </Typography>
                                     </div>
