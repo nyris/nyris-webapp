@@ -6,8 +6,6 @@ have tos:
 
 * [ ] Results: click image not working & feedback
 
-* [ ] camera view
-
 * [ ] add material design settings
 * [ ] add material design layout
 
@@ -23,6 +21,7 @@ shoulds:
 * [ ] solve todos in code
 * [ ] implement basic test
 * [ ] history state
+* [ ] improved error handeling when using http and camera capture
 
 
 ## Available Scripts

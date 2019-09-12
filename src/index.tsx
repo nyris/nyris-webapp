@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App, {AppMD} from './App';
 import * as serviceWorker from './serviceWorker';
 
 import {connect, Provider} from 'react-redux';
@@ -14,11 +14,12 @@ import {
 import {reducer as nyrisReducer} from './actions/nyrisAppActions';
 import {fileOrBlobToCanvas, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {AppAction, AppState, RectCoords, Region, SearchServiceSettings} from "./types";
+import {AppAction, AppState, RectCoords, Region, Result, SearchServiceSettings} from "./types";
 import {Subject} from "rxjs";
 import {debounceTime, ignoreElements, tap, withLatestFrom} from "rxjs/operators";
 import {combineEpics, createEpicMiddleware, Epic, ofType} from "redux-observable";
 import NyrisAPI from "./NyrisAPI";
+import {createMuiTheme, makeStyles, MuiThemeProvider} from "@material-ui/core";
 
 
 declare var settings : SearchServiceSettings;
@@ -158,19 +159,21 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
                 console.log('onSelectFile', canvas);
                 await dispatch(selectImage(canvas));
             },
-            onImageClick: async (e: Event) => {
-                let img = e.target as HTMLImageElement;
-                console.log('on example image clicked', img);
-                try {
-                    dispatch(({ type: 'SHOW_RESULTS'}));
-                    console.log('-> on example image clicked', img);
-                    const canvas = await toCanvas(img);
-                    console.log('-> on example image clicked', canvas);
-                    await dispatch(selectImage(canvas));
-                    setTimeout(() => { dispatch({type: 'SHOW_FEEDBACK'})},feedbackTimeout)
-                } catch (e) {
-                    console.error(e)
+            onImageClick: async (e: Result) => {
+                if (e.img && e.img.url) {
+                    let img = await fileOrBlobToCanvas(e.img && e.img.url); // TODO this is sketchy
+                    console.log('on example image clicked', img);
+                    try {
+                        dispatch(({ type: 'SHOW_RESULTS'}));
+                        console.log('-> on example image clicked', img);
+                        const canvas = await toCanvas(img);
+                        console.log('-> on example image clicked', canvas);
+                        await dispatch(selectImage(canvas));
+                        setTimeout(() => { dispatch({type: 'SHOW_FEEDBACK'})},feedbackTimeout)
+                    } catch (e) {
+                        console.error(e)
 
+                    }
                 }
             },
             onLinkClick: async (result: any) => {
@@ -202,9 +205,21 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
 };
 
 
-const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
 
-ReactDOM.render(<Provider store={store}><ConnectedApp/></Provider>, document.getElementById('root'));
+let theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#e2001a'
+        },
+        secondary: {
+            main: '#777777'
+        }
+    }
+});
+
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(AppMD);
+
+ReactDOM.render(<Provider store={store}><MuiThemeProvider theme={theme}><ConnectedApp/></MuiThemeProvider></Provider>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

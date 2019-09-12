@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.3.3",
+    "@material-ui/icons": "^4.4.1",
     "@types/blueimp-load-image": "^2.23.4",
     "@types/classnames": "^2.2.9",
     "@types/jest": "24.0.18",
