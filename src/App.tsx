@@ -321,7 +321,7 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
             <main>
                 <div
                     className={classNames(classes.heroContent, showPart === 'results' ? classes.heroContentClosed : null)}>
-                    <Container maxWidth='sm'>
+                    <Container maxWidth='md'>
                         <div>
                             <Hidden mdUp>
                                 <div style={{textAlign: 'center'}}>
