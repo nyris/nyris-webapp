@@ -253,6 +253,7 @@ const useStyles = makeStyles(theme => ({
         paddingTop: theme.spacing(8),
         paddingBottom: theme.spacing(8),
         minHeight: 600,
+        overflow: 'hidden',
         transition: 'all 300ms',
     },
     cardGridCollapsed: {
@@ -311,7 +312,7 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                     <img src={mdSettings.appBarLogoUrl} style={{height: '2em', minHeight: '64px', display: 'flex'}}/>
                     <Toolbar component="span">
                         <Typography style={{color: mdSettings.appBarCustomTextColor}}>
-                            Page title (customizable)
+                            { mdSettings.appBarTitle }
                         </Typography>
                     </Toolbar>
                 </Container>
@@ -352,7 +353,7 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                                 </div>
                             </Hidden>
                             <Hidden smDown>
-                                <div style={{border: 'dashed 5px #ddd', borderRadius: 10, padding: 10}}>
+                                <div style={{border: 'dashed 5px #ddd', borderRadius: 10, padding: 10, paddingBottom: 30}}>
                                     <div style={{textAlign: 'center'}}>
                                         <Image style={{fontSize: '20em', color: '#cccccc'}}/>
                                     </div>
