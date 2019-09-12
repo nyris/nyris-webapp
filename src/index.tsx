@@ -21,6 +21,7 @@ import {combineEpics, createEpicMiddleware, Epic, ofType} from "redux-observable
 import NyrisAPI from "./NyrisAPI";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
 import 'typeface-roboto';
+import {defaultMdSettings} from "./defaults";
 
 
 declare var settings: SearchServiceSettings;
@@ -248,22 +249,8 @@ window.addEventListener('message', onMessage);
 
 
 
-export const defaultMdSettings = {
-    appBarLogoUrl: 'images/windmoeller-and-hoelscher-kg-vector-logo.svg',
-    appBarCustomBackgroundColor: '#f4f4f4',
-    appBarCustomTextColor: '#ccc',
-    appBarTitle: '',
-    primaryColor: '#e2001a',
-    secondaryColor: '#777777',
 
-    resultFirstRowProperty: 'title',
-    resultSecondRowProperty: 'sku',
-    resultLinkText: 'Info',
-
-    customFontFamily: 'Helvetica',
-};
-
-let useMd = true; // TODO get from settings
+let useMd = settings.materialDesign !== undefined;
 let md: MDSettings = {
     ...defaultMdSettings,
     ...settings.materialDesign
