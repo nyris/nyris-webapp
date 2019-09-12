@@ -2,41 +2,31 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## TODO
 
-done:
-
-* [x] check feed for link
-* [x] Button "DROP IMAGE"
-
 musts:
 
-* [ ] Md: search took xx <- remove
-* [ ] Md: Nyris link clickable
-* [ ] Results: click image not working
-* [ ] Preview: dots color
-* [ ] add material design settings
+* [ ] check if it still works with google chrome plugin
+* [ ] move to web namespace
+* [ ] add to Nyris.Web.Demo.Server gitlab-ci deployment
+
+
 
 * [ ] check gs.nyris.io works
 * [ ] kclifttrucks.nyris.io works
 * [ ] konecranes.nyris.io works
 * [ ] liebherr.nyris.io works
 
-* [ ] Md: Logo use eps
-* [ ] gitlab-ci deployment
-* [ ] check works in subdomain
-
 
 shoulds:
 
-* [ ] md: Preview abgeschnitten
-* [ ] check if it still works with google chrome plugin
 * [ ] url options
+* [ ] history state (hashrouter?)
 
 nice to have:
 
+* [ ] md: Preview is cropped
 * [ ] show separate loading overlays for regions and results
 * [ ] solve todos in code
-* [ ] implement basic test
-* [ ] history state
+* [ ] implement basic smoke test with mock server
 * [ ] check request errors
 * [ ] improved error handeling when using http and camera capture
 * [ ] merge Result component views
