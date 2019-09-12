@@ -235,11 +235,24 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>) =>
     };
 };
 
+
+// chrome plugin communication
+async function onMessage(evt: MessageEvent) {
+    let msg = evt.data;
+    if (msg.type === "image")  {
+        let canvas = await fileOrBlobToCanvas(msg.image);
+        store.dispatch({type: 'SELECT_IMAGE', image: canvas})
+    }
+}
+window.addEventListener('message', onMessage);
+
+
+
 export const defaultMdSettings = {
-    appBarLogoUrl: 'images/testlogo.jpg',
-    appBarCustomBackgroundColor: 'white',
+    appBarLogoUrl: 'images/windmoeller-and-hoelscher-kg-vector-logo.svg',
+    appBarCustomBackgroundColor: '#f4f4f4',
     appBarCustomTextColor: '#ccc',
-    appBarTitle: 'Custom text',
+    appBarTitle: '',
     primaryColor: '#e2001a',
     secondaryColor: '#777777',
 
@@ -250,7 +263,7 @@ export const defaultMdSettings = {
     customFontFamily: 'Helvetica',
 };
 
-let useMd = false; // TODO get from settings
+let useMd = true; // TODO get from settings
 let md: MDSettings = {
     ...defaultMdSettings,
     ...settings.materialDesign
