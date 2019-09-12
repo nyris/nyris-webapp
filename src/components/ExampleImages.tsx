@@ -2,7 +2,7 @@ import React from 'react';
 
 interface ExampleImagesProps {
     images: string[],
-    onExampleImageClicked: (e: React.MouseEvent<HTMLImageElement>) => void
+    onExampleImageClicked: (url: string) => void
 }
 
 const ExampleImages : React.FC<ExampleImagesProps> = ({images, onExampleImageClicked}) => {
@@ -14,8 +14,7 @@ const ExampleImages : React.FC<ExampleImagesProps> = ({images, onExampleImageCli
             You can also try one of these pictures:
             <div className="exampleImages">
                 <div className="exImagesWrap">
-                    {/* note: crossOrigin has to be applied before src to work */}
-                    {images.map((i) => (<img key={i} crossOrigin="anonymous" src={i} alt="" onClick={onExampleImageClicked}/>))}
+                    {images.map((i) => (<img key={i} src={i} alt="" onClick={() => onExampleImageClicked(i)}/>))}
                 </div>
             </div>
         </section>

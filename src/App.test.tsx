@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App, {AppMD, AppProps} from './App';
+import {defaultMdSettings} from "./index";
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
@@ -16,7 +17,8 @@ it('renders without crashing', () => {
     feedbackState: 'question',
     handlers: {},
     showPart: 'start',
-    settings: { }
+    settings: { },
+    mdSettings: defaultMdSettings,
   };
   ReactDOM.render(<App { ...appProps} />, div);
   ReactDOM.unmountComponentAtNode(div);

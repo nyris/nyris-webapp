@@ -16,8 +16,8 @@ export type NyrisAction =
     | { type: 'SHOW_RESULTS' }
     | { type: 'SHOW_FEEDBACK' }
     | { type: 'HIDE_FEEDBACK' }
-    | { type: 'RESULT_LINK_CLICKED', result: Result}
-    | { type: 'RESULT_IMAGE_CLICKED', result: Result}
+    | { type: 'RESULT_LINK_CLICKED', position: number, url: string}
+    | { type: 'RESULT_IMAGE_CLICKED', position: number, url: string}
 
 
 const initialNyrisState : NyrisAppState = {

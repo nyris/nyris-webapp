@@ -1,5 +1,5 @@
 import './App.css';
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 import Result from './components/Result';
 import Preview from './components/Preview';
 import ExampleImages from './components/ExampleImages';
@@ -9,7 +9,7 @@ import PredictedCategories from "./components/PredictedCategories";
 import {useDropzone} from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
-import {Region} from "./types";
+import {MDSettings, RectCoords, Region} from "./types";
 import {NyrisAppPart, NyrisFeedbackState} from "./actions/nyrisAppActions";
 import Capture from "./components/Capture";
 import {
@@ -18,13 +18,13 @@ import {
     CardMedia, CircularProgress,
     Container,
     CssBaseline, Fab,
-    Grid,
+    Grid, Hidden,
     Link,
     makeStyles,
     Toolbar,
     Typography
 } from "@material-ui/core";
-import {PhotoCamera, ArrowBack} from "@material-ui/icons";
+import {PhotoCamera, ArrowBack, Image} from "@material-ui/icons";
 
 
 const makeFileHandler = (action: any) => (e: any) => {
@@ -32,6 +32,21 @@ const makeFileHandler = (action: any) => (e: any) => {
     action(file);
 };
 
+export interface AppHanders {
+    onExampleImageClick: (url: string) => void,
+    onImageClick: (position: number, url: string) => void,
+    onLinkClick: (position: number, url: string) => void,
+    onFileDropped: (file: File) => void,
+    onCaptureComplete: (image: HTMLCanvasElement) => void,
+    onCaptureCanceled: () => void,
+    onSelectFile: (f: File) => void,
+    onCameraClick: () => void,
+    onShowStart: () => void,
+    onSelectionChange: (r: Region) => void,
+    onPositiveFeedback: () => void,
+    onNegativeFeedback: () => void,
+    onCloseFeedback: () => void,
+}
 
 export interface AppProps {
     search: {
@@ -49,19 +64,20 @@ export interface AppProps {
     loading: boolean,
     showPart: NyrisAppPart,
     feedbackState: NyrisFeedbackState,
-    handlers: any
+    handlers: AppHanders,
+    mdSettings: MDSettings
 }
 
 const App: React.FC<AppProps> = ({
                                      search: {results, regions, initialRegion, requestId, duration, errorMessage, filterOptions, categoryPredictions},
                                      showPart, settings, handlers, loading, previewImage, feedbackState
                                  }) => {
-    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: handlers.onFileDropped});
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: (fs: File[]) => handlers.onFileDropped(fs[0])});
     return (
         <div>
             {showPart === 'camera' &&
             <Capture onCaptureComplete={handlers.onCaptureComplete} onCaptureCanceled={handlers.onCaptureCanceled}
-                     onFileSelected={handlers.onSelectFile} useAppText='Use default camera app'/>}
+                     onFileSelected={makeFileHandler(handlers.onSelectFile)} useAppText='Use default camera app'/>}
             <div className={classNames('headSection', {hidden: showPart === 'results'})} id="headSection">
                 <div className="navWrap">
                     <div className="wrapper">
@@ -108,7 +124,7 @@ const App: React.FC<AppProps> = ({
                             </label>
                             <label htmlFor="capture" className="mobileUploadHandler onMobile"/>
                         </section>
-                        <ExampleImages images={settings.exampleImages} onExampleImageClicked={handlers.onImageClick}/>
+                        <ExampleImages images={settings.exampleImages} onExampleImageClicked={handlers.onExampleImageClick}/>
                     </div>
                 </div>
                 <div className={classNames('tryDifferent', {hidden: showPart !== 'results'})}
@@ -153,11 +169,6 @@ const App: React.FC<AppProps> = ({
                 </div>
                 <CategoryFilter cats={filterOptions}/>
 
-                {duration && (<div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}>Search
-                    took {duration.toFixed(2)} seconds</div>)}
-
-                {requestId && <div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}>Request
-                    identifier {requestId}</div>}
                 <div className="wrapper">
                     <NodeGroup data={results}
                                keyAccessor={r => r.sku}
@@ -183,7 +194,14 @@ const App: React.FC<AppProps> = ({
                         <div className="noResults">We did not find anything <span role="img"
                                                                                   aria-label="sad face">😕</span></div>
                     )}
+
                     <br style={{clear: 'both'}}/>
+
+                    {duration && showPart === 'results' && (<div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}>Search
+                        took {duration.toFixed(2)} seconds</div>)}
+
+                    {requestId && showPart === 'results' && <div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}>Request
+                        identifier {requestId}</div>}
                 </div>
             </section>
 
@@ -280,20 +298,20 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, loading, search: {results, regions, initialRegion, requestId, duration}}) => {
+export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, loading, search: {results, regions, initialRegion, requestId, duration}, mdSettings}) => {
     const classes = useStyles();
     return (
         <React.Fragment>
             <CssBaseline/>
             {showPart === 'camera' &&
             <Capture onCaptureComplete={handlers.onCaptureComplete} onCaptureCanceled={handlers.onCaptureCanceled}
-                     onFileSelected={handlers.onSelectFile} useAppText='Use default camera app'/>}
-            <AppBar position={"relative"} style={{backgroundColor: '#ffffff'}}>
+                     onFileSelected={makeFileHandler(handlers.onSelectFile)} useAppText='Use default camera app'/>}
+            <AppBar position={"relative"} style={{backgroundColor: mdSettings.appBarCustomBackgroundColor}}>
 
                 <Container maxWidth='md' style={{flexDirection: 'row', display: 'flex'}}>
-                    <img src='images/testlogo.jpg' style={{height: '2em', minHeight: '64px', display: 'flex'}}/>
+                    <img src={mdSettings.appBarLogoUrl} style={{height: '2em', minHeight: '64px', display: 'flex'}}/>
                     <Toolbar component="span">
-                        <Typography>
+                        <Typography style={{color: mdSettings.appBarCustomTextColor}}>
                             Page title (customizable)
                         </Typography>
                     </Toolbar>
@@ -305,45 +323,80 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                     className={classNames(classes.heroContent, showPart === 'results' ? classes.heroContentClosed : null)}>
                     <Container maxWidth='sm'>
                         <div>
-                            <div style={{textAlign: 'center'}}>
-                                <PhotoCamera style={{fontSize: '20em', color: '#cccccc'}}/>
-                            </div>
-                            <div style={{textAlign: 'center'}}>
-                                <Button variant={"contained"} color={"primary"} onClick={handlers.onCameraClick}>Take a
-                                    picture</Button>
-                            </div>
-                            <div style={{textAlign: 'center'}}>
-                                <Typography>
-                                    or
-                                </Typography>
-                            </div>
-                            <div style={{textAlign: 'center'}}>
-                                <input
-                                    accept="image/*"
-                                    id="raised-button-file"
-                                    type="file"
-                                    onChange={makeFileHandler(handlers.onSelectFile)}
-                                    style={{width: '.1px', height: '.1px', overflow: 'hidden', opacity: 0}}
-                                />
-                                <label htmlFor="raised-button-file">
-                                    <Button variant={"contained"} color={"primary"} component="span">
-                                        Select an image
-                                    </Button>
-                                </label>
-                            </div>
+                            <Hidden mdUp>
+                                <div style={{textAlign: 'center'}}>
+                                    <PhotoCamera style={{fontSize: '20em', color: '#cccccc'}}/>
+                                </div>
+                                <div style={{textAlign: 'center'}}>
+                                    <Button variant={"contained"} color={"primary"} onClick={handlers.onCameraClick}>Take
+                                        a
+                                        picture</Button>
+                                </div>
+                                <div style={{textAlign: 'center'}}>
+                                    <Typography>
+                                        or
+                                    </Typography>
+                                </div>
+                                <div style={{textAlign: 'center'}}>
+                                    <input
+                                        accept="image/*"
+                                        id="raised-button-file"
+                                        type="file"
+                                        onChange={makeFileHandler(handlers.onSelectFile)}
+                                        style={{width: '.1px', height: '.1px', overflow: 'hidden', opacity: 0}}
+                                    />
+                                    <label htmlFor="raised-button-file">
+                                        <Button variant={"contained"} color={"primary"} component="span">
+                                            Select an image
+                                        </Button>
+                                    </label>
+                                </div>
+                            </Hidden>
+                            <Hidden smDown>
+                                <div style={{border: 'dashed 5px #ddd', borderRadius: 10, padding: 10}}>
+                                    <div style={{textAlign: 'center'}}>
+                                        <Image style={{fontSize: '20em', color: '#cccccc'}}/>
+                                    </div>
+                                    <div style={{textAlign: 'center'}}>
+                                        <Typography variant='body1'>
+                                            DROP AN IMAGE
+                                        </Typography>
+                                    </div>
+                                    <div style={{textAlign: 'center'}}>
+                                        <Typography>
+                                            or
+                                        </Typography>
+                                    </div>
+                                    <div style={{textAlign: 'center'}}>
+                                        <input
+                                            accept="image/*"
+                                            id="raised-button-file"
+                                            type="file"
+                                            onChange={makeFileHandler(handlers.onSelectFile)}
+                                            style={{width: '.1px', height: '.1px', overflow: 'hidden', opacity: 0}}
+                                        />
+                                        <label htmlFor="raised-button-file">
+                                            <Button variant={"contained"} color={"primary"} component="span">
+                                                Select an image
+                                            </Button>
+                                        </label>
+                                    </div>
+                                </div>
+                            </Hidden>
                         </div>
                     </Container>
                 </div>
-                <Container className={classNames(classes.cardGrid, showPart !== 'results' && classes.cardGridCollapsed)} maxWidth="md">
+                <Container className={classNames(classes.cardGrid, showPart !== 'results' && classes.cardGridCollapsed)}
+                           maxWidth="md">
 
                     {previewImage &&
                     <Card style={{marginBottom: '4em'}} raised={true}>
-                            <Preview key={regions.length}
-                                     maxWidth={document.body.clientWidth}
-                                     maxHeight={Math.floor(window.innerHeight * 0.45)}
-                                     dotColor="#4C8F9F"
-                                     onSelectionChange={handlers.onSelectionChange} regions={regions}
-                                     initialRegion={initialRegion} image={previewImage}/>
+                        <Preview key={regions.length}
+                                 maxWidth={document.body.clientWidth}
+                                 maxHeight={Math.floor(window.innerHeight * 0.45)}
+                                 dotColor="#4C8F9F"
+                                 onSelectionChange={handlers.onSelectionChange} regions={regions}
+                                 initialRegion={initialRegion} image={previewImage}/>
                     </Card>
                     }
 
@@ -377,19 +430,18 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                                                 <CardContent className={classes.cardContent}>
                                                     <Typography gutterBottom variant="subtitle2" component="h5"
                                                                 className={classes.withElipsis}>
-                                                        {result.title}
+                                                        {result[mdSettings.resultFirstRowProperty]}
                                                     </Typography>
                                                     <Typography variant="body2" className={classes.withElipsis}>
-                                                        {result.sku}
+                                                        {result[mdSettings.resultSecondRowProperty]}
                                                     </Typography>
                                                 </CardContent>
                                                 {result.l &&
                                                 <CardActions>
                                                     <Button style={{marginLeft: 'auto'}} size="small" color="primary"
-                                                            onClick={() => handlers.onLinkClick(result)}
-                                                            onAuxClick={() => handlers.onLinkClick(result)}
-                                                    >
-                                                        Link (custom)
+                                                            onClick={() => handlers.onLinkClick(result.position, result.l)}
+                                                            onAuxClick={() => handlers.onLinkClick(result.position, result.l)} >
+                                                        {mdSettings.resultLinkText}
                                                     </Button>
                                                 </CardActions>
                                                 }
@@ -410,7 +462,7 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
 
                 </Container>
                 {showPart !== 'start' &&
-                <Container maxWidth='lg' >
+                <Container maxWidth='lg'>
                     <div className={classes.fabContainer}>
                         <Fab aria-label='back' className={classes.fab} color='primary' onClick={handlers.onShowStart}>
                             <ArrowBack/>
@@ -422,13 +474,9 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
             </main>
 
             <footer className={classes.footer}>
-                <Typography variant="subtitle1" align="center" color="textSecondary">
-                    {duration && (<div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}>Search
-                        took {duration.toFixed(2)} seconds</div>)}
-                </Typography>
 
                 <Typography variant="subtitle1" align="center" color="textSecondary">
-                    {requestId && <div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}>Request
+                    {requestId && showPart === 'results' && <div style={{textAlign: 'center', fontSize: '0.7em', paddingTop: '0.8em'}}>Request
                         identifier {requestId}</div>}
                 </Typography>
                 <Copyright/>

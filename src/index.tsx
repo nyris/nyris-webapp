@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App, {AppMD} from './App';
@@ -14,61 +14,59 @@ import {
 import {reducer as nyrisReducer} from './actions/nyrisAppActions';
 import {fileOrBlobToCanvas, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {AppAction, AppState, RectCoords, Region, Result, SearchServiceSettings} from "./types";
+import {AppAction, AppState, MDSettings, RectCoords, Region, Result, SearchServiceSettings} from "./types";
 import {Subject} from "rxjs";
 import {debounceTime, ignoreElements, tap, withLatestFrom} from "rxjs/operators";
 import {combineEpics, createEpicMiddleware, Epic, ofType} from "redux-observable";
 import NyrisAPI from "./NyrisAPI";
-import {createMuiTheme, makeStyles, MuiThemeProvider} from "@material-ui/core";
+import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
 import 'typeface-roboto';
 
 
-declare var settings : SearchServiceSettings;
-
+declare var settings: SearchServiceSettings;
 
 
 function scrollTop() {
     // TODO might require polyfil for ios and edge
-    window.scrollTo({top: 0,  left: 0, behavior: "smooth"});
+    window.scrollTo({top: 0, left: 0, behavior: "smooth"});
 }
 
 
-
 // feedback api
-const feedbackSuccessEpic : Epic<AppAction, AppAction, AppState> = (action$, state$, { api }) => action$.pipe(
+const feedbackSuccessEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {api}) => action$.pipe(
     ofType('FEEDBACK_SUBMIT_POSITIVE', "FEEDBACK_SUBMIT_NEGATIVE"),
     withLatestFrom(state$),
-    tap(async ([{ type }, state]) => {
+    tap(async ([{type}, state]) => {
         const success = type === 'FEEDBACK_SUBMIT_POSITIVE';
         await api.sendFeedback(state.search.sessionId, state.search.requestId, {
-            event: 'feedback', data: { success }
+            event: 'feedback', data: {success}
         });
     }),
     ignoreElements()
 );
 
-const feedbackRegionEpic : Epic<AppAction, AppAction, AppState> = (action$, state$, { api }) => action$.pipe(
+const feedbackRegionEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {api}) => action$.pipe(
     ofType('REGION_CHANGED'),
     withLatestFrom(state$),
     tap(async ([action, state]) => {
         if (action.type === 'REGION_CHANGED') {
-            let { region: {x1, x2, y1, y2} } =  action;
+            let {region: {x1, x2, y1, y2}} = action;
             await api.sendFeedback(state.search.sessionId, state.search.requestId, {
-                event: 'region', data: { rect: { x: x1, y: y1, w: x2-x1, h: y2-y1 } }
+                event: 'region', data: {rect: {x: x1, y: y1, w: x2 - x1, h: y2 - y1}}
             });
         }
     }),
     ignoreElements()
 );
 
-const feedbackClickEpic : Epic<AppAction, AppAction, AppState> = (action$, state$, { api }) => action$.pipe(
+const feedbackClickEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {api}) => action$.pipe(
     ofType('RESULT_LINK_CLICKED', 'RESULT_IMAGE_CLICKED'),
     withLatestFrom(state$),
     tap(async ([action, state]) => {
         if (action.type === 'RESULT_LINK_CLICKED' || action.type === 'RESULT_IMAGE_CLICKED') {
-            let { result } =  action;
+            let {position} = action;
             await api.sendFeedback(state.search.sessionId, state.search.requestId, {
-                event: 'click', data: { positions: [result.position] }
+                event: 'click', data: {positions: [position]}
             });
         }
     }),
@@ -84,8 +82,8 @@ const rootEpic = combineEpics(
 
 let api = new NyrisAPI(settings);
 
-const epicMiddleware = createEpicMiddleware<AppAction,AppAction, AppState>({
-    dependencies: { api }
+const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>({
+    dependencies: {api}
 });
 
 
@@ -117,7 +115,7 @@ const mapStateToProps = (state: AppState) => ({
         results: state.search.results,
         categoryPredictions: state.search.categoryPredictions,
         filterOptions: state.search.filterOptions,
-        initialRegion: state.search.regions.length > 0 ? state.search.regions[0] : { x1: 0.1, y1: 0.1, x2: 0.9, y2: 0.9  },
+        initialRegion: state.search.regions.length > 0 ? state.search.regions[0] : {x1: 0.1, y1: 0.1, x2: 0.9, y2: 0.9},
         regions: state.search.regions,
         duration: state.search.duration,
         requestId: state.search.requestId
@@ -125,12 +123,13 @@ const mapStateToProps = (state: AppState) => ({
     settings: state.settings,
     previewImage: state.search.requestImage instanceof HTMLCanvasElement ? state.search.requestImage : undefined,
     loading: state.search.fetchingRegions || state.search.fetchingResults,
-    feedbackState: state.nyrisDesign.feedbackState
+    feedbackState: state.nyrisDesign.feedbackState,
+    mdSettings: state.settings.materialDesign || defaultMdSettings
 });
 
 const feedbackTimeout = 4000;
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>) => {
     let changeEmitter = new Subject();
     changeEmitter.pipe(debounceTime(600)).subscribe(e => {
         console.log('selection changed', e);
@@ -139,58 +138,88 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
     return {
         handlers: {
             onPositiveFeedback: () => {
-                dispatch({ type: 'FEEDBACK_SUBMIT_POSITIVE'});
+                dispatch({type: 'FEEDBACK_SUBMIT_POSITIVE'});
             },
             onNegativeFeedback: () => {
-                dispatch({ type: 'FEEDBACK_SUBMIT_NEGATIVE'});
+                dispatch({type: 'FEEDBACK_SUBMIT_NEGATIVE'});
             },
             onCameraClick: () => {
-                dispatch({ type: 'SHOW_CAMERA'});
+                dispatch({type: 'SHOW_CAMERA'});
             },
             onCaptureCanceled: () => {
-                dispatch({ type: 'SHOW_START'});
+                dispatch({type: 'SHOW_START'});
             },
-            onCaptureComplete: async (canvas: HTMLCanvasElement) => {
-                await dispatch({ type: 'SHOW_RESULTS'});
-                await dispatch(selectImage(canvas));
+            onCaptureComplete: (canvas: HTMLCanvasElement) => {
+                (async () => {
+                    await dispatch({type: 'SHOW_RESULTS'});
+                    await dispatch(selectImage(canvas));
+                })()
             },
-            onSelectFile: async (file: File) => {
-                console.log('onSelectFile');
-                const canvas = await fileOrBlobToCanvas(file);
-                console.log('onSelectFile', canvas);
-                await dispatch(selectImage(canvas));
+            onSelectFile: (file: File) => {
+                (async () => {
+                    console.log('onSelectFile');
+                    const canvas = await fileOrBlobToCanvas(file);
+                    console.log('onSelectFile', canvas);
+                    await dispatch(selectImage(canvas));
+                })()
             },
-            onImageClick: async (e: Result) => {
-                if (e.img && e.img.url) {
-                    let img = await fileOrBlobToCanvas(e.img && e.img.url); // TODO this is sketchy
-                    console.log('on example image clicked', img);
+            onImageClick: (position: number, url: string) => {
+                (async () => {
+                    dispatch({ type: "RESULT_IMAGE_CLICKED", position, url})
+                    let img = await fileOrBlobToCanvas(url); // TODO this is sketchy
+                    console.log('on image clicked', img);
                     try {
-                        dispatch(({ type: 'SHOW_RESULTS'}));
+                        dispatch(({type: 'SHOW_RESULTS'}));
                         console.log('-> on example image clicked', img);
                         const canvas = await toCanvas(img);
                         console.log('-> on example image clicked', canvas);
                         await dispatch(selectImage(canvas));
-                        setTimeout(() => { dispatch({type: 'SHOW_FEEDBACK'})},feedbackTimeout)
+                        setTimeout(() => {
+                            dispatch({type: 'SHOW_FEEDBACK'})
+                        }, feedbackTimeout)
                     } catch (e) {
                         console.error(e)
 
                     }
+                })()
+            },
+            onExampleImageClick: (url: string) => {
+                (async () => {
+                    let img = await fileOrBlobToCanvas(url); // TODO this is sketchy
+                    console.log('on image clicked', img);
+                    try {
+                        dispatch(({type: 'SHOW_RESULTS'}));
+                        console.log('-> on example image clicked', img);
+                        const canvas = await toCanvas(img);
+                        console.log('-> on example image clicked', canvas);
+                        await dispatch(selectImage(canvas));
+                        setTimeout(() => {
+                            dispatch({type: 'SHOW_FEEDBACK'})
+                        }, feedbackTimeout)
+                    } catch (e) {
+                        console.error(e)
+
+                    }
+                })()
+            },
+            onLinkClick: (position: number, url: string) => {
+                console.log('result clicked', position);
+                dispatch({type: 'RESULT_LINK_CLICKED', position, url});
+                if (url) {
+                    window.open(url);
                 }
             },
-            onLinkClick: async (result: any) => {
-                console.log('result clicked', result);
-                dispatch({type: 'RESULT_LINK_CLICKED', result});
-                if (result.l) {
-                    window.open(result.l);
-                }
-            },
-            onFileDropped: async (file: File) => {
-                console.log('onFileDropped');
-                dispatch(({ type: 'SHOW_RESULTS'}));
-                const canvas = await fileOrBlobToCanvas(file);
-                console.log('onSelectFile', canvas);
-                await dispatch(selectImage(canvas));
-                setTimeout(() => { dispatch({type: 'SHOW_FEEDBACK'})},feedbackTimeout)
+            onFileDropped: (file: File) => {
+                (async () => {
+                    console.log('onFileDropped');
+                    dispatch(({type: 'SHOW_RESULTS'}));
+                    const canvas = await fileOrBlobToCanvas(file);
+                    console.log('onSelectFile', canvas);
+                    await dispatch(selectImage(canvas));
+                    setTimeout(() => {
+                        dispatch({type: 'SHOW_FEEDBACK'})
+                    }, feedbackTimeout)
+                })()
             },
             onSelectionChange: (selection: Region) => {
                 changeEmitter.next(selection);
@@ -206,22 +235,44 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>)  =
     };
 };
 
+export const defaultMdSettings = {
+    appBarLogoUrl: 'images/testlogo.jpg',
+    appBarCustomBackgroundColor: 'white',
+    appBarCustomTextColor: '#ccc',
+    appBarTitle: 'Custom text',
+    primaryColor: '#e2001a',
+    secondaryColor: '#777777',
 
+    resultFirstRowProperty: 'title',
+    resultSecondRowProperty: 'sku',
+    resultLinkText: 'Info',
 
+    customFontFamily: 'Helvetica',
+};
+
+let useMd = false; // TODO get from settings
+let md: MDSettings = {
+    ...defaultMdSettings,
+    ...settings.materialDesign
+};
 let theme = createMuiTheme({
+    typography: {
+        fontFamily: md.customFontFamily,
+    },
     palette: {
         primary: {
-            main: '#e2001a'
+            main: md.primaryColor,
         },
         secondary: {
-            main: '#777777'
+            main: md.secondaryColor
         }
     }
 });
+const SelectedApp = useMd ? AppMD : App;
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(SelectedApp);
 
-const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(AppMD);
-
-ReactDOM.render(<Provider store={store}><MuiThemeProvider theme={theme}><ConnectedApp/></MuiThemeProvider></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><MuiThemeProvider
+    theme={theme}><ConnectedApp/></MuiThemeProvider></Provider>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

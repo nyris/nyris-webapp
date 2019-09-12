@@ -1,17 +1,36 @@
 import {SearchAction, SearchState} from "./actions/searchActions";
 import {NyrisAction, NyrisAppState} from "./actions/nyrisAppActions";
 
+export interface MDSettings {
+    customFontFamily?: string,
+
+    appBarLogoUrl: string,
+    appBarTitle: string,
+    appBarCustomBackgroundColor?: string,
+    appBarCustomTextColor?: string,
+
+    primaryColor: string,
+    secondaryColor: string,
+    resultFirstRowProperty: string,
+    resultSecondRowProperty: string,
+
+    resultImageProperty?: string,
+    resultLinkProperty?: string,
+    resultLinkText?: string,
+}
+
 export interface SearchServiceSettings {
-    xOptions: boolean | string;
-    customSearchRequest?: ((file: Blob, client: any) => Promise<any>);
-    responseHook?: ((response: any) => any);
-    apiKey: string;
-    imageMatchingUrl?: string;
-    imageMatchingUrlBySku?: string;
-    imageMatchingSubmitManualUrl?: string;
-    regionProposalUrl?: string;
-    responseFormat?: string;
-    feedbackUrl?: string;
+    xOptions: boolean | string,
+    customSearchRequest?: ((file: Blob, client: any) => Promise<any>),
+    responseHook?: ((response: any) => any),
+    apiKey: string,
+    imageMatchingUrl?: string,
+    imageMatchingUrlBySku?: string,
+    imageMatchingSubmitManualUrl?: string,
+    regionProposalUrl?: string,
+    responseFormat?: string,
+    feedbackUrl?: string,
+    materialDesign?: MDSettings
 }
 
 export interface ImageSearchOptions {
