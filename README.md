@@ -5,10 +5,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 musts:
 
 * [ ] check if it still works with google chrome plugin
-* [ ] move to web namespace
-* [ ] add to Nyris.Web.Demo.Server gitlab-ci deployment
-
-
 * [ ] kclifttrucks.nyris.io works
 * [ ] konecranes.nyris.io works
 * [ ] liebherr.nyris.io works
@@ -21,6 +17,7 @@ shoulds:
 
 nice to have:
 
+* [ ] favicon
 * [ ] md: Preview is cropped
 * [ ] show separate loading overlays for regions and results
 * [ ] solve todos in code

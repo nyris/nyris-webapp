@@ -247,7 +247,7 @@ async function onMessage(evt: MessageEvent) {
     let msg = evt.data;
     if (msg.type === "image")  {
         let canvas = await fileOrBlobToCanvas(msg.image);
-        store.dispatch({type: 'SELECT_IMAGE', image: canvas})
+        await store.dispatch(selectImage(canvas));
     }
 }
 window.addEventListener('message', onMessage);
