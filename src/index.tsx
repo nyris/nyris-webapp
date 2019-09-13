@@ -47,8 +47,9 @@ normalizedSettings = {
     regions: getUrlParam('use.regions') as boolean || normalizedSettings.regions,
     preview: getUrlParam('use.preview') as boolean || normalizedSettings.preview,
 
-}
+};
 
+document.title = window.location.host;
 
 let api = new NyrisAPI(normalizedSettings);
 
