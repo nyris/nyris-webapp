@@ -6,10 +6,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 shoulds:
 
 * [ ] history state (hashrouter?)
+* [ ] favicon
 
 nice to have:
 
-* [ ] favicon
 * [ ] md: Preview is cropped
 * [ ] show separate loading overlays for regions and results
 * [ ] solve todos in code
