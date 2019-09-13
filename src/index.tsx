@@ -23,6 +23,7 @@ import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
 import 'typeface-roboto';
 import {defaultMdSettings, defaultSettings} from "./defaults";
 import rootEpic from "./epics";
+import { createHashHistory } from 'history';
 
 
 declare var settings: SearchServiceSettings;
@@ -51,10 +52,11 @@ normalizedSettings = {
 
 document.title = window.location.host;
 
-let api = new NyrisAPI(normalizedSettings);
+const api = new NyrisAPI(normalizedSettings);
+const history = createHashHistory();
 
 const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>({
-    dependencies: {api}
+    dependencies: {api, history}
 });
 
 
@@ -79,6 +81,22 @@ const store = createStore(rootReducer, composeWithDevTools(
 ));
 epicMiddleware.run(rootEpic);
 
+
+
+history.listen((location, action) => {
+    console.log('history', location, action)
+    if (action == 'PUSH') {
+        return;
+    }
+    switch (location.pathname) {
+        case '/results':
+            store.dispatch({type: 'SHOW_RESULTS'});
+            break;
+        case '/':
+            store.dispatch({type: 'SHOW_START'});
+            break;
+    }
+});
 
 
 // Here comes the really dirty code of the composition-root
@@ -246,6 +264,10 @@ const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(SelectedApp);
 
 ReactDOM.render(<Provider store={store}><MuiThemeProvider
     theme={theme}><ConnectedApp/></MuiThemeProvider></Provider>, document.getElementById('root'));
+
+
+
+
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

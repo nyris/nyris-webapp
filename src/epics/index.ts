@@ -44,10 +44,23 @@ const feedbackClickEpic: Epic<AppAction, AppAction, AppState> = (action$, state$
 );
 
 
+const historyEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {history}) => action$.pipe(
+    ofType('SHOW_RESULTS'),
+    tap(() => {
+        if ( history.location.pathname !== '/results') {
+            history.push('/results');
+        }
+    }),
+    ignoreElements()
+);
+
+
+
 const rootEpic = combineEpics(
     feedbackSuccessEpic,
     feedbackRegionEpic,
-    feedbackClickEpic
+    feedbackClickEpic,
+    historyEpic
 );
 
 export default rootEpic;

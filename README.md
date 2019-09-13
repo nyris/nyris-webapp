@@ -3,11 +3,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## TODO
 
 
-shoulds:
-
-* [ ] history state (hashrouter?)
-* [ ] favicon
-
 nice to have:
 
 * [ ] md: Preview is cropped
