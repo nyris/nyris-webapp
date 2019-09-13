@@ -2,6 +2,7 @@
 import {combineEpics, Epic, ofType} from "redux-observable";
 import {AppAction, AppState} from "../types";
 import {ignoreElements, tap, withLatestFrom} from "rxjs/operators";
+import {History} from "history";
 
 const feedbackSuccessEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {api}) => action$.pipe(
     ofType('FEEDBACK_SUBMIT_POSITIVE', "FEEDBACK_SUBMIT_NEGATIVE"),
@@ -44,7 +45,7 @@ const feedbackClickEpic: Epic<AppAction, AppAction, AppState> = (action$, state$
 );
 
 
-const historyEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {history}) => action$.pipe(
+const historyEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {history}: { history: History}) => action$.pipe(
     ofType('SHOW_RESULTS', 'SHOW_START'),
     tap((action) => {
         let { type } = action;
@@ -52,7 +53,7 @@ const historyEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {his
             history.push('/results');
         }
         if (type === 'SHOW_START' && history.location.pathname !== '/') {
-            history.push('/');
+            history.goBack();
         }
     }),
     ignoreElements()
