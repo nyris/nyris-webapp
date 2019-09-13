@@ -21,7 +21,7 @@ import {combineEpics, createEpicMiddleware, Epic, ofType} from "redux-observable
 import NyrisAPI from "./NyrisAPI";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
 import 'typeface-roboto';
-import {defaultMdSettings} from "./defaults";
+import {defaultMdSettings, defaultSettings} from "./defaults";
 
 
 declare var settings: SearchServiceSettings;
@@ -81,7 +81,12 @@ const rootEpic = combineEpics(
     feedbackClickEpic
 );
 
-let api = new NyrisAPI(settings);
+let normalizedSettings : SearchServiceSettings = {
+    ...defaultSettings,
+    ...settings
+}
+
+let api = new NyrisAPI(normalizedSettings);
 
 const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>({
     dependencies: {api}
@@ -97,7 +102,7 @@ const withConsoleLogger = (reducer: Reducer) => (
 
 
 const rootReducer = combineReducers({
-    settings: () => settings as SearchServiceSettings,
+    settings: () => normalizedSettings as SearchServiceSettings,
     nyrisDesign: nyrisReducer,
     search: withConsoleLogger(searchReducer)
 });

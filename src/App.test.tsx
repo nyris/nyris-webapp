@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App, {AppMD, AppProps} from './App';
-import {defaultMdSettings} from "./defaults";
+import {defaultMdSettings, defaultSettings} from "./defaults";
 
 
 const appProps: AppProps = {
@@ -16,7 +16,7 @@ const appProps: AppProps = {
   feedbackState: 'question',
   handlers: {},
   showPart: 'start',
-  settings: { },
+  settings: { ...defaultSettings },
   mdSettings: defaultMdSettings,
 };
 

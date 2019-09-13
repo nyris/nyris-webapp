@@ -30,7 +30,10 @@ export interface SearchServiceSettings {
     regionProposalUrl?: string,
     responseFormat?: string,
     feedbackUrl?: string,
-    materialDesign?: MDSettings
+    exampleImages: string[],
+    resultTemplate?: string,
+    noImageUrl?: string,
+    materialDesign?: MDSettings,
 }
 
 export interface ImageSearchOptions {

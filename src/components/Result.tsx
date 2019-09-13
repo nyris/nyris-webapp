@@ -91,14 +91,14 @@ export interface ResultProps {
     template?: string,
     onImageClick: (pos: number, url: string) => void,
     onLinkClick: (pos: number, url: string) => void,
-    noImageUrl: string
+    noImageUrl?: string
 }
 
 const Result : React.FC<ResultProps> = ({result, style, template, onImageClick, onLinkClick, noImageUrl}) => {
     let options: Options = {
         onImageClick: () => onImageClick(result.position,  result.img.url),
         onLinkClick: () => onLinkClick(result.position, result.l),
-        noImageUrl,
+        noImageUrl: noImageUrl || 'images/ic_cam_large_noimage.png',
         result
     };
 

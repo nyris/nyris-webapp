@@ -1,3 +1,12 @@
+import {SearchServiceSettings} from "./types";
+
+export const defaultSettings : SearchServiceSettings = {
+
+    xOptions: false,
+    apiKey: 'UNSET',
+    exampleImages: [],
+};
+
 export const defaultMdSettings = {
     appBarLogoUrl: 'images/windmoeller-and-hoelscher-kg-vector-logo.svg',
     appBarCustomBackgroundColor: '#f4f4f4',
