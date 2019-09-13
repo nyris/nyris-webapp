@@ -354,7 +354,8 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                                 </div>
                             </Hidden>
                             <Hidden smDown>
-                                <div style={{borderStyle: 'dashed', borderWidth: 5, borderColor: isDragActive ? '#ccc' : '#eee', borderRadius: 10, padding: 10, paddingBottom: 30}} {...getRootProps()}>
+                                <div style={{borderStyle: 'dashed', borderWidth: 5, borderColor: isDragActive ? '#ccc' : '#eee', borderRadius: 10, padding: 10, paddingBottom: 30}}
+                                     {...getRootProps({ onClick: e => { e.stopPropagation() }}) }>
                                     <div style={{textAlign: 'center'}}>
                                         <Image style={{fontSize: '20em', color: '#cccccc'}}/>
                                     </div>
