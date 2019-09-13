@@ -4,7 +4,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 musts:
 
-* [ ] check if it still works with google chrome plugin
 * [ ] kclifttrucks.nyris.io works
 * [ ] konecranes.nyris.io works
 * [ ] liebherr.nyris.io works
