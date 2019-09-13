@@ -151,8 +151,10 @@ export default class NyrisAPI {
             score: score as number
         })).sort((a, b) => b.score - a.score);
 
+        let responseData = this.settings.responseHook? this.settings.responseHook(res.data) : res.data;
+
         let results : Result[] =
-            (this.settings.responseHook? (await this.settings.responseHook(res)) : res.data.offerInfos).map((r: any, i: number) => ({
+            responseData.offerInfos.map((r: Result, i: number) => ({
                 ...r,
                 position: i
             }));
@@ -174,7 +176,7 @@ export default class NyrisAPI {
             headers['X-Options'] = this.settings.xOptions as string;
         let r:any = await this.httpClient.get(url, {headers, responseType: 'json'})
         if (this.settings.responseHook) {
-            r = await this.settings.responseHook;
+            r = this.settings.responseHook;
         }
         return r;
     }
