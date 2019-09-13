@@ -5,6 +5,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 nice to have:
 
+* [ ] check category filter works
+* [ ] check category prediction display works
 * [ ] md: Preview is cropped
 * [ ] show separate loading overlays for regions and results
 * [ ] solve todos in code

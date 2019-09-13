@@ -14,8 +14,6 @@ export interface MDSettings {
     resultFirstRowProperty: string,
     resultSecondRowProperty: string,
 
-    resultImageProperty?: string,
-    resultLinkProperty?: string,
     resultLinkText?: string,
 }
 
