@@ -45,10 +45,14 @@ const feedbackClickEpic: Epic<AppAction, AppAction, AppState> = (action$, state$
 
 
 const historyEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {history}) => action$.pipe(
-    ofType('SHOW_RESULTS'),
-    tap(() => {
-        if ( history.location.pathname !== '/results') {
+    ofType('SHOW_RESULTS', 'SHOW_START'),
+    tap((action) => {
+        let { type } = action;
+        if (type === 'SHOW_RESULTS' && history.location.pathname !== '/results') {
             history.push('/results');
+        }
+        if (type === 'SHOW_START' && history.location.pathname !== '/') {
+            history.push('/');
         }
     }),
     ignoreElements()

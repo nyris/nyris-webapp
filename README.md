@@ -5,6 +5,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 nice to have:
 
+* [ ] md drop box works
 * [ ] check category filter works
 * [ ] check category prediction display works
 * [ ] md: Preview is cropped
