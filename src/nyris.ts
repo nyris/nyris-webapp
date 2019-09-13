@@ -9,8 +9,8 @@ import {Crop, RectCoords, WH} from "./types";
 // returns:
 //   * string value if it has value assigned with `=`
 //   * true if it is specified but without value
-//   * false if not present
-export function getUrlParam(name: string): string | boolean {
+//   * undefined if not present
+export function getUrlParam(name: string): string | boolean | undefined {
     let results = new RegExp(`[?&]${name}(=([^&#]*))?(&|$|#)`, 'i')
         .exec(window.location.href);
     if (results && results[2]) { // has value
@@ -18,7 +18,7 @@ export function getUrlParam(name: string): string | boolean {
         return decodeURIComponent(results[2]);
     }
     return (results && true) // present but without value
-        || false; // not present
+        || undefined; // not present
 }
 
 export const rectToCrop = ({x1, x2, y1, y2}: RectCoords): Crop =>

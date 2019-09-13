@@ -12,16 +12,17 @@ import {
     selectionChanged
 } from './actions/searchActions';
 import {reducer as nyrisReducer} from './actions/nyrisAppActions';
-import {fileOrBlobToCanvas, toCanvas} from "./nyris";
+import {fileOrBlobToCanvas, getUrlParam, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
 import {AppAction, AppState, MDSettings, RectCoords, Region, SearchServiceSettings} from "./types";
 import {Subject} from "rxjs";
-import {debounceTime, ignoreElements, tap, withLatestFrom} from "rxjs/operators";
-import {combineEpics, createEpicMiddleware, Epic, ofType} from "redux-observable";
+import {debounceTime} from "rxjs/operators";
+import {createEpicMiddleware} from "redux-observable";
 import NyrisAPI from "./NyrisAPI";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
 import 'typeface-roboto';
 import {defaultMdSettings, defaultSettings} from "./defaults";
+import rootEpic from "./epics";
 
 
 declare var settings: SearchServiceSettings;
@@ -33,58 +34,21 @@ function scrollTop() {
 }
 
 
-// feedback api
-const feedbackSuccessEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {api}) => action$.pipe(
-    ofType('FEEDBACK_SUBMIT_POSITIVE', "FEEDBACK_SUBMIT_NEGATIVE"),
-    withLatestFrom(state$),
-    tap(async ([{type}, state]) => {
-        const success = type === 'FEEDBACK_SUBMIT_POSITIVE';
-        await api.sendFeedback(state.search.sessionId, state.search.requestId, {
-            event: 'feedback', data: {success}
-        });
-    }),
-    ignoreElements()
-);
-
-const feedbackRegionEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {api}) => action$.pipe(
-    ofType('REGION_CHANGED'),
-    withLatestFrom(state$),
-    tap(async ([action, state]) => {
-        if (action.type === 'REGION_CHANGED') {
-            let {region: {x1, x2, y1, y2}} = action;
-            await api.sendFeedback(state.search.sessionId, state.search.requestId, {
-                event: 'region', data: {rect: {x: x1, y: y1, w: x2 - x1, h: y2 - y1}}
-            });
-        }
-    }),
-    ignoreElements()
-);
-
-const feedbackClickEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {api}) => action$.pipe(
-    ofType('RESULT_LINK_CLICKED', 'RESULT_IMAGE_CLICKED'),
-    withLatestFrom(state$),
-    tap(async ([action, state]) => {
-        if (action.type === 'RESULT_LINK_CLICKED' || action.type === 'RESULT_IMAGE_CLICKED') {
-            let {position} = action;
-            await api.sendFeedback(state.search.sessionId, state.search.requestId, {
-                event: 'click', data: {positions: [position]}
-            });
-        }
-    }),
-    ignoreElements()
-);
-
-
-const rootEpic = combineEpics(
-    feedbackSuccessEpic,
-    feedbackRegionEpic,
-    feedbackClickEpic
-);
 
 let normalizedSettings : SearchServiceSettings = {
     ...defaultSettings,
-    ...settings
+    ...settings,
+};
+
+normalizedSettings = {
+    ...normalizedSettings,
+    apiKey: getUrlParam('apiKey') as string || normalizedSettings.apiKey,
+    xOptions: getUrlParam('xOptions') as string || normalizedSettings.xOptions,
+    regions: getUrlParam('use.regions') as boolean || normalizedSettings.regions,
+    preview: getUrlParam('use.preview') as boolean || normalizedSettings.preview,
+
 }
+
 
 let api = new NyrisAPI(normalizedSettings);
 
@@ -114,6 +78,9 @@ const store = createStore(rootReducer, composeWithDevTools(
 ));
 epicMiddleware.run(rootEpic);
 
+
+
+// Here comes the really dirty code of the composition-root
 
 const mapStateToProps = (state: AppState) => ({
     showPart: state.nyrisDesign.showPart,
@@ -171,7 +138,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>) =>
             },
             onImageClick: (position: number, url: string) => {
                 (async () => {
-                    dispatch({ type: "RESULT_IMAGE_CLICKED", position, url})
+                    dispatch({ type: "RESULT_IMAGE_CLICKED", position, url});
                     let img = await fileOrBlobToCanvas(url); // TODO this is sketchy
                     console.log('on image clicked', img);
                     try {

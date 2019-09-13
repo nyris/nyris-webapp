@@ -5,7 +5,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 shoulds:
 
-* [ ] url options
 * [ ] history state (hashrouter?)
 
 nice to have:
@@ -18,6 +17,10 @@ nice to have:
 * [ ] check request errors
 * [ ] improved error handeling when using http and camera capture
 * [ ] merge Result component views
+
+would be great:
+
+* [ ] refactor search actions to not have side-effects
 
 ## Available Scripts
 
