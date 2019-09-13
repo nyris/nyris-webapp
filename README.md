@@ -2,12 +2,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## TODO
 
-musts:
-
-* [ ] kclifttrucks.nyris.io works
-* [ ] konecranes.nyris.io works
-* [ ] liebherr.nyris.io works
-
 
 shoulds:
 

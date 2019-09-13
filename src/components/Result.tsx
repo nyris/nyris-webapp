@@ -82,6 +82,7 @@ const renderSnrMultilink = ({result, noImageUrl, onImageClick, onLinkClick}: Opt
                 {result.l.map((l: { text: string, href: string }) =>
                     <a style={{backgroundImage: 'none', paddingLeft: '10px'}} className="prdctShopLink" href={l.href}
                        onClick={onLinkClick} onAuxClick={onLinkClick} target="_blank"
+                       key={l.href}
                        rel="noopener noreferrer">{l.text}</a>
                 )}
             </div>

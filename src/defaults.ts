@@ -5,6 +5,8 @@ export const defaultSettings : SearchServiceSettings = {
     xOptions: false,
     apiKey: 'UNSET',
     exampleImages: [],
+    preview: true,
+    regions: false,
 };
 
 export const defaultMdSettings = {

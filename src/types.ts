@@ -34,6 +34,9 @@ export interface SearchServiceSettings {
     resultTemplate?: string,
     noImageUrl?: string,
     materialDesign?: MDSettings,
+    preview: boolean,
+    regions: boolean
+
 }
 
 export interface ImageSearchOptions {

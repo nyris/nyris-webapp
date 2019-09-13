@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App, {AppMD} from './App';
@@ -14,7 +14,7 @@ import {
 import {reducer as nyrisReducer} from './actions/nyrisAppActions';
 import {fileOrBlobToCanvas, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {AppAction, AppState, MDSettings, RectCoords, Region, Result, SearchServiceSettings} from "./types";
+import {AppAction, AppState, MDSettings, RectCoords, Region, SearchServiceSettings} from "./types";
 import {Subject} from "rxjs";
 import {debounceTime, ignoreElements, tap, withLatestFrom} from "rxjs/operators";
 import {combineEpics, createEpicMiddleware, Epic, ofType} from "redux-observable";

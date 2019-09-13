@@ -1,5 +1,5 @@
 import './App.css';
-import React, {ChangeEvent} from 'react';
+import React from 'react';
 import Result from './components/Result';
 import Preview from './components/Preview';
 import ExampleImages from './components/ExampleImages';
@@ -9,7 +9,7 @@ import PredictedCategories from "./components/PredictedCategories";
 import {useDropzone} from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
-import {MDSettings, RectCoords, Region, SearchServiceSettings} from "./types";
+import {MDSettings,  Region, SearchServiceSettings} from "./types";
 import {NyrisAppPart, NyrisFeedbackState} from "./actions/nyrisAppActions";
 import Capture from "./components/Capture";
 import {
@@ -155,7 +155,7 @@ const App: React.FC<AppProps> = ({
                         </div>
                     }
                 </Animate>
-                {previewImage &&
+                {settings.preview && previewImage &&
                 <div className="preview">
                     <Preview key={regions.length}
                              maxWidth={document.body.clientWidth} maxHeight={Math.floor(window.innerHeight * 0.45)}
@@ -309,7 +309,7 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
             <AppBar position={"relative"} style={{backgroundColor: mdSettings.appBarCustomBackgroundColor}}>
 
                 <Container maxWidth='md' style={{flexDirection: 'row', display: 'flex'}}>
-                    <img src={mdSettings.appBarLogoUrl} style={{height: '2em', minHeight: '64px', display: 'flex'}}/>
+                    <img src={mdSettings.appBarLogoUrl} style={{height: '2em', minHeight: '64px', display: 'flex'}} alt="Logo"/>
                     <Toolbar component="span">
                         <Typography style={{color: mdSettings.appBarCustomTextColor}}>
                             { mdSettings.appBarTitle }
@@ -389,7 +389,7 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                 <Container className={classNames(classes.cardGrid, showPart !== 'results' && classes.cardGridCollapsed)}
                            maxWidth="md">
 
-                    {previewImage &&
+                    { previewImage &&
                     <Card style={{marginBottom: '4em'}} raised={true}>
                         <Preview key={regions.length}
                                  maxWidth={document.body.clientWidth}

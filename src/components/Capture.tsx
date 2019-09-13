@@ -53,7 +53,7 @@ class Capture extends React.Component<CaptureProps> {
 
 
     render() {
-        let {onCaptureCanceled, onCaptureComplete, onFileSelected, useAppText} = this.props;
+        let {onCaptureCanceled, onFileSelected, useAppText} = this.props;
 
         return (
             <div id="capture-ui">

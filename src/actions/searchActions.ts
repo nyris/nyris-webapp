@@ -1,5 +1,5 @@
 import NyrisAPI from './../NyrisAPI';
-import {ImageSearchOptions, RectCoords, Region, Result} from "../types";
+import {AppState, ImageSearchOptions, RectCoords, Region} from "../types";
 import {ThunkAction} from "redux-thunk";
 import {rectToCrop} from "../nyris";
 
@@ -47,7 +47,7 @@ const initialState : SearchState = {
 };
 
 
-export const selectImage = (canvas: HTMLCanvasElement): ThunkAction<Promise<void>, any, any, SearchAction> =>
+export const selectImage = (canvas: HTMLCanvasElement): ThunkAction<Promise<void>, AppState, any, SearchAction> =>
     async (dispatch, getState) => {
         const { settings } = getState();
         await dispatch({type: 'SELECT_IMAGE', image: canvas});

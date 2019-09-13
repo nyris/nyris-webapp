@@ -1,4 +1,4 @@
-import {AppAction, Result} from "../types";
+import {AppAction} from "../types";
 
 
 export type NyrisAppPart = 'start' | 'camera' | 'results';
