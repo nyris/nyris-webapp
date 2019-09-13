@@ -300,6 +300,7 @@ const useStyles = makeStyles(theme => ({
 
 export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, loading, search: {results, regions, initialRegion, requestId, duration}, mdSettings}) => {
     const classes = useStyles();
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: (fs: File[]) => handlers.onFileDropped(fs[0])});
     return (
         <React.Fragment>
             <CssBaseline/>
@@ -353,7 +354,7 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                                 </div>
                             </Hidden>
                             <Hidden smDown>
-                                <div style={{border: 'dashed 5px #ddd', borderRadius: 10, padding: 10, paddingBottom: 30}}>
+                                <div style={{borderStyle: 'dashed', borderWidth: 5, borderColor: isDragActive ? '#ccc' : '#eee', borderRadius: 10, padding: 10, paddingBottom: 30}} {...getRootProps()}>
                                     <div style={{textAlign: 'center'}}>
                                         <Image style={{fontSize: '20em', color: '#cccccc'}}/>
                                     </div>
@@ -372,6 +373,7 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                                             accept="image/*"
                                             id="raised-button-file"
                                             type="file"
+                                            {...getInputProps()}
                                             onChange={makeFileHandler(handlers.onSelectFile)}
                                             style={{width: '.1px', height: '.1px', overflow: 'hidden', opacity: 0}}
                                         />
