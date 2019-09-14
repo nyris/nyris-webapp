@@ -146,7 +146,7 @@ export default class NyrisAPI {
             responseType: 'json'
         });
         console.log(res);
-        const categoryPredictions = Object.entries(res.predicted_category || {}).map(([name, score]) => ({
+        const categoryPredictions = Object.entries(res.data.predicted_category || {}).map(([name, score]) => ({
             name: name,
             score: score as number
         })).sort((a, b) => b.score - a.score);
