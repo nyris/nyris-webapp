@@ -60,6 +60,8 @@ export const searchOffersForImage = (image: HTMLCanvasElement, region?: RectCoor
     image,
     region
 });
+export const submitPositiveFeedback = () : SearchAction => ({ type: 'FEEDBACK_SUBMIT_POSITIVE'});
+export const submitNegativeFeedback = () : SearchAction => ({ type: 'FEEDBACK_SUBMIT_NEGATIVE'});
 
 export const reducer = (state : SearchState = initialState, action: SearchAction)  => {
     switch (action.type) {

@@ -5,13 +5,13 @@ import App, {AppMD} from './App';
 import * as serviceWorker from './serviceWorker';
 
 import {connect, Provider} from 'react-redux';
-import {applyMiddleware, combineReducers, createStore, Dispatch} from 'redux';
+import {applyMiddleware, bindActionCreators, combineReducers, createStore, Dispatch} from 'redux';
 import {
     loadCanvas,
     loadFile,
     loadUrl,
     reducer as searchReducer,
-    selectionChanged
+    selectionChanged, submitNegativeFeedback, submitPositiveFeedback
 } from './actions/searchActions';
 import {
     hideFeedback,
@@ -118,25 +118,20 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
     return {
         handlers: {
-            onPositiveFeedback: () => {
-                dispatch({type: 'FEEDBACK_SUBMIT_POSITIVE'});
-            },
-            onNegativeFeedback: () => {
-                dispatch({type: 'FEEDBACK_SUBMIT_NEGATIVE'});
-            },
-            onCameraClick: () => {
-                dispatch(showCamera());
-            },
-            onCaptureCanceled: () => {
-                dispatch(showStart());
-            },
-            onCaptureComplete: (canvas: HTMLCanvasElement) => { dispatch(loadCanvas(canvas)); },
-            onSelectFile: (file: File) => { dispatch(loadFile(file)) },
+            ...bindActionCreators({
+                onPositiveFeedback: submitPositiveFeedback,
+                onNegativeFeedback: submitNegativeFeedback,
+                onCameraClick: showCamera,
+                onCaptureCanceled: showStart,
+                onCaptureComplete: loadCanvas,
+                onSelectFile: loadFile,
+                onExampleImageClick: loadUrl,
+                onFileDropped: loadFile,
+                onSelectionChange: selectionChanged,
+                onCloseFeedback: hideFeedback,
+            }, dispatch),
             onImageClick: (position: number, url: string) => {
                 dispatch({ type: "RESULT_IMAGE_CLICKED", position, url});
-                dispatch(loadUrl(url));
-            },
-            onExampleImageClick: (url: string) => {
                 dispatch(loadUrl(url));
             },
             onLinkClick: (position: number, url: string) => {
@@ -145,19 +140,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
                     window.open(url);
                 }
             },
-            onFileDropped: (file: File) => {
-                    dispatch(loadFile(file));
-            },
-            onSelectionChange: (region: Region) => {
-                dispatch(selectionChanged(region));
-            },
             onShowStart: () => {
                 dispatch(showStart());
                 scrollTop();
             },
-            onCloseFeedback: () => {
-                dispatch(hideFeedback());
-            }
         }
     };
 };
