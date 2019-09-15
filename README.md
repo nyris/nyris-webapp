@@ -5,7 +5,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 nice to have:
 
-* [ ] select image handle diffferent kinds: url & blob & canvas
 * [ ] md: Preview is cropped
 * [ ] show separate loading overlays for regions and results
 * [ ] solve todos in code
@@ -14,9 +13,6 @@ nice to have:
 * [ ] improved error handeling when using http and camera capture
 * [ ] merge Result component views
 
-would be great:
-
-* [ ] refactor search actions to not have side-effects
 
 ## Available Scripts
 

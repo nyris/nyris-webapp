@@ -1,10 +1,14 @@
 import {AppState, RectCoords, Region} from "../types";
 
+export type ImageSourceType =
+    | { url: string }
+    | { file: File }
+    | { image: HTMLCanvasElement }
 
 export type SearchAction =
     | { type: 'FEEDBACK_SUBMIT_POSITIVE' }
     | { type: 'FEEDBACK_SUBMIT_NEGATIVE' }
-    | { type: 'SELECT_IMAGE', image: HTMLCanvasElement }
+    | { type: 'IMAGE_LOADED', image: HTMLCanvasElement }
     | { type: 'REGION_REQUEST_START', image: HTMLCanvasElement }
     | { type: 'REGION_REQUEST_SUCCEED', regions: Region[] }
     | { type: 'REGION_REQUEST_FAIL', reason: string, exception: any }
@@ -12,6 +16,7 @@ export type SearchAction =
     | { type: 'SEARCH_REQUEST_SUCCEED', results: any[], requestId: string, duration: number, categoryPredictions: CategoryPrediction[] }
     | { type: 'SEARCH_REQUEST_FAIL', reason: string, exception?: any }
     | { type: 'REGION_CHANGED', region: Region}
+    | { type: 'LOAD_IMAGE'} & ImageSourceType
 
 interface CategoryPrediction {
     name: string,
@@ -44,7 +49,10 @@ const initialState : SearchState = {
 };
 
 
-export const selectImage = (image: HTMLCanvasElement): SearchAction => ({ type: 'SELECT_IMAGE', image });
+export const loadFile = (file: File ): SearchAction => ({ type: 'LOAD_IMAGE', file });
+export const loadUrl = (url: string): SearchAction => ({ type: 'LOAD_IMAGE', url });
+export const loadCanvas = (image: HTMLCanvasElement): SearchAction => ({ type: 'LOAD_IMAGE', image });
+export const imageLoaded = (image: HTMLCanvasElement): SearchAction => ({ type: 'IMAGE_LOADED', image });
 export const selectionChanged = (region: RectCoords) : SearchAction => ({ type: 'REGION_CHANGED', region });
 export const searchRegions = (image: HTMLCanvasElement): SearchAction => ({ type: 'REGION_REQUEST_START', image });
 export const searchOffersForImage = (image: HTMLCanvasElement, region?: RectCoords) : SearchAction => ({
@@ -55,7 +63,7 @@ export const searchOffersForImage = (image: HTMLCanvasElement, region?: RectCoor
 
 export const reducer = (state : SearchState = initialState, action: SearchAction)  => {
     switch (action.type) {
-        case "SELECT_IMAGE":
+        case "IMAGE_LOADED":
             let { image } = action;
             return {
                 ...initialState,
@@ -93,7 +101,7 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
                 ...state,
                 fetchingResults: false,
                 errorMessage: action.reason
-            }
+            };
         case "REGION_CHANGED":
             return {
                 ...state,

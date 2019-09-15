@@ -5,22 +5,23 @@ import App, {AppMD} from './App';
 import * as serviceWorker from './serviceWorker';
 
 import {connect, Provider} from 'react-redux';
-import {applyMiddleware, combineReducers, createStore, Dispatch, Reducer} from 'redux';
+import {applyMiddleware, combineReducers, createStore, Dispatch} from 'redux';
 import {
-    reducer as searchReducer, selectImage,
+    loadCanvas,
+    loadFile,
+    loadUrl,
+    reducer as searchReducer,
     selectionChanged
 } from './actions/searchActions';
 import {
     hideFeedback,
     reducer as nyrisReducer,
     showCamera,
-    showFeedback,
-    showResults,
     showStart
 } from './actions/nyrisAppActions';
-import {fileOrBlobToCanvas, getUrlParam, toCanvas} from "./nyris";
+import { getUrlParam } from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {AppAction, AppState, MDSettings, RectCoords, Region, SearchServiceSettings} from "./types";
+import {AppAction, AppState, MDSettings, Region, SearchServiceSettings} from "./types";
 import {createEpicMiddleware} from "redux-observable";
 import NyrisAPI from "./NyrisAPI";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
@@ -113,7 +114,6 @@ const mapStateToProps = (state: AppState) => ({
     mdSettings: state.settings.materialDesign || defaultMdSettings
 });
 
-const feedbackTimeout = 4000;
 
 const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
     return {
@@ -130,77 +130,23 @@ const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
             onCaptureCanceled: () => {
                 dispatch(showStart());
             },
-            onCaptureComplete: (canvas: HTMLCanvasElement) => {
-                (async () => {
-                    await dispatch(showResults());
-                    await dispatch(selectImage(canvas));
-                })()
-            },
-            onSelectFile: (file: File) => {
-                (async () => {
-                    console.log('onSelectFile');
-                    const canvas = await fileOrBlobToCanvas(file);
-                    console.log('onSelectFile', canvas);
-                    await dispatch(selectImage(canvas));
-                })()
-            },
+            onCaptureComplete: (canvas: HTMLCanvasElement) => { dispatch(loadCanvas(canvas)); },
+            onSelectFile: (file: File) => { dispatch(loadFile(file)) },
             onImageClick: (position: number, url: string) => {
-                (async () => {
-                    dispatch({ type: "RESULT_IMAGE_CLICKED", position, url});
-                    let img = await fileOrBlobToCanvas(url);
-                    console.log('on image clicked', img);
-                    try {
-                        dispatch(showResults());
-                        console.log('-> on example image clicked', img);
-                        const canvas = await toCanvas(img);
-                        console.log('-> on example image clicked', canvas);
-                        await dispatch(selectImage(canvas));
-                        setTimeout(() => {
-                            dispatch(showFeedback())
-                        }, feedbackTimeout)
-                    } catch (e) {
-                        console.error(e)
-
-                    }
-                })()
+                dispatch({ type: "RESULT_IMAGE_CLICKED", position, url});
+                dispatch(loadUrl(url));
             },
             onExampleImageClick: (url: string) => {
-                (async () => {
-                    let img = await fileOrBlobToCanvas(url); // TODO this is sketchy
-                    console.log('on image clicked', img);
-                    try {
-                        dispatch(showResults());
-                        console.log('-> on example image clicked', img);
-                        const canvas = await toCanvas(img);
-                        console.log('-> on example image clicked', canvas);
-                        await dispatch(selectImage(canvas));
-                        setTimeout(() => {
-                            dispatch(showFeedback())
-                        }, feedbackTimeout)
-                    } catch (e) {
-                        console.error(e)
-
-                    }
-                })()
+                dispatch(loadUrl(url));
             },
             onLinkClick: (position: number, url: string) => {
-                console.log('result clicked', position);
                 dispatch({type: 'RESULT_LINK_CLICKED', position, url});
                 if (url) {
                     window.open(url);
                 }
             },
             onFileDropped: (file: File) => {
-                (async () => {
-                    console.log('onFileDropped');
-                    dispatch(showResults());
-                    const canvas = await fileOrBlobToCanvas(file);
-                    console.log('onSelectFile', canvas);
-                    await dispatch(selectImage(canvas));
-                    setTimeout(() => {
-                        dispatch(showFeedback())
-                    }, feedbackTimeout)
-                })()
+                    dispatch(loadFile(file));
             },
             onSelectionChange: (region: Region) => {
                 dispatch(selectionChanged(region));
@@ -218,11 +164,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
 
 
 // chrome plugin communication
-async function onMessage(evt: MessageEvent) {
+function onMessage(evt: MessageEvent) {
     let msg = evt.data;
     if (msg.type === "image")  {
-        let canvas = await fileOrBlobToCanvas(msg.image);
-        await store.dispatch(selectImage(canvas));
+        store.dispatch(loadUrl(msg.image));
     }
 }
 window.addEventListener('message', onMessage);

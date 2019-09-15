@@ -1,11 +1,12 @@
 // feedback api
 import {combineEpics, Epic, ofType} from "redux-observable";
 import {AppAction, AppState, ImageSearchOptions} from "../types";
-import {debounceTime, ignoreElements, switchMap, tap, withLatestFrom} from "rxjs/operators";
+import {debounceTime, delay, ignoreElements, map, switchMap, tap, withLatestFrom} from "rxjs/operators";
 import {History} from "history";
 import NyrisAPI from "../NyrisAPI";
-import {rectToCrop} from "../nyris";
-import {searchOffersForImage, searchRegions} from "../actions/searchActions";
+import {fileOrBlobToCanvas, rectToCrop} from "../nyris";
+import {imageLoaded, searchOffersForImage, searchRegions} from "../actions/searchActions";
+import {showFeedback, showResults} from "../actions/nyrisAppActions";
 
 interface EpicsDependencies {
     api: NyrisAPI,
@@ -31,6 +32,7 @@ const feedbackSuccessEpic: EpicConf = (action$, state$, {api}) => action$.pipe(
 
 const feedbackRegionEpic: EpicConf = (action$, state$, {api}) => action$.pipe(
     ofType('REGION_CHANGED'),
+    debounceTime(600),
     withLatestFrom(state$),
     tap(async ([action, state]) => {
         if (action.type === 'REGION_CHANGED') {
@@ -137,11 +139,11 @@ const regionSearch: EpicConf = (action$, state$, {api}) => action$.pipe(
 );
 
 
-const startSearchOnImageSelected: EpicConf = (action$, state$) => action$.pipe(
-    ofType('SELECT_IMAGE'),
+const startSearchOnImageLoaded: EpicConf = (action$, state$) => action$.pipe(
+    ofType('IMAGE_LOADED'),
     withLatestFrom(state$),
     switchMap(async ([action, {settings}]) : Promise<AppAction> => {
-        if (action.type !== 'SELECT_IMAGE') {
+        if (action.type !== 'IMAGE_LOADED') {
             throw new Error(`Wrong action type ${action.type}`);
         }
 
@@ -192,6 +194,35 @@ const startSearchOnRegionChange: EpicConf = (action$, state$) => action$.pipe(
     })
 );
 
+const loadImage: EpicConf = (action$) => action$.pipe(
+    ofType('LOAD_IMAGE'),
+    switchMap(async (action) : Promise<AppAction> => {
+        if (action.type !== 'LOAD_IMAGE') {
+            throw new Error(`Wrong action type ${action.type}`);
+        }
+        if ('url' in action) {
+            return imageLoaded(await fileOrBlobToCanvas(action.url));
+        }
+        if ('file' in action) {
+            return imageLoaded(await fileOrBlobToCanvas(action.file));
+        }
+        if ('image' in action) {
+            return imageLoaded(action.image);
+        }
+        throw new Error(`LOAD_IMAGE action wrong properties ${Object.keys(action).join(',')}`);
+    })
+);
+
+const onSearchSuccessShowResults: EpicConf = (action$) => action$.pipe(
+    ofType('SEARCH_REQUEST_SUCCEED'),
+    map(showResults)
+);
+
+const onSearchSuccessShowFeedbackDelayed: EpicConf = (action$) => action$.pipe(
+    ofType('SEARCH_REQUEST_SUCCEED'),
+    delay(3000),
+    map(showFeedback)
+);
 
 
 
@@ -202,9 +233,12 @@ const rootEpic = combineEpics(
     historyEpic,
     imageSearch,
     regionSearch,
-    startSearchOnImageSelected,
+    startSearchOnImageLoaded,
     startSearchOnRegionsSuccessful,
-    startSearchOnRegionChange
+    startSearchOnRegionChange,
+    loadImage,
+    onSearchSuccessShowResults,
+    onSearchSuccessShowFeedbackDelayed
 );
 
 export default rootEpic;
