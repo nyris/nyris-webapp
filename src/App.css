@@ -31,3 +31,19 @@
     transform: rotate(360deg);
   }
 }
+
+.predicted-categories {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+}
+.predicted-categories small {
+    white-space: nowrap;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+    font-size: 0.8em;
+    border-radius: 5px;
+    margin: 0.2em;
+    background-color: #fff;
+}

@@ -12,7 +12,7 @@ export type SearchAction =
     | { type: 'REGION_REQUEST_SUCCEED', regions: Region[] }
     | { type: 'REGION_REQUEST_FAIL', reason: string }
     | { type: 'SEARCH_REQUEST_START' }
-    | { type: 'SEARCH_REQUEST_SUCCEED', results: any[], requestId: string, duration: number }
+    | { type: 'SEARCH_REQUEST_SUCCEED', results: any[], requestId: string, duration: number, categoryPredictions: CategoryPrediction[] }
     | { type: 'SEARCH_REQUEST_FAIL', reason: string }
     | { type: 'REGION_CHANGED', region: Region}
 
@@ -111,8 +111,8 @@ export const searchOffersForImage = (canvas: HTMLCanvasElement, section?: RectCo
 
         dispatch({ type: 'SEARCH_REQUEST_START'});
         try {
-            const {results, duration, requestId} = await api.findByImage(canvas, options);
-            dispatch({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration });
+            const {results, duration, requestId, categoryPredictions} = await api.findByImage(canvas, options);
+            dispatch({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration, categoryPredictions });
         } catch (e) {
             dispatch({ type: 'SEARCH_REQUEST_FAIL', reason: e.message });
             throw e;
@@ -145,13 +145,14 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
                 fetchingResults: true
             };
         case "SEARCH_REQUEST_SUCCEED":
-            let { results, requestId, duration } = action;
+            let { results, requestId, duration, categoryPredictions } = action;
             return {
                 ...state,
                 results,
                 requestId,
                 fetchingResults: false,
                 sessionId: state.sessionId || requestId,
+                categoryPredictions,
                 duration
             };
         case "SEARCH_REQUEST_FAIL":
