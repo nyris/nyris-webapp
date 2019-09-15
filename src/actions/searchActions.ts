@@ -1,19 +1,16 @@
-import NyrisAPI from './../NyrisAPI';
-import {AppState, ImageSearchOptions, RectCoords, Region} from "../types";
-import {ThunkAction} from "redux-thunk";
-import {rectToCrop} from "../nyris";
+import {AppState, RectCoords, Region} from "../types";
 
 
 export type SearchAction =
     | { type: 'FEEDBACK_SUBMIT_POSITIVE' }
     | { type: 'FEEDBACK_SUBMIT_NEGATIVE' }
     | { type: 'SELECT_IMAGE', image: HTMLCanvasElement }
-    | { type: 'REGION_REQUEST_START' }
+    | { type: 'REGION_REQUEST_START', image: HTMLCanvasElement }
     | { type: 'REGION_REQUEST_SUCCEED', regions: Region[] }
-    | { type: 'REGION_REQUEST_FAIL', reason: string }
-    | { type: 'SEARCH_REQUEST_START' }
+    | { type: 'REGION_REQUEST_FAIL', reason: string, exception: any }
+    | { type: 'SEARCH_REQUEST_START', image: HTMLCanvasElement, region?: RectCoords  }
     | { type: 'SEARCH_REQUEST_SUCCEED', results: any[], requestId: string, duration: number, categoryPredictions: CategoryPrediction[] }
-    | { type: 'SEARCH_REQUEST_FAIL', reason: string }
+    | { type: 'SEARCH_REQUEST_FAIL', reason: string, exception?: any }
     | { type: 'REGION_CHANGED', region: Region}
 
 interface CategoryPrediction {
@@ -47,78 +44,14 @@ const initialState : SearchState = {
 };
 
 
-export const selectImage = (canvas: HTMLCanvasElement): ThunkAction<Promise<void>, AppState, any, SearchAction> =>
-    async (dispatch, getState) => {
-        const { settings } = getState();
-        await dispatch({type: 'SELECT_IMAGE', image: canvas});
-        let selection = undefined;
-        if (settings.regions) {
-            await dispatch(searchRegions(canvas));
-            let {search: {regions} } = getState();
-            if (regions.length > 0) {
-                selection  = regions[0];
-            }
-        }
-        await dispatch(searchOffersForImage(canvas, selection));
-    };
-
-export const selectionChanged = (newSelection: RectCoords) : ThunkAction<Promise<void>, any, any, SearchAction> =>
-    async (dispatch, getState) => {
-        await dispatch({ type: 'REGION_CHANGED', region: newSelection });
-        let { search: { requestImage }} = getState();
-        await dispatch(searchOffersForImage(requestImage, newSelection));
-    };
-
-
-
-export const searchRegions = (canvas: HTMLCanvasElement): ThunkAction<Promise<void>, any, any, SearchAction> =>
-    async (dispatch, getState) => {
-        const { settings } = getState();
-        const api = new NyrisAPI(settings);
-        try {
-            dispatch({type: "REGION_REQUEST_START"});
-            let regions = await api.findRegions(canvas, settings);
-            dispatch({type: 'REGION_REQUEST_SUCCEED', regions });
-
-        } catch (e) {
-            dispatch({type: 'REGION_REQUEST_FAIL', reason: e.message});
-            console.error(e);
-            throw e;
-        }
-    };
-
-
-
-export const searchOffersForImage = (canvas: HTMLCanvasElement, section?: RectCoords) : ThunkAction<Promise<void>, any, any, SearchAction> => (
-    async (dispatch, getState) => {
-        const { settings } = getState();
-        const api = new NyrisAPI(settings);
-        let options : ImageSearchOptions = settings;;
-
-        if (section) {
-            let { x1, x2, y1, y2} = section;
-            let crop = rectToCrop({
-                x1: x1*canvas.width,
-                x2: x2*canvas.width,
-                y1: y1*canvas.height,
-                y2: y2*canvas.height
-            });
-            options = {
-                ...options,
-                crop
-            }
-        }
-
-        dispatch({ type: 'SEARCH_REQUEST_START'});
-        try {
-            const {results, duration, requestId, categoryPredictions} = await api.findByImage(canvas, options);
-            dispatch({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration, categoryPredictions });
-        } catch (e) {
-            dispatch({ type: 'SEARCH_REQUEST_FAIL', reason: e.message });
-            throw e;
-        }
-    }
-);
+export const selectImage = (image: HTMLCanvasElement): SearchAction => ({ type: 'SELECT_IMAGE', image });
+export const selectionChanged = (region: RectCoords) : SearchAction => ({ type: 'REGION_CHANGED', region });
+export const searchRegions = (image: HTMLCanvasElement): SearchAction => ({ type: 'REGION_REQUEST_START', image });
+export const searchOffersForImage = (image: HTMLCanvasElement, region?: RectCoords) : SearchAction => ({
+    type: 'SEARCH_REQUEST_START',
+    image,
+    region
+});
 
 export const reducer = (state : SearchState = initialState, action: SearchAction)  => {
     switch (action.type) {

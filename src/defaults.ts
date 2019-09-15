@@ -7,6 +7,10 @@ export const defaultSettings : SearchServiceSettings = {
     exampleImages: [],
     preview: true,
     regions: false,
+    maxWidth: 500,
+    maxHeight: 500,
+    jpegQuality: 0.92,
+    useRecommendations: false,
 };
 
 export const defaultMdSettings = {

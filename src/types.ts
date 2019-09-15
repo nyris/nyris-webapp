@@ -33,7 +33,11 @@ export interface SearchServiceSettings {
     noImageUrl?: string,
     materialDesign?: MDSettings,
     preview: boolean,
-    regions: boolean
+    regions: boolean,
+    jpegQuality: number,
+    maxWidth: number,
+    maxHeight: number,
+    useRecommendations: boolean
 
 }
 

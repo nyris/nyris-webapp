@@ -5,8 +5,7 @@ import App, {AppMD} from './App';
 import * as serviceWorker from './serviceWorker';
 
 import {connect, Provider} from 'react-redux';
-import {applyMiddleware, combineReducers, createStore, Reducer} from 'redux';
-import thunk, {ThunkDispatch, ThunkMiddleware} from 'redux-thunk';
+import {applyMiddleware, combineReducers, createStore, Dispatch, Reducer} from 'redux';
 import {
     reducer as searchReducer, selectImage,
     selectionChanged
@@ -76,7 +75,6 @@ const rootReducer = combineReducers({
 
 
 const store = createStore(rootReducer, composeWithDevTools(
-    applyMiddleware(thunk as ThunkMiddleware<any, any>),
     applyMiddleware(epicMiddleware)
 ));
 epicMiddleware.run(rootEpic);
@@ -121,7 +119,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const feedbackTimeout = 4000;
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>) => {
+const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
     let changeEmitter = new Subject();
     changeEmitter.pipe(debounceTime(600)).subscribe(e => {
         console.log('selection changed', e);
@@ -158,7 +156,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<AppState, {}, AppAction>) =>
             onImageClick: (position: number, url: string) => {
                 (async () => {
                     dispatch({ type: "RESULT_IMAGE_CLICKED", position, url});
-                    let img = await fileOrBlobToCanvas(url); // TODO this is sketchy
+                    let img = await fileOrBlobToCanvas(url);
                     console.log('on image clicked', img);
                     try {
                         dispatch(({type: 'SHOW_RESULTS'}));
