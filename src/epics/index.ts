@@ -3,15 +3,24 @@ import {combineEpics, Epic, ofType} from "redux-observable";
 import {AppAction, AppState} from "../types";
 import {ignoreElements, tap, withLatestFrom} from "rxjs/operators";
 import {History} from "history";
+import NyrisAPI from "../NyrisAPI";
 
-const feedbackSuccessEpic: Epic<AppAction, AppAction, AppState> = (action$, state$, {api}) => action$.pipe(
+interface EpicsDependencies {
+    api: NyrisAPI
+}
+
+
+const feedbackSuccessEpic: Epic<AppAction, AppAction, AppState, EpicsDependencies> = (action$, state$, {api}) => action$.pipe(
     ofType('FEEDBACK_SUBMIT_POSITIVE', "FEEDBACK_SUBMIT_NEGATIVE"),
     withLatestFrom(state$),
     tap(async ([{type}, state]) => {
         const success = type === 'FEEDBACK_SUBMIT_POSITIVE';
-        await api.sendFeedback(state.search.sessionId, state.search.requestId, {
-            event: 'feedback', data: {success}
-        });
+        const sessionId = state.search.sessionId || state.search.requestId;
+        if (sessionId && state.search.requestId) {
+            await api.sendFeedback(sessionId, state.search.requestId, {
+                event: 'feedback', data: {success}
+            });
+        }
     }),
     ignoreElements()
 );

@@ -85,7 +85,7 @@ epicMiddleware.run(rootEpic);
 
 history.listen((location, action) => {
     console.log('history', location, action)
-    if (action == 'PUSH') {
+    if (action === 'PUSH') {
         return;
     }
     switch (location.pathname) {
