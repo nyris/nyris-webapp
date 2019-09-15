@@ -89,13 +89,6 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         };
     };
 
-    private handleSelectionChanged(selection: RectCoords) {
-        this.setState(selection);
-        if (this.props.onSelectionChange) {
-            this.props.onSelectionChange(selection);
-        }
-    }
-
     constructor(props: PreviewProps) {
         super(props);
         this.selectionRef = React.createRef<Konva.Shape>();
@@ -177,9 +170,10 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         this.animation && this.animation.stop();
     }
 
-    setSelection(r: Region) {
-        if ('x1' in r) {
-            this.handleSelectionChanged(r);
+    setSelection(r: RectCoords) {
+        this.setState(r);
+        if (this.props.onSelectionChange) {
+            this.props.onSelectionChange(r);
         }
     }
 

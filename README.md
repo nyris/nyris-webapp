@@ -5,7 +5,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 nice to have:
 
-* [ ] move debouncing to epic REGION_CHANGED
 * [ ] select image handle diffferent kinds: url & blob & canvas
 * [ ] md: Preview is cropped
 * [ ] show separate loading overlays for regions and results

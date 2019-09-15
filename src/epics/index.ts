@@ -1,7 +1,7 @@
 // feedback api
 import {combineEpics, Epic, ofType} from "redux-observable";
 import {AppAction, AppState, ImageSearchOptions} from "../types";
-import {ignoreElements, switchMap, tap, withLatestFrom} from "rxjs/operators";
+import {debounceTime, ignoreElements, switchMap, tap, withLatestFrom} from "rxjs/operators";
 import {History} from "history";
 import NyrisAPI from "../NyrisAPI";
 import {rectToCrop} from "../nyris";
@@ -178,6 +178,7 @@ const startSearchOnRegionsSuccessful: EpicConf = (action$, state$) => action$.pi
 
 const startSearchOnRegionChange: EpicConf = (action$, state$) => action$.pipe(
     ofType('REGION_CHANGED'),
+    debounceTime(600),
     withLatestFrom(state$),
     switchMap(async ([action, { search: { requestImage}}]) : Promise<AppAction> => {
         if (action.type !== 'REGION_CHANGED') {

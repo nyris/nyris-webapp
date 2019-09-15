@@ -10,12 +10,17 @@ import {
     reducer as searchReducer, selectImage,
     selectionChanged
 } from './actions/searchActions';
-import {reducer as nyrisReducer} from './actions/nyrisAppActions';
+import {
+    hideFeedback,
+    reducer as nyrisReducer,
+    showCamera,
+    showFeedback,
+    showResults,
+    showStart
+} from './actions/nyrisAppActions';
 import {fileOrBlobToCanvas, getUrlParam, toCanvas} from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
 import {AppAction, AppState, MDSettings, RectCoords, Region, SearchServiceSettings} from "./types";
-import {Subject} from "rxjs";
-import {debounceTime} from "rxjs/operators";
 import {createEpicMiddleware} from "redux-observable";
 import NyrisAPI from "./NyrisAPI";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
@@ -58,19 +63,10 @@ const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>({
     dependencies: {api, history}
 });
 
-
-const withConsoleLogger = (reducer: Reducer) => (
-    (state: any, action: any) => {
-        console.log("reducer called with action", action);
-        return reducer(state, action);
-    }
-);
-
-
 const rootReducer = combineReducers({
     settings: () => normalizedSettings as SearchServiceSettings,
     nyrisDesign: nyrisReducer,
-    search: withConsoleLogger(searchReducer)
+    search: searchReducer
 });
 
 
@@ -120,11 +116,6 @@ const mapStateToProps = (state: AppState) => ({
 const feedbackTimeout = 4000;
 
 const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
-    let changeEmitter = new Subject();
-    changeEmitter.pipe(debounceTime(600)).subscribe(e => {
-        console.log('selection changed', e);
-        return dispatch(selectionChanged(e as RectCoords));
-    });
     return {
         handlers: {
             onPositiveFeedback: () => {
@@ -134,14 +125,14 @@ const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
                 dispatch({type: 'FEEDBACK_SUBMIT_NEGATIVE'});
             },
             onCameraClick: () => {
-                dispatch({type: 'SHOW_CAMERA'});
+                dispatch(showCamera());
             },
             onCaptureCanceled: () => {
-                dispatch({type: 'SHOW_START'});
+                dispatch(showStart());
             },
             onCaptureComplete: (canvas: HTMLCanvasElement) => {
                 (async () => {
-                    await dispatch({type: 'SHOW_RESULTS'});
+                    await dispatch(showResults());
                     await dispatch(selectImage(canvas));
                 })()
             },
@@ -159,13 +150,13 @@ const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
                     let img = await fileOrBlobToCanvas(url);
                     console.log('on image clicked', img);
                     try {
-                        dispatch(({type: 'SHOW_RESULTS'}));
+                        dispatch(showResults());
                         console.log('-> on example image clicked', img);
                         const canvas = await toCanvas(img);
                         console.log('-> on example image clicked', canvas);
                         await dispatch(selectImage(canvas));
                         setTimeout(() => {
-                            dispatch({type: 'SHOW_FEEDBACK'})
+                            dispatch(showFeedback())
                         }, feedbackTimeout)
                     } catch (e) {
                         console.error(e)
@@ -178,13 +169,13 @@ const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
                     let img = await fileOrBlobToCanvas(url); // TODO this is sketchy
                     console.log('on image clicked', img);
                     try {
-                        dispatch(({type: 'SHOW_RESULTS'}));
+                        dispatch(showResults());
                         console.log('-> on example image clicked', img);
                         const canvas = await toCanvas(img);
                         console.log('-> on example image clicked', canvas);
                         await dispatch(selectImage(canvas));
                         setTimeout(() => {
-                            dispatch({type: 'SHOW_FEEDBACK'})
+                            dispatch(showFeedback())
                         }, feedbackTimeout)
                     } catch (e) {
                         console.error(e)
@@ -202,24 +193,24 @@ const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => {
             onFileDropped: (file: File) => {
                 (async () => {
                     console.log('onFileDropped');
-                    dispatch(({type: 'SHOW_RESULTS'}));
+                    dispatch(showResults());
                     const canvas = await fileOrBlobToCanvas(file);
                     console.log('onSelectFile', canvas);
                     await dispatch(selectImage(canvas));
                     setTimeout(() => {
-                        dispatch({type: 'SHOW_FEEDBACK'})
+                        dispatch(showFeedback())
                     }, feedbackTimeout)
                 })()
             },
-            onSelectionChange: (selection: Region) => {
-                changeEmitter.next(selection);
+            onSelectionChange: (region: Region) => {
+                dispatch(selectionChanged(region));
             },
             onShowStart: () => {
-                dispatch({type: 'SHOW_START'});
+                dispatch(showStart());
                 scrollTop();
             },
             onCloseFeedback: () => {
-                dispatch({type: 'HIDE_FEEDBACK'});
+                dispatch(hideFeedback());
             }
         }
     };

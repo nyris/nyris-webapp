@@ -94,6 +94,11 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
                 fetchingResults: false,
                 errorMessage: action.reason
             }
+        case "REGION_CHANGED":
+            return {
+                ...state,
+                selectedRegion: action.region
+            }
     }
     return state;
 };

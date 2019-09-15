@@ -20,6 +20,12 @@ export type NyrisAction =
     | { type: 'RESULT_IMAGE_CLICKED', position: number, url: string}
 
 
+export const showCamera = () :NyrisAction => ({type: 'SHOW_CAMERA'});
+export const showStart = () :NyrisAction => ({type: 'SHOW_START'});
+export const showResults = () :NyrisAction => ({type: 'SHOW_RESULTS'});
+export const showFeedback = () :NyrisAction => ({type: 'SHOW_FEEDBACK'});
+export const hideFeedback = () :NyrisAction => ({type: 'HIDE_FEEDBACK'});
+
 const initialNyrisState : NyrisAppState = {
     showPart: 'start',
     feedbackState: 'hidden'
