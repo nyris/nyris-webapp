@@ -1362,7 +1362,7 @@ a img.aligncenter {
 
 @media only screen and (max-width: 500px) {
   .feedback {
-    position: relative;
+    font-size: 10px;
   }
 }
 
