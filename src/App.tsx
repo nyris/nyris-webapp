@@ -212,7 +212,7 @@ const App: React.FC<AppProps> = ({
                 </div>
             </section>
             <Feedback feedbackState={feedbackState} onPositiveFeedback={handlers.onPositiveFeedback}
-                      onNegativeFeedback={handlers.onNegativeFeedback} onClose={handlers.onCloseFeedback}/> }
+                      onNegativeFeedback={handlers.onNegativeFeedback} onClose={handlers.onCloseFeedback}/>
         </div>
     );
 
