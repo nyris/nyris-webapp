@@ -441,7 +441,8 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                                                 </CardContent>
                                                 {result.l &&
                                                 <CardActions>
-                                                    <Button style={{marginLeft: 'auto'}} size="small" color="primary"
+                                                    <Button variant="outlined" style={{marginLeft: 'auto'}}
+                                                            size="small" color="primary"
                                                             onClick={() => handlers.onLinkClick(result.position, result.l)}
                                                             onAuxClick={() => handlers.onLinkClick(result.position, result.l)} >
                                                         {mdSettings.resultLinkText}
