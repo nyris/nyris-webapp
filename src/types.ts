@@ -15,6 +15,7 @@ export interface MDSettings {
     resultSecondRowProperty: string,
 
     resultLinkText?: string,
+    resultLinkIcon?: string,
 }
 
 export interface SearchServiceSettings {

@@ -1,4 +1,4 @@
-import {AppState, RectCoords, Region} from "../types";
+import {RectCoords, Region} from "../types";
 
 export type ImageSourceType =
     | { url: string }

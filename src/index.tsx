@@ -26,7 +26,7 @@ import {
 } from './actions/nyrisAppActions';
 import { getUrlParam } from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {AppAction, AppState, MDSettings, Region, SearchServiceSettings} from "./types";
+import {AppAction, AppState, MDSettings, SearchServiceSettings} from "./types";
 import {createEpicMiddleware} from "redux-observable";
 import NyrisAPI from "./NyrisAPI";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
@@ -40,7 +40,7 @@ declare var settings: SearchServiceSettings;
 
 
 function scrollTop() {
-    // TODO might require polyfil for ios and edge
+    // TODO might require polyfill for ios and edge
     window.scrollTo({top: 0, left: 0, behavior: "smooth"});
 }
 

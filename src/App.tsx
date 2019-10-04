@@ -25,6 +25,7 @@ import {
     Typography
 } from "@material-ui/core";
 import {PhotoCamera, ArrowBack, Image} from "@material-ui/icons";
+import Icon from "@material-ui/core/Icon";
 
 
 const makeFileHandler = (action: any) => (e: any) => {
@@ -303,6 +304,7 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: (fs: File[]) => handlers.onFileDropped(fs[0])});
     return (
         <React.Fragment>
+            {mdSettings.resultLinkIcon && <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />}
             <CssBaseline/>
             {showPart === 'camera' &&
             <Capture onCaptureComplete={handlers.onCaptureComplete} onCaptureCanceled={handlers.onCaptureCanceled}
@@ -445,6 +447,10 @@ export const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, preview
                                                             size="small" color="primary"
                                                             onClick={() => handlers.onLinkClick(result.position, result.l)}
                                                             onAuxClick={() => handlers.onLinkClick(result.position, result.l)} >
+                                                        { mdSettings.resultLinkIcon && <React.Fragment>
+                                                            <Icon>{ mdSettings.resultLinkIcon }</Icon>
+                                                            {' '}
+                                                        </React.Fragment> }
                                                         {mdSettings.resultLinkText}
                                                     </Button>
                                                 </CardActions>
