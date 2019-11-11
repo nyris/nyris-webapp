@@ -30,7 +30,13 @@ import Icon from "@material-ui/core/Icon";
 
 const makeFileHandler = (action: any) => (e: any) => {
     let file = (e.dataTransfer && e.dataTransfer.files[0]) || e.target.files[0];
-    action(file);
+    if (e.target && e.target.value) {
+        e.target.value = "";
+    }
+
+    if (file) {
+        action(file);
+    }
 };
 
 export interface AppHanders {
