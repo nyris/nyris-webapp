@@ -6,7 +6,8 @@ import 'blueimp-canvas-to-blob';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App, {AppMD} from './App';
+import App from './App';
+import AppMD from './AppMD';
 import * as serviceWorker from './serviceWorker';
 
 import {connect, Provider} from 'react-redux';
