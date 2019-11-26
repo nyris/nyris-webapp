@@ -112,6 +112,11 @@ export default class NyrisAPI {
         return {bytes, region};
     }
 
+    /**
+     * Search for an image.
+     * @param canvas Image, Video (frame) or Canvas to use use for image search.
+     * @param options See [[ImageSearchOptions]].
+     */
     async findByImage(canvas: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement, options: ImageSearchOptions) : Promise<SearchResult> {
         const image = await this.prepareImage(canvas, options);
 
@@ -164,6 +169,11 @@ export default class NyrisAPI {
         return { results, requestId, duration, categoryPredictions };
     }
 
+    /**
+     * Search by SKU (itemID)
+     * @param sku The SKU or ID of the item.
+     * @param mid The index ID.
+     */
     async findBySku(sku: string, mid: string) {
         let headers: any = {
             'Content-Type': 'image/jpeg',
@@ -181,6 +191,12 @@ export default class NyrisAPI {
         return r;
     }
 
+    /**
+     * Find significant sections in the image.
+     * @param canvas Canvas, video or image to search with.
+     * @param options See [[ImageSearchOptions]].
+     * @returns A list of regions, see [[Region]].
+     */
     async findRegions(canvas: HTMLCanvasElement | HTMLVideoElement | HTMLImageElement, options: ImageSearchOptions): Promise<Region[]> {
         let [origW, origH] = getElementSize(canvas);
         let {w: scaledW, h: scaledH} = getThumbSizeArea(options.maxWidth, options.maxHeight, origW, origH);
@@ -209,6 +225,12 @@ export default class NyrisAPI {
             }));
     }
 
+    /**
+     * Send feedback event.
+     * @param sessionId ID of the session. Usually the first request ID returned.
+     * @param requestId The request ID to submit the feedback event to.
+     * @param payload See [[FeedbackEventPayload]].
+     */
     async sendFeedback(sessionId: string, requestId: string, payload: FeedbackEventPayload) {
         const headers = {
             'X-Api-Key': this.settings.apiKey,
