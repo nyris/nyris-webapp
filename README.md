@@ -1,21 +1,30 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# nyris-webapp
 
-## TODO
+## Getting started
 
+1. Create a `settings.js` file in `public/js/`
+2. run `npm ci` (clean install)
+3. run `npm start`
+3. Go to http://localhost:3000
 
-nice to have:
+Following Browser extensions are recommended for developing:
 
-* [ ] md: Preview is cropped
-* [ ] show separate loading overlays for regions and results
-* [ ] solve todos in code
-* [ ] implement basic smoke test with mock server
-* [ ] check request errors
-* [ ] improved error handeling when using http and camera capture
-* [ ] merge Result component views
+* React Developer Tools
+* Redux DevTools
 
+## Configuration
+
+The configuration file is `public/js/settings.js`. You can use the example file as a guide.
+Look at `SearchServiceSettings` in `src/types.ts` for a complete list.
+
+## Architecture
+
+This app uses react and redux. The main components are App and AppMD with `index.tsx` as the composition root.
+The file `NyrisAPI.ts` contains the interface to the [nyris vision API](https://docs.nyris.io/).
 
 ## Available Scripts
 
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 In the project directory, you can run:
 
 ### `npm start`
@@ -41,18 +50,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+### `npm run mockserver`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Start a server for local testing. Change the URLs prefix to `http://localhost:8080` in your `settings.js` to use it.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
