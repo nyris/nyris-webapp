@@ -63,10 +63,10 @@ const renderSnr = ({result, noImageUrl, onImageClick, onLinkClick}: Options) => 
     </>
 );
 
-const renderSnrMultilink = ({result, noImageUrl, onImageClick, onLinkClick}: Options) => (
+const renderSnrMultilink = ({result, noImageUrl, onImageClick}: Options, onLinkClick: (url: string) => void) => (
     <>
         <a href={result.l} className="imageLink"
-           onClick={onImageClick} onAuxClick={onLinkClick}>
+           onClick={onImageClick} onAuxClick={onImageClick}>
             <div className="prdctImg">
                 <div className="imgWrap">
                     <img src={(result.img && result.img.url + '?r=512x512') || noImageUrl} alt={result.title}/>
@@ -81,7 +81,7 @@ const renderSnrMultilink = ({result, noImageUrl, onImageClick, onLinkClick}: Opt
                 </div>
                 {result.l.map((l: { text: string, href: string }) =>
                     <a style={{backgroundImage: 'none', paddingLeft: '10px'}} className="prdctShopLink" href={l.href}
-                       onClick={onLinkClick} onAuxClick={onLinkClick} target="_blank"
+                       onClick={() => onLinkClick(l.href)} onAuxClick={() => onLinkClick(l.href)} target="_blank"
                        key={l.href}
                        rel="noopener noreferrer">{l.text}</a>
                 )}
@@ -113,7 +113,7 @@ const Result: React.FC<ResultProps> = ({result, style, template, onImageClick, o
             resultInner = renderSnr(options);
             break;
         case "snr-multilink":
-            resultInner = renderSnrMultilink(options);
+            resultInner = renderSnrMultilink(options, (url) => onLinkClick(result.position, url));
             break;
         case 'default':
         default:
