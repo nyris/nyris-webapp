@@ -6,8 +6,8 @@ import {Result as ResultData} from "../types";
 interface Options {
     result: any,
     noImageUrl: string,
-    onImageClick: () => void,
-    onLinkClick: () => void
+    onImageClick: (e: React.MouseEvent) => void,
+    onLinkClick: (e: React.MouseEvent) => void
 }
 
 const renderPrice = (result: ResultData) =>
@@ -101,8 +101,14 @@ export interface ResultProps {
 
 const Result: React.FC<ResultProps> = ({result, style, template, onImageClick, onLinkClick, noImageUrl}) => {
     let options: Options = {
-        onImageClick: () => onImageClick(result.position, result.img.url),
-        onLinkClick: () => onLinkClick(result.position, result.l),
+        onImageClick: (e: React.MouseEvent) => {
+            e.preventDefault();
+            onImageClick(result.position, result.img.url);
+        },
+        onLinkClick: (e: React.MouseEvent) => {
+            e.preventDefault();
+            onLinkClick(result.position, result.l);
+        },
         noImageUrl: noImageUrl || 'images/ic_cam_large_noimage.png',
         result
     };
