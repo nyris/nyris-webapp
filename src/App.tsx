@@ -66,6 +66,11 @@ const App: React.FC<AppProps> = ({
                                      showPart, settings, handlers, loading, previewImage, feedbackState
                                  }) => {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: (fs: File[]) => handlers.onFileDropped(fs[0])});
+
+    const minPreviewHeight = 400;
+    const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
+    const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
+
     return (
         <div>
             {showPart === 'camera' &&
@@ -151,7 +156,7 @@ const App: React.FC<AppProps> = ({
                 {settings.preview && previewImage &&
                 <div className="preview">
                     <Preview key={regions.length}
-                             maxWidth={document.body.clientWidth} maxHeight={Math.floor(window.innerHeight * 0.45)}
+                             maxWidth={document.body.clientWidth} maxHeight={maxPreviewHeight}
                              dotColor="#4C8F9F"
                              onSelectionChange={handlers.onSelectionChange} regions={regions}
                              initialRegion={initialRegion} image={previewImage}/>

@@ -115,6 +115,11 @@ function Copyright() {
 const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, loading, search: {results, regions, initialRegion, requestId, duration}, mdSettings}) => {
     const classes = useStyles();
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: (fs: File[]) => handlers.onFileDropped(fs[0])});
+
+    const minPreviewHeight = 400;
+    const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
+    const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
+
     return (
         <React.Fragment>
             {mdSettings.resultLinkIcon && <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />}
@@ -211,7 +216,7 @@ const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, 
                     <Card style={{marginBottom: '4em'}} raised={true}>
                         <Preview key={regions.length}
                                  maxWidth={document.body.clientWidth}
-                                 maxHeight={Math.floor(window.innerHeight * 0.45)}
+                                 maxHeight={maxPreviewHeight}
                                  dotColor={mdSettings.primaryColor}
                                  onSelectionChange={handlers.onSelectionChange} regions={regions}
                                  initialRegion={initialRegion} image={previewImage}/>
