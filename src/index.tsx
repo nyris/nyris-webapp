@@ -107,6 +107,7 @@ const mapStateToProps = (state: AppState) => ({
     search: {
         results: state.search.results,
         categoryPredictions: state.search.categoryPredictions,
+        codes: state.search.codes,
         filterOptions: state.search.filterOptions,
         initialRegion: state.search.regions.length > 0 ? state.search.regions[0] : {x1: 0.1, y1: 0.1, x2: 0.9, y2: 0.9},
         regions: state.search.regions,

@@ -1,4 +1,5 @@
 import {RectCoords, Region} from "../types";
+import {Code} from "../NyrisAPI";
 
 export type ImageSourceType =
     | { url: string }
@@ -13,7 +14,7 @@ export type SearchAction =
     | { type: 'REGION_REQUEST_SUCCEED', regions: Region[] }
     | { type: 'REGION_REQUEST_FAIL', reason: string, exception: any }
     | { type: 'SEARCH_REQUEST_START', image: HTMLCanvasElement, region?: RectCoords  }
-    | { type: 'SEARCH_REQUEST_SUCCEED', results: any[], requestId: string, duration: number, categoryPredictions: CategoryPrediction[] }
+    | { type: 'SEARCH_REQUEST_SUCCEED', results: any[], requestId: string, duration: number, categoryPredictions: CategoryPrediction[], codes: Code[] }
     | { type: 'SEARCH_REQUEST_FAIL', reason: string, exception?: any }
     | { type: 'REGION_CHANGED', region: Region}
     | { type: 'LOAD_IMAGE'} & ImageSourceType
@@ -24,17 +25,18 @@ interface CategoryPrediction {
 }
 
 export interface SearchState {
-    results: any[],
-    duration?: number,
-    requestId?: string,
-    sessionId?: string,
-    regions: Region[],
-    selectedRegion: Region,
-    fetchingRegions: boolean,
-    fetchingResults: boolean,
-    filterOptions: string[],
-    requestImage?:  HTMLCanvasElement,
+    results: any[]
+    duration?: number
+    requestId?: string
+    sessionId?: string
+    regions: Region[]
+    selectedRegion: Region
+    fetchingRegions: boolean
+    fetchingResults: boolean
+    filterOptions: string[]
+    requestImage?:  HTMLCanvasElement
     categoryPredictions: CategoryPrediction[]
+    codes: Code[]
 }
 
 const initialState : SearchState = {
@@ -45,7 +47,8 @@ const initialState : SearchState = {
     fetchingResults: false,
     fetchingRegions: false,
     filterOptions: [],
-    categoryPredictions: []
+    categoryPredictions: [],
+    codes: []
 };
 
 
@@ -88,7 +91,7 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
                 fetchingResults: true
             };
         case "SEARCH_REQUEST_SUCCEED":
-            let { results, requestId, duration, categoryPredictions } = action;
+            let { results, requestId, duration, categoryPredictions, codes } = action;
             return {
                 ...state,
                 results,
@@ -96,6 +99,7 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
                 fetchingResults: false,
                 sessionId: state.sessionId || requestId,
                 categoryPredictions,
+                codes,
                 duration
             };
         case "SEARCH_REQUEST_FAIL":

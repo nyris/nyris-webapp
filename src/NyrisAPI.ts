@@ -3,12 +3,22 @@ import {canvasToJpgBlob, getElementSize, getThumbSizeArea, toCanvas} from "./nyr
 import axios, {AxiosInstance} from 'axios';
 
 interface SearchResult {
-    results: Result[],
-    requestId: string,
-    categoryPredictions: { name: string, score: number}[],
+    results: Result[]
+    requestId: string
+    categoryPredictions: CategoryPrediction[]
+    codes: Code[]
     duration: number
 }
 
+export interface CategoryPrediction {
+    name: string
+    score: number
+}
+
+export interface Code {
+    value: string
+    type: string
+}
 
 interface NyrisRegion {
     left: number,
@@ -155,6 +165,7 @@ export default class NyrisAPI {
             name: name,
             score: score as number
         })).sort((a, b) => b.score - a.score);
+        let codes = res.data.barcodes || [];
 
         let responseData = this.settings.responseHook? this.settings.responseHook(res.data) : res.data;
 
@@ -166,7 +177,7 @@ export default class NyrisAPI {
 
         const requestId = res.headers["x-matching-request"];
         const duration = res.data.durationSeconds;
-        return { results, requestId, duration, categoryPredictions };
+        return { results, requestId, duration, categoryPredictions, codes };
     }
 
     /**

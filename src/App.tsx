@@ -6,6 +6,8 @@ import ExampleImages from './components/ExampleImages';
 import Feedback from './components/Feedback';
 import CategoryFilter from "./components/CategoryFilter";
 import PredictedCategories from "./components/PredictedCategories";
+import Codes from "./components/Codes";
+import {Code, CategoryPrediction} from "./NyrisAPI";
 import {useDropzone} from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
@@ -46,7 +48,8 @@ export interface AppProps {
         results: any[],
         requestId?: string,
         duration?: number,
-        categoryPredictions: { name: string, score: number }[],
+        categoryPredictions: CategoryPrediction[],
+        codes: Code[],
         filterOptions: string[],
         errorMessage?: string,
         regions: Region[],
@@ -62,7 +65,7 @@ export interface AppProps {
 }
 
 const App: React.FC<AppProps> = ({
-                                     search: {results, regions, initialRegion, requestId, duration, errorMessage, filterOptions, categoryPredictions},
+                                     search: {results, regions, initialRegion, requestId, duration, errorMessage, filterOptions, categoryPredictions, codes},
                                      showPart, settings, handlers, loading, previewImage, feedbackState
                                  }) => {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: (fs: File[]) => handlers.onFileDropped(fs[0])});
@@ -164,6 +167,9 @@ const App: React.FC<AppProps> = ({
                 }
                 <div className="predicted-categories">
                     <PredictedCategories cs={categoryPredictions}/>
+                </div>
+                <div className="predicted-categories">
+                    <Codes codes={codes}/>
                 </div>
                 <CategoryFilter cats={filterOptions}/>
 

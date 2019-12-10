@@ -108,8 +108,8 @@ const imageSearch: EpicConf = (action$, state$, {api}) => action$.pipe(
         }
 
         try {
-            const {results, duration, requestId, categoryPredictions} = await api.findByImage(image, options);
-            return ({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration, categoryPredictions });
+            const {results, duration, requestId, categoryPredictions, codes} = await api.findByImage(image, options);
+            return ({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration, categoryPredictions, codes });
         } catch (e) {
             return ({ type: 'SEARCH_REQUEST_FAIL', reason: e.message, exception: e });
         }
