@@ -13,16 +13,25 @@ type PreviewElem =
     | 'br'
     | 'rect';
 
+/** Properties of the Preview Component. */
 interface PreviewProps {
+    /** A canvas to render as the image. */
     image: HTMLCanvasElement,
-    initialRegion: Region,
+    /** Initial selection on the image, setting this, won't send a selection change event. */
+    initialRect: RectCoords,
+    /** List of regions to display on the image */
     regions: Region[],
+    /** Handler for changed selection. */
     onSelectionChange?: (r: RectCoords) => void,
+    /** Maximal width of the image to display in pixels. */
     maxWidth: number,
+    /** Maximal height of the image to display in pixels. */
     maxHeight: number,
+    /** Color of the dot, which is rendered center of not selected regions. */
     dotColor: string
 }
 
+/** @internal State of the Preview component */
 interface PreviewState extends RectCoords {
     tlHover: boolean,
     trHover: boolean,
@@ -32,6 +41,7 @@ interface PreviewState extends RectCoords {
     rectHover: boolean
 }
 
+/** The Preview component. */
 class Preview extends React.Component<PreviewProps,PreviewState> {
     private readonly selectionRef: React.RefObject<any>;
     private animation?: Konva.Animation;
@@ -99,7 +109,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
             brHover: false,
             dotHover: false,
             rectHover: false,
-            ...props.initialRegion
+            ...props.initialRect
         };
     }
 
@@ -210,7 +220,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         const {x1, x2, y1, y2 , width, height } = this.scaleToPreviewPixels(this.state);
 
         const dots = regions.map((region, i) => {
-            let {x1, x2, y1, y2} = region;
+            let {x1, x2, y1, y2} = region.normalizedRect;
             return { // get middle of box and map to pixels
                 region,
                 x: width* ((x2-x1)/2 + x1),
@@ -257,8 +267,8 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
                            start={(d, i) => ({opacity: 0, x: -100, y: d.y})}
                            enter={(d, i) => ({opacity: [1], x: [d.x], y: d.y, timing: {delay: i*100, duration: 300}})}>
                     {ds => <Layer key='dots'>{ds.map(({key, data, state: position}) =>
-                        <Circle onClick={() => this.setSelection(data.region)}
-                                onTap={() => this.setSelection(data.region)}
+                        <Circle onClick={() => this.setSelection(data.region.normalizedRect)}
+                                onTap={() => this.setSelection(data.region.normalizedRect)}
                                 onMouseOver={() => this.setState({dotHover: true})}
                                 onMouseOut={() => this.setState({dotHover: false})}
                                 key={key} radius={7} {...position} stroke={this.props.dotColor} fill="white" strokeWidth={4}/>)}</Layer>}

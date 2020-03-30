@@ -1,5 +1,5 @@
-import {ImageSearchOptions, Region, Result, SearchServiceSettings} from "./types";
-import {canvasToJpgBlob, getElementSize, getThumbSizeArea, toCanvas} from "./nyris";
+import {ImageSearchOptions, RectCoords, Region, Result, SearchServiceSettings} from "./types";
+import {calculateCropAspectRatio, canvasToJpgBlob, getElementSize, getThumbSizeArea, toCanvas} from "./nyris";
 import axios, {AxiosInstance} from 'axios';
 
 interface SearchResult {
@@ -96,30 +96,18 @@ export default class NyrisAPI {
         this.responseFormat = this.settings.responseFormat || 'application/offers.nyris+json';
     }
 
-    private async prepareImage(canvas: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement, options: ImageSearchOptions): Promise<{bytes: Blob, region?: RegionData}> {
-        let [w, h] = getElementSize(canvas);
-        let crop = options.crop ? options.crop : {
-            x: 0,
-            y: 0,
-            w: w,
-            h: h
+    private async prepareImage(canvas: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement, cropRect?: RectCoords): Promise<Blob> {
+        let crop = cropRect || {
+            x1: 0,
+            x2: 1,
+            y1: 0,
+            y2: 1
         };
-        let region: RegionData|undefined = undefined;
-        if (options.crop){
-            region = {
-                rect:{
-                    w: Math.min(1, crop.w / w),
-                    h: Math.min(1, crop.h / h),
-                    x: Math.min(1, crop.x / w),
-                    y: Math.min(1, crop.y / h)
-                }
-            };
-        }
-        let scaledSize = getThumbSizeArea(options.maxWidth, options.maxHeight, crop.w, crop.h);
-        let resizedCroppedCanvas = toCanvas(canvas, scaledSize, undefined, crop);
-        let bytes = await canvasToJpgBlob(resizedCroppedCanvas, options.jpegQuality);
-
-        return {bytes, region};
+        const originalSize = getElementSize(canvas);
+        const aspectRatio = calculateCropAspectRatio(crop, originalSize);
+        let scaledSize = getThumbSizeArea(this.settings.maxWidth, this.settings.maxHeight, aspectRatio);
+        let resizedCroppedCanvas = toCanvas(canvas, scaledSize, crop);
+        return await canvasToJpgBlob(resizedCroppedCanvas, this.settings.jpegQuality);
     }
 
     /**
@@ -128,10 +116,10 @@ export default class NyrisAPI {
      * @param options See [[ImageSearchOptions]].
      */
     async findByImage(canvas: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement, options: ImageSearchOptions) : Promise<SearchResult> {
-        const image = await this.prepareImage(canvas, options);
+        const imageBytes = await this.prepareImage(canvas, options.cropRect);
 
         if (this.settings.customSearchRequest)
-            return this.settings.customSearchRequest(image.bytes, this.httpClient); // TODO check if the interface is ok for hooks
+            return this.settings.customSearchRequest(imageBytes, this.httpClient);
 
         let headers : any = {
             'Content-Type': 'image/jpeg',
@@ -142,7 +130,7 @@ export default class NyrisAPI {
         const xOptions = [];
         if (this.settings.xOptions)
             xOptions.push(this.settings.xOptions as string);
-        if (options.useRecommendations)
+        if (this.settings.useRecommendations)
             xOptions.push('+recommendations');
         if (xOptions.length > 0)
             headers['X-Options'] = xOptions.join(' ');
@@ -151,11 +139,11 @@ export default class NyrisAPI {
             lon: options.geoLocation.lon.toString(),
             dist: options.geoLocation.dist.toString()
         } : {};
-        console.log('p', params, image.bytes);
+        console.log('p', params, imageBytes);
         let res :any = await this.httpClient.request<any>({
             method: 'POST',
             url: this.imageMatchingUrl,
-            data: image.bytes,
+            data: imageBytes,
             params,
             headers,
             responseType: 'json'
@@ -208,11 +196,11 @@ export default class NyrisAPI {
      * @param options See [[ImageSearchOptions]].
      * @returns A list of regions, see [[Region]].
      */
-    async findRegions(canvas: HTMLCanvasElement | HTMLVideoElement | HTMLImageElement, options: ImageSearchOptions): Promise<Region[]> {
-        let [origW, origH] = getElementSize(canvas);
-        let {w: scaledW, h: scaledH} = getThumbSizeArea(options.maxWidth, options.maxHeight, origW, origH);
-        let resizedCroppedCanvas = toCanvas(canvas, {w: scaledW, h: scaledH});
-        let blob = await canvasToJpgBlob(resizedCroppedCanvas, options.jpegQuality);
+    async findRegions(canvas: HTMLCanvasElement | HTMLVideoElement | HTMLImageElement): Promise<Region[]> {
+        let {w: origW, h: origH} = getElementSize(canvas);
+        let scaledSize = getThumbSizeArea(this.settings.maxWidth, this.settings.maxHeight, origW/origH);
+        let resizedCroppedCanvas = toCanvas(canvas, scaledSize);
+        let blob = await canvasToJpgBlob(resizedCroppedCanvas, this.settings.jpegQuality);
 
         const headers = {
             'Content-Type': 'image/jpeg',
@@ -229,10 +217,12 @@ export default class NyrisAPI {
         return regions.map(r => ({
                 className: r.className,
                 confidence: r.confidence,
-                x1: r.region.left / scaledW,
-                x2: (r.region.right / scaledW),
-                y1: r.region.top / scaledH,
-                y2: (r.region.bottom / scaledH),
+                normalizedRect: {
+                    x1: r.region.left / scaledSize.w,
+                    x2: (r.region.right / scaledSize.w),
+                    y1: r.region.top / scaledSize.h,
+                    y2: (r.region.bottom / scaledSize.h),
+                }
             }));
     }
 

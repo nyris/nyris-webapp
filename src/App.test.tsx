@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App, {AppMD, AppProps} from './App';
+import App, { AppProps } from './App';
+import  AppMD from './AppMD';
 import {defaultMdSettings, defaultSettings} from "./defaults";
 
 
@@ -10,7 +11,8 @@ const appProps: AppProps = {
     categoryPredictions: [],
     filterOptions: [],
     regions: [],
-    initialRegion: { x1: 0, x2: 1, y1: 0, y2: 1}
+    codes: [],
+    initialRect: { x1: 0, x2: 1, y1: 0, y2: 1}
   },
   loading: false,
   feedbackState: 'question',

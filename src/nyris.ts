@@ -1,5 +1,5 @@
 import loadImage from 'blueimp-load-image';
-import {Crop, RectCoords, WH} from "./types";
+import {RectCoords, WH} from "./types";
 
 
 
@@ -21,14 +21,6 @@ export function getUrlParam(name: string): string | boolean | undefined {
         || undefined; // not present
 }
 
-export const rectToCrop = ({x1, x2, y1, y2}: RectCoords): Crop =>
-    ({
-        x: x1,
-        y: y1,
-        w: x2-x1,
-        h: y2-y1
-    });
-
 export function getThumbSizeLongestEdge(maxW: number, maxH: number, iW: number, iH: number): WH {
     let iR = iW / iH;
     let dR = maxW / maxH;
@@ -44,10 +36,9 @@ export function getThumbSizeLongestEdge(maxW: number, maxH: number, iW: number, 
     }
 }
 
-export function getThumbSizeArea(maxWidth: number, maxHeight: number, originalWidth: number, originalHeight: number): WH {
+export function getThumbSizeArea(maxWidth: number, maxHeight: number, aspectRatio: number): WH {
     const targetArea = maxWidth * maxHeight;
 
-    const aspectRatio = originalWidth / originalHeight;
     const width = Math.sqrt(targetArea * aspectRatio);
     return {
         w: width,
@@ -55,39 +46,45 @@ export function getThumbSizeArea(maxWidth: number, maxHeight: number, originalWi
     };
 }
 
-export function getElementSize(elem: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement) {
-    const img = elem as HTMLImageElement;
-    const video = elem as HTMLVideoElement;
-    return [
-        img.naturalWidth || video.videoWidth || elem.width,
-        img.naturalHeight || video.videoHeight || elem.height
-    ];
+export function calculateCropAspectRatio({x1, x2, y1, y2}: RectCoords, {w, h}: WH) : number {
+    const cropW = x2 - x1;
+    const cropH = y2 - y1;
+    return (cropW * w) / (cropH * h);
 }
 
-// TODO get rid of crop type
-export function toCanvas(elem: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement, newSize?: WH, canvas?: HTMLCanvasElement, crop?: Crop): HTMLCanvasElement {
-    let [ow, oh] = getElementSize(elem);
-    if (!crop) {
-        crop = {
-            x: 0,
-            y: 0,
-            w: ow,
-            h: oh
-        }
-    }
-    const sx = crop.x;
-    const sy = crop.y;
-    const sw = crop.w;
-    const sh = crop.h;
+export function getElementSize(elem: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement): WH {
+    const img = elem as HTMLImageElement;
+    const video = elem as HTMLVideoElement;
+    return {
+        w: img.naturalWidth || video.videoWidth || elem.width,
+        h: img.naturalHeight || video.videoHeight || elem.height
+    };
+}
+
+export function toCanvas(elem: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement, newSize?: WH, normalizedRect?: RectCoords): HTMLCanvasElement {
+    const {w: ow, h: oh} = getElementSize(elem);
+    const { x1, x2, y1, y2 } = normalizedRect ? normalizedRect : {
+        x1: 0,
+        x2: 1,
+        y1: 0,
+        y2: 1
+    };
+    const w = x2-x1;
+    const h = y2-y1;
+
+    // scale to absolute pixels
+    const sx = ow * x1;
+    const sw = ow * w;
+    const sy = oh * y1;
+    const sh = oh * h;
 
     const dw = (newSize && newSize.w) || ow;
     const dh = (newSize && newSize.h) || oh;
 
-    if (!canvas)
-        canvas = document.createElement('canvas');
-
+    const canvas = document.createElement('canvas');
     canvas.width = dw;
     canvas.height = dh;
+
     // @ts-ignore
     canvas.getContext('2d').drawImage(
         elem,

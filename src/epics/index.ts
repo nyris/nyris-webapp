@@ -4,7 +4,7 @@ import {AppAction, AppState, ImageSearchOptions} from "../types";
 import {debounceTime, delay, ignoreElements, map, switchMap, tap, withLatestFrom} from "rxjs/operators";
 import {History} from "history";
 import NyrisAPI from "../NyrisAPI";
-import {fileOrBlobToCanvas, rectToCrop} from "../nyris";
+import {fileOrBlobToCanvas} from "../nyris";
 import {imageLoaded, searchOffersForImage, searchRegions} from "../actions/searchActions";
 import {showFeedback, showResults} from "../actions/nyrisAppActions";
 
@@ -36,7 +36,7 @@ const feedbackRegionEpic: EpicConf = (action$, state$, {api}) => action$.pipe(
     withLatestFrom(state$),
     tap(async ([action, state]) => {
         if (action.type === 'REGION_CHANGED') {
-            let {region: {x1, x2, y1, y2}} = action;
+            let {normalizedRect: {x1, x2, y1, y2}} = action;
             const sessionId = state.search.sessionId || state.search.requestId;
             if (sessionId && state.search.requestId) {
                 await api.sendFeedback(sessionId, state.search.requestId, {
@@ -89,23 +89,11 @@ const imageSearch: EpicConf = (action$, state$, {api}) => action$.pipe(
             throw new Error(`Wrong action type ${action.type}`);
         }
 
-        let { image, region} = action;
+        let { image, normalizedRect} = action;
 
-        let options : ImageSearchOptions = settings;
-
-        if (region) {
-            let { x1, x2, y1, y2} = region;
-            let crop = rectToCrop({
-                x1: x1*image.width,
-                x2: x2*image.width,
-                y1: y1*image.height,
-                y2: y2*image.height
-            });
-            options = {
-                ...options,
-                crop
-            }
-        }
+        let options : ImageSearchOptions = {
+            cropRect: normalizedRect
+        };
 
         try {
             const {results, duration, requestId, categoryPredictions, codes} = await api.findByImage(image, options);
@@ -128,7 +116,7 @@ const regionSearch: EpicConf = (action$, state$, {api}) => action$.pipe(
         let { image } = action;
 
         try {
-            let regions = await api.findRegions(image, settings);
+            let regions = await api.findRegions(image);
             return {type: 'REGION_REQUEST_SUCCEED', regions };
 
         } catch (e) {
@@ -171,7 +159,7 @@ const startSearchOnRegionsSuccessful: EpicConf = (action$, state$) => action$.pi
 
         let selection = undefined;
         if (regions.length > 0) {
-            selection  = regions[0];
+            selection  = regions[0].normalizedRect;
         }
         return searchOffersForImage(requestImage, selection);
     })
@@ -189,8 +177,8 @@ const startSearchOnRegionChange: EpicConf = (action$, state$) => action$.pipe(
         if (!requestImage) {
             throw new Error(`No requestImage`);
         }
-        let { region } = action;
-        return searchOffersForImage(requestImage, region);
+        let { normalizedRect } = action;
+        return searchOffersForImage(requestImage, normalizedRect);
     })
 );
 

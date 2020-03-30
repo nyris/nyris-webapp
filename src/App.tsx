@@ -11,7 +11,7 @@ import {Code, CategoryPrediction} from "./NyrisAPI";
 import {useDropzone} from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
-import {MDSettings,  Region, SearchServiceSettings} from "./types";
+import {MDSettings, RectCoords, Region, SearchServiceSettings} from "./types";
 import {NyrisAppPart, NyrisFeedbackState} from "./actions/nyrisAppActions";
 import Capture from "./components/Capture";
 
@@ -37,7 +37,7 @@ export interface AppHanders {
     onSelectFile: (f: File) => void,
     onCameraClick: () => void,
     onShowStart: () => void,
-    onSelectionChange: (r: Region) => void,
+    onSelectionChange: (r: RectCoords) => void,
     onPositiveFeedback: () => void,
     onNegativeFeedback: () => void,
     onCloseFeedback: () => void,
@@ -53,7 +53,7 @@ export interface AppProps {
         filterOptions: string[],
         errorMessage?: string,
         regions: Region[],
-        initialRegion: Region
+        initialRect: RectCoords
     },
     previewImage?: HTMLCanvasElement,
     settings: SearchServiceSettings,
@@ -65,7 +65,7 @@ export interface AppProps {
 }
 
 const App: React.FC<AppProps> = ({
-                                     search: {results, regions, initialRegion, requestId, duration, errorMessage, filterOptions, categoryPredictions, codes},
+                                     search: {results, regions, initialRect, requestId, duration, errorMessage, filterOptions, categoryPredictions, codes},
                                      showPart, settings, handlers, loading, previewImage, feedbackState
                                  }) => {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: (fs: File[]) => handlers.onFileDropped(fs[0])});
@@ -162,7 +162,7 @@ const App: React.FC<AppProps> = ({
                              maxWidth={document.body.clientWidth} maxHeight={maxPreviewHeight}
                              dotColor="#4C8F9F"
                              onSelectionChange={handlers.onSelectionChange} regions={regions}
-                             initialRegion={initialRegion} image={previewImage}/>
+                             initialRect={initialRect} image={previewImage}/>
                 </div>
                 }
                 <div className="predicted-categories">

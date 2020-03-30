@@ -112,7 +112,7 @@ function Copyright() {
 }
 
 
-const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, loading, search: {results, regions, initialRegion, requestId, duration}, mdSettings}) => {
+const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, loading, search: {results, regions, initialRect, requestId, duration}, mdSettings}) => {
     const classes = useStyles();
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: (fs: File[]) => handlers.onFileDropped(fs[0])});
 
@@ -219,7 +219,7 @@ const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, 
                                  maxHeight={maxPreviewHeight}
                                  dotColor={mdSettings.primaryColor}
                                  onSelectionChange={handlers.onSelectionChange} regions={regions}
-                                 initialRegion={initialRegion} image={previewImage}/>
+                                 initialRect={initialRect} image={previewImage}/>
                     </Card>
                     }
 
