@@ -206,6 +206,24 @@ const onSearchSuccessShowResults: EpicConf = (action$) => action$.pipe(
     map(showResults)
 );
 
+const onSearchSuccessRedirectToSite: EpicConf = (action$, state$) => action$.pipe(
+    ofType('SEARCH_REQUEST_SUCCEED'),
+    withLatestFrom(state$),
+    tap(([action, {settings}]) => {
+        if (action.type !== 'SEARCH_REQUEST_SUCCEED' || !action.results || action.results.length !== 1) {
+            return;
+        }
+
+        const firstLink = action.results[0].l;
+        const instantRedirectPatterns = settings.instantRedirectPatterns;
+        if (!instantRedirectPatterns.find(r => r.test(firstLink))) {
+            return;
+        }
+        window.location.href = firstLink;
+    }),
+    ignoreElements()
+);
+
 const onSearchSuccessShowFeedbackDelayed: EpicConf = (action$) => action$.pipe(
     ofType('SEARCH_REQUEST_SUCCEED'),
     delay(3000),
@@ -226,7 +244,8 @@ const rootEpic = combineEpics(
     startSearchOnRegionChange,
     loadImage,
     onSearchSuccessShowResults,
-    onSearchSuccessShowFeedbackDelayed
+    onSearchSuccessShowFeedbackDelayed,
+    onSearchSuccessRedirectToSite
 );
 
 export default rootEpic;
