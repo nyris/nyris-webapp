@@ -1,6 +1,6 @@
-import {SearchServiceSettings} from "./types";
+import {AppSettings, SearchServiceSettings} from "./types";
 
-export const defaultSettings : SearchServiceSettings = {
+export const defaultSettings : AppSettings = {
 
     xOptions: false,
     apiKey: 'UNSET',
@@ -11,6 +11,13 @@ export const defaultSettings : SearchServiceSettings = {
     maxHeight: 500,
     jpegQuality: 0.92,
     useRecommendations: false,
+    instantRedirectPatterns: [
+        new RegExp('^https?://(www\.)?youtube.com/'),
+        new RegExp('^https?://(www\.)?youtu.be/'),
+        new RegExp('^https?://(www\.)?vimeo.com/'),
+        new RegExp('^https?://(www\.)?dailymotion.com/'),
+        new RegExp('^https?://(www\.)?dai.ly/')
+    ]
 };
 
 export const defaultMdSettings = {

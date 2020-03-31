@@ -29,17 +29,21 @@ export interface SearchServiceSettings {
     regionProposalUrl?: string,
     responseFormat?: string,
     feedbackUrl?: string,
-    exampleImages: string[],
-    resultTemplate?: string,
-    noImageUrl?: string,
-    materialDesign?: MDSettings,
-    preview: boolean,
-    regions: boolean,
     jpegQuality: number,
     maxWidth: number,
     maxHeight: number,
     useRecommendations: boolean
+}
 
+
+export interface AppSettings extends SearchServiceSettings {
+    exampleImages: string[],
+    preview: boolean,
+    noImageUrl?: string,
+    resultTemplate?: string,
+    regions: boolean,
+    materialDesign?: MDSettings,
+    instantRedirectPatterns: RegExp[]
 }
 
 export interface ImageSearchOptions {
@@ -70,7 +74,7 @@ export interface WH {
 
 export type AppState = {
     search: SearchState,
-    settings: SearchServiceSettings,
+    settings: AppSettings,
     nyrisDesign: NyrisAppState
 };
 

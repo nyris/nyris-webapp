@@ -27,7 +27,7 @@ import {
 } from './actions/nyrisAppActions';
 import { getUrlParam } from "./nyris";
 import {composeWithDevTools} from "redux-devtools-extension";
-import {AppAction, AppState, MDSettings, SearchServiceSettings} from "./types";
+import {AppAction, AppSettings, AppState, MDSettings} from "./types";
 import {createEpicMiddleware} from "redux-observable";
 import NyrisAPI from "./NyrisAPI";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
@@ -37,7 +37,7 @@ import rootEpic from "./epics";
 import { createHashHistory } from 'history';
 
 
-declare var settings: SearchServiceSettings;
+declare var settings: AppSettings;
 
 
 function scrollTop() {
@@ -47,7 +47,7 @@ function scrollTop() {
 
 
 
-let normalizedSettings : SearchServiceSettings = {
+let normalizedSettings : AppSettings = {
     ...defaultSettings,
     ...settings,
 };
@@ -71,7 +71,7 @@ const epicMiddleware = createEpicMiddleware<AppAction, AppAction, AppState>({
 });
 
 const rootReducer = combineReducers({
-    settings: () => normalizedSettings as SearchServiceSettings,
+    settings: () => normalizedSettings as AppSettings,
     nyrisDesign: nyrisReducer,
     search: searchReducer
 });

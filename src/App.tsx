@@ -11,7 +11,7 @@ import {Code, CategoryPrediction} from "./NyrisAPI";
 import {useDropzone} from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
-import {MDSettings, RectCoords, Region, SearchServiceSettings} from "./types";
+import {AppSettings, MDSettings, RectCoords, Region} from "./types";
 import {NyrisAppPart, NyrisFeedbackState} from "./actions/nyrisAppActions";
 import Capture from "./components/Capture";
 
@@ -56,7 +56,7 @@ export interface AppProps {
         initialRect: RectCoords
     },
     previewImage?: HTMLCanvasElement,
-    settings: SearchServiceSettings,
+    settings: AppSettings,
     loading: boolean,
     showPart: NyrisAppPart,
     feedbackState: NyrisFeedbackState,
