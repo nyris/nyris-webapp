@@ -1,4 +1,4 @@
-import {ImageSearchOptions, RectCoords, Region, Result, SearchServiceSettings} from "./types";
+import {ImageSearchOptions, RectCoords, Region, Result} from "./types";
 import {calculateCropAspectRatio, canvasToJpgBlob, getElementSize, getThumbSizeArea, toCanvas} from "./nyris";
 import axios, {AxiosInstance} from 'axios';
 
@@ -77,22 +77,38 @@ type FeedbackEvent = FeedbackEventPayload & {
     session_id: string
 }
 
+export interface NyrisAPISettings {
+    xOptions: boolean | string,
+    customSearchRequest?: ((file: Blob, client: any) => Promise<any>),
+    responseHook?: ((response: any) => any),
+    apiKey: string,
+    baseUrl?: string,
+    jpegQuality: number,
+    maxWidth: number,
+    maxHeight: number,
+    useRecommendations: boolean,
+    responseFormat?: string
+}
+
 export default class NyrisAPI {
     private readonly httpClient: AxiosInstance;
     private readonly imageMatchingUrl: string;
     private readonly regionProposalUrl: string;
     private readonly responseFormat: string;
-    private imageMatchingUrlBySku: string;
-    private imageMatchingSubmitManualUrl: string;
-    private feedbackUrl: string;
+    private readonly imageMatchingUrlBySku: string;
+    private readonly imageMatchingSubmitManualUrl: string;
+    private readonly feedbackUrl: string;
 
-    constructor(private settings: SearchServiceSettings) {
+    constructor(private settings: NyrisAPISettings) {
         this.httpClient = axios.create();
-        this.imageMatchingUrl = this.settings.imageMatchingUrl || 'https://api.nyris.io/find/v1';
-        this.imageMatchingUrlBySku = this.settings.imageMatchingUrlBySku || 'https://api.nyris.io/recommend/v1/';
-        this.imageMatchingSubmitManualUrl = this.settings.imageMatchingSubmitManualUrl || 'https://api.nyris.io/find/v1/manual/';
-        this.feedbackUrl = this.settings.feedbackUrl || 'https://api.nyris.io/feedback/v1/';
-        this.regionProposalUrl = this.settings.regionProposalUrl || 'https://api.nyris.io/find/v1/regions/';
+
+        const baseUrl = this.settings.baseUrl || 'https://api.nyris.io';
+        this.imageMatchingUrl = `${baseUrl}/find/v1`;
+        this.imageMatchingUrlBySku = `${baseUrl}/recommend/v1/`;
+        this.imageMatchingSubmitManualUrl = `${baseUrl}/find/v1/manual/`;
+        this.feedbackUrl = `${baseUrl}/feedback/v1/`;
+        this.regionProposalUrl = `${baseUrl}/find/v1/regions/`;
+
         this.responseFormat = this.settings.responseFormat || 'application/offers.nyris+json';
     }
 
@@ -180,7 +196,7 @@ export default class NyrisAPI {
             'Accept-Language': 'de,*;q=0.5',
             'Accept': this.responseFormat
         };
-        const url = this.settings.imageMatchingUrlBySku + encodeURIComponent(sku) + '/' + encodeURIComponent(mid);
+        const url = this.imageMatchingUrlBySku + encodeURIComponent(sku) + '/' + encodeURIComponent(mid);
         if (this.settings.xOptions)
             headers['X-Options'] = this.settings.xOptions as string;
         let r:any = await this.httpClient.get(url, {headers, responseType: 'json'})
