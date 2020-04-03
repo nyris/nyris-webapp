@@ -82,7 +82,7 @@ export interface NyrisAPISettings {
     customSearchRequest?: ((file: Blob, client: any) => Promise<any>),
     responseHook?: ((response: any) => any),
     apiKey: string,
-    baseUrl?: string,
+    baseUrl: string,
     jpegQuality: number,
     maxWidth: number,
     maxHeight: number,
@@ -102,7 +102,7 @@ export default class NyrisAPI {
     constructor(private settings: NyrisAPISettings) {
         this.httpClient = axios.create();
 
-        const baseUrl = this.settings.baseUrl || 'https://api.nyris.io';
+        const baseUrl = this.settings.baseUrl;
         this.imageMatchingUrl = `${baseUrl}/find/v1`;
         this.imageMatchingUrlBySku = `${baseUrl}/recommend/v1/`;
         this.imageMatchingSubmitManualUrl = `${baseUrl}/find/v1/manual/`;

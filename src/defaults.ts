@@ -1,4 +1,4 @@
-import {AppSettings, SearchServiceSettings} from "./types";
+import {AppSettings} from "./types";
 
 export const defaultSettings : AppSettings = {
 
@@ -11,17 +11,18 @@ export const defaultSettings : AppSettings = {
     maxHeight: 500,
     jpegQuality: 0.92,
     useRecommendations: false,
+    baseUrl: 'https://api.nyris.io',
     instantRedirectPatterns: [
-        new RegExp('^https?://(www\.)?youtube.com/'),
-        new RegExp('^https?://(www\.)?youtu.be/'),
-        new RegExp('^https?://(www\.)?vimeo.com/'),
-        new RegExp('^https?://(www\.)?dailymotion.com/'),
-        new RegExp('^https?://(www\.)?dai.ly/')
+        new RegExp('^https?://(www.)?youtube.com/'),
+        new RegExp('^https?://(www.)?youtu.be/'),
+        new RegExp('^https?://(www.)?vimeo.com/'),
+        new RegExp('^https?://(www.)?dailymotion.com/'),
+        new RegExp('^https?://(www.)?dai.ly/')
     ]
 };
 
 export const defaultMdSettings = {
-    appBarLogoUrl: 'images/windmoeller-and-hoelscher-kg-vector-logo.svg',
+    appBarLogoUrl: 'images/nyris-logo.svg',
     appBarCustomBackgroundColor: '#f4f4f4',
     appBarCustomTextColor: '#ccc',
     appBarTitle: '',

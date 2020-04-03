@@ -6,12 +6,8 @@ var settings = {
   "jpegQuality": 0.9,
   "regions": true,
   "preview": true,
+  "baseUrl": "https://api.nyris.io",
   "xOptions": "",
-  "imageMatchingUrl": "http://api.nyris.io/find/v1/",
-  "imageMatchingUrlBySku": "https://api.nyris.io/recommend/v1/",
-  "imageMatchingSubmitManualUrl": "https://api.nyris.io/find/v1/manual/",
-  "regionProposalUrl": "https://api.nyris.io/find/v1/regions/",
-  "feedbackUrl": "https://api.nyris.io/feedback/v1/",
   "exampleImages": [
     "https://img.nyris.io/demo/everybag/kissen.jpg",
     "https://img.nyris.io/demo/everybag/aspirin.jpg",
