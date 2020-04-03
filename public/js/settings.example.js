@@ -17,6 +17,13 @@ var settings = {
     "https://img.nyris.io/demo/everybag/1.jpg",
     "https://img.nyris.io/demo/everybag/5.jpg",
     "https://img.nyris.io/demo/everybag/6.jpg"
+  ],
+  "instantRedirectPatterns": [
+    new RegExp('^https?://(www.)?youtube.com/'),
+    new RegExp('^https?://(www.)?youtu.be/'),
+    new RegExp('^https?://(www.)?vimeo.com/'),
+    new RegExp('^https?://(www.)?dailymotion.com/'),
+    new RegExp('^https?://(www.)?dai.ly/')
   ]
 };
 settings["customSearchRequest"] = null;
