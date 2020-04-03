@@ -1,4 +1,4 @@
-import {RectCoords, Region} from "../types";
+import {RectCoords, Region, CanvasWithId} from "../types";
 import {Code} from "../NyrisAPI";
 
 export type ImageSourceType =
