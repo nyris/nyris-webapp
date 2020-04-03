@@ -214,12 +214,12 @@ const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, 
 
                     { previewImage &&
                     <Card style={{marginBottom: '4em'}} raised={true}>
-                        <Preview key={regions.length}
+                        <Preview key={previewImage.id}
                                  maxWidth={document.body.clientWidth}
                                  maxHeight={maxPreviewHeight}
                                  dotColor={mdSettings.primaryColor}
                                  onSelectionChange={handlers.onSelectionChange} regions={regions}
-                                 initialRect={initialRect} image={previewImage}/>
+                                 initialRect={initialRect} image={previewImage.canvas}/>
                     </Card>
                     }
 

@@ -11,7 +11,7 @@ import {Code, CategoryPrediction} from "./NyrisAPI";
 import {useDropzone} from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
-import {AppSettings, MDSettings, RectCoords, Region} from "./types";
+import {AppSettings, MDSettings, RectCoords, Region, CanvasWithId} from "./types";
 import {NyrisAppPart, NyrisFeedbackState} from "./actions/nyrisAppActions";
 import Capture from "./components/Capture";
 
@@ -55,7 +55,7 @@ export interface AppProps {
         regions: Region[],
         initialRect: RectCoords
     },
-    previewImage?: HTMLCanvasElement,
+    previewImage?: CanvasWithId,
     settings: AppSettings,
     loading: boolean,
     showPart: NyrisAppPart,
@@ -158,11 +158,11 @@ const App: React.FC<AppProps> = ({
                 </Animate>
                 {settings.preview && previewImage &&
                 <div className="preview">
-                    <Preview key={regions.length}
+                    <Preview key={previewImage.id}
                              maxWidth={document.body.clientWidth} maxHeight={maxPreviewHeight}
                              dotColor="#4C8F9F"
                              onSelectionChange={handlers.onSelectionChange} regions={regions}
-                             initialRect={initialRect} image={previewImage}/>
+                             initialRect={initialRect} image={previewImage.canvas}/>
                 </div>
                 }
                 <div className="predicted-categories">

@@ -50,6 +50,11 @@ export type Region = {
     normalizedRect: RectCoords
 }
 
+export interface CanvasWithId {
+    canvas: HTMLCanvasElement
+    id: string
+}
+
 export interface WH {
     w: number,
     h: number

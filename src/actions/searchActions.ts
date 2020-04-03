@@ -9,7 +9,7 @@ export type ImageSourceType =
 export type SearchAction =
     | { type: 'FEEDBACK_SUBMIT_POSITIVE' }
     | { type: 'FEEDBACK_SUBMIT_NEGATIVE' }
-    | { type: 'IMAGE_LOADED', image: HTMLCanvasElement }
+    | { type: 'IMAGE_LOADED', image: CanvasWithId }
     | { type: 'REGION_REQUEST_START', image: HTMLCanvasElement }
     | { type: 'REGION_REQUEST_SUCCEED', regions: Region[] }
     | { type: 'REGION_REQUEST_FAIL', reason: string, exception: any }
@@ -34,7 +34,7 @@ export interface SearchState {
     fetchingRegions: boolean
     fetchingResults: boolean
     filterOptions: string[]
-    requestImage?:  HTMLCanvasElement
+    requestImage?:  CanvasWithId
     categoryPredictions: CategoryPrediction[]
     codes: Code[]
 }
@@ -55,7 +55,7 @@ const initialState : SearchState = {
 export const loadFile = (file: File ): SearchAction => ({ type: 'LOAD_IMAGE', file });
 export const loadUrl = (url: string): SearchAction => ({ type: 'LOAD_IMAGE', url });
 export const loadCanvas = (image: HTMLCanvasElement): SearchAction => ({ type: 'LOAD_IMAGE', image });
-export const imageLoaded = (image: HTMLCanvasElement): SearchAction => ({ type: 'IMAGE_LOADED', image });
+export const imageLoaded = (image: HTMLCanvasElement, id: string): SearchAction => ({ type: 'IMAGE_LOADED', image: {canvas: image, id: id} });
 export const selectionChanged = (normalizedRect: RectCoords) : SearchAction => ({ type: 'REGION_CHANGED', normalizedRect });
 export const searchRegions = (image: HTMLCanvasElement): SearchAction => ({ type: 'REGION_REQUEST_START', image });
 export const searchOffersForImage = (image: HTMLCanvasElement, normalizedRect?: RectCoords) : SearchAction => ({

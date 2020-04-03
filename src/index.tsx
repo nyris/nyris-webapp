@@ -115,7 +115,7 @@ const mapStateToProps = (state: AppState) => ({
         requestId: state.search.requestId
     },
     settings: state.settings,
-    previewImage: state.search.requestImage instanceof HTMLCanvasElement ? state.search.requestImage : undefined,
+    previewImage: state.search.requestImage,
     loading: state.search.fetchingRegions || state.search.fetchingResults,
     feedbackState: state.nyrisDesign.feedbackState,
     mdSettings: state.settings.materialDesign || defaultMdSettings

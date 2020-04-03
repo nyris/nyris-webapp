@@ -138,9 +138,9 @@ const startSearchOnImageLoaded: EpicConf = (action$, state$) => action$.pipe(
         let { image } = action;
 
         if (settings.regions) {
-            return searchRegions(image);
+            return searchRegions(image.canvas);
         }
-        return searchOffersForImage(image);
+        return searchOffersForImage(image.canvas);
     })
 );
 
@@ -161,7 +161,7 @@ const startSearchOnRegionsSuccessful: EpicConf = (action$, state$) => action$.pi
         if (regions.length > 0) {
             selection  = regions[0].normalizedRect;
         }
-        return searchOffersForImage(requestImage, selection);
+        return searchOffersForImage(requestImage.canvas, selection);
     })
 );
 
@@ -178,7 +178,7 @@ const startSearchOnRegionChange: EpicConf = (action$, state$) => action$.pipe(
             throw new Error(`No requestImage`);
         }
         let { normalizedRect } = action;
-        return searchOffersForImage(requestImage, normalizedRect);
+        return searchOffersForImage(requestImage.canvas, normalizedRect);
     })
 );
 
@@ -188,14 +188,15 @@ const loadImage: EpicConf = (action$) => action$.pipe(
         if (action.type !== 'LOAD_IMAGE') {
             throw new Error(`Wrong action type ${action.type}`);
         }
+        const randomId = Math.random().toString();
         if ('url' in action) {
-            return imageLoaded(await fileOrBlobToCanvas(action.url));
+            return imageLoaded(await fileOrBlobToCanvas(action.url), randomId);
         }
         if ('file' in action) {
-            return imageLoaded(await fileOrBlobToCanvas(action.file));
+            return imageLoaded(await fileOrBlobToCanvas(action.file), randomId);
         }
         if ('image' in action) {
-            return imageLoaded(action.image);
+            return imageLoaded(action.image, randomId);
         }
         throw new Error(`LOAD_IMAGE action wrong properties ${Object.keys(action).join(',')}`);
     })
