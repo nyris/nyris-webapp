@@ -42,7 +42,7 @@ export interface SearchState {
 const initialState : SearchState = {
     results: [],
     regions: [],
-    selectedRegion: {x1: 0, x2: 1, y1: 0, y2: 1},
+    selectedRegion: {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9},
     requestImage: undefined,
     fetchingResults: false,
     fetchingRegions: false,
@@ -83,7 +83,8 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
             return {
                 ...state,
                 fetchingRegions: false,
-                regions: action.regions
+                regions: action.regions,
+                selectedRegion: action.regions.length > 0 ? action.regions[0].normalizedRect : state.selectedRegion
             };
         case "SEARCH_REQUEST_START":
             return {

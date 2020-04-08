@@ -53,7 +53,7 @@ export interface AppProps {
         filterOptions: string[],
         errorMessage?: string,
         regions: Region[],
-        initialRect: RectCoords
+        previewSelection: RectCoords
     },
     previewImage?: CanvasWithId,
     settings: AppSettings,
@@ -65,7 +65,7 @@ export interface AppProps {
 }
 
 const App: React.FC<AppProps> = ({
-                                     search: {results, regions, initialRect, requestId, duration, errorMessage, filterOptions, categoryPredictions, codes},
+                                     search: {results, regions, previewSelection, requestId, duration, errorMessage, filterOptions, categoryPredictions, codes},
                                      showPart, settings, handlers, loading, previewImage, feedbackState
                                  }) => {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: (fs: File[]) => handlers.onFileDropped(fs[0])});
@@ -162,7 +162,7 @@ const App: React.FC<AppProps> = ({
                              maxWidth={document.body.clientWidth} maxHeight={maxPreviewHeight}
                              dotColor="#4C8F9F"
                              onSelectionChange={handlers.onSelectionChange} regions={regions}
-                             initialRect={initialRect} image={previewImage.canvas}/>
+                             selection={previewSelection} image={previewImage.canvas}/>
                 </div>
                 }
                 <div className="predicted-categories">

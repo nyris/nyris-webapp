@@ -109,7 +109,7 @@ const mapStateToProps = (state: AppState) => ({
         categoryPredictions: state.search.categoryPredictions,
         codes: state.search.codes,
         filterOptions: state.search.filterOptions,
-        initialRect: state.search.regions.length > 0 ? state.search.regions[0].normalizedRect : {x1: 0.1, y1: 0.1, x2: 0.9, y2: 0.9},
+        previewSelection: state.search.selectedRegion,
         regions: state.search.regions,
         duration: state.search.duration,
         requestId: state.search.requestId

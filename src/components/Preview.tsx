@@ -18,7 +18,7 @@ interface PreviewProps {
     /** A canvas to render as the image. */
     image: HTMLCanvasElement,
     /** Initial selection on the image, setting this, won't send a selection change event. */
-    initialRect: RectCoords,
+    selection: RectCoords,
     /** List of regions to display on the image */
     regions: Region[],
     /** Handler for changed selection. */
@@ -32,7 +32,7 @@ interface PreviewProps {
 }
 
 /** @internal State of the Preview component */
-interface PreviewState extends RectCoords {
+interface PreviewState {
     tlHover: boolean,
     trHover: boolean,
     blHover: boolean,
@@ -54,7 +54,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
 
     private handleDragBoundTl = ({x, y}: {x: number,y: number}) => {
         let [minX, minY ] = [ 100, 100];
-        let {x2, y2} = this.scaleToPreviewPixels(this.state);
+        let {x2, y2} = this.scaleToPreviewPixels(this.props.selection);
         return {
             x: Math.max(Math.min(x, x2-minX), 0),
             y: Math.max(Math.min(y, y2-minY), 0)
@@ -64,7 +64,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
 
     private handleDragBoundTr = ({x, y}: {x: number,y: number}) => {
         let [minX, minY ] = [ 100, 100];
-        let {x1, y2, width} = this.scaleToPreviewPixels(this.state);
+        let {x1, y2, width} = this.scaleToPreviewPixels(this.props.selection);
         return {
             x: Math.min(Math.max(x, x1+minX), width),
             y: Math.max(Math.min(y, y2-minY), 0)
@@ -73,7 +73,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
     }
     private handleDragBoundBl = ({x, y}: {x: number,y: number}) => {
         let [minX, minY ] = [ 100, 100];
-        let { x2, y1, height} = this.scaleToPreviewPixels(this.state);
+        let { x2, y1, height} = this.scaleToPreviewPixels(this.props.selection);
         return {
             x: Math.max(Math.min(x, x2-minX), 0),
             y: Math.min(Math.max(y, y1+minY), height)
@@ -82,7 +82,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
 
     private handleDragBoundBr = ({x, y}: {x: number,y: number}) => {
         let [minX, minY ] = [ 100, 100];
-        let {x1, y1, width, height} = this.scaleToPreviewPixels(this.state);
+        let {x1, y1, width, height} = this.scaleToPreviewPixels(this.props.selection);
         return {
             x: Math.min(Math.max(x, x1+minX), width),
             y: Math.min(Math.max(y, y1+minY), height)
@@ -90,7 +90,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
     };
 
     private handleDragBoundRect = ({x, y}: {x: number,y: number}) => {
-        let {x1, x2, y1, y2, width, height} = this.scaleToPreviewPixels(this.state);
+        let {x1, x2, y1, y2, width, height} = this.scaleToPreviewPixels(this.props.selection);
         let elemWidth = x2-x1;
         let elemHeight = y2-y1;
         return {
@@ -109,12 +109,12 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
             brHover: false,
             dotHover: false,
             rectHover: false,
-            ...props.initialRect
+            ...props.selection
         };
     }
 
     private handleDragMove(elem: PreviewElem, evt: Konva.KonvaEventObject<DragEvent>) {
-        let {x1, x2, y1, y2, width, height} = this.scaleToPreviewPixels(this.state);
+        let {x1, x2, y1, y2, width, height} = this.scaleToPreviewPixels(this.props.selection);
         if (evt.target instanceof Konva.Stage) {
             return;
         }
@@ -151,7 +151,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
             y1: y1/height,
             y2: y2/height
         };
-        this.setSelection(newState);
+        this.notifySelection(newState);
     }
 
     private scaleToPreviewPixels({x1, x2, y1, y2} : RectCoords) {
@@ -180,8 +180,7 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         this.animation && this.animation.stop();
     }
 
-    setSelection(r: RectCoords) {
-        this.setState(r);
+    notifySelection(r: RectCoords) {
         if (this.props.onSelectionChange) {
             this.props.onSelectionChange(r);
         }
@@ -209,15 +208,13 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
         return 'default';
     }
 
-
-
     render() {
         const {image, regions} = this.props;
         if (!image) {
             return null;
         }
 
-        const {x1, x2, y1, y2 , width, height } = this.scaleToPreviewPixels(this.state);
+        const {x1, x2, y1, y2 , width, height } = this.scaleToPreviewPixels(this.props.selection);
 
         const dots = regions.map((region, i) => {
             let {x1, x2, y1, y2} = region.normalizedRect;
@@ -267,8 +264,8 @@ class Preview extends React.Component<PreviewProps,PreviewState> {
                            start={(d, i) => ({opacity: 0, x: -100, y: d.y})}
                            enter={(d, i) => ({opacity: [1], x: [d.x], y: d.y, timing: {delay: i*100, duration: 300}})}>
                     {ds => <Layer key='dots'>{ds.map(({key, data, state: position}) =>
-                        <Circle onClick={() => this.setSelection(data.region.normalizedRect)}
-                                onTap={() => this.setSelection(data.region.normalizedRect)}
+                        <Circle onClick={() => this.notifySelection(data.region.normalizedRect)}
+                                onTap={() => this.notifySelection(data.region.normalizedRect)}
                                 onMouseOver={() => this.setState({dotHover: true})}
                                 onMouseOut={() => this.setState({dotHover: false})}
                                 key={key} radius={7} {...position} stroke={this.props.dotColor} fill="white" strokeWidth={4}/>)}</Layer>}
