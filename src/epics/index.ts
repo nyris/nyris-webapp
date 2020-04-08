@@ -217,7 +217,7 @@ const onSearchSuccessRedirectToSite: EpicConf = (action$, state$) => action$.pip
 
         const firstLink = action.results[0].l;
         const instantRedirectPatterns = settings.instantRedirectPatterns;
-        if (!instantRedirectPatterns.find(r => r.test(firstLink))) {
+        if (!instantRedirectPatterns.find(r => new RegExp(r).test(firstLink))) {
             return;
         }
         window.location.href = firstLink;

@@ -26,7 +26,7 @@ export interface AppSettings extends NyrisAPISettings {
     resultTemplate?: string,
     regions: boolean,
     materialDesign?: MDSettings,
-    instantRedirectPatterns: RegExp[]
+    instantRedirectPatterns: string[]
 }
 
 export interface ImageSearchOptions {

@@ -19,11 +19,11 @@ var settings = {
     "https://img.nyris.io/demo/everybag/6.jpg"
   ],
   "instantRedirectPatterns": [
-    new RegExp('^https?://(www.)?youtube.com/'),
-    new RegExp('^https?://(www.)?youtu.be/'),
-    new RegExp('^https?://(www.)?vimeo.com/'),
-    new RegExp('^https?://(www.)?dailymotion.com/'),
-    new RegExp('^https?://(www.)?dai.ly/')
+    '^https?://(www.)?youtube.com/',
+    '^https?://(www.)?youtu.be/',
+    '^https?://(www.)?vimeo.com/',
+    '^https?://(www.)?dailymotion.com/',
+    '^https?://(www.)?dai.ly/'
   ]
 };
 settings["customSearchRequest"] = null;
