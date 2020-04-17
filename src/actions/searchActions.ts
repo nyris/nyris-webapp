@@ -1,5 +1,6 @@
 import {RectCoords, Region, CanvasWithId} from "../types";
 import {Code} from "../NyrisAPI";
+import {selectFirstCenteredRegion} from "../nyris";
 
 export type ImageSourceType =
     | { url: string }
@@ -84,7 +85,7 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
                 ...state,
                 fetchingRegions: false,
                 regions: action.regions,
-                selectedRegion: action.regions.length > 0 ? action.regions[0].normalizedRect : state.selectedRegion
+                selectedRegion:  selectFirstCenteredRegion(action.regions, state.selectedRegion)
             };
         case "SEARCH_REQUEST_START":
             return {

@@ -4,7 +4,7 @@ import {AppAction, AppState, ImageSearchOptions} from "../types";
 import {debounceTime, delay, ignoreElements, map, switchMap, tap, withLatestFrom} from "rxjs/operators";
 import {History} from "history";
 import NyrisAPI from "../NyrisAPI";
-import {fileOrBlobToCanvas} from "../nyris";
+import {fileOrBlobToCanvas, selectFirstCenteredRegion} from "../nyris";
 import {imageLoaded, searchOffersForImage, searchRegions} from "../actions/searchActions";
 import {showFeedback, showResults} from "../actions/nyrisAppActions";
 
@@ -157,10 +157,7 @@ const startSearchOnRegionsSuccessful: EpicConf = (action$, state$) => action$.pi
         }
         let { regions } = action;
 
-        let selection = undefined;
-        if (regions.length > 0) {
-            selection  = regions[0].normalizedRect;
-        }
+        let selection = selectFirstCenteredRegion(regions, {x1: 0, x2: 1, y1: 0, y2: 1});
         return searchOffersForImage(requestImage.canvas, selection);
     })
 );

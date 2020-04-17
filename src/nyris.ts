@@ -1,9 +1,30 @@
 import loadImage from 'blueimp-load-image';
-import {RectCoords, WH} from "./types";
+import {RectCoords, Region, WH} from "./types";
 
 
 
+function rectCenter({x1, x2, y1, y2}: RectCoords) : [number, number] {
+    return [ // get middle of box and map to pixels
+         ((x2-x1)/2 + x1),
+         ((y2-y1)/2+ y1)
+    ];
+}
 
+const dist2d = ([x1, y1]: [number, number], [x2, y2]: [number, number] ) : number =>
+    Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+
+
+
+export function selectFirstCenteredRegion(regions: Region[], defaultRect: RectCoords) : RectCoords {
+    let centeredRegion = regions.filter(r => {
+        let dist = dist2d([0.5, 0.5], rectCenter(r.normalizedRect));
+        return dist < 0.3;
+    });
+    if (centeredRegion.length === 0) {
+        return defaultRect;
+    }
+    return centeredRegion[0].normalizedRect;
+}
 
 /**
  * Gets url parameter values by name.
