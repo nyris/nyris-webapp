@@ -16,7 +16,7 @@
     "blueimp-load-image": "^2.24.0"
   },
   "devDependencies": {
-    "typescript": "3.6.2",
-    "rxjs": "^6.5.3"
+    "rxjs": "^6.5.3",
+    "typescript": "3.6.2"
   }
 }
