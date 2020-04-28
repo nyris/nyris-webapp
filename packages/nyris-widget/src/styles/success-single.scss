@@ -1,0 +1,42 @@
+.nyris__success-single {
+  &-image {
+    @include rounded-rect(70vmin, 70vmin, 5px);
+    position: relative;
+    align-self: center;
+    overflow: hidden;
+    background: none no-repeat center;
+    background-size: contain;
+    text-decoration: none;
+    color: $color-heading;
+
+    @media #{$desktop-query} {
+      @include flex-filler();
+      width: initial;
+      height: initial;
+    }
+
+    &-panel {
+      position: relative;
+      width: 100%;
+      font-size: 11px;
+      font-weight: 700;
+      bottom: 0;
+      
+
+      & > div {
+        margin: 0 7px;
+      }
+
+      &-name {
+        font-weight: bold;
+      }
+    }
+  }
+
+  &-note {
+    position: relative;
+    margin-top: 34px;
+    text-align: center;
+    font-size: 14px;
+  }
+}

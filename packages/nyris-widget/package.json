@@ -1,0 +1,41 @@
+{
+  "name": "@nyris/nyris-widget",
+  "version": "0.1.0",
+  "homepage": "https://github.com/nyris/nyris-webapp",
+  "devDependencies": {
+    "@svgr/webpack": "^5.3.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/classnames": "^2.2.10",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.12.35",
+    "@types/react": "^16.9.33",
+    "@types/react-dom": "^16.9.6",
+    "classnames": "^2.2.6",
+    "copy-webpack-plugin": "^5.1.1",
+    "css-loader": "^3.5.3",
+    "konva": "4.0.7",
+    "node-sass": "^4.13.1",
+    "@nyris/nyris-api": "^0.1.0",
+    "@nyris/nyris-react-components": "^0.1.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-dropzone": "^11.0.1",
+    "react-move": "^6.1.0",
+    "sass-loader": "^8.0.2",
+    "source-map-loader": "^0.2.4",
+    "style-loader": "^1.2.0",
+    "svg-inline-loader": "^0.8.2",
+    "ts-loader": "^7.0.1",
+    "typescript": "^3.7.5",
+    "url-loader": "^4.1.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack"
+  }
+}

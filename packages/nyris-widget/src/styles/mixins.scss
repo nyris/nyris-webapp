@@ -1,0 +1,41 @@
+@mixin flex-center() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin inline-flex-center() {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-column-spread() {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@mixin flex-column-center() {
+  @include flex-center();
+  flex-direction: column;
+}
+
+@mixin flex-filler() {
+  flex-grow: 1;
+  align-self: stretch;
+}
+
+@mixin rounded-rect($width, $height, $radius) {
+  width: $width;
+  height: $height;
+  border-radius: $radius;
+}
+
+@mixin circle($diameter) {
+  @include rounded-rect($diameter, $diameter, $diameter / 2)
+}
+
+@mixin transparent-dark($opacity) {
+  background-color: rgba(#000, $opacity);
+}
