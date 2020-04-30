@@ -23,8 +23,24 @@ Look at `SearchServiceSettings` in `src/types.ts` for a complete list.
 
 ## Architecture
 
-This app uses react and redux. The main components are App and AppMD with `index.tsx` as the composition root.
-The file `NyrisAPI.ts` contains the interface to the [nyris vision API](https://docs.nyris.io/).
+The main components are `App` and `AppMD` with `index.tsx` as the composition root.
+
+### redux & state handling
+
+Actions are data structures, which describe events, that take place.
+
+To change the state of the app, redurcers are used. A reducer takes a
+state and an action and produces calculates a new state.
+
+The files are in `src/actions/`
+
+Neither actions nor reducers have any side effects (e.g. sending a request to a server).
+Epics introduced by [redux-observable](https://redux-observable.js.org/) library handle side effects.
+They listen for a specific action produce themselves new actions asynchronously.
+
+The files are in `src/epics/`
+
+
 
 ## Available Scripts
 
@@ -67,7 +83,7 @@ npm install --save nyris-api
 ```
 
 ```typescript
-import NyrisAPI, { urlOrBlobToCanvas} from 'nyris-api';
+import NyrisAPI, { urlOrBlobToCanvas} from '@nyris/nyris-api';
 const nyrisApi = new NyrisAPI({
     apiKey: '<API_KEY>'
 });
@@ -90,7 +106,7 @@ npm install --save nyris-react-components
 
 Import a component to use it.
 ```tsx
-import {Preview} from 'nyris-react-components';
+import {Preview} from '@nyris/nyris-react-components';
 
 export default App = () => (
     <div>
