@@ -18,6 +18,6 @@ window.nyrisSettings = {
     instantRedirectPatterns: [ 'mysite.com' ] // If exactly one result is returned and it contains `mysite.com`,go directly to the link.
 };
 </script>
-<scrpt src="node_modules/@nyris/nyris-widget/dist/widget.js"></scrpt>
+<script src="node_modules/@nyris/nyris-widget/dist/widget.js"></script>
 ```
 
