@@ -15,6 +15,7 @@
 /packages/nyris-widget/dist
 /packages/nyris-webapp/build
 /packages/nyris-webapp/dist
+/packages/nyris-webapp/public/js/settings.js
 *.tgz
 
 # misc
