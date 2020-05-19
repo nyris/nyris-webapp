@@ -18,7 +18,9 @@
       var gNyrisApiKey=location.search.split("=")[1];
       if (gNyrisApiKey) {
           window.nyrisSettings = {
-            apiKey: gNyrisApiKey
+            apiKey: gNyrisApiKey,
+            responseFormat: 'application/offers.complete+json', // See "response type" https://docs.nyris.io/#response-type
+
           };
           var s = document.createElement("script");
           s.src = "widget.js";
