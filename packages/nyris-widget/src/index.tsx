@@ -9,11 +9,10 @@ import NyrisAPI, {
     RectCoords,
     Region,
     SearchResult,
-    Result, elementToCanvas
+    Result, elementToCanvas, ImageSearchOptions
 } from "@nyris/nyris-api";
 import {ResultProps} from "./Result";
 import {makeFileHandler} from "@nyris/nyris-react-components";
-import search from "../../nyris-webapp/src/epics/search";
 
 
 interface NyrisSettings extends NyrisAPISettings {
@@ -149,7 +148,10 @@ class Nyris {
         this.showScreen(Screen.Wait);
         try {
             await this.updateThumbnail();
-            const searchResult = await this.nyrisApi.findByImage(this.image, {}); // TODO set options
+            let options : ImageSearchOptions = {
+                cropRect: this.selection
+            };
+            const searchResult = await this.nyrisApi.findByImage(this.image, options);
             if (searchResult.results.length === 1 && this.shouldRedirect(searchResult)) {
                 const firstLink = searchResult.results[0].l;
                 // @ts-ignore
