@@ -9,7 +9,7 @@ import NyrisAPI, {
     RectCoords,
     Region,
     SearchResult,
-    Result, elementToCanvas, ImageSearchOptions
+    OfferNyrisResult, elementToCanvas, ImageSearchOptions
 } from "@nyris/nyris-api";
 import {ResultProps} from "./Result";
 import {makeFileHandler} from "@nyris/nyris-react-components";
@@ -133,12 +133,12 @@ class Nyris {
         this.showScreen(this.screen === Screen.Hidden ? Screen.Hello : Screen.Hidden);
     }
 
-    renderResults(results: Result[]) {
+    renderResults(results: OfferNyrisResult[]) {
         this.results = results.map((offer:any) => ({
             title: offer.title,
             imageUrl: offer.img.url,
             link: offer.l,
-            price:  `${(offer.p.vi / 100).toFixed(2)} ${offer.p.c}`
+            price:  offer.p ? `${(offer.p.vi / 100).toFixed(2)} ${offer.p.c}` : ''
         }));
 
         this.showScreen(Screen.Result);

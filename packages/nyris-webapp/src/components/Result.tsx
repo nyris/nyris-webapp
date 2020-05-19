@@ -1,5 +1,5 @@
 import React from 'react';
-import {Result as ResultData} from "@nyris/nyris-api";
+import {OfferNyrisResult as ResultData} from "@nyris/nyris-api";
 
 // TODO this needs refactoring: Make it one block with parameters for first line, second line, image url ..
 
@@ -30,7 +30,6 @@ const renderDefault = ({result, noImageUrl, onImageClick, onLinkClick}: Options)
                     <div className="prdctTitle">{result.title}</div>
                     <div className="prdctMeta">
                         <span className="prdctPrice">{renderPrice(result)}</span>
-                        <span className="prdctShop"> at {result.mer}</span>
                     </div>
                     <a onClick={onLinkClick} onAuxClick={onLinkClick} className="prdctShopLink" href={result.l}
                        target="_blank" rel="noopener noreferrer">Buy Now</a>

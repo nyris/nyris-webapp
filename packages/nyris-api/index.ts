@@ -1,6 +1,5 @@
 import {getRectAspectRatio, canvasToJpgBlob, getElementSize, getThumbSizeArea, elementToCanvas} from "./utils";
 import axios, {AxiosInstance} from 'axios';
-import set = Reflect.set;
 
 // re-export utils
 export * from './utils';
@@ -34,7 +33,17 @@ export interface WH {
 }
 
 
-export interface Result {
+interface SearchResponseBase {
+    id: string
+    session: string
+    predicted_category?: { [category:string]:number }
+    barcodes?: Code[]
+}
+
+/**
+ * Result entry of `application/offers.nyris+json`
+ */
+export interface OfferNyrisResult {
     position: number,
     sku?: string,
     title?: string,
@@ -44,8 +53,33 @@ export interface Result {
     [x: string]: any
 }
 
+export interface OfferCompleteResult {
+    title: string
+    description?: string
+    price?: string
+    links?: {
+        main?: string
+    }
+    images: string[]
+    sku: string
+    score: number
+}
+
+interface OfferCompleteResponse extends SearchResponseBase {
+    results: OfferCompleteResult[]
+}
+
+
+/**
+ * Response of `application/offers.nyris+json`
+ */
+interface OfferNyrisResponse extends SearchResponseBase {
+    durationSeconds: number
+    offerInfos: OfferNyrisResult[]
+}
+
 export interface SearchResult {
-    results: Result[]
+    results: OfferNyrisResult[]
     requestId: string
     categoryPredictions: CategoryPrediction[]
     codes: Code[]
@@ -214,7 +248,8 @@ export default class NyrisAPI {
             dist: options.geoLocation.dist.toString()
         } : {};
         console.log('p', params, imageBytes);
-        let res :any = await this.httpClient.request<any>({
+        let t1 = Date.now();
+        let res = await this.httpClient.request<OfferNyrisResponse|OfferCompleteResponse>({
             method: 'POST',
             url: this.imageMatchingUrl,
             data: imageBytes,
@@ -222,6 +257,7 @@ export default class NyrisAPI {
             headers,
             responseType: 'json'
         });
+        let t2 = Date.now();
         console.log(res);
         const categoryPredictions = Object.entries(res.data.predicted_category || {}).map(([name, score]) => ({
             name: name,
@@ -229,16 +265,26 @@ export default class NyrisAPI {
         })).sort((a, b) => b.score - a.score);
         let codes = res.data.barcodes || [];
 
-        let responseData = this.responseHook? this.responseHook(res.data) : res.data;
+        let responseData : OfferNyrisResponse|OfferCompleteResponse = this.responseHook? this.responseHook(res.data) : res.data;
 
-        let results : Result[] =
-            responseData.offerInfos.map((r: Result, i: number) => ({
+        let results : OfferNyrisResult[] =
+            'offerInfos' in responseData ?
+            responseData.offerInfos.map((r: OfferNyrisResult, i: number) => ({
                 ...r,
                 position: i
-            }));
+            }))
+            : responseData.results.map((r: OfferCompleteResult, i: number) =>
+                    ({
+                        position: i,
+                        sku: r.sku,
+                        title: r.title,
+                        img: r.images && r.images[0] ? { url: r.images[0] } : undefined,
+                        l: r.links ? r.links.main : undefined,
+                        p: r.price ? { vi: parseFloat(r.price) * 100, c: r.price.split(" ")[1]} : undefined
+                    }));
 
         const requestId = res.headers["x-matching-request"];
-        const duration = res.data.durationSeconds;
+        const duration = 'durationSeconds' in res.data ? res.data.durationSeconds : (t2-t1) / 1000;
         return { results, requestId, duration, categoryPredictions, codes };
     }
 
