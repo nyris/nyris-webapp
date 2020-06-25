@@ -162,9 +162,15 @@ export function elementToCanvas(elem: HTMLImageElement | HTMLCanvasElement | HTM
     const canvas = document.createElement('canvas');
     canvas.width = dw;
     canvas.height = dh;
+    const context = canvas.getContext('2d');
+    if (!context) {
+        throw Error("Error converting element to canvas: Can not get 2d context");
+    }
+    // fill with white first to
+    context.fillStyle="rgb(255, 255,255)";
+    context.fillRect(0,0, dw, dh);
 
-    // @ts-ignore
-    canvas.getContext('2d').drawImage(
+    context.drawImage(
         elem,
         sx, sy,
         sw, sh,
