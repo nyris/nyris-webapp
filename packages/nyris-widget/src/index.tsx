@@ -1,3 +1,6 @@
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -183,7 +186,7 @@ window.addEventListener("load", (e) => {
     console.log("loading widget");
     let div = document.createElement('div');
     div.id = 'nyris-mount-point';
-    document.body.prepend(div);
+    document.body.appendChild(div);
 
     const nyris = new Nyris(window.nyrisSettings);
 });

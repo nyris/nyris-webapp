@@ -6,7 +6,7 @@ module.exports = {
     target: 'node',
 
     // Enable sourcemaps for debugging webpack's output.
-    devtool: "source-map",
+    devtool: "eval-source-map",
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
@@ -26,10 +26,9 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.ts(x?)$/,
-                use: [
-                    { loader: "ts-loader" }
-                ]
+                test: /\.(js|jsx|ts|tsx)$/,
+                exclude: /node_modules/,
+                loader: "babel-loader"
             },
             {
                 enforce: "pre",
