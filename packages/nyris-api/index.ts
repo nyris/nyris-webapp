@@ -1,3 +1,5 @@
+require("blueimp-canvas-to-blob");
+
 import {getRectAspectRatio, canvasToJpgBlob, getElementSize, getThumbSizeArea, elementToCanvas} from "./utils";
 import axios, {AxiosInstance} from 'axios';
 
