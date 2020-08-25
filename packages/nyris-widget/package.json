@@ -3,6 +3,13 @@
   "version": "0.1.4",
   "homepage": "https://github.com/nyris/nyris-webapp",
   "devDependencies": {
+    "@babel/core": "^7.11.4",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+    "@babel/plugin-transform-runtime": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
     "@nyris/nyris-api": "^0.1.4",
     "@nyris/nyris-react-components": "^0.1.4",
     "@svgr/webpack": "^5.3.1",
@@ -14,8 +21,10 @@
     "@types/node": "^12.12.35",
     "@types/react": "^16.9.33",
     "@types/react-dom": "^16.9.6",
+    "babel-loader": "^8.1.0",
     "classnames": "^2.2.6",
     "copy-webpack-plugin": "^5.1.1",
+    "core-js": "^3.6.5",
     "css-loader": "^3.5.3",
     "konva": "4.0.7",
     "node-sass": "^4.14.1",
@@ -23,6 +32,7 @@
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.1",
     "react-move": "^6.1.0",
+    "regenerator-runtime": "^0.13.7",
     "sass-loader": "^8.0.2",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.2.0",
@@ -37,5 +47,31 @@
   "scripts": {
     "start": "webpack-dev-server --mode development",
     "build": "webpack"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all",
+      "ie 11"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version",
+      "ie 11"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react",
+      "@babel/preset-typescript"
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-class-properties",
+      "@babel/proposal-object-rest-spread",
+      "@babel/plugin-transform-runtime"
+    ]
   }
 }
