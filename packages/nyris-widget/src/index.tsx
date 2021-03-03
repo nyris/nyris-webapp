@@ -6,13 +6,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App, {AppProps, Screen} from './App';
 import NyrisAPI, {
-    urlOrBlobToCanvas,
-    getElementSize, getThumbSizeLongestEdge,
+    elementToCanvas,
+    getElementSize,
+    getThumbSizeLongestEdge,
+    ImageSearchOptions,
     NyrisAPISettings,
+    OfferNyrisResult,
     RectCoords,
     Region,
     SearchResult,
-    OfferNyrisResult, elementToCanvas, ImageSearchOptions
+    selectFirstCenteredRegion,
+    urlOrBlobToCanvas
 } from "@nyris/nyris-api";
 import {ResultProps} from "./Result";
 import {makeFileHandler} from "@nyris/nyris-react-components";
@@ -110,11 +114,8 @@ class Nyris {
     }
 
     async refineSelection() {
-        this.showScreen(Screen.Wait);
         try {
-            const regions = await this.nyrisApi.findRegions(this.image);
-            this.regions = regions;
-            await this.showRefineSearch(regions);
+            await this.showRefineSearch(this.regions);
         } catch (err) {
             this.err = err.toString();
             this.showScreen(Screen.Fail);
@@ -124,6 +125,11 @@ class Nyris {
 
     async handleFile(f: File) {
         this.image = await urlOrBlobToCanvas(f);
+
+        const regions = await this.nyrisApi.findRegions(this.image);
+        this.regions = regions;
+        this.selection = this.preselectDefaultRegion(regions);
+
         await this.startProcessing();
     }
 
@@ -147,18 +153,25 @@ class Nyris {
         this.showScreen(Screen.Result);
     }
 
+    preselectDefaultRegion(regions: Region[]) {
+        const defaultRect = {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9};
+        return selectFirstCenteredRegion(regions, 0.3, defaultRect)
+    }
+
     async startProcessing() {
         this.showScreen(Screen.Wait);
         try {
             await this.updateThumbnail();
+
+
             let options : ImageSearchOptions = {
                 cropRect: this.selection
             };
+
             const searchResult = await this.nyrisApi.findByImage(this.image, options);
             if (searchResult.results.length === 1 && this.shouldRedirect(searchResult)) {
-                const firstLink = searchResult.results[0].l;
                 // @ts-ignore
-                window.location.href = firstLink;
+                window.location.href = searchResult.results[0].l;
                 return;
             }
             this.renderResults(searchResult.results);
