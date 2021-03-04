@@ -7,7 +7,7 @@ import './index.css';
 import App, {AppProps, Screen} from './App';
 import NyrisAPI, {
     elementToCanvas,
-    getElementSize,
+    getElementSize, getRectSize,
     getThumbSizeLongestEdge,
     ImageSearchOptions,
     NyrisAPISettings,
@@ -89,9 +89,8 @@ class Nyris {
     }
 
     async updateThumbnail() {
-        const originalSize = getElementSize(this.image);
-        let scaledSize = getThumbSizeLongestEdge(100, 100, originalSize.w, originalSize.h);
-
+        const {w, h} = getRectSize(this.selection);
+        let scaledSize = getThumbSizeLongestEdge(100, 100, w, h);
         this.thumbImageUrl = elementToCanvas(this.image, scaledSize, this.selection).toDataURL();
     }
 
