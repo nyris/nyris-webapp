@@ -7,7 +7,7 @@ import './index.css';
 import App, {AppProps, Screen} from './App';
 import NyrisAPI, {
     elementToCanvas,
-    getElementSize, getRectSize,
+    getRectSize,
     getThumbSizeLongestEdge,
     ImageSearchOptions,
     NyrisAPISettings,
@@ -124,10 +124,15 @@ class Nyris {
 
     async handleFile(f: File) {
         this.image = await urlOrBlobToCanvas(f);
+        this.regions = [];
 
-        const regions = await this.nyrisApi.findRegions(this.image);
-        this.regions = regions;
-        this.selection = this.preselectDefaultRegion(regions);
+        try {
+            this.regions = await this.nyrisApi.findRegions(this.image);
+        } catch (e) {
+            console.warn("Could not get regions", e);
+        }
+
+        this.selection = this.preselectDefaultRegion(this.regions);
 
         await this.startProcessing();
     }
