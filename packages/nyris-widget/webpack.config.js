@@ -17,7 +17,7 @@ module.exports = {
     },
 
     plugins: [
-        new CopyPlugin([ { from: 'public', to: 'dist'} ])
+        new CopyPlugin([ { from: 'public', to: ''} ])
     ],
 
 
