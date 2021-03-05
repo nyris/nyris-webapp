@@ -30,3 +30,7 @@ window.nyrisSettings = {
 <script src="node_modules/@nyris/nyris-widget/dist/widget.js"></script>
 ```
 
+## Building a custom version
+
+Follow the steps on [main README](../../README.md) initialize all packages.
+Then in this directory, run `npm start` for a local development server or  `npm run build` to build a minified `widget.js`.

@@ -9,8 +9,9 @@
 </head>
 <body>
   <h1>Test page</h1>
+  <h2>Test on this site</h2>
   Enter your api key and submit
-  <form method="get" action="example.html">
+  <form method="get" action="sample.html">
     API key: <input type="text" name="apikey" placeholder="YOUR API KEY HERE">
     <input type="submit">
   </form>
@@ -20,12 +21,18 @@
           window.nyrisSettings = {
             apiKey: gNyrisApiKey,
             responseFormat: 'application/offers.complete+json', // See "response type" https://docs.nyris.io/#response-type
-
           };
+
           var s = document.createElement("script");
           s.src = "widget.js";
           document.getElementsByTagName('head')[0].appendChild(s);
       }
   </script>
+  <h2>Download widget.js</h2>
+  <a href="widget.js">widget.js</a>
+
+  <h2>Source</h2>
+  <p>To build a custom version, check out the code on github: <a href="https://github.com/nyris/nyris-webapp/tree/develop/packages/nyris-widget">nyris-widget</a></p>
+
 </body>
 </html>
