@@ -18,6 +18,7 @@ import * as React from "react";
 import {NodeGroup} from "react-move";
 import classNames from 'classnames';
 import {Capture, Preview} from "@nyris/nyris-react-components";
+import {cadExtensions} from "@nyris/nyris-api";
 
 
 const useStyles = makeStyles(theme => ({
@@ -118,6 +119,10 @@ const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, 
     const minPreviewHeight = 400;
     const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
     const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
+    const acceptTypes =
+        [ 'image/*' ].concat(
+            settings.cadSearch ? cadExtensions : []
+        ).join(',');
 
     return (
         <React.Fragment>
@@ -159,7 +164,7 @@ const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, 
                                 </div>
                                 <div style={{textAlign: 'center'}}>
                                     <input
-                                        accept="image/*"
+                                        accept={acceptTypes}
                                         id="raised-button-file"
                                         type="file"
                                         onChange={makeFileHandler(handlers.onSelectFile)}
@@ -167,7 +172,7 @@ const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, 
                                     />
                                     <label htmlFor="raised-button-file">
                                         <Button variant={"contained"} color={"primary"} component="span">
-                                            Select an image
+                                            Select a file
                                         </Button>
                                     </label>
                                 </div>
@@ -190,7 +195,7 @@ const AppMD: React.FC<AppProps> = ({settings, handlers, showPart, previewImage, 
                                     </div>
                                     <div style={{textAlign: 'center'}}>
                                         <input
-                                            accept="image/*"
+                                            accept={acceptTypes}
                                             id="raised-button-file"
                                             type="file"
                                             {...getInputProps()}
