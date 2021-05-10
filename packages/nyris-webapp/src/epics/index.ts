@@ -4,7 +4,7 @@ import {showFeedback, showResults} from "../actions/nyrisAppActions";
 import {EpicConf} from "./types";
 import feedbackEpics from "./feedback";
 import searchEpics from "./search";
-import {searchOffersForImage, searchRegions} from "../actions/searchActions";
+import {searchOffersForImage, searchOffersForCad, searchRegions} from "../actions/searchActions";
 import {AppAction} from "../types";
 import {selectFirstCenteredRegion} from "@nyris/nyris-api";
 
@@ -71,6 +71,18 @@ const startSearchOnImageLoaded: EpicConf = (action$, state$) => action$.pipe(
     })
 );
 
+const startSearchOnCadLoaded: EpicConf = (action$, state$) => action$.pipe(
+    ofType('CAD_LOADED'),
+    withLatestFrom(state$),
+    switchMap(async ([action, {settings}]) : Promise<AppAction> => {
+        if (action.type !== 'CAD_LOADED') {
+            throw new Error(`Wrong action type ${action.type}`);
+        }
+        let { file } = action;
+        return searchOffersForCad(file);
+    })
+);
+
 const startSearchOnRegionsSuccessful: EpicConf = (action$, state$) => action$.pipe(
     ofType('REGION_REQUEST_SUCCEED'),
     withLatestFrom(state$),
@@ -110,6 +122,7 @@ const rootEpic = combineEpics(
     feedbackEpics,
     historyEpic,
     startSearchOnImageLoaded,
+    startSearchOnCadLoaded,
     startSearchOnRegionsSuccessful,
     startSearchOnRegionChange,
     onSearchSuccessShowResults,

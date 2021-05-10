@@ -210,3 +210,12 @@ export function canvasToJpgBlob(canvas: HTMLCanvasElement, quality: number): Pro
     });
 }
 
+export const cadExtensions = ['.stp', '.step', '.stl', '.obj', '.glb', '.gltf' ];
+
+export function isCadFile(file: File) {
+    return cadExtensions.some(ex => file.name.endsWith(ex))
+}
+
+export function isImageFile(file: File) {
+    return file.type.startsWith('image/');
+}
