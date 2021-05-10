@@ -6,7 +6,7 @@ import Feedback from './components/Feedback';
 import CategoryFilter from "./components/CategoryFilter";
 import PredictedCategories from "./components/PredictedCategories";
 import Codes from "./components/Codes";
-import {Code, CategoryPrediction, RectCoords, Region} from "@nyris/nyris-api";
+import {Code, CategoryPrediction, RectCoords, Region, cadExtensions} from "@nyris/nyris-api";
 import { useDropzone} from "react-dropzone";
 import classNames from 'classnames';
 import {Animate, NodeGroup} from "react-move";
@@ -62,6 +62,10 @@ const App: React.FC<AppProps> = ({
     const minPreviewHeight = 400;
     const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
     const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
+    const acceptTypes =
+        [ 'image/*' ].concat(
+            settings.cadSearch ? cadExtensions : []
+        ).join(',');
 
     return (
         <div>
@@ -91,10 +95,10 @@ const App: React.FC<AppProps> = ({
                         <section className="uploadImage">
                             <input type="button" name="file" id="capture" className="inputfile" accept="image/*"
                                    capture="environment" onClick={handlers.onCameraClick}/>
-                            <input type="file" name="file" id="capture_file" className="inputfile" accept="image/*"
+                            <input type="file" name="file" id="capture_file" className="inputfile" accept={acceptTypes}
                                    capture="environment"/>
                             <input {...getInputProps()} type="file" name="file" id="select_file" className="inputfile"
-                                   accept="image/*"
+                                   accept={acceptTypes}
                                    onChange={makeFileHandler(handlers.onSelectFile)}
                             />
                             <div className="onDesktop">
