@@ -22,6 +22,7 @@ export interface MDSettings {
 export interface AppSettings extends NyrisAPISettings {
     exampleImages: string[],
     preview: boolean,
+    cadSearch?: boolean,
     noImageUrl?: string,
     resultTemplate?: string,
     regions: boolean,
