@@ -170,6 +170,7 @@ export interface NyrisAPISettings {
 export default class NyrisAPI {
     private readonly httpClient: AxiosInstance;
     private readonly imageMatchingUrl: string;
+    private readonly cadMatchingUrl: string;
     private readonly regionProposalUrl: string;
     private readonly responseFormat: string;
     private readonly imageMatchingUrlBySku: string;
@@ -194,6 +195,7 @@ export default class NyrisAPI {
         this.apiKey = settings.apiKey;
         const baseUrl = settings.baseUrl || 'https://api.nyris.io';
         this.imageMatchingUrl = `${baseUrl}/find/v1`;
+        this.cadMatchingUrl = `${baseUrl}/cad/find/v0.1`;
         this.imageMatchingUrlBySku = `${baseUrl}/recommend/v1/`;
         this.imageMatchingSubmitManualUrl = `${baseUrl}/find/v1/manual/`;
         this.feedbackUrl = `${baseUrl}/feedback/v1/`;
@@ -220,6 +222,73 @@ export default class NyrisAPI {
         let scaledSize = getThumbSizeArea(this.maxWidth, this.maxHeight, aspectRatio);
         let resizedCroppedCanvas = elementToCanvas(canvas, scaledSize, crop);
         return await canvasToJpgBlob(resizedCroppedCanvas, this.jpegQuality);
+    }
+
+    /**
+     * Search using the experimental CAD API
+     * @param file - A CAD file
+     * @param options - Image search options
+     * @deprecated This is a prototype API and might be removed/changed at any time.
+     */
+    async findByCad(file: File, options: ImageSearchOptions) : Promise<SearchResult> {
+        const imageBytes : Blob = file;
+
+        let headers : any = {
+            'Content-Type': file.type,
+            'X-Api-Key': this.apiKey,
+            'Accept-Language': 'de,*;q=0.5',
+            'Accept': this.responseFormat
+        };
+        const xOptions = [];
+        if (this.xOptions)
+            xOptions.push(this.xOptions as string);
+        if (xOptions.length > 0)
+            headers['X-Options'] = xOptions.join(' ');
+        let params = options.geoLocation ? {
+            lat: options.geoLocation.lat.toString(),
+            lon: options.geoLocation.lon.toString(),
+            dist: options.geoLocation.dist.toString()
+        } : {};
+        console.log('p', params, imageBytes);
+        let t1 = Date.now();
+        let res = await this.httpClient.request<OfferNyrisResponse|OfferCompleteResponse>({
+            method: 'POST',
+            url: this.cadMatchingUrl,
+            data: imageBytes,
+            params,
+            headers,
+            responseType: 'json'
+        });
+        let t2 = Date.now();
+        console.log(res);
+        const categoryPredictions = Object.entries(res.data.predicted_category || {}).map(([name, score]) => ({
+            name: name,
+            score: score as number
+        })).sort((a, b) => b.score - a.score);
+        let codes = res.data.barcodes || [];
+
+        let responseData : OfferNyrisResponse|OfferCompleteResponse = this.responseHook? this.responseHook(res.data) : res.data;
+
+        let results : OfferNyrisResult[] =
+            'offerInfos' in responseData ?
+                responseData.offerInfos.map((r: OfferNyrisResult, i: number) => ({
+                    ...r,
+                    position: i
+                }))
+                : responseData.results.map((r: OfferCompleteResult, i: number) =>
+                    ({
+                        position: i,
+                        sku: r.sku,
+                        title: r.title,
+                        img: r.images && r.images[0] ? { url: r.images[0] } : undefined,
+                        l: r.links ? r.links.main : undefined,
+                        p: r.price ? { vi: parseFloat(r.price) * 100, c: r.price.split(" ")[1]} : undefined
+                    }));
+
+        const requestId = res.headers["x-matching-request"];
+        const duration = 'durationSeconds' in res.data ? res.data.durationSeconds : (t2-t1) / 1000;
+        return { results, requestId, duration, categoryPredictions, codes };
+
     }
 
     /**
