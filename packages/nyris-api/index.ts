@@ -1,159 +1,31 @@
+import {
+    CategoryPrediction, FeedbackEvent,
+    FeedbackEventPayload,
+    ImageSearchOptions,
+    OfferNyrisResult,
+    Region,
+    SearchResult,
+    RectCoords
+} from "./types-external";
+
 require("blueimp-canvas-to-blob");
 
-import {getRectAspectRatio, canvasToJpgBlob, getElementSize, getThumbSizeArea, elementToCanvas} from "./utils";
-import axios, {AxiosInstance} from 'axios';
+import {getRectAspectRatio, canvasToJpgBlob, getElementSize, getThumbSizeArea, elementToCanvas, timePromise} from "./utils";
+import axios, {AxiosInstance, AxiosResponse} from 'axios';
 
 // re-export utils
 export * from './utils';
+// and export types
+export * from './types-external';
+
+import {
+    CategoryPredictionResponse, NyrisRegionResult,
+    OfferCompleteResponse,
+    OfferCompleteResult,
+    OfferNyrisResponse
+} from './types-internal';
 
 
-
-export interface ImageSearchOptions {
-    geoLocation?: { lat: number, lon: number, dist: number };
-    cropRect?: RectCoords;
-}
-
-/**
- * Coordinates of a rectangle.
- * The distance is usually normalized to the range 0.0 to 1.0 from the top left corner.  */
-export interface RectCoords {
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number
-}
-
-export type Region = {
-    className?: string,
-    confidence?: number,
-    normalizedRect: RectCoords
-}
-
-export interface WH {
-    w: number,
-    h: number
-}
-
-
-interface SearchResponseBase {
-    id: string
-    session: string
-    predicted_category?: { [category:string]:number }
-    barcodes?: Code[]
-}
-
-/**
- * Result entry of `application/offers.nyris+json`
- */
-export interface OfferNyrisResult {
-    position: number,
-    sku?: string,
-    title?: string,
-    l?: string,
-    img?: { url?: string },
-    // There can be also any other data
-    [x: string]: any
-}
-
-export interface OfferCompleteResult {
-    title: string
-    description?: string
-    price?: string
-    links?: {
-        main?: string
-    }
-    images: string[]
-    sku: string
-    score: number
-}
-
-interface OfferCompleteResponse extends SearchResponseBase {
-    results: OfferCompleteResult[]
-}
-
-
-/**
- * Response of `application/offers.nyris+json`
- */
-interface OfferNyrisResponse extends SearchResponseBase {
-    durationSeconds: number
-    offerInfos: OfferNyrisResult[]
-}
-
-export interface SearchResult {
-    results: OfferNyrisResult[]
-    requestId: string
-    categoryPredictions: CategoryPrediction[]
-    codes: Code[]
-    duration: number
-}
-
-export interface CategoryPrediction {
-    name: string
-    score: number
-}
-
-export interface Code {
-    value: string
-    type: string
-}
-
-interface NyrisRegion {
-    left: number,
-    top: number,
-    right: number,
-    bottom: number
-}
-
-interface NyrisRegionResult {
-    className: string,
-    region: NyrisRegion,
-    confidence: number
-}
-
-
-export interface RegionData {
-    rect: {
-        x: number,
-        y: number,
-        w: number,
-        h: number
-    }
-}
-
-export interface FeedbackData {
-    success: boolean
-}
-
-export interface ClickData {
-    positions: number[],
-    product_ids?: string[]
-}
-
-interface SuccessEventPayload  {
-    event: 'feedback',
-    data: FeedbackData
-}
-
-interface RegionEventPayload {
-    event: 'region',
-    data: RegionData
-}
-interface ClickEventPayload  {
-    event: 'click',
-    data: ClickData
-}
-
-export type FeedbackEventPayload =
-    | SuccessEventPayload
-    | RegionEventPayload
-    | ClickEventPayload
-
-type FeedbackEvent = FeedbackEventPayload & {
-    request_id: string,
-    timestamp: Date,
-    session_id: string
-}
 
 export interface NyrisAPISettings {
     xOptions: boolean | string,
@@ -224,47 +96,48 @@ export default class NyrisAPI {
         return await canvasToJpgBlob(resizedCroppedCanvas, this.jpegQuality);
     }
 
-    /**
-     * Search using the experimental CAD API
-     * @param file - A CAD file
-     * @param options - Image search options
-     * @deprecated This is a prototype API and might be removed/changed at any time.
-     */
-    async findByCad(file: File, options: ImageSearchOptions) : Promise<SearchResult> {
-        const imageBytes : Blob = file;
-
+    private getSearchRequestHeaders(contentType?: string) {
+        // Create headers
         let headers : any = {
-            'Content-Type': file.type,
             'X-Api-Key': this.apiKey,
             'Accept-Language': 'de,*;q=0.5',
             'Accept': this.responseFormat
         };
+
+        // Add content type if provided
+        if (contentType)
+            headers['Content-Type'] = contentType;
+
+        // Add options
         const xOptions = [];
         if (this.xOptions)
             xOptions.push(this.xOptions as string);
         if (xOptions.length > 0)
             headers['X-Options'] = xOptions.join(' ');
+
+        return headers;
+    };
+
+    private getParams(options: ImageSearchOptions) {
         let params = options.geoLocation ? {
             lat: options.geoLocation.lat.toString(),
             lon: options.geoLocation.lon.toString(),
             dist: options.geoLocation.dist.toString()
         } : {};
-        console.log('p', params, imageBytes);
-        let t1 = Date.now();
-        let res = await this.httpClient.request<OfferNyrisResponse|OfferCompleteResponse>({
-            method: 'POST',
-            url: this.cadMatchingUrl,
-            data: imageBytes,
-            params,
-            headers,
-            responseType: 'json'
-        });
-        let t2 = Date.now();
-        console.log(res);
-        const categoryPredictions = Object.entries(res.data.predicted_category || {}).map(([name, score]) => ({
+
+        return params;
+    }
+
+    private parseCategoryPredictions(categoryPredictionResponse?: CategoryPredictionResponse) : CategoryPrediction[] {
+        return Object.entries(categoryPredictionResponse || {}).map(([name, score]) => ({
             name: name,
             score: score as number
         })).sort((a, b) => b.score - a.score);
+    }
+
+
+    private parseSearchResult(res: AxiosResponse<OfferNyrisResponse|OfferCompleteResponse>, durationSeconds: number) {
+        const categoryPredictions = this.parseCategoryPredictions(res.data.predicted_category);
         let codes = res.data.barcodes || [];
 
         let responseData : OfferNyrisResponse|OfferCompleteResponse = this.responseHook? this.responseHook(res.data) : res.data;
@@ -286,9 +159,28 @@ export default class NyrisAPI {
                     }));
 
         const requestId = res.headers["x-matching-request"];
-        const duration = 'durationSeconds' in res.data ? res.data.durationSeconds : (t2-t1) / 1000;
+        const duration = 'durationSeconds' in res.data ? res.data.durationSeconds : durationSeconds;
         return { results, requestId, duration, categoryPredictions, codes };
+    }
 
+    /**
+     * Search using the experimental CAD API
+     * @param file - A CAD file
+     * @param options - Image search options
+     * @deprecated This is a prototype API and might be removed/changed at any time.
+     */
+    async findByCad(file: File, options: ImageSearchOptions) : Promise<SearchResult> {
+        let headers = this.getSearchRequestHeaders(file.type);
+        let params = this.getParams(options);
+        let { res, durationSeconds } = await timePromise(this.httpClient.request<OfferNyrisResponse|OfferCompleteResponse>({
+            method: 'POST',
+            url: this.cadMatchingUrl,
+            data: file,
+            params,
+            headers,
+            responseType: 'json'
+        }));
+        return this.parseSearchResult(res, durationSeconds);
     }
 
     /**
@@ -302,61 +194,19 @@ export default class NyrisAPI {
         if (this.customSearchRequest)
             return this.customSearchRequest(imageBytes, this.httpClient);
 
-        let headers : any = {
-            'Content-Type': 'image/jpeg',
-            'X-Api-Key': this.apiKey,
-            'Accept-Language': 'de,*;q=0.5',
-            'Accept': this.responseFormat
-        };
-        const xOptions = [];
-        if (this.xOptions)
-            xOptions.push(this.xOptions as string);
-        if (xOptions.length > 0)
-            headers['X-Options'] = xOptions.join(' ');
-        let params = options.geoLocation ? {
-            lat: options.geoLocation.lat.toString(),
-            lon: options.geoLocation.lon.toString(),
-            dist: options.geoLocation.dist.toString()
-        } : {};
-        console.log('p', params, imageBytes);
-        let t1 = Date.now();
-        let res = await this.httpClient.request<OfferNyrisResponse|OfferCompleteResponse>({
+        let headers = this.getSearchRequestHeaders('image/jpeg');
+        let params = this.getParams(options);
+
+        let { res, durationSeconds } = await timePromise(this.httpClient.request<OfferNyrisResponse|OfferCompleteResponse>({
             method: 'POST',
             url: this.imageMatchingUrl,
             data: imageBytes,
             params,
             headers,
             responseType: 'json'
-        });
-        let t2 = Date.now();
-        console.log(res);
-        const categoryPredictions = Object.entries(res.data.predicted_category || {}).map(([name, score]) => ({
-            name: name,
-            score: score as number
-        })).sort((a, b) => b.score - a.score);
-        let codes = res.data.barcodes || [];
+        }));
 
-        let responseData : OfferNyrisResponse|OfferCompleteResponse = this.responseHook? this.responseHook(res.data) : res.data;
-
-        let results : OfferNyrisResult[] =
-            'offerInfos' in responseData ?
-            responseData.offerInfos.map((r: OfferNyrisResult, i: number) => ({
-                ...r,
-                position: i
-            }))
-            : responseData.results.map((r: OfferCompleteResult, i: number) =>
-                    ({
-                        position: i,
-                        sku: r.sku,
-                        title: r.title,
-                        img: r.images && r.images[0] ? { url: r.images[0] } : undefined,
-                        l: r.links ? r.links.main : undefined,
-                        p: r.price ? { vi: parseFloat(r.price) * 100, c: r.price.split(" ")[1]} : undefined
-                    }));
-
-        const requestId = res.headers["x-matching-request"];
-        const duration = 'durationSeconds' in res.data ? res.data.durationSeconds : (t2-t1) / 1000;
-        return { results, requestId, duration, categoryPredictions, codes };
+        return this.parseSearchResult(res, durationSeconds);
     }
 
     /**
@@ -365,15 +215,8 @@ export default class NyrisAPI {
      * @param mid The index ID.
      */
     async findBySku(sku: string, mid: string) {
-        let headers: any = {
-            'Content-Type': 'image/jpeg',
-            'X-Api-Key': this.apiKey,
-            'Accept-Language': 'de,*;q=0.5',
-            'Accept': this.responseFormat
-        };
-        const url = this.imageMatchingUrlBySku + encodeURIComponent(sku) + '/' + encodeURIComponent(mid);
-        if (this.xOptions)
-            headers['X-Options'] = this.xOptions as string;
+        const headers = this.getSearchRequestHeaders();
+        const url = `${this.imageMatchingUrlBySku}${encodeURIComponent(sku)}/${encodeURIComponent(mid)}`;
         let r:any = await this.httpClient.get(url, {headers, responseType: 'json'})
         if (this.responseHook) {
             r = this.responseHook;
