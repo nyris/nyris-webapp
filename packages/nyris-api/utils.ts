@@ -1,5 +1,5 @@
 import loadImage from 'blueimp-load-image';
-import {RectCoords, Region, WH} from "./types";
+import {RectCoords, Region, WH} from "./types-external";
 
 
 /**
@@ -218,4 +218,15 @@ export function isCadFile(file: File) {
 
 export function isImageFile(file: File) {
     return file.type.startsWith('image/');
+}
+
+/**
+ * Measures time remaining for a promise to resolve.
+ * @param promise The promise
+ */
+export async function timePromise<T>(promise: Promise<T>): Promise<{ res: T, durationSeconds: number}> {
+    let t1 = Date.now();
+    const res = await promise;
+    let t2 = Date.now();
+    return {res, durationSeconds: (t2-t1)/1000};
 }
