@@ -43,7 +43,8 @@ export function reducer(state : NyrisAppState = initialNyrisState, action: AppAc
                 ...state,
                 showPart: 'camera'
             };
-        case 'IMAGE_LOADED':
+        case 'SEARCH_REQUEST_START':
+        case 'REGION_REQUEST_START':
         case 'SHOW_RESULTS':
             return {
                 ...state,

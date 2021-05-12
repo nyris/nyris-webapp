@@ -13,44 +13,38 @@ const imageSearch: EpicConf = (action$, state$, {api}) => action$.pipe(
             throw new Error(`Wrong action type ${action.type}`);
         }
 
-        let { image, normalizedRect} = action;
+        if ('image' in action) {
+            let { image, normalizedRect} = action;
 
-        let options : ImageSearchOptions = {
-            cropRect: normalizedRect
-        };
+            let options : ImageSearchOptions = {
+                cropRect: normalizedRect
+            };
 
-        try {
-            const {results, duration, requestId, categoryPredictions, codes} = await api.findByImage(image, options);
-            return ({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration, categoryPredictions, codes });
-        } catch (e) {
-            console.warn('search failed', e);
-            return ({ type: 'SEARCH_REQUEST_FAIL', reason: e.message, exception: e });
+            try {
+                const {results, duration, requestId, categoryPredictions, codes} = await api.findByImage(image, options);
+                return ({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration, categoryPredictions, codes });
+            } catch (e) {
+                console.warn('search failed', e);
+                return ({ type: 'SEARCH_REQUEST_FAIL', reason: e.message, exception: e });
+            }
         }
+
+        if ('file' in action) {
+            let { file } = action;
+
+            let options : ImageSearchOptions = { };
+
+            try {
+                const {results, duration, requestId, categoryPredictions, codes} = await api.findByCad(file, options);
+                return ({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration, categoryPredictions, codes });
+            } catch (e) {
+                console.warn('search failed', e);
+                return ({ type: 'SEARCH_REQUEST_FAIL', reason: e.message, exception: e });
+            }
+        }
+        throw new Error(`Wrong action content ${action}`);
     })
 );
-
-const cadSearch: EpicConf = (action$, state$, {api}) => action$.pipe(
-    ofType('CAD_SEARCH_REQUEST_START'),
-    withLatestFrom(state$),
-    switchMap(async ([action, {settings}]) : Promise<AppAction> => {
-        if (action.type !== 'CAD_SEARCH_REQUEST_START') {
-            throw new Error(`Wrong action type ${action.type}`);
-        }
-
-        let { file } = action;
-
-        let options : ImageSearchOptions = { };
-
-        try {
-            const {results, duration, requestId, categoryPredictions, codes} = await api.findByCad(file, options);
-            return ({ type: 'SEARCH_REQUEST_SUCCEED', results, requestId, duration, categoryPredictions, codes });
-        } catch (e) {
-            console.warn('search failed', e);
-            return ({ type: 'SEARCH_REQUEST_FAIL', reason: e.message, exception: e });
-        }
-    })
-);
-
 
 const regionSearch: EpicConf = (action$, state$, {api}) => action$.pipe(
     ofType('REGION_REQUEST_START'),
@@ -114,7 +108,6 @@ const loadImage: EpicConf = (action$) => action$.pipe(
 );
 
 export default combineEpics(
-    cadSearch,
     imageSearch,
     regionSearch,
     loadFile,
