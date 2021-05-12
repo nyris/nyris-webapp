@@ -14,7 +14,7 @@ export type SearchAction =
     | { type: 'REGION_REQUEST_SUCCEED', regions: Region[] }
     | { type: 'REGION_REQUEST_FAIL', reason: string, exception: any }
     | { type: 'SEARCH_REQUEST_START', image: HTMLCanvasElement, normalizedRect?: RectCoords  }
-    | { type: 'CAD_SEARCH_REQUEST_START', file: File }
+    | { type: 'SEARCH_REQUEST_START', file: File }
     | { type: 'SEARCH_REQUEST_SUCCEED', results: any[], requestId: string, duration: number, categoryPredictions: CategoryPrediction[], codes: Code[] }
     | { type: 'SEARCH_REQUEST_FAIL', reason: string, exception?: any }
     | { type: 'REGION_CHANGED', normalizedRect: RectCoords}
@@ -69,7 +69,7 @@ export const searchOffersForImage = (image: HTMLCanvasElement, normalizedRect?: 
     normalizedRect
 });
 export const searchOffersForCad = (file: File) : SearchAction => ({
-    type: 'CAD_SEARCH_REQUEST_START',
+    type: 'SEARCH_REQUEST_START',
     file
 });
 export const submitPositiveFeedback = () : SearchAction => ({ type: 'FEEDBACK_SUBMIT_POSITIVE'});
