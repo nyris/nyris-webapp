@@ -101,12 +101,9 @@ export default class NyrisAPI {
         let headers : any = {
             'X-Api-Key': this.apiKey,
             'Accept-Language': 'de,*;q=0.5',
-            'Accept': this.responseFormat
+            'Accept': this.responseFormat,
+            'Content-Type': contentType || 'application/octet-stream'
         };
-
-        // Add content type if provided
-        if (contentType)
-            headers['Content-Type'] = contentType;
 
         // Add options
         const xOptions = [];
@@ -170,7 +167,8 @@ export default class NyrisAPI {
      * @deprecated This is a prototype API and might be removed/changed at any time.
      */
     async findByCad(file: File, options: ImageSearchOptions) : Promise<SearchResult> {
-        let headers = this.getSearchRequestHeaders(file.type);
+        let fileType = file.type;
+        let headers = this.getSearchRequestHeaders(fileType);
         let params = this.getParams(options);
         let { res, durationSeconds } = await timePromise(this.httpClient.request<OfferNyrisResponse|OfferCompleteResponse>({
             method: 'POST',
