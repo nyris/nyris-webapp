@@ -16,7 +16,7 @@ import {makeFileHandler, Capture, Preview} from "@nyris/nyris-react-components";
 
 
 
-export interface AppHanders {
+export interface AppHandlers {
     onExampleImageClick: (url: string) => void,
     onImageClick: (position: number, url: string) => void,
     onLinkClick: (position: number, url: string) => void,
@@ -49,7 +49,7 @@ export interface AppProps {
     loading: boolean,
     showPart: NyrisAppPart,
     feedbackState: NyrisFeedbackState,
-    handlers: AppHanders,
+    handlers: AppHandlers,
     mdSettings: MDSettings
 }
 
