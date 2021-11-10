@@ -100,6 +100,21 @@ const startSearchOnRegionsSuccessful: EpicConf = (action$, state$) => action$.pi
     })
 );
 
+const startSearchOnRegionsFailed: EpicConf = (action$, state$) => action$.pipe(
+    ofType('REGION_REQUEST_FAIL'),
+    withLatestFrom(state$),
+    switchMap(async ([action, { search: { requestImage}}]) : Promise<AppAction> => {
+        if (action.type !== 'REGION_REQUEST_FAIL') {
+            throw new Error(`Wrong action type ${action.type}`);
+        }
+        if (!requestImage) {
+            throw new Error(`No requestImage`);
+        }
+
+        return searchOffersForImage(requestImage.canvas);
+    })
+);
+
 const startSearchOnRegionChange: EpicConf = (action$, state$) => action$.pipe(
     ofType('REGION_CHANGED'),
     debounceTime(600),
@@ -124,6 +139,7 @@ const rootEpic = combineEpics(
     startSearchOnImageLoaded,
     startSearchOnCadLoaded,
     startSearchOnRegionsSuccessful,
+    startSearchOnRegionsFailed,
     startSearchOnRegionChange,
     onSearchSuccessShowResults,
     onSearchSuccessShowFeedbackDelayed,
