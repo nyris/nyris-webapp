@@ -12,7 +12,7 @@ related projects:
 * [nyris-api](./packages/nyris-api/README.md) - Handle images and communicate with the nyris API.
 * [nyris-react-components](./packages/nyris-react-components/README.md) - React components to reuse in your own projects.
 * [nyris-widget](./packages/nyris-widget/README.md) - Embed nyris search on your website.
-* [nyris-webapp](./packages/nyris-widget/README.md) - A complete mobile friendly webapp based on the nyris API.
+* [nyris-webapp](./packages/nyris-webapp/README.md) - A complete mobile friendly webapp based on the nyris API.
 
 
 ## Setting up the repository for development
