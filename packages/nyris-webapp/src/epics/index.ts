@@ -117,7 +117,7 @@ const startSearchOnRegionsFailed: EpicConf = (action$, state$) => action$.pipe(
 
 const startSearchOnRegionChange: EpicConf = (action$, state$) => action$.pipe(
     ofType('REGION_CHANGED'),
-    debounceTime(600),
+    debounceTime(1200),
     withLatestFrom(state$),
     switchMap(async ([action, { search: { requestImage}}]) : Promise<AppAction> => {
         if (action.type !== 'REGION_CHANGED') {

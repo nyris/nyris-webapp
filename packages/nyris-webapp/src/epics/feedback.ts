@@ -19,7 +19,7 @@ const feedbackSuccessEpic: EpicConf = (action$, state$, {api}) => action$.pipe(
 
 const feedbackRegionEpic: EpicConf = (action$, state$, {api}) => action$.pipe(
     ofType('REGION_CHANGED'),
-    debounceTime(600),
+    debounceTime(1200),
     withLatestFrom(state$),
     tap(async ([action, state]) => {
         if (action.type === 'REGION_CHANGED') {
