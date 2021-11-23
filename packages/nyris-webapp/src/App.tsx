@@ -1,5 +1,5 @@
 import './App.css';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Result from './components/Result';
 import ExampleImages from './components/ExampleImages';
 import Feedback from './components/Feedback';
@@ -13,8 +13,8 @@ import {Animate, NodeGroup} from "react-move";
 import {AppSettings, MDSettings, CanvasWithId} from "./types";
 import {NyrisAppPart, NyrisFeedbackState} from "./actions/nyrisAppActions";
 import {makeFileHandler, Capture, Preview} from "@nyris/nyris-react-components";
-
-
+import {Snackbar} from "@material-ui/core";
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 export interface AppHandlers {
     onExampleImageClick: (url: string) => void,
@@ -42,7 +42,8 @@ export interface AppProps {
         filterOptions: string[],
         errorMessage?: string,
         regions: Region[],
-        previewSelection: RectCoords
+        previewSelection: RectCoords,
+        toastErrorMessage?: string
     },
     previewImage?: CanvasWithId,
     settings: AppSettings,
@@ -53,8 +54,12 @@ export interface AppProps {
     mdSettings: MDSettings
 }
 
+function Alert(props: AlertProps) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const App: React.FC<AppProps> = ({
-                                     search: {results, regions, previewSelection, requestId, duration, errorMessage, filterOptions, categoryPredictions, codes},
+                                     search: {results, regions, previewSelection, requestId, duration, errorMessage, filterOptions, categoryPredictions, codes, toastErrorMessage},
                                      showPart, settings, handlers, loading, previewImage, feedbackState
                                  }) => {
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop: (fs: File[]) => handlers.onFileDropped(fs[0])});
@@ -66,6 +71,13 @@ const App: React.FC<AppProps> = ({
         [ 'image/*' ].concat(
             settings.cadSearch ? cadExtensions : []
         ).join(',');
+    const [toastOpen, setToastOpen] = useState(false);
+
+    useEffect(() => {
+        if (toastErrorMessage !== '') {
+            setToastOpen(true);
+        }
+    }, [toastErrorMessage])
 
     return (
         <div>
@@ -201,6 +213,12 @@ const App: React.FC<AppProps> = ({
                         identifier {requestId}</div>}
                 </div>
             </section>
+
+            <Snackbar open={toastOpen} autoHideDuration={3000} onClose={() => setToastOpen(false)}>
+                <Alert onClose={() => setToastOpen(false)} severity="error">
+                    {toastErrorMessage}
+                </Alert>
+            </Snackbar>
 
             <section className="footnote">
                 <div className="wrapper">

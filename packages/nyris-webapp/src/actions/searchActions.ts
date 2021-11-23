@@ -40,7 +40,8 @@ export interface SearchState {
     requestImage?:  CanvasWithId
     requestCadFile?:  File
     categoryPredictions: CategoryPrediction[]
-    codes: Code[]
+    codes: Code[],
+    errorMessage: string
 }
 
 const initialState : SearchState = {
@@ -52,7 +53,8 @@ const initialState : SearchState = {
     fetchingRegions: false,
     filterOptions: [],
     categoryPredictions: [],
-    codes: []
+    codes: [],
+    errorMessage: ''
 };
 
 
@@ -101,6 +103,12 @@ export const reducer = (state : SearchState = initialState, action: SearchAction
                 fetchingRegions: false,
                 regions: action.regions,
                 selectedRegion:  selectFirstCenteredRegion(action.regions, 0.3, state.selectedRegion)
+            };
+        case "REGION_REQUEST_FAIL":
+            return {
+                ...state,
+                fetchingRegions: false,
+                errorMessage: action.exception.response.data.detail
             };
         case "SEARCH_REQUEST_START":
             return {

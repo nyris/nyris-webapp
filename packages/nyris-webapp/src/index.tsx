@@ -111,13 +111,14 @@ const mapStateToProps = (state: AppState) => ({
         previewSelection: state.search.selectedRegion,
         regions: state.search.regions,
         duration: state.search.duration,
-        requestId: state.search.requestId
+        requestId: state.search.requestId,
+        toastErrorMessage: state.search.errorMessage
     },
     settings: state.settings,
     previewImage: state.search.requestImage,
     loading: state.search.fetchingRegions || state.search.fetchingResults,
     feedbackState: state.nyrisDesign.feedbackState,
-    mdSettings: state.settings.materialDesign || defaultMdSettings
+    mdSettings: state.settings.materialDesign || defaultMdSettings,
 });
 
 
