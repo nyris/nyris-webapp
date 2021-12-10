@@ -115,6 +115,23 @@ export default class NyrisAPI {
         return headers;
     };
 
+    private getRegionRequestHeaders(contentType?: string) {
+        // Create headers
+        let headers : any = {
+            'X-Api-Key': this.apiKey,
+            'Content-Type': contentType || 'application/octet-stream'
+        };
+
+        // Add options
+        const xOptions = [];
+        if (this.xOptions)
+            xOptions.push(this.xOptions as string);
+        if (xOptions.length > 0)
+            headers['X-Options'] = xOptions.join(' ');
+
+        return headers;
+    };
+
     private getParams(options: ImageSearchOptions) {
         let params = options.geoLocation ? {
             lat: options.geoLocation.lat.toString(),
@@ -233,10 +250,7 @@ export default class NyrisAPI {
         let resizedCroppedCanvas = elementToCanvas(canvas, scaledSize);
         let blob = await canvasToJpgBlob(resizedCroppedCanvas, this.jpegQuality);
 
-        const headers = {
-            'Content-Type': 'image/jpeg',
-            'X-Api-Key': this.apiKey
-        };
+        let headers = this.getRegionRequestHeaders('image/jpeg');
         let response = await
             this.httpClient.request<NyrisRegionResult[]>({
                 method: 'POST',
