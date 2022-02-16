@@ -14,7 +14,6 @@ export const serviceImage = async (file: any, settings: any) => {
       y1: 0,
       y2: 1,
     });
-
     let options: ImageSearchOptions = {
       cropRect: selection,
     };
