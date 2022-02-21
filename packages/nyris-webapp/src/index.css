@@ -25,7 +25,7 @@ a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, bo
   padding: 0;
   border: 0;
   margin: 0;
-  vertical-align: baseline
+  /* vertical-align: baseline */
 }
 
 blockquote, q {
@@ -250,35 +250,35 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 
 @font-face {
   font-family: Roboto;
-  src: local("Roboto Italic"), local("Roboto-Italic"), url(fonts/roboto-italic-webfont.woff2) format("woff2"), url(fonts/roboto-italic-webfont.woff) format("woff");
+  src: local("Roboto Italic"), local("Roboto-Italic"), url(common/assets/fonts/roboto-italic-webfont.woff2) format("woff2"), url(common/assets/fonts/roboto-italic-webfont.woff) format("woff");
   font-weight: 400;
   font-style: italic
 }
 
 @font-face {
   font-family: Roboto;
-  src: local("Roboto Bold"), local("Roboto-Bold"), url(fonts/roboto-bold-webfont.woff2) format("woff2"), url(fonts/roboto-bold-webfont.woff) format("woff");
+  src: local("Roboto Bold"), local("Roboto-Bold"), url(common/assets/fonts/roboto-bold-webfont.woff2) format("woff2"), url(common/assets/fonts/roboto-bold-webfont.woff) format("woff");
   font-weight: 700;
   font-style: normal
 }
 
 @font-face {
   font-family: Roboto;
-  src: local("Roboto Regular"), local("Roboto-Regular"), url(fonts/roboto-regular-webfont.woff2) format("woff2"), url(fonts/roboto-regular-webfont.woff) format("woff");
+  src: local("Roboto Regular"), local("Roboto-Regular"), url(common/assets/fonts/roboto-regular-webfont.woff2) format("woff2"), url(common/assets/fonts/roboto-regular-webfont.woff) format("woff");
   font-weight: 400;
   font-style: normal
 }
 
 @font-face {
   font-family: "Roboto Condensed";
-  src: local("Roboto Condensed Bold"), local("RobotoCondensed-Bold"), url(fonts/robotocondensed-bold-webfont.woff2) format("woff2"), url(fonts/robotocondensed-bold-webfont.woff) format("woff");
+  src: local("Roboto Condensed Bold"), local("RobotoCondensed-Bold"), url(common/assets/fonts/robotocondensed-bold-webfont.woff2) format("woff2"), url(common/assets/fonts/robotocondensed-bold-webfont.woff) format("woff");
   font-weight: 700;
   font-style: normal
 }
 
 @font-face {
   font-family: "Roboto Condensed";
-  src: local("Roboto Condensed Bold Italic"), local("RobotoCondensed-BoldItalic"), url(fonts/robotocondensed-bolditalic-webfont.woff2) format("woff2"), url(fonts/robotocondensed-bolditalic-webfont.woff) format("woff");
+  src: local("Roboto Condensed Bold Italic"), local("RobotoCondensed-BoldItalic"), url(common/assets/fonts/robotocondensed-bolditalic-webfont.woff2) format("woff2"), url(common/assets/fonts/robotocondensed-bolditalic-webfont.woff) format("woff");
   font-weight: 700;
   font-style: italic
 }
@@ -534,21 +534,21 @@ a img.aligncenter {
   width: 100%;
   height: 61px;
   z-index: 9996;
-  background: url(images/sectionTransBack.svg) 0 bottom repeat-x
+  background: url(common/assets/images/sectionTransBack.svg) 0 bottom repeat-x
 }
 
 .no-svg .headerSeparatorBack, .no-svg .headerSeparatorTop {
-  background: url(images/sectionTransBack.png) 0 bottom repeat-x
+  background: url(common/assets/images/sectionTransBack.png) 0 bottom repeat-x
 }
 
 .headerSeparatorTop {
   height: 30px;
   z-index: 9999;
-  background: url(images/sectionTransTop.svg) 0 bottom repeat-x
+  background: url(common/assets/images/sectionTransTop.svg) 0 bottom repeat-x
 }
 
 .no-svg .headerSeparatorTop {
-  background: url(images/sectionTransTop.png) 0 bottom repeat-x
+  background: url(common/assets/images/sectionTransTop.png) 0 bottom repeat-x
 }
 
 .headSection {
@@ -624,7 +624,7 @@ a img.aligncenter {
   width: 93px;
   height: 60px;
   min-height: 0;
-  background: url(images/nyris_logo.png) 50% 50% no-repeat;
+  background: url(common/assets/images/nyris_logo.png) 50% 50% no-repeat;
   overflow: hidden;
   text-indent: -99999px;
   transition: all .2s ease
@@ -829,12 +829,12 @@ a img.aligncenter {
 .tryDifferent .icIcon {
   width: 22px;
   height: 18px;
-  background: url(images/ic_cam.svg) no-repeat;
+  background: url(common/assets/images/ic_cam.svg) no-repeat;
   margin-right: 10px
 }
 
 .no-svg .tryDifferent .icIcon {
-  background: url(images/ic_cam.png) no-repeat
+  background: url(common/assets/images/ic_cam.png) no-repeat
 }
 
 .tryDifferent:hover {
@@ -1058,22 +1058,22 @@ a img.aligncenter {
   text-transform: uppercase;
   font-size: 13px;
   border-radius: 3px;
-  background: url(images/ic_shopNowLight.svg) 10px 50% no-repeat #FBFDFE;
+  background: url(common/assets/images/ic_shopNowLight.svg) 10px 50% no-repeat #FBFDFE;
   border: 1px solid rgba(3, 31, 43, .12)
 }
 
 .no-svg .prdctItem .prdctDetailsWrap .prdctShopLink {
-  background: url(images/ic_shopNowLight.png) 10px 50% no-repeat #FBFDFE
+  background: url(common/assets/images/ic_shopNowLight.png) 10px 50% no-repeat #FBFDFE
 }
 
 .prdctItem .prdctDetailsWrap .prdctShopLink:hover {
-  background: url(images/ic_shopNow.svg) 10px 50% no-repeat #4C8F9F;
+  background: url(common/assets/images/ic_shopNow.svg) 10px 50% no-repeat #4C8F9F;
   border: 1px solid #4c8f9f;
   color: #FBFDFE
 }
 
 .no-svg .prdctItem .prdctDetailsWrap .prdctShopLink:hover {
-  background: url(images/ic_shopNow.png) 10px 50% no-repeat #4C8F9F
+  background: url(common/assets/images/ic_shopNow.png) 10px 50% no-repeat #4C8F9F
 }
 
 @media only screen and (min-width: 530px) {
@@ -1221,7 +1221,7 @@ a img.aligncenter {
   transform: translateY(-50%);
   width: 30px;
   height: 30px;
-  background: url(images/ic_close_feedback.svg) 50% 50% no-repeat;
+  background: url(common/assets/images/ic_close_feedback.svg) 50% 50% no-repeat;
   float: right;
   opacity: .38;
   -webkit-transition: all .2s ease;

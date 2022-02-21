@@ -1,6 +1,7 @@
-import {SearchAction, SearchState} from "./actions/searchActions";
-import {NyrisAction, NyrisAppState} from "./actions/nyrisAppActions";
 import {NyrisAPISettings} from "@nyris/nyris-api";
+import { NyrisAction } from "Store/common";
+import { NyrisAppState } from "Store/Nyris";
+import { SearchAction, SearchState } from "Store/Search";
 
 export interface MDSettings {
     customFontFamily?: string,

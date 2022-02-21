@@ -27,10 +27,8 @@ export const defaultMdSettings = {
     appBarTitle: '',
     primaryColor: '#e2001a',
     secondaryColor: '#777777',
-
     resultFirstRowProperty: 'title',
     resultSecondRowProperty: 'sku',
     resultLinkText: 'Info',
-
     customFontFamily: 'Helvetica',
 };
