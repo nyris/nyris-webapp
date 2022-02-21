@@ -33,17 +33,33 @@
 }
 
 .predicted-categories {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
 }
 .predicted-categories small {
-    white-space: nowrap;
-    padding-left: 0.4em;
-    padding-right: 0.4em;
-    font-size: 0.8em;
-    border-radius: 5px;
-    margin: 0.2em;
-    background-color: #fff;
+  white-space: nowrap;
+  padding-left: 0.4em;
+  padding-right: 0.4em;
+  font-size: 0.8em;
+  border-radius: 5px;
+  margin: 0.2em;
+  background-color: #fff;
 }
+
+/* Css Common all page */
+.d-flex {
+  display: flex !important;
+}
+.justify-center {
+  justify-content: center;
+}
+.flex-end {
+  align-items: flex-end;
+}
+.flex-center {
+  align-items: center;
+}
+
+
