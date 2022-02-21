@@ -160,6 +160,7 @@ const LandingPageApp = () => {
     dispatch(showFeedback(""));
     if (isImageFile(file) || typeof file === "string") {
       return serviceImage(file, settings).then((res) => {
+        console.log("isCheckImageFile", res);
         return dispatch(loadFile(res));
       });
     }
@@ -172,6 +173,7 @@ const LandingPageApp = () => {
     dispatch(showResults(""));
     dispatch(loadingActionResults(""));
     serviceImage(url, settings).then((res) => {
+      console.log("serviceImage", res);
       dispatch(loadFile(res));
       return dispatch(showFeedback(""));
     });
@@ -201,7 +203,11 @@ const LandingPageApp = () => {
       return dispatch(showFeedback(""));
     });
   };
+  console.log("==================");
 
+  console.log("regions", regions);
+  console.log("selectedRegion", selectedRegion);
+  console.log("==================");
   return (
     <div>
       {showPart === "camera" && (
