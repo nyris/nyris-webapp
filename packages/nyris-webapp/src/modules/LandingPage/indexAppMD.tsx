@@ -36,16 +36,12 @@ import {
   loadFileSelectRegion,
   loadingActionRegions,
   loadingActionResults,
+  searchFileImageNonRegion,
   selectionChanged,
 } from "Store/Search";
-import {
-  showCamera,
-  showFeedback,
-  showResults,
-  showStart,
-} from "Store/Nyris";
+import { showCamera, showFeedback, showResults, showStart } from "Store/Nyris";
 import _, { debounce, isEmpty } from "lodash";
-import { serviceImage } from "services/image";
+import { serviceImage, serviceImageNonRegion } from "services/image";
 import { findByImage } from "services/findByImage";
 import { feedbackRegionEpic } from "services/Feedback";
 
@@ -173,9 +169,19 @@ const LandingPageAppMD: React.FC<any> = () => {
     dispatch(loadingActionResults(""));
     dispatch(showFeedback(""));
     if (isImageFile(file) || typeof file === "string") {
-      return serviceImage(file, settings).then((res) => {
-        return dispatch(loadFile(res));
-      });
+      if (settings.regions) {
+        serviceImage(file, searchState).then((res) => {
+          dispatch(loadFile(res));
+          return dispatch(showFeedback(""));
+        });
+      } else {
+        serviceImageNonRegion(file, searchState, rectCoords).then((res) => {
+          dispatch(searchFileImageNonRegion(res));
+        });
+      }
+      // return serviceImage(file, settings).then((res) => {
+      //   return dispatch(loadFile(res));
+      // });
     }
     if (isCadFile(file)) {
       return dispatch(loadCadFileLoad(file));
