@@ -150,6 +150,21 @@ export const searchSlice = createSlice({
         fetchingRegions: true,
       };
     },
+    searchFileImageNonRegion: (state, data: PayloadAction<any>) => {
+      const { payload } = data;
+      const { results, requestId, duration, categoryPredictions, codes, requestImage } =
+        payload;
+      return {
+        ...state,
+        results,
+        requestId,
+        duration,
+        categoryPredictions,
+        codes,
+        requestImage,
+        fetchingResults: false,
+      };
+    },
   },
 });
 
@@ -162,5 +177,6 @@ export const {
   loadFileSelectRegion,
   loadingActionResults,
   loadingActionRegions,
+  searchFileImageNonRegion
 } = searchSlice.actions;
 export default searchSlice.reducer;

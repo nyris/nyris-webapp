@@ -34,6 +34,7 @@ import {
   loadFileSelectRegion,
   loadingActionRegions,
   loadingActionResults,
+  searchFileImageNonRegion,
   selectionChanged,
 } from "Store/Search";
 import {
@@ -44,7 +45,7 @@ import {
   showResults,
   showStart,
 } from "Store/Nyris";
-import { serviceImage } from "services/image";
+import { serviceImage, serviceImageNonRegion } from "services/image";
 import { findByImage } from "services/findByImage";
 import { debounce, isEmpty } from "lodash";
 import { feedbackClickEpic } from "services/Feedback";
@@ -94,7 +95,7 @@ const LandingPageApp = () => {
   const dispatch = useAppDispatch();
   const searchState = useAppSelector((state) => state);
   const [toastOpen, setToastOpen] = useState(false);
-  const [rectCoords, setRectCoords] = useState<any>();
+  const [rectCoords, setRectCoords] = useState<any>(undefined);
   const { settings, search, nyris } = searchState;
   const {
     errorMessage,
@@ -159,7 +160,7 @@ const LandingPageApp = () => {
     dispatch(loadingActionResults(""));
     dispatch(showFeedback(""));
     if (isImageFile(file) || typeof file === "string") {
-      return serviceImage(file, settings).then((res) => {
+      return serviceImage(file, searchState).then((res) => {
         return dispatch(loadFile(res));
       });
     }
@@ -171,12 +172,19 @@ const LandingPageApp = () => {
   const getUrlToCanvasFile = (url: string, position?: number) => {
     dispatch(showResults(""));
     dispatch(loadingActionResults(""));
-    serviceImage(url, settings).then((res) => {
-      dispatch(loadFile(res));
-      return dispatch(showFeedback(""));
-    });
     if (position) {
       feedbackClickEpic(searchState, position);
+    }
+
+    if (settings.regions) {
+      serviceImage(url, searchState).then((res) => {
+        dispatch(loadFile(res));
+        return dispatch(showFeedback(""));
+      });
+    } else {
+      serviceImageNonRegion(url, searchState, rectCoords).then((res) => {
+        dispatch(searchFileImageNonRegion(res));
+      });
     }
   };
 
