@@ -6,21 +6,37 @@ import FooterComponent from "./Footer";
 import { useAppSelector } from "Store/Store";
 import HeaderMdComponent from "./HeaderMd";
 import FooterMD from "./FooterMD";
+import HeaderNewVersion from "./HeaderNewVersion";
+import FooterNewVersion from "./FooterNewVersion";
 function Layout({ children }: ReactNode): JSX.Element {
-  const { settings } = useAppSelector((state) => state);
-  let useMd = settings.materialDesign !== undefined;
+  const { settings } = useAppSelector((state: any) => state);
+  const { themePage } = settings;
+  
+  let HeaderApp: any;
+  let FooterApp: any;
+  let classNameBoxVersion: string = "newVersion";
+  if (themePage["default"].active) {
+    classNameBoxVersion = "default";
+    HeaderApp = HeaderComponent;
+    FooterApp = FooterComponent;
+  } else if (themePage["materialDesign"].active) {
+    classNameBoxVersion = "materialDesign";
+    HeaderApp = HeaderMdComponent;
+    FooterApp = FooterMD;
+  } else {
+    HeaderApp = HeaderNewVersion;
+    FooterApp = FooterNewVersion;
+  }
   return (
-    <div className="layout-main">
-      <div className="header-wrap-main">
-        {useMd ? (
-          <HeaderMdComponent settings={settings} />
-        ) : (
-          <HeaderComponent />
-        )}
+    <div className={`layout-main-${classNameBoxVersion}`}>
+      <div className={`box-header-${classNameBoxVersion}-main`}>
+        <HeaderApp />
       </div>
-      <div className="body-wrap-main">{children}</div>
+      <div className={`box-body-${classNameBoxVersion}-wrap-main`}>
+        {children}
+      </div>
       <div className="footer-wrap-main">
-        {useMd ? <FooterMD /> : <FooterComponent />}
+        <FooterApp />
       </div>
     </div>
   );

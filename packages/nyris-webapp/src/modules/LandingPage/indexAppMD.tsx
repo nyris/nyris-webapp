@@ -138,7 +138,7 @@ const LandingPageAppMD: React.FC<any> = () => {
     results,
     requestId,
   } = search;
-
+  const { themePage }: any = settings;
   useEffect(() => {
     if (isEmpty(rectCoords)) {
       return;
@@ -149,8 +149,8 @@ const LandingPageAppMD: React.FC<any> = () => {
 
   const loading = fetchingRegions || fetchingResults;
 
-  const mdSettings: any = settings.materialDesign
-    ? settings.materialDesign
+  const mdSettings: any = themePage.materialDesign.active
+    ? themePage.materialDesign.materialDesign
     : defaultMdSettings;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

@@ -46,3 +46,20 @@ export const feedbackRegionEpic = async (state: any, region: any) => {
     console.log("error feedbackRegionEpic", error);
   }
 };
+
+export const sendFeedbackByApi = async (
+  settings: any,
+  sessionId: any,
+  requestId: any,
+  payload: any
+) => {
+  const api = new NyrisAPI(settings);
+  try {
+    const dataByApi = await api
+      .sendFeedback(sessionId, requestId, payload)
+      .then((res) => {});
+    console.log("dataByApi", dataByApi);
+  } catch (error) {
+    console.log("error sendFeedbackByApi321", error);
+  }
+};

@@ -24,13 +24,12 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, data: PayloadAction<LoginResponse>) => {
-      const payload = data.payload;
-      state.accessToken = payload.access_token;
-      state.name = payload.name;
-      state.role = payload.role;
-      if (payload.access_token) {
-        jscookie.set("token", payload.access_token);
-      }
+      // state.accessToken = payload.access_token;
+      // state.name = payload.name;
+      // state.role = payload.role;
+      // if (payload.access_token) {
+      //   jscookie.set("token", payload?.access_token);
+      // }
     },
     logout: (state) => {
       state.accessToken = null;

@@ -5,16 +5,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import * as serviceWorker from "./serviceWorker";
 import { Provider } from "react-redux";
-import {  AppSettings, MDSettings } from "./types";
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core";
+import { AppSettings, MDSettings } from "./types";
+import { MuiThemeProvider } from "@material-ui/core";
 import "typeface-roboto";
 import { defaultMdSettings } from "./defaults";
 import { HashRouter } from "react-router-dom";
 import Router from "Router";
-import { store } from 'Store/Store';
-
+import { store } from "Store/Store";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { createTheme } from "@material-ui/core/styles";
 declare var settings: AppSettings;
-
 
 document.title = window.location.host;
 
@@ -23,7 +23,7 @@ let md: MDSettings = {
   ...settings.materialDesign,
 };
 
-let theme = createMuiTheme({
+let theme = createTheme({
   typography: {
     fontFamily: md.customFontFamily,
   },

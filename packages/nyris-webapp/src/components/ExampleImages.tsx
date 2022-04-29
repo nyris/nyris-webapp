@@ -1,3 +1,4 @@
+import { Typography } from "@material-ui/core";
 import React from "react";
 
 interface ExampleImagesProps {
@@ -14,7 +15,9 @@ const ExampleImages: React.FC<ExampleImagesProps> = ({
   }
   return (
     <section className="useExampleImg">
-      You can also try one of these pictures:
+      <Typography className="title-box">
+        You can also try one of these pictures:
+      </Typography>
       <div className="exampleImages">
         <div className="exImagesWrap">
           {images.map((i) => {

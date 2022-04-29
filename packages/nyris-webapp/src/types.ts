@@ -46,3 +46,26 @@ export interface CanvasWithId {
     id: string
 }
 
+export interface SearchServiceSettings {
+    xOptions: boolean | string,
+    customSearchRequest?: ((file: Blob, client: any) => Promise<any>),
+    responseHook?: ((response: any) => any),
+    apiKey: string,
+    imageMatchingUrl?: string,
+    imageMatchingUrlBySku?: string,
+    imageMatchingSubmitManualUrl?: string,
+    regionProposalUrl?: string,
+    responseFormat?: string,
+    feedbackUrl?: string,
+    exampleImages: string[],
+    resultTemplate?: string,
+    noImageUrl?: string,
+    materialDesign?: MDSettings,
+    preview: boolean,
+    regions: boolean,
+    jpegQuality: number,
+    maxWidth: number,
+    maxHeight: number,
+    useRecommendations: boolean
+}
+

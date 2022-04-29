@@ -114,7 +114,14 @@ const LandingPageApp = () => {
   const { showPart } = nyris;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (fs: File[]) => dispatch(loadFile(fs[0])),
+    onDrop: (fs: File[]) => {
+      // console.log("fsssssssss", fs);
+      serviceImage(fs[0], searchState).then((res) => {
+        dispatch(loadFile(res));
+        return dispatch(showFeedback(""));
+      });
+      // return dispatch(loadFile(fs[0]));
+    },
   });
   const minPreviewHeight = 400;
   const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
@@ -209,6 +216,7 @@ const LandingPageApp = () => {
       return dispatch(showFeedback(""));
     });
   };
+
 
   return (
     <div>

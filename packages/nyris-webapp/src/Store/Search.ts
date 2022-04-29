@@ -54,6 +54,11 @@ export interface SearchState {
   categoryPredictions: CategoryPrediction[];
   codes: Code[];
   errorMessage: string;
+  valueTextSearch: any;
+  resultSearchText: any[];
+  filters: any[];
+  configureFilter?: any;
+  loadingSearchAlgolia: boolean;
 }
 
 // TODO: init state
@@ -68,6 +73,11 @@ const initialState: SearchState = {
   categoryPredictions: [],
   codes: [],
   errorMessage: "",
+  valueTextSearch: {},
+  resultSearchText: [],
+  filters: [],
+  configureFilter: {},
+  loadingSearchAlgolia: false,
 };
 
 export const searchSlice = createSlice({
@@ -85,9 +95,11 @@ export const searchSlice = createSlice({
         duration,
         regions,
         selectedRegion,
+        filters,
       } = payload;
       return {
         ...state,
+        filters,
         requestImage,
         results,
         requestId,
@@ -152,8 +164,14 @@ export const searchSlice = createSlice({
     },
     searchFileImageNonRegion: (state, data: PayloadAction<any>) => {
       const { payload } = data;
-      const { results, requestId, duration, categoryPredictions, codes, requestImage } =
-        payload;
+      const {
+        results,
+        requestId,
+        duration,
+        categoryPredictions,
+        codes,
+        requestImage,
+      } = payload;
       return {
         ...state,
         results,
@@ -163,6 +181,68 @@ export const searchSlice = createSlice({
         codes,
         requestImage,
         fetchingResults: false,
+      };
+    },
+    changeValueTextSearch: (state: any, data: PayloadAction<any>) => {
+      const { payload } = data;
+      return {
+        ...state,
+        valueTextSearch: payload,
+      };
+    },
+    resultSearchText: (state: any, data: PayloadAction<any>) => {
+      const { payload } = data;
+      return {
+        ...state,
+        resultSearchText: payload,
+      };
+    },
+    updateResults: (state: any, data: PayloadAction<any>) => {
+      const { payload } = data;
+      return {
+        ...state,
+        results: payload,
+      };
+    },
+    reset: (state: any, data: PayloadAction<any>) => {
+      return {
+        results: [],
+        regions: [],
+        selectedRegion: { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 },
+        requestImage: undefined,
+        fetchingResults: false,
+        fetchingRegions: false,
+        filterOptions: [],
+        categoryPredictions: [],
+        codes: [],
+        errorMessage: "",
+        valueTextSearch: {},
+        resultSearchText: [],
+        filters: [],
+        loadingSearchAlgolia: false,
+      };
+    },
+    configureFilter: (state: any, data: PayloadAction<any>) => {
+      const { payload } = data;
+      return {
+        ...state,
+        configureFilter: payload,
+      };
+    },
+    setUpdateSession: (state: any, data: PayloadAction<any>) => {
+      const { payload } = data;
+      return {
+        ...state,
+        requestId: payload.requestId,
+        sessionId: payload.sessionId,
+      };
+    },
+    updateResultChangePosition: (state: any, data: PayloadAction<any>) => {
+      const { payload } = data;
+      const { results } = payload;
+      return {
+        ...state,
+        results,
       };
     },
   },
@@ -177,6 +257,13 @@ export const {
   loadFileSelectRegion,
   loadingActionResults,
   loadingActionRegions,
-  searchFileImageNonRegion
+  searchFileImageNonRegion,
+  changeValueTextSearch,
+  resultSearchText,
+  updateResults,
+  reset,
+  configureFilter,
+  setUpdateSession,
+  updateResultChangePosition,
 } = searchSlice.actions;
 export default searchSlice.reducer;
