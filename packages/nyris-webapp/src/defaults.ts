@@ -17,7 +17,10 @@ export const defaultSettings : AppSettings = {
         '^https?://(www.)?vimeo.com/',
         '^https?://(www.)?dailymotion.com/',
         '^https?://(www.)?dai.ly/'
-    ]
+    ],
+    themePage: {
+        default: { active: true }
+    }
 };
 
 export const defaultMdSettings = {

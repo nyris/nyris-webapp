@@ -8,18 +8,19 @@ import HeaderMdComponent from "./HeaderMd";
 import FooterMD from "./FooterMD";
 import HeaderNewVersion from "./HeaderNewVersion";
 import FooterNewVersion from "./FooterNewVersion";
+import {AppState} from "../types";
 function Layout({ children }: ReactNode): JSX.Element {
-  const { settings } = useAppSelector((state: any) => state);
+  const { settings } = useAppSelector<AppState>((state:any) => state);
   const { themePage } = settings;
   
   let HeaderApp: any;
   let FooterApp: any;
   let classNameBoxVersion: string = "newVersion";
-  if (themePage["default"].active) {
+  if (themePage.default?.active) {
     classNameBoxVersion = "default";
     HeaderApp = HeaderComponent;
     FooterApp = FooterComponent;
-  } else if (themePage["materialDesign"].active) {
+  } else if (themePage.materialDesign?.active) {
     classNameBoxVersion = "materialDesign";
     HeaderApp = HeaderMdComponent;
     FooterApp = FooterMD;

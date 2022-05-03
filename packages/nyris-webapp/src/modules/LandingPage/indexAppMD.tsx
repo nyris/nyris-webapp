@@ -44,6 +44,7 @@ import _, { debounce, isEmpty } from "lodash";
 import { serviceImage, serviceImageNonRegion } from "services/image";
 import { findByImage } from "services/findByImage";
 import { feedbackRegionEpic } from "services/Feedback";
+import {AppState, MDSettings} from "../../types";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -138,7 +139,7 @@ const LandingPageAppMD: React.FC<any> = () => {
     results,
     requestId,
   } = search;
-  const { themePage }: any = settings;
+  const { themePage } = settings;
   useEffect(() => {
     if (isEmpty(rectCoords)) {
       return;
@@ -149,9 +150,7 @@ const LandingPageAppMD: React.FC<any> = () => {
 
   const loading = fetchingRegions || fetchingResults;
 
-  const mdSettings: any = themePage.materialDesign.active
-    ? themePage.materialDesign.materialDesign
-    : defaultMdSettings;
+  const mdSettings = themePage.materialDesign as MDSettings;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => dispatch(loadFile(fs[0])),

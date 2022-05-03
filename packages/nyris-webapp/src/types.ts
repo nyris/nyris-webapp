@@ -18,6 +18,7 @@ export interface MDSettings {
 
     resultLinkText?: string,
     resultLinkIcon?: string,
+    active?: boolean
 }
 
 export interface AppSettings extends NyrisAPISettings {
@@ -28,7 +29,22 @@ export interface AppSettings extends NyrisAPISettings {
     resultTemplate?: string,
     regions: boolean,
     materialDesign?: MDSettings,
-    instantRedirectPatterns: string[]
+    instantRedirectPatterns: string[],
+    themePage: ThemeChoice
+}
+
+export interface DefaultThemeSettings  {
+    active: boolean
+}
+
+export interface SearchSuiteSettings  {
+    active: boolean
+}
+
+export type ThemeChoice = {
+    default?: DefaultThemeSettings,
+    materialDesign?: MDSettings,
+    searchSuite?: SearchSuiteSettings
 }
 
 export type AppState = {
