@@ -20,7 +20,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { NodeGroup } from "react-move";
 import classNames from "classnames";
 import { Capture, Preview } from "@nyris/nyris-react-components";
-import { defaultMdSettings } from "defaults";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import {
   RectCoords,
@@ -44,7 +43,7 @@ import _, { debounce, isEmpty } from "lodash";
 import { serviceImage, serviceImageNonRegion } from "services/image";
 import { findByImage } from "services/findByImage";
 import { feedbackRegionEpic } from "services/Feedback";
-import {AppState, MDSettings} from "../../types";
+import { MDSettings } from "../../types";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
