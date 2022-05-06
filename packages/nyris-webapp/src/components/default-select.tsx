@@ -1,6 +1,5 @@
-import { Box, MenuItem, Select } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import KeyboardArrowDownOutlinedIcon from "@material-ui/icons/KeyboardArrowDownOutlined";
 import { connectMenu } from "react-instantsearch-dom";
 
 interface Props {

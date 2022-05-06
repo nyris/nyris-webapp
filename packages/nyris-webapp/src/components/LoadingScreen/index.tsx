@@ -11,19 +11,6 @@ function LoadingScreen({
   searching,
 }: any) {
   const [isLoading] = useState<boolean>(false);
-  // const hasResults = searchResults && searchResults.nbHits !== 0;
-
-  // useEffect(() => {
-  //   if (searching) {
-  //     return;
-  //   } else {
-  //     setLoading(true);
-  //     setTimeout(() => {
-  //       setLoading(false);
-  //     }, 1000);
-  //   }
-  // }, [searching, searchResults]);
-  console.log("searchResults", searchResults);
 
   return (
     <>

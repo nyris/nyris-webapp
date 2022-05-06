@@ -256,8 +256,6 @@ function ResultComponent(props: Props) {
       )
     : "";
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
-  console.log("isLoading", isLoading);
-      
   return (
     <Box className={`wrap-main-result loading`}>
       <>
@@ -284,14 +282,7 @@ function ResultComponent(props: Props) {
                 <CustomSearchBox />
               </Box>
               {/* <Box className="box-filter">
-                <FilterComponent
-                  dataFieldOne={dataFieldOne}
-                  dataFieldTow={dataFieldTow}
-                  dataFieldThree={dataFieldThree}
-                  dataFieldFour={dataFieldFour}
-                  dataFieldFive={dataFieldFive}
-                  dataFieldSix={dataFieldSix}
-                />
+                <FilterComponent />
               </Box> */}
             </div>
             <Box className="box-result">
@@ -390,8 +381,8 @@ function ResultComponent(props: Props) {
                 results={dataResult}
                 onHandlerModalShare={() => setOpenModalShare(true)}
                 onSearchImage={(url: string) => {
-                  setLoading(true)
-                  getUrlToCanvasFile(url)
+                  setLoading(true);
+                  getUrlToCanvasFile(url);
                 }}
               />
             </DefaultModal>

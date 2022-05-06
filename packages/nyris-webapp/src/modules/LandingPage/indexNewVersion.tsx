@@ -19,8 +19,6 @@ import NyrisAPICT from "services/findRegionsCustom";
 interface Props {}
 
 function AppNewVersion(props: Props) {
-  // const searchClient = algoliasearch(appId, apiKey);
-  // const index = searchClient.initIndex(indexName);
   const dispatch = useAppDispatch();
   const history = useHistory();
   const searchState = useAppSelector((state) => state);
@@ -33,7 +31,7 @@ function AppNewVersion(props: Props) {
   searchClient.initIndex(indexNameAlgolia);
 
   useEffect(() => {
-    const createSecssion = async () => {
+    const createSession = async () => {
       try {
         await nyrisApi.createSession().then((res: any) => {
           const payload: any = {
@@ -45,8 +43,9 @@ function AppNewVersion(props: Props) {
       } catch (error) {}
     };
 
-    createSecssion();
-  }, [dispatch, nyrisApi]);
+    createSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const acceptTypes = ["image/*"]
     .concat(settings.cadSearch ? cadExtensions : [])

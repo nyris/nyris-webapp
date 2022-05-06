@@ -574,6 +574,8 @@ button {
     }
     .exampleImages {
       padding-bottom: 0px !important;
+      display: flex;
+      justify-content: center;
     }
     .useExampleImg {
       margin-top: 0px !important;
@@ -652,8 +654,13 @@ button {
     width: 100%;
     height: 100%;
     position: relative;
-    // background: #1e1f31;
-    // padding: 21px;
+    @media screen and (min-width: 2047px)  {
+      position: initial;
+      .loadingSpinCT{
+        top: 0;
+        bottom: 0;
+      }
+    }
 
     .box-content-drop {
       display: flex;
@@ -677,6 +684,9 @@ button {
       animation: gradient 15s ease infinite;
       position: relative;
       background-size: 100% 100%;
+      @media screen and (min-width: 2047px)  {
+        position: initial;
+      }
       @keyframes gradient {
         0% {
           background-position: 0% 50%;
@@ -693,6 +703,9 @@ button {
       background: #1e1f31;
       padding: 21px;
       height: 100%;
+      @media screen and (min-width: 2047px)  {
+        position: inherit;
+      }
     }
     .box-border {
       border: 2px dashed #aaabb5;
@@ -861,6 +874,9 @@ button {
       // overflow: auto;
       .box-item-result {
         max-width: 714px;
+        @media screen and (min-width: 2047px) {
+          max-width: 1300px;
+        }
         margin: 16px 0;
         // margin-right: auto !important;
         ul {

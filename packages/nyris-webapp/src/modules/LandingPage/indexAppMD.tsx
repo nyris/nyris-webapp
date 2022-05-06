@@ -138,7 +138,7 @@ const LandingPageAppMD: React.FC<any> = () => {
     results,
     requestId,
   } = search;
-  const { themePage } = settings;
+  const { themePage }: any = settings;
   useEffect(() => {
     if (isEmpty(rectCoords)) {
       return;
@@ -149,7 +149,7 @@ const LandingPageAppMD: React.FC<any> = () => {
 
   const loading = fetchingRegions || fetchingResults;
 
-  const mdSettings = themePage.materialDesign as MDSettings;
+  const mdSettings: any = themePage.materialDesign as MDSettings;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => dispatch(loadFile(fs[0])),
