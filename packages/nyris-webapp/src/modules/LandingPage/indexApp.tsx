@@ -176,7 +176,7 @@ const LandingPageApp = () => {
   };
   //
 
-  const getUrlToCanvasFile = (url: string, position?: number) => {
+  const searchByUrl = (url: string, position?: number) => {
     dispatch(showResults());
     dispatch(loadingActionResults());
     if (position) {
@@ -304,7 +304,7 @@ const LandingPageApp = () => {
             <ExampleImages
               images={settings.exampleImages}
               onExampleImageClicked={(url: string) => {
-                return getUrlToCanvasFile(url);
+                return searchByUrl(url);
               }}
             />
           </div>
@@ -402,7 +402,7 @@ const LandingPageApp = () => {
                     noImageUrl={settings.noImageUrl}
                     template={settings.resultTemplate}
                     onImageClick={(_pos, url) => {
-                      return getUrlToCanvasFile(url, _pos);
+                      return searchByUrl(url, _pos);
                     }}
                     onLinkClick={onLinkClick}
                     result={data}
