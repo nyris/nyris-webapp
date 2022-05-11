@@ -173,12 +173,12 @@ const LandingPageApp = () => {
   };
   // TODO: search image file home page
   const isCheckImageFile = (file: any) => {
-    dispatch(showResults());
     dispatch(loadingActionResults());
+    dispatch(showResults());
     dispatch(showFeedback());
     if (isImageFile(file) || typeof file === "string") {
       return serviceImage(file, searchState.settings).then((res) => {
-        return dispatch(setSearchResults(res));
+        dispatch(setSearchResults(res));
       });
     }
     if (isCadFile(file)) {
@@ -188,8 +188,8 @@ const LandingPageApp = () => {
   //
 
   const searchByUrl = (url: string, position?: number) => {
-    dispatch(showResults());
     dispatch(loadingActionResults());
+    dispatch(showResults());
     if (position) {
       feedbackClickEpic(searchState, position);
     }
@@ -197,11 +197,12 @@ const LandingPageApp = () => {
     if (settings.regions) {
       serviceImage(url, searchState.settings).then((res) => {
         dispatch(setSearchResults(res));
-        return dispatch(showFeedback());
+        dispatch(showFeedback());
       });
     } else {
       serviceImageNonRegion(url, searchState, rectCoords).then((res) => {
         dispatch(searchFileImageNonRegion(res));
+        dispatch(showFeedback());
       });
     }
   };
@@ -430,8 +431,8 @@ const LandingPageApp = () => {
 
           {(results.length === 0 &&
             showPart === "results" &&
-            fetchingRegions) ||
-            (fetchingResults && (
+            !fetchingRegions) ||
+            (!fetchingResults && (
               <div className="noResults">
                 We did not find anything{" "}
                 <span role="img" aria-label="sad face">
