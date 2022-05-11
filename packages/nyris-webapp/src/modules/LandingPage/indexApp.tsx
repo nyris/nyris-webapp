@@ -155,7 +155,7 @@ const LandingPageApp = () => {
   };
 
   const onLinkClick = (_position: number, url: string) => {
-    feedbackClickEpic(searchState, _position);
+    feedbackClickEpic(searchState, _position).catch(console.warn);
     if (url) {
       window.open(url);
     }
