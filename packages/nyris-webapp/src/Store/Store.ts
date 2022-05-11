@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { combineReducers } from "redux";
-import thunk from "redux-thunk";
 import Auth from "Store/Auth";
 import { AppSettings } from "types";
 import { defaultSettings } from "defaults";
@@ -36,7 +35,6 @@ const reducers = combineReducers({
 export const store = configureStore({
   reducer: reducers,
   devTools: process.env.NODE_ENV !== "production",
-  middleware: [thunk],
 });
 
 export type RootState = ReturnType<typeof store.getState>;
