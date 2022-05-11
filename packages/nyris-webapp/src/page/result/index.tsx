@@ -52,9 +52,9 @@ import {
   serviceImage,
   serviceImageNonRegion,
 } from "services/image";
-import Preview from "components/preview/preview";
 import NyrisAPI from "@nyris/nyris-api";
 import LoadingScreenCustom from "components/LoadingScreen";
+import { Preview } from "@nyris/nyris-react-components";
 
 interface Props {}
 
@@ -314,13 +314,7 @@ function ResultComponent(props: Props) {
                               return;
                             }}
                             image={requestImage?.canvas}
-                            initialRegion={
-                              !selectedRegion
-                                ? regions[0]
-                                  ? regions[0]
-                                  : { x1: 0, x2: 1, y1: 0, y2: 1 }
-                                : selectedRegion
-                            }
+                            selection={selectedRegion}
                             regions={regions}
                             maxWidth={400}
                             maxHeight={500}

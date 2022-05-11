@@ -19,7 +19,7 @@ import Icon from "@material-ui/core/Icon";
 import React, { useCallback, useEffect, useState } from "react";
 import { NodeGroup } from "react-move";
 import classNames from "classnames";
-import { Capture } from "@nyris/nyris-react-components";
+import {Capture, Preview} from "@nyris/nyris-react-components";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import {
   RectCoords,
@@ -44,7 +44,6 @@ import { serviceImage, serviceImageNonRegion } from "services/image";
 import { findByImage } from "services/findByImage";
 import { feedbackRegionEpic } from "services/Feedback";
 import { MDSettings } from "../../types";
-import Preview from "components/preview/preview";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -365,13 +364,7 @@ const LandingPageAppMD: React.FC<any> = () => {
                   return;
                 }}
                 image={requestImage?.canvas}
-                initialRegion={
-                  !selectedRegion
-                    ? regions[0]
-                      ? regions[0]
-                      : { x1: 0, x2: 1, y1: 0, y2: 1 }
-                    : selectedRegion
-                }
+                selection={selectedRegion}
                 regions={regions}
                 maxWidth={400}
                 maxHeight={500}

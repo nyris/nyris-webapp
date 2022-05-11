@@ -21,7 +21,7 @@ import { Animate, NodeGroup } from "react-move";
 import { AppSettings, MDSettings, CanvasWithId } from "types";
 import {
   makeFileHandler,
-  Capture,
+  Capture, Preview,
 } from "@nyris/nyris-react-components";
 import { Snackbar } from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
@@ -47,7 +47,6 @@ import { serviceImage, serviceImageNonRegion } from "services/image";
 import { findByImage } from "services/findByImage";
 import { debounce, isEmpty } from "lodash";
 import { feedbackClickEpic } from "services/Feedback";
-import Preview from "components/preview/preview";
 export interface AppHandlers {
   onExampleImageClick: (url: string) => void;
   onImageClick: (position: number, url: string) => void;
@@ -125,6 +124,7 @@ const LandingPageApp = () => {
   const minPreviewHeight = 400;
   const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
   const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
+  const defaultSelection = {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9};
 
   useEffect(() => {
     if (isEmpty(rectCoords)) {
@@ -359,22 +359,8 @@ const LandingPageApp = () => {
             </div>
           )}
         </Animate>
-        {/* // TODO:Box Preview image. */}
         {settings.preview && requestImage && (
           <div className="preview">
-            {/* <Preview
-              key={requestImage?.id}
-              maxWidth={document.body.clientWidth}
-              maxHeight={maxPreviewHeight}
-              dotColor="#4C8F9F"
-              onSelectionChange={(r: RectCoords) => {
-                dispatch(selectionChanged(r));
-                return debounceRectCoords(r);
-              }}
-              regions={regions}
-              selection={selectedRegion}
-              image={requestImage.canvas}
-            /> */}
             <Preview
               key={requestImage?.id}
               onSelectionChange={(r: RectCoords) => {
@@ -382,13 +368,7 @@ const LandingPageApp = () => {
                 return;
               }}
               image={requestImage?.canvas}
-              initialRegion={
-                !selectedRegion
-                  ? regions[0]
-                    ? regions[0]
-                    : { x1: 0, x2: 1, y1: 0, y2: 1 }
-                  : selectedRegion
-              }
+              selection={selectedRegion || defaultSelection}
               regions={regions}
               maxWidth={document.body.clientWidth}
               maxHeight={maxPreviewHeight}
