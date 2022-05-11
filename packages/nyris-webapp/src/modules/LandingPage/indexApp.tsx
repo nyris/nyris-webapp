@@ -122,9 +122,9 @@ const LandingPageApp = () => {
       // return dispatch(loadFile(fs[0]));
     },
   });
-  // const minPreviewHeight = 400;
-  // const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
-  // const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
+  const minPreviewHeight = 400;
+  const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
+  const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
 
   useEffect(() => {
     if (isEmpty(rectCoords)) {
@@ -390,9 +390,9 @@ const LandingPageApp = () => {
                   : selectedRegion
               }
               regions={regions}
-              maxWidth={400}
-              maxHeight={500}
-              dotColor="#FBD914"
+              maxWidth={document.body.clientWidth}
+              maxHeight={maxPreviewHeight}
+              dotColor="#4C8F9F"
             />
           </div>
         )}
