@@ -19,7 +19,7 @@ import Icon from "@material-ui/core/Icon";
 import React, { useCallback, useEffect, useState } from "react";
 import { NodeGroup } from "react-move";
 import classNames from "classnames";
-import { Capture, Preview } from "@nyris/nyris-react-components";
+import { Capture } from "@nyris/nyris-react-components";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import {
   RectCoords,
@@ -36,7 +36,7 @@ import {
   loadingActionRegions,
   loadingActionResults,
   searchFileImageNonRegion,
-  selectionChanged,
+  // selectionChanged,
 } from "Store/Search";
 import { showCamera, showFeedback, showResults, showStart } from "Store/Nyris";
 import _, { debounce, isEmpty } from "lodash";
@@ -44,6 +44,7 @@ import { serviceImage, serviceImageNonRegion } from "services/image";
 import { findByImage } from "services/findByImage";
 import { feedbackRegionEpic } from "services/Feedback";
 import { MDSettings } from "../../types";
+import Preview from "components/preview/preview";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -155,9 +156,9 @@ const LandingPageAppMD: React.FC<any> = () => {
     onDrop: (fs: File[]) => dispatch(loadFile(fs[0])),
   });
 
-  const minPreviewHeight = 400;
-  const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
-  const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
+  // const minPreviewHeight = 400;
+  // const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
+  // const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
   const acceptTypes = ["image/*"]
     .concat(settings.cadSearch ? cadExtensions : [])
     .join(",");
@@ -358,17 +359,23 @@ const LandingPageAppMD: React.FC<any> = () => {
           {requestImage && (
             <Card style={{ marginBottom: "4em" }} raised={true}>
               <Preview
-                key={requestImage.id}
-                maxWidth={document.body.clientWidth}
-                maxHeight={maxPreviewHeight}
-                dotColor={mdSettings.primaryColor}
+                key={requestImage?.id}
                 onSelectionChange={(r: RectCoords) => {
-                  dispatch(selectionChanged(r));
-                  return debounceRectCoords(r);
+                  debounceRectCoords(r);
+                  return;
                 }}
+                image={requestImage?.canvas}
+                initialRegion={
+                  !selectedRegion
+                    ? regions[0]
+                      ? regions[0]
+                      : { x1: 0, x2: 1, y1: 0, y2: 1 }
+                    : selectedRegion
+                }
                 regions={regions}
-                selection={selectedRegion}
-                image={requestImage.canvas}
+                maxWidth={400}
+                maxHeight={500}
+                dotColor="#FBD914"
               />
             </Card>
           )}
