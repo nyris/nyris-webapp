@@ -22,7 +22,6 @@ import { AppSettings, MDSettings, CanvasWithId } from "types";
 import {
   makeFileHandler,
   Capture,
-  Preview,
 } from "@nyris/nyris-react-components";
 import { Snackbar } from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
@@ -35,7 +34,6 @@ import {
   loadingActionRegions,
   loadingActionResults,
   searchFileImageNonRegion,
-  selectionChanged,
 } from "Store/Search";
 import {
   NyrisAppPart,
@@ -49,6 +47,7 @@ import { serviceImage, serviceImageNonRegion } from "services/image";
 import { findByImage } from "services/findByImage";
 import { debounce, isEmpty } from "lodash";
 import { feedbackClickEpic } from "services/Feedback";
+import Preview from "components/preview/preview";
 export interface AppHandlers {
   onExampleImageClick: (url: string) => void;
   onImageClick: (position: number, url: string) => void;
@@ -123,9 +122,9 @@ const LandingPageApp = () => {
       // return dispatch(loadFile(fs[0]));
     },
   });
-  const minPreviewHeight = 400;
-  const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
-  const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
+  // const minPreviewHeight = 400;
+  // const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
+  // const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
 
   useEffect(() => {
     if (isEmpty(rectCoords)) {
@@ -161,7 +160,7 @@ const LandingPageApp = () => {
       window.open(url);
     }
   };
-
+  // TODO: search image file home page
   const isCheckImageFile = (file: any) => {
     dispatch(showResults(""));
     dispatch(loadingActionResults(""));
@@ -175,6 +174,7 @@ const LandingPageApp = () => {
       return dispatch(loadCadFileLoad(file));
     }
   };
+  //
 
   const getUrlToCanvasFile = (url: string, position?: number) => {
     dispatch(showResults(""));
@@ -216,7 +216,6 @@ const LandingPageApp = () => {
       return dispatch(showFeedback(""));
     });
   };
-
 
   return (
     <div>
@@ -360,9 +359,10 @@ const LandingPageApp = () => {
             </div>
           )}
         </Animate>
+        {/* // TODO:Box Preview image. */}
         {settings.preview && requestImage && (
           <div className="preview">
-            <Preview
+            {/* <Preview
               key={requestImage?.id}
               maxWidth={document.body.clientWidth}
               maxHeight={maxPreviewHeight}
@@ -374,6 +374,25 @@ const LandingPageApp = () => {
               regions={regions}
               selection={selectedRegion}
               image={requestImage.canvas}
+            /> */}
+            <Preview
+              key={requestImage?.id}
+              onSelectionChange={(r: RectCoords) => {
+                debounceRectCoords(r);
+                return;
+              }}
+              image={requestImage?.canvas}
+              initialRegion={
+                !selectedRegion
+                  ? regions[0]
+                    ? regions[0]
+                    : { x1: 0, x2: 1, y1: 0, y2: 1 }
+                  : selectedRegion
+              }
+              regions={regions}
+              maxWidth={400}
+              maxHeight={500}
+              dotColor="#FBD914"
             />
           </div>
         )}
@@ -384,7 +403,6 @@ const LandingPageApp = () => {
           <Codes codes={codes} />
         </div>
         <CategoryFilter cats={filterOptions} />
-
         <div className="wrapper">
           <NodeGroup
             data={results}

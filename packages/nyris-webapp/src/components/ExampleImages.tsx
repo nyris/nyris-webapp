@@ -15,10 +15,10 @@ const ExampleImages: React.FC<ExampleImagesProps> = ({
   }
   return (
     <section className="useExampleImg">
-      <Typography className="title-box">
+      <Typography className="title-box text-center">
         You can also try one of these pictures:
       </Typography>
-      <div className="exampleImages">
+      <div className="exampleImages d-flex justify-center">
         <div className="exImagesWrap">
           {images.map((i) => {
             return (

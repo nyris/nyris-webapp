@@ -11,10 +11,10 @@ import {AppState} from "./types";
 
 function App(): JSX.Element {
   const { settings } = useAppSelector<AppState>((state: any) => state);
-  const { themePage } = settings;
+  const { themePage }: any = settings;
   let SelectedApp = 
     themePage.default?.active ? LandingPageApp : (
-      themePage.materialDesign?.active ? LandingPageAppMD : AppNewVersion);
+      themePage.mdWhiteLabel?.active ? LandingPageAppMD : AppNewVersion);
 
   return <SelectedApp />;
 }
