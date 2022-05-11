@@ -32,31 +32,31 @@ export const nyrisSlice = createSlice({
         showPart: "camera",
       };
     },
-    showResults: (state, _data: PayloadAction<any>) => {
+    showResults: (state) => {
       return {
         ...state,
         showPart: "results",
       };
     },
-    showFeedback: (state, _data: PayloadAction<any>) => {
+    showFeedback: (state) => {
       return {
         ...state,
         feedbackState: "question",
       };
     },
-    hideFeedback: (state, _data: PayloadAction<any>) => {
+    hideFeedback: (state) => {
       return {
         ...state,
         feedbackState: "hidden",
       };
     },
-    feedbackSubmitPositive: (state, _data: PayloadAction<any>) => {
+    feedbackSubmitPositive: (state) => {
       return {
         ...state,
         feedbackState: "positive",
       };
     },
-    feedbackNegative: (state, _data: PayloadAction<any>) => {
+    feedbackNegative: (state) => {
       return {
         ...state,
         feedbackState: "negative",

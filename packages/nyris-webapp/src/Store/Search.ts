@@ -145,19 +145,19 @@ const initialState: SearchState = {
         fetchingRegions: false,
       };
     },
-    submitPositiveFeedback: (state, data: PayloadAction<RectCoords>) => {
+    submitPositiveFeedback: () => {
       return;
     },
-    submitNegativeFeedback: (state, data: PayloadAction<RectCoords>) => {
+    submitNegativeFeedback: () => {
       return;
     },
-    loadingActionResults: (state, _data: PayloadAction<any>) => {
+    loadingActionResults: (state) => {
       return {
         ...state,
         fetchingResults: true,
       };
     },
-    loadingActionRegions: (state, _data: PayloadAction<any>) => {
+    loadingActionRegions: (state) => {
       return {
         ...state,
         fetchingRegions: true,

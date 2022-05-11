@@ -117,7 +117,7 @@ const LandingPageApp = () => {
       // console.log("fsssssssss", fs);
       serviceImage(fs[0], searchState).then((res) => {
         dispatch(loadFile(res));
-        return dispatch(showFeedback(""));
+        return dispatch(showFeedback());
       });
       // return dispatch(loadFile(fs[0]));
     },
@@ -162,9 +162,9 @@ const LandingPageApp = () => {
   };
   // TODO: search image file home page
   const isCheckImageFile = (file: any) => {
-    dispatch(showResults(""));
-    dispatch(loadingActionResults(""));
-    dispatch(showFeedback(""));
+    dispatch(showResults());
+    dispatch(loadingActionResults());
+    dispatch(showFeedback());
     if (isImageFile(file) || typeof file === "string") {
       return serviceImage(file, searchState).then((res) => {
         return dispatch(loadFile(res));
@@ -177,8 +177,8 @@ const LandingPageApp = () => {
   //
 
   const getUrlToCanvasFile = (url: string, position?: number) => {
-    dispatch(showResults(""));
-    dispatch(loadingActionResults(""));
+    dispatch(showResults());
+    dispatch(loadingActionResults());
     if (position) {
       feedbackClickEpic(searchState, position);
     }
@@ -186,7 +186,7 @@ const LandingPageApp = () => {
     if (settings.regions) {
       serviceImage(url, searchState).then((res) => {
         dispatch(loadFile(res));
-        return dispatch(showFeedback(""));
+        return dispatch(showFeedback());
       });
     } else {
       serviceImageNonRegion(url, searchState, rectCoords).then((res) => {
@@ -210,10 +210,10 @@ const LandingPageApp = () => {
     let options: ImageSearchOptions = {
       cropRect: r,
     };
-    dispatch(loadingActionRegions(""));
+    dispatch(loadingActionRegions());
     return findByImage(canvas, options, settings).then((res) => {
       dispatch(loadFileSelectRegion(res));
-      return dispatch(showFeedback(""));
+      return dispatch(showFeedback());
     });
   };
 

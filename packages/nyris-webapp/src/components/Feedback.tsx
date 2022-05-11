@@ -19,9 +19,9 @@ const Feedback: React.FC<FeedbackProps> = ({ feedbackState, onClose }) => {
   const onPositiveFeedback = (data: boolean) => {
     feedbackSuccessEpic(state, data);
     if (data) {
-      dispatch(feedbackSubmitPositive(""));
+      dispatch(feedbackSubmitPositive());
     } else {
-      dispatch(feedbackNegative(""));
+      dispatch(feedbackNegative());
     }
   };
 

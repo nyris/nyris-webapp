@@ -164,14 +164,14 @@ const LandingPageAppMD: React.FC<any> = () => {
     .join(",");
 
   const isCheckImageFile = async (file: any) => {
-    dispatch(showResults(""));
-    dispatch(loadingActionResults(""));
-    dispatch(showFeedback(""));
+    dispatch(showResults());
+    dispatch(loadingActionResults());
+    dispatch(showFeedback());
     if (isImageFile(file) || typeof file === "string") {
       if (settings.regions) {
         serviceImage(file, searchState).then((res) => {
           dispatch(loadFile(res));
-          return dispatch(showFeedback(""));
+          return dispatch(showFeedback());
         });
       } else {
         serviceImageNonRegion(file, searchState, rectCoords).then((res) => {
@@ -217,10 +217,10 @@ const LandingPageAppMD: React.FC<any> = () => {
       cropRect: r,
     };
     feedbackRegionEpic(searchState, r);
-    dispatch(loadingActionRegions(""));
+    dispatch(loadingActionRegions());
     return findByImage(canvas, options, settings).then((res) => {
       dispatch(loadFileSelectRegion(res));
-      return dispatch(showFeedback(""));
+      return dispatch(showFeedback());
     });
   };
 

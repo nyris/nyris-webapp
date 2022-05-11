@@ -19,7 +19,7 @@ function FooterComponent(): JSX.Element {
       <Feedback
         feedbackState={feedbackState}
         onClose={() => {
-          return dispatch(hideFeedback(""));
+          return dispatch(hideFeedback());
         }}
       />
     </>

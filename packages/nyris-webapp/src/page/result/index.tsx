@@ -144,7 +144,7 @@ function ResultComponent(props: Props) {
         };
         dispatch(updateResultChangePosition(payload));
         setLoading(false);
-        return dispatch(showFeedback(""));
+        return dispatch(showFeedback());
       });
     } else {
       serviceImageNonRegion(canvas, StateGlobal, null).then((res: any) => {
@@ -153,7 +153,7 @@ function ResultComponent(props: Props) {
           requestImage: requestImage,
         };
         dispatch(updateResultChangePosition(payload));
-        return dispatch(showFeedback(""));
+        return dispatch(showFeedback());
       });
     }
   };
@@ -202,17 +202,18 @@ function ResultComponent(props: Props) {
 
   // Search image with url or file
   const getUrlToCanvasFile = (url: string, position?: number) => {
-    dispatch(showResults(""));
-    dispatch(loadingActionResults(""));
+    dispatch(showResults());
+    dispatch(loadingActionResults());
     if (position) {
       feedbackClickEpic(StateGlobal, position);
       return;
     }
     if (settings.regions) {
-      serviceImage(url, StateGlobal).then((res: any) => {
+      serviceImage(url, StateGlobal).then((res ) => {
+        console.log("res", res)
         dispatch(loadFile(res));
         setLoading(false);
-        return dispatch(showFeedback(""));
+        return dispatch(showFeedback());
       });
 
       return;

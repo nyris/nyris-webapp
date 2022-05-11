@@ -60,15 +60,15 @@ function DragDropFile(props: Props) {
         setLoadingLoadFile(false);
         onChangeLoading(false);
         history.push("/result");
-        return dispatch(showFeedback(""));
+        return dispatch(showFeedback());
       });
     },
   });
 
   const getUrlToCanvasFile = (url: string, position?: number) => {
     onChangeLoading(true);
-    dispatch(showResults(""));
-    dispatch(loadingActionResults(""));
+    dispatch(showResults());
+    dispatch(loadingActionResults());
     if (position) {
       feedbackClickEpic(searchState, position);
     }
@@ -78,7 +78,7 @@ function DragDropFile(props: Props) {
         dispatch(loadFile(res));
         onChangeLoading(false);
         history.push("/result");
-        return dispatch(showFeedback(""));
+        return dispatch(showFeedback());
       });
     } else {
       serviceImageNonRegion(url, searchState, rectCoords).then((res) => {
