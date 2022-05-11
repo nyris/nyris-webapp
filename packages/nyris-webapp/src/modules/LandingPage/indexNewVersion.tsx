@@ -56,9 +56,10 @@ function AppNewVersion(props: Props) {
   const nonEmptyFilter: any[] = !search?.requestImage
     ? []
     : ["sku:DOES_NOT_EXIST<score=1>"];
+  // Build filter using reverse position for stable item order
   const filterSkus: any = search?.results
-    ? search?.results.map(
-        (f: any) => `sku:'${f.sku}'<score=${Math.round(100 * f.score)}>`
+    ? search?.results.reverse().map(
+        (f: any, i: number) => `sku:'${f.sku}'<score=${i}>`
       )
     : "";
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
