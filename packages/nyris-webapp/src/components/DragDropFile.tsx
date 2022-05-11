@@ -6,7 +6,7 @@ import { makeFileHandler } from "@nyris/nyris-react-components";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import { serviceImage, serviceImageNonRegion } from "services/image";
 import {
-  loadFile,
+  setSearchResults,
   loadingActionResults,
   searchFileImageNonRegion,
 } from "Store/Search";
@@ -56,7 +56,7 @@ function DragDropFile(props: Props) {
         };
         console.log("payload", payload);
 
-        dispatch(loadFile(payload));
+        dispatch(setSearchResults(payload));
         setLoadingLoadFile(false);
         onChangeLoading(false);
         history.push("/result");
@@ -75,7 +75,7 @@ function DragDropFile(props: Props) {
 
     if (settings.regions) {
       serviceImage(url, searchState).then((res) => {
-        dispatch(loadFile(res));
+        dispatch(setSearchResults(res));
         onChangeLoading(false);
         history.push("/result");
         return dispatch(showFeedback());

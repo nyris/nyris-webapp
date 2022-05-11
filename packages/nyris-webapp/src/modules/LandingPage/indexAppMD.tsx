@@ -31,7 +31,7 @@ import {
 import NyrisAPI from "@nyris/nyris-api";
 import {
   loadCadFileLoad,
-  loadFile,
+  setSearchResults,
   loadFileSelectRegion,
   loadingActionRegions,
   loadingActionResults,
@@ -152,7 +152,7 @@ const LandingPageAppMD: React.FC<any> = () => {
   const mdSettings: any = themePage.materialDesign as MDSettings;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (fs: File[]) => dispatch(loadFile(fs[0])),
+    onDrop: (fs: File[]) => dispatch(setSearchResults(fs[0])),
   });
 
   // const minPreviewHeight = 400;
@@ -169,7 +169,7 @@ const LandingPageAppMD: React.FC<any> = () => {
     if (isImageFile(file) || typeof file === "string") {
       if (settings.regions) {
         serviceImage(file, searchState).then((res) => {
-          dispatch(loadFile(res));
+          dispatch(setSearchResults(res));
           return dispatch(showFeedback());
         });
       } else {

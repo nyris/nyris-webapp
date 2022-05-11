@@ -85,7 +85,7 @@ const initialState: SearchState = {
     name: "search",
     initialState,
     reducers: {
-      loadFile: (state, data) => {
+      setSearchResults: (state, data) => {
       const { payload } = data;
       const {
         requestImage,
@@ -250,7 +250,7 @@ const initialState: SearchState = {
 });
 
 export const {
-  loadFile,
+  setSearchResults,
   selectionChanged,
   submitPositiveFeedback,
   submitNegativeFeedback,

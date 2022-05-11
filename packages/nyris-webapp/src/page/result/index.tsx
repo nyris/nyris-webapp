@@ -31,7 +31,7 @@ import DetailItem from "components/DetailItem";
 import FileCopyOutlinedIcon from "@material-ui/icons/FileCopyOutlined";
 import { RectCoords } from "@nyris/nyris-api";
 import {
-  loadFile,
+  setSearchResults,
   loadingActionResults,
   searchFileImageNonRegion,
   selectionChanged,
@@ -211,7 +211,7 @@ function ResultComponent(props: Props) {
     if (settings.regions) {
       serviceImage(url, StateGlobal).then((res ) => {
         console.log("res", res)
-        dispatch(loadFile(res));
+        dispatch(setSearchResults(res));
         setLoading(false);
         return dispatch(showFeedback());
       });

@@ -29,7 +29,7 @@ import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import {
   loadCadFileLoad,
-  loadFile,
+  setSearchResults,
   loadFileSelectRegion,
   loadingActionRegions,
   loadingActionResults,
@@ -115,7 +115,7 @@ const LandingPageApp = () => {
     onDrop: (fs: File[]) => {
       // console.log("fsssssssss", fs);
       serviceImage(fs[0], searchState).then((res) => {
-        dispatch(loadFile(res));
+        dispatch(setSearchResults(res));
         return dispatch(showFeedback());
       });
       // return dispatch(loadFile(fs[0]));
@@ -167,7 +167,7 @@ const LandingPageApp = () => {
     dispatch(showFeedback());
     if (isImageFile(file) || typeof file === "string") {
       return serviceImage(file, searchState).then((res) => {
-        return dispatch(loadFile(res));
+        return dispatch(setSearchResults(res));
       });
     }
     if (isCadFile(file)) {
@@ -185,7 +185,7 @@ const LandingPageApp = () => {
 
     if (settings.regions) {
       serviceImage(url, searchState).then((res) => {
-        dispatch(loadFile(res));
+        dispatch(setSearchResults(res));
         return dispatch(showFeedback());
       });
     } else {
