@@ -93,7 +93,10 @@ const LandingPageApp = () => {
   const dispatch = useAppDispatch();
   const searchState = useAppSelector((state) => state);
   const [toastOpen, setToastOpen] = useState(false);
-  const [rectCoords, setRectCoords] = useState<any>(undefined);
+  const [rectCoords, setRectCoords] = useState<any>();
+  const defaultSelection = {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9};
+  const [selection, setSelection] = useState<RectCoords>(defaultSelection);
+
   const { settings, search, nyris } = searchState;
   const {
     errorMessage,
@@ -111,6 +114,15 @@ const LandingPageApp = () => {
   } = search;
   const { showPart } = nyris;
 
+  const isDefaultRect = (r: RectCoords) => r.x1 === 0 && r.x2 === 1 && r.y1 === 0 && r.y2 === 1;
+
+  // update selection, if it is not the default one
+  useEffect(() => {
+    if (!isDefaultRect(selectedRegion)) {
+      setSelection(selectedRegion);
+    }
+  }, [selectedRegion]);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => {
       // console.log("fsssssssss", fs);
@@ -124,7 +136,6 @@ const LandingPageApp = () => {
   const minPreviewHeight = 400;
   const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
   const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
-  const defaultSelection = {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9};
 
   useEffect(() => {
     if (isEmpty(rectCoords)) {
@@ -199,7 +210,7 @@ const LandingPageApp = () => {
     return setRectCoords(value);
   }, 1200);
 
-  const debounceRectCoords = useCallback(
+  const debouncedSetRectCoords = useCallback(
     (value) => handlerRectCoords(value),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -364,11 +375,12 @@ const LandingPageApp = () => {
             <Preview
               key={requestImage?.id}
               onSelectionChange={(r: RectCoords) => {
-                debounceRectCoords(r);
+                setSelection(r);
+                debouncedSetRectCoords(r);
                 return;
               }}
               image={requestImage?.canvas}
-              selection={selectedRegion || defaultSelection}
+              selection={selection}
               regions={regions}
               maxWidth={document.body.clientWidth}
               maxHeight={maxPreviewHeight}
