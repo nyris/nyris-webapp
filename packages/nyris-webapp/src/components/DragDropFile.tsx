@@ -40,7 +40,7 @@ function DragDropFile(props: Props) {
       setLoadingLoadFile(true);
       console.log("fs", fs);
 
-      return serviceImage(fs[0], searchState).then((res: any) => {
+      return serviceImage(fs[0], searchState.settings).then((res: any) => {
         console.log("res?.results", res);
 
         res?.results.map((item: any) => {
@@ -74,7 +74,7 @@ function DragDropFile(props: Props) {
     }
 
     if (settings.regions) {
-      serviceImage(url, searchState).then((res) => {
+      serviceImage(url, searchState.settings).then((res) => {
         dispatch(setSearchResults(res));
         onChangeLoading(false);
         history.push("/result");

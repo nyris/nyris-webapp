@@ -126,7 +126,7 @@ const LandingPageApp = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => {
       // console.log("fsssssssss", fs);
-      serviceImage(fs[0], searchState).then((res) => {
+      serviceImage(fs[0], searchState.settings).then((res) => {
         dispatch(setSearchResults(res));
         return dispatch(showFeedback());
       });
@@ -177,7 +177,7 @@ const LandingPageApp = () => {
     dispatch(loadingActionResults());
     dispatch(showFeedback());
     if (isImageFile(file) || typeof file === "string") {
-      return serviceImage(file, searchState).then((res) => {
+      return serviceImage(file, searchState.settings).then((res) => {
         return dispatch(setSearchResults(res));
       });
     }
@@ -195,7 +195,7 @@ const LandingPageApp = () => {
     }
 
     if (settings.regions) {
-      serviceImage(url, searchState).then((res) => {
+      serviceImage(url, searchState.settings).then((res) => {
         dispatch(setSearchResults(res));
         return dispatch(showFeedback());
       });

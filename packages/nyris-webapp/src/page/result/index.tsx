@@ -209,7 +209,7 @@ function ResultComponent(props: Props) {
       return;
     }
     if (settings.regions) {
-      serviceImage(url, StateGlobal).then((res ) => {
+      serviceImage(url, settings).then((res ) => {
         console.log("res", res)
         dispatch(setSearchResults(res));
         setLoading(false);

@@ -1,18 +1,23 @@
-import { ImageSearchOptions, urlOrBlobToCanvas } from "@nyris/nyris-api";
+import {ImageSearchOptions, NyrisAPISettings, selectFirstCenteredRegion, urlOrBlobToCanvas} from "@nyris/nyris-api";
 import NyrisAPI from "@nyris/nyris-api";
 import { fileOrBlobToCanvas, rectToCrop } from "./nyris";
 
-export const serviceImage = async (file: any, stateStore: any) => {
+export const serviceImage = async (file: any, settings: NyrisAPISettings) => {
   try {
-    const { settings } = stateStore;
-    let options = settings;
     const nyrisApi = new NyrisAPI(settings);
     const randomId = Math.random().toString();
 
-    const image: any = await fileOrBlobToCanvas(file);
+    const image = await fileOrBlobToCanvas(file);
     const imageFileCanvas = { canvas: image, id: randomId };
 
-    const regions: any = await nyrisApi.findRegions(image);
+    const regions = await nyrisApi.findRegions(image);
+    const searchRegion = selectFirstCenteredRegion(regions, 0.3, {x1: 0, x2: 1, y1: 0, y2: 1});
+
+    let options : ImageSearchOptions = {
+      ...settings,
+      cropRect: searchRegion
+    };
+
     const { results, requestId, duration, categoryPredictions, codes } =
       await nyrisApi.findByImage(image, options);
     const payload = {
@@ -23,6 +28,7 @@ export const serviceImage = async (file: any, stateStore: any) => {
       duration,
       regions,
       requestImage: imageFileCanvas,
+      selectedRegion: searchRegion
     };
 
     return payload;

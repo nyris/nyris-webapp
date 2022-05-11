@@ -168,7 +168,7 @@ const LandingPageAppMD: React.FC<any> = () => {
     dispatch(showFeedback());
     if (isImageFile(file) || typeof file === "string") {
       if (settings.regions) {
-        serviceImage(file, searchState).then((res) => {
+        serviceImage(file, searchState.settings).then((res) => {
           dispatch(setSearchResults(res));
           return dispatch(showFeedback());
         });
