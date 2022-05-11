@@ -80,11 +80,12 @@ const initialState: SearchState = {
   loadingSearchAlgolia: false,
 };
 
-export const searchSlice = createSlice({
-  name: "search",
-  initialState,
-  reducers: {
-    loadFile: (state, data: PayloadAction<any>) => {
+
+  export const searchSlice = createSlice({
+    name: "search",
+    initialState,
+    reducers: {
+      loadFile: (state, data) => {
       const { payload } = data;
       const {
         requestImage,

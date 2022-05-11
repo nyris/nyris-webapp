@@ -1,5 +1,4 @@
 import { ImageSearchOptions, urlOrBlobToCanvas } from "@nyris/nyris-api";
-import NyrisAPICT from "./findRegionsCustom";
 import NyrisAPI from "@nyris/nyris-api";
 import { fileOrBlobToCanvas, rectToCrop } from "./nyris";
 
@@ -7,21 +6,13 @@ export const serviceImage = async (file: any, stateStore: any) => {
   try {
     const { settings } = stateStore;
     let options = settings;
-    const nyrisApi = new NyrisAPICT(settings);
+    const nyrisApi = new NyrisAPI(settings);
     const randomId = Math.random().toString();
 
     const image: any = await fileOrBlobToCanvas(file);
     const imageFileCanvas = { canvas: image, id: randomId };
 
-    const searchServiceSettings: any = {
-      ...settings,
-      responseHook: (r: any) => ({ offerInfos: r.results }),
-    };
-
-    const regions: any = await nyrisApi.findRegions(
-      image,
-      searchServiceSettings
-    );
+    const regions: any = await nyrisApi.findRegions(image);
     const { results, requestId, duration, categoryPredictions, codes } =
       await nyrisApi.findByImage(image, options);
     const payload = {
@@ -79,7 +70,7 @@ export const searchImageByPosition = async (
     const { settings } = stateStore;
 
     let options = settings;
-    const nyrisApi = new NyrisAPICT(settings);
+    const nyrisApi = new NyrisAPI(settings);
     if (region) {
       let { x1, x2, y1, y2 } = region;
       let crop = rectToCrop({

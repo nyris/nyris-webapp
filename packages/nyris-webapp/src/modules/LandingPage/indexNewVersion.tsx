@@ -14,7 +14,7 @@ import {
 } from "react-instantsearch-dom";
 import algoliasearch from "algoliasearch/lite";
 import CustomSearchBox from "components/input/inputSearch";
-import NyrisAPICT from "services/findRegionsCustom";
+import {createSessionByApi} from "../../services/session";
 
 interface Props {}
 
@@ -25,25 +25,17 @@ function AppNewVersion(props: Props) {
   const { settings, search }: any = searchState;
   const [searchStateInput, setSearchStateInput] = useState<any>({});
   const [isLoading, setLoading] = useState<boolean>(false);
-  const nyrisApi = new NyrisAPICT(settings);
   const { apiKeyAlgolia, appIdAlgolia, indexNameAlgolia } = settings;
   const searchClient = algoliasearch(appIdAlgolia, apiKeyAlgolia);
   searchClient.initIndex(indexNameAlgolia);
 
   useEffect(() => {
     const createSession = async () => {
-      try {
-        await nyrisApi.createSession().then((res: any) => {
-          const payload: any = {
-            sessionId: res.data.session,
-            requestId: res.data.id,
-          };
-          dispatch(setUpdateSession(payload));
-        });
-      } catch (error) {}
+      let payload = await createSessionByApi(searchState.settings);
+      dispatch(setUpdateSession(payload));
     };
 
-    createSession();
+    createSession().catch(console.log);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
