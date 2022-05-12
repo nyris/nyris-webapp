@@ -431,8 +431,7 @@ const LandingPageApp = () => {
 
           {(results.length === 0 &&
             showPart === "results" &&
-            !fetchingRegions) ||
-            (!fetchingResults && (
+            !fetchingRegions && !fetchingResults && (
               <div className="noResults">
                 We did not find anything{" "}
                 <span role="img" aria-label="sad face">
