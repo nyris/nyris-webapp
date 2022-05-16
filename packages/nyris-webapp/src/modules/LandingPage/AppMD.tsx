@@ -16,34 +16,12 @@ import {
 } from "@material-ui/core";
 import { PhotoCamera, ArrowBack, Image } from "@material-ui/icons";
 import Icon from "@material-ui/core/Icon";
-import React, { useCallback, useEffect, useState } from "react";
 import { NodeGroup } from "react-move";
 import classNames from "classnames";
 import {Capture, Preview} from "@nyris/nyris-react-components";
-import { useAppDispatch, useAppSelector } from "Store/Store";
-import {
-  RectCoords,
-  cadExtensions,
-  isCadFile,
-  isImageFile,
-  ImageSearchOptions,
-} from "@nyris/nyris-api";
-import NyrisAPI from "@nyris/nyris-api";
-import {
-  loadCadFileLoad,
-  setSearchResults,
-  loadFileSelectRegion,
-  loadingActionRegions,
-  loadingActionResults,
-  searchFileImageNonRegion,
-  // selectionChanged,
-} from "Store/Search";
-import { showCamera, showFeedback, showResults, showStart } from "Store/Nyris";
-import _, { debounce, isEmpty } from "lodash";
-import { serviceImage, serviceImageNonRegion } from "services/image";
-import { findByImage } from "services/findByImage";
-import { feedbackRegionEpic } from "services/Feedback";
-import { MDSettings } from "../../types";
+import _  from "lodash";
+import {AppProps} from "./propsType";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -122,106 +100,43 @@ const makeFileHandler = (action: any) => (e: any) => {
   }
 };
 
-const LandingPageAppMD: React.FC<any> = () => {
-  const dispatch = useAppDispatch();
+const LandingPageAppMD = (props: AppProps) => {
   const classes = useStyles();
-  const [rectCoords, setRectCoords] = useState<any>();
-  const searchState = useAppSelector((state) => state);
-  const { settings, search, nyris } = searchState;
-  const { showPart } = nyris;
   const {
-    requestImage,
-    regions,
-    selectedRegion,
-    fetchingRegions,
-    fetchingResults,
+    handlers,
+    showPart,
+    acceptTypes,
+    settings,
+    search,
+    loading,
+    previewImage
+  } = props;
+
+  const mdSettings = settings.themePage.materialDesign;
+
+  const {
     results,
-    requestId,
+    regions,
+    previewSelection,
   } = search;
-  const { themePage }: any = settings;
-  useEffect(() => {
-    if (isEmpty(rectCoords)) {
-      return;
-    }
-    onSearchOffersForImage(rectCoords);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rectCoords]);
 
-  const loading = fetchingRegions || fetchingResults;
-
-  const mdSettings: any = themePage.materialDesign as MDSettings;
+  const {
+    onLinkClick,
+    onFileDropped,
+    onCaptureComplete,
+    onCaptureCanceled,
+    onSelectFile,
+    onCameraClick,
+    onShowStart,
+    onSelectionChange,
+  } = handlers;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (fs: File[]) => dispatch(setSearchResults(fs[0])),
+    onDrop: (fs: File[]) => {
+      onFileDropped(fs[0]);
+    },
   });
 
-  // const minPreviewHeight = 400;
-  // const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
-  // const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
-  const acceptTypes = ["image/*"]
-    .concat(settings.cadSearch ? cadExtensions : [])
-    .join(",");
-
-  const isCheckImageFile = async (file: any) => {
-    dispatch(showResults());
-    dispatch(loadingActionResults());
-    dispatch(showFeedback());
-    if (isImageFile(file) || typeof file === "string") {
-      if (settings.regions) {
-        serviceImage(file, searchState.settings).then((res) => {
-          dispatch(setSearchResults(res));
-          return dispatch(showFeedback());
-        });
-      } else {
-        serviceImageNonRegion(file, searchState, rectCoords).then((res) => {
-          dispatch(searchFileImageNonRegion(res));
-        });
-      }
-      // return serviceImage(file, settings).then((res) => {
-      //   return dispatch(loadFile(res));
-      // });
-    }
-    if (isCadFile(file)) {
-      return dispatch(loadCadFileLoad(file));
-    }
-  };
-
-  const feedbackClickEpic = async (position: any, _url: string) => {
-    try {
-      const api = new NyrisAPI(settings);
-      const sessionId = search.sessionId || search.requestId;
-      if (sessionId && requestId) {
-        await api.sendFeedback(sessionId, requestId, {
-          event: "click",
-          data: { positions: [position] },
-        });
-      }
-    } catch (error) {
-      console.log("err feedbackClickEpic", error);
-    }
-  };
-
-  const handlerRectCoords = debounce((value) => {
-    setRectCoords(value);
-  }, 1200);
-
-  const debounceRectCoords = useCallback(
-    (value) => handlerRectCoords(value),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-  const onSearchOffersForImage = (r: RectCoords) => {
-    const { canvas }: any = requestImage;
-    let options: ImageSearchOptions = {
-      cropRect: r,
-    };
-    feedbackRegionEpic(searchState, r);
-    dispatch(loadingActionRegions());
-    return findByImage(canvas, options, settings).then((res) => {
-      dispatch(loadFileSelectRegion(res));
-      return dispatch(showFeedback());
-    });
-  };
 
   return (
     <React.Fragment>
@@ -234,10 +149,8 @@ const LandingPageAppMD: React.FC<any> = () => {
       <CssBaseline />
       {showPart === "camera" && (
         <Capture
-          onCaptureComplete={(image: HTMLCanvasElement) =>
-            isCheckImageFile(image)
-          }
-          onCaptureCanceled={() => dispatch(showStart)}
+          onCaptureComplete={onCaptureComplete}
+          onCaptureCanceled={onCaptureCanceled}
           useAppText="Use default camera app"
         />
       )}
@@ -258,9 +171,7 @@ const LandingPageAppMD: React.FC<any> = () => {
                   <Button
                     variant={"contained"}
                     color={"primary"}
-                    onClick={() => {
-                      return dispatch(showCamera);
-                    }}
+                    onClick={onCameraClick}
                   >
                     Take a picture
                   </Button>
@@ -273,7 +184,7 @@ const LandingPageAppMD: React.FC<any> = () => {
                     accept={acceptTypes}
                     id="raised-button-file"
                     type="file"
-                    onChange={makeFileHandler((e: any) => isCheckImageFile(e))}
+                    onChange={makeFileHandler(onSelectFile)}
                     style={{
                       width: ".1px",
                       height: ".1px",
@@ -323,9 +234,7 @@ const LandingPageAppMD: React.FC<any> = () => {
                       id="raised-button-file"
                       type="file"
                       {...getInputProps()}
-                      onChange={makeFileHandler((e: any) => {
-                        return isCheckImageFile(e);
-                      })}
+                      onChange={makeFileHandler(onSelectFile)}
                       style={{
                         width: ".1px",
                         height: ".1px",
@@ -355,16 +264,13 @@ const LandingPageAppMD: React.FC<any> = () => {
           )}
           maxWidth="md"
         >
-          {requestImage && (
+          {previewImage && (
             <Card style={{ marginBottom: "4em" }} raised={true}>
               <Preview
-                key={requestImage?.id}
-                onSelectionChange={(r: RectCoords) => {
-                  debounceRectCoords(r);
-                  return;
-                }}
-                image={requestImage?.canvas}
-                selection={selectedRegion}
+                key={previewImage?.id}
+                onSelectionChange={onSelectionChange}
+                image={previewImage?.canvas}
+                selection={previewSelection}
                 regions={regions}
                 maxWidth={400}
                 maxHeight={500}
@@ -417,13 +323,13 @@ const LandingPageAppMD: React.FC<any> = () => {
                             component="h5"
                             className={classes.withElipsis}
                           >
-                            {result[mdSettings.resultFirstRowProperty]}
+                            {result[mdSettings?.resultFirstRowProperty!!]}
                           </Typography>
                           <Typography
                             variant="body2"
                             className={classes.withElipsis}
                           >
-                            {result[mdSettings.resultSecondRowProperty]}
+                            {result[mdSettings?.resultSecondRowProperty!!]}
                           </Typography>
                         </CardContent>
                         {result.l && (
@@ -435,26 +341,25 @@ const LandingPageAppMD: React.FC<any> = () => {
                               color="primary"
                               onClick={
                                 () => {
-                                  return feedbackClickEpic(
+                                  onLinkClick(
                                     result.position,
                                     result.l
                                   );
                                 }
-                                // handlers.onLinkClick(result.position, result.l)
                               }
                               onAuxClick={() => {
-                                return feedbackClickEpic(
+                                onLinkClick(
                                   result.position,
                                   result.l
                                 );
                               }}
                             >
-                              {mdSettings.resultLinkIcon && (
+                              {mdSettings?.resultLinkIcon && (
                                 <React.Fragment>
                                   <Icon>{mdSettings.resultLinkIcon}</Icon>{" "}
                                 </React.Fragment>
                               )}
-                              {mdSettings.resultLinkText}
+                              {mdSettings?.resultLinkText}
                             </Button>
                           </CardActions>
                         )}
@@ -479,7 +384,7 @@ const LandingPageAppMD: React.FC<any> = () => {
                 aria-label="back"
                 className={classes.fab}
                 color="primary"
-                onClick={() => dispatch(showStart(""))}
+                onClick={onShowStart}
               >
                 <ArrowBack />
               </Fab>

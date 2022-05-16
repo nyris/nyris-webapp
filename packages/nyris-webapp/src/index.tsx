@@ -20,8 +20,9 @@ document.title = window.location.host;
 
 let md: MDSettings = {
   ...defaultMdSettings,
-  ...settings.materialDesign,
+  ...settings.themePage.materialDesign,
 };
+
 
 let theme = createTheme({
   typography: {

@@ -1,17 +1,16 @@
 import React from "react";
 import { Container, Toolbar, Typography, AppBar } from "@material-ui/core";
-import { defaultMdSettings } from "defaults";
 import { useAppSelector } from "Store/Store";
+import {MDSettings} from "../types";
 interface Props {
   settings: any;
 }
 
 function HeaderMdComponent(): JSX.Element {
-  const { settings } = useAppSelector((state: any) => state);
+  const { settings } = useAppSelector((state) => state);
   const { themePage } = settings;
-  const mdSettings: any = themePage.materialDesign.active
-    ? themePage.materialDesign.materialDesign
-    : defaultMdSettings;
+  const mdSettings = themePage.materialDesign as MDSettings;
+
   return (
     <AppBar
       position={"relative"}

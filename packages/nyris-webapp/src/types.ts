@@ -28,7 +28,6 @@ export interface AppSettings extends NyrisAPISettings {
     noImageUrl?: string,
     resultTemplate?: string,
     regions: boolean,
-    materialDesign?: MDSettings,
     instantRedirectPatterns: string[],
     themePage: ThemeChoice
 }

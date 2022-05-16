@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export type NyrisAppPart = "start" | "camera" | "results";
 export type NyrisFeedbackState =
@@ -20,7 +20,7 @@ export const nyrisSlice = createSlice({
   name: "nyris",
   initialState,
   reducers: {
-    showStart: (state, _data: PayloadAction<any>) => {
+    showStart: (state) => {
       return {
         ...state,
         showPart: "start",

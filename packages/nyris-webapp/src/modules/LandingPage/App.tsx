@@ -1,24 +1,13 @@
 import "App.css";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Result from "components/Result";
 import ExampleImages from "components/ExampleImages";
 import CategoryFilter from "components/CategoryFilter";
 import PredictedCategories from "components/PredictedCategories";
 import Codes from "components/Codes";
-import {
-  Code,
-  CategoryPrediction,
-  RectCoords,
-  Region,
-  cadExtensions,
-  isCadFile,
-  isImageFile,
-  ImageSearchOptions,
-} from "@nyris/nyris-api";
 import { useDropzone } from "react-dropzone";
 import classNames from "classnames";
 import { Animate, NodeGroup } from "react-move";
-import { AppSettings, MDSettings, CanvasWithId } from "types";
 import {
   makeFileHandler,
   Capture, Preview,
@@ -26,217 +15,72 @@ import {
 import { Snackbar } from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 
-import { useAppDispatch, useAppSelector } from "Store/Store";
-import {
-  loadCadFileLoad,
-  setSearchResults,
-  loadFileSelectRegion,
-  loadingActionRegions,
-  loadingActionResults,
-  searchFileImageNonRegion,
-} from "Store/Search";
-import {
-  NyrisAppPart,
-  NyrisFeedbackState,
-  showCamera,
-  showFeedback,
-  showResults,
-  showStart,
-} from "Store/Nyris";
-import { serviceImage, serviceImageNonRegion } from "services/image";
-import { findByImage } from "services/findByImage";
-import { debounce, isEmpty } from "lodash";
-import { feedbackClickEpic } from "services/Feedback";
-export interface AppHandlers {
-  onExampleImageClick: (url: string) => void;
-  onImageClick: (position: number, url: string) => void;
-  onLinkClick: (position: number, url: string) => void;
-  onFileDropped: (file: File) => void;
-  onCaptureComplete: (image: HTMLCanvasElement) => void;
-  onCaptureCanceled: () => void;
-  onSelectFile: (f: File) => void;
-  onCameraClick: () => void;
-  onShowStart: () => void;
-  onSelectionChange: (r: RectCoords) => void;
-  onPositiveFeedback: () => void;
-  onNegativeFeedback: () => void;
-  onCloseFeedback: () => void;
-}
-
-export interface AppProps {
-  search: {
-    results: any[];
-    requestId?: string;
-    duration?: number;
-    categoryPredictions: CategoryPrediction[];
-    codes: Code[];
-    filterOptions: string[];
-    errorMessage?: string;
-    regions: Region[];
-    previewSelection: RectCoords;
-    toastErrorMessage?: string;
-  };
-  previewImage?: CanvasWithId;
-  settings: AppSettings;
-  loading: boolean;
-  showPart: NyrisAppPart;
-  feedbackState: NyrisFeedbackState;
-  handlers: AppHandlers;
-  mdSettings: MDSettings;
-}
+import {AppProps} from "./propsType";
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const LandingPageApp = () => {
-  const dispatch = useAppDispatch();
-  const searchState = useAppSelector((state) => state);
-  const [toastOpen, setToastOpen] = useState(false);
-  const [rectCoords, setRectCoords] = useState<any>();
-  const defaultSelection = {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9};
-  const [selection, setSelection] = useState<RectCoords>(defaultSelection);
-
-  const { settings, search, nyris } = searchState;
+const LandingPageApp = (props: AppProps) => {
   const {
-    errorMessage,
+    handlers,
+    showPart,
+    acceptTypes,
+    settings,
+    search,
+    loading,
+    previewImage
+  } = props;
+
+  const {
     results,
     requestId,
-    fetchingRegions,
-    fetchingResults,
-    requestImage,
-    regions,
-    selectedRegion,
+    duration,
     categoryPredictions,
     codes,
     filterOptions,
-    duration,
+    errorMessage,
+    regions,
+    previewSelection
   } = search;
-  const { showPart } = nyris;
 
-  const isDefaultRect = (r: RectCoords) => r.x1 === 0 && r.x2 === 1 && r.y1 === 0 && r.y2 === 1;
-
-  // update selection, if it is not the default one
-  useEffect(() => {
-    if (!isDefaultRect(selectedRegion)) {
-      setSelection(selectedRegion);
-    }
-  }, [selectedRegion]);
+  const {
+    onExampleImageClick,
+    onImageClick,
+    onLinkClick,
+    onFileDropped,
+    onCaptureComplete,
+    onCaptureCanceled,
+    onSelectFile,
+    onCameraClick,
+    onShowStart,
+    onSelectionChange,
+  } = handlers;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => {
-      // console.log("fsssssssss", fs);
-      serviceImage(fs[0], searchState.settings).then((res) => {
-        dispatch(setSearchResults(res));
-        return dispatch(showFeedback());
-      });
-      // return dispatch(loadFile(fs[0]));
+      onFileDropped(fs[0]);
     },
   });
-  const minPreviewHeight = 400;
-  const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
-  const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
 
-  useEffect(() => {
-    if (isEmpty(rectCoords)) {
-      return;
-    }
-    onSearchOffersForImage(rectCoords);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rectCoords]);
 
-  const acceptTypes = ["image/*"]
-    .concat(settings.cadSearch ? cadExtensions : [])
-    .join(",");
-
+  const [toastOpen, setToastOpen] = useState(false);
   useEffect(() => {
     if (errorMessage !== "") {
       setToastOpen(true);
     }
   }, [errorMessage]);
 
-  function scrollTop() {
-    // TODO might require polyfill for ios and edge
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  }
-
-  const onShowStart = () => {
-    dispatch(showStart(""));
-    scrollTop();
-  };
-
-  const onLinkClick = (_position: number, url: string) => {
-    feedbackClickEpic(searchState, _position).catch(console.warn);
-    if (url) {
-      window.open(url);
-    }
-  };
-  // TODO: search image file home page
-  const isCheckImageFile = (file: any) => {
-    dispatch(loadingActionResults());
-    dispatch(showResults());
-    dispatch(showFeedback());
-    if (isImageFile(file) || typeof file === "string") {
-      return serviceImage(file, searchState.settings).then((res) => {
-        dispatch(setSearchResults(res));
-      });
-    }
-    if (isCadFile(file)) {
-      return dispatch(loadCadFileLoad(file));
-    }
-  };
-  //
-
-  const searchByUrl = (url: string, position?: number) => {
-    dispatch(loadingActionResults());
-    dispatch(showResults());
-    if (position) {
-      feedbackClickEpic(searchState, position);
-    }
-
-    if (settings.regions) {
-      serviceImage(url, searchState.settings).then((res) => {
-        dispatch(setSearchResults(res));
-        dispatch(showFeedback());
-      });
-    } else {
-      serviceImageNonRegion(url, searchState, rectCoords).then((res) => {
-        dispatch(searchFileImageNonRegion(res));
-        dispatch(showFeedback());
-      });
-    }
-  };
-
-  const handlerRectCoords = debounce((value) => {
-    return setRectCoords(value);
-  }, 1200);
-
-  const debouncedSetRectCoords = useCallback(
-    (value) => handlerRectCoords(value),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
-  const onSearchOffersForImage = (r: RectCoords) => {
-    const { canvas }: any = requestImage;
-    let options: ImageSearchOptions = {
-      cropRect: r,
-    };
-    dispatch(loadingActionRegions());
-    return findByImage(canvas, options, settings).then((res) => {
-      dispatch(loadFileSelectRegion(res));
-      return dispatch(showFeedback());
-    });
-  };
+  const minPreviewHeight = 400;
+  const halfOfTheScreenHeight = Math.floor(window.innerHeight * 0.45);
+  const maxPreviewHeight = Math.max(minPreviewHeight, halfOfTheScreenHeight);
 
   return (
-    <div>
-      {showPart === "camera" && (
+      <div>
+        {showPart === "camera" && (
         <Capture
-          onCaptureComplete={(image: HTMLCanvasElement) => {
-            return isCheckImageFile(image);
-          }}
-          onCaptureCanceled={() => dispatch(showStart)}
+          onCaptureComplete={ onCaptureComplete }
+          onCaptureCanceled={ onCaptureCanceled }
           useAppText="Use default camera app"
         />
       )}
@@ -265,7 +109,7 @@ const LandingPageApp = () => {
                 className="inputfile"
                 accept="image/*"
                 capture="environment"
-                onClick={() => dispatch(showCamera)}
+                onClick={() => onCameraClick()}
               />
               <input
                 type="file"
@@ -282,9 +126,7 @@ const LandingPageApp = () => {
                 id="select_file"
                 className="inputfile"
                 accept={acceptTypes}
-                onChange={makeFileHandler((e) => {
-                  return isCheckImageFile(e);
-                })}
+                onChange={makeFileHandler(onSelectFile)}
               />
               <div className="onDesktop">
                 Drop an image
@@ -315,9 +157,7 @@ const LandingPageApp = () => {
             </section>
             <ExampleImages
               images={settings.exampleImages}
-              onExampleImageClicked={(url: string) => {
-                return searchByUrl(url);
-              }}
+              onExampleImageClicked={onExampleImageClick}
             />
           </div>
         </div>
@@ -360,7 +200,7 @@ const LandingPageApp = () => {
           </div>
         )}
         <Animate
-          show={fetchingRegions || fetchingResults}
+          show={loading}
           start={{ opacity: 0.0 }}
           enter={{ opacity: [1.0], timing: { duration: 300 } }}
           leave={{ opacity: [0.0], timing: { duration: 300 } }}
@@ -371,17 +211,13 @@ const LandingPageApp = () => {
             </div>
           )}
         </Animate>
-        {settings.preview && requestImage && (
+        {settings.preview && previewImage && (
           <div className="preview">
             <Preview
-              key={requestImage?.id}
-              onSelectionChange={(r: RectCoords) => {
-                setSelection(r);
-                debouncedSetRectCoords(r);
-                return;
-              }}
-              image={requestImage?.canvas}
-              selection={selection}
+              key={previewImage?.id}
+              onSelectionChange={ onSelectionChange }
+              image={previewImage?.canvas}
+              selection={previewSelection}
               regions={regions}
               maxWidth={document.body.clientWidth}
               maxHeight={maxPreviewHeight}
@@ -414,9 +250,7 @@ const LandingPageApp = () => {
                     key={key}
                     noImageUrl={settings.noImageUrl}
                     template={settings.resultTemplate}
-                    onImageClick={(_pos, url) => {
-                      return searchByUrl(url, _pos);
-                    }}
+                    onImageClick={onImageClick}
                     onLinkClick={onLinkClick}
                     result={data}
                     style={{
@@ -431,7 +265,7 @@ const LandingPageApp = () => {
 
           {(results.length === 0 &&
             showPart === "results" &&
-            !fetchingRegions && !fetchingResults && (
+            !loading && (
               <div className="noResults">
                 We did not find anything{" "}
                 <span role="img" aria-label="sad face">

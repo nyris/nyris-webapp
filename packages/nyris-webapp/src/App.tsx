@@ -4,17 +4,14 @@ import React from "react";
 import "typeface-roboto";
 import "index.css";
 import { useAppSelector } from "Store/Store";
-import LandingPageApp from "modules/LandingPage/indexApp";
-import LandingPageAppMD from "modules/LandingPage/indexAppMD";
+import LandingPageApp from "modules/LandingPage/index";
 import AppNewVersion from "modules/LandingPage/indexNewVersion";
 import {AppState} from "./types";
 
 function App(): JSX.Element {
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const { themePage } = settings;
-  let SelectedApp = 
-    themePage.default?.active ? LandingPageApp : (
-      themePage.materialDesign?.active ? LandingPageAppMD : AppNewVersion);
+  let SelectedApp = themePage.searchSuite?.active ? AppNewVersion : LandingPageApp;
 
   return <SelectedApp />;
 }

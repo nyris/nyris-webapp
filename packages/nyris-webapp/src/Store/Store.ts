@@ -2,18 +2,27 @@ import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { combineReducers } from "redux";
 import Auth from "Store/Auth";
-import { AppSettings } from "types";
-import { defaultSettings } from "defaults";
+import {AppSettings, MDSettings} from "types";
 import { getUrlParam } from "utils";
 import Search from "Store/Search";
 import Nyris from "Store/Nyris";
+import {defaultMdSettings, defaultSettings} from "../defaults";
 
 declare var settings: AppSettings;
+
+
 
 let normalizedSettings: AppSettings = {
   ...defaultSettings,
   ...settings,
 };
+
+// spread default settings for material design
+let mdSettings : MDSettings = {
+  ...defaultMdSettings,
+  ...settings.themePage.materialDesign
+}
+normalizedSettings.themePage.materialDesign = mdSettings;
 
 normalizedSettings = {
   ...normalizedSettings,
@@ -27,7 +36,7 @@ normalizedSettings = {
 
 const reducers = combineReducers({
   auth: Auth,
-  settings: () => normalizedSettings as AppSettings,
+  settings: () => normalizedSettings,
   search: Search,
   nyris: Nyris,
 });
