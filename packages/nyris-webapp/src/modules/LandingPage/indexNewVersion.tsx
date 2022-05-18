@@ -15,23 +15,23 @@ import {
 import algoliasearch from "algoliasearch/lite";
 import CustomSearchBox from "components/input/inputSearch";
 import {createSessionByApi} from "../../services/session";
+import {AlgoliaSettings} from "../../types";
 
 interface Props {}
 
 function AppNewVersion(props: Props) {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const searchState = useAppSelector((state) => state);
-  const { settings, search }: any = searchState;
+  const { settings, search } = useAppSelector((state) => state);
   const [searchStateInput, setSearchStateInput] = useState<any>({});
   const [isLoading, setLoading] = useState<boolean>(false);
-  const { apiKeyAlgolia, appIdAlgolia, indexNameAlgolia } = settings;
-  const searchClient = algoliasearch(appIdAlgolia, apiKeyAlgolia);
-  searchClient.initIndex(indexNameAlgolia);
+  const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
+  const searchClient = algoliasearch(appId, apiKey);
+  searchClient.initIndex(indexName);
 
   useEffect(() => {
     const createSession = async () => {
-      let payload = await createSessionByApi(searchState.settings);
+      let payload = await createSessionByApi(settings);
       dispatch(setUpdateSession(payload));
     };
 
@@ -67,10 +67,10 @@ function AppNewVersion(props: Props) {
   return (
     <Box className={`box-content-main ${isLoading ? "loading" : ""}`}>
       <InstantSearch
-        indexName={indexNameAlgolia}
+        indexName={indexName}
         searchClient={searchClient}
         searchState={searchStateInput}
-        onSearchStateChange={(state: any) => {
+        onSearchStateChange={(state) => {
           setSearchStateInput(state);
           dispatch(changeValueTextSearch(state));
           history.push("/result");

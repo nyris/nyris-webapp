@@ -55,18 +55,19 @@ import {
 import NyrisAPI from "@nyris/nyris-api";
 import LoadingScreenCustom from "components/LoadingScreen";
 import { Preview } from "@nyris/nyris-react-components";
+import {AlgoliaSettings} from "../../types";
 
 interface Props {}
 
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
-  const StateGlobal = useAppSelector((state) => state);
+  const stateGlobal = useAppSelector((state) => state);
   const [showColLeft, setToggleShowColLeft] = useState<boolean>(false);
   const [showImageCanvas, setShowImageCanvas] = useState<boolean>(true);
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [numberResult, setNumberResult] = useState<number>(0);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
-  const { search, settings }: any = StateGlobal;
+  const { search, settings } = stateGlobal;
   const { results, requestImage, regions, selectedRegion }: any = search;
   const { valueTextSearch } = search;
   const [dataResult, setDataResult] = useState<any[]>([]);
@@ -74,9 +75,9 @@ function ResultComponent(props: Props) {
   const [searchStateInput, setSearchStateInput] = useState<any>({});
   const apiNyris = new NyrisAPI(settings);
   const [isLoading, setLoading] = useState<any>(false);
-  const { apiKeyAlgolia, appIdAlgolia, indexNameAlgolia } = settings;
-  const searchClient = algoliasearch(appIdAlgolia, apiKeyAlgolia);
-  const index = searchClient.initIndex(indexNameAlgolia);
+  const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
+  const searchClient = algoliasearch(appId, apiKey);
+  const index = searchClient.initIndex(indexName);
 
   useEffect(() => {
     if (!valueTextSearch) {
@@ -137,7 +138,7 @@ function ResultComponent(props: Props) {
     }
     const { canvas }: any = requestImage;
     if (settings.regions) {
-      searchImageByPosition(canvas, StateGlobal, r).then((res: any) => {
+      searchImageByPosition(canvas, stateGlobal, r).then((res: any) => {
         const payload = {
           ...res,
           requestImage: requestImage,
@@ -147,7 +148,7 @@ function ResultComponent(props: Props) {
         return dispatch(showFeedback());
       });
     } else {
-      serviceImageNonRegion(canvas, StateGlobal, null).then((res: any) => {
+      serviceImageNonRegion(canvas, stateGlobal, null).then((res: any) => {
         const payload = {
           ...res,
           requestImage: requestImage,
@@ -205,7 +206,7 @@ function ResultComponent(props: Props) {
     dispatch(showResults());
     dispatch(loadingActionResults());
     if (position) {
-      feedbackClickEpic(StateGlobal, position);
+      feedbackClickEpic(stateGlobal, position);
       return;
     }
     if (settings.regions) {
@@ -218,7 +219,7 @@ function ResultComponent(props: Props) {
 
       return;
     } else {
-      serviceImageNonRegion(url, StateGlobal, undefined).then((res) => {
+      serviceImageNonRegion(url, stateGlobal, undefined).then((res) => {
         dispatch(searchFileImageNonRegion(res));
       });
       return;
@@ -268,7 +269,7 @@ function ResultComponent(props: Props) {
           </Box>
         )}
         <InstantSearch
-          indexName={indexNameAlgolia}
+          indexName={indexName}
           searchClient={searchClient}
           searchState={searchStateInput}
           onSearchStateChange={(state: any) => {

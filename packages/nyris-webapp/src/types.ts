@@ -21,6 +21,12 @@ export interface MDSettings {
     active?: boolean
 }
 
+export interface AlgoliaSettings {
+    apiKey: string,
+    appId: string,
+    indexName: string
+}
+
 export interface AppSettings extends NyrisAPISettings {
     exampleImages: string[],
     preview: boolean,
@@ -29,7 +35,8 @@ export interface AppSettings extends NyrisAPISettings {
     resultTemplate?: string,
     regions: boolean,
     instantRedirectPatterns: string[],
-    themePage: ThemeChoice
+    themePage: ThemeChoice,
+    algolia?: AlgoliaSettings
 }
 
 export interface DefaultThemeSettings  {
