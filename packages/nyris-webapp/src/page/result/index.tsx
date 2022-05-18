@@ -46,7 +46,7 @@ import {
   Configure,
 } from "react-instantsearch-dom";
 import CustomSearchBox from "components/input/inputSearch";
-import { feedbackClickEpic } from "services/Feedback";
+import {feedbackClickEpic, feedbackSuccessEpic} from "services/Feedback";
 import {
   searchImageByPosition,
   serviceImage,
@@ -183,23 +183,8 @@ function ResultComponent(props: Props) {
     }
   };
 
-  // TODO: Handler like dislike
-  const sendFeedBackAction = async (type: string) => {
-    try {
-      const action = type === "like" ? true : false;
-      const payload: any = {
-        event: "feedback",
-        data: {
-          success: action,
-        },
-      };
-      await apiNyris.sendFeedback(
-        search?.sessionId,
-        search?.requestId,
-        payload
-      );
-    } catch (error) {}
-  };
+  const sendFeedBackAction = async (type: string) =>
+    feedbackSuccessEpic(stateGlobal, type === "like");
 
   // Search image with url or file
   const getUrlToCanvasFile = (url: string, position?: number) => {
