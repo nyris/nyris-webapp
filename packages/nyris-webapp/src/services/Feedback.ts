@@ -1,5 +1,6 @@
 import NyrisAPI, {FeedbackEventPayload, NyrisAPISettings} from "@nyris/nyris-api";
 import {RootState} from "../Store/Store";
+import {RectCoords} from "./types";
 
 export const feedbackSuccessEpic = async (state: RootState, success: boolean) => {
   const { search, settings } = state;
@@ -33,21 +34,15 @@ export const feedbackTextSearchEpic = async (state: RootState, query: string, pa
   }
 };
 
-export const feedbackRegionEpic = async (state: any, region: any) => {
-  try {
-    const { search, settings } = state;
-    const api = new NyrisAPI(settings);
-    const sessionId = search.sessionId || search.requestId;
-    const { x1, x2, y1, y2 } = region;
-    if (sessionId && search.requestId) {
-      await api.sendFeedback(sessionId, search.requestId, {
+export const feedbackRegionEpic = async (state: RootState, region: RectCoords) => {
+  const {settings, search} = state;
+  const {sessionId, requestId } = search;
+  const { x1, x2, y1, y2 } = region;
+  const payload : FeedbackEventPayload = {
         event: "region",
-        data: { rect: { x: x1, y: y1, w: x2 - x1, h: y2 - y1 } },
-      });
-    }
-  } catch (error) {
-    console.log("error feedbackRegionEpic", error);
-  }
+        data: { rect: { x: x1, y: y1, w: x2 - x1, h: y2 - y1 } }
+  };
+  return await sendFeedbackByApi(settings, sessionId, requestId, payload);
 };
 
 export const sendFeedbackByApi = async (

@@ -101,7 +101,7 @@ export const searchImageByPosition = async (
       regions: region,
     };
     return payload;
-  } catch (error: any) {
+  } catch (error) {
     console.log("error searchImageByPosition", error);
   }
 };

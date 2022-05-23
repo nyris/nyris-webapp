@@ -28,7 +28,7 @@ import {
 import { serviceImage, serviceImageNonRegion } from "services/image";
 import { findByImage } from "services/findByImage";
 import { debounce, isEmpty } from "lodash";
-import { feedbackClickEpic } from "services/Feedback";
+import {feedbackClickEpic, feedbackRegionEpic} from "services/Feedback";
 import AppMD from "./AppMD";
 import App from "./App";
 import {AppHandlers, AppProps} from "./propsType";
@@ -85,16 +85,16 @@ const LandingPageApp = () => {
         }
     };
     // TODO: search image file home page
-    const isCheckImageFile = (file: any) => {
+    const searchByFile = (file: File | HTMLCanvasElement | string) => {
         dispatch(loadingActionResults());
         dispatch(showResults());
         dispatch(showFeedback());
-        if (isImageFile(file) || typeof file === "string") {
+        if ((file instanceof File && isImageFile(file)) || typeof file === "string") {
             return serviceImage(file, searchState.settings).then((res) => {
                 dispatch(setSearchResults(res));
             });
         }
-        if (isCadFile(file)) {
+        if (file instanceof File && isCadFile(file)) {
             return dispatch(loadCadFileLoad(file));
         }
     };
@@ -135,6 +135,7 @@ const LandingPageApp = () => {
         let options: ImageSearchOptions = {
             cropRect: r,
         };
+        feedbackRegionEpic(searchState, r);
         dispatch(loadingActionRegions());
         return findByImage(canvas, options, settings).then((res) => {
             dispatch(loadFileSelectRegion(res));
@@ -146,9 +147,9 @@ const LandingPageApp = () => {
         onExampleImageClick: url => searchByUrl(url),
         onCameraClick: () => dispatch(showCamera),
         onCaptureCanceled: () => dispatch(showStart),
-        onCaptureComplete: (i) => isCheckImageFile(i),
+        onCaptureComplete: (i) => searchByFile(i),
         onCloseFeedback: () => dispatch(hideFeedback),
-        onFileDropped: (f) => isCheckImageFile(f),
+        onFileDropped: (f) => searchByFile(f),
         onImageClick: (position, url) => searchByUrl(url, position),
         onLinkClick: onLinkClick,
         onPositiveFeedback: () => {
@@ -159,7 +160,7 @@ const LandingPageApp = () => {
             dispatch(feedbackNegative());
             // TODO submit negative feedback to the api
         },
-        onSelectFile: (f) => isCheckImageFile(f),
+        onSelectFile: (f) => searchByFile(f),
         onSelectionChange: r => {
             setSelection(r);
             debouncedSetRectCoords(r);
