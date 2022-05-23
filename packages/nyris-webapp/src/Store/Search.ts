@@ -2,37 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CanvasWithId } from "types";
 import { Code, RectCoords, Region } from "@nyris/nyris-api";
 
-export type ImageSourceType =
-  | { url: string }
-  | { file: File }
-  | { image: HTMLCanvasElement };
-
-export type SearchAction =
-  | { type: "FEEDBACK_SUBMIT_POSITIVE" }
-  | { type: "FEEDBACK_SUBMIT_NEGATIVE" }
-  | { type: "IMAGE_LOADED"; image: CanvasWithId }
-  | { type: "REGION_REQUEST_START"; image: HTMLCanvasElement }
-  | { type: "REGION_REQUEST_SUCCEED"; regions: Region[] }
-  | { type: "REGION_REQUEST_FAIL"; reason: string; exception: any }
-  | {
-      type: "SEARCH_REQUEST_START";
-      image: HTMLCanvasElement;
-      normalizedRect?: RectCoords;
-    }
-  | { type: "SEARCH_REQUEST_START"; file: File }
-  | {
-      type: "SEARCH_REQUEST_SUCCEED";
-      results: any[];
-      requestId: string;
-      duration: number;
-      categoryPredictions: CategoryPrediction[];
-      codes: Code[];
-    }
-  | { type: "SEARCH_REQUEST_FAIL"; reason: string; exception?: any }
-  | { type: "REGION_CHANGED"; normalizedRect: RectCoords }
-  | ({ type: "LOAD_IMAGE" } & ImageSourceType)
-  | { type: "LOAD_FILE"; file: File }
-  | { type: "CAD_LOADED"; file: File };
 
 interface CategoryPrediction {
   name: string;

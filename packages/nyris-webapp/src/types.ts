@@ -1,7 +1,6 @@
 import {NyrisAPISettings} from "@nyris/nyris-api";
-import { NyrisAction } from "Store/common";
 import { NyrisAppState } from "Store/Nyris";
-import { SearchAction, SearchState } from "Store/Search";
+import { SearchState } from "Store/Search";
 
 export interface MDSettings {
     customFontFamily?: string,
@@ -58,10 +57,6 @@ export type AppState = {
     settings: AppSettings,
     nyrisDesign: NyrisAppState
 };
-
-export type AppAction =
-    | SearchAction
-    | NyrisAction
 
 export interface CanvasWithId {
     canvas: HTMLCanvasElement
