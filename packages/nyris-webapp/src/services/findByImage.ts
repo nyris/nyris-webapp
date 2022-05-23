@@ -1,8 +1,6 @@
-import NyrisAPI from "@nyris/nyris-api";
+import NyrisAPI, {ImageSearchOptions, NyrisAPISettings} from "@nyris/nyris-api";
 
-export const findByImage = async (image: any, options: any, settings: any) => {
-  
-  try {
+export const findByImage = async (image: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement, options: ImageSearchOptions, settings: NyrisAPISettings) => {
     const api = new NyrisAPI(settings);
     const {
       results,
@@ -18,7 +16,4 @@ export const findByImage = async (image: any, options: any, settings: any) => {
       categoryPredictions,
       codes,
     };
-  } catch (error) {
-    console.log("error findByImage", error);
-  }
 };

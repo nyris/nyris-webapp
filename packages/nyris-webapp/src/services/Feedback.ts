@@ -1,6 +1,5 @@
-import NyrisAPI, {FeedbackEventPayload, NyrisAPISettings} from "@nyris/nyris-api";
+import NyrisAPI, {FeedbackEventPayload, NyrisAPISettings, RectCoords} from "@nyris/nyris-api";
 import {RootState} from "../Store/Store";
-import {RectCoords} from "./types";
 
 export const feedbackSuccessEpic = async (state: RootState, success: boolean) => {
   const { search, settings } = state;

@@ -27,27 +27,6 @@ export interface SearchServiceSettings {
     useRecommendations: boolean
 }
 
-export interface ImageSearchOptions {
-    geoLocation?: { lat: number, lon: number, dist: number };
-    crop?: { x: number, y: number, w: number, h: number };
-    maxWidth: number;
-    maxHeight: number;
-    useRecommendations: boolean;
-    jpegQuality: number;
-}
-
-export interface RectCoords {
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number
-}
-
-export type Region = {
-    className?: string,
-    confidence?: number
-} & RectCoords
-
 export interface Crop {
     x: number,
     y: number,
@@ -60,23 +39,12 @@ export interface WH {
     h: number
 }
 
-// export type AppState = {
-//     search: SearchState,
-//     settings: SearchServiceSettings,
-//     nyrisDesign: NyrisAppState
-// };
-
-// export type AppAction =
-//     | SearchAction
-//     | NyrisAction
-
-
 export interface Result {
     position: number,
     sku?: string,
     title?: string,
     l?: string,
     img?: { url?: string },
-    // There can be also any other ddata
+    // There can be also any other data
     [x: string]: any
 }
