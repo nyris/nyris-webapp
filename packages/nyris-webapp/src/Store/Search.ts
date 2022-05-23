@@ -114,12 +114,6 @@ const initialState: SearchState = {
         fetchingRegions: false,
       };
     },
-    submitPositiveFeedback: () => {
-      return;
-    },
-    submitNegativeFeedback: () => {
-      return;
-    },
     loadingActionResults: (state) => {
       return {
         ...state,
@@ -220,8 +214,6 @@ const initialState: SearchState = {
 export const {
   setSearchResults,
   selectionChanged,
-  submitPositiveFeedback,
-  submitNegativeFeedback,
   loadCadFileLoad,
   loadFileSelectRegion,
   loadingActionResults,
