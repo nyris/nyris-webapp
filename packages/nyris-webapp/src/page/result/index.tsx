@@ -43,7 +43,6 @@ import {
   serviceImage,
   serviceImageNonRegion,
 } from "services/image";
-import NyrisAPI from "@nyris/nyris-api";
 import LoadingScreenCustom from "components/LoadingScreen";
 import { Preview } from "@nyris/nyris-react-components";
 import {AlgoliaResult, AlgoliaSettings} from "../../types";
