@@ -153,28 +153,28 @@ const initialState: SearchState = {
         fetchingResults: false,
       };
     },
-    changeValueTextSearch: (state: any, data: PayloadAction<any>) => {
+    changeValueTextSearch: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       return {
         ...state,
         valueTextSearch: payload,
       };
     },
-    resultSearchText: (state: any, data: PayloadAction<any>) => {
+    resultSearchText: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       return {
         ...state,
         resultSearchText: payload,
       };
     },
-    updateResults: (state: any, data: PayloadAction<any>) => {
+    updateResults: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       return {
         ...state,
         results: payload,
       };
     },
-    reset: (state: any, data: PayloadAction<any>) => {
+    reset: (state, data: PayloadAction<any>) => {
       return {
         results: [],
         regions: [],
@@ -192,21 +192,21 @@ const initialState: SearchState = {
         loadingSearchAlgolia: false,
       };
     },
-    configureFilter: (state: any, data: PayloadAction<any>) => {
+    configureFilter: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       return {
         ...state,
         configureFilter: payload,
       };
     },
-    setUpdateSession: (state: any, data: PayloadAction<string>) => {
+    setUpdateSession: (state, data: PayloadAction<string>) => {
       const { payload } = data;
       return {
         ...state,
         sessionId: payload,
       };
     },
-    updateResultChangePosition: (state: any, data: PayloadAction<any>) => {
+    updateResultChangePosition: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       const { results } = payload;
       return {
