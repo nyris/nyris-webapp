@@ -1,5 +1,12 @@
-import {ImageSearchOptions, NyrisAPISettings, selectFirstCenteredRegion, urlOrBlobToCanvas} from "@nyris/nyris-api";
+import {
+  ImageSearchOptions,
+  NyrisAPISettings,
+  RectCoords,
+  selectFirstCenteredRegion,
+  urlOrBlobToCanvas
+} from "@nyris/nyris-api";
 import NyrisAPI from "@nyris/nyris-api";
+import {RootState} from "../Store/Store";
 
 export const serviceImage = async (file: any, settings: NyrisAPISettings) => {
   try {
@@ -38,13 +45,13 @@ export const serviceImage = async (file: any, settings: NyrisAPISettings) => {
 };
 
 export const serviceImageNonRegion = async (
-  file: any,
-  stateStore: any,
-  rectCoords: any
+  file: File | string | HTMLCanvasElement,
+  stateStore: RootState,
+  rectCoords?: RectCoords
 ) => {
   const { settings } = stateStore;
   const api = new NyrisAPI(settings);
-  const image = await urlOrBlobToCanvas(file);
+  const image = file instanceof HTMLCanvasElement ? file : await urlOrBlobToCanvas(file);
   const randomId = Math.random().toString();
   const imageFileCanvas = { canvas: image, id: randomId };
   let options: ImageSearchOptions = {

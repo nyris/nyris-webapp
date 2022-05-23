@@ -137,7 +137,7 @@ function ResultComponent(props: Props) {
         return dispatch(showFeedback());
       });
     } else {
-      serviceImageNonRegion(canvas, stateGlobal, null).then((res: any) => {
+      serviceImageNonRegion(canvas, stateGlobal).then((res: any) => {
         const payload = {
           ...res,
           requestImage: requestImage,

@@ -4,17 +4,14 @@ import {
     cadExtensions,
     isCadFile,
     isImageFile,
-    ImageSearchOptions,
 } from "@nyris/nyris-api";
 
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import {
     loadCadFileLoad,
     setSearchResults,
-    loadFileSelectRegion,
-    loadingActionRegions,
     loadingActionResults,
-    searchFileImageNonRegion,
+    searchFileImageNonRegion, selectionChanged,
 } from "Store/Search";
 import {
     feedbackNegative,
@@ -26,8 +23,7 @@ import {
     showStart,
 } from "Store/Nyris";
 import { serviceImage, serviceImageNonRegion } from "services/image";
-import { findByImage } from "services/findByImage";
-import { debounce, isEmpty } from "lodash";
+import { debounce } from "lodash";
 import {feedbackClickEpic, feedbackRegionEpic, feedbackSuccessEpic} from "services/Feedback";
 import AppMD from "./AppMD";
 import App from "./App";
@@ -37,7 +33,6 @@ import {defaultMdSettings} from "../../defaults";
 const LandingPageApp = () => {
     const dispatch = useAppDispatch();
     const searchState = useAppSelector((state) => state);
-    const [rectCoords, setRectCoords] = useState<any>();
     const defaultSelection = {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9};
     const [selection, setSelection] = useState<RectCoords>(defaultSelection);
 
@@ -58,15 +53,6 @@ const LandingPageApp = () => {
             setSelection(selectedRegion);
         }
     }, [selectedRegion]);
-
-
-    useEffect(() => {
-        if (isEmpty(rectCoords)) {
-            return;
-        }
-        onSearchOffersForImage(rectCoords);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [rectCoords]);
 
     const acceptTypes = ["image/*"]
         .concat(settings.cadSearch ? cadExtensions : [])
@@ -115,35 +101,24 @@ const LandingPageApp = () => {
                 dispatch(showFeedback());
             });
         } else {
-            serviceImageNonRegion(url, searchState, rectCoords).then((res) => {
+            serviceImageNonRegion(url, searchState, search.selectedRegion).then((res) => {
                 dispatch(searchFileImageNonRegion(res));
                 dispatch(showFeedback());
             });
         }
     };
 
-    const handlerRectCoords = debounce((value) => {
-        return setRectCoords(value);
-    }, 1200);
-
     const debouncedSetRectCoords = useCallback(
-        (value) => handlerRectCoords(value),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
+        debounce(value => {
+            dispatch(selectionChanged(value));
+            feedbackRegionEpic(searchState, value);
+            serviceImageNonRegion(requestImage!!.canvas, searchState, value).then((res) => {
+                dispatch(searchFileImageNonRegion(res));
+                dispatch(showFeedback());
+            }).catch(e => console.warn('catch', e));
+        }, 1200),
+        [requestImage, searchState]
     );
-
-    const onSearchOffersForImage = (r: RectCoords) => {
-        const { canvas }: any = requestImage;
-        let options: ImageSearchOptions = {
-            cropRect: r,
-        };
-        feedbackRegionEpic(searchState, r);
-        dispatch(loadingActionRegions());
-        return findByImage(canvas, options, settings).then((res) => {
-            dispatch(loadFileSelectRegion(res));
-            return dispatch(showFeedback());
-        });
-    };
 
     const handlers : AppHandlers = {
         onExampleImageClick: url => searchByUrl(url),
