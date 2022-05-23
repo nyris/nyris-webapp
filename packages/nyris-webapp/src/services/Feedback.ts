@@ -1,52 +1,33 @@
-import NyrisAPI from "@nyris/nyris-api";
+import NyrisAPI, {FeedbackEventPayload, NyrisAPISettings} from "@nyris/nyris-api";
 import {RootState} from "../Store/Store";
 
-export const feedbackSuccessEpic = async (state: any, success: boolean) => {
+export const feedbackSuccessEpic = async (state: RootState, success: boolean) => {
   const { search, settings } = state;
-  try {
-    const api = new NyrisAPI(settings);
-    const sessionId = search.sessionId || search.requestId;
-    return await api.sendFeedback(sessionId, search.requestId, {
-      event: "feedback",
-      data: { success },
-    });
-  } catch (error) {
-    console.log("error feedbackSuccessEpic", error);
-  }
+  return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
+    event: 'feedback',
+    data: { success }
+  });
 };
 
-export const feedbackClickEpic = async (state: any, position: number) => {
-  try {
-    const { search, settings } = state;
-    const api = new NyrisAPI(settings);
-    const sessionId = search.sessionId || search.requestId;
-    if (sessionId && state.search.requestId) {
-      await api.sendFeedback(sessionId, state.search.requestId, {
-        event: "click",
-        data: { positions: [position] },
-      });
-    }
-  } catch (error) {
-    console.log("error feedbackClickEpic", feedbackClickEpic);
-  }
+export const feedbackClickEpic = async (state: RootState, position: number) => {
+  const { search, settings } = state;
+  return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
+    event: "click",
+    data: { positions: [position] },
+  });
 };
 
 export const feedbackTextSearchEpic = async (state: RootState, query: string, page: number, productIds: string[]) => {
   try {
     const { search, settings } = state;
-    const api = new NyrisAPI(settings);
-    const sessionId = search.sessionId || search.requestId;
-    const requestId = search.requestId || search.sessionId;
-    if (sessionId) {
-      const eventData = {
-        query,
-        page,
-        product_ids: productIds,
-      };
-      const textSearchEvent = { event: "text-search", data: eventData };
-      // @ts-ignore
-      await api.sendFeedback(sessionId, requestId, textSearchEvent);
-    }
+    const eventData = {
+      query,
+      page,
+      product_ids: productIds,
+    };
+    const textSearchEvent = { event: "text-search", data: eventData };
+    // @ts-ignore
+    return await sendFeedbackByApi(settings, search.sessionId, search.requestId, textSearchEvent);
   } catch (error) {
     console.log("error feedbackTextSearchEpic", error);
   }
@@ -70,18 +51,20 @@ export const feedbackRegionEpic = async (state: any, region: any) => {
 };
 
 export const sendFeedbackByApi = async (
-  settings: any,
-  sessionId: any,
-  requestId: any,
-  payload: any
+  settings: NyrisAPISettings,
+  sessionId: string | undefined,
+  requestId: string | undefined,
+  payload: FeedbackEventPayload
 ) => {
   const api = new NyrisAPI(settings);
-  try {
-    const dataByApi = await api
-      .sendFeedback(sessionId, requestId, payload)
-      .then((res) => {});
-    console.log("dataByApi", dataByApi);
-  } catch (error) {
-    console.log("error sendFeedbackByApi321", error);
+  if (sessionId && requestId) {
+    try {
+      const dataByApi = await api
+        .sendFeedback(sessionId, requestId, payload)
+        .then((res) => {});
+      console.log("dataByApi", dataByApi);
+    } catch (error) {
+      console.log("error sendFeedbackByApi321", error);
+    }
   }
 };
