@@ -92,6 +92,7 @@ const LandingPageApp = () => {
         if ((file instanceof File && isImageFile(file)) || typeof file === "string") {
             return serviceImage(file, searchState.settings).then((res) => {
                 dispatch(setSearchResults(res));
+                setSelection(defaultSelection);
             });
         }
         if (file instanceof File && isCadFile(file)) {
@@ -110,6 +111,7 @@ const LandingPageApp = () => {
         if (settings.regions) {
             serviceImage(url, searchState.settings).then((res) => {
                 dispatch(setSearchResults(res));
+                setSelection(defaultSelection);
                 dispatch(showFeedback());
             });
         } else {
