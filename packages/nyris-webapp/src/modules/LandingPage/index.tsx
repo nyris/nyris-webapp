@@ -28,7 +28,7 @@ import {
 import { serviceImage, serviceImageNonRegion } from "services/image";
 import { findByImage } from "services/findByImage";
 import { debounce, isEmpty } from "lodash";
-import {feedbackClickEpic, feedbackRegionEpic} from "services/Feedback";
+import {feedbackClickEpic, feedbackRegionEpic, feedbackSuccessEpic} from "services/Feedback";
 import AppMD from "./AppMD";
 import App from "./App";
 import {AppHandlers, AppProps} from "./propsType";
@@ -156,11 +156,11 @@ const LandingPageApp = () => {
         onLinkClick: onLinkClick,
         onPositiveFeedback: () => {
             dispatch(feedbackSubmitPositive());
-            // TODO submit positive feedback to the api
+            feedbackSuccessEpic(searchState, true);
         },
         onNegativeFeedback: () => {
             dispatch(feedbackNegative());
-            // TODO submit negative feedback to the api
+            feedbackSuccessEpic(searchState, false);
         },
         onSelectFile: (f) => searchByFile(f),
         onSelectionChange: r => {
