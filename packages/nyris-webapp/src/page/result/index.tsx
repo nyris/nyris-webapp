@@ -10,15 +10,6 @@ import React, { useEffect, useState } from "react";
 import IconWhatsApp from "common/assets/icons/Icon_whatsapp.png";
 import IconEmail from "common/assets/icons/icon_email.png";
 import IconWeChat from "common/assets/icons/Icon_wechat.png";
-// import FilterComponent from "components/FilterComponent";
-// import {
-//   dataFieldFive,
-//   dataFieldFour,
-//   dataFieldOne,
-//   dataFieldSix,
-//   dataFieldThree,
-//   dataFieldTow,
-// } from "./MockData";
 import ItemResult from "components/results/ItemResult";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import { debounce } from "lodash";
@@ -46,7 +37,7 @@ import {
   Configure,
 } from "react-instantsearch-dom";
 import CustomSearchBox from "components/input/inputSearch";
-import {feedbackClickEpic, feedbackSuccessEpic} from "services/Feedback";
+import {feedbackClickEpic, feedbackSuccessEpic, feedbackTextSearchEpic} from "services/Feedback";
 import {
   searchImageByPosition,
   serviceImage,
@@ -55,7 +46,7 @@ import {
 import NyrisAPI from "@nyris/nyris-api";
 import LoadingScreenCustom from "components/LoadingScreen";
 import { Preview } from "@nyris/nyris-react-components";
-import {AlgoliaSettings} from "../../types";
+import {AlgoliaResult, AlgoliaSettings} from "../../types";
 
 interface Props {}
 
@@ -73,7 +64,6 @@ function ResultComponent(props: Props) {
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
   const [searchStateInput, setSearchStateInput] = useState<any>({});
-  const apiNyris = new NyrisAPI(settings);
   const [isLoading, setLoading] = useState<any>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
@@ -163,21 +153,11 @@ function ResultComponent(props: Props) {
   const searchTextByApiAndFilter = async (searchState: any) => {
     try {
       if (searchState?.query !== "") {
-        const data = await index.search(searchState.query, {});
-        const productIds = data.hits.map((hit: any) => hit.sku);
-        const eventData = {
-          query: data.query,
-          page: data.page,
-          product_ids: productIds,
-        };
-        const textSearchEvent: any = { event: "text-search", data: eventData };
-        await apiNyris.sendFeedback(
-          search?.sessionId,
-          search?.requestId,
-          textSearchEvent
-        );
+        const data = await index.search<AlgoliaResult>(searchState.query, {});
+        const productIds = data.hits.map((hit) => hit.sku);
+        await feedbackTextSearchEpic(stateGlobal, data.query, data.page, productIds);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.log("searchTextByApi", error);
       return;
     }
@@ -238,8 +218,8 @@ function ResultComponent(props: Props) {
     ? []
     : ["sku:DOES_NOT_EXIST<score=1>"];
   const filterSkus: any = search?.results
-    ? search?.results.map(
-        (f: any) => `sku:'${f.sku}'<score=${Math.round(100 * f.score)}>`
+      ? search?.results.slice().reverse().map(
+          (f: any, i: number) => `sku:'${f.sku}'<score=${i}>`
       )
     : "";
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
@@ -257,7 +237,7 @@ function ResultComponent(props: Props) {
           indexName={indexName}
           searchClient={searchClient}
           searchState={searchStateInput}
-          onSearchStateChange={(state: any) => {
+          onSearchStateChange={(state) => {
             setSearchStateInput(state);
             searchTextByApiAndFilter(state);
           }}

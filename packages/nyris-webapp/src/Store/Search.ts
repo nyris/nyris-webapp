@@ -230,12 +230,11 @@ const initialState: SearchState = {
         configureFilter: payload,
       };
     },
-    setUpdateSession: (state: any, data: PayloadAction<any>) => {
+    setUpdateSession: (state: any, data: PayloadAction<string>) => {
       const { payload } = data;
       return {
         ...state,
-        requestId: payload.requestId,
-        sessionId: payload.sessionId,
+        sessionId: payload,
       };
     },
     updateResultChangePosition: (state: any, data: PayloadAction<any>) => {

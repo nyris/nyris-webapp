@@ -91,3 +91,6 @@ export interface SearchServiceSettings {
     useRecommendations: boolean
 }
 
+export interface AlgoliaResult {
+    sku: string
+}

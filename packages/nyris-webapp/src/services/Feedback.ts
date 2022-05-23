@@ -1,4 +1,5 @@
 import NyrisAPI from "@nyris/nyris-api";
+import {RootState} from "../Store/Store";
 
 export const feedbackSuccessEpic = async (state: any, success: boolean) => {
   const { search, settings } = state;
@@ -27,6 +28,27 @@ export const feedbackClickEpic = async (state: any, position: number) => {
     }
   } catch (error) {
     console.log("error feedbackClickEpic", feedbackClickEpic);
+  }
+};
+
+export const feedbackTextSearchEpic = async (state: RootState, query: string, page: number, productIds: string[]) => {
+  try {
+    const { search, settings } = state;
+    const api = new NyrisAPI(settings);
+    const sessionId = search.sessionId || search.requestId;
+    const requestId = search.requestId || search.sessionId;
+    if (sessionId) {
+      const eventData = {
+        query,
+        page,
+        product_ids: productIds,
+      };
+      const textSearchEvent = { event: "text-search", data: eventData };
+      // @ts-ignore
+      await api.sendFeedback(sessionId, requestId, textSearchEvent);
+    }
+  } catch (error) {
+    console.log("error feedbackTextSearchEpic", error);
   }
 };
 
