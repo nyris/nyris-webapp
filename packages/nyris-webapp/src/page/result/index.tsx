@@ -127,7 +127,7 @@ function ResultComponent(props: Props) {
     }
     const { canvas }: any = requestImage;
     if (settings.regions) {
-      searchImageByPosition(canvas, stateGlobal, r).then((res: any) => {
+      searchImageByPosition(canvas, stateGlobal.settings, r).then((res: any) => {
         const payload = {
           ...res,
           requestImage: requestImage,

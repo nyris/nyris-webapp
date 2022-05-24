@@ -8,40 +8,35 @@ import {
 import NyrisAPI from "@nyris/nyris-api";
 import {RootState} from "../Store/Store";
 
-export const serviceImage = async (file: any, settings: NyrisAPISettings) => {
-  try {
-    const nyrisApi = new NyrisAPI(settings);
-    const randomId = Math.random().toString();
+export const serviceImage = async (file: File|string, settings: NyrisAPISettings) => {
+  const nyrisApi = new NyrisAPI(settings);
+  const randomId = Math.random().toString();
 
-    const image = await urlOrBlobToCanvas(file);
-    const imageFileCanvas = { canvas: image, id: randomId };
+  const image = await urlOrBlobToCanvas(file);
+  const imageFileCanvas = { canvas: image, id: randomId };
 
-    const regions = await nyrisApi.findRegions(image);
-    const searchRegion = selectFirstCenteredRegion(regions, 0.3, {x1: 0, x2: 1, y1: 0, y2: 1});
+  const regions = await nyrisApi.findRegions(image);
+  const searchRegion = selectFirstCenteredRegion(regions, 0.3, {x1: 0, x2: 1, y1: 0, y2: 1});
 
-    let options : ImageSearchOptions = {
-      ...settings,
-      cropRect: searchRegion
-    };
+  let options : ImageSearchOptions = {
+    ...settings,
+    cropRect: searchRegion
+  };
 
-    const { results, requestId, duration, categoryPredictions, codes } =
-      await nyrisApi.findByImage(image, options);
-    const payload = {
-      results,
-      requestId,
-      categoryPredictions,
-      codes,
-      duration,
-      regions,
-      requestImage: imageFileCanvas,
-      selectedRegion: searchRegion
-    };
+  const { results, requestId, duration, categoryPredictions, codes } =
+    await nyrisApi.findByImage(image, options);
+  const payload = {
+    results,
+    requestId,
+    categoryPredictions,
+    codes,
+    duration,
+    regions,
+    requestImage: imageFileCanvas,
+    selectedRegion: searchRegion
+  };
 
-    return payload;
-  } catch (error) {
-    console.log("error serviceImage", error);
-    return;
-  }
+  return payload;
 };
 
 export const serviceImageNonRegion = async (
@@ -57,50 +52,39 @@ export const serviceImageNonRegion = async (
   let options: ImageSearchOptions = {
     cropRect: rectCoords,
   };
-  try {
-    const { results, duration, requestId, categoryPredictions, codes } =
-      await api.findByImage(image, options);
-    return {
-      results,
-      requestId,
-      duration,
-      categoryPredictions,
-      codes,
-      requestImage: imageFileCanvas,
-    };
-  } catch (e) {
-    console.warn("search failed serviceImageNonRegion", e);
-  }
+  const { results, duration, requestId, categoryPredictions, codes } =
+    await api.findByImage(image, options);
+  return {
+    results,
+    requestId,
+    duration,
+    categoryPredictions,
+    codes,
+    requestImage: imageFileCanvas,
+  };
 };
 
 export const searchImageByPosition = async (
   image: HTMLCanvasElement,
-  stateStore: any,
-  region?: any
+  settings: NyrisAPISettings,
+  region?: RectCoords
 ) => {
-  try {
-    const { settings } = stateStore;
-
-    let options = settings;
-    const nyrisApi = new NyrisAPI(settings);
-    if (region) {
-      options = {
-        ...options,
-        crop: region,
-      };
-    }
-    const { results, duration, requestId, categoryPredictions, codes } =
-      await nyrisApi.findByImage(image, options);
-    const payload = {
-      results,
-      requestId,
-      categoryPredictions,
-      codes,
-      duration,
-      regions: region,
+  const nyrisApi = new NyrisAPI(settings);
+  let options = {};
+  if (region) {
+    options = {
+      cropRect: region,
     };
-    return payload;
-  } catch (error) {
-    console.log("error searchImageByPosition", error);
   }
+  const { results, duration, requestId, categoryPredictions, codes } =
+    await nyrisApi.findByImage(image, options);
+  const payload = {
+    results,
+    requestId,
+    categoryPredictions,
+    codes,
+    duration,
+    regions: region,
+  };
+  return payload;
 };
