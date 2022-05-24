@@ -46,6 +46,7 @@ import {AlgoliaResult, AlgoliaSettings} from "../../types";
 
 interface Props {}
 
+const defaultSelection = {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9};
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector((state) => state);
@@ -55,7 +56,7 @@ function ResultComponent(props: Props) {
   const [numberResult, setNumberResult] = useState<number>(0);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const { search, settings } = stateGlobal;
-  const { results, requestImage, regions, selectedRegion }: any = search;
+  const { results, requestImage, regions, selectedRegion } = search;
   const { valueTextSearch } = search;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
@@ -263,7 +264,7 @@ function ResultComponent(props: Props) {
                               return;
                             }}
                             image={requestImage?.canvas}
-                            selection={selectedRegion}
+                            selection={selectedRegion|| defaultSelection}
                             regions={regions}
                             maxWidth={400}
                             maxHeight={500}

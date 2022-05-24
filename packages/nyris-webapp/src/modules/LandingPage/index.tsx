@@ -3,26 +3,23 @@ import {
     RectCoords,
     cadExtensions,
     isCadFile,
-    isImageFile,
 } from "@nyris/nyris-api";
 
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import {
-    loadCadFileLoad,
     setSearchResults,
     loadingActionResults,
-    searchFileImageNonRegion, selectionChanged, setRequestImage, setRegions, setSelectedRegion,
+    searchFileImageNonRegion, selectionChanged, setRequestImage, setRegions, setSelectedRegion, setError,
 } from "Store/Search";
 import {
     feedbackNegative,
     feedbackSubmitPositive,
     hideFeedback,
     showCamera,
-    showFeedback,
-    showResults,
+    showFeedback, showResults,
     showStart,
 } from "Store/Nyris";
-import {createImage, findByImage, findRegions} from "services/image";
+import {createImage, findByCadFile, findByImage, findRegions} from "services/image";
 import { debounce } from "lodash";
 import {feedbackClickEpic, feedbackRegionEpic, feedbackSuccessEpic} from "services/Feedback";
 import AppMD from "./AppMD";
@@ -30,10 +27,11 @@ import App from "./App";
 import {AppHandlers, AppProps} from "./propsType";
 import {defaultMdSettings} from "../../defaults";
 
+const defaultSelection = {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9};
+
 const LandingPageApp = () => {
     const dispatch = useAppDispatch();
     const searchState = useAppSelector((state) => state);
-    const defaultSelection = {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9};
     const [selection, setSelection] = useState<RectCoords>(defaultSelection);
 
     const { settings, search, nyris } = searchState;
@@ -52,7 +50,7 @@ const LandingPageApp = () => {
         } else {
             setSelection(defaultSelection);
         }
-    }, [selectedRegion, defaultSelection]);
+    }, [selectedRegion]);
 
     const acceptTypes = ["image/*"]
         .concat(settings.cadSearch ? cadExtensions : [])
@@ -70,58 +68,37 @@ const LandingPageApp = () => {
             window.open(url);
         }
     };
-    // TODO: search image file home page
-    const searchByFile = async (file: File | HTMLCanvasElement | string) => {
-        dispatch(loadingActionResults());
-        dispatch(showResults());
-        dispatch(showFeedback());
-        if ((file instanceof File && isImageFile(file)) || typeof file === "string") {
-            let image = await createImage(file);
-            dispatch(setRequestImage(image));
-            let searchRegion : RectCoords | undefined;
-            if (settings.regions) {
-                let {
-                    regions: foundRegions,
-                    selectedRegion: suggestedRegion
-                } = await findRegions(image, settings);
-                searchRegion = suggestedRegion;
-                dispatch(setRegions(foundRegions));
-                dispatch(setSelectedRegion(searchRegion))
-            }
-            return findByImage(image, searchState.settings, searchRegion).then((res) => {
+
+    const startSearch = async (file: File | HTMLCanvasElement | string) => {
+        try {
+            dispatch(loadingActionResults());
+            dispatch(showResults());
+            if (file instanceof File && isCadFile(file)) {
+                let res = await findByCadFile(file, settings);
                 dispatch(setSearchResults(res));
-            });
+            } else {
+                let image = await createImage(file);
+                dispatch(setRequestImage(image));
+                let searchRegion : RectCoords | undefined;
+                if (settings.regions) {
+                    let {
+                        regions: foundRegions,
+                        selectedRegion: suggestedRegion
+                    } = await findRegions(image, settings);
+                    searchRegion = suggestedRegion;
+                    dispatch(setRegions(foundRegions));
+                    dispatch(setSelectedRegion(searchRegion))
+                }
+                return findByImage(image, searchState.settings, searchRegion).then((res) => {
+                    dispatch(setSearchResults(res));
+                    dispatch(showFeedback());
+                });
+            }
+        } catch (e) {
+            // TODO show error messages
+            dispatch(setError("There was an error while performing the request. Please try again later."));
         }
-        if (file instanceof File && isCadFile(file)) {
-            return dispatch(loadCadFileLoad(file));
-        }
-    };
-    //
 
-    const searchByUrl = async (url: string, position?: number) => {
-        dispatch(loadingActionResults());
-        dispatch(showResults());
-        if (position) {
-            feedbackClickEpic(searchState, position);
-        }
-
-        let image = await createImage(url);
-        dispatch(setRequestImage(image));
-
-        let searchRegion : RectCoords | undefined;
-        if (settings.regions) {
-            let {
-                regions: foundRegions,
-                selectedRegion: suggestedRegion
-            } = await findRegions(image, settings);
-            searchRegion = suggestedRegion;
-            dispatch(setRegions(foundRegions));
-            dispatch(setSelectedRegion(searchRegion));
-        }
-        findByImage(image, searchState.settings, searchRegion).then((res) => {
-            dispatch(setSearchResults(res));
-            dispatch(showFeedback());
-        });
     };
 
     const debouncedSetRectCoords = useCallback(
@@ -137,13 +114,18 @@ const LandingPageApp = () => {
     );
 
     const handlers : AppHandlers = {
-        onExampleImageClick: url => searchByUrl(url),
+        onExampleImageClick: url => {
+            startSearch(url);
+        },
         onCameraClick: () => dispatch(showCamera),
         onCaptureCanceled: () => dispatch(showStart),
-        onCaptureComplete: (i) => searchByFile(i),
+        onCaptureComplete: (i) => startSearch(i),
         onCloseFeedback: () => dispatch(hideFeedback),
-        onFileDropped: (f) => searchByFile(f),
-        onImageClick: (position, url) => searchByUrl(url, position),
+        onFileDropped: (f) => startSearch(f),
+        onImageClick: (position, url) => {
+            startSearch(url);
+            feedbackClickEpic(searchState, position);
+        },
         onLinkClick: onLinkClick,
         onPositiveFeedback: () => {
             dispatch(feedbackSubmitPositive());
@@ -153,7 +135,7 @@ const LandingPageApp = () => {
             dispatch(feedbackNegative());
             feedbackSuccessEpic(searchState, false);
         },
-        onSelectFile: (f) => searchByFile(f),
+        onSelectFile: (f) => startSearch(f),
         onSelectionChange: r => {
             setSelection(r);
             debouncedSetRectCoords(r);

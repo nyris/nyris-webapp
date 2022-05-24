@@ -19,7 +19,6 @@ export interface SearchState {
   fetchingResults: boolean;
   filterOptions: string[];
   requestImage?: CanvasWithId;
-  requestCadFile?: File;
   categoryPredictions: CategoryPrediction[];
   codes: Code[];
   errorMessage: string;
@@ -94,14 +93,6 @@ const initialState: SearchState = {
           id: Math.random().toString()
         }
     }),
-
-    loadCadFileLoad: (state, data: PayloadAction<any>) => {
-      const { payload } = data;
-      return {
-        ...state,
-        requestCadFile: payload,
-      };
-    },
 
     selectionChanged: (state, data: PayloadAction<RectCoords>) => {
       const { payload } = data;
@@ -218,6 +209,15 @@ const initialState: SearchState = {
         results,
       };
     },
+
+    setError: (state, data: PayloadAction<string>) => {
+        return {
+          ...state,
+          fetchingRegions: false,
+          fetchingResults: false,
+          errorMessage: data.payload
+        }
+    }
   },
 });
 
@@ -225,7 +225,6 @@ export const {
   setSearchResults,
   selectionChanged,
   setRequestImage,
-  loadCadFileLoad,
   loadFileSelectRegion,
   setRegions,
   setSelectedRegion,
@@ -239,5 +238,6 @@ export const {
   configureFilter,
   setUpdateSession,
   updateResultChangePosition,
+  setError,
 } = searchSlice.actions;
 export default searchSlice.reducer;
