@@ -11,7 +11,7 @@ import {
     loadCadFileLoad,
     setSearchResults,
     loadingActionResults,
-    searchFileImageNonRegion, selectionChanged, setRequestImage,
+    searchFileImageNonRegion, selectionChanged, setRequestImage, setRegions, setSelectedRegion,
 } from "Store/Search";
 import {
     feedbackNegative,
@@ -22,7 +22,7 @@ import {
     showResults,
     showStart,
 } from "Store/Nyris";
-import {createImage, serviceImage, serviceImageNonRegion} from "services/image";
+import {createImage, findByImage, findRegions} from "services/image";
 import { debounce } from "lodash";
 import {feedbackClickEpic, feedbackRegionEpic, feedbackSuccessEpic} from "services/Feedback";
 import AppMD from "./AppMD";
@@ -45,14 +45,14 @@ const LandingPageApp = () => {
     } = search;
     const { showPart } = nyris;
 
-    const isDefaultRect = (r: RectCoords) => r.x1 === 0 && r.x2 === 1 && r.y1 === 0 && r.y2 === 1;
-
     // update selection, if it is not the default one
     useEffect(() => {
-        if (!isDefaultRect(selectedRegion)) {
+        if (selectedRegion) {
             setSelection(selectedRegion);
+        } else {
+            setSelection(defaultSelection);
         }
-    }, [selectedRegion]);
+    }, [selectedRegion, defaultSelection]);
 
     const acceptTypes = ["image/*"]
         .concat(settings.cadSearch ? cadExtensions : [])
@@ -78,9 +78,18 @@ const LandingPageApp = () => {
         if ((file instanceof File && isImageFile(file)) || typeof file === "string") {
             let image = await createImage(file);
             dispatch(setRequestImage(image));
-            return serviceImage(image, searchState.settings).then((res) => {
+            let searchRegion : RectCoords | undefined;
+            if (settings.regions) {
+                let {
+                    regions: foundRegions,
+                    selectedRegion: suggestedRegion
+                } = await findRegions(image, settings);
+                searchRegion = suggestedRegion;
+                dispatch(setRegions(foundRegions));
+                dispatch(setSelectedRegion(searchRegion))
+            }
+            return findByImage(image, searchState.settings, searchRegion).then((res) => {
                 dispatch(setSearchResults(res));
-                setSelection(defaultSelection);
             });
         }
         if (file instanceof File && isCadFile(file)) {
@@ -99,25 +108,27 @@ const LandingPageApp = () => {
         let image = await createImage(url);
         dispatch(setRequestImage(image));
 
+        let searchRegion : RectCoords | undefined;
         if (settings.regions) {
-            serviceImage(image, searchState.settings).then((res) => {
-                dispatch(setSearchResults(res));
-                setSelection(defaultSelection);
-                dispatch(showFeedback());
-            });
-        } else {
-            serviceImageNonRegion(image, searchState, search.selectedRegion).then((res) => {
-                dispatch(searchFileImageNonRegion(res));
-                dispatch(showFeedback());
-            });
+            let {
+                regions: foundRegions,
+                selectedRegion: suggestedRegion
+            } = await findRegions(image, settings);
+            searchRegion = suggestedRegion;
+            dispatch(setRegions(foundRegions));
+            dispatch(setSelectedRegion(searchRegion));
         }
+        findByImage(image, searchState.settings, searchRegion).then((res) => {
+            dispatch(setSearchResults(res));
+            dispatch(showFeedback());
+        });
     };
 
     const debouncedSetRectCoords = useCallback(
         debounce(value => {
             dispatch(selectionChanged(value));
             feedbackRegionEpic(searchState, value);
-            serviceImageNonRegion(requestImage!!.canvas, searchState, value).then((res) => {
+            findByImage(requestImage!!.canvas, settings, value).then((res) => {
                 dispatch(searchFileImageNonRegion(res));
                 dispatch(showFeedback());
             }).catch(e => console.warn('catch', e));

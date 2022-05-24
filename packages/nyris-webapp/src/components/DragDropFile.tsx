@@ -4,17 +4,18 @@ import { useDropzone } from "react-dropzone";
 import IconSearch from "common/assets/icons/icon_search_image.svg";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import {createImage, serviceImage, serviceImageNonRegion} from "services/image";
+import {createImage, findByImage, findRegions} from "services/image";
 import {
   setSearchResults,
   loadingActionResults,
-  searchFileImageNonRegion, setRequestImage,
+  setRequestImage, setRegions, setSelectedRegion,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import { useHistory } from "react-router-dom";
 import ExampleImages from "./ExampleImages";
 import { feedbackClickEpic } from "services/Feedback";
 import { useState } from "react";
+import {RectCoords} from "@nyris/nyris-api";
 
 interface Props {
   acceptTypes: any;
@@ -28,7 +29,6 @@ function DragDropFile(props: Props) {
   const { acceptTypes, onChangeLoading, isLoading } = props;
   const searchState = useAppSelector((state) => state);
   const { settings } = searchState;
-  const [rectCoords] = useState<any>(undefined);
   const [isLoadingLoadFile, setLoadingLoadFile] = useState<any>(false);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -42,7 +42,8 @@ function DragDropFile(props: Props) {
 
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
-      return serviceImage(image, searchState.settings).then((res: any) => {
+      // TODO support regions
+      return findByImage(image, searchState.settings).then((res: any) => {
         console.log("res?.results", res);
 
         res?.results.map((item: any) => {
@@ -77,20 +78,19 @@ function DragDropFile(props: Props) {
 
     let image = await createImage(url);
     dispatch(setRequestImage(image));
+    let searchRegion: RectCoords| undefined = undefined;
     if (settings.regions) {
-      serviceImage(image, searchState.settings).then((res) => {
-        dispatch(setSearchResults(res));
-        onChangeLoading(false);
-        history.push("/result");
-        return dispatch(showFeedback());
-      });
-    } else {
-      serviceImageNonRegion(image, searchState, rectCoords).then((res) => {
-        onChangeLoading(false);
-        history.push("/result");
-        dispatch(searchFileImageNonRegion(res));
-      });
+      let res = await findRegions(image, settings);
+      dispatch(setRegions(res.regions));
+      searchRegion = res.selectedRegion;
+      dispatch(setSelectedRegion(searchRegion));
     }
+    return findByImage(image, searchState.settings, searchRegion).then((res) => {
+      dispatch(setSearchResults(res));
+      onChangeLoading(false);
+      history.push("/result");
+      return dispatch(showFeedback());
+    });
   };
 
   return (

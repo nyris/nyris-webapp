@@ -24,9 +24,8 @@ import { RectCoords } from "@nyris/nyris-api";
 import {
   setSearchResults,
   loadingActionResults,
-  searchFileImageNonRegion,
   selectionChanged,
-  updateResultChangePosition,
+  updateResultChangePosition, setRegions, setSelectedRegion,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import algoliasearch from "algoliasearch/lite";
@@ -39,10 +38,7 @@ import {
 import CustomSearchBox from "components/input/inputSearch";
 import {feedbackClickEpic, feedbackSuccessEpic, feedbackTextSearchEpic} from "services/Feedback";
 import {
-  createImage,
-  searchImageByPosition,
-  serviceImage,
-  serviceImageNonRegion,
+  createImage, findByImage, findRegions,
 } from "services/image";
 import LoadingScreenCustom from "components/LoadingScreen";
 import { Preview } from "@nyris/nyris-react-components";
@@ -118,35 +114,23 @@ function ResultComponent(props: Props) {
   const handlerRectCoords = debounce((value: any) => {
     dispatch(selectionChanged(value));
     setLoading(true);
-    return onSearchOffersForImage(value);
+    return findItemsInSelection(value);
   }, 500);
 
   // TODO: Search offers for image:
-  const onSearchOffersForImage = (r: RectCoords) => {
+  const findItemsInSelection = (r: RectCoords) => {
     if (!requestImage) {
       return;
     }
     const { canvas }: any = requestImage;
-    if (settings.regions) {
-      searchImageByPosition(canvas, stateGlobal.settings, r).then((res: any) => {
-        const payload = {
-          ...res,
-          requestImage: requestImage,
-        };
-        dispatch(updateResultChangePosition(payload));
-        setLoading(false);
-        return dispatch(showFeedback());
-      });
-    } else {
-      serviceImageNonRegion(canvas, stateGlobal).then((res: any) => {
-        const payload = {
-          ...res,
-          requestImage: requestImage,
-        };
-        dispatch(updateResultChangePosition(payload));
-        return dispatch(showFeedback());
-      });
-    }
+    findByImage(canvas, stateGlobal.settings, r).then((res) => {
+      const payload = {
+        ...res,
+      };
+      dispatch(updateResultChangePosition(payload));
+      setLoading(false);
+      return dispatch(showFeedback());
+    });
   };
 
   // TODO: Search text
@@ -175,21 +159,19 @@ function ResultComponent(props: Props) {
       feedbackClickEpic(stateGlobal, position);
       return;
     }
+    let searchRegion : RectCoords | undefined = undefined;
     if (settings.regions) {
-      serviceImage(image, settings).then((res ) => {
-        console.log("res", res)
-        dispatch(setSearchResults(res));
-        setLoading(false);
-        return dispatch(showFeedback());
-      });
-
-      return;
-    } else {
-      serviceImageNonRegion(image, stateGlobal).then((res) => {
-        dispatch(searchFileImageNonRegion(res));
-      });
-      return;
+      let res = await findRegions(image, settings);
+      searchRegion = res.selectedRegion;
+      dispatch(setRegions(res.regions));
+      dispatch(setSelectedRegion(searchRegion));
     }
+
+    findByImage(image, settings, searchRegion).then((res ) => {
+      dispatch(setSearchResults(res));
+      setLoading(false);
+      return dispatch(showFeedback());
+    });
   };
 
   // Todo: item result.

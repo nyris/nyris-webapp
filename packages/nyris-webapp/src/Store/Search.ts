@@ -14,7 +14,7 @@ export interface SearchState {
   requestId?: string;
   sessionId?: string;
   regions: Region[];
-  selectedRegion: RectCoords;
+  selectedRegion?: RectCoords;
   fetchingRegions: boolean;
   fetchingResults: boolean;
   filterOptions: string[];
@@ -34,7 +34,7 @@ export interface SearchState {
 const initialState: SearchState = {
   results: [],
   regions: [],
-  selectedRegion: { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 },
+  selectedRegion: undefined,
   requestImage: undefined,
   fetchingResults: false,
   fetchingRegions: false,
@@ -62,8 +62,6 @@ const initialState: SearchState = {
         categoryPredictions,
         codes,
         duration,
-        regions,
-        selectedRegion,
         filters,
       } = payload;
       return {
@@ -75,11 +73,19 @@ const initialState: SearchState = {
         codes,
         duration,
         sessionId: state.sessionId || requestId,
-        regions,
-        selectedRegion,
         fetchingResults: false,
       };
     },
+
+    setRegions: (state, data: PayloadAction<Region[]>) => ({
+      ...state,
+      regions: data.payload
+    }),
+
+    setSelectedRegion: (state, data: PayloadAction<RectCoords|undefined>) => ({
+      ...state,
+      selectedRegion: data.payload
+    }),
 
     setRequestImage: (state, data: PayloadAction<HTMLCanvasElement>) => ({
         ...state,
@@ -221,6 +227,8 @@ export const {
   setRequestImage,
   loadCadFileLoad,
   loadFileSelectRegion,
+  setRegions,
+  setSelectedRegion,
   loadingActionResults,
   loadingActionRegions,
   searchFileImageNonRegion,
