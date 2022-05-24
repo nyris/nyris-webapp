@@ -33,3 +33,8 @@ export const findByImage = (image: HTMLCanvasElement, settings: NyrisAPISettings
   }
   return nyrisApi.findByImage(image, options);
 };
+
+export const findByCadFile = (file: File, settings: NyrisAPISettings) => {
+  const nyrisApi = new NyrisAPI(settings);
+  return nyrisApi.findByCad(file, {});
+};
