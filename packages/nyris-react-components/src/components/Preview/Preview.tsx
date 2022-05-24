@@ -231,11 +231,13 @@ const Preview = ({
 
     const dots = regions.map((region, i) => {
         let {x1, x2, y1, y2} = region.normalizedRect;
+        let x = width* ((x2-x1)/2 + x1);
+        let y = height* ((y2-y1)/2+ y1);
         return { // get middle of box and map to pixels
             region,
-            x: width* ((x2-x1)/2 + x1),
-            y: height* ((y2-y1)/2+ y1),
-            key: i
+            key: `${x}-${y}`,
+            x,
+            y,
         };
     });
 
