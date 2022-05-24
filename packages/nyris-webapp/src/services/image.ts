@@ -8,14 +8,10 @@ import {
 import NyrisAPI from "@nyris/nyris-api";
 import {RootState} from "../Store/Store";
 
-export const serviceImage = async (file: File|string, settings: NyrisAPISettings) => {
+export const serviceImage = async (canvas: HTMLCanvasElement, settings: NyrisAPISettings) => {
   const nyrisApi = new NyrisAPI(settings);
-  const randomId = Math.random().toString();
 
-  const image = await urlOrBlobToCanvas(file);
-  const imageFileCanvas = { canvas: image, id: randomId };
-
-  const regions = await nyrisApi.findRegions(image);
+  const regions = await nyrisApi.findRegions(canvas);
   const searchRegion = selectFirstCenteredRegion(regions, 0.3, {x1: 0, x2: 1, y1: 0, y2: 1});
 
   let options : ImageSearchOptions = {
@@ -24,7 +20,7 @@ export const serviceImage = async (file: File|string, settings: NyrisAPISettings
   };
 
   const { results, requestId, duration, categoryPredictions, codes } =
-    await nyrisApi.findByImage(image, options);
+    await nyrisApi.findByImage(canvas, options);
   const payload = {
     results,
     requestId,
@@ -32,7 +28,6 @@ export const serviceImage = async (file: File|string, settings: NyrisAPISettings
     codes,
     duration,
     regions,
-    requestImage: imageFileCanvas,
     selectedRegion: searchRegion
   };
 
@@ -40,27 +35,23 @@ export const serviceImage = async (file: File|string, settings: NyrisAPISettings
 };
 
 export const serviceImageNonRegion = async (
-  file: File | string | HTMLCanvasElement,
+  canvas: HTMLCanvasElement,
   stateStore: RootState,
   rectCoords?: RectCoords
 ) => {
   const { settings } = stateStore;
   const api = new NyrisAPI(settings);
-  const image = file instanceof HTMLCanvasElement ? file : await urlOrBlobToCanvas(file);
-  const randomId = Math.random().toString();
-  const imageFileCanvas = { canvas: image, id: randomId };
   let options: ImageSearchOptions = {
     cropRect: rectCoords,
   };
   const { results, duration, requestId, categoryPredictions, codes } =
-    await api.findByImage(image, options);
+    await api.findByImage(canvas, options);
   return {
     results,
     requestId,
     duration,
     categoryPredictions,
     codes,
-    requestImage: imageFileCanvas,
   };
 };
 
@@ -87,4 +78,24 @@ export const searchImageByPosition = async (
     regions: region,
   };
   return payload;
+};
+
+export const createImage = async (fileOrUrl: File|string|HTMLCanvasElement) => {
+  const image = fileOrUrl instanceof HTMLCanvasElement ? fileOrUrl : await urlOrBlobToCanvas(fileOrUrl);
+  return image;
+}
+
+export const findRegions = (image: HTMLCanvasElement, settings: NyrisAPISettings) => {
+  const nyrisApi = new NyrisAPI(settings);
+  return nyrisApi.findRegions(image);
+};
+
+export const findByImage = (image: HTMLCanvasElement, settings: NyrisAPISettings, region?: RectCoords) => {
+  const nyrisApi = new NyrisAPI(settings);
+  let options = {};
+  if (region) {
+    options = { cropRect: region };
+  }
+  return nyrisApi.findByImage(image, options);
+
 };

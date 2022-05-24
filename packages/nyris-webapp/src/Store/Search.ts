@@ -57,7 +57,6 @@ const initialState: SearchState = {
       setSearchResults: (state, data) => {
       const { payload } = data;
       const {
-        requestImage,
         results,
         requestId,
         categoryPredictions,
@@ -70,7 +69,6 @@ const initialState: SearchState = {
       return {
         ...state,
         filters,
-        requestImage,
         results,
         requestId,
         categoryPredictions,
@@ -82,6 +80,14 @@ const initialState: SearchState = {
         fetchingResults: false,
       };
     },
+
+    setRequestImage: (state, data: PayloadAction<HTMLCanvasElement>) => ({
+        ...state,
+        requestImage: {
+          canvas: data.payload,
+          id: Math.random().toString()
+        }
+    }),
 
     loadCadFileLoad: (state, data: PayloadAction<any>) => {
       const { payload } = data;
@@ -134,7 +140,6 @@ const initialState: SearchState = {
         duration,
         categoryPredictions,
         codes,
-        requestImage,
       } = payload;
       return {
         ...state,
@@ -143,7 +148,6 @@ const initialState: SearchState = {
         duration,
         categoryPredictions,
         codes,
-        requestImage,
         fetchingResults: false,
       };
     },
@@ -214,6 +218,7 @@ const initialState: SearchState = {
 export const {
   setSearchResults,
   selectionChanged,
+  setRequestImage,
   loadCadFileLoad,
   loadFileSelectRegion,
   loadingActionResults,

@@ -39,6 +39,7 @@ import {
 import CustomSearchBox from "components/input/inputSearch";
 import {feedbackClickEpic, feedbackSuccessEpic, feedbackTextSearchEpic} from "services/Feedback";
 import {
+  createImage,
   searchImageByPosition,
   serviceImage,
   serviceImageNonRegion,
@@ -166,15 +167,16 @@ function ResultComponent(props: Props) {
     feedbackSuccessEpic(stateGlobal, type === "like");
 
   // Search image with url or file
-  const getUrlToCanvasFile = (url: string, position?: number) => {
+  const getUrlToCanvasFile = async (url: string, position?: number) => {
     dispatch(showResults());
     dispatch(loadingActionResults());
+    let image = await createImage(url);
     if (position) {
       feedbackClickEpic(stateGlobal, position);
       return;
     }
     if (settings.regions) {
-      serviceImage(url, settings).then((res ) => {
+      serviceImage(image, settings).then((res ) => {
         console.log("res", res)
         dispatch(setSearchResults(res));
         setLoading(false);
@@ -183,7 +185,7 @@ function ResultComponent(props: Props) {
 
       return;
     } else {
-      serviceImageNonRegion(url, stateGlobal, undefined).then((res) => {
+      serviceImageNonRegion(image, stateGlobal).then((res) => {
         dispatch(searchFileImageNonRegion(res));
       });
       return;
@@ -213,7 +215,7 @@ function ResultComponent(props: Props) {
     );
   };
 
-  const nonEmptyFilter: any[] = !search?.requestImage
+  const nonEmptyFilter: any[] = !requestImage
     ? []
     : ["sku:DOES_NOT_EXIST<score=1>"];
   const filterSkus: any = search?.results

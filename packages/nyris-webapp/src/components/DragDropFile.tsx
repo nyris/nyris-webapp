@@ -4,11 +4,11 @@ import { useDropzone } from "react-dropzone";
 import IconSearch from "common/assets/icons/icon_search_image.svg";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import { serviceImage, serviceImageNonRegion } from "services/image";
+import {createImage, serviceImage, serviceImageNonRegion} from "services/image";
 import {
   setSearchResults,
   loadingActionResults,
-  searchFileImageNonRegion,
+  searchFileImageNonRegion, setRequestImage,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import { useHistory } from "react-router-dom";
@@ -32,7 +32,7 @@ function DragDropFile(props: Props) {
   const [isLoadingLoadFile, setLoadingLoadFile] = useState<any>(false);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (fs: File[]) => {
+    onDrop: async (fs: File[]) => {
       onChangeLoading(true);
       console.log("321");
       let payload: any;
@@ -40,7 +40,9 @@ function DragDropFile(props: Props) {
       setLoadingLoadFile(true);
       console.log("fs", fs);
 
-      return serviceImage(fs[0], searchState.settings).then((res: any) => {
+      let image = await createImage(fs[0]);
+      dispatch(setRequestImage(image));
+      return serviceImage(image, searchState.settings).then((res: any) => {
         console.log("res?.results", res);
 
         res?.results.map((item: any) => {
@@ -65,7 +67,7 @@ function DragDropFile(props: Props) {
     },
   });
 
-  const getUrlToCanvasFile = (url: string, position?: number) => {
+  const getUrlToCanvasFile = async (url: string, position?: number) => {
     onChangeLoading(true);
     dispatch(showResults());
     dispatch(loadingActionResults());
@@ -73,15 +75,17 @@ function DragDropFile(props: Props) {
       feedbackClickEpic(searchState, position);
     }
 
+    let image = await createImage(url);
+    dispatch(setRequestImage(image));
     if (settings.regions) {
-      serviceImage(url, searchState.settings).then((res) => {
+      serviceImage(image, searchState.settings).then((res) => {
         dispatch(setSearchResults(res));
         onChangeLoading(false);
         history.push("/result");
         return dispatch(showFeedback());
       });
     } else {
-      serviceImageNonRegion(url, searchState, rectCoords).then((res) => {
+      serviceImageNonRegion(image, searchState, rectCoords).then((res) => {
         onChangeLoading(false);
         history.push("/result");
         dispatch(searchFileImageNonRegion(res));

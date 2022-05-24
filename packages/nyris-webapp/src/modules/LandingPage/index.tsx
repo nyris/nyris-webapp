@@ -11,7 +11,7 @@ import {
     loadCadFileLoad,
     setSearchResults,
     loadingActionResults,
-    searchFileImageNonRegion, selectionChanged,
+    searchFileImageNonRegion, selectionChanged, setRequestImage,
 } from "Store/Search";
 import {
     feedbackNegative,
@@ -22,7 +22,7 @@ import {
     showResults,
     showStart,
 } from "Store/Nyris";
-import { serviceImage, serviceImageNonRegion } from "services/image";
+import {createImage, serviceImage, serviceImageNonRegion} from "services/image";
 import { debounce } from "lodash";
 import {feedbackClickEpic, feedbackRegionEpic, feedbackSuccessEpic} from "services/Feedback";
 import AppMD from "./AppMD";
@@ -71,12 +71,14 @@ const LandingPageApp = () => {
         }
     };
     // TODO: search image file home page
-    const searchByFile = (file: File | HTMLCanvasElement | string) => {
+    const searchByFile = async (file: File | HTMLCanvasElement | string) => {
         dispatch(loadingActionResults());
         dispatch(showResults());
         dispatch(showFeedback());
         if ((file instanceof File && isImageFile(file)) || typeof file === "string") {
-            return serviceImage(file, searchState.settings).then((res) => {
+            let image = await createImage(file);
+            dispatch(setRequestImage(image));
+            return serviceImage(image, searchState.settings).then((res) => {
                 dispatch(setSearchResults(res));
                 setSelection(defaultSelection);
             });
@@ -87,21 +89,24 @@ const LandingPageApp = () => {
     };
     //
 
-    const searchByUrl = (url: string, position?: number) => {
+    const searchByUrl = async (url: string, position?: number) => {
         dispatch(loadingActionResults());
         dispatch(showResults());
         if (position) {
             feedbackClickEpic(searchState, position);
         }
 
+        let image = await createImage(url);
+        dispatch(setRequestImage(image));
+
         if (settings.regions) {
-            serviceImage(url, searchState.settings).then((res) => {
+            serviceImage(image, searchState.settings).then((res) => {
                 dispatch(setSearchResults(res));
                 setSelection(defaultSelection);
                 dispatch(showFeedback());
             });
         } else {
-            serviceImageNonRegion(url, searchState, search.selectedRegion).then((res) => {
+            serviceImageNonRegion(image, searchState, search.selectedRegion).then((res) => {
                 dispatch(searchFileImageNonRegion(res));
                 dispatch(showFeedback());
             });
