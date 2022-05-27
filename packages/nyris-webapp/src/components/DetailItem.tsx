@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Typography } from "@material-ui/core";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
 import DefaultCarousel from "./carousel/DefaultCarousel";
 import { Link } from "react-router-dom";
@@ -8,11 +8,9 @@ import IconLike from "common/assets/icons/icon_like.svg";
 import IconDisLike from "common/assets/icons/icon_dislike.svg";
 import IconShare from "common/assets/icons/Fill.svg";
 import IconBookmark from "common/assets/icons/book_mark.svg";
-// import IconPicture from "common/assets/icons/icon_picture.png";
 import IconPicture from "common/assets/icons/icon_modal_image.svg";
-import { useState } from "react";
 import { isEmpty } from "lodash";
-import { useEffect } from "react";
+import IconOpenLink from "common/assets/icons/Union.svg";
 
 interface Props {
   numberResult?: number;
@@ -26,12 +24,8 @@ interface Props {
 }
 
 function DetailItem(props: Props) {
-  const {
-    handlerCloseModal,
-    dataItem,
-    onHandlerModalShare,
-    onSearchImage,
-  } = props;
+  const { handlerCloseModal, dataItem, onHandlerModalShare, onSearchImage } =
+    props;
 
   const { img, title, sku, main_image_link } = dataItem;
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
@@ -98,16 +92,49 @@ function DetailItem(props: Props) {
         <Box className="box-top">
           <Grid container justifyContent="space-between">
             <Grid item xs={10}>
-              <Typography className="text-f9 fw-500 max-line-1">
+              <Typography className="text-f10 fw-500 max-line-1">
                 SKU: {sku}
               </Typography>
-              <Typography className="text-f16 fw-600 text-dark">
+              <Typography
+                className="text-f22 fw-600 text-dark"
+                style={{ margin: "20px 0 10px" }}
+              >
                 {title}
               </Typography>
-              <Link className="text-f9 text-blue" to={"/"} href="#">
+              <Link className="text-f10 text-blue" to={"/"} href="#">
                 View full description
               </Link>
             </Grid>
+            <Grid item xs={12}>
+              <Box
+                style={{
+                  padding: "5px 10px",
+                  backgroundColor: "#55566B",
+                  boxShadow: "-2px 2px 4px rgba(170, 171, 181, 0.5)",
+                  borderRadius: 1,
+                }}
+                display={"flex"}
+                justifyContent={"space-between"}
+                mt={2}
+                mb={1}
+              >
+                <Button
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    padding: 0,
+                  }}
+                  // onClick={() => window.open(`${main_offer_link}`, "_blank")}
+                >
+                  <Typography className="text-f12 fw-600 text-white">
+                    CONSULT ITEM
+                  </Typography>
+                  <img src={IconOpenLink} alt="" />
+                </Button>
+              </Box>
+            </Grid>
+
             <Grid item>
               <Button className="btn-item">
                 <img

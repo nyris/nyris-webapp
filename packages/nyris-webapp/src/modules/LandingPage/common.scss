@@ -29,6 +29,22 @@ a {
   color: #55566b !important;
 }
 
+.fw-400 {
+  font-weight: 400 !important;
+}
+
+.text-f10 {
+  font-family: "Montserrat";
+  font-size: 10px !important;
+  line-height: 10px !important;
+}
+
+.text-f22 {
+  font-family: "Montserrat";
+  font-size: 22px !important;
+  line-height: 20px !important;
+}
+
 .box-gray2 {
   background-color: #e9e9ec;
 }
@@ -260,8 +276,8 @@ button {
 }
 
 .box-modal-default {
-  height: 80%;
-  width: 40%;
+  min-height: 230px;
+  width: 340px;
   min-height: 468px;
   min-width: 330px;
   display: flex;
@@ -274,6 +290,7 @@ button {
     width: 186px;
     box-shadow: 0px 0px 13px rgba(30, 31, 49, 0.3);
     border-radius: 5px;
+    height: 192px;
     .box-content-box-share {
       padding: 0px 10px 10px 10px;
       .box-input {
@@ -287,7 +304,7 @@ button {
       }
       .box-media-share {
         button {
-          width: 100%;
+          // width: 100%;
           padding: 0;
           .MuiButton-label {
             justify-content: flex-start !important;
@@ -339,9 +356,9 @@ button {
         height: 100%;
       }
     }
-    .slider-wrapper{
+    .slider-wrapper {
       height: 100%;
-      .slider{
+      .slider {
         height: 100%;
       }
     }
@@ -445,8 +462,38 @@ button {
 }
 
 .wrap-main-item-result {
+  filter: drop-shadow(0px 1px 6px rgba(170, 171, 181, 0.4));
   .box-top {
     position: relative;
+    .btn-show-result {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 11;
+      background: linear-gradient(180deg, #ffffff 0%, #f4f4f6 100%);
+      box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25);
+
+      border-radius: 12px;
+      &:hover {
+        background: linear-gradient(180deg, #3e36dc 0%, #2b269a 100%);
+        box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25);
+        span {
+          color: #fff;
+        }
+        svg {
+          color: #fff;
+        }
+      }
+      button {
+        padding: 5px !important;
+      }
+      span {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: initial;
+      }
+    }
+
     .box-icon-modal {
       bottom: 10px;
       left: 10px;
@@ -456,6 +503,12 @@ button {
       display: block;
       overflow: hidden;
       z-index: 11;
+      span{
+        display: block;
+        img{
+          padding: 5px;
+        }
+      }
       button {
         padding: 0px;
       }
@@ -527,7 +580,7 @@ button {
       }
     }
     .box-gray {
-      background: linear-gradient(180deg, #aaabb5 0%, #55566b 100%);
+      background: #fff;
       &.box-support {
         width: 21px;
         height: 21px;
@@ -654,9 +707,9 @@ button {
     width: 100%;
     height: 100%;
     position: relative;
-    @media screen and (min-width: 2047px)  {
+    @media screen and (min-width: 2047px) {
       position: initial;
-      .loadingSpinCT{
+      .loadingSpinCT {
         top: 0;
         bottom: 0;
       }
@@ -684,7 +737,7 @@ button {
       animation: gradient 15s ease infinite;
       position: relative;
       background-size: 100% 100%;
-      @media screen and (min-width: 2047px)  {
+      @media screen and (min-width: 2047px) {
         position: initial;
       }
       @keyframes gradient {
@@ -703,7 +756,7 @@ button {
       background: #1e1f31;
       padding: 21px;
       height: 100%;
-      @media screen and (min-width: 2047px)  {
+      @media screen and (min-width: 2047px) {
         position: inherit;
       }
     }
@@ -759,7 +812,7 @@ button {
 
 // TODO: css result component
 .box-wrap-result-component {
-  min-height: calc(100vh - 32px);
+  min-height: 100%;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -783,23 +836,34 @@ button {
     }
   }
   .box-result {
-    // max-width: 1280px;
-    // height: calc(100% - 164px - 32px);
-    // overflow: hidden;
-    height: calc(100vh - 164px - 104px);
-    // width: 1280px;
+    height: calc(100vh - 180px);
     display: flex;
     justify-content: space-between;
     // margin: auto;
     overflow: auto;
+    position: relative;
+    .btn-open-support {
+      background: linear-gradient(45deg, #3e36dc 14.84%, #00ff94 85.16%);
+      width: 50px;
+      height: 50px;
+      position: fixed;
+      border-radius: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      bottom: 80px;
+      right: 30px;
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
     .col-left {
       width: fit-content;
       height: fit-content;
       margin-right: 62px;
-      // width: 517px;
-      min-height: 462px;
-      // transform: rotate(90deg);
-      // transition: ease-in-out 0.5s;
+      min-height: 100%;
       position: relative;
       &.toggle {
         .box-title_col-left {
@@ -871,14 +935,19 @@ button {
     }
     .col-right {
       width: calc(100% - 462px);
-      // overflow: auto;
       .box-item-result {
-        max-width: 714px;
+        max-width: calc(180 * 4px + 60px);
+        display: flex;
+        flex-wrap: wrap;
+        margin: 16px 0;
         @media screen and (min-width: 2047px) {
           max-width: 1300px;
         }
-        margin: 16px 0;
-        // margin-right: auto !important;
+        .wrap-main-item-result {
+          max-width: 180px;
+          width: 180px;
+          margin: 20px 7px;
+        }
         ul {
           padding: 0;
           display: flex;
@@ -900,9 +969,38 @@ button {
   }
 
   .box-notify {
-    height: 32px;
+    height: 40px;
     background: #f3f3f5;
     border-top: 1px solid #e9e9ec;
+    .select-choose-page {
+      &::after,
+      &::before {
+        display: none;
+      }
+    }
+    .item-notify-right {
+      padding-left: 20px;
+      border-left: 1px solid #e9e9ec;
+    }
+    .box-change-hit-items {
+      font-family: "Montserrat";
+      font-style: normal;
+      font-weight: 500;
+      font-size: 12px;
+      color: #2b2c46;
+      border-right: 1.33333px solid #e9e9ec;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      .ais-HitsPerPage-select {
+        border: 0px;
+        background-color: transparent;
+        font-size: 12px;
+        color: #2b2c46 !important;
+        font-weight: 500;
+      }
+    }
+
     .item-notify {
       height: 100%;
       display: flex;
@@ -1146,6 +1244,20 @@ button {
     form {
       width: 100%;
       display: flex;
+      .box-inp {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        .icon-search {
+          position: absolute;
+          right: 16px;
+          top: 0;
+          bottom: 0;
+          margin: auto;
+        }
+      }
     }
     .input-search {
       padding: 0 6px;
@@ -1208,6 +1320,7 @@ button {
 
 .wrap-main-result {
   position: relative;
+  height: 100%;
   &.loading {
     .loadingSpinCT {
       display: block;
@@ -1225,26 +1338,108 @@ button {
 }
 
 .wrap-main-support-page {
-  // background-color: red;
+  background-color: #2b2c46;
   min-height: calc(100vh - 32px);
-  // max-width: 1280px;
   margin: auto;
+  padding: 40px;
   .col-left {
     width: 50%;
-    background-color: #322bb0;
+    // background-color: #322bb0;
     .col-left__top {
-      background-color: #3e36dc;
-      min-height: 170px;
+      // background-color: #3e36dc;
+      // min-height: 170px;
     }
 
     .col-left__bottom {
       .box-form {
-        max-width: 224px;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 74px;
+        // max-width: 224px;
+        // margin-left: auto;
+        // margin-right: auto;
+        // margin-top: 74px;
         .MuiButton-label {
           justify-content: flex-start !important;
+        }
+        .box-content-main-drop {
+          background: linear-gradient(180deg, #3e36dc 0%, #2b2c46 100%);
+          padding: 21px;
+          height: 100%;
+          animation: gradient 15s ease infinite;
+          position: relative;
+          background-size: 100% 100%;
+          min-height: 150px;
+          @media screen and (min-width: 2047px) {
+            position: initial;
+          }
+          @keyframes gradient {
+            0% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+            100% {
+              background-position: 0% 50%;
+            }
+          }
+        }
+        .box-content-main {
+          background: #1e1f31;
+          padding: 21px;
+          height: 100%;
+          min-height: 150px;
+          label {
+            color: #fff;
+          }
+          @media screen and (min-width: 2047px) {
+            position: inherit;
+          }
+        }
+        .box-border {
+          border: 2px dashed #aaabb5;
+          height: 150px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #fff;
+          width: 100%;
+          flex-direction: column;
+        }
+        .box-form-control {
+          // background-color: red;
+          .item-field {
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            width: 100%;
+            label {
+              color: #fff;
+              span {
+                color: red;
+              }
+            }
+            .box-input-control {
+              &::before {
+                display: none;
+              }
+              background: #f3f3f5;
+              box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+              border-radius: 2px;
+
+              padding: 0px 9px;
+            }
+          }
+          .box-textArea {
+            // padding: 11px;
+            position: relative;
+            .box-icon {
+              position: absolute;
+              top: 10px;
+              left: 10px;
+            }
+            textarea {
+              padding: 10px 25px;
+            }
+          }
         }
       }
       .box-btn-upload {
@@ -1286,9 +1481,9 @@ button {
   }
   .col-right {
     width: 50%;
-    background-image: url("../../common/assets/images/bg-support-page.svg");
-    background-size: cover;
-    background-repeat: no-repeat;
+    // background-image: url("../../common/assets/images/bg-support-page.svg");
+    // background-size: cover;
+    // background-repeat: no-repeat;
   }
 }
 
@@ -1302,3 +1497,32 @@ button {
     display: none !important;
   }
 }
+
+.btn-text-item-result {
+  padding: 5px 10px;
+  background-color: #55566b;
+  box-shadow: "-2px 2px 4px rgba(170, 171, 181, 0.5)";
+  border-radius: 1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-open-support {
+  z-index: 11;
+  background: linear-gradient(45deg, #3e36dc 14.84%, #00ff94 85.16%);
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 40px;
+  right: 30px;
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
