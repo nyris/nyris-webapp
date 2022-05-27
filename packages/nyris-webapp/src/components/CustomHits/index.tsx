@@ -16,7 +16,7 @@ function Hits({
   const handleSearch = () => {
     setDataResultToAlgolia(hits);
   };
-  console.log("hitshits", hits);
+
 
   return (
     <>
@@ -30,7 +30,7 @@ function Hits({
               handlerToggleModal(hit);
             }}
             handlerToggleModalShare={() => setOpenModalShare(true)}
-            indexItem={hit.__position}
+            indexItem={hit?.__position}
             isHover={false}
             onSearchImage={(url: any) => {
               setSearchStateInput({});

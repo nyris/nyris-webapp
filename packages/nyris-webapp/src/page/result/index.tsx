@@ -7,10 +7,11 @@ import {
   Typography,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import IconWhatsApp from "common/assets/icons/Icon_whatsapp.png";
-import IconEmail from "common/assets/icons/icon_email.png";
-import IconWeChat from "common/assets/icons/Icon_wechat.png";
-import ItemResult from "components/results/ItemResult";
+import IconWhatsApp from "common/assets/icons/icon_whatapps.svg";
+import IconEmail from "common/assets/icons/email_share.svg";
+import IconWeChat from "common/assets/icons/icon_chat.svg";
+import IconSupport from "common/assets/icons/support3.svg";
+
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import { debounce } from "lodash";
 import KeyboardArrowRightOutlinedIcon from "@material-ui/icons/KeyboardArrowRightOutlined";
@@ -25,28 +26,31 @@ import {
   setSearchResults,
   loadingActionResults,
   selectionChanged,
-  updateResultChangePosition, setRegions, setSelectedRegion,
+  updateResultChangePosition,
+  setRegions,
+  setSelectedRegion,
+  setRequestImage,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import algoliasearch from "algoliasearch/lite";
-import {
-  InstantSearch,
-  Hits,
-  Pagination,
-  Configure,
-} from "react-instantsearch-dom";
+import { InstantSearch, Configure, HitsPerPage } from "react-instantsearch-dom";
 import CustomSearchBox from "components/input/inputSearch";
-import {feedbackClickEpic, feedbackSuccessEpic, feedbackTextSearchEpic} from "services/Feedback";
 import {
-  createImage, findByImage, findRegions,
-} from "services/image";
+  feedbackClickEpic,
+  feedbackSuccessEpic,
+  feedbackTextSearchEpic,
+} from "services/Feedback";
+import { createImage, findByImage, findRegions } from "services/image";
+import { AlgoliaResult, AlgoliaSettings, AppSettings } from "../../types";
 import LoadingScreenCustom from "components/LoadingScreen";
 import { Preview } from "@nyris/nyris-react-components";
-import {AlgoliaResult, AlgoliaSettings} from "../../types";
+import { showHits } from "./MockData";
+import { Link } from "react-router-dom";
 
 interface Props {}
 
-const defaultSelection = {x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9};
+const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
+
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector((state) => state);
@@ -57,6 +61,7 @@ function ResultComponent(props: Props) {
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const { search, settings } = stateGlobal;
   const { results, requestImage, regions, selectedRegion } = search;
+  const { moreInfoText }: any = settings as AppSettings;
   const { valueTextSearch } = search;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
@@ -66,6 +71,7 @@ function ResultComponent(props: Props) {
   const searchClient = algoliasearch(appId, apiKey);
   const index = searchClient.initIndex(indexName);
 
+  // TODO: data algolia search to api
   useEffect(() => {
     if (!valueTextSearch) {
       return;
@@ -140,7 +146,12 @@ function ResultComponent(props: Props) {
       if (searchState?.query !== "") {
         const data = await index.search<AlgoliaResult>(searchState.query, {});
         const productIds = data.hits.map((hit) => hit.sku);
-        await feedbackTextSearchEpic(stateGlobal, data.query, data.page, productIds);
+        await feedbackTextSearchEpic(
+          stateGlobal,
+          data.query,
+          data.page,
+          productIds
+        );
       }
     } catch (error) {
       console.log("searchTextByApi", error);
@@ -148,19 +159,23 @@ function ResultComponent(props: Props) {
     }
   };
 
-  const sendFeedBackAction = async (type: string) =>
+  // TODO: Handler like dislike
+  const sendFeedBackAction = async (type: string) => {
     feedbackSuccessEpic(stateGlobal, type === "like");
+  };
 
-  // Search image with url or file
+  // TODO: Search image with url or file
   const getUrlToCanvasFile = async (url: string, position?: number) => {
     dispatch(showResults());
     dispatch(loadingActionResults());
     let image = await createImage(url);
+    dispatch(setRequestImage(image))
+
     if (position) {
       feedbackClickEpic(stateGlobal, position);
       return;
     }
-    let searchRegion : RectCoords | undefined = undefined;
+    let searchRegion: RectCoords | undefined = undefined;
     if (settings.regions) {
       let res = await findRegions(image, settings);
       searchRegion = res.selectedRegion;
@@ -168,45 +183,24 @@ function ResultComponent(props: Props) {
       dispatch(setSelectedRegion(searchRegion));
     }
 
-    findByImage(image, settings, searchRegion).then((res ) => {
+    findByImage(image, settings, searchRegion).then((res) => {
       dispatch(setSearchResults(res));
       setLoading(false);
       return dispatch(showFeedback());
     });
   };
 
-  // Todo: item result.
-  const Hit = (hit: any) => {
-    return (
-      <ItemResult
-        dataItem={hit?.hit}
-        handlerToggleModal={() => {
-          handlerToggleModal(hit?.hit);
-        }}
-        handlerToggleModalShare={() => setOpenModalShare(true)}
-        indexItem={hit.__position}
-        isHover={false}
-        onSearchImage={(url: any) => {
-          setSearchStateInput({});
-          getUrlToCanvasFile(url);
-          setLoading(true);
-        }}
-        handlerFeedback={(value: string) => {
-          sendFeedBackAction(value);
-        }}
-      />
-    );
-  };
-
   const nonEmptyFilter: any[] = !requestImage
     ? []
     : ["sku:DOES_NOT_EXIST<score=1>"];
   const filterSkus: any = search?.results
-      ? search?.results.slice().reverse().map(
-          (f: any, i: number) => `sku:'${f.sku}'<score=${i}>`
-      )
+    ? search?.results
+        .slice()
+        .reverse()
+        .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
     : "";
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
+  
   return (
     <Box className={`wrap-main-result loading`}>
       <>
@@ -233,11 +227,16 @@ function ResultComponent(props: Props) {
                 <CustomSearchBox />
               </Box>
               {/* <Box className="box-filter">
-                <FilterComponent />
-              </Box> */}
+                  <FilterComponent />
+                </Box> */}
             </div>
             <Box className="box-result">
               <>
+                <Box className="btn-open-support">
+                  <Link to={"/support"} style={{ color: "#3E36DC" }}>
+                    <img src={IconSupport} alt="" width={16} height={16} />
+                  </Link>
+                </Box>
                 {settings.preview && requestImage && (
                   <Box className={`col-left ${showColLeft && "toggle"}`}>
                     <Box className="box-preview">
@@ -264,7 +263,7 @@ function ResultComponent(props: Props) {
                               return;
                             }}
                             image={requestImage?.canvas}
-                            selection={selectedRegion|| defaultSelection}
+                            selection={selectedRegion || defaultSelection}
                             regions={regions}
                             maxWidth={400}
                             maxHeight={500}
@@ -293,19 +292,31 @@ function ResultComponent(props: Props) {
                         : "ml-auto mr-auto"
                     }`}
                   >
-                    <LoadingScreenCustom>
-                      <Hits hitComponent={Hit} />
-                    </LoadingScreenCustom>
+                    <LoadingScreenCustom
+                      handlerToggleModal={handlerToggleModal}
+                      setOpenModalShare={setOpenModalShare}
+                      setSearchStateInput={setSearchStateInput}
+                      getUrlToCanvasFile={getUrlToCanvasFile}
+                      setLoading={setLoading}
+                      sendFeedBackAction={sendFeedBackAction}
+                      moreInfoText={moreInfoText}
+                    />
                   </Box>
                 </Box>
               </>
             </Box>
             <Box>
-              <Box className="box-panigation">
-                <Pagination />
-              </Box>
               <Box className="box-notify">
-                <FooterResult search={search} />
+                <FooterResult search={search}>
+                  <Box
+                    display={"flex"}
+                    style={{ padding: "0 20px" }}
+                    className="box-change-hit-items"
+                  >
+                    Items per page:{" "}
+                    <HitsPerPage items={showHits} defaultRefinement={20} />
+                  </Box>
+                </FooterResult>
               </Box>
             </Box>
 
@@ -329,6 +340,7 @@ function ResultComponent(props: Props) {
                   setLoading(true);
                   getUrlToCanvasFile(url);
                 }}
+                // moreInfoText={moreInfoText}
               />
             </DefaultModal>
 
@@ -370,38 +382,40 @@ function ResultComponent(props: Props) {
                     </IconButton>
                   </Paper>
 
-                  <Box mt={1} className="box-media-share">
+                  <Box
+                    mt={1}
+                    className="box-media-share"
+                    display={"flex"}
+                    style={{ height: "100%" }}
+                  >
                     <Button style={{ padding: 0 }}>
                       <Box display={"flex"} alignItems={"center"}>
-                        <img src={IconEmail} alt="icon_email" />
-                        <Typography
-                          className="text-f8 fw-500"
-                          style={{ color: "#2B2C46", marginLeft: 5 }}
-                        >
-                          Share with e-Mail
-                        </Typography>
+                        <img
+                          width={40}
+                          height={40}
+                          src={IconEmail}
+                          alt="icon_email"
+                        />
+                      </Box>
+                    </Button>
+                    <Button style={{ padding: 0, margin: "0 20px" }}>
+                      <Box display={"flex"} alignItems={"center"}>
+                        <img
+                          src={IconWeChat}
+                          width={40}
+                          height={40}
+                          alt="icon_email"
+                        />
                       </Box>
                     </Button>
                     <Button style={{ padding: 0 }}>
                       <Box display={"flex"} alignItems={"center"}>
-                        <img src={IconWhatsApp} alt="icon_email" />
-                        <Typography
-                          className="text-f8 fw-500"
-                          style={{ color: "#2B2C46", marginLeft: 5 }}
-                        >
-                          Share with WhatsApp
-                        </Typography>
-                      </Box>
-                    </Button>
-                    <Button style={{ padding: 0 }}>
-                      <Box display={"flex"} alignItems={"center"}>
-                        <img src={IconWeChat} alt="icon_email" />
-                        <Typography
-                          className="text-f8 fw-500"
-                          style={{ color: "#2B2C46", marginLeft: 5 }}
-                        >
-                          Share with WeChat
-                        </Typography>
+                        <img
+                          src={IconWhatsApp}
+                          width={40}
+                          height={40}
+                          alt="icon_email"
+                        />
                       </Box>
                     </Button>
                   </Box>

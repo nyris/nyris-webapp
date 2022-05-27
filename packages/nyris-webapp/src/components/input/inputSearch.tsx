@@ -7,7 +7,7 @@ import { useAppDispatch } from "Store/Store";
 import { reset } from "Store/Search";
 import { debounce } from "lodash";
 import { useCallback } from "react";
-
+import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
 const SearchBox = ({ currentRefinement, isSearchStalled, refine }: any) => {
   const focusInp: any = useRef();
   const history = useHistory();
@@ -43,16 +43,20 @@ const SearchBox = ({ currentRefinement, isSearchStalled, refine }: any) => {
     <Box className="wrap-input-search">
       <Box p={2} display={"flex"} className="box-input-search">
         <form noValidate action="" role="search">
-          <input
-            style={{ border: "0px", width: "100%" }}
-            className="input-search"
-            value={valueInput}
-            onChange={(event) => {
-              setValueInput(event.currentTarget.value);
-              debounceSearch(event.currentTarget.value);
-            }}
-            ref={focusInp}
-          />
+          <Box className="box-inp">
+            <input
+              style={{ border: "0px", width: "100%" }}
+              className="input-search"
+              placeholder="Search by any name, category, SKU or keyword"
+              value={valueInput}
+              onChange={(event) => {
+                setValueInput(event.currentTarget.value);
+                debounceSearch(event.currentTarget.value);
+              }}
+              ref={focusInp}
+            />
+            <SearchRoundedIcon className="icon-search" style={{ color: "#55566B", fontSize: "20px" }} />
+          </Box>
           {history.location.pathname === "/result" && (
             <Button
               className="btn-clear-text"
