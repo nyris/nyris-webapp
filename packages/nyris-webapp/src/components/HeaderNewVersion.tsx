@@ -2,9 +2,6 @@ import { Box, Grid } from "@material-ui/core";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "./common.scss";
-import IconReLoad from "common/assets/icons/reload_icon.svg";
-import IconSave from "common/assets/icons/save_search.svg";
-import IconSupport from "common/assets/icons/support.svg";
 import IconAdmin from "common/assets/icons/admin.svg";
 import LogoNyris from "common/assets/icons/nyris_logo.svg";
 function HeaderNewVersion(): JSX.Element {
@@ -24,7 +21,7 @@ function HeaderNewVersion(): JSX.Element {
         <img width={74} height={19} src={`${LogoNyris}`} alt="nyris logo" />
       </NavLink>
       <Grid container className="nav-menu">
-        <Grid item className="item-nav">
+        {/* <Grid item className="item-nav">
           <NavLink
             activeClassName="active"
             isActive={(match, location) =>
@@ -68,7 +65,7 @@ function HeaderNewVersion(): JSX.Element {
               <img width={10} height={10} src={`${IconSupport}`} alt="" />
             </span>
           </NavLink>
-        </Grid>
+        </Grid> */}
         <Grid item className="item-nav">
           <NavLink
             activeClassName="active"
@@ -79,8 +76,8 @@ function HeaderNewVersion(): JSX.Element {
             className="nav-link p-0 menu-children rounded-0"
           >
             <span className="d-none d-sm-block ms-4 px-2 py-1 border-bottom-1">
-              My Account
-              <img width={10} height={10} src={`${IconAdmin}`} alt=""/>
+              {/* My Account */}
+              <img width={20} height={20} src={`${IconAdmin}`} alt=""/>
             </span>
           </NavLink>
         </Grid>

@@ -26,8 +26,8 @@ function Pagination({ currentRefinement, nbPages, refine, children }: any) {
         <Typography className="text-f12 text-center">
           <span className="fw-600" style={{ color: "#2B2C46" }}>
             Didn’t find what you were looking for?
-          </span>{" "}
-          <span style={{ color: "#2B2C46" }}>Share your search with our</span>{" "}
+          </span>
+          <span style={{ color: "#2B2C46" }}>Share your search with our</span>
           <Link to={"/support"} style={{ color: "#3E36DC" }}>
             product experts
           </Link>

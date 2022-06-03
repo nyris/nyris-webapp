@@ -1,12 +1,12 @@
-import { Box, Typography } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import "./common.scss";
-import TranslateIcon from "common/assets/icons/translate_icon.svg";
+// import TranslateIcon from "common/assets/icons/translate_icon.svg";
 import DragDropFile from "components/DragDropFile";
 import { cadExtensions } from "@nyris/nyris-api";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import { changeValueTextSearch, setUpdateSession } from "Store/Search";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   Configure,
   InstantSearch,
@@ -14,8 +14,9 @@ import {
 } from "react-instantsearch-dom";
 import algoliasearch from "algoliasearch/lite";
 import CustomSearchBox from "components/input/inputSearch";
-import {createSessionByApi} from "../../services/session";
-import {AlgoliaSettings} from "../../types";
+import { createSessionByApi } from "../../services/session";
+import { AlgoliaSettings } from "../../types";
+import IconSupport from "common/assets/icons/support3.svg";
 
 interface Props {}
 
@@ -58,14 +59,20 @@ function AppNewVersion(props: Props) {
     : ["sku:DOES_NOT_EXIST<score=1>"];
   // Build filter using reverse position for stable item order
   const filterSkus: any = search?.results
-    ? search?.results.slice().reverse().map(
-        (f: any, i: number) => `sku:'${f.sku}'<score=${i}>`
-      )
+    ? search?.results
+        .slice()
+        .reverse()
+        .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
     : "";
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
 
   return (
     <Box className={`box-content-main ${isLoading ? "loading" : ""}`}>
+      <Box className="btn-open-support">
+        <Link to={"/support"} style={{ color: "#3E36DC" }}>
+          <img src={IconSupport} alt="" width={16} height={16} />
+        </Link>
+      </Box>
       <InstantSearch
         indexName={indexName}
         searchClient={searchClient}
@@ -77,9 +84,9 @@ function AppNewVersion(props: Props) {
         }}
       >
         <Box className="box-content_top">
-          <div className="box-logo">
+          {/* <div className="box-logo">
             <img src={TranslateIcon} width={32} height={27} alt="logo_icon" />
-          </div>
+          </div> */}
           <div className="box-input">
             <div className="wrap-input-search">
               <Configure filters={filtersString}></Configure>
@@ -89,11 +96,11 @@ function AppNewVersion(props: Props) {
               <CustomSearchBox />
             </div>
           </div>
-          <div className="box-bottom">
+          {/* <div className="box-bottom">
             <Typography className="text-bottom">
               Search by any name, category, SKU or keyword.
             </Typography>
-          </div>
+          </div> */}
         </Box>
         <Box className="box-content_bottom">
           <DragDropFile

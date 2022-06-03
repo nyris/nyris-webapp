@@ -29,22 +29,6 @@ a {
   color: #55566b !important;
 }
 
-.fw-400 {
-  font-weight: 400 !important;
-}
-
-.text-f10 {
-  font-family: "Montserrat";
-  font-size: 10px !important;
-  line-height: 10px !important;
-}
-
-.text-f22 {
-  font-family: "Montserrat";
-  font-size: 22px !important;
-  line-height: 20px !important;
-}
-
 .box-gray2 {
   background-color: #e9e9ec;
 }
@@ -64,7 +48,9 @@ button {
 .w-100 {
   width: 100%;
 }
-
+.fw-400 {
+  font-weight: 400 !important;
+}
 .fw-500 {
   font-weight: 500 !important;
 }
@@ -91,6 +77,18 @@ button {
 .text-f40 {
   font-size: 40px !important;
   line-height: 37px !important;
+}
+
+.text-f10 {
+  font-family: "Montserrat";
+  font-size: 10px !important;
+  line-height: 10px !important;
+}
+
+.text-f22 {
+  font-family: "Montserrat";
+  font-size: 22px !important;
+  line-height: 20px !important;
 }
 
 .text-btn-small {
@@ -157,6 +155,7 @@ button {
   -webkit-line-clamp: 3; /* number of lines to show */
   -webkit-box-orient: vertical;
   min-height: 42px;
+  height: 50px;
 }
 
 .btn-ct {
@@ -367,6 +366,7 @@ button {
       position: absolute;
       bottom: 16px;
       left: 16px;
+      z-index: 9;
       button {
         padding: 0;
       }
@@ -493,7 +493,6 @@ button {
         text-transform: initial;
       }
     }
-
     .box-icon-modal {
       bottom: 10px;
       left: 10px;
@@ -503,12 +502,6 @@ button {
       display: block;
       overflow: hidden;
       z-index: 11;
-      span{
-        display: block;
-        img{
-          padding: 5px;
-        }
-      }
       button {
         padding: 0px;
       }
@@ -580,6 +573,7 @@ button {
       }
     }
     .box-gray {
+      // background: linear-gradient(180deg, #aaabb5 0%, #55566b 100%);
       background: #fff;
       &.box-support {
         width: 21px;
@@ -836,10 +830,13 @@ button {
     }
   }
   .box-result {
+    // max-width: 1280px;
+    // height: calc(100% - 164px - 32px);
+    // overflow: hidden;
+    // height: calc(100vh - 164px - 104px);
     height: calc(100vh - 180px);
     display: flex;
     justify-content: space-between;
-    // margin: auto;
     overflow: auto;
     position: relative;
     .btn-open-support {
@@ -863,7 +860,10 @@ button {
       width: fit-content;
       height: fit-content;
       margin-right: 62px;
+      // width: 517px;
       min-height: 100%;
+      // transform: rotate(90deg);
+      // transition: ease-in-out 0.5s;
       position: relative;
       &.toggle {
         .box-title_col-left {
@@ -935,14 +935,17 @@ button {
     }
     .col-right {
       width: calc(100% - 462px);
+      // overflow: auto;
       .box-item-result {
         max-width: calc(180 * 4px + 60px);
-        display: flex;
-        flex-wrap: wrap;
-        margin: 16px 0;
         @media screen and (min-width: 2047px) {
           max-width: 1300px;
         }
+        display: flex;
+        flex-wrap: wrap;
+        // justify-content: space-between;
+        margin: 16px 0;
+        // margin-right: auto !important;
         .wrap-main-item-result {
           max-width: 180px;
           width: 180px;
@@ -1000,7 +1003,6 @@ button {
         font-weight: 500;
       }
     }
-
     .item-notify {
       height: 100%;
       display: flex;
@@ -1340,8 +1342,9 @@ button {
 .wrap-main-support-page {
   background-color: #2b2c46;
   min-height: calc(100vh - 32px);
-  margin: auto;
+  // max-width: 1280px;
   padding: 40px;
+  margin: auto;
   .col-left {
     width: 50%;
     // background-color: #322bb0;
@@ -1525,4 +1528,3 @@ button {
     justify-content: center;
   }
 }
-
