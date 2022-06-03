@@ -7,7 +7,7 @@ interface Props {
   handleClose: (e: any) => void;
 }
 
-function DefaultModal(props: Props) {
+function DefaultModal(props: Props): JSX.Element {
   const { children, openModal = false, handleClose } = props;
 
   return (
@@ -20,7 +20,7 @@ function DefaultModal(props: Props) {
         alignItems: "center",
       }}
     >
-      {children}
+      <div>{children}</div>
     </Modal>
   );
 }

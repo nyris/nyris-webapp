@@ -1,7 +1,6 @@
 import { Box, Typography } from "@material-ui/core";
 import React from "react";
 import { useDropzone } from "react-dropzone";
-import IconSearch from "common/assets/icons/icon_search_image.svg";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import {createImage, findByImage, findRegions} from "services/image";
@@ -146,14 +145,14 @@ function DragDropFile(props: Props) {
                 },
               })}
             >
-              <Box className="box-image">
+              {/* <Box className="box-image">
                 <img
                   width={27}
                   height={27}
                   src={IconSearch}
                   alt="icon_search"
                 />
-              </Box>
+              </Box> */}
               <label htmlFor="select_file" className="text-f20 text-bold">
                 <span className="box-blue">Choose photo</span> or drag & drop it
                 here

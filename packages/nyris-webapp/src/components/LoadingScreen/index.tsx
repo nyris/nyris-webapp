@@ -1,8 +1,19 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@material-ui/core";
 import { connectStateResults } from "react-instantsearch-dom";
 import ItemResult from "components/results/ItemResult";
 import _ from "lodash";
+
+interface Props {
+  allSearchResults: any;
+  handlerToggleModal: any;
+  setOpenModalShare: any;
+  setSearchStateInput: any;
+  getUrlToCanvasFile: any;
+  setLoading: any;
+  sendFeedBackAction: any;
+  moreInfoText: any;
+}
 
 function LoadingScreen({
   allSearchResults,
@@ -19,59 +30,41 @@ function LoadingScreen({
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
 
   useEffect(() => {
-    if (allSearchResults?.hits) {
-      const result = allSearchResults?.hits;
-      let newArrayShowGroup: any = [];
-      let newArrayShowItem: any = [];
-      var valueArr = result.map(function (hit: any) {
-        return hit.group_id;
-      });
-
-      const newArrayFilter = findDuplicates(valueArr);
-      const toFindDuplicates = Array.from(new Set(newArrayFilter));
-
-      if (!toFindDuplicates) {
-        return;
-      }
-      const groupHits = _.groupBy(result, "group_id");
-      setHitGroups(groupHits);
-
-      Object.keys(hitGroups).forEach((key) => {
-        newArrayShowGroup.push(hitGroups[key]);
-      });
-      newArrayShowGroup.forEach((item: any, index: any) => {
-        let payload: any;
-        if (item.length >= 2) {
-          payload = {
-            ...item[0],
-            isGroup: true,
-          };
-          newArrayShowItem.push(payload);
-        } else {
-          payload = {
-            ...item[0],
-            isGroup: false,
-          };
-          newArrayShowItem.push(payload);
-        }
-      });
-      setItemShowDefault(newArrayShowItem);
+    if (!allSearchResults?.hits) {
+      setItemShowDefault([]);
+      return;
     }
+    const listHistDefaultGroups = setListHitDefault(allSearchResults?.hits);
+    setItemShowDefault(listHistDefaultGroups);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSearchResults?.hits]);
 
-  const findDuplicates = (arr: any[]) => {
-    let sorted_arr = arr.slice().sort();
-    let results = [];
-    for (let i = 0; i < sorted_arr.length - 1; i++) {
-      if (sorted_arr[i + 1] === sorted_arr[i]) {
-        results.push(sorted_arr[i]);
+  const setListHitDefault = (hits: any) => {
+    let newArrayShowGroup: any = [];
+    let newArrayShowItem: any = [];
+    const groupHits = _.groupBy(hits, "group_id");
+    setHitGroups(groupHits);
+    newArrayShowGroup = Object.values(groupHits);
+    newArrayShowGroup.forEach((item: any) => {
+      let payload: any;
+      if (item.length >= 2) {
+        payload = {
+          ...item[0],
+          isGroup: true,
+        };
+        newArrayShowItem.push(payload);
+      } else {
+        payload = {
+          ...item[0],
+          isGroup: false,
+        };
+        newArrayShowItem.push(payload);
       }
-    }
-    return results;
+    });
+    return newArrayShowItem;
   };
 
-  const hanlderGroupItem = (hit: any, index: any) => {
+  const handlerGroupItem = (hit: any, index: any) => {
     const group_id = hit.group_id;
     let newItemList = [...itemShowDefault];
     const firstArr = newItemList.slice(0, index + 1);
@@ -94,41 +87,6 @@ function LoadingScreen({
     setItemShowDefault(firstArr.concat(secondArr));
   };
 
-  const renderItemHit = useCallback(() => {
-    if (!itemShowDefault) {
-      return <Box>No item to show</Box>;
-    } else {
-      return itemShowDefault.map((hit: any, i: any) => {
-        return (
-          <ItemResult
-            key={i}
-            dataItem={hit}
-            handlerToggleModal={() => {
-              handlerToggleModal(hit);
-            }}
-            handlerToggleModalShare={() => setOpenModalShare(true)}
-            indexItem={hit?.__position}
-            isHover={false}
-            onSearchImage={(url: any) => {
-              setSearchStateInput({});
-              getUrlToCanvasFile(url);
-              setLoading(true);
-            }}
-            handlerFeedback={(value: string) => {
-              sendFeedBackAction(value);
-            }}
-            handlerGroupItem={() => hanlderGroupItem(hit, i)}
-            handlerCloseGroup={() => handlerCloseGroup(hit, i)}
-            isGroupItem={hit?.isGroup}
-            // moreInfoText={moreInfoText}
-          />
-        );
-      });
-    }
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemShowDefault]);
-  // console.log('itemShowDefault', itemShowDefault);
-
   return (
     <>
       {isLoading && (
@@ -139,9 +97,39 @@ function LoadingScreen({
         </Box>
       )}
 
-      {renderItemHit()}
+      {!itemShowDefault ? (
+        <Box>No item to show</Box>
+      ) : (
+        itemShowDefault.map((hit: any, i: any) => {
+          return (
+            <ItemResult
+              key={i}
+              dataItem={hit}
+              handlerToggleModal={() => {
+                handlerToggleModal(hit);
+              }}
+              handlerToggleModalShare={() => setOpenModalShare(true)}
+              indexItem={hit?.__position}
+              isHover={false}
+              onSearchImage={(url: any) => {
+                setSearchStateInput({});
+                getUrlToCanvasFile(url);
+                setLoading(true);
+              }}
+              handlerFeedback={(value: string) => {
+                sendFeedBackAction(value);
+              }}
+              handlerGroupItem={() => handlerGroupItem(hit, i)}
+              handlerCloseGroup={() => handlerCloseGroup(hit, i)}
+              isGroupItem={hit?.isGroup}
+              moreInfoText={moreInfoText}
+            />
+          );
+        })
+      )}
     </>
   );
 }
-const LoadingScreenCustom = connectStateResults<any>(LoadingScreen);
+const LoadingScreenCustom = connectStateResults<Props>(LoadingScreen);
+
 export default LoadingScreenCustom;

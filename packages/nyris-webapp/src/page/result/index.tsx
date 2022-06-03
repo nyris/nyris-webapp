@@ -169,7 +169,7 @@ function ResultComponent(props: Props) {
     dispatch(showResults());
     dispatch(loadingActionResults());
     let image = await createImage(url);
-    dispatch(setRequestImage(image))
+    dispatch(setRequestImage(image));
 
     if (position) {
       feedbackClickEpic(stateGlobal, position);
@@ -200,7 +200,7 @@ function ResultComponent(props: Props) {
         .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
     : "";
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
-  
+
   return (
     <Box className={`wrap-main-result loading`}>
       <>
@@ -320,30 +320,6 @@ function ResultComponent(props: Props) {
               </Box>
             </Box>
 
-            {/* TODO: Component modal image */}
-            <DefaultModal
-              openModal={isOpenModalImage}
-              handleClose={(e: any) => {
-                setOpenModalImage(false);
-              }}
-            >
-              <DetailItem
-                handlerCloseModal={() => {
-                  setOpenModalImage(false);
-                }}
-                onPrevItem={onPrevItem}
-                onNextItem={onNextItem}
-                dataItem={dataImageModal}
-                results={dataResult}
-                onHandlerModalShare={() => setOpenModalShare(true)}
-                onSearchImage={(url: string) => {
-                  setLoading(true);
-                  getUrlToCanvasFile(url);
-                }}
-                // moreInfoText={moreInfoText}
-              />
-            </DefaultModal>
-
             {/* TODO: Component modal share */}
             <DefaultModal
               openModal={isOpenModalShare}
@@ -424,6 +400,30 @@ function ResultComponent(props: Props) {
             </DefaultModal>
           </Box>
         </InstantSearch>
+
+        {/* TODO: Component modal image */}
+        <DefaultModal
+          openModal={isOpenModalImage}
+          handleClose={(e: any) => {
+            setOpenModalImage(false);
+          }}
+        >
+          <DetailItem
+            handlerCloseModal={() => {
+              setOpenModalImage(false);
+            }}
+            onPrevItem={onPrevItem}
+            onNextItem={onNextItem}
+            dataItem={dataImageModal}
+            results={dataResult}
+            onHandlerModalShare={() => setOpenModalShare(true)}
+            onSearchImage={(url: string) => {
+              setLoading(true);
+              getUrlToCanvasFile(url);
+            }}
+            // moreInfoText={moreInfoText}
+          />
+        </DefaultModal>
       </>
     </Box>
   );
