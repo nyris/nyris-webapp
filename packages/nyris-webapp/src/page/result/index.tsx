@@ -52,6 +52,7 @@ interface Props {}
 const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
 
 function ResultComponent(props: Props) {
+  
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector((state) => state);
   const [showColLeft, setToggleShowColLeft] = useState<boolean>(false);
@@ -68,9 +69,15 @@ function ResultComponent(props: Props) {
   const [searchStateInput, setSearchStateInput] = useState<any>({});
   const [isLoading, setLoading] = useState<any>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
+  console.log('settings', settings);
+  
+  // const apiKey: any = process.env.REACT_APP_KEY_NYRIS;
   const searchClient = algoliasearch(appId, apiKey);
   const index = searchClient.initIndex(indexName);
-
+  const newSettings: any = {
+    ...settings,
+    apiKey: process.env.REACT_APP_KEY_NYRIS,
+  };
   // TODO: data algolia search to api
   useEffect(() => {
     if (!valueTextSearch) {
@@ -130,7 +137,7 @@ function ResultComponent(props: Props) {
       return;
     }
     const { canvas }: any = requestImage;
-    findByImage(canvas, stateGlobal.settings, r).then((res) => {
+    findByImage(canvas, newSettings, r).then((res) => {
       const payload = {
         ...res,
       };
@@ -176,14 +183,14 @@ function ResultComponent(props: Props) {
       return;
     }
     let searchRegion: RectCoords | undefined = undefined;
+
     if (settings.regions) {
-      let res = await findRegions(image, settings);
+      let res = await findRegions(image, newSettings);
       searchRegion = res.selectedRegion;
       dispatch(setRegions(res.regions));
       dispatch(setSelectedRegion(searchRegion));
     }
-
-    findByImage(image, settings, searchRegion).then((res) => {
+    findByImage(image, newSettings, searchRegion).then((res) => {
       dispatch(setSearchResults(res));
       setLoading(false);
       return dispatch(showFeedback());

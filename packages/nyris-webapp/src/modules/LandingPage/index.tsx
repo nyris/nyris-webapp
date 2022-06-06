@@ -33,7 +33,6 @@ const LandingPageApp = () => {
     const dispatch = useAppDispatch();
     const searchState = useAppSelector((state) => state);
     const [selection, setSelection] = useState<RectCoords>(defaultSelection);
-
     const { settings, search, nyris } = searchState;
     const {
         fetchingRegions,
@@ -42,6 +41,10 @@ const LandingPageApp = () => {
         selectedRegion,
     } = search;
     const { showPart } = nyris;
+    const newSettings: any = {
+        ...settings,
+        apiKey: process.env.REACT_APP_KEY_NYRIS,
+      };
 
     // update selection, if it is not the default one
     useEffect(() => {
@@ -89,7 +92,7 @@ const LandingPageApp = () => {
                     dispatch(setRegions(foundRegions));
                     dispatch(setSelectedRegion(searchRegion))
                 }
-                return findByImage(image, searchState.settings, searchRegion).then((res) => {
+                return findByImage(image, newSettings, searchRegion).then((res) => {
                     dispatch(setSearchResults(res));
                     dispatch(showFeedback());
                 });
@@ -105,7 +108,7 @@ const LandingPageApp = () => {
         debounce(value => {
             dispatch(selectionChanged(value));
             feedbackRegionEpic(searchState, value);
-            findByImage(requestImage!!.canvas, settings, value).then((res) => {
+            findByImage(requestImage!!.canvas, newSettings, value).then((res) => {
                 dispatch(searchFileImageNonRegion(res));
                 dispatch(showFeedback());
             }).catch(e => console.warn('catch', e));

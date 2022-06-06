@@ -75,7 +75,6 @@ function ItemResult(props: Props) {
                             onClick={(e: any) => {
                                 e.preventDefault();
                                 onSearchImage(main_image_link);
-                                // handlerToggleModal();
                             }}
                         >
                             <img src={IconSearchImage} alt="" width={30} height={30} />

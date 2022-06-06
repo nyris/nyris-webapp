@@ -15,9 +15,9 @@ export const createImage = async (fileOrUrl: File|string|HTMLCanvasElement) => {
 }
 
 export const findRegions = async (image: HTMLCanvasElement, settings: NyrisAPISettings) => {
+  
   const nyrisApi = new NyrisAPI(settings);
   let regions = await nyrisApi.findRegions(image);
-
   const selectedRegion = selectFirstCenteredRegion(regions, 0.3, defaultRect);
   return {
     selectedRegion: isEqual(selectedRegion, defaultRect) ? undefined : selectedRegion,

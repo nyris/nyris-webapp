@@ -29,7 +29,10 @@ function DragDropFile(props: Props) {
   const searchState = useAppSelector((state) => state);
   const { settings } = searchState;
   const [isLoadingLoadFile, setLoadingLoadFile] = useState<any>(false);
-
+  const newSettings: any = {
+    ...settings,
+    apiKey: process.env.REACT_APP_KEY_NYRIS,
+  };
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[]) => {
       onChangeLoading(true);
@@ -42,9 +45,7 @@ function DragDropFile(props: Props) {
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
       // TODO support regions
-      return findByImage(image, searchState.settings).then((res: any) => {
-        console.log("res?.results", res);
-
+      return findByImage(image, newSettings).then((res: any) => {
         res?.results.map((item: any) => {
           filters.push({
             sku: item.sku,
@@ -84,7 +85,7 @@ function DragDropFile(props: Props) {
       searchRegion = res.selectedRegion;
       dispatch(setSelectedRegion(searchRegion));
     }
-    return findByImage(image, searchState.settings, searchRegion).then((res) => {
+    return findByImage(image, newSettings, searchRegion).then((res) => {
       dispatch(setSearchResults(res));
       onChangeLoading(false);
       history.push("/result");
