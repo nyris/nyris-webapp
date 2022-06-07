@@ -860,10 +860,7 @@ button {
       width: fit-content;
       height: fit-content;
       margin-right: 62px;
-      // width: 517px;
-      min-height: 100%;
-      // transform: rotate(90deg);
-      // transition: ease-in-out 0.5s;
+      min-height: auto;
       position: relative;
       &.toggle {
         .box-title_col-left {

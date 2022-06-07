@@ -33,7 +33,16 @@ import {
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import algoliasearch from "algoliasearch/lite";
-import { InstantSearch, Configure, HitsPerPage } from "react-instantsearch-dom";
+import {
+  InstantSearch,
+  Configure,
+  HitsPerPage,
+  RefinementList,
+  DynamicWidgets,
+  HierarchicalMenu,
+  Panel,
+  Menu,
+} from "react-instantsearch-dom";
 import CustomSearchBox from "components/input/inputSearch";
 import {
   feedbackClickEpic,
@@ -46,6 +55,7 @@ import LoadingScreenCustom from "components/LoadingScreen";
 import { Preview } from "@nyris/nyris-react-components";
 import { showHits } from "./MockData";
 import { Link } from "react-router-dom";
+import ExpandablePanelComponent from "components/PanelResult";
 
 interface Props {}
 
@@ -67,6 +77,7 @@ function ResultComponent(props: Props) {
   const [dataImageModal, setDataImageModal] = useState<any>();
   const [searchStateInput, setSearchStateInput] = useState<any>({});
   const [isLoading, setLoading] = useState<any>(false);
+  const [collapsePanel, setCollapsePanel] = useState<boolean>(true);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   const index = searchClient.initIndex(indexName);
@@ -200,7 +211,9 @@ function ResultComponent(props: Props) {
         .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
     : "";
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
-
+  const attributes = [
+    'brand',
+  ]
   return (
     <Box className={`wrap-main-result loading`}>
       <>
@@ -221,6 +234,7 @@ function ResultComponent(props: Props) {
           }}
         >
           <Configure filters={filtersString}></Configure>
+
           <Box className="box-wrap-result-component">
             <div className="box-search">
               <Box>
@@ -237,48 +251,53 @@ function ResultComponent(props: Props) {
                     <img src={IconSupport} alt="" width={16} height={16} />
                   </Link>
                 </Box>
-                {settings.preview && requestImage && (
-                  <Box className={`col-left ${showColLeft && "toggle"}`}>
-                    <Box className="box-preview">
-                      <Button
-                        className="button-toggle"
-                        onClick={() => {
-                          setTimeout(() => {
-                            setToggleShowColLeft(!showColLeft);
-                          }, 500);
-                        }}
-                      >
-                        {showColLeft ? (
-                          <KeyboardArrowRightOutlinedIcon />
-                        ) : (
-                          <KeyboardArrowLeftOutlinedIcon />
+                <Box>
+                  {settings.preview && requestImage && (
+                    <Box className={`col-left ${showColLeft && "toggle"}`}>
+                      <Box className="box-preview">
+                        <Button
+                          className="button-toggle"
+                          onClick={() => {
+                            setTimeout(() => {
+                              setToggleShowColLeft(!showColLeft);
+                            }, 500);
+                          }}
+                        >
+                          {showColLeft ? (
+                            <KeyboardArrowRightOutlinedIcon />
+                          ) : (
+                            <KeyboardArrowLeftOutlinedIcon />
+                          )}
+                        </Button>
+                        {requestImage && showImageCanvas && (
+                          <Box className="preview-item">
+                            <Preview
+                              key={requestImage?.id}
+                              onSelectionChange={(r: RectCoords) => {
+                                debounceRectCoords(r);
+                                return;
+                              }}
+                              image={requestImage?.canvas}
+                              selection={selectedRegion || defaultSelection}
+                              regions={regions}
+                              maxWidth={400}
+                              maxHeight={500}
+                              dotColor="#FBD914"
+                            />
+                          </Box>
                         )}
-                      </Button>
-                      {requestImage && showImageCanvas && (
-                        <Box className="preview-item">
-                          <Preview
-                            key={requestImage?.id}
-                            onSelectionChange={(r: RectCoords) => {
-                              debounceRectCoords(r);
-                              return;
-                            }}
-                            image={requestImage?.canvas}
-                            selection={selectedRegion || defaultSelection}
-                            regions={regions}
-                            maxWidth={400}
-                            maxHeight={500}
-                            dotColor="#FBD914"
-                          />
-                        </Box>
-                      )}
+                      </Box>
+                      <Box className="box-title_col-left">
+                        <Typography style={{ fontSize: 11, color: "#fff" }}>
+                          Adjust the selection frame for better results.
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box className="box-title_col-left">
-                      <Typography style={{ fontSize: 11, color: "#fff" }}>
-                        Adjust the selection frame for better results.
-                      </Typography>
-                    </Box>
-                  </Box>
-                )}
+                  )}
+                  321
+                  {/* TODO: Filter list Choose */}
+                  <ExpandablePanelComponent />
+                </Box>
 
                 <Box
                   className={`col-right ${
