@@ -64,26 +64,23 @@ function LoadingScreen({
     return newArrayShowItem;
   };
 
-  const handlerGroupItem = (hit: any, index: any) => {
+  const handlerGroupItem = (hit: any, index: number) => {
     const group_id = hit.group_id;
     let newItemList = [...itemShowDefault];
     const firstArr = newItemList.slice(0, index + 1);
     let secondArr = newItemList.slice(index + 1, newItemList.length);
-
     let otherItemsInGroup = [...hitGroups[group_id]];
     otherItemsInGroup.shift();
     secondArr = otherItemsInGroup.concat(secondArr);
-
     setItemShowDefault(firstArr.concat(secondArr));
   };
 
-  const handlerCloseGroup = (hit: any, index: any) => {
+  const handlerCloseGroup = (hit: any, index: number) => {
     const group_id = hit.group_id;
     let newItemList = [...itemShowDefault];
     const firstArr = newItemList.slice(0, index + 1);
     let secondArr = newItemList.slice(index + 1, newItemList.length);
     secondArr = secondArr.filter((item) => item.group_id !== group_id);
-
     setItemShowDefault(firstArr.concat(secondArr));
   };
 
@@ -100,7 +97,7 @@ function LoadingScreen({
       {!itemShowDefault ? (
         <Box>No item to show</Box>
       ) : (
-        itemShowDefault.map((hit: any, i: any) => {
+        itemShowDefault.map((hit: any, i: number) => {
           return (
             <ItemResult
               key={i}
@@ -111,7 +108,7 @@ function LoadingScreen({
               handlerToggleModalShare={() => setOpenModalShare(true)}
               indexItem={hit?.__position}
               isHover={false}
-              onSearchImage={(url: any) => {
+              onSearchImage={(url: string) => {
                 setSearchStateInput({});
                 getUrlToCanvasFile(url);
                 setLoading(true);

@@ -62,7 +62,7 @@ function ResultComponent(props: Props) {
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const { search, settings } = stateGlobal;
   const { results, requestImage, regions, selectedRegion } = search;
-  const { moreInfoText }: any = settings as AppSettings;
+  const { moreInfoText } = settings as AppSettings;
   const { valueTextSearch } = search;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
