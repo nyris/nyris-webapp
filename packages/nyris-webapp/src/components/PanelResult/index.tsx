@@ -1,17 +1,17 @@
-import React, { useCallback, useMemo,  } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useAtomValue } from "jotai/utils";
-import type { MouseEventHandler } from "react";
 import type {
   CurrentRefinementsProvided,
   SearchResults,
 } from "react-instantsearch-core";
-
 import { useGetRefinementWidgets } from "./useGetRefinementWidgets";
 import { configAtom } from "./config";
 import { getPanelAttributes, getPanelId } from "./refinements";
 import { atom, useAtom } from "jotai";
 import { ExpandablePanelCustom } from "./expandable-panel";
-import { DynamicWidgets } from "components/dynamic-widgets/dynamic-widgets";
+import { DynamicWidgetsCT } from "components/dynamic-widgets/dynamic-widgets";
+import { Button } from "@material-ui/core";
+import IconLabel from "components/icon-label/icon-label";
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -52,26 +52,25 @@ export function useHasRefinements(
   return hasRefinements;
 }
 
-export function useCurrentRefinementCount(items: any[], attributes: string[]) {
-  return useMemo(() => {
-    let count = 0;
-
-    attributes?.forEach((attribute) => {
-      const tmp: string[] = [];
-
-      let currentRefinement = items.find(
-        (item) => item.attribute === attribute
-      )?.currentRefinement;
-      currentRefinement = currentRefinement
-        ? tmp.concat(currentRefinement)
-        : tmp;
-
-      count += currentRefinement.length;
-    });
-
-    return count;
-  }, [items, attributes]);
+function togglePanels(panels: Panels, val: boolean) {
+  return Object.keys(panels).reduce(
+    (acc, panelKey) => ({ ...acc, [panelKey]: val }),
+    {}
+  );
 }
+
+export const refinementsPanelsExpandedAtom = atom(
+  (get) =>
+    Boolean(Object.values(get(refinementsPanelsAtom)).find((v) => v === true)),
+  (get, set, update: (prev: boolean) => boolean) => {
+    const expanded = update(get(refinementsPanelsExpandedAtom));
+    set(
+      refinementsPanelsAtom,
+      togglePanels(get(refinementsPanelsAtom), expanded)
+    );
+  }
+);
+
 export const refinementsPanelsAtom = atom<Panels>({});
 
 function WidgetPanel({ children, onToggle, panelId, ...props }: any) {
@@ -88,12 +87,14 @@ function WidgetPanel({ children, onToggle, panelId, ...props }: any) {
 }
 
 export default function ExpandablePanelComponent({
-  dynamicWidgets = true
+  dynamicWidgets = true,
 }: any) {
   const { refinements } = useAtomValue(configAtom);
   const widgets = useGetRefinementWidgets(refinements);
   const [panels, setPanels] = useAtom(refinementsPanelsAtom);
-  
+  const [refinementsPanelsExpanded, setRefinementsPanelsExpanded] = useAtom(
+    refinementsPanelsExpandedAtom
+  );
   const onToggle = useCallback(
     (panelId: string) => {
       setPanels((prevPanels) => {
@@ -111,7 +112,6 @@ export default function ExpandablePanelComponent({
         const refinement = refinements[i];
         const panelId = getPanelId(refinement);
         const panelAttributes = getPanelAttributes(refinement);
-
         return (
           <WidgetPanel
             key={panelId}
@@ -128,15 +128,25 @@ export default function ExpandablePanelComponent({
     [widgets, refinements, onToggle, panels]
   );
 
+  const onTogglePanelsClick = useCallback(
+    () => setRefinementsPanelsExpanded((expanded: boolean) => !expanded),
+    [setRefinementsPanelsExpanded]
+  );
+
   return (
-    <div>
-      <DynamicWidgets enabled={dynamicWidgets}>
+    <>
+      <div className="wrap-main-header-panel">
+        <Button className="text-neutral-darkest" onClick={onTogglePanelsClick} style={{justifyContent:"flex-end"}}>
+          <IconLabel
+            icon={refinementsPanelsExpanded ? "remove" : "add"}
+            label={`${refinementsPanelsExpanded ? "Collapse" : "Expand"} all`}
+            labelPosition="left"
+          />
+        </Button>
+      </div>
+      <DynamicWidgetsCT enabled={dynamicWidgets}>
         {widgetsPanels}
-      </DynamicWidgets>
-    </div>
+      </DynamicWidgetsCT>
+    </>
   );
 }
-
-// export const ExpandablePanel = connectCurrentRefinements<any>(
-//   memo(ExpandablePanelComponent, isEqual)
-// );

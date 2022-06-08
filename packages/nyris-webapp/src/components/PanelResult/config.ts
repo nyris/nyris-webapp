@@ -22,7 +22,7 @@ const refinements: Refinement[] = [
     label: 'Category',
     options: {
       searchable: false,
-      attribute: 'custom_category',
+      attribute: 'keyword_0',
     },
   },
 ]
@@ -36,16 +36,6 @@ const searchParameters = {
   clickAnalytics: true,
 }
 
-// const setUserToken: SetUserToken = (generatedUserToken, setToken) => {
-//   setToken(generatedUserToken)
-// }
-
-const autocomplete = {
-  placeholders: ['products', 'articles', 'faq'],
-  debouncing: 800, // in ms
-  detachedMediaQuery: '(max-width: 1439px)',
-}
-
 const url = {
   debouncing: 1500, // in ms
 }
@@ -54,8 +44,6 @@ const config = {
   refinementsLayoutAtom,
   refinements,
   searchParameters,
-  // setUserToken,
-  autocomplete,
   url,
 }
 

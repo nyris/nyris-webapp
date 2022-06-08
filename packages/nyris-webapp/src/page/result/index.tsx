@@ -33,16 +33,7 @@ import {
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import algoliasearch from "algoliasearch/lite";
-import {
-  InstantSearch,
-  Configure,
-  HitsPerPage,
-  RefinementList,
-  DynamicWidgets,
-  HierarchicalMenu,
-  Panel,
-  Menu,
-} from "react-instantsearch-dom";
+import { InstantSearch, Configure, HitsPerPage } from "react-instantsearch-dom";
 import CustomSearchBox from "components/input/inputSearch";
 import {
   feedbackClickEpic,
@@ -56,6 +47,7 @@ import { Preview } from "@nyris/nyris-react-components";
 import { showHits } from "./MockData";
 import { Link } from "react-router-dom";
 import ExpandablePanelComponent from "components/PanelResult";
+import { CurrentRefinements } from "components/current-refinements/current-refinements";
 
 interface Props {}
 
@@ -77,7 +69,7 @@ function ResultComponent(props: Props) {
   const [dataImageModal, setDataImageModal] = useState<any>();
   const [searchStateInput, setSearchStateInput] = useState<any>({});
   const [isLoading, setLoading] = useState<any>(false);
-  const [collapsePanel, setCollapsePanel] = useState<boolean>(true);
+  // const [collapsePanel, setCollapsePanel] = useState<boolean>(true);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   const index = searchClient.initIndex(indexName);
@@ -211,9 +203,7 @@ function ResultComponent(props: Props) {
         .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
     : "";
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
-  const attributes = [
-    'brand',
-  ]
+
   return (
     <Box className={`wrap-main-result loading`}>
       <>
@@ -251,7 +241,7 @@ function ResultComponent(props: Props) {
                     <img src={IconSupport} alt="" width={16} height={16} />
                   </Link>
                 </Box>
-                <Box>
+                <Box className="wrap-main-col-left">
                   {settings.preview && requestImage && (
                     <Box className={`col-left ${showColLeft && "toggle"}`}>
                       <Box className="box-preview">
@@ -294,9 +284,10 @@ function ResultComponent(props: Props) {
                       </Box>
                     </Box>
                   )}
-                  321
                   {/* TODO: Filter list Choose */}
-                  <ExpandablePanelComponent />
+                  <Box className="col-left__bottom">
+                    <ExpandablePanelComponent />
+                  </Box>
                 </Box>
 
                 <Box
@@ -304,6 +295,9 @@ function ResultComponent(props: Props) {
                     settings.preview && "ml-auto mr-auto"
                   }`}
                 >
+                  <Box className="wrap-box-refinements">
+                    <CurrentRefinements />
+                  </Box>
                   <Box
                     className={`box-item-result ${
                       requestImage && showImageCanvas

@@ -1,6 +1,7 @@
-import classNames from "classnames";
-import { useReducedMotion, m } from "framer-motion";
 import React from "react";
+import classNames from "classnames";
+import type { Variants } from "framer-motion";
+import { useReducedMotion, motion } from "framer-motion";
 
 export type CollapseProps = {
   isCollapsed: boolean;
@@ -8,7 +9,7 @@ export type CollapseProps = {
   children: React.ReactNode;
 };
 
-const variants: any = {
+const variants: Variants = {
   collapsed: (shouldReduceMotion: boolean) => {
     return {
       height: shouldReduceMotion ? "auto" : 0,
@@ -32,20 +33,26 @@ const transition = {
   duration: 0.6,
 };
 
-export default function Collapse({ isCollapsed, className, children }: CollapseProps) {
+export function Collapse({
+  isCollapsed,
+  className,
+  children,
+}: CollapseProps): JSX.Element {
   const shouldReduceMotion = useReducedMotion();
-
+  console.log("isCollapsed", isCollapsed);
+  console.log('shouldReduceMotion', shouldReduceMotion);
+  
   return (
-    <m.div
+    <motion.div
       key="collapse"
       initial="collapsed"
       animate={isCollapsed ? "collapsed" : "expanded"}
       variants={variants}
-      // className={classNames("overflow-hidden", className)}
+      className={classNames("overflow-hidden", className)}
       transition={transition}
       custom={shouldReduceMotion}
     >
-      <>{children}</>
-    </m.div>
+      {children}
+    </motion.div>
   );
 }
