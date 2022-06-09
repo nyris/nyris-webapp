@@ -24,18 +24,7 @@ interface Props {}
 function SupportPage(props: Props) {
   const [imageUpload, setImageUpload] = useState<any[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [isLoadingLoadFile, setLoadingLoadFile] = useState<any>(false);
-
-  // const onUploadImage = (e: any) => {
-  //   let newValue: any[] = [];
-  //   Object.values(e.target.files).forEach((val: any, index: any) => {
-  //     newValue.push({
-  //       value: index,
-  //       urlImage: URL.createObjectURL(val),
-  //     });
-  //   });
-  //   setImageUpload(newValue);
-  // };
+  const [isLoadingLoadFile, setLoadingLoadFile] = useState<boolean>(false);
 
   const onRemoveImage = (value: any) => {
     setLoading(true);
@@ -133,9 +122,7 @@ function SupportPage(props: Props) {
                           type="file"
                           name="file"
                           id="select_file"
-                          // className="inputFile"
                           placeholder="Choose photo"
-                          // accept={acceptTypes}
                           onChange={makeFileHandler((e) => {})}
                         />
                       </Box>
@@ -164,10 +151,6 @@ function SupportPage(props: Props) {
                             className="inputFile"
                             placeholder="Choose photo"
                             style={{ display: "block" }}
-                            // accept={acceptTypes}
-                            // onChange={makeFileHandler((e) => {
-                            //   return isCheckImageFile(e);
-                            // })}
                           />
                         </Box>
                       </>
@@ -216,7 +199,6 @@ function SupportPage(props: Props) {
                           id="standard-required"
                           label="Name"
                           className="item-field"
-                          // defaultValue="Hello World"
                           InputProps={{
                             className: "box-input-control",
                             startAdornment: (
@@ -260,7 +242,6 @@ function SupportPage(props: Props) {
                           id="standard-required"
                           label="Phone number"
                           className="item-field"
-                          // defaultValue="Hello World"
                           InputProps={{
                             className: "box-input-control",
                             startAdornment: (
@@ -282,7 +263,6 @@ function SupportPage(props: Props) {
                           id="standard-required"
                           label="Company"
                           className="item-field"
-                          // defaultValue="Hello World"
                           InputProps={{
                             className: "box-input-control",
                             startAdornment: (
@@ -342,7 +322,7 @@ function SupportPage(props: Props) {
                     Send
                   </Button>
                 </Box>
-                <Box mt={3} style={{width: '320px'}}>
+                <Box mt={3} style={{ width: "320px" }}>
                   <Typography className="text-f8 text-white fw-600">
                     All personal data will be securely stored in accordance with
                     European GDPR regulations. We do not sell data.

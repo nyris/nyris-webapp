@@ -41,7 +41,7 @@ import {
   feedbackTextSearchEpic,
 } from "services/Feedback";
 import { createImage, findByImage, findRegions } from "services/image";
-import { AlgoliaResult, AlgoliaSettings, AppSettings } from "../../types";
+import { AlgoliaResult, AlgoliaSettings } from "../../types";
 import LoadingScreenCustom from "components/LoadingScreen";
 import { Preview } from "@nyris/nyris-react-components";
 import { showHits } from "./MockData";
@@ -62,16 +62,13 @@ function ResultComponent(props: Props) {
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const { search, settings } = stateGlobal;
   const { results, requestImage, regions, selectedRegion } = search;
-  const { moreInfoText } = settings as AppSettings;
+  const { moreInfoText } = settings;
   const { valueTextSearch } = search;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
   const [searchStateInput, setSearchStateInput] = useState<any>({});
   const [isLoading, setLoading] = useState<any>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
-  console.log('settings', settings);
-  
-  // const apiKey: any = process.env.REACT_APP_KEY_NYRIS;
   const searchClient = algoliasearch(appId, apiKey);
   const index = searchClient.initIndex(indexName);
   const newSettings: any = {

@@ -13,15 +13,14 @@ import ArrowLeftOutlinedIcon from "@material-ui/icons/ArrowLeftOutlined";
 import ArrowRightOutlinedIcon from "@material-ui/icons/ArrowRightOutlined";
 interface Props {}
 
-function Pagination({ currentRefinement, nbPages, refine, children }: any) {
+function Pagination({ nbPages, refine, children }: any) {
   const [pageCurrent, setPageCurrent] = useState(1);
-
 
   useEffect(() => {
     if (pageCurrent) {
       refine(pageCurrent);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageCurrent]);
 
   return (
@@ -32,13 +31,6 @@ function Pagination({ currentRefinement, nbPages, refine, children }: any) {
       style={{ height: "100%" }}
     >
       {children}
-
-
-
-
-
-
-
 
       <Grid item className="item-notify">
         <Typography className="text-f12 text-center">

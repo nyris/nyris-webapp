@@ -11,14 +11,11 @@ import { Link } from "react-router-dom";
 import { connectPagination } from "react-instantsearch-dom";
 import ArrowLeftOutlinedIcon from "@material-ui/icons/ArrowLeftOutlined";
 import ArrowRightOutlinedIcon from "@material-ui/icons/ArrowRightOutlined";
-interface Props {}
 
 function Pagination({
-  currentRefinement,
   nbPages,
   refine,
   children,
-  ...props
 }: any) {
   const [pageCurrent, setPageCurrent] = useState(1);
 

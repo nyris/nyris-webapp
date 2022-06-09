@@ -4,7 +4,6 @@ import { SearchState } from "Store/Search";
 
 export interface MDSettings {
   customFontFamily?: string;
-
   appBarLogoUrl: string;
   appBarTitle: string;
   appBarCustomBackgroundColor?: string;
