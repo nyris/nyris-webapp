@@ -1,20 +1,8 @@
 import { Box } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { connectMenu } from "react-instantsearch-dom";
 
-interface Props {
-  dataField: any[];
-}
-
 function DefaultSelectCustom({ items, currentRefinement, refine }: any) {
-  const [valueFilter, setValueFilter] = useState<string>();
-
-  useEffect(() => {
-    if (!valueFilter) {
-      return;
-    }
-    refine(valueFilter);
-  }, [valueFilter]);
 
   return (
     <Box className="w-100">
@@ -22,8 +10,7 @@ function DefaultSelectCustom({ items, currentRefinement, refine }: any) {
         className="w-100 btn-ct"
         value={currentRefinement || ""}
         onChange={(event: any) => {
-          setValueFilter(event?.currentTarget.value);
-          // refine(event.currentTarget.value);
+          refine(event?.currentTarget.value);
         }}
       >
         <option value="">See all options</option>

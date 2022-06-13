@@ -18,7 +18,6 @@ function Pagination({
   children,
 }: any) {
   const [pageCurrent, setPageCurrent] = useState(1);
-
   useEffect(() => {
     if (pageCurrent) {
       refine(pageCurrent);
