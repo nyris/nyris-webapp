@@ -31,7 +31,7 @@ function DragDropFile(props: Props) {
   const [isLoadingLoadFile, setLoadingLoadFile] = useState<any>(false);
   const newSettings: any = {
     ...settings,
-    apiKey: process.env.REACT_APP_KEY_NYRIS,
+    //apiKey: process.env.REACT_APP_KEY_NYRIS,
   };
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[]) => {

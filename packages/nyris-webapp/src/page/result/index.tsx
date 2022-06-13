@@ -73,7 +73,7 @@ function ResultComponent(props: Props) {
   const index = searchClient.initIndex(indexName);
   const newSettings: any = {
     ...settings,
-    apiKey: process.env.REACT_APP_KEY_NYRIS,
+    //apiKey: process.env.REACT_APP_KEY_NYRIS,
   };
   // TODO: data algolia search to api
   useEffect(() => {

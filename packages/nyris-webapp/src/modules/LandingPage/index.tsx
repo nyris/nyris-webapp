@@ -43,7 +43,7 @@ const LandingPageApp = () => {
     const { showPart } = nyris;
     const newSettings: any = {
         ...settings,
-        apiKey: process.env.REACT_APP_KEY_NYRIS,
+        //apiKey: process.env.REACT_APP_KEY_NYRIS,
       };
 
     // update selection, if it is not the default one

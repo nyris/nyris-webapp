@@ -3,7 +3,15 @@ import {RootState} from "../Store/Store";
 
 export const feedbackSuccessEpic = async (state: RootState, success: boolean) => {
   const { search, settings } = state;
+<<<<<<< Updated upstream
   return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
+=======
+  const newSettings: any = {
+    ...settings,
+    //apiKey: process.env.REACT_APP_KEY_NYRIS,
+  };
+  return await sendFeedbackByApi(newSettings, search.sessionId, search.requestId, {
+>>>>>>> Stashed changes
     event: 'feedback',
     data: { success }
   });
@@ -11,7 +19,15 @@ export const feedbackSuccessEpic = async (state: RootState, success: boolean) =>
 
 export const feedbackClickEpic = async (state: RootState, position: number) => {
   const { search, settings } = state;
+<<<<<<< Updated upstream
   return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
+=======
+  const newSettings: any = {
+    ...settings,
+    //apiKey: process.env.REACT_APP_KEY_NYRIS,
+  };
+  return await sendFeedbackByApi(newSettings, search.sessionId, search.requestId, {
+>>>>>>> Stashed changes
     event: "click",
     data: { positions: [position] },
   });
@@ -20,6 +36,13 @@ export const feedbackClickEpic = async (state: RootState, position: number) => {
 export const feedbackTextSearchEpic = async (state: RootState, query: string, page: number, productIds: string[]) => {
   try {
     const { search, settings } = state;
+<<<<<<< Updated upstream
+=======
+    const newSettings: any = {
+      ...settings,
+      //apiKey: process.env.REACT_APP_KEY_NYRIS,
+    };
+>>>>>>> Stashed changes
     const eventData = {
       query,
       page,
@@ -35,6 +58,13 @@ export const feedbackTextSearchEpic = async (state: RootState, query: string, pa
 
 export const feedbackRegionEpic = async (state: RootState, region: RectCoords) => {
   const {settings, search} = state;
+<<<<<<< Updated upstream
+=======
+  const newSettings: any = {
+    ...settings,
+    //apiKey: process.env.REACT_APP_KEY_NYRIS,
+  };
+>>>>>>> Stashed changes
   const {sessionId, requestId } = search;
   const { x1, x2, y1, y2 } = region;
   const payload : FeedbackEventPayload = {
