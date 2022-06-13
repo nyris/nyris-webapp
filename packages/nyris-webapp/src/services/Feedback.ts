@@ -3,11 +3,7 @@ import {RootState} from "../Store/Store";
 
 export const feedbackSuccessEpic = async (state: RootState, success: boolean) => {
   const { search, settings } = state;
-  const newSettings: any = {
-    ...settings,
-    apiKey: process.env.REACT_APP_KEY_NYRIS,
-  };
-  return await sendFeedbackByApi(newSettings, search.sessionId, search.requestId, {
+  return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
     event: 'feedback',
     data: { success }
   });
@@ -15,11 +11,7 @@ export const feedbackSuccessEpic = async (state: RootState, success: boolean) =>
 
 export const feedbackClickEpic = async (state: RootState, position: number) => {
   const { search, settings } = state;
-  const newSettings: any = {
-    ...settings,
-    apiKey: process.env.REACT_APP_KEY_NYRIS,
-  };
-  return await sendFeedbackByApi(newSettings, search.sessionId, search.requestId, {
+  return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
     event: "click",
     data: { positions: [position] },
   });
@@ -28,10 +20,6 @@ export const feedbackClickEpic = async (state: RootState, position: number) => {
 export const feedbackTextSearchEpic = async (state: RootState, query: string, page: number, productIds: string[]) => {
   try {
     const { search, settings } = state;
-    const newSettings: any = {
-      ...settings,
-      apiKey: process.env.REACT_APP_KEY_NYRIS,
-    };
     const eventData = {
       query,
       page,
@@ -39,7 +27,7 @@ export const feedbackTextSearchEpic = async (state: RootState, query: string, pa
     };
     const textSearchEvent = { event: "text-search", data: eventData };
     // @ts-ignore
-    return await sendFeedbackByApi(newSettings, search.sessionId, search.requestId, textSearchEvent);
+    return await sendFeedbackByApi(settings, search.sessionId, search.requestId, textSearchEvent);
   } catch (error) {
     console.log("error feedbackTextSearchEpic", error);
   }
@@ -47,17 +35,13 @@ export const feedbackTextSearchEpic = async (state: RootState, query: string, pa
 
 export const feedbackRegionEpic = async (state: RootState, region: RectCoords) => {
   const {settings, search} = state;
-  const newSettings: any = {
-    ...settings,
-    apiKey: process.env.REACT_APP_KEY_NYRIS,
-  };
   const {sessionId, requestId } = search;
   const { x1, x2, y1, y2 } = region;
   const payload : FeedbackEventPayload = {
         event: "region",
         data: { rect: { x: x1, y: y1, w: x2 - x1, h: y2 - y1 } }
   };
-  return await sendFeedbackByApi(newSettings, sessionId, requestId, payload);
+  return await sendFeedbackByApi(settings, sessionId, requestId, payload);
 };
 
 export const sendFeedbackByApi = async (
