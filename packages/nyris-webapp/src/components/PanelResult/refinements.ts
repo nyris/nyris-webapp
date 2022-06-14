@@ -1,47 +1,44 @@
-import type { Refinement, RefinementWidget } from './refinements-type'
+import type { Refinement, RefinementWidget } from "./refinements-type";
 
 export function getRefinementPanelId(
   refinement: Refinement | RefinementWidget
 ) {
-  return refinement.options?.attributes
-    ? refinement.options?.attributes.join(':')
-    : refinement.options?.attribute
+  return refinement?.attributes
+    ? refinement.options?.attributes.join(":")
+    : refinement?.attribute;
 }
 
 export function getPanelId(refinement: Refinement | RefinementWidget) {
-  const widgets = (refinement as Refinement).widgets
+  const widgets = (refinement as Refinement).widgets;
 
-  const panelId = []
+  const panelId = [];
   if (widgets?.length) {
     widgets.forEach((refinementWidget: RefinementWidget) =>
       panelId.push(getRefinementPanelId(refinementWidget))
-    )
+    );
   } else {
-    panelId.push(getRefinementPanelId(refinement))
+    panelId.push(getRefinementPanelId(refinement));
   }
 
-  return panelId.join(':')
+  return panelId.join(":");
 }
 
 export function getRefinementPanelAttribute(
   refinement: Refinement | RefinementWidget
 ) {
-  return refinement.options?.attributes
-    ? refinement.options?.attributes[0]
-    : refinement.options?.attribute
+  return refinement?.attribute;
 }
 
 export function getPanelAttributes(refinement: Refinement | RefinementWidget) {
-  const widgets = (refinement as Refinement)?.widgets
+  const widgets = (refinement as Refinement)?.widgets;
 
-  const panelAttributes = []
+  const panelAttributes = [];
   if (widgets?.length) {
     widgets.forEach((refinementWidget: RefinementWidget) =>
       panelAttributes.push(getRefinementPanelAttribute(refinementWidget))
-    )
+    );
   } else {
-    panelAttributes.push(getRefinementPanelAttribute(refinement))
+    panelAttributes.push(getRefinementPanelAttribute(refinement));
   }
-
-  return panelAttributes
+  return panelAttributes;
 }

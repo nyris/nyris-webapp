@@ -78,7 +78,6 @@ function WidgetPanel({ children, onToggle, panelId, ...props }: any) {
     () => onToggle(panelId),
     [onToggle, panelId]
   );
-
   return (
     <ExpandablePanelCustom onToggle={onToggleMemoized} {...props}>
       {children}
