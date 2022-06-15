@@ -43,14 +43,15 @@ export interface DefaultThemeSettings {
 }
 
 export interface SearchSuiteSettings {
-  active: boolean;
+  active?: boolean;
+  moreInfoText?: any;
 }
 
-export type ThemeChoice = {
+export interface ThemeChoice {
   default?: DefaultThemeSettings;
   materialDesign?: MDSettings;
-  searchSuite?: SearchSuiteSettings;
-};
+  searchSuite?: SearchSuiteSettings | any;
+}
 
 export type AppState = {
   search: SearchState;
