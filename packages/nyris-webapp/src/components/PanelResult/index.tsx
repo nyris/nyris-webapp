@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useAtomValue } from "jotai/utils";
 import type {
   CurrentRefinementsProvided,
@@ -94,10 +94,27 @@ export default function ExpandablePanelComponent({
   const [refinementsPanelsExpanded, setRefinementsPanelsExpanded] = useAtom(
     refinementsPanelsExpandedAtom
   );
+
+  // Set initial panels value
+  useEffect(() => {
+    setPanels((prevPanels) => ({
+      ...prevPanels,
+      ...refinements.reduce(
+        (acc: any, current: any) => ({
+          ...acc,
+          [getPanelId(current)]: Boolean(current.isExpanded),
+        }),
+        {}
+      ),
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onToggle = useCallback(
     (panelId: string) => {
       setPanels((prevPanels) => {
         return {
+          ...prevPanels,
           [panelId]: !prevPanels[panelId],
         };
       });

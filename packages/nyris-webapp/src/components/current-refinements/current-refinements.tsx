@@ -42,7 +42,7 @@ function CurrentRefinementsComponent({
         return [...acc, ...getCurrentRefinement(current, config)]
       }, []),
     [config, items]
-  )
+  );
 
   const setRefinementCount = useUpdateAtom(refinementCountAtom)
   useEffect(() => {
