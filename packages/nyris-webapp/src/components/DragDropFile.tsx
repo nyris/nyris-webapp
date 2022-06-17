@@ -7,7 +7,7 @@ import {createImage, findByImage, findRegions} from "services/image";
 import {
   setSearchResults,
   loadingActionResults,
-  setRequestImage, setRegions, setSelectedRegion,
+  setRequestImage, setRegions, setSelectedRegion, setImageSearchInput,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import { useHistory } from "react-router-dom";
@@ -68,6 +68,7 @@ function DragDropFile(props: Props) {
     onChangeLoading(true);
     dispatch(showResults());
     dispatch(loadingActionResults());
+    dispatch(setImageSearchInput(url));
     if (position) {
       feedbackClickEpic(searchState, position);
     }

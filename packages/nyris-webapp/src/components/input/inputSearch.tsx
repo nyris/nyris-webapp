@@ -3,12 +3,17 @@ import { Button, Box } from "@material-ui/core";
 import ClearOutlinedIcon from "@material-ui/icons/ClearOutlined";
 import { connectSearchBox } from "react-instantsearch-dom";
 import { useHistory } from "react-router-dom";
-import { useAppDispatch } from "Store/Store";
+import { useAppDispatch, useAppSelector } from "Store/Store";
 import { reset } from "Store/Search";
 import { debounce } from "lodash";
 import { useCallback } from "react";
 import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
-const SearchBox = ({ currentRefinement, isSearchStalled, refine }: any) => {
+import CloseIcon from "@material-ui/icons/Close";
+
+const SearchBox = ({ currentRefinement, refine }: any) => {
+  const stateGlobal = useAppSelector((state) => state);
+  const { search } = stateGlobal;
+  const { imageThumbSearchInput } = search;
   const focusInp: any = useRef();
   const history = useHistory();
   const [, setShowBtnClear] = useState<boolean>(true);
@@ -44,6 +49,23 @@ const SearchBox = ({ currentRefinement, isSearchStalled, refine }: any) => {
       <Box p={2} display={"flex"} className="box-input-search">
         <form noValidate action="" role="search">
           <Box className="box-inp">
+            <Box
+              style={
+                imageThumbSearchInput
+                  ? { paddingLeft: 0, height: "100%" }
+                  : { paddingLeft: 10, height: "100%" }
+              }
+            >
+              {imageThumbSearchInput && (
+                <Box className="box-image-search-thumb" display={"flex"}>
+                  <img src={imageThumbSearchInput} alt="img_search" />
+                  <button onClick={() => dispatch(reset(""))}>
+                    <CloseIcon style={{ fontSize: 20, color: "#3e36dc" }} />
+                  </button>
+                </Box>
+              )}
+            </Box>
+
             <input
               style={{ border: "0px", width: "100%" }}
               className="input-search"
@@ -55,7 +77,10 @@ const SearchBox = ({ currentRefinement, isSearchStalled, refine }: any) => {
               }}
               ref={focusInp}
             />
-            <SearchRoundedIcon className="icon-search" style={{ color: "#55566B", fontSize: "20px" }} />
+            <SearchRoundedIcon
+              className="icon-search"
+              style={{ color: "#55566B", fontSize: "20px" }}
+            />
           </Box>
           {history.location.pathname === "/result" && (
             <Button

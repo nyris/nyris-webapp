@@ -30,6 +30,7 @@ import {
   setRegions,
   setSelectedRegion,
   setRequestImage,
+  setImageSearchInput,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import algoliasearch from "algoliasearch/lite";
@@ -69,7 +70,6 @@ function ResultComponent(props: Props) {
   const [dataImageModal, setDataImageModal] = useState<any>();
   const [searchStateInput, setSearchStateInput] = useState<any>({});
   const [isLoading, setLoading] = useState<any>(false);
-  // const [collapsePanel, setCollapsePanel] = useState<boolean>(true);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   const index = searchClient.initIndex(indexName);
@@ -119,7 +119,6 @@ function ResultComponent(props: Props) {
   // TODO: rectCoords
 
   const debounceRectCoords = (value: any) => handlerRectCoords(value);
-
   const handlerRectCoords = debounce((value: any) => {
     dispatch(selectionChanged(value));
     setLoading(true);
@@ -170,6 +169,7 @@ function ResultComponent(props: Props) {
   const getUrlToCanvasFile = async (url: string, position?: number) => {
     dispatch(showResults());
     dispatch(loadingActionResults());
+    dispatch(setImageSearchInput(url));
     let image = await createImage(url);
     dispatch(setRequestImage(image));
 

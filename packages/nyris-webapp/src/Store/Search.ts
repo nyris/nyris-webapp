@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CanvasWithId } from "types";
 import { Code, RectCoords, Region } from "@nyris/nyris-api";
 
-
 interface CategoryPrediction {
   name: string;
   score: number;
@@ -27,6 +26,7 @@ export interface SearchState {
   filters: any[];
   configureFilter?: any;
   loadingSearchAlgolia: boolean;
+  imageThumbSearchInput?: string;
 }
 
 // TODO: init state
@@ -46,14 +46,14 @@ const initialState: SearchState = {
   filters: [],
   configureFilter: {},
   loadingSearchAlgolia: false,
+  imageThumbSearchInput: "",
 };
 
-
-  export const searchSlice = createSlice({
-    name: "search",
-    initialState,
-    reducers: {
-      setSearchResults: (state, data) => {
+export const searchSlice = createSlice({
+  name: "search",
+  initialState,
+  reducers: {
+    setSearchResults: (state, data) => {
       const { payload } = data;
       const {
         results,
@@ -78,20 +78,23 @@ const initialState: SearchState = {
 
     setRegions: (state, data: PayloadAction<Region[]>) => ({
       ...state,
-      regions: data.payload
+      regions: data.payload,
     }),
 
-    setSelectedRegion: (state, data: PayloadAction<RectCoords|undefined>) => ({
+    setSelectedRegion: (
+      state,
+      data: PayloadAction<RectCoords | undefined>
+    ) => ({
       ...state,
-      selectedRegion: data.payload
+      selectedRegion: data.payload,
     }),
 
     setRequestImage: (state, data: PayloadAction<HTMLCanvasElement>) => ({
-        ...state,
-        requestImage: {
-          canvas: data.payload,
-          id: Math.random().toString()
-        }
+      ...state,
+      requestImage: {
+        canvas: data.payload,
+        id: Math.random().toString(),
+      },
     }),
 
     selectionChanged: (state, data: PayloadAction<RectCoords>) => {
@@ -101,6 +104,7 @@ const initialState: SearchState = {
         selectedRegion: payload,
       };
     },
+
     loadFileSelectRegion: (state, data: PayloadAction<any>) => {
       const { payload } = data;
 
@@ -117,27 +121,25 @@ const initialState: SearchState = {
         fetchingRegions: false,
       };
     },
+
     loadingActionResults: (state) => {
       return {
         ...state,
         fetchingResults: true,
       };
     },
+
     loadingActionRegions: (state) => {
       return {
         ...state,
         fetchingRegions: true,
       };
     },
+
     searchFileImageNonRegion: (state, data: PayloadAction<any>) => {
       const { payload } = data;
-      const {
-        results,
-        requestId,
-        duration,
-        categoryPredictions,
-        codes,
-      } = payload;
+      const { results, requestId, duration, categoryPredictions, codes } =
+        payload;
       return {
         ...state,
         results,
@@ -148,6 +150,7 @@ const initialState: SearchState = {
         fetchingResults: false,
       };
     },
+
     changeValueTextSearch: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       return {
@@ -155,6 +158,7 @@ const initialState: SearchState = {
         valueTextSearch: payload,
       };
     },
+
     resultSearchText: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       return {
@@ -162,6 +166,7 @@ const initialState: SearchState = {
         resultSearchText: payload,
       };
     },
+
     updateResults: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       return {
@@ -169,6 +174,7 @@ const initialState: SearchState = {
         results: payload,
       };
     },
+
     reset: (state, data: PayloadAction<any>) => {
       return {
         results: [],
@@ -185,8 +191,10 @@ const initialState: SearchState = {
         resultSearchText: [],
         filters: [],
         loadingSearchAlgolia: false,
+        imageThumbSearchInput: "",
       };
     },
+
     configureFilter: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       return {
@@ -194,6 +202,7 @@ const initialState: SearchState = {
         configureFilter: payload,
       };
     },
+
     setUpdateSession: (state, data: PayloadAction<string>) => {
       const { payload } = data;
       return {
@@ -201,6 +210,7 @@ const initialState: SearchState = {
         sessionId: payload,
       };
     },
+
     updateResultChangePosition: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       const { results } = payload;
@@ -211,13 +221,21 @@ const initialState: SearchState = {
     },
 
     setError: (state, data: PayloadAction<string>) => {
-        return {
-          ...state,
-          fetchingRegions: false,
-          fetchingResults: false,
-          errorMessage: data.payload
-        }
-    }
+      return {
+        ...state,
+        fetchingRegions: false,
+        fetchingResults: false,
+        errorMessage: data.payload,
+      };
+    },
+
+    setImageSearchInput: (state, data: PayloadAction<string>) => {
+      const { payload } = data;
+      return {
+        ...state,
+        imageThumbSearchInput: payload,
+      };
+    },
   },
 });
 
@@ -239,5 +257,6 @@ export const {
   setUpdateSession,
   updateResultChangePosition,
   setError,
+  setImageSearchInput,
 } = searchSlice.actions;
 export default searchSlice.reducer;
