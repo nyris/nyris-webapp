@@ -1,17 +1,16 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useAtomValue } from "jotai/utils";
 import type {
   CurrentRefinementsProvided,
   SearchResults,
 } from "react-instantsearch-core";
 import { useGetRefinementWidgets } from "./useGetRefinementWidgets";
-import { configAtom } from "./config";
 import { getPanelAttributes, getPanelId } from "./refinements";
 import { atom, useAtom } from "jotai";
 import { ExpandablePanelCustom } from "./expandable-panel";
 import { DynamicWidgetsCT } from "components/dynamic-widgets/dynamic-widgets";
 import { Button } from "@material-ui/core";
 import IconLabel from "components/icon-label/icon-label";
+import { useAppSelector } from "Store/Store";
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -88,7 +87,9 @@ function WidgetPanel({ children, onToggle, panelId, ...props }: any) {
 export default function ExpandablePanelComponent({
   dynamicWidgets = true,
 }: any) {
-  const { refinements } = useAtomValue(configAtom);
+  const stateGlobal = useAppSelector((state) => state);
+  const { settings } = stateGlobal;
+  const { refinements } = settings;
   const widgets = useGetRefinementWidgets(refinements);
   const [panels, setPanels] = useAtom(refinementsPanelsAtom);
   const [refinementsPanelsExpanded, setRefinementsPanelsExpanded] = useAtom(
@@ -152,7 +153,11 @@ export default function ExpandablePanelComponent({
   return (
     <>
       <div className="wrap-main-header-panel">
-        <Button className="text-neutral-darkest" onClick={onTogglePanelsClick} style={{justifyContent:"flex-end"}}>
+        <Button
+          className="text-neutral-darkest"
+          onClick={onTogglePanelsClick}
+          style={{ justifyContent: "flex-end" }}
+        >
           <IconLabel
             icon={refinementsPanelsExpanded ? "remove" : "add"}
             label={`${refinementsPanelsExpanded ? "Collapse" : "Expand"} all`}
@@ -166,3 +171,4 @@ export default function ExpandablePanelComponent({
     </>
   );
 }
+ 

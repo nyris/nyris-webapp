@@ -36,6 +36,7 @@ export interface AppSettings extends NyrisAPISettings {
   themePage: ThemeChoice;
   algolia?: AlgoliaSettings;
   moreInfoText?: string;
+  refinements?: any
 }
 
 export interface DefaultThemeSettings {
