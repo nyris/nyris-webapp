@@ -39,8 +39,6 @@ export function Collapse({
   children,
 }: CollapseProps): JSX.Element {
   const shouldReduceMotion = useReducedMotion();
-  console.log("isCollapsed", isCollapsed);
-  console.log('shouldReduceMotion', shouldReduceMotion);
   
   return (
     <motion.div
