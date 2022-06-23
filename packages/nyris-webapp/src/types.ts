@@ -44,13 +44,13 @@ export interface DefaultThemeSettings {
 
 export interface SearchSuiteSettings {
   active?: boolean;
-  moreInfoText?: any;
+  moreInfoText?: string;
 }
 
 export interface ThemeChoice {
   default?: DefaultThemeSettings;
   materialDesign?: MDSettings;
-  searchSuite?: SearchSuiteSettings | any;
+  searchSuite?: SearchSuiteSettings;
 }
 
 export type AppState = {
