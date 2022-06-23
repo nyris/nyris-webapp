@@ -61,7 +61,7 @@ function ResultComponent(props: Props) {
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const { search, settings } = stateGlobal;
   const { results, requestImage, regions, selectedRegion } = search;
-  const { moreInfoText } = settings?.themePage?.searchSuite;
+  const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
   const { valueTextSearch } = search;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
@@ -70,8 +70,8 @@ function ResultComponent(props: Props) {
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   const index = searchClient.initIndex(indexName);
-  console.log('settings', settings);
-  
+  console.log("settings", settings);
+
   // TODO: data algolia search to api
   useEffect(() => {
     if (!valueTextSearch) {
@@ -422,7 +422,6 @@ function ResultComponent(props: Props) {
               setLoading(true);
               getUrlToCanvasFile(url);
             }}
-            // moreInfoText={moreInfoText}
           />
         </DefaultModal>
       </>

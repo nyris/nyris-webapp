@@ -44,7 +44,7 @@ export interface DefaultThemeSettings {
 
 export interface SearchSuiteSettings {
   active?: boolean;
-  moreInfoText?: string;
+  moreInfoText: string;
 }
 
 export interface ThemeChoice {
