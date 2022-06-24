@@ -6,25 +6,13 @@ import {
   Select,
   Typography,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { connectPagination } from "react-instantsearch-dom";
 import ArrowLeftOutlinedIcon from "@material-ui/icons/ArrowLeftOutlined";
 import ArrowRightOutlinedIcon from "@material-ui/icons/ArrowRightOutlined";
 
-function Pagination({
-  nbPages,
-  refine,
-  children,
-}: any) {
-  const [pageCurrent, setPageCurrent] = useState(1);
-  useEffect(() => {
-    if (pageCurrent) {
-      refine(pageCurrent);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageCurrent]);
-
+function Pagination({ currentRefinement, nbPages, refine, children }: any) {
   return (
     <Grid
       container
@@ -54,8 +42,8 @@ function Pagination({
           >
             <Select
               labelId="demo-simple-select-label"
-              value={pageCurrent}
-              onChange={(event: any) => setPageCurrent(event.target.value)}
+              value={currentRefinement}
+              onChange={(event: any) => refine(event.target.value)}
               className="select-choose-page"
             >
               {new Array(nbPages).fill(null).map((_, index) => {
@@ -78,10 +66,10 @@ function Pagination({
               className="btn-prev"
               style={{ borderRight: "1px solid #e9e9ec" }}
               onClick={() => {
-                if (1 === pageCurrent) {
+                if (1 === currentRefinement) {
                   return;
                 }
-                setPageCurrent(pageCurrent - 1);
+                refine(currentRefinement - 1);
               }}
             >
               <ArrowLeftOutlinedIcon />
@@ -90,10 +78,10 @@ function Pagination({
             <Button
               className="btn-next"
               onClick={() => {
-                if (pageCurrent === nbPages) {
+                if (currentRefinement === nbPages) {
                   return;
                 }
-                setPageCurrent(pageCurrent + 1);
+                refine(currentRefinement + 1);
               }}
             >
               <ArrowRightOutlinedIcon />

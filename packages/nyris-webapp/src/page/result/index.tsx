@@ -70,7 +70,6 @@ function ResultComponent(props: Props) {
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   const index = searchClient.initIndex(indexName);
-  console.log("settings", settings);
 
   // TODO: data algolia search to api
   useEffect(() => {
