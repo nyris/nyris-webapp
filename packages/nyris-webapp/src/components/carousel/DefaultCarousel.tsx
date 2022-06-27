@@ -13,9 +13,10 @@ function DefaultCarousel(props: Props) {
 
   return (
     <Carousel
-      showThumbs={false}
+      showThumbs={true}
       infiniteLoop={false}
       showStatus={false}
+      showIndicators={false}
       className={imgItem.length > 1 ? "" : "hide-btn-arrow"}
       renderArrowNext={(onClickHandler, hasPrev, label) => (
         <Button onClick={onClickHandler} className="btn-carousel-right">

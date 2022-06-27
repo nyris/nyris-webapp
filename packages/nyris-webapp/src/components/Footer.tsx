@@ -17,7 +17,7 @@ function Pagination({ currentRefinement, nbPages, refine, children }: any) {
     <Grid
       container
       justifyContent="space-between"
-      alignItems="center" 
+      alignItems="center"
       style={{ height: "100%" }}
     >
       {children}
@@ -35,58 +35,56 @@ function Pagination({ currentRefinement, nbPages, refine, children }: any) {
         </Typography>
       </Grid>
       <Grid item className="item-notify-right" style={{ minWidth: 32 }}>
-        <Typography className="text-f8">
-          <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-            <Box
-              display={"flex"}
-              alignItems={"center"}
-              style={{ borderRight: "1px solid #e9e9ec", paddingRight: 20 }}
+        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+          <Box
+            display={"flex"}
+            alignItems={"center"}
+            style={{ borderRight: "1px solid #e9e9ec", paddingRight: 20 }}
+          >
+            <Select
+              labelId="demo-simple-select-label"
+              value={currentRefinement}
+              onChange={(event: any) => refine(event.target.value)}
+              className="select-choose-page"
             >
-              <Select
-                labelId="demo-simple-select-label"
-                value={currentRefinement}
-                onChange={(event: any) => refine(event.target.value)}
-                className="select-choose-page"
-              >
-                {new Array(nbPages).fill(null).map((_, index) => {
-                  const page = index + 1;
-                  return <MenuItem value={page}>{page}</MenuItem>;
-                })}
-              </Select>
-              <Box>
-                <Typography className="text-f12" style={{ color: "#2B2C46" }}>
-                  of {nbPages} pages
-                </Typography>
-              </Box>
-            </Box>
+              {new Array(nbPages).fill(null).map((_, index) => {
+                const page = index + 1;
+                return <MenuItem value={page}>{page}</MenuItem>;
+              })}
+            </Select>
             <Box>
-              <Button
-                className="btn-prev"
-                style={{ borderRight: "1px solid #e9e9ec" }}
-                onClick={() => {
-                  if (1 === currentRefinement) {
-                    return;
-                  }
-                  refine(currentRefinement - 1);
-                }}
-              >
-                <ArrowLeftOutlinedIcon />
-              </Button>
-
-              <Button
-                className="btn-next"
-                onClick={() => {
-                  if (currentRefinement === nbPages) {
-                    return;
-                  }
-                  refine(currentRefinement + 1);
-                }}
-              >
-                <ArrowRightOutlinedIcon />
-              </Button>
+              <Typography className="text-f12" style={{ color: "#2B2C46" }}>
+                of {nbPages} pages
+              </Typography>
             </Box>
           </Box>
-        </Typography>
+          <Box>
+            <Button
+              className="btn-prev"
+              style={{ borderRight: "1px solid #e9e9ec" }}
+              onClick={() => {
+                if (1 === currentRefinement) {
+                  return;
+                }
+                refine(currentRefinement - 1);
+              }}
+            >
+              <ArrowLeftOutlinedIcon />
+            </Button>
+
+            <Button
+              className="btn-next"
+              onClick={() => {
+                if (currentRefinement === nbPages) {
+                  return;
+                }
+                refine(currentRefinement + 1);
+              }}
+            >
+              <ArrowRightOutlinedIcon />
+            </Button>
+          </Box>
+        </Box>
       </Grid>
     </Grid>
   );

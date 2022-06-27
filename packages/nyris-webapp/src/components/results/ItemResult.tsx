@@ -6,7 +6,7 @@ import IconDisLike from "common/assets/icons/icon_dislike.svg";
 import IconShare from "common/assets/icons/Fill.svg";
 import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import IconOpenLink from "common/assets/icons/Union.svg";
-import IconSearchImage from "common/assets/icons/icon_search_image.svg";
+import IconSearchImage from "common/assets/icons/icon_search_image2.svg";
 interface Props {
   dataItem: any;
   handlerToggleModal?: any;
@@ -142,13 +142,17 @@ function ItemResult(props: Props) {
               </Typography>
               <Box
                 style={{
-                  padding: "5px 10px",
-                  backgroundColor: "#55566B",
                   boxShadow: "-2px 2px 4px rgba(170, 171, 181, 0.5)",
-                  borderRadius: 1,
                   marginBottom: 22,
+                  height: 40,
+                  background:
+                    "linear-gradient(270deg, #56577C 0%, #2B2C46 100%)",
+                  borderRadius: 4,
+                  padding: '0 8px'
                 }}
                 display={"flex"}
+                justifyItems={'center'}
+                alignItems={'center'}
                 justifyContent={"space-between"}
                 mt={2}
               >

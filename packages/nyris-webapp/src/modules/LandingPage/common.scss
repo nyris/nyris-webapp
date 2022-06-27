@@ -276,7 +276,7 @@ button {
 
 .box-modal-default {
   min-height: 230px;
-  width: 340px;
+  width: 408px;
   min-height: 468px;
   min-width: 330px;
   display: flex;
@@ -349,6 +349,20 @@ button {
     padding: 0px 14px;
     min-height: 330px;
     position: relative;
+    .thumbs-wrapper {
+      margin: 0px !important;
+    }
+    ul.thumbs {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .thumb {
+        width: 40px !important;
+        height: 40px;
+        border: 2px solid #e0e0e0 !important;
+        border-radius: 2px;
+      }
+    }
     .carousel-root {
       height: 100%;
       .carousel-slider {
@@ -364,15 +378,15 @@ button {
     .icon-style {
       border-radius: 100%;
       position: absolute;
-      bottom: 16px;
-      left: 16px;
+      bottom: 50px;
+      right: 16px;
       z-index: 9;
       button {
         padding: 0;
       }
       img {
-        width: 32px !important;
-        height: 32px;
+        width: 48px !important;
+        height: 48px;
         padding: 0;
       }
     }
@@ -495,7 +509,7 @@ button {
     }
     .box-icon-modal {
       bottom: 10px;
-      left: 10px;
+      right: 10px;
       position: absolute;
       border-radius: 100%;
       filter: drop-shadow(0px 0px 2.66667px rgba(85, 86, 107, 0.502974));
@@ -505,7 +519,7 @@ button {
       span {
         display: block;
         img {
-          padding: 5px;
+          padding: 0px;
         }
       }
       button {
@@ -940,7 +954,7 @@ button {
       width: calc(100% - 462px);
       // overflow: auto;
       .box-item-result {
-        max-width: calc(180 * 4px + 60px);
+        max-width: calc(192px * 4 + 60px);
         @media screen and (min-width: 2047px) {
           max-width: 1300px;
         }
@@ -950,9 +964,11 @@ button {
         margin: 16px 0;
         // margin-right: auto !important;
         .wrap-main-item-result {
-          max-width: 180px;
-          width: 180px;
+          max-width: 192px;
+          width: 192px;
           margin: 20px 7px;
+          border-radius: 4px;
+          overflow: hidden;
         }
         ul {
           padding: 0;
@@ -1303,6 +1319,14 @@ button {
 }
 
 .box-panigation {
+  .ais-Pagination {
+    // .ais-Pagination-link {
+    //   font-size: 30px;
+    //   font-weight: bold;
+    //   line-height: 20px;
+
+    // }
+  }
   .ais-Pagination-list {
     display: flex;
     justify-content: center;
@@ -1619,18 +1643,50 @@ button {
   align-items: center;
   min-width: 70px;
   background-color: rgb(62 54 220 / 15%);
-  img{
+  img {
     width: 32px;
     height: 32px;
     border-radius: 100%;
-    
   }
-  button{
+  button {
     display: flex;
     align-items: center;
     border: 0px !important;
     background-color: transparent;
     height: fit-content;
     cursor: pointer;
+  }
+}
+
+.pagination-result {
+  padding: 10px;
+  .ais-Pagination-list {
+    flex-wrap: nowrap !important;
+    text-align: center;
+    .ais-Pagination-item {
+      position: relative;
+      padding: 0;
+      a {
+        font-family: "Montserrat";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 18px;
+        color: #161616;
+      }
+    }
+    .ais-Pagination-item--selected {
+      a::after {
+        position: absolute;
+        content: "";
+        left: 0;
+        right: 0;
+        width: 16px;
+        height: 4px;
+        background-color: #3e36dc;
+        margin: auto;
+        bottom: -11px;
+      }
+    }
   }
 }

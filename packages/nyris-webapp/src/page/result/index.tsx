@@ -34,7 +34,12 @@ import {
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import algoliasearch from "algoliasearch/lite";
-import { InstantSearch, Configure, HitsPerPage } from "react-instantsearch-dom";
+import {
+  InstantSearch,
+  Configure,
+  HitsPerPage,
+  Pagination,
+} from "react-instantsearch-dom";
 import CustomSearchBox from "components/input/inputSearch";
 import {
   feedbackClickEpic,
@@ -49,7 +54,8 @@ import { showHits } from "./MockData";
 import { Link } from "react-router-dom";
 import ExpandablePanelComponent from "components/PanelResult";
 import { CurrentRefinements } from "components/current-refinements/current-refinements";
-
+import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
+import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 interface Props {}
 
 const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
@@ -229,9 +235,6 @@ function ResultComponent(props: Props) {
               <Box>
                 <CustomSearchBox />
               </Box>
-              {/* <Box className="box-filter">
-                  <FilterComponent />
-                </Box> */}
             </div>
             <Box className="box-result">
               <>
@@ -313,6 +316,21 @@ function ResultComponent(props: Props) {
                       sendFeedBackAction={sendFeedBackAction}
                       moreInfoText={moreInfoText}
                     />
+                    {/* <CustomPagination /> */}
+                    <Box
+                      className="pagination-result"
+                      style={{ width: "100%", margin: "20px auto", padding:"0 20%" }}
+                    >
+                      <Pagination
+                        totalPages={5}
+                        showFirst={false}
+                        translations={{
+                          previous: <ArrowLeftIcon style={{color:'#161616'}} />,
+                          next: <ArrowRightIcon style={{color:'#161616'}} />,
+                        }}
+                        // showPrevious={false}
+                      />
+                    </Box>
                   </Box>
                 </Box>
               </>
