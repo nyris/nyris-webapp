@@ -11,11 +11,9 @@ import IconWhatsApp from "common/assets/icons/icon_whatapps.svg";
 import IconEmail from "common/assets/icons/email_share.svg";
 import IconWeChat from "common/assets/icons/icon_chat.svg";
 import IconSupport from "common/assets/icons/support3.svg";
-
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import { debounce } from "lodash";
 import KeyboardArrowRightOutlinedIcon from "@material-ui/icons/KeyboardArrowRightOutlined";
-import KeyboardArrowLeftOutlinedIcon from "@material-ui/icons/KeyboardArrowLeftOutlined";
 import FooterResult from "components/FooterResult";
 import DefaultModal from "components/modal/DefaultModal";
 import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
@@ -61,8 +59,8 @@ const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector((state) => state);
-  const [showColLeft, setToggleShowColLeft] = useState<boolean>(false);
-  const [showImageCanvas, setShowImageCanvas] = useState<boolean>(true);
+  // const [showColLeft, setToggleShowColLeft] = useState<boolean>(false);
+  // const [showImageCanvas, setShowImageCanvas] = useState<boolean>(true);
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [numberResult, setNumberResult] = useState<number>(0);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
@@ -102,12 +100,12 @@ function ResultComponent(props: Props) {
     setDataResult(results);
   }, [results]);
 
-  useEffect(() => {
-    if (!showColLeft) {
-      return setShowImageCanvas(true);
-    }
-    return setShowImageCanvas(false);
-  }, [showColLeft]);
+  // useEffect(() => {
+  //   if (!showColLeft) {
+  //     return setShowImageCanvas(true);
+  //   }
+  //   return setShowImageCanvas(false);
+  // }, [showColLeft]);
 
   // TODO: hanlder modal:
   const handlerToggleModal = (item: any) => {
@@ -264,7 +262,7 @@ function ResultComponent(props: Props) {
                   <Box className="box-toggle-coloumn">
                     <Button
                       style={
-                        requestImage && showImageCanvas && !toggleColLeft
+                        requestImage && !toggleColLeft
                           ? { color: "#fff" }
                           : { color: "#55566b" }
                       }
@@ -282,7 +280,7 @@ function ResultComponent(props: Props) {
                     </Button>
                   </Box>
                   {settings.preview && requestImage && (
-                    <Box className={`col-left ${showColLeft && "toggle"}`}>
+                    <Box className="col-left">
                       <Box className="box-preview">
                         {/* <Button
                           className="button-toggle"
@@ -298,7 +296,7 @@ function ResultComponent(props: Props) {
                             <KeyboardArrowLeftOutlinedIcon />
                           )}
                         </Button> */}
-                        {requestImage && showImageCanvas && (
+                        {requestImage && (
                           <Box className="preview-item">
                             <Preview
                               key={requestImage?.id}
@@ -340,7 +338,7 @@ function ResultComponent(props: Props) {
                   </Box>
                   <Box
                     className={`box-item-result ${
-                      requestImage && showImageCanvas
+                      requestImage
                         ? "mr-auto"
                         : "ml-auto mr-auto"
                     }`}
