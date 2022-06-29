@@ -263,9 +263,13 @@ function ResultComponent(props: Props) {
                 >
                   <Box className="box-toggle-coloumn">
                     <Button
+                      style={
+                        requestImage && showImageCanvas && !toggleColLeft
+                          ? { color: "#fff" }
+                          : { color: "#55566b" }
+                      }
                       onClick={() => {
                         setToggleColLeft(!toggleColLeft);
-                        // setToggleShowColLeft(false);
                       }}
                     >
                       {toggleColLeft ? (
@@ -280,7 +284,7 @@ function ResultComponent(props: Props) {
                   {settings.preview && requestImage && (
                     <Box className={`col-left ${showColLeft && "toggle"}`}>
                       <Box className="box-preview">
-                        <Button
+                        {/* <Button
                           className="button-toggle"
                           onClick={() => {
                             setTimeout(() => {
@@ -293,7 +297,7 @@ function ResultComponent(props: Props) {
                           ) : (
                             <KeyboardArrowLeftOutlinedIcon />
                           )}
-                        </Button>
+                        </Button> */}
                         {requestImage && showImageCanvas && (
                           <Box className="preview-item">
                             <Preview
@@ -305,8 +309,8 @@ function ResultComponent(props: Props) {
                               image={requestImage?.canvas}
                               selection={selectedRegion || defaultSelection}
                               regions={regions}
-                              maxWidth={220}
-                              maxHeight={220}
+                              maxWidth={320}
+                              maxHeight={320}
                               dotColor="#FBD914"
                             />
                           </Box>

@@ -79,6 +79,10 @@ button {
   line-height: 37px !important;
 }
 
+.text-f30 {
+  font-size: 30px !important;
+}
+
 .text-f10 {
   font-family: "Montserrat";
   font-size: 10px !important;
@@ -914,8 +918,9 @@ button {
       justify-content: center;
       align-items: center;
       background: #1e1f31;
-      padding: 32px;
+      max-width: 320px;
       .box-preview {
+        padding: 30px;
         width: 100%;
         // border: 2px dashed #55566b;
         display: flex;
@@ -1568,8 +1573,8 @@ button {
   margin-right: 16px;
   width: 100%;
   box-shadow: 3px -2px 3px -3px #d3d4d8;
-  padding-right: 24px;
-  padding-left: 24px;
+  // padding-right: 24px;
+  // padding-left: 24px;
   background: #fff;
   position: relative;
   
@@ -1597,6 +1602,7 @@ button {
   .col-left__bottom {
     margin-top: 32px;
     width: 100%;
+    padding: 0 24px;
     button {
       display: flex;
       justify-content: space-between;
