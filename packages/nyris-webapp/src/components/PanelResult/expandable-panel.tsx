@@ -9,7 +9,7 @@ import type {
 import { connectCurrentRefinements } from "react-instantsearch-dom";
 import { useHasRefinements } from ".";
 import { searchResultsAtom } from "./virtual-state-results";
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import RemoveIcon from "@material-ui/icons/Remove";
 import AddIcon from "@material-ui/icons/Add";
 import { Collapse } from "components/collapse/collapse";
@@ -46,16 +46,26 @@ function ExpandablePanelComponent({
       )}
     >
       <Button
-        className="w-full flex items-center justify-between gap-3 group"
+        className="w-full flex items-center justify-between group"
         aria-expanded={isOpened}
+        style={{ paddingLeft: 0 }}
         onClick={(e) => {
           if (typeof onToggle === "function") {
             onToggle(e);
           }
         }}
       >
-        <div className="flex items-center w-full subhead laptop:small-bold laptop:uppercase">
-          {header || attributes[0]}
+        <div className="flex items-center w-full subhead">
+          <Typography
+            className="fw-700"
+            style={{
+              textTransform: "none",
+              fontFamily: "Montserrat !important",
+              fontSize: 14,
+            }}
+          >
+            {header || attributes[0]}
+          </Typography>
         </div>
         <div className="text-neutral-dark can-hover:transition-colors can-hover:group-hover:text-neutral-light">
           {isOpened ? <RemoveIcon /> : <AddIcon />}

@@ -2,8 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import { m } from "framer-motion";
 import { atom } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import type {
   CurrentRefinementsProvided,
   RefinementValue,
@@ -35,6 +34,7 @@ function CurrentRefinementsComponent({
 }: CurrentRefinementsProps) {
   const stateGlobal = useAppSelector((state) => state);
   const { settings } = stateGlobal;
+
   const refinements = useMemo(
     () =>
       items.reduce((acc: CurrentRefinement[], current) => {
@@ -43,16 +43,12 @@ function CurrentRefinementsComponent({
           ...getCurrentRefinement(current, settings?.refinements),
         ];
       }, []),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [settings, items],
   );
 
-  const setRefinementCount = useUpdateAtom(refinementCountAtom);
-  useEffect(() => {
-    setRefinementCount(refinements.length);
-  }, [setRefinementCount, refinements]);
-
-  if (!refinements.length) return null;
+  if (!refinements.length) {
+    return null;
+  }
 
   return (
     <div className={className}>
@@ -66,9 +62,16 @@ function CurrentRefinementsComponent({
                 onClick={() => refine(refinement.value)}
               >
                 {refinement.category && (
-                  <div className="text-f12 fw-600">{refinement.category}:</div>
+                  <div className="text-f12 fw-700">{refinement.category}:</div>
                 )}
-                <div className="capitalize" style={{ marginLeft: 5 }}>
+                <div
+                  className="capitalize"
+                  style={{
+                    marginLeft: 5,
+                    textTransform: "capitalize",
+                    marginRight: 10,
+                  }}
+                >
                   {refinement.label}
                 </div>
               </ChipComponent>

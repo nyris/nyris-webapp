@@ -13,7 +13,7 @@ export function getCurrentRefinement(
   config: any
 ): CurrentRefinement[] {
   let refinementConfig: any;
-  config.refinements.forEach((r: any) => {
+  config.forEach((r: any) => {
     const widgets = r?.widgets;
     const widgetCfg = widgets?.find((w: any) =>
       getRefinementConfig(w, refinement)
@@ -27,13 +27,12 @@ export function getCurrentRefinement(
       refinementConfig = r;
     }
   });
-
   switch (refinementConfig?.type) {
     case "size":
     case "list": {
       return (
         refinement?.items?.map((item: any) => ({
-          category: refinementConfig?.label,
+          category: refinementConfig?.header,
           label: item.label,
           value: item.value,
         })) || []

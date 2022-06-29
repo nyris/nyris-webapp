@@ -1564,11 +1564,36 @@ button {
 // TODO: filter panel result
 
 .wrap-main-col-left {
-  max-width: 464px;
+  max-width: 320px;
   margin-right: 16px;
   width: 100%;
   box-shadow: 3px -2px 3px -3px #d3d4d8;
-  padding-right: 16px;
+  padding-right: 24px;
+  padding-left: 24px;
+  background: #fff;
+  position: relative;
+  
+  &.toggle {
+    // transition: all 0.1s ease-in-out;
+    // transition: all 0.5s ease-in;
+    max-width: 40px;
+    > * {
+      display: none !important;
+    }
+    .box-toggle-coloumn{
+      transition: all 010s ease-in-out;
+      display: block !important;
+      right: 0;
+      left: 0;
+      margin: auto;
+    }
+  }
+  .box-toggle-coloumn {
+    position: absolute;
+    right: 16px;
+    top: 0;
+    z-index: 222;
+  }
   .col-left__bottom {
     margin-top: 32px;
     width: 100%;
@@ -1576,6 +1601,8 @@ button {
       display: flex;
       justify-content: space-between;
       width: 100%;
+      align-items: center;
+      padding-right: 0px;
     }
     .border-neutral-light {
       border-bottom: 1px solid #d3d4d8;
@@ -1619,11 +1646,13 @@ button {
     li {
       list-style-type: none;
       margin-bottom: 0px;
-      border: 1px solid rgb(85, 86, 107);
       padding: 0px;
-      border-radius: 5px;
+      background: #f3f3f5;
+      border: 1px solid #e0e0e0;
+      border-radius: 1px;
       &:last-child {
         border: 0px;
+        background: initial;
       }
       button {
         padding: 2px 5px;
@@ -1688,5 +1717,71 @@ button {
         bottom: -11px;
       }
     }
+  }
+}
+
+.box-refinement-list {
+  .ais-SearchBox-form {
+    display: flex;
+    // margin: 0 20px;
+    background: #e9e9ec;
+    border-radius: 16px;
+    padding: 0 10px;
+    height: 32px;
+    margin-bottom: 16px;
+    input {
+      order: 1;
+      width: 100%;
+      margin-left: 5px !important;
+      border: 0px;
+      background-color: initial !important;
+      &:focus {
+        outline: none;
+      }
+    }
+    .ais-SearchBox-submit {
+      width: fit-content !important;
+      order: 0;
+      display: flex;
+      align-items: center;
+      border: 0px;
+      background-color: initial;
+      svg {
+        width: 15px !important;
+        height: 15px !important;
+      }
+    }
+    .ais-SearchBox-reset {
+      display: none;
+    }
+  }
+}
+
+.ais-RefinementList {
+  .ais-RefinementList-list {
+    padding-left: 0px !important;
+    .ais-RefinementList-item {
+      padding-left: 0px !important;
+      label {
+        display: inline-flex;
+        align-items: center;
+        span {
+          font-size: 14px;
+          font-family: "Montserrat";
+          font-style: normal;
+        }
+      }
+    }
+  }
+}
+
+.box-switch-apply-fillter {
+  span.MuiFormControlLabel-label {
+    color: #aaabb5;
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
   }
 }

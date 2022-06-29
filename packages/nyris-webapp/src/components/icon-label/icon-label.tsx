@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import RemoveIcon from "@material-ui/icons/Remove";
 import AddIcon from "@material-ui/icons/Add";
+import { Typography } from "@material-ui/core";
 
 export type LabelPosition = "bottom" | "left" | "right" | "top";
 
@@ -41,9 +42,26 @@ export default function IconLabel({
   }, [icon]);
 
   return (
-    <div style={{ display: "flex" }}>
-      {(tagIcon === "remove" ? <RemoveIcon /> : <AddIcon />)}
-      {label && <div className={classNameLabel}>{label}</div>}
+    <div style={{ display: "flex", alignItems: 'center' }}>
+      {label && (
+        <div className={classNameLabel}>
+          <Typography
+            style={{
+              textTransform: "none",
+              fontSize: 12,
+              color: "#55566B",
+              fontWeight: 600,
+            }}
+          >
+            {label}
+          </Typography>
+        </div>
+      )}
+      {tagIcon === "remove" ? (
+        <RemoveIcon style={{ color: "#55566B" }} />
+      ) : (
+        <AddIcon style={{ color: "#55566B" }} />
+      )}
     </div>
   );
 }

@@ -6,7 +6,7 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import IconWhatsApp from "common/assets/icons/icon_whatapps.svg";
 import IconEmail from "common/assets/icons/email_share.svg";
 import IconWeChat from "common/assets/icons/icon_chat.svg";
@@ -41,13 +41,9 @@ import {
   Pagination,
 } from "react-instantsearch-dom";
 import CustomSearchBox from "components/input/inputSearch";
-import {
-  feedbackClickEpic,
-  feedbackSuccessEpic,
-  feedbackTextSearchEpic,
-} from "services/Feedback";
+import { feedbackClickEpic, feedbackSuccessEpic } from "services/Feedback";
 import { createImage, findByImage, findRegions } from "services/image";
-import { AlgoliaResult, AlgoliaSettings } from "../../types";
+import { AlgoliaSettings } from "../../types";
 import LoadingScreenCustom from "components/LoadingScreen";
 import { Preview } from "@nyris/nyris-react-components";
 import { showHits } from "./MockData";
@@ -56,6 +52,8 @@ import ExpandablePanelComponent from "components/PanelResult";
 import { CurrentRefinements } from "components/current-refinements/current-refinements";
 import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import ArrowBackIosOutlinedIcon from "@material-ui/icons/ArrowBackIosOutlined";
+
 interface Props {}
 
 const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
@@ -78,8 +76,17 @@ function ResultComponent(props: Props) {
   const [isLoading, setLoading] = useState<any>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
-  const index = searchClient.initIndex(indexName);
-  // TODO: data algolia search to api
+  // const index = searchClient.initIndex(indexName);
+  const [stateSearchAlgolia, setStateSearchAlgolia] = useState({});
+  const [toggleColLeft, setToggleColLeft] = useState(false);
+  // TODO: Action search algolia
+  useEffect(() => {
+    if (!stateSearchAlgolia) {
+      return;
+    }
+    setSearchStateInput(stateSearchAlgolia);
+  }, [stateSearchAlgolia]);
+
   useEffect(() => {
     if (!valueTextSearch) {
       return;
@@ -148,23 +155,23 @@ function ResultComponent(props: Props) {
   };
 
   // TODO: Search text
-  const searchTextByApiAndFilter = async (searchState: any) => {
-    try {
-      if (searchState?.query !== "") {
-        const data = await index.search<AlgoliaResult>(searchState.query, {});
-        const productIds = data.hits.map((hit) => hit.sku);
-        await feedbackTextSearchEpic(
-          stateGlobal,
-          data.query,
-          data.page,
-          productIds
-        );
-      }
-    } catch (error) {
-      console.log("searchTextByApi", error);
-      return;
-    }
-  };
+  // const searchTextByApiAndFilter = async (searchState: any) => {
+  //   try {
+  //     if (searchState?.query !== "") {
+  //       const data = await index.search<AlgoliaResult>(searchState.query, {});
+  //       const productIds = data.hits.map((hit) => hit.sku);
+  //       await feedbackTextSearchEpic(
+  //         stateGlobal,
+  //         data.query,
+  //         data.page,
+  //         productIds
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.log("searchTextByApi", error);
+  //     return;
+  //   }
+  // };
 
   // TODO: Handler like dislike
   const sendFeedBackAction = async (type: string) => {
@@ -198,6 +205,15 @@ function ResultComponent(props: Props) {
     });
   };
 
+  const onToogleApplyFillter = (value: boolean) => {
+    if (value) {
+      setSearchStateInput(stateSearchAlgolia);
+      return;
+    }
+    setSearchStateInput({});
+    return;
+  };
+
   const nonEmptyFilter: any[] = !requestImage
     ? []
     : ["sku:DOES_NOT_EXIST<score=1>"];
@@ -224,17 +240,14 @@ function ResultComponent(props: Props) {
           searchClient={searchClient}
           searchState={searchStateInput}
           onSearchStateChange={(state) => {
-            setSearchStateInput(state);
-            searchTextByApiAndFilter(state);
+            setStateSearchAlgolia(state);
           }}
         >
           <Configure filters={filtersString}></Configure>
 
           <Box className="box-wrap-result-component">
             <div className="box-search">
-              <Box>
-                <CustomSearchBox />
-              </Box>
+              <CustomSearchBox />
             </div>
             <Box className="box-result">
               <>
@@ -243,7 +256,27 @@ function ResultComponent(props: Props) {
                     <img src={IconSupport} alt="" width={16} height={16} />
                   </Link>
                 </Box>
-                <Box className="wrap-main-col-left">
+                <Box
+                  className={`wrap-main-col-left ${
+                    toggleColLeft ? "toggle" : ""
+                  }`}
+                >
+                  <Box className="box-toggle-coloumn">
+                    <Button
+                      onClick={() => {
+                        setToggleColLeft(!toggleColLeft);
+                        // setToggleShowColLeft(false);
+                      }}
+                    >
+                      {toggleColLeft ? (
+                        <KeyboardArrowRightOutlinedIcon
+                          style={{ fontSize: 30 }}
+                        />
+                      ) : (
+                        <ArrowBackIosOutlinedIcon style={{ fontSize: 20 }} />
+                      )}
+                    </Button>
+                  </Box>
                   {settings.preview && requestImage && (
                     <Box className={`col-left ${showColLeft && "toggle"}`}>
                       <Box className="box-preview">
@@ -272,8 +305,8 @@ function ResultComponent(props: Props) {
                               image={requestImage?.canvas}
                               selection={selectedRegion || defaultSelection}
                               regions={regions}
-                              maxWidth={400}
-                              maxHeight={500}
+                              maxWidth={220}
+                              maxHeight={220}
                               dotColor="#FBD914"
                             />
                           </Box>
@@ -288,10 +321,11 @@ function ResultComponent(props: Props) {
                   )}
                   {/* TODO: Filter list Choose */}
                   <Box className="col-left__bottom">
-                    <ExpandablePanelComponent />
+                    <ExpandablePanelComponent
+                      onToogleApplyFillter={onToogleApplyFillter}
+                    />
                   </Box>
                 </Box>
-
                 <Box
                   className={`col-right ${
                     settings.preview && "ml-auto mr-auto"
@@ -316,19 +350,22 @@ function ResultComponent(props: Props) {
                       sendFeedBackAction={sendFeedBackAction}
                       moreInfoText={moreInfoText}
                     />
-                    {/* <CustomPagination /> */}
                     <Box
                       className="pagination-result"
-                      style={{ width: "100%", margin: "20px auto", padding:"0 20%" }}
+                      style={{
+                        width: "100%",
+                        margin: "20px auto",
+                        padding: "0 20%",
+                      }}
                     >
                       <Pagination
-                        totalPages={5}
                         showFirst={false}
                         translations={{
-                          previous: <ArrowLeftIcon style={{color:'#161616'}} />,
-                          next: <ArrowRightIcon style={{color:'#161616'}} />,
+                          previous: (
+                            <ArrowLeftIcon style={{ color: "#161616" }} />
+                          ),
+                          next: <ArrowRightIcon style={{ color: "#161616" }} />,
                         }}
-                        // showPrevious={false}
                       />
                     </Box>
                   </Box>
@@ -458,4 +495,4 @@ function ResultComponent(props: Props) {
   );
 }
 
-export default ResultComponent;
+export default memo(ResultComponent);

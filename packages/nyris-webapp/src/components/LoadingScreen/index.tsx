@@ -83,7 +83,7 @@ function LoadingScreen({
     secondArr = secondArr.filter((item) => item.group_id !== group_id);
     setItemShowDefault(firstArr.concat(secondArr));
   };
-
+  
   return (
     <>
       {isLoading && (
