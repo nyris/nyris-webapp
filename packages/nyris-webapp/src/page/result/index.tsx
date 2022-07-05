@@ -59,8 +59,6 @@ const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector((state) => state);
-  // const [showColLeft, setToggleShowColLeft] = useState<boolean>(false);
-  // const [showImageCanvas, setShowImageCanvas] = useState<boolean>(true);
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [numberResult, setNumberResult] = useState<number>(0);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
@@ -74,9 +72,10 @@ function ResultComponent(props: Props) {
   const [isLoading, setLoading] = useState<any>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
-  // const index = searchClient.initIndex(indexName);
   const [stateSearchAlgolia, setStateSearchAlgolia] = useState({});
-  const [toggleColLeft, setToggleColLeft] = useState(false);
+  const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
+  const [statusSwitchButton, setStatusSwitchButton] = useState<boolean>(true);
+  
   // TODO: Action search algolia
   useEffect(() => {
     if (!stateSearchAlgolia) {
@@ -99,13 +98,6 @@ function ResultComponent(props: Props) {
     }
     setDataResult(results);
   }, [results]);
-
-  // useEffect(() => {
-  //   if (!showColLeft) {
-  //     return setShowImageCanvas(true);
-  //   }
-  //   return setShowImageCanvas(false);
-  // }, [showColLeft]);
 
   // TODO: hanlder modal:
   const handlerToggleModal = (item: any) => {
@@ -152,25 +144,6 @@ function ResultComponent(props: Props) {
     });
   };
 
-  // TODO: Search text
-  // const searchTextByApiAndFilter = async (searchState: any) => {
-  //   try {
-  //     if (searchState?.query !== "") {
-  //       const data = await index.search<AlgoliaResult>(searchState.query, {});
-  //       const productIds = data.hits.map((hit) => hit.sku);
-  //       await feedbackTextSearchEpic(
-  //         stateGlobal,
-  //         data.query,
-  //         data.page,
-  //         productIds
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.log("searchTextByApi", error);
-  //     return;
-  //   }
-  // };
-
   // TODO: Handler like dislike
   const sendFeedBackAction = async (type: string) => {
     feedbackSuccessEpic(stateGlobal, type === "like");
@@ -204,6 +177,7 @@ function ResultComponent(props: Props) {
   };
 
   const onToogleApplyFillter = (value: boolean) => {
+    setStatusSwitchButton(value);
     if (value) {
       setSearchStateInput(stateSearchAlgolia);
       return;
@@ -282,20 +256,6 @@ function ResultComponent(props: Props) {
                   {settings.preview && requestImage && (
                     <Box className="col-left">
                       <Box className="box-preview">
-                        {/* <Button
-                          className="button-toggle"
-                          onClick={() => {
-                            setTimeout(() => {
-                              setToggleShowColLeft(!showColLeft);
-                            }, 500);
-                          }}
-                        >
-                          {showColLeft ? (
-                            <KeyboardArrowRightOutlinedIcon />
-                          ) : (
-                            <KeyboardArrowLeftOutlinedIcon />
-                          )}
-                        </Button> */}
                         {requestImage && (
                           <Box className="preview-item">
                             <Preview
@@ -334,13 +294,13 @@ function ResultComponent(props: Props) {
                   }`}
                 >
                   <Box className="wrap-box-refinements">
-                    <CurrentRefinements />
+                    <CurrentRefinements
+                      statusSwitchButton={statusSwitchButton}
+                    />
                   </Box>
                   <Box
                     className={`box-item-result ${
-                      requestImage
-                        ? "mr-auto"
-                        : "ml-auto mr-auto"
+                      requestImage ? "ml-auto mr-auto" : "ml-auto mr-auto"
                     }`}
                   >
                     <LoadingScreenCustom

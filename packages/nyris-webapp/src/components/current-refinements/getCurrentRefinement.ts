@@ -2,7 +2,7 @@ import type { CurrentRefinement } from "./current-refinements";
 
 function getRefinementConfig(r: any, refinement: any) {
   const refinementOptions = r.attribute;
-  
+
   return refinementOptions?.attributes
     ? refinementOptions?.attributes[0] === refinement.attribute
     : refinementOptions === refinement.attribute;
@@ -14,19 +14,11 @@ export function getCurrentRefinement(
 ): CurrentRefinement[] {
   let refinementConfig: any;
   config.forEach((r: any) => {
-    const widgets = r?.widgets;
-    const widgetCfg = widgets?.find((w: any) =>
-      getRefinementConfig(w, refinement)
-    );
-    if (widgets?.length && widgetCfg) {
-      refinementConfig = {
-        ...r,
-        ...widgetCfg,
-      };
-    } else if (getRefinementConfig(r, refinement)) {
+    if (getRefinementConfig(r, refinement)) {
       refinementConfig = r;
     }
   });
+  
   switch (refinementConfig?.type) {
     case "size":
     case "list": {

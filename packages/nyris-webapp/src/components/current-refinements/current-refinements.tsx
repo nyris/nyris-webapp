@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import { m } from "framer-motion";
 import { atom } from "jotai";
@@ -16,6 +16,7 @@ import { useAppSelector } from "Store/Store";
 export type CurrentRefinementsProps = CurrentRefinementsProvided & {
   header?: string;
   className?: string;
+  statusSwitchButton?: boolean;
 };
 
 export type CurrentRefinement = {
@@ -29,21 +30,27 @@ export const refinementCountAtom = atom(0);
 function CurrentRefinementsComponent({
   items,
   refine,
-  header,
   className,
+  statusSwitchButton,
 }: CurrentRefinementsProps) {
   const stateGlobal = useAppSelector((state) => state);
   const { settings } = stateGlobal;
+  const [newItems, setListItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!statusSwitchButton) return;
+    setListItems(items);
+  }, [items, statusSwitchButton]);
 
   const refinements = useMemo(
     () =>
-      items.reduce((acc: CurrentRefinement[], current) => {
+    newItems.reduce((acc: CurrentRefinement[], current) => {
         return [
           ...acc,
           ...getCurrentRefinement(current, settings?.refinements),
         ];
       }, []),
-    [settings, items],
+    [settings, newItems]
   );
 
   if (!refinements.length) {
@@ -52,7 +59,6 @@ function CurrentRefinementsComponent({
 
   return (
     <div className={className}>
-      {header && <div className="text-neutral-dark mb-2">{header}</div>}
       <ul className="flex flex-wrap gap-3">
         {refinements.map((refinement) => {
           return (

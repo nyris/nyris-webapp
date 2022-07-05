@@ -99,24 +99,6 @@ export default function ExpandablePanelComponent({
     refinementsPanelsExpandedAtom
   );
 
-  const widgets = useMemo(
-    () =>
-      refinements.map((refinement: any) => {
-        return (
-          <RefinementList
-            className="box-refinement-list"
-            attribute={refinement.attribute}
-            {...refinement.options}
-            translations={{
-              noResults: "No results",
-              placeholder: "",
-            }}
-          />
-        );
-      }),
-    [refinements]
-  );
-
   // Set initial panels value
   useEffect(() => {
     setPanels((prevPanels) => ({
@@ -144,37 +126,55 @@ export default function ExpandablePanelComponent({
     [setPanels]
   );
 
-  const widgetsPanels = useMemo(
+  const widgets = useMemo(
     () =>
-      widgets.map((widget: any, i: any) => {
-        const refinement = refinements[i];
-        const panelId = getPanelId(refinement);
-        const panelAttributes = getPanelAttributes(refinement);
+      refinements.map((refinement: any) => {
         return (
-          <WidgetPanel
-            key={panelId}
-            panelId={panelId}
-            attributes={panelAttributes}
-            header={refinement.header}
-            isOpened={panels[panelId]}
-            onToggle={onToggle}
-          >
-            {widget}
-          </WidgetPanel>
+          <Box>
+            <RefinementList
+              className="box-refinement-list"
+              attribute={refinement.attribute}
+              {...refinement.options}
+              translations={{
+                noResults: "No results",
+                placeholder: "",
+              }}
+            />
+          </Box>
         );
       }),
-    [widgets, refinements, onToggle, panels]
+    [refinements]
   );
 
-  const onTogglePanelsClick = useCallback(
-    () => setRefinementsPanelsExpanded((expanded: boolean) => !expanded),
-    [setRefinementsPanelsExpanded]
-  );
+  const widgetsPanels = useMemo(() => {
+    return widgets.map((widget: any, i: any) => {
+      const refinement = refinements[i];
+      const panelId = getPanelId(refinement);
+      const panelAttributes = getPanelAttributes(refinement);
+      
+      return (
+        <WidgetPanel
+          key={panelId}
+          panelId={panelId}
+          attributes={panelAttributes}
+          header={refinement.header}
+          isOpened={panels[panelId]}
+          onToggle={onToggle}
+        >
+          {widget}
+        </WidgetPanel>
+      );
+    });
+  }, [widgets, refinements, onToggle, panels]);
+
+  const onTogglePanelsClick = useCallback(() => {
+    setRefinementsPanelsExpanded((expanded: boolean) => !expanded);
+  }, [setRefinementsPanelsExpanded]);
 
   return (
     <>
       <div className="wrap-main-header-panel">
-        <Box style={{borderBottom: '1px solid #E0E0E0'}}>
+        <Box style={{ borderBottom: "1px solid #E0E0E0" }}>
           <Button
             className="text-neutral-darkest"
             onClick={onTogglePanelsClick}
@@ -188,7 +188,7 @@ export default function ExpandablePanelComponent({
         </Box>
         <Box className="box-switch-apply-fillter">
           <FormControlLabel
-            style={{fontSize: 14}}
+            style={{ fontSize: 14 }}
             control={
               <IOSSwitch
                 checked={switched}
