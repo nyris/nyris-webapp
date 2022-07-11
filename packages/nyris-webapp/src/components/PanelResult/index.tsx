@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import type {
   CurrentRefinementsProvided,
   SearchResults,
@@ -7,11 +7,11 @@ import { getPanelAttributes, getPanelId } from "./refinements";
 import { atom, useAtom } from "jotai";
 import { ExpandablePanelCustom } from "./expandable-panel";
 import { DynamicWidgetsCT } from "components/dynamic-widgets/dynamic-widgets";
-import { Box, Button, FormControlLabel } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
 import IconLabel from "components/icon-label/icon-label";
 import { useAppSelector } from "Store/Store";
-import { IOSSwitch } from "components/switch";
 import { RefinementList } from "react-instantsearch-dom";
+import { orderBy } from "lodash";
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -90,7 +90,6 @@ export default function ExpandablePanelComponent({
   dynamicWidgets = true,
   onToogleApplyFillter,
 }: any) {
-  const [switched, setChangeSwitch] = useState(true);
   const stateGlobal = useAppSelector((state) => state);
   const { settings } = stateGlobal;
   const { refinements } = settings;
@@ -130,42 +129,43 @@ export default function ExpandablePanelComponent({
     () =>
       refinements.map((refinement: any) => {
         return (
-          <Box>
-            <RefinementList
-              className="box-refinement-list"
-              attribute={refinement.attribute}
-              {...refinement.options}
-              translations={{
-                noResults: "No results",
-                placeholder: "",
-              }}
-            />
-          </Box>
+          <RefinementList
+            className="box-refinement-list"
+            attribute={refinement.attribute}
+            {...refinement.options}
+            translations={{
+              noResults: "No results",
+              placeholder: "",
+            }}
+            transformItems={(items: any) => orderBy(items, "label", "asc")}
+          />
         );
       }),
     [refinements]
   );
 
-  const widgetsPanels = useMemo(() => {
-    return widgets.map((widget: any, i: any) => {
-      const refinement = refinements[i];
-      const panelId = getPanelId(refinement);
-      const panelAttributes = getPanelAttributes(refinement);
-      
-      return (
-        <WidgetPanel
-          key={panelId}
-          panelId={panelId}
-          attributes={panelAttributes}
-          header={refinement.header}
-          isOpened={panels[panelId]}
-          onToggle={onToggle}
-        >
-          {widget}
-        </WidgetPanel>
-      );
-    });
-  }, [widgets, refinements, onToggle, panels]);
+  const widgetsPanels = useMemo(
+    () =>
+      widgets.map((widget: any, i: any) => {
+        const refinement = refinements[i];
+        const panelId = getPanelId(refinement);
+        const panelAttributes = getPanelAttributes(refinement);
+
+        return (
+          <WidgetPanel
+            key={panelId}
+            panelId={panelId}
+            attributes={panelAttributes}
+            header={refinement.header}
+            isOpened={panels[panelId]}
+            onToggle={onToggle}
+          >
+            {widget}
+          </WidgetPanel>
+        );
+      }),
+    [widgets, refinements, onToggle, panels]
+  );
 
   const onTogglePanelsClick = useCallback(() => {
     setRefinementsPanelsExpanded((expanded: boolean) => !expanded);
@@ -185,22 +185,6 @@ export default function ExpandablePanelComponent({
               label={`${refinementsPanelsExpanded ? "Collapse" : "Expand"} all`}
             />
           </Button>
-        </Box>
-        <Box className="box-switch-apply-fillter">
-          <FormControlLabel
-            style={{ fontSize: 14 }}
-            control={
-              <IOSSwitch
-                checked={switched}
-                onChange={(e: any) => {
-                  setChangeSwitch(e.target.checked);
-                  onToogleApplyFillter(e.target.checked);
-                }}
-                name="checkedSwitch"
-              />
-            }
-            label="Show only applied filters"
-          />
         </Box>
       </div>
       <DynamicWidgetsCT enabled={dynamicWidgets}>

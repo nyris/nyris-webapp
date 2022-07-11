@@ -37,7 +37,7 @@ function DragDropFile(props: Props) {
       let filters: any[] = [];
       setLoadingLoadFile(true);
       console.log("fs", fs);
-
+      dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
       // TODO support regions
@@ -50,11 +50,9 @@ function DragDropFile(props: Props) {
         });
         payload = {
           ...res,
-          // results: newResult,
           filters,
         };
         console.log("payload", payload);
-
         dispatch(setSearchResults(payload));
         setLoadingLoadFile(false);
         onChangeLoading(false);
@@ -127,7 +125,6 @@ function DragDropFile(props: Props) {
               type="file"
               name="file"
               id="select_file"
-              // className="inputFile"
               placeholder="Choose photo"
               accept={acceptTypes}
               onChange={makeFileHandler((e) => {})}
@@ -155,10 +152,6 @@ function DragDropFile(props: Props) {
                 className="inputFile"
                 placeholder="Choose photo"
                 style={{ display: "block" }}
-                // accept={acceptTypes}
-                // onChange={makeFileHandler((e) => {
-                //   return isCheckImageFile(e);
-                // })}
               />
             </Box>
             <Box style={{ marginTop: 19, zIndex: 109 }} className="box-thumb">

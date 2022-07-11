@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import classNames from "classnames";
 import { useAtomValue } from "jotai/utils";
 import type { MouseEventHandler } from "react";
@@ -13,6 +13,7 @@ import { Button, Typography } from "@material-ui/core";
 import RemoveIcon from "@material-ui/icons/Remove";
 import AddIcon from "@material-ui/icons/Add";
 import { Collapse } from "components/collapse/collapse";
+import isEqual from 'react-fast-compare'
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -79,6 +80,10 @@ function ExpandablePanelComponent({
   );
 }
 
+// export const ExpandablePanelCustom = connectCurrentRefinements<any>(
+//   ExpandablePanelComponent
+// );
+
 export const ExpandablePanelCustom = connectCurrentRefinements<any>(
-  ExpandablePanelComponent
+  memo(ExpandablePanelComponent, isEqual)
 );

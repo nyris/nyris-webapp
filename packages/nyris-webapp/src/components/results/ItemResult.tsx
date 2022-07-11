@@ -36,7 +36,8 @@ function ItemResult(props: Props) {
     handlerCloseGroup,
   } = props;
 
-  const { sku, title, main_image_link, brand, main_offer_link } = dataItem;
+  const { sku, title, main_image_link, brand, main_offer_link, group_id } =
+    dataItem;
   const [showGroup, setShowGroup] = useState<boolean>(false);
 
   const handlerShowGroup = () => {
@@ -52,7 +53,7 @@ function ItemResult(props: Props) {
   return (
     <Box
       className="wrap-main-item-result"
-      style={{ filter: "drop-shadow(0px 0px 6px rgba(170, 171, 181, 0.7))" }}
+      // style={{ boxShadow: "0px 0px 6px #aaabb5b3" }}
     >
       <Box className="box-top">
         {isGroupItem && !showGroup && (
@@ -148,11 +149,11 @@ function ItemResult(props: Props) {
                   background:
                     "linear-gradient(270deg, #56577C 0%, #2B2C46 100%)",
                   borderRadius: 4,
-                  padding: '0 8px'
+                  padding: "0 8px",
                 }}
                 display={"flex"}
-                justifyItems={'center'}
-                alignItems={'center'}
+                justifyItems={"center"}
+                alignItems={"center"}
                 justifyContent={"space-between"}
                 mt={2}
               >

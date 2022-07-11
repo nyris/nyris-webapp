@@ -84,9 +84,6 @@ function AppNewVersion(props: Props) {
         }}
       >
         <Box className="box-content_top">
-          {/* <div className="box-logo">
-            <img src={TranslateIcon} width={32} height={27} alt="logo_icon" />
-          </div> */}
           <div className="box-input">
             <div className="wrap-input-search">
               <Configure filters={filtersString}></Configure>
@@ -96,11 +93,6 @@ function AppNewVersion(props: Props) {
               <CustomSearchBox />
             </div>
           </div>
-          {/* <div className="box-bottom">
-            <Typography className="text-bottom">
-              Search by any name, category, SKU or keyword.
-            </Typography>
-          </div> */}
         </Box>
         <Box className="box-content_bottom">
           <DragDropFile
