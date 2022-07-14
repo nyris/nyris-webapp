@@ -121,11 +121,6 @@ function PaginationItem(props: PaginationItemProps) {
         className="ais-Pagination-link"
         href={createURL(value)}
         onClick={(event) => {
-          // We let the browser handle the native event when the click is modified
-          // (with a special mouse event or with a combination key) for accessibility
-          // purposes. For example, clicking the link while holding the Control
-          // key opens the next search state link in a new tab, but doesn't refine
-          // the search state in the current tab.
           if (isModifierClick(event)) {
             return;
           }

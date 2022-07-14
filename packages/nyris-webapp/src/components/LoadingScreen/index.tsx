@@ -39,10 +39,6 @@ function LoadingScreen({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSearchResults?.hits]);
 
-  console.log('allSearchResults', allSearchResults?.hits);
-  console.log('itemShowDefault', itemShowDefault);
-  
-
   const setListHitDefault = (hits: any) => {
     let newArrayShowGroup: any = [];
     let newArrayShowItem: any = [];

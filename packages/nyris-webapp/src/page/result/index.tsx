@@ -1,3 +1,4 @@
+import React, { memo, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -6,7 +7,6 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-import React, { memo, useEffect, useState } from "react";
 import IconWhatsApp from "common/assets/icons/icon_whatapps.svg";
 import IconEmail from "common/assets/icons/email_share.svg";
 import IconWeChat from "common/assets/icons/icon_chat.svg";
@@ -51,6 +51,7 @@ import { CurrentRefinements } from "components/current-refinements/current-refin
 import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowBackIosOutlinedIcon from "@material-ui/icons/ArrowBackIosOutlined";
+import { CustomPagination } from "components/results/pagination";
 
 interface Props {}
 
@@ -121,12 +122,15 @@ function ResultComponent(props: Props) {
 
   // TODO: rectCoords
 
-  const debounceRectCoords = (value: any) => handlerRectCoords(value);
-  const handlerRectCoords = debounce((value: any) => {
+  const debounceRectCoords = (value: any) => {
+    handlerRectCoords(value);
     dispatch(selectionChanged(value));
+  };
+
+  const handlerRectCoords = debounce((value: any) => {
     setLoading(true);
     return findItemsInSelection(value);
-  }, 500);
+  }, 200);
 
   // TODO: Search offers for image:
   const findItemsInSelection = (r: RectCoords) => {
@@ -262,7 +266,6 @@ function ResultComponent(props: Props) {
                               key={requestImage?.id}
                               onSelectionChange={(r: RectCoords) => {
                                 debounceRectCoords(r);
-                                return;
                               }}
                               image={requestImage?.canvas}
                               selection={selectedRegion || defaultSelection}
@@ -320,6 +323,7 @@ function ResultComponent(props: Props) {
                         padding: "0 20%",
                       }}
                     >
+                      {/* <CustomPagination /> */}
                       <Pagination
                         showFirst={false}
                         translations={{
