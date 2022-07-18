@@ -120,7 +120,6 @@ function ResultComponent(props: Props) {
   };
 
   // TODO: rectCoords
-
   const debounceRectCoords = (value: any) => {
     handlerRectCoords(value);
     dispatch(selectionChanged(value));

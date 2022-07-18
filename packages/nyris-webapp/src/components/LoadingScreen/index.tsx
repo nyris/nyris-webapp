@@ -94,7 +94,7 @@ function LoadingScreen({
         </Box>
       )}
 
-      {!itemShowDefault ? (
+      {itemShowDefault.length === 0 ? (
         <Box>No item to show</Box>
       ) : (
         itemShowDefault.map((hit: any, i: number) => {

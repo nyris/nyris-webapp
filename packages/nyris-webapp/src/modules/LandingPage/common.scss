@@ -963,19 +963,20 @@ button {
       width: calc(100% - 462px);
       // overflow: auto;
       .box-item-result {
-        max-width: calc(192px * 4 + 60px);
+        max-width: calc(192px * 4 + 96px);
         @media screen and (min-width: 2047px) {
           max-width: 1300px;
         }
         display: flex;
         flex-wrap: wrap;
+        gap: 24px;
         // justify-content: space-between;
-        margin: 16px 0;
+        // margin: 16px 0;
         // margin-right: auto !important;
         .wrap-main-item-result {
           max-width: 192px;
           width: 192px;
-          margin: 20px 7px;
+          margin: 20px 0px;
           border-radius: 4px;
           overflow: hidden;
         }
