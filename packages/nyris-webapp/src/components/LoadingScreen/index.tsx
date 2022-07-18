@@ -83,7 +83,7 @@ function LoadingScreen({
     secondArr = secondArr.filter((item) => item.group_id !== group_id);
     setItemShowDefault(firstArr.concat(secondArr));
   };
-  
+
   return (
     <>
       {isLoading && (
@@ -120,6 +120,7 @@ function LoadingScreen({
               handlerCloseGroup={() => handlerCloseGroup(hit, i)}
               isGroupItem={hit?.isGroup}
               moreInfoText={moreInfoText}
+              main_image_link={hit?.main_image_link}
             />
           );
         })

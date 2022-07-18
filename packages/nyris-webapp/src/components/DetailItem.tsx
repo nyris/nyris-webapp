@@ -34,12 +34,37 @@ function DetailItem(props: Props) {
   } = props;
   console.log("props", props);
   const [collapDescription, setCollapDescription] = useState(false);
-  const { img, title, sku, main_image_link, main_offer_link } = dataItem;
+  const { img, title, sku, main_offer_link } = dataItem;
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
-
+  const [urlImage, setUrlImage] = useState<string>('');
   useEffect(() => {
     checkDataItemResult(dataItem);
+    handlerCheckUrlImage(dataItem?.main_image_link)
   }, [dataItem]);
+
+  console.log('3213232 dataItem', dataItem);
+  
+
+  const handlerCheckUrlImage = (url: any, timeout?: number) => {
+    timeout = timeout || 5000;
+    var timedOut = false,
+      timer: any;
+    var img = new Image();
+    img.onerror = img.onabort = function () {
+      if (!timedOut) {
+        clearTimeout(timer);
+        setUrlImage("");
+      }
+    };
+    img.onload = function () {
+      if (!timedOut) {
+        clearTimeout(timer);
+        setUrlImage(url);
+        return;
+      }
+    };
+    img.src = url;
+  };
 
   const checkDataItemResult = (dataItem: any) => {
     if (!dataItem) {
@@ -78,13 +103,10 @@ function DetailItem(props: Props) {
         <Button
           className="icon-style"
           onClick={() => {
-            if (!main_image_link) {
-              console.log("321");
-
-              return;
+            if (urlImage.length > 1) {
+              onSearchImage(urlImage);
+              handlerCloseModal();
             }
-            onSearchImage(main_image_link);
-            handlerCloseModal();
           }}
         >
           <img src={IconSearchImage} alt="icon_picture" />

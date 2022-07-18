@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Typography } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import IconSupport2 from "common/assets/icons/item_support_icon.svg";
 import IconLike from "common/assets/icons/icon_like.svg";
 import IconDisLike from "common/assets/icons/icon_dislike.svg";
@@ -7,6 +7,7 @@ import IconShare from "common/assets/icons/Fill.svg";
 import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import IconOpenLink from "common/assets/icons/Union.svg";
 import IconSearchImage from "common/assets/icons/icon_search_image2.svg";
+import NoImage from "common/assets/images/unnamed.png";
 interface Props {
   dataItem: any;
   handlerToggleModal?: any;
@@ -20,6 +21,7 @@ interface Props {
   isGroupItem?: boolean;
   moreInfoText?: string;
   handlerCloseGroup?: any;
+  main_image_link?: any;
 }
 
 function ItemResult(props: Props) {
@@ -34,11 +36,17 @@ function ItemResult(props: Props) {
     isGroupItem,
     moreInfoText,
     handlerCloseGroup,
+    main_image_link,
   } = props;
-
-  const { sku, title, main_image_link, brand, main_offer_link, group_id } =
-    dataItem;
+  const [urlImage, setUrlImage] = useState<string>('');
+  const { sku, title, brand, main_offer_link } = dataItem;
   const [showGroup, setShowGroup] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (main_image_link) {
+      handlerCheckUrlImage(main_image_link);
+    }
+  }, [main_image_link]);
 
   const handlerShowGroup = () => {
     handlerGroupItem();
@@ -50,16 +58,36 @@ function ItemResult(props: Props) {
     setShowGroup(false);
   };
 
+  const handlerCheckUrlImage = (url: any, timeout?: number) => {
+    timeout = timeout || 5000;
+    var timedOut = false,
+      timer: any;
+    var img = new Image();
+    img.onerror = img.onabort = function () {
+      if (!timedOut) {
+        clearTimeout(timer);
+        setUrlImage('');
+      }
+    };
+    img.onload = function () {
+      if (!timedOut) {
+        clearTimeout(timer);
+        setUrlImage(url);
+        return;
+      }
+    };
+    img.src = url;
+  };
+
   return (
     <Box
       className="wrap-main-item-result"
-      // style={{ boxShadow: "0px 0px 6px #aaabb5b3" }}
     >
       <Box className="box-top">
         {isGroupItem && !showGroup && (
           <Box className="btn-show-result">
             <Button onClick={handlerShowGroup}>
-              Show group{" "}
+              Show group
               <ChevronRightOutlinedIcon style={{ fontSize: "10px" }} />
             </Button>
           </Box>
@@ -67,7 +95,7 @@ function ItemResult(props: Props) {
         {isGroupItem && showGroup && (
           <Box className="btn-show-result">
             <Button onClick={handlerHideGroup}>
-              Close group{" "}
+              Close group
               <ChevronRightOutlinedIcon style={{ fontSize: "10px" }} />
             </Button>
           </Box>
@@ -77,7 +105,9 @@ function ItemResult(props: Props) {
             <Button
               onClick={(e: any) => {
                 e.preventDefault();
-                onSearchImage(main_image_link);
+                if(urlImage.length > 1){
+                  onSearchImage(dataItem?.main_image_link);
+                }
               }}
             >
               <img src={IconSearchImage} alt="" width={30} height={30} />
@@ -89,12 +119,21 @@ function ItemResult(props: Props) {
             style={{ width: "100%", height: "100%", padding: 0, zIndex: 9 }}
             onClick={handlerToggleModal}
           >
-            <img
-              src={dataItem?.img?.url ? dataItem?.img?.url : main_image_link}
-              alt="image_item"
-              className="img-style"
-              style={{ width: "100%", height: "100%" }}
-            />
+            {urlImage?.length > 1 ? (
+              <img
+                src={main_image_link}
+                alt="image_item"
+                className="img-style"
+                style={{ width: "100%", height: "100%" }}
+              />
+            ) : (
+              <img
+                src={NoImage}
+                alt="image_item"
+                className="img-style"
+                style={{ width: "100%", height: "100%" }}
+              />
+            )}
           </Button>
           {isHover && (
             <Box className="box-hover">

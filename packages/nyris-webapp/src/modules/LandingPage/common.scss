@@ -73,7 +73,9 @@ button {
 .text-gray {
   color: #55566b;
 }
-
+.text-f32 {
+  font-size: 32px !important;
+}
 .text-f40 {
   font-size: 40px !important;
   line-height: 37px !important;
@@ -540,7 +542,7 @@ button {
       position: relative;
       .img-style {
         // width: 160px !important;
-        height: 153px !important;
+        height: 159px !important;
       }
       &:hover .box-hover {
         display: flex;

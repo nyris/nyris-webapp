@@ -51,7 +51,6 @@ import { CurrentRefinements } from "components/current-refinements/current-refin
 import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowBackIosOutlinedIcon from "@material-ui/icons/ArrowBackIosOutlined";
-import { CustomPagination } from "components/results/pagination";
 
 interface Props {}
 
