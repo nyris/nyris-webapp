@@ -7,8 +7,8 @@ import { useAppDispatch, useAppSelector } from "Store/Store";
 import { reset } from "Store/Search";
 import { debounce } from "lodash";
 import { useCallback } from "react";
-import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
 import CloseIcon from "@material-ui/icons/Close";
+import IconSearch from "common/assets/icons/icon_search.svg";
 
 const SearchBox = ({ currentRefinement, refine }: any) => {
   const stateGlobal = useAppSelector((state) => state);
@@ -67,9 +67,9 @@ const SearchBox = ({ currentRefinement, refine }: any) => {
             </Box>
 
             <input
-              style={{ border: "0px", width: "100%" }}
+              style={{ border: "0px", width: "100%", fontSize: 14, color:'#2B2C46' }}
               className="input-search"
-              placeholder="Search by any name, category, SKU or keyword"
+              placeholder="Search"
               value={valueInput}
               onChange={(event) => {
                 setValueInput(event.currentTarget.value);
@@ -77,10 +77,13 @@ const SearchBox = ({ currentRefinement, refine }: any) => {
               }}
               ref={focusInp}
             />
-            <SearchRoundedIcon
+            <Box className="icon-search">
+              <img src={IconSearch} alt="" width={24} height={24} />
+            </Box>
+            {/* <SearchRoundedIcon
               className="icon-search"
               style={{ color: "#55566B", fontSize: "20px" }}
-            />
+            /> */}
           </Box>
           {history.location.pathname === "/result" && (
             <Button

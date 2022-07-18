@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import "./common.scss";
 import IconAdmin from "common/assets/icons/admin.svg";
 import LogoNyris from "common/assets/icons/nyris_logo.svg";
+import IconSupport from "common/assets/icons/support.svg";
 function HeaderNewVersion(): JSX.Element {
   const handleCheckMatchLink = (match: any, location: any) => {
     let active = false;
@@ -51,6 +52,7 @@ function HeaderNewVersion(): JSX.Element {
             </span>
           </NavLink>
         </Grid>
+         */}
         <Grid item className="item-nav">
           <NavLink
             activeClassName="active"
@@ -62,10 +64,10 @@ function HeaderNewVersion(): JSX.Element {
           >
             <span className="d-none d-sm-block ms-4 px-2 py-1 border-bottom-1">
               Support
-              <img width={10} height={10} src={`${IconSupport}`} alt="" />
+              <img width={20} height={20} src={`${IconSupport}`} alt="" />
             </span>
           </NavLink>
-        </Grid> */}
+        </Grid>
         <Grid item className="item-nav">
           <NavLink
             activeClassName="active"
@@ -76,8 +78,8 @@ function HeaderNewVersion(): JSX.Element {
             className="nav-link p-0 menu-children rounded-0"
           >
             <span className="d-none d-sm-block ms-4 px-2 py-1 border-bottom-1">
-              {/* My Account */}
-              <img width={20} height={20} src={`${IconAdmin}`} alt=""/>
+              My Account
+              <img width={20} height={20} src={`${IconAdmin}`} alt="" />
             </span>
           </NavLink>
         </Grid>

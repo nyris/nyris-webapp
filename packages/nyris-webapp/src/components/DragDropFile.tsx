@@ -3,19 +3,22 @@ import React from "react";
 import { useDropzone } from "react-dropzone";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import {createImage, findByImage, findRegions} from "services/image";
+import { createImage, findByImage, findRegions } from "services/image";
 import {
   setSearchResults,
   loadingActionResults,
-  setRequestImage, setRegions, setSelectedRegion, setImageSearchInput,
+  setRequestImage,
+  setRegions,
+  setSelectedRegion,
+  setImageSearchInput,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import { useHistory } from "react-router-dom";
-import ExampleImages from "./ExampleImages";
+// import ExampleImages from "./ExampleImages";
 import { feedbackClickEpic } from "services/Feedback";
 import { useState } from "react";
-import {RectCoords} from "@nyris/nyris-api";
-
+import { RectCoords } from "@nyris/nyris-api";
+import IconDownload from "common/assets/images/Icon_downLoad.svg";
 interface Props {
   acceptTypes: any;
   onChangeLoading: any;
@@ -73,7 +76,7 @@ function DragDropFile(props: Props) {
 
     let image = await createImage(url);
     dispatch(setRequestImage(image));
-    let searchRegion: RectCoords| undefined = undefined;
+    let searchRegion: RectCoords | undefined = undefined;
     if (settings.regions) {
       let res = await findRegions(image, settings);
       dispatch(setRegions(res.regions));
@@ -140,9 +143,15 @@ function DragDropFile(props: Props) {
                 },
               })}
             >
-              <label htmlFor="select_file" className="text-f20 text-bold">
-                <span className="box-blue">Choose photo</span> or drag & drop it
-                here
+              <Box style={{ marginBottom: 16 }}>
+                <img src={IconDownload} alt="" width={48} height={48} />
+              </Box>
+              <label
+                htmlFor="select_file"
+                className=""
+                style={{ color: "#2B2C46", fontSize: 14 }}
+              >
+                <span className="fw-700">Choose a file</span> or drag it here
               </label>
               <input
                 {...getInputProps()}
@@ -154,7 +163,7 @@ function DragDropFile(props: Props) {
                 style={{ display: "block" }}
               />
             </Box>
-            <Box style={{ marginTop: 19, zIndex: 109 }} className="box-thumb">
+            {/* <Box style={{ marginTop: 19, zIndex: 109 }} className="box-thumb">
               <Box display={"flex"} alignItems={"flex-end"}>
                 <ExampleImages
                   images={settings.exampleImages}
@@ -163,7 +172,7 @@ function DragDropFile(props: Props) {
                   }}
                 />
               </Box>
-            </Box>
+            </Box> */}
           </>
         )}
       </div>

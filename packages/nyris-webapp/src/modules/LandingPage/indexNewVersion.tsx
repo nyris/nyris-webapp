@@ -84,6 +84,9 @@ function AppNewVersion(props: Props) {
         }}
       >
         <Box className="box-content_top">
+          <Box className="fw-700 text-f32 text-dark2">
+            <h1>Visual Search Suite – Nyris</h1>
+          </Box>
           <div className="box-input">
             <div className="wrap-input-search">
               <Configure filters={filtersString}></Configure>
