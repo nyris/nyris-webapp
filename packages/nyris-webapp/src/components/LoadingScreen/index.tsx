@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box } from "@material-ui/core";
 import { connectStateResults } from "react-instantsearch-dom";
 import ItemResult from "components/results/ItemResult";
@@ -28,7 +28,6 @@ function LoadingScreen({
   const [isLoading] = useState<boolean>(false);
   const [hitGroups, setHitGroups] = useState<any>({});
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
-
   useEffect(() => {
     if (!allSearchResults?.hits) {
       setItemShowDefault([]);
@@ -51,12 +50,14 @@ function LoadingScreen({
         payload = {
           ...item[0],
           isGroup: true,
+          collap: true,
         };
         newArrayShowItem.push(payload);
       } else {
         payload = {
           ...item[0],
           isGroup: false,
+          collap: null,
         };
         newArrayShowItem.push(payload);
       }
@@ -68,6 +69,7 @@ function LoadingScreen({
     const group_id = hit.group_id;
     let newItemList = [...itemShowDefault];
     const firstArr = newItemList.slice(0, index + 1);
+    firstArr.filter((item) => item.group_id === group_id)[0].collap = false;
     let secondArr = newItemList.slice(index + 1, newItemList.length);
     let otherItemsInGroup = [...hitGroups[group_id]];
     otherItemsInGroup.shift();
@@ -79,10 +81,53 @@ function LoadingScreen({
     const group_id = hit.group_id;
     let newItemList = [...itemShowDefault];
     const firstArr = newItemList.slice(0, index + 1);
+    firstArr.filter((item) => item.group_id === group_id)[0].collap = true;
     let secondArr = newItemList.slice(index + 1, newItemList.length);
-    secondArr = secondArr.filter((item) => item.group_id !== group_id);
+    secondArr = secondArr.filter((item) => {
+      return item.group_id !== group_id;
+    });
     setItemShowDefault(firstArr.concat(secondArr));
   };
+
+  console.log("aaa itemShowDefault", itemShowDefault);
+
+  const renderItem = useMemo(() => {
+    if (itemShowDefault.length === 0) {
+      return;
+    }
+    return itemShowDefault.map((hit: any, i: number) => {
+      return (
+        <Box key={i}>
+          <ItemResult
+            dataItem={hit}
+            handlerToggleModal={() => {
+              handlerToggleModal(hit);
+            }}
+            handlerToggleModalShare={() => setOpenModalShare(true)}
+            indexItem={i}
+            isHover={false}
+            onSearchImage={(url: string) => {
+              setSearchStateInput({});
+              getUrlToCanvasFile(url);
+              setLoading(true);
+            }}
+            handlerFeedback={(value: string) => {
+              sendFeedBackAction(value);
+            }}
+            handlerGroupItem={(hitItem: any, index: number) =>
+              handlerGroupItem(hitItem, index)
+            }
+            handlerCloseGroup={(hitItem: any, index: number) =>
+              handlerCloseGroup(hitItem, index)
+            }
+            isGroupItem={hit?.isGroup}
+            moreInfoText={moreInfoText}
+            main_image_link={hit?.main_image_link}
+          />
+        </Box>
+      );
+    });
+  }, [itemShowDefault]);
 
   return (
     <>
@@ -94,37 +139,7 @@ function LoadingScreen({
         </Box>
       )}
 
-      {itemShowDefault.length === 0 ? (
-        <Box>No item to show</Box>
-      ) : (
-        itemShowDefault.map((hit: any, i: number) => {
-          return (
-            <ItemResult
-              key={i}
-              dataItem={hit}
-              handlerToggleModal={() => {
-                handlerToggleModal(hit);
-              }}
-              handlerToggleModalShare={() => setOpenModalShare(true)}
-              indexItem={hit?.__position}
-              isHover={false}
-              onSearchImage={(url: string) => {
-                setSearchStateInput({});
-                getUrlToCanvasFile(url);
-                setLoading(true);
-              }}
-              handlerFeedback={(value: string) => {
-                sendFeedBackAction(value);
-              }}
-              handlerGroupItem={() => handlerGroupItem(hit, i)}
-              handlerCloseGroup={() => handlerCloseGroup(hit, i)}
-              isGroupItem={hit?.isGroup}
-              moreInfoText={moreInfoText}
-              main_image_link={hit?.main_image_link}
-            />
-          );
-        })
-      )}
+      {itemShowDefault.length === 0 ? <Box>No item to show</Box> : renderItem}
     </>
   );
 }

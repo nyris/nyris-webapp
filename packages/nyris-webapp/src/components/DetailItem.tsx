@@ -34,16 +34,15 @@ function DetailItem(props: Props) {
   } = props;
   console.log("props", props);
   const [collapDescription, setCollapDescription] = useState(false);
-  const { img, title, sku, main_offer_link } = dataItem;
+  const { img, title, sku, main_offer_link, brand } = dataItem;
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
-  const [urlImage, setUrlImage] = useState<string>('');
+  const [urlImage, setUrlImage] = useState<string>("");
   useEffect(() => {
     checkDataItemResult(dataItem);
-    handlerCheckUrlImage(dataItem?.main_image_link)
+    handlerCheckUrlImage(dataItem?.main_image_link);
   }, [dataItem]);
 
-  console.log('3213232 dataItem', dataItem);
-  
+  console.log("3213232 dataItem", dataItem);
 
   const handlerCheckUrlImage = (url: any, timeout?: number) => {
     timeout = timeout || 5000;
@@ -125,13 +124,28 @@ function DetailItem(props: Props) {
       >
         <Box className="box-top">
           <Grid container justifyContent="space-between">
-            <Grid item xs={10}>
+            <Grid item xs={12}>
               <Typography className="text-f10 fw-500 max-line-1">
                 SKU: {sku}
               </Typography>
+              <Box
+                borderRadius={16}
+                style={{
+                  backgroundColor: "#E4E3FF",
+                  width: "fit-content",
+                  padding: "3px 5px",
+                  marginTop: 8,
+                }}
+              >
+                <Typography
+                  style={{ color: "#3E36DC", fontSize: 10, fontWeight: 700 }}
+                >
+                  {brand}
+                </Typography>
+              </Box>
               <Typography
                 className="text-f22 fw-600 text-dark"
-                style={{ margin: "20px 0 10px" }}
+                style={{ margin: "8px 0px 0 0px" }}
               >
                 {title}
               </Typography>
@@ -146,6 +160,7 @@ function DetailItem(props: Props) {
                     color: "#3E36DC",
                     fontSize: 14,
                     textTransform: "initial",
+                    paddingLeft: 0,
                   }}
                   onClick={() => setCollapDescription(!collapDescription)}
                 >
@@ -172,6 +187,7 @@ function DetailItem(props: Props) {
                 justifyContent={"space-between"}
                 alignItems={"center"}
                 mt={2}
+                className="btn-detail-item"
               >
                 <Button
                   style={{
@@ -181,6 +197,7 @@ function DetailItem(props: Props) {
                     padding: 0,
                   }}
                   onClick={() => window.open(`${main_offer_link}`, "_blank")}
+                  
                 >
                   <Typography className="text-f18 fw-600 text-white">
                     {moreInfoText ? moreInfoText : "MORE INFO"}

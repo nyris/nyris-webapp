@@ -1,11 +1,12 @@
 import { Box } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import "./common.scss";
+// import TranslateIcon from "common/assets/icons/translate_icon.svg";
 import DragDropFile from "components/DragDropFile";
 import { cadExtensions } from "@nyris/nyris-api";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import { changeValueTextSearch, setUpdateSession } from "Store/Search";
-import {  useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   Configure,
   InstantSearch,
@@ -15,6 +16,8 @@ import algoliasearch from "algoliasearch/lite";
 import CustomSearchBox from "components/input/inputSearch";
 import { createSessionByApi } from "../../services/session";
 import { AlgoliaSettings } from "../../types";
+import IconSupport from "common/assets/icons/support3.svg";
+import { useMediaQuery } from 'react-responsive'
 
 interface Props {}
 
@@ -27,6 +30,8 @@ function AppNewVersion(props: Props) {
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   searchClient.initIndex(indexName);
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' })
+
 
   useEffect(() => {
     const createSession = async () => {
@@ -66,11 +71,14 @@ function AppNewVersion(props: Props) {
 
   return (
     <Box className={`box-content-main ${isLoading ? "loading" : ""}`}>
-      {/* <Box className="btn-open-support">
-        <Link to={"/support"} style={{ color: "#3E36DC" }}>
-          <img src={IconSupport} alt="" width={16} height={16} />
-        </Link>
-      </Box> */}
+      {isMobile && (
+        <Box className="btn-open-support">
+          <Link to={"/support"} style={{ color: "#3E36DC" }}>
+            <img src={IconSupport} alt="" width={16} height={16} />
+          </Link>
+        </Box>
+      )}
+
       <InstantSearch
         indexName={indexName}
         searchClient={searchClient}

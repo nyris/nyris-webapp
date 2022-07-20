@@ -4,22 +4,25 @@ import ClearOutlinedIcon from "@material-ui/icons/ClearOutlined";
 import { connectSearchBox } from "react-instantsearch-dom";
 import { useHistory } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import { reset } from "Store/Search";
+import { reset, setImageSearchInput, setRequestImage, setSearchResults } from "Store/Search";
 import { debounce } from "lodash";
 import { useCallback } from "react";
 import CloseIcon from "@material-ui/icons/Close";
 import IconSearch from "common/assets/icons/icon_search.svg";
-
+import IconButton from "@material-ui/core/IconButton";
+import PhotoCamera from "@material-ui/icons/PhotoCamera";
+import { useDropzone } from "react-dropzone";
+import { createImage, findByImage } from "services/image";
+import IconCamera from "common/assets/icons/camera.svg";
 const SearchBox = ({ currentRefinement, refine }: any) => {
   const stateGlobal = useAppSelector((state) => state);
-  const { search } = stateGlobal;
+  const { search, settings } = stateGlobal;
   const { imageThumbSearchInput } = search;
   const focusInp: any = useRef();
   const history = useHistory();
   const [, setShowBtnClear] = useState<boolean>(true);
   const [valueInput, setValueInput] = useState<string>("");
   const dispatch = useAppDispatch();
-
   useEffect(() => {
     if (focusInp?.current) {
       focusInp?.current.focus();
@@ -44,6 +47,37 @@ const SearchBox = ({ currentRefinement, refine }: any) => {
     []
   );
 
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: async (fs: File[]) => {
+      // onChangeLoading(true);
+      console.log("321");
+      let payload: any;
+      let filters: any[] = [];
+      // setLoadingLoadFile(true);
+      console.log("fs", fs);
+      dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
+      let image = await createImage(fs[0]);
+      dispatch(setRequestImage(image));
+      // TODO support regions
+      return findByImage(image, settings).then((res: any) => {
+        res?.results.map((item: any) => {
+          filters.push({
+            sku: item.sku,
+            score: item.score,
+          });
+        });
+        payload = {
+          ...res,
+          filters,
+        };
+        console.log("payload", payload);
+        dispatch(setSearchResults(payload));
+        // history.push("/result");
+        // return dispatch(showFeedback());
+      });
+    },
+  });
+
   return (
     <Box className="wrap-input-search">
       <Box p={2} display={"flex"} className="box-input-search">
@@ -67,7 +101,12 @@ const SearchBox = ({ currentRefinement, refine }: any) => {
             </Box>
 
             <input
-              style={{ border: "0px", width: "100%", fontSize: 14, color:'#2B2C46' }}
+              style={{
+                border: "0px",
+                width: "100%",
+                fontSize: 14,
+                color: "#2B2C46",
+              }}
               className="input-search"
               placeholder="Search"
               value={valueInput}
@@ -99,6 +138,30 @@ const SearchBox = ({ currentRefinement, refine }: any) => {
               <ClearOutlinedIcon style={{ fontSize: 12, color: "#2B2C46" }} />
             </Button>
           )}
+          <Box>
+            <input
+              accept="image/*"
+              id="icon-button-file"
+              type="file"
+              style={{ display: "none" }}
+              {...getInputProps({
+                onClick: (e) => {
+                  e.stopPropagation();
+                },
+              })}
+            />
+            <label htmlFor="icon-button-file">
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="span"
+                style={{width: 32, height: 32, borderRadius: '100%', padding: 7, backgroundColor: '#F3F3F5'}}
+              >
+                <img src={IconCamera} alt="" width={18} height={18} />
+                
+              </IconButton>
+            </label>
+          </Box>
         </form>
       </Box>
     </Box>

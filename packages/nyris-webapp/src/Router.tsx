@@ -10,7 +10,6 @@ import SearchHistory from "page/History";
 import Saved from "page/Saved";
 import Profile from "page/Profile";
 import SupportPage from "page/Support";
-// import TestComponent from "page/Test";
 
 interface PrivateRouteProps {
   component: ReactNode;

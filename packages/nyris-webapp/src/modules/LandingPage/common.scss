@@ -182,6 +182,19 @@ button {
     }
   }
 }
+
+.btn-detail-item {
+  background: linear-gradient(to left, #56577c 10%, #2b2c46 80%) !important;
+  background-size: 100% 200% !important; 
+  background-position: left bottom;
+  transition: all 1s ease-out;
+  
+  &:hover {
+    background-position: left bottom !important;
+    // background-size: 200% 100% !important;
+  }
+}
+
 .box-wrap-loading {
   position: absolute;
   background: #00000075;
@@ -282,7 +295,7 @@ button {
 
 .box-modal-default {
   min-height: 230px;
-  width: 408px;
+  width: 640px;
   min-height: 468px;
   min-width: 330px;
   display: flex;
@@ -432,6 +445,9 @@ button {
       .btn-item {
         width: fit-content !important;
         min-width: auto !important;
+        &:hover {
+          background-color: initial !important;
+        }
         img {
           width: 20px;
         }
@@ -579,6 +595,9 @@ button {
         width: fit-content !important;
         min-width: auto !important;
         padding: 0 5px;
+        &:hover {
+          background-color: initial !important;
+        }
         &:first-child {
           padding-left: 0;
         }
@@ -592,6 +611,9 @@ button {
         width: fit-content !important;
         min-width: auto !important;
         padding: 0 5px;
+        &:hover {
+          background-color: initial !important;
+        }
         &:first-child {
           padding-left: 0;
         }
@@ -865,7 +887,7 @@ button {
     height: calc(100vh - 180px);
     display: flex;
     justify-content: space-between;
-    overflow: auto;
+    // overflow: auto;
     position: relative;
     .btn-open-support {
       background: linear-gradient(45deg, #3e36dc 14.84%, #00ff94 85.16%);
@@ -960,8 +982,9 @@ button {
       }
     }
     .col-right {
-      width: calc(100% - 462px);
-      // overflow: auto;
+      // width: calc(100% - 462px);
+      overflow: auto;
+      width: 100%;
       .box-item-result {
         max-width: calc(192px * 4 + 96px);
         @media screen and (min-width: 2047px) {
@@ -1307,7 +1330,7 @@ button {
       border: 0px !important;
       &::placeholder {
         font-size: 14px !important;
-        color: #2B2C46 !important;
+        color: #2b2c46 !important;
         font-weight: 500 !important;
       }
       &::-webkit-search-cancel-button {
@@ -1583,6 +1606,8 @@ button {
   margin-right: 16px;
   width: 100%;
   box-shadow: 3px -2px 3px -3px #d3d4d8;
+  overflow-x: hidden;
+  overflow-y: auto;
   // padding-right: 24px;
   // padding-left: 24px;
   background: #fff;

@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Typography } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import IconSupport2 from "common/assets/icons/item_support_icon.svg";
 import IconLike from "common/assets/icons/icon_like.svg";
 import IconDisLike from "common/assets/icons/icon_dislike.svg";
@@ -37,10 +37,10 @@ function ItemResult(props: Props) {
     moreInfoText,
     handlerCloseGroup,
     main_image_link,
+    indexItem,
   } = props;
-  const [urlImage, setUrlImage] = useState<string>('');
-  const { sku, title, brand, main_offer_link } = dataItem;
-  const [showGroup, setShowGroup] = useState<boolean>(false);
+  const [urlImage, setUrlImage] = useState<string>("");
+  const { sku, title, brand, main_offer_link, collap } = dataItem;
 
   useEffect(() => {
     if (main_image_link) {
@@ -49,13 +49,11 @@ function ItemResult(props: Props) {
   }, [main_image_link]);
 
   const handlerShowGroup = () => {
-    handlerGroupItem();
-    setShowGroup(true);
+    handlerGroupItem(dataItem, indexItem);
   };
 
   const handlerHideGroup = () => {
-    handlerCloseGroup();
-    setShowGroup(false);
+    handlerCloseGroup(dataItem, indexItem);
   };
 
   const handlerCheckUrlImage = (url: any, timeout?: number) => {
@@ -66,7 +64,7 @@ function ItemResult(props: Props) {
     img.onerror = img.onabort = function () {
       if (!timedOut) {
         clearTimeout(timer);
-        setUrlImage('');
+        setUrlImage("");
       }
     };
     img.onload = function () {
@@ -78,13 +76,13 @@ function ItemResult(props: Props) {
     };
     img.src = url;
   };
-
+  // console.log('showGroup title',title, showGroup);
+  console.log('collap', collap);
+  
   return (
-    <Box
-      className="wrap-main-item-result"
-    >
+    <Box className="wrap-main-item-result">
       <Box className="box-top">
-        {isGroupItem && !showGroup && (
+        {isGroupItem && collap && (
           <Box className="btn-show-result">
             <Button onClick={handlerShowGroup}>
               Show group
@@ -92,7 +90,7 @@ function ItemResult(props: Props) {
             </Button>
           </Box>
         )}
-        {isGroupItem && showGroup && (
+        {isGroupItem && !collap && (
           <Box className="btn-show-result">
             <Button onClick={handlerHideGroup}>
               Close group
@@ -100,12 +98,12 @@ function ItemResult(props: Props) {
             </Button>
           </Box>
         )}
-        {!isHover && (
+        {!isHover && urlImage?.length > 1 && (
           <Box className="box-icon-modal">
             <Button
               onClick={(e: any) => {
                 e.preventDefault();
-                if(urlImage.length > 1){
+                if (urlImage.length > 1) {
                   onSearchImage(dataItem?.main_image_link);
                 }
               }}
@@ -288,4 +286,4 @@ function ItemResult(props: Props) {
   );
 }
 
-export default ItemResult;
+export default memo(ItemResult);

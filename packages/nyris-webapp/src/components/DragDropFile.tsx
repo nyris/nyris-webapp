@@ -3,7 +3,7 @@ import React from "react";
 import { useDropzone } from "react-dropzone";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import { createImage, findByImage, findRegions } from "services/image";
+import { createImage, findByImage } from "services/image";
 import {
   setSearchResults,
   loadingActionResults,
@@ -65,31 +65,31 @@ function DragDropFile(props: Props) {
     },
   });
 
-  const getUrlToCanvasFile = async (url: string, position?: number) => {
-    onChangeLoading(true);
-    dispatch(showResults());
-    dispatch(loadingActionResults());
-    dispatch(setImageSearchInput(url));
-    if (position) {
-      feedbackClickEpic(searchState, position);
-    }
+  // const getUrlToCanvasFile = async (url: string, position?: number) => {
+  //   onChangeLoading(true);
+  //   dispatch(showResults());
+  //   dispatch(loadingActionResults());
+  //   dispatch(setImageSearchInput(url));
+  //   if (position) {
+  //     feedbackClickEpic(searchState, position);
+  //   }
 
-    let image = await createImage(url);
-    dispatch(setRequestImage(image));
-    let searchRegion: RectCoords | undefined = undefined;
-    if (settings.regions) {
-      let res = await findRegions(image, settings);
-      dispatch(setRegions(res.regions));
-      searchRegion = res.selectedRegion;
-      dispatch(setSelectedRegion(searchRegion));
-    }
-    return findByImage(image, settings, searchRegion).then((res) => {
-      dispatch(setSearchResults(res));
-      onChangeLoading(false);
-      history.push("/result");
-      return dispatch(showFeedback());
-    });
-  };
+  //   let image = await createImage(url);
+  //   dispatch(setRequestImage(image));
+  //   let searchRegion: RectCoords | undefined = undefined;
+  //   if (settings.regions) {
+  //     let res = await findRegions(image, settings);
+  //     dispatch(setRegions(res.regions));
+  //     searchRegion = res.selectedRegion;
+  //     dispatch(setSelectedRegion(searchRegion));
+  //   }
+  //   return findByImage(image, settings, searchRegion).then((res) => {
+  //     dispatch(setSearchResults(res));
+  //     onChangeLoading(false);
+  //     history.push("/result");
+  //     return dispatch(showFeedback());
+  //   });
+  // };
 
   return (
     <Box
