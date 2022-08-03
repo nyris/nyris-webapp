@@ -41,7 +41,11 @@ const initialState: SearchState = {
   categoryPredictions: [],
   codes: [],
   errorMessage: "",
-  valueTextSearch: {},
+  valueTextSearch: {
+    configure: { filters: "" },
+    page: 1,
+    refinementList: "",
+  },
   resultSearchText: [],
   filters: [],
   configureFilter: {},

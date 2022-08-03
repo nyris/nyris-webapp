@@ -8,7 +8,7 @@ interface Props {
   allSearchResults: any;
   handlerToggleModal: any;
   setOpenModalShare: any;
-  setSearchStateInput: any;
+  setSearchStateInput?: any;
   getUrlToCanvasFile: any;
   setLoading: any;
   sendFeedBackAction: any;
@@ -89,8 +89,6 @@ function LoadingScreen({
     setItemShowDefault(firstArr.concat(secondArr));
   };
 
-  console.log("aaa itemShowDefault", itemShowDefault);
-
   const renderItem = useMemo(() => {
     if (itemShowDefault.length === 0) {
       return;
@@ -127,6 +125,7 @@ function LoadingScreen({
         </Box>
       );
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemShowDefault]);
 
   return (

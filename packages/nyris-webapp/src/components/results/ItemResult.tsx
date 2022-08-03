@@ -76,8 +76,6 @@ function ItemResult(props: Props) {
     };
     img.src = url;
   };
-  // console.log('showGroup title',title, showGroup);
-  console.log('collap', collap);
   
   return (
     <Box className="wrap-main-item-result">

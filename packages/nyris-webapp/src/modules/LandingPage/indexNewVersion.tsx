@@ -5,11 +5,10 @@ import "./common.scss";
 import DragDropFile from "components/DragDropFile";
 import { cadExtensions } from "@nyris/nyris-api";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import { changeValueTextSearch, setUpdateSession } from "Store/Search";
-import { Link, useHistory } from "react-router-dom";
+import {  setUpdateSession } from "Store/Search";
+import { Link } from "react-router-dom";
 import {
   Configure,
-  InstantSearch,
   connectInfiniteHits,
 } from "react-instantsearch-dom";
 import algoliasearch from "algoliasearch/lite";
@@ -17,21 +16,18 @@ import CustomSearchBox from "components/input/inputSearch";
 import { createSessionByApi } from "../../services/session";
 import { AlgoliaSettings } from "../../types";
 import IconSupport from "common/assets/icons/support3.svg";
-import { useMediaQuery } from 'react-responsive'
+import { useMediaQuery } from "react-responsive";
 
 interface Props {}
 
 function AppNewVersion(props: Props) {
   const dispatch = useAppDispatch();
-  const history = useHistory();
   const { settings, search } = useAppSelector((state) => state);
-  const [searchStateInput, setSearchStateInput] = useState<any>({});
   const [isLoading, setLoading] = useState<boolean>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   searchClient.initIndex(indexName);
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' })
-
+  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
 
   useEffect(() => {
     const createSession = async () => {
@@ -78,39 +74,27 @@ function AppNewVersion(props: Props) {
           </Link>
         </Box>
       )}
-
-      <InstantSearch
-        indexName={indexName}
-        searchClient={searchClient}
-        searchState={searchStateInput}
-        onSearchStateChange={(state) => {
-          setSearchStateInput(state);
-          dispatch(changeValueTextSearch(state));
-          history.push("/result");
-        }}
-      >
-        <Box className="box-content_top">
-          <Box className="fw-700 text-f32 text-dark2">
-            <h1>Visual Search Suite – Nyris</h1>
-          </Box>
-          <div className="box-input">
-            <div className="wrap-input-search">
-              <Configure filters={filtersString}></Configure>
-              <div style={{ display: "none" }}>
-                <CustomInfiniteHits />
-              </div>
-              <CustomSearchBox />
+      <Box className="box-content_top">
+        <Box className="fw-700 text-f32 text-dark2">
+          <h1>Visual Search Suite – Nyris</h1>
+        </Box>
+        <div className="box-input">
+          <div className="wrap-input-search">
+            <Configure filters={filtersString}></Configure>
+            <div style={{ display: "none" }}>
+              <CustomInfiniteHits />
             </div>
+            <CustomSearchBox />
           </div>
-        </Box>
-        <Box className="box-content_bottom">
-          <DragDropFile
-            acceptTypes={acceptTypes}
-            isLoading={isLoading}
-            onChangeLoading={onChangeLoading}
-          />
-        </Box>
-      </InstantSearch>
+        </div>
+      </Box>
+      <Box className="box-content_bottom">
+        <DragDropFile
+          acceptTypes={acceptTypes}
+          isLoading={isLoading}
+          onChangeLoading={onChangeLoading}
+        />
+      </Box>
     </Box>
   );
 }

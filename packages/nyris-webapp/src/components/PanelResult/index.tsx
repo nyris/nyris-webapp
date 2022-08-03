@@ -12,6 +12,9 @@ import IconLabel from "components/icon-label/icon-label";
 import { useAppSelector } from "Store/Store";
 import { RefinementList } from "react-instantsearch-dom";
 import { orderBy } from "lodash";
+import { useMediaQuery } from "react-responsive";
+import { ClearRefinements } from "components/clear-refinements/clear-refinements";
+import { useHistory } from "react-router-dom";
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -97,7 +100,8 @@ export default function ExpandablePanelComponent({
   const [refinementsPanelsExpanded, setRefinementsPanelsExpanded] = useAtom(
     refinementsPanelsExpandedAtom
   );
-
+  const history = useHistory();
+  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
   // Set initial panels value
   useEffect(() => {
     setPanels((prevPanels) => ({
@@ -157,7 +161,7 @@ export default function ExpandablePanelComponent({
             panelId={panelId}
             attributes={panelAttributes}
             header={refinement.header}
-            isOpened={panels[panelId]}
+            isOpened={isMobile ? !panels[panelId] : panels[panelId]}
             onToggle={onToggle}
           >
             {widget}
@@ -171,25 +175,61 @@ export default function ExpandablePanelComponent({
     setRefinementsPanelsExpanded((expanded: boolean) => !expanded);
   }, [setRefinementsPanelsExpanded]);
 
+  const handlerApplyfillter = () => {
+    onToogleApplyFillter();
+    if (history.location.pathname !== "/result") {
+      history.push("/result");
+    }
+  };
+
   return (
     <>
       <div className="wrap-main-header-panel">
-        <Box style={{ borderBottom: "1px solid #E0E0E0" }}>
+        {!isMobile && (
+          <Box style={{ borderBottom: "1px solid #E0E0E0" }}>
+            <Button
+              className="text-neutral-darkest"
+              onClick={onTogglePanelsClick}
+              style={{ justifyContent: "flex-end" }}
+            >
+              <IconLabel
+                icon={refinementsPanelsExpanded ? "remove" : "add"}
+                label={`${
+                  refinementsPanelsExpanded ? "Collapse" : "Expand"
+                } all`}
+              />
+            </Button>
+          </Box>
+        )}
+      </div>
+      {isMobile && (
+        <Box className="box-top-filter" style={{ paddingBottom: 10 }}>
+          <ClearRefinements>Reset Filters</ClearRefinements>
+        </Box>
+      )}
+      <Box className="box-center-filter">
+        <DynamicWidgetsCT enabled={dynamicWidgets}>
+          {widgetsPanels}
+        </DynamicWidgetsCT>
+      </Box>
+
+      {isMobile && (
+        <Box className="box-footer-filter">
           <Button
-            className="text-neutral-darkest"
-            onClick={onTogglePanelsClick}
-            style={{ justifyContent: "flex-end" }}
+            className="text-white"
+            style={{
+              width: "100%",
+              backgroundColor: "#3E36DC",
+              fontWeight: 700,
+              fontSize: 14,
+              borderRadius: 0,
+            }}
+            onClick={handlerApplyfillter}
           >
-            <IconLabel
-              icon={refinementsPanelsExpanded ? "remove" : "add"}
-              label={`${refinementsPanelsExpanded ? "Collapse" : "Expand"} all`}
-            />
+            APPLY
           </Button>
         </Box>
-      </div>
-      <DynamicWidgetsCT enabled={dynamicWidgets}>
-        {widgetsPanels}
-      </DynamicWidgetsCT>
+      )}
     </>
   );
 }

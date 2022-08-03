@@ -20,7 +20,6 @@ function ClearRefinementsComponent({
   items,
   refine,
 }: ClearRefinementsProps) {
-  
   const handleButtonClick = useCallback(() => refine(items), [refine, items]);
 
   return (
@@ -30,9 +29,10 @@ function ClearRefinementsComponent({
       className={className}
       onClick={handleButtonClick}
       style={{
-        color: "#E31B5D",
+        color: "#3E36DC",
         fontWeight: "bold",
         textTransform: "capitalize",
+        padding: 0,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 // import Page404 from "Page/Exception/404";
 import Login from "page/Auth/login";
@@ -80,17 +80,10 @@ function Router(): JSX.Element {
             path="/support"
             component={SupportPage}
           />
-          {/* <PrivateRoute
-            authed={!!accessToken}
-            exact
-            strict
-            path="/test"
-            component={TestComponent}
-          /> */}
         </Switch>
       </Layout>
     </Switch>
   );
 }
 
-export default Router;
+export default memo(Router);

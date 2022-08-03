@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -51,6 +51,7 @@ import { CurrentRefinements } from "components/current-refinements/current-refin
 import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowBackIosOutlinedIcon from "@material-ui/icons/ArrowBackIosOutlined";
+import { useMediaQuery } from "react-responsive";
 
 interface Props {}
 
@@ -68,28 +69,12 @@ function ResultComponent(props: Props) {
   const { valueTextSearch } = search;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
-  const [searchStateInput, setSearchStateInput] = useState<any>({});
   const [isLoading, setLoading] = useState<any>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
-  const [stateSearchAlgolia, setStateSearchAlgolia] = useState({});
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const [statusSwitchButton, setStatusSwitchButton] = useState<boolean>(true);
-  
-  // TODO: Action search algolia
-  useEffect(() => {
-    if (!stateSearchAlgolia) {
-      return;
-    }
-    setSearchStateInput(stateSearchAlgolia);
-  }, [stateSearchAlgolia]);
-
-  useEffect(() => {
-    if (!valueTextSearch) {
-      return;
-    }
-    setSearchStateInput(valueTextSearch);
-  }, [valueTextSearch]);
+  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
 
   useEffect(() => {
     if (results?.length === 0) {
@@ -120,6 +105,7 @@ function ResultComponent(props: Props) {
   };
 
   // TODO: rectCoords
+
   const debounceRectCoords = (value: any) => {
     handlerRectCoords(value);
     dispatch(selectionChanged(value));
@@ -178,15 +164,15 @@ function ResultComponent(props: Props) {
     });
   };
 
-  const onToogleApplyFillter = (value: boolean) => {
-    setStatusSwitchButton(value);
-    if (value) {
-      setSearchStateInput(stateSearchAlgolia);
-      return;
-    }
-    setSearchStateInput({});
-    return;
-  };
+  // const onToogleApplyFillter = (value: boolean) => {
+  //   setStatusSwitchButton(value);
+  //   if (value) {
+  //     setSearchStateInput(stateSearchAlgolia);
+  //     return;
+  //   }
+  //   setSearchStateInput({});
+  //   return;
+  // };
 
   const nonEmptyFilter: any[] = !requestImage
     ? []
@@ -209,27 +195,21 @@ function ResultComponent(props: Props) {
             </Box>
           </Box>
         )}
-        <InstantSearch
-          indexName={indexName}
-          searchClient={searchClient}
-          searchState={searchStateInput}
-          onSearchStateChange={(state) => {
-            setStateSearchAlgolia(state);
-          }}
-        >
-          <Configure filters={filtersString}></Configure>
-
-          <Box className="box-wrap-result-component">
+        <Configure filters={filtersString}></Configure>
+        <Box className="box-wrap-result-component">
+          {!isMobile && (
             <div className="box-search">
               <CustomSearchBox />
             </div>
-            <Box className="box-result">
-              <>
-                <Box className="btn-open-support">
-                  <Link to={"/support"} style={{ color: "#3E36DC" }}>
-                    <img src={IconSupport} alt="" width={16} height={16} />
-                  </Link>
-                </Box>
+          )}
+          <Box className="box-result">
+            <>
+              <Box className="btn-open-support">
+                <Link to={"/support"} style={{ color: "#3E36DC" }}>
+                  <img src={IconSupport} alt="" width={16} height={16} />
+                </Link>
+              </Box>
+              {!isMobile && (
                 <Box
                   className={`wrap-main-col-left ${
                     toggleColLeft ? "toggle" : ""
@@ -285,57 +265,108 @@ function ResultComponent(props: Props) {
                   {/* TODO: Filter list Choose */}
                   <Box className="col-left__bottom">
                     <ExpandablePanelComponent
-                      onToogleApplyFillter={onToogleApplyFillter}
+                      // onToogleApplyFillter={onToogleApplyFillter}
                     />
                   </Box>
                 </Box>
-                <Box
-                  className={`col-right ${
-                    settings.preview && "ml-auto mr-auto"
-                  }`}
-                >
-                  <Box className="wrap-box-refinements">
-                    <CurrentRefinements
-                      statusSwitchButton={statusSwitchButton}
-                    />
-                  </Box>
-                  <Box
-                    className={`box-item-result ${
-                      requestImage ? "ml-auto mr-auto" : "ml-auto mr-auto"
-                    }`}
-                  >
-                    <LoadingScreenCustom
-                      handlerToggleModal={handlerToggleModal}
-                      setOpenModalShare={setOpenModalShare}
-                      setSearchStateInput={setSearchStateInput}
-                      getUrlToCanvasFile={getUrlToCanvasFile}
-                      setLoading={setLoading}
-                      sendFeedBackAction={sendFeedBackAction}
-                      moreInfoText={moreInfoText}
-                    />
-                    <Box
-                      className="pagination-result"
-                      style={{
-                        width: "100%",
-                        margin: "20px auto",
-                        padding: "0 20%",
-                      }}
-                    >
-                      {/* <CustomPagination /> */}
-                      <Pagination
-                        showFirst={false}
-                        translations={{
-                          previous: (
-                            <ArrowLeftIcon style={{ color: "#161616" }} />
-                          ),
-                          next: <ArrowRightIcon style={{ color: "#161616" }} />,
-                        }}
-                      />
+              )}
+
+              <Box
+                className={`col-right ${
+                  settings.preview && "ml-auto mr-auto"
+                } ${isMobile && "col-right-result-mobile"}`}
+              >
+                <Box className="wrap-box-refinements">
+                  <CurrentRefinements statusSwitchButton={statusSwitchButton} />
+                </Box>
+                {isMobile && settings.preview && requestImage && (
+                  <Box className="col-left">
+                    <Box className="box-preview">
+                      {requestImage && (
+                        <Box className="preview-item">
+                          <Preview
+                            key={requestImage?.id}
+                            onSelectionChange={(r: RectCoords) => {
+                              debounceRectCoords(r);
+                            }}
+                            image={requestImage?.canvas}
+                            selection={selectedRegion || defaultSelection}
+                            regions={regions}
+                            maxWidth={320}
+                            maxHeight={320}
+                            dotColor="#3E36DC"
+                          />
+                        </Box>
+                      )}
                     </Box>
                   </Box>
+                )}
+                <Box
+                  className={`box-item-result ${
+                    requestImage ? "ml-auto mr-auto" : "ml-auto mr-auto"
+                  }`}
+                >
+                  <LoadingScreenCustom
+                    handlerToggleModal={handlerToggleModal}
+                    setOpenModalShare={setOpenModalShare}
+                    // setSearchStateInput={setSearchStateInput}
+                    getUrlToCanvasFile={getUrlToCanvasFile}
+                    setLoading={setLoading}
+                    sendFeedBackAction={sendFeedBackAction}
+                    moreInfoText={moreInfoText}
+                  />
+                  <Box
+                    className="pagination-result"
+                    style={{
+                      width: "100%",
+                      margin: "20px auto",
+                      padding: "0 20%",
+                    }}
+                  >
+                    {/* <CustomPagination /> */}
+                    <Pagination
+                      showFirst={false}
+                      translations={{
+                        previous: (
+                          <ArrowLeftIcon style={{ color: "#161616" }} />
+                        ),
+                        next: <ArrowRightIcon style={{ color: "#161616" }} />,
+                      }}
+                    />
+                  </Box>
+                  {isMobile && (
+                    <Box
+                      className="box-title_col-left"
+                      style={{
+                        height: 86,
+                        background:
+                          "linear-gradient(360deg, #56577C 0%, #2B2C46 100%)",
+                        width: "100%",
+                      }}
+                    >
+                      <Typography
+                        style={{
+                          fontSize: 11,
+                          color: "#fff",
+                          textAlign: "center",
+                          marginTop: 18,
+                        }}
+                      >
+                        <span className="fw-700">Wrong results?</span> share
+                        your search with our{" "}
+                        <span style={{ textDecoration: "underline" }}>
+                          <a href="#" className="fw-700 text-white">
+                            product experts
+                          </a>
+                        </span>
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
-              </>
-            </Box>
+              </Box>
+            </>
+          </Box>
+          {!isMobile && (
             <Box>
               <Box className="box-notify">
                 <FooterResult search={search}>
@@ -350,87 +381,86 @@ function ResultComponent(props: Props) {
                 </FooterResult>
               </Box>
             </Box>
-
-            {/* TODO: Component modal share */}
-            <DefaultModal
-              openModal={isOpenModalShare}
-              handleClose={() => setOpenModalShare(false)}
-            >
-              <Box className="box-modal-default box-modal-share">
-                <Box
-                  className="ml-auto"
-                  style={{ width: "fit-content", marginRight: 5 }}
+          )}
+          {/* TODO: Component modal share */}
+          <DefaultModal
+            openModal={isOpenModalShare}
+            handleClose={() => setOpenModalShare(false)}
+          >
+            <Box className="box-modal-default box-modal-share">
+              <Box
+                className="ml-auto"
+                style={{ width: "fit-content", marginRight: 5 }}
+              >
+                <Button
+                  style={{ padding: 0 }}
+                  onClick={() => setOpenModalShare(false)}
                 >
-                  <Button
+                  <CloseOutlinedIcon
+                    style={{ fontSize: 12, color: "#55566B" }}
+                  />
+                </Button>
+              </Box>
+              <Box className="box-content-box-share">
+                <Typography className="text-f12 text-gray text-bold">
+                  Share
+                </Typography>
+                <Paper component="form" className="box-input">
+                  <InputBase
+                    className="text-f9 text-gray"
+                    style={{ width: "100%" }}
+                    value={"https://www.go..."}
+                  />
+                  <IconButton
+                    color="secondary"
+                    aria-label="directions"
                     style={{ padding: 0 }}
-                    onClick={() => setOpenModalShare(false)}
                   >
-                    <CloseOutlinedIcon
-                      style={{ fontSize: 12, color: "#55566B" }}
-                    />
+                    <FileCopyOutlinedIcon style={{ fontSize: 8 }} />
+                  </IconButton>
+                </Paper>
+
+                <Box
+                  mt={1}
+                  className="box-media-share"
+                  display={"flex"}
+                  style={{ height: "100%" }}
+                >
+                  <Button style={{ padding: 0 }}>
+                    <Box display={"flex"} alignItems={"center"}>
+                      <img
+                        width={40}
+                        height={40}
+                        src={IconEmail}
+                        alt="icon_email"
+                      />
+                    </Box>
+                  </Button>
+                  <Button style={{ padding: 0, margin: "0 20px" }}>
+                    <Box display={"flex"} alignItems={"center"}>
+                      <img
+                        src={IconWeChat}
+                        width={40}
+                        height={40}
+                        alt="icon_email"
+                      />
+                    </Box>
+                  </Button>
+                  <Button style={{ padding: 0 }}>
+                    <Box display={"flex"} alignItems={"center"}>
+                      <img
+                        src={IconWhatsApp}
+                        width={40}
+                        height={40}
+                        alt="icon_email"
+                      />
+                    </Box>
                   </Button>
                 </Box>
-                <Box className="box-content-box-share">
-                  <Typography className="text-f12 text-gray text-bold">
-                    Share
-                  </Typography>
-                  <Paper component="form" className="box-input">
-                    <InputBase
-                      className="text-f9 text-gray"
-                      style={{ width: "100%" }}
-                      value={"https://www.go..."}
-                    />
-                    <IconButton
-                      color="secondary"
-                      aria-label="directions"
-                      style={{ padding: 0 }}
-                    >
-                      <FileCopyOutlinedIcon style={{ fontSize: 8 }} />
-                    </IconButton>
-                  </Paper>
-
-                  <Box
-                    mt={1}
-                    className="box-media-share"
-                    display={"flex"}
-                    style={{ height: "100%" }}
-                  >
-                    <Button style={{ padding: 0 }}>
-                      <Box display={"flex"} alignItems={"center"}>
-                        <img
-                          width={40}
-                          height={40}
-                          src={IconEmail}
-                          alt="icon_email"
-                        />
-                      </Box>
-                    </Button>
-                    <Button style={{ padding: 0, margin: "0 20px" }}>
-                      <Box display={"flex"} alignItems={"center"}>
-                        <img
-                          src={IconWeChat}
-                          width={40}
-                          height={40}
-                          alt="icon_email"
-                        />
-                      </Box>
-                    </Button>
-                    <Button style={{ padding: 0 }}>
-                      <Box display={"flex"} alignItems={"center"}>
-                        <img
-                          src={IconWhatsApp}
-                          width={40}
-                          height={40}
-                          alt="icon_email"
-                        />
-                      </Box>
-                    </Button>
-                  </Box>
-                </Box>
               </Box>
-            </DefaultModal>
-          </Box>
-        </InstantSearch>
+            </Box>
+          </DefaultModal>
+        </Box>
 
         {/* TODO: Component modal image */}
         <DefaultModal
@@ -459,4 +489,4 @@ function ResultComponent(props: Props) {
   );
 }
 
-export default memo(ResultComponent);
+export default ResultComponent;

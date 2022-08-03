@@ -1,28 +1,44 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { Button, Box } from "@material-ui/core";
 import ClearOutlinedIcon from "@material-ui/icons/ClearOutlined";
 import { connectSearchBox } from "react-instantsearch-dom";
 import { useHistory } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import { reset, setImageSearchInput, setRequestImage, setSearchResults } from "Store/Search";
-import { debounce } from "lodash";
+import {
+  reset,
+  setImageSearchInput,
+  setRequestImage,
+  setSearchResults,
+} from "Store/Search";
+import { debounce, isEmpty } from "lodash";
 import { useCallback } from "react";
 import CloseIcon from "@material-ui/icons/Close";
 import IconSearch from "common/assets/icons/icon_search.svg";
 import IconButton from "@material-ui/core/IconButton";
-import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { useDropzone } from "react-dropzone";
 import { createImage, findByImage } from "services/image";
 import IconCamera from "common/assets/icons/camera.svg";
-const SearchBox = ({ currentRefinement, refine }: any) => {
+import IconFilter from "common/assets/icons/filter_settings.svg";
+import { useMediaQuery } from "react-responsive";
+
+const SearchBox = (props: any) => {
+  const {
+    currentRefinement,
+    refine,
+    onToggleFilterMobile,
+    onGetRefInputSearchMobile,
+  }: any = props;
+  const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector((state) => state);
   const { search, settings } = stateGlobal;
-  const { imageThumbSearchInput } = search;
-  const focusInp: any = useRef();
+  const { imageThumbSearchInput, valueTextSearch } = search;
+  const focusInp: any = useRef<HTMLDivElement>(null);
   const history = useHistory();
   const [, setShowBtnClear] = useState<boolean>(true);
   const [valueInput, setValueInput] = useState<string>("");
   const dispatch = useAppDispatch();
+  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+
   useEffect(() => {
     if (focusInp?.current) {
       focusInp?.current.focus();
@@ -30,10 +46,15 @@ const SearchBox = ({ currentRefinement, refine }: any) => {
   }, [focusInp]);
 
   useEffect(() => {
-    // if (currentRefinement) {
+    onGetRefInputSearchMobile(containerRefInputMobile);
+  }, [containerRefInputMobile]);
+
+  useEffect(() => {
+    if (!isEmpty(valueTextSearch?.query)) {
+      setValueInput(valueTextSearch.query);
+    }
     setValueInput(currentRefinement);
-    // }
-  }, [currentRefinement]);
+  }, [currentRefinement, valueTextSearch]);
 
   useEffect(() => {
     if (valueInput.length > 0) {
@@ -80,7 +101,11 @@ const SearchBox = ({ currentRefinement, refine }: any) => {
 
   return (
     <Box className="wrap-input-search">
-      <Box p={2} display={"flex"} className="box-input-search">
+      <div
+        style={{ padding: 10 }}
+        className="box-input-search d-flex"
+        ref={containerRefInputMobile}
+      >
         <form noValidate action="" role="search">
           <Box className="box-inp">
             <Box
@@ -113,16 +138,15 @@ const SearchBox = ({ currentRefinement, refine }: any) => {
               onChange={(event) => {
                 setValueInput(event.currentTarget.value);
                 debounceSearch(event.currentTarget.value);
+                if (history.location.pathname !== "/result") {
+                  history.push("/result");
+                }
               }}
               ref={focusInp}
             />
             <Box className="icon-search">
               <img src={IconSearch} alt="" width={24} height={24} />
             </Box>
-            {/* <SearchRoundedIcon
-              className="icon-search"
-              style={{ color: "#55566B", fontSize: "20px" }}
-            /> */}
           </Box>
           {history.location.pathname === "/result" && (
             <Button
@@ -132,41 +156,56 @@ const SearchBox = ({ currentRefinement, refine }: any) => {
                 refine("");
                 dispatch(reset(""));
                 history.push("/");
-                return;
               }}
             >
               <ClearOutlinedIcon style={{ fontSize: 12, color: "#2B2C46" }} />
             </Button>
           )}
-          <Box>
-            <input
-              accept="image/*"
-              id="icon-button-file"
-              type="file"
-              style={{ display: "none" }}
-              {...getInputProps({
-                onClick: (e) => {
-                  e.stopPropagation();
-                },
-              })}
-            />
-            <label htmlFor="icon-button-file">
-              <IconButton
-                color="primary"
-                aria-label="upload picture"
-                component="span"
-                style={{width: 32, height: 32, borderRadius: '100%', padding: 7, backgroundColor: '#F3F3F5'}}
+          {!isMobile ? (
+            <div className="wrap-box-input-mobile">
+              <input
+                accept="image/*"
+                id="icon-button-file"
+                type="file"
+                style={{ display: "none" }}
+                {...getInputProps({
+                  onClick: (e) => {
+                    e.stopPropagation();
+                  },
+                })}
+              />
+              <label htmlFor="icon-button-file">
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  component="span"
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: "100%",
+                    padding: 7,
+                    backgroundColor: "#F3F3F5",
+                  }}
+                >
+                  <img src={IconCamera} alt="" width={18} height={18} />
+                </IconButton>
+              </label>
+            </div>
+          ) : (
+            <Box>
+              <Button
+                className="btn-mobile-filter"
+                onClick={onToggleFilterMobile}
               >
-                <img src={IconCamera} alt="" width={18} height={18} />
-                
-              </IconButton>
-            </label>
-          </Box>
+                <img src={IconFilter} alt="" width={18} height={18} />
+              </Button>
+            </Box>
+          )}
         </form>
-      </Box>
+      </div>
     </Box>
   );
 };
 
-const CustomSearchBox = connectSearchBox(SearchBox);
+const CustomSearchBox = connectSearchBox<any>(memo(SearchBox));
 export default CustomSearchBox;

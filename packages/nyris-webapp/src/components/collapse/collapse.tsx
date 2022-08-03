@@ -39,18 +39,20 @@ export function Collapse({
   children,
 }: CollapseProps): JSX.Element {
   const shouldReduceMotion = useReducedMotion();
-  
+
   return (
-    <motion.div
-      key="collapse"
-      initial="collapsed"
-      animate={isCollapsed ? "collapsed" : "expanded"}
-      variants={variants}
-      className={classNames("overflow-hidden", className)}
-      transition={transition}
-      custom={shouldReduceMotion}
-    >
-      {children}
-    </motion.div>
+    <>
+      <motion.div
+        key="collapse"
+        initial="collapsed"
+        animate={isCollapsed ? "collapsed" : "expanded"}
+        variants={variants}
+        className={classNames("overflow-hidden", className)}
+        transition={transition}
+        custom={shouldReduceMotion}
+      >
+        {children}
+      </motion.div>
+    </>
   );
 }
