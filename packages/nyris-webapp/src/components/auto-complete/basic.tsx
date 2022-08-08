@@ -6,6 +6,7 @@ import React, {
   useRef,
   Fragment,
   ReactNode,
+  useCallback,
 } from "react";
 import { autocomplete, Pragma } from "@algolia/autocomplete-js";
 import { useAppSelector } from "Store/Store";
@@ -14,25 +15,30 @@ import algoliasearch from "algoliasearch/lite";
 import { popularSearchesPluginCreator } from "components/autocomplete/plugins/popular-searches/popular-searches";
 import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
-
+import { connectSearchBox } from "react-instantsearch-dom";
+import { debounce } from "lodash";
+import { useHistory } from "react-router-dom";
+// import '@algolia/autocomplete-theme-classic';
 interface Props {
-  containerRefInputMobile?: any
+  containerRefInputMobile?: any;
 }
 
 function AutocompleteBasicComponent(props: Props) {
-  const { containerRefInputMobile }: any = props;
+  const { containerRefInputMobile, refine }: any = props;
   // const containerRef = useRef<HTMLDivElement | any>(null);
   const panelRootRef = useRef<Root | any>(null);
   const rootRef = useRef<HTMLElement | any>(null);
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
+  const history = useHistory();
 
   const plugins = useMemo(
     () => [
       popularSearchesPluginCreator({
         searchClient,
         onSelect({ item }: any) {
+          console.log("itemmmmmmm", item);
           // if (typeof onSelect === "function") onSelect(item.query);
         },
         indexName,
@@ -43,11 +49,11 @@ function AutocompleteBasicComponent(props: Props) {
   );
 
   useEffect(() => {
-    if(!containerRefInputMobile?.current){
-      return
+    if (!containerRefInputMobile?.current) {
+      return;
     }
     const autocompleteInstance = autocomplete({
-      container: containerRefInputMobile.current,
+      container: "#box-input-search",
       renderer: {
         createElement: createElement as Pragma,
         Fragment,
@@ -61,6 +67,7 @@ function AutocompleteBasicComponent(props: Props) {
       },
       plugins,
       openOnFocus: true,
+      onSubmit,
       ...props,
     });
     return () => {
@@ -77,10 +84,22 @@ function AutocompleteBasicComponent(props: Props) {
   }, [plugins]);
   // console.log("containerRef", containerRef);
 
-  return (
-    <>
-    </>
+  const onSubmit = ({ state }: any) => {
+    console.log("321 state", state);
+    debounceSearch(state?.query);
+    if (history.location.pathname !== "/result") {
+      history.push("/result");
+    }
+  };
+  const debounceSearch = useCallback(
+    debounce((nextValue: any) => refine(nextValue), 200),
+    []
   );
+
+  return <></>;
 }
 
-export default memo(AutocompleteBasicComponent);
+const AutocompleteBasicMobileComponent = connectSearchBox<any>(
+  memo(AutocompleteBasicComponent)
+);
+export default AutocompleteBasicMobileComponent;

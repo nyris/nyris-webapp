@@ -8,7 +8,7 @@ import LandingPageApp from "modules/LandingPage/index";
 import AppNewVersion from "modules/LandingPage/indexNewVersion";
 import { useMediaQuery } from "react-responsive";
 import AppMobile from "modules/LandingPage/AppMobile";
-
+// import '@algolia/autocomplete-theme-classic';
 function App(): JSX.Element {
   const { settings } = useAppSelector((state) => state);
   const { themePage } = settings;

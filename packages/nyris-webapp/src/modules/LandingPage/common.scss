@@ -1581,6 +1581,7 @@ button {
 }
 
 .btn-open-support {
+  display: none !important;
   z-index: 11;
   background: linear-gradient(45deg, #3e36dc 14.84%, #00ff94 85.16%);
   width: 50px;

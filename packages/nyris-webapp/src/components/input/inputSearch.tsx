@@ -26,9 +26,9 @@ const SearchBox = (props: any) => {
     currentRefinement,
     refine,
     onToggleFilterMobile,
-    onGetRefInputSearchMobile,
+    // onGetRefInputSearchMobile,
   }: any = props;
-  const containerRefInputMobile = useRef<HTMLDivElement>(null);
+  // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector((state) => state);
   const { search, settings } = stateGlobal;
   const { imageThumbSearchInput, valueTextSearch } = search;
@@ -44,10 +44,6 @@ const SearchBox = (props: any) => {
       focusInp?.current.focus();
     }
   }, [focusInp]);
-
-  useEffect(() => {
-    onGetRefInputSearchMobile(containerRefInputMobile);
-  }, [containerRefInputMobile]);
 
   useEffect(() => {
     if (!isEmpty(valueTextSearch?.query)) {
@@ -104,7 +100,8 @@ const SearchBox = (props: any) => {
       <div
         style={{ padding: 10 }}
         className="box-input-search d-flex"
-        ref={containerRefInputMobile}
+      
+        
       >
         <form noValidate action="" role="search">
           <Box className="box-inp">

@@ -20,6 +20,9 @@ export function popularSearchesPluginCreator({
     searchClient,
     indexName: indexName,
     categoryAttribute: [indexName, "brand", "keyword_0", "custom_category"],
+    getSearchParams({ state }) {
+      return { hitsPerPage: 5 };
+    },
     transformSource({ source, onTapAhead }) {
       return {
         ...source,
@@ -48,7 +51,7 @@ export function popularSearchesPluginCreator({
                   <button
                     type="button"
                     className="aa-ItemActionButton"
-                    title={`Fill query with "${item.keyword}"`}
+                    title={`Fill query with "${item.title}"`}
                     onClick={(event) => {
                       event.preventDefault();
                       event.stopPropagation();

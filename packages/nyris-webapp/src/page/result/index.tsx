@@ -164,15 +164,6 @@ function ResultComponent(props: Props) {
     });
   };
 
-  // const onToogleApplyFillter = (value: boolean) => {
-  //   setStatusSwitchButton(value);
-  //   if (value) {
-  //     setSearchStateInput(stateSearchAlgolia);
-  //     return;
-  //   }
-  //   setSearchStateInput({});
-  //   return;
-  // };
 
   const nonEmptyFilter: any[] = !requestImage
     ? []
@@ -309,7 +300,6 @@ function ResultComponent(props: Props) {
                   <LoadingScreenCustom
                     handlerToggleModal={handlerToggleModal}
                     setOpenModalShare={setOpenModalShare}
-                    // setSearchStateInput={setSearchStateInput}
                     getUrlToCanvasFile={getUrlToCanvasFile}
                     setLoading={setLoading}
                     sendFeedBackAction={sendFeedBackAction}

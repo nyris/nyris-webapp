@@ -8,7 +8,6 @@ interface Props {
   allSearchResults: any;
   handlerToggleModal: any;
   setOpenModalShare: any;
-  setSearchStateInput?: any;
   getUrlToCanvasFile: any;
   setLoading: any;
   sendFeedBackAction: any;
@@ -19,7 +18,6 @@ function LoadingScreen({
   allSearchResults,
   handlerToggleModal,
   setOpenModalShare,
-  setSearchStateInput,
   getUrlToCanvasFile,
   setLoading,
   sendFeedBackAction,
@@ -105,7 +103,6 @@ function LoadingScreen({
             indexItem={i}
             isHover={false}
             onSearchImage={(url: string) => {
-              setSearchStateInput({});
               getUrlToCanvasFile(url);
               setLoading(true);
             }}

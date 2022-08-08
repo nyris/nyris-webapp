@@ -225,6 +225,7 @@
     z-index: 999;
     .aa-DetachedFormContainer {
       display: flex;
+      padding: 0;
       .aa-Form {
         display: flex;
         width: 100%;
@@ -234,6 +235,53 @@
             width: 100%;
           }
         }
+      }
+    }
+  }
+  .aa-Form{
+    border: 0px !important;
+    &:focus-within{
+      box-shadow: none !important;
+    }
+    .aa-SubmitButton {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      svg {
+        color: #000 !important;
+      }
+    }
+  }
+  
+  .aa-Autocomplete {
+    .aa-DetachedSearchButton {
+      border: 0px !important;
+    }
+
+    .aa-DetachedSearchButtonIcon,
+    .aa-SubmitButton {
+      svg {
+        color: #000 !important;
+      }
+    }
+  }
+
+  #box-input-search {
+    position: relative;
+    .box-button-input-mobile {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 24px;
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      button {
+        background-color: #f7f7f7;
+        border-radius: 100%;
+        width: 40px;
+        height: 40px;
       }
     }
   }

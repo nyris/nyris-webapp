@@ -8,7 +8,6 @@ function Hits({
   setDataResultToAlgolia,
   handlerToggleModal,
   setOpenModalShare,
-  setSearchStateInput,
   getUrlToCanvasFile,
   setLoading,
   sendFeedBackAction,
@@ -33,7 +32,6 @@ function Hits({
             indexItem={hit?.__position}
             isHover={false}
             onSearchImage={(url: any) => {
-              setSearchStateInput({});
               getUrlToCanvasFile(url);
               setLoading(true);
             }}
