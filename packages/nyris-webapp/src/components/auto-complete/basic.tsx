@@ -38,8 +38,10 @@ function AutocompleteBasicComponent(props: Props) {
       popularSearchesPluginCreator({
         searchClient,
         onSelect({ item }: any) {
-          console.log("itemmmmmmm", item);
-          // if (typeof onSelect === "function") onSelect(item.query);
+          refine(`${item?.keyword}`);
+          if (history.location.pathname !== "/result") {
+            history.push("/result");
+          }
         },
         indexName,
       }),

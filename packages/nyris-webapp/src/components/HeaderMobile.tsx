@@ -4,6 +4,10 @@ import CustomSearchBox from "./input/inputSearch";
 import AutocompleteBasicComponent from "./auto-complete/basic";
 import { useMediaQuery } from "react-responsive";
 import IconFilter from "common/assets/icons/filter_settings.svg";
+import { useAppDispatch } from "Store/Store";
+import { reset } from "Store/Search";
+import IconBack from "common/assets/images/back_arrow.svg";
+import { useHistory } from "react-router-dom";
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -11,19 +15,41 @@ interface Props {
 
 function HeaderMobile(props: Props): JSX.Element {
   const { onToggleFilterMobile } = props;
+  const dispatch = useAppDispatch();
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
-  // const [containerRefInputMobile, setContainerRefInputMobile] = useState(null);
-  // const onGetRefInputSearchMobile = (refInput: any) => {
-  //   setContainerRefInputMobile(refInput);
-  // };
+  const history = useHistory();
 
   return (
     <Box className="wrap-header-mobile">
       {!isMobile ? (
         <CustomSearchBox onToggleFilterMobile={onToggleFilterMobile} />
       ) : (
-        <div ref={containerRefInputMobile} id="box-input-search">
+        <div
+          ref={containerRefInputMobile}
+          id="box-input-search"
+          className="d-flex w-100"
+          style={{ alignItems: "center" }}
+        >
+          {history.location?.pathname !== "/" && (
+            <Box className="" style={{ backgroundColor: "#fff" }}>
+              <button
+                onClick={() => {
+                  dispatch(reset(""));
+                  history.push("/");
+                }}
+                style={{
+                  backgroundColor: "#fff",
+                  border: 0,
+                  padding: "0px 0px 0 16px",
+                  display: "flex",
+                }}
+              >
+                <img src={IconBack} alt="icon_back" />
+              </button>
+            </Box>
+          )}
+
           <AutocompleteBasicComponent
             containerRefInputMobile={containerRefInputMobile}
           />
