@@ -6,13 +6,13 @@ import IconQrCode from "common/assets/images/bar_code.svg";
 interface ExampleImagesProps {
   images: string[];
   onExampleImageClicked: (url: string) => void;
-  onToggleModal?: any
+  onToggleModalCamera?: any
 }
 
 const ExampleImages: React.FC<ExampleImagesProps> = ({
   images,
   onExampleImageClicked,
-  onToggleModal
+  onToggleModalCamera
 }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
 
@@ -31,7 +31,7 @@ const ExampleImages: React.FC<ExampleImagesProps> = ({
         <div className="exImagesWrap">
           {isMobile && (
             <>
-              <Button style={{ padding: 0 }} onClick={onToggleModal}>
+              <Button style={{ padding: 0 }} onClick={onToggleModalCamera}>
                 <img src={IconCamera} alt="" />
               </Button>
               <Button style={{ padding: 0, transform: "scale(1.1)" }}>

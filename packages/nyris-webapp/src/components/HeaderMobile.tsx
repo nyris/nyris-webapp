@@ -8,7 +8,8 @@ import { useAppDispatch } from "Store/Store";
 import { reset } from "Store/Search";
 import IconBack from "common/assets/images/back_arrow.svg";
 import { useHistory } from "react-router-dom";
-
+import CloseIcon from "@material-ui/icons/Close";
+import AutocompleteBasicMobileComponent from "./auto-complete/basic";
 interface Props {
   onToggleFilterMobile?: any;
 }
@@ -32,7 +33,7 @@ function HeaderMobile(props: Props): JSX.Element {
           style={{ alignItems: "center" }}
         >
           {history.location?.pathname !== "/" && (
-            <Box className="" style={{ backgroundColor: "#fff" }}>
+            <Box className="btn-close-header" style={{ backgroundColor: "#fff" }}>
               <button
                 onClick={() => {
                   dispatch(reset(""));
@@ -45,12 +46,12 @@ function HeaderMobile(props: Props): JSX.Element {
                   display: "flex",
                 }}
               >
-                <img src={IconBack} alt="icon_back" />
+                <CloseIcon style={{ fontSize: 20, color: "#3e36dc" }} />
               </button>
             </Box>
           )}
 
-          <AutocompleteBasicComponent
+          <AutocompleteBasicMobileComponent
             containerRefInputMobile={containerRefInputMobile}
           />
           <Box className="box-button-input-mobile">

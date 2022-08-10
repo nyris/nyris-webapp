@@ -5,7 +5,6 @@ import React, {
   useMemo,
   useRef,
   Fragment,
-  ReactNode,
   useCallback,
 } from "react";
 import { autocomplete, Pragma } from "@algolia/autocomplete-js";
@@ -13,20 +12,17 @@ import { useAppSelector } from "Store/Store";
 import { AlgoliaSettings, AppState } from "types";
 import algoliasearch from "algoliasearch/lite";
 import { popularSearchesPluginCreator } from "components/autocomplete/plugins/popular-searches/popular-searches";
-import type { Root } from "react-dom/client";
-import { createRoot } from "react-dom/client";
 import { connectSearchBox } from "react-instantsearch-dom";
 import { debounce } from "lodash";
 import { useHistory } from "react-router-dom";
-// import '@algolia/autocomplete-theme-classic';
+import { render } from 'react-dom';
 interface Props {
   containerRefInputMobile?: any;
 }
 
 function AutocompleteBasicComponent(props: Props) {
   const { containerRefInputMobile, refine }: any = props;
-  // const containerRef = useRef<HTMLDivElement | any>(null);
-  const panelRootRef = useRef<Root | any>(null);
+  const panelRootRef = useRef<any | any>(null);
   const rootRef = useRef<HTMLElement | any>(null);
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
@@ -59,13 +55,9 @@ function AutocompleteBasicComponent(props: Props) {
       renderer: {
         createElement: createElement as Pragma,
         Fragment,
-        render: () => {},
       },
-      render({ children: acChildren }, root) {
-        rootRef.current = root;
-        panelRootRef.current?.unmount();
-        panelRootRef.current = createRoot(root);
-        panelRootRef.current.render(acChildren as ReactNode);
+      render({ children }, root) {
+        render(children, root);
       },
       plugins,
       openOnFocus: true,

@@ -16,7 +16,6 @@ import { createImage, findByImage, findRegions } from "services/image";
 import { useHistory } from "react-router-dom";
 import ExampleImages from "components/ExampleImages";
 import CameraCustom from "components/drawer/cameraCustom";
-import Webcam from "react-webcam";
 interface Props {}
 
 function AppMobile(props: Props): JSX.Element {
@@ -29,6 +28,7 @@ function AppMobile(props: Props): JSX.Element {
     .concat(settings.cadSearch ? cadExtensions : [])
     .join(",");
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const getUrlToCanvasFile = async (url: string, position?: number) => {
     // onChangeLoading(true);
@@ -38,7 +38,6 @@ function AppMobile(props: Props): JSX.Element {
     if (position) {
       feedbackClickEpic(searchState, position);
     }
-
     let image = await createImage(url);
     dispatch(setRequestImage(image));
     let searchRegion: RectCoords | undefined = undefined;
@@ -48,44 +47,62 @@ function AppMobile(props: Props): JSX.Element {
       searchRegion = res.selectedRegion;
       dispatch(setSelectedRegion(searchRegion));
     }
-    return findByImage(image, settings, searchRegion).then((res) => {
-      dispatch(setSearchResults(res));
-      // onChangeLoading(false);
-      history.push("/result");
-      return dispatch(showFeedback());
-    });
+    return findByImage(image, settings, searchRegion)
+      .then((res) => {
+        dispatch(setSearchResults(res));
+        // onChangeLoading(false);
+        history.push("/result");
+        return dispatch(showFeedback());
+      })
+      .catch((err: any) => {
+        console.log("err getUrlToCanvasFile mobile", err);
+      });
+  };
+
+  const handlerLoading = (value: boolean) => {
+    setLoading(value);
   };
 
   return (
-    <Box className="wrap-content-body">
-      <Box className="title-top">
-        <Typography className="text-center text-white">
-          Snap a photo or attach any image in the <br /> following formats:
-        </Typography>
-        <Typography className="text-center text-white">
-          jpg, png, svg, pdf or tiff
-        </Typography>
+    <>
+      {isLoading && (
+        <Box className="box-wrap-loading">
+          <Box className="loadingSpinCT" style={{ top: 0, bottom: 0 }}>
+            <Box className="box-content-spin"></Box>
+          </Box>
+        </Box>
+      )}
+      <Box className="wrap-content-body">
+        <Box className="title-top">
+          <Typography className="text-center text-white">
+            Snap a photo or attach any image in the <br /> following formats:
+          </Typography>
+          <Typography className="text-center text-white">
+            jpg, png, svg, pdf or tiff
+          </Typography>
+        </Box>
+        <Box className="box-drag-mobile">
+          <ExampleImages
+            images={settings.exampleImages}
+            onExampleImageClicked={(url: string) => {
+              return getUrlToCanvasFile(url);
+            }}
+            onToggleModalCamera={() => {
+              setOpenModalCamera(!isOpenModalCamera);
+            }}
+          />
+        </Box>
+        <Box className="box-screenshot-camera">
+          <CameraCustom
+            isToggle={isOpenModalCamera}
+            onToggleModal={() => {
+              setOpenModalCamera(!isOpenModalCamera);
+            }}
+            // onLoading={setLoading(true)}
+          />
+        </Box>
       </Box>
-      <Box className="box-drag-mobile">
-        <ExampleImages
-          images={settings.exampleImages}
-          onExampleImageClicked={(url: string) => {
-            return getUrlToCanvasFile(url);
-          }}
-          onToggleModal={() => {
-            setOpenModalCamera(!isOpenModalCamera);
-          }}
-        />
-      </Box>
-      <Box className="box-screenshot-camera">
-        <CameraCustom
-          isToggle={isOpenModalCamera}
-          onToggleModal={() => {
-            setOpenModalCamera(!isOpenModalCamera);
-          }}
-        />
-      </Box>
-    </Box>
+    </>
   );
 }
 

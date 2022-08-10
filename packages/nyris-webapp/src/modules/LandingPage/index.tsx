@@ -162,7 +162,7 @@ const LandingPageApp = () => {
       previewSelection: selection,
     },
     settings,
-    previewImage: search.requestImage,
+    previewImage: search?.requestImage,
     acceptTypes,
     showPart,
     handlers,

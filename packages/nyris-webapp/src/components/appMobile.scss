@@ -108,7 +108,7 @@
           }
         }
       }
-      .box-title_col-left{
+      .box-title_col-left {
         margin-top: auto;
       }
       .wrap-main-result {
@@ -149,9 +149,13 @@
         width: fit-content;
         margin: auto;
         top: -50%;
+        width: 64px;
+        height: 64px;
         button {
           border: 0px !important;
           padding: 21px 18px;
+          width: 64px;
+          height: 64px;
         }
       }
     }
@@ -242,9 +246,9 @@
       }
     }
   }
-  .aa-Form{
+  .aa-Form {
     border: 0px !important;
-    &:focus-within{
+    &:focus-within {
       box-shadow: none !important;
     }
     .aa-SubmitButton {
@@ -256,7 +260,7 @@
       }
     }
   }
-  
+
   .aa-Autocomplete {
     width: 100%;
     .aa-DetachedSearchButton {
@@ -289,6 +293,107 @@
         width: 40px;
         height: 40px;
       }
+    }
+    .btn-close-header {
+      position: absolute;
+      right: calc(64px + 25px);
+      top: 0;
+      bottom: 0;
+      z-index: 11;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .modal-togggle-cam {
+    .wrap-camera {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #1e1f31;
+      .btn-capture-camera {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: auto;
+        bottom: 108px;
+        width: fit-content;
+        background-color: transparent;
+        border: 1px solid #fff;
+        border-radius: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2px;
+      }
+      .btn-switch-camera {
+        position: absolute;
+        left: 38px;
+        margin: auto;
+        bottom: 108px;
+        padding: 0;
+        background-color: transparent;
+        border: 0px;
+      }
+      video {
+        border-radius: 17px;
+        overflow: hidden;
+      }
+    }
+    .btn-close-modal {
+      background-color: #655ee3;
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      top: 16px;
+      border: 0px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      &.right {
+        right: 21px;
+        border-radius: 100%;
+      }
+      &.left {
+        border-radius: 12px;
+        left: 21px;
+        width: 48px;
+      }
+    }
+    .box-scale-camera {
+      position: absolute;
+      bottom: 198px;
+      left: 0;
+      right: 0;
+      margin: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #2b2c46b3;
+      border-radius: 15px;
+      width: fit-content;
+      padding: 2px 0;
+      button {
+        width: 28px;
+        height: 28px;
+        background-color: transparent;
+        border-radius: 100%;
+        border: 0px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0 6px;
+        &.active {
+          background-color: #655ee3;
+        }
+      }
+    }
+    .MuiBackdrop-root {
+      background-color: #1e1f31;
     }
   }
 }

@@ -60,10 +60,10 @@ const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector((state) => state);
+  const { search, settings } = stateGlobal;
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [numberResult, setNumberResult] = useState<number>(0);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
-  const { search, settings } = stateGlobal;
   const { results, requestImage, regions, selectedRegion } = search;
   const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
   const { valueTextSearch } = search;
@@ -164,7 +164,6 @@ function ResultComponent(props: Props) {
     });
   };
 
-
   const nonEmptyFilter: any[] = !requestImage
     ? []
     : ["sku:DOES_NOT_EXIST<score=1>"];
@@ -256,7 +255,7 @@ function ResultComponent(props: Props) {
                   {/* TODO: Filter list Choose */}
                   <Box className="col-left__bottom">
                     <ExpandablePanelComponent
-                      // onToogleApplyFillter={onToogleApplyFillter}
+                    // onToogleApplyFillter={onToogleApplyFillter}
                     />
                   </Box>
                 </Box>
@@ -453,6 +452,9 @@ function ResultComponent(props: Props) {
         </Box>
 
         {/* TODO: Component modal image */}
+        {
+          !isMobile 
+        }
         <DefaultModal
           openModal={isOpenModalImage}
           handleClose={(e: any) => {
