@@ -28,7 +28,6 @@ function AppMobile(props: Props): JSX.Element {
     .concat(settings.cadSearch ? cadExtensions : [])
     .join(",");
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
 
   const getUrlToCanvasFile = async (url: string, position?: number) => {
     // onChangeLoading(true);
@@ -59,19 +58,9 @@ function AppMobile(props: Props): JSX.Element {
       });
   };
 
-  const handlerLoading = (value: boolean) => {
-    setLoading(value);
-  };
 
   return (
     <>
-      {isLoading && (
-        <Box className="box-wrap-loading">
-          <Box className="loadingSpinCT" style={{ top: 0, bottom: 0 }}>
-            <Box className="box-content-spin"></Box>
-          </Box>
-        </Box>
-      )}
       <Box className="wrap-content-body">
         <Box className="title-top">
           <Typography className="text-center text-white">
@@ -98,7 +87,6 @@ function AppMobile(props: Props): JSX.Element {
             onToggleModal={() => {
               setOpenModalCamera(!isOpenModalCamera);
             }}
-            // onLoading={setLoading(true)}
           />
         </Box>
       </Box>

@@ -28,7 +28,6 @@ function CameraCustom(props: Props) {
   const { search, settings } = stateGlobal;
   const history = useHistory();
   const dispatch = useAppDispatch();
- 
 
   const videoConstraints = {
     aspectRatio: 0.6666666667,
@@ -42,16 +41,27 @@ function CameraCustom(props: Props) {
   }, []);
 
   const handlerFindImage = async (image: any) => {
+    onLoading(true);
     let searchRegion: RectCoords | undefined = undefined;
     let imageConvert = await createImage(image);
     dispatch(setRequestImage(imageConvert));
     findByImage(imageConvert, settings, searchRegion).then((res: any) => {
       dispatch(setSearchResults(res));
-      onToggleModal();
+
       history.push("/result");
       return dispatch(showFeedback());
     });
-    // onLoading(false);
+    setTimeout(() => {
+      onLoading(false);
+      handlerCloseModal();
+    }, 500);
+  };
+
+  const handlerCloseModal = () => {
+    // onLoading();
+    setFacingMode("environment");
+    setScaleCamera(1);
+    onToggleModal();
   };
 
   return (
@@ -59,14 +69,14 @@ function CameraCustom(props: Props) {
       <Drawer
         anchor={"bottom"}
         open={isToggle}
-        onClose={onToggleModal}
+        onClose={handlerCloseModal}
         className="modal-togggle-cam"
       >
         <Box className="wrap-camera">
-          <button className="btn-close-modal right" onClick={onToggleModal}>
+          <button className="btn-close-modal right" onClick={handlerCloseModal}>
             <CloseIcon style={{ fontSize: 20, color: "#fff" }} />
           </button>
-          <button className="btn-close-modal left" onClick={onToggleModal}>
+          <button className="btn-close-modal left" onClick={handlerCloseModal}>
             <svg
               width="18"
               height="10"
@@ -86,6 +96,8 @@ function CameraCustom(props: Props) {
               justifyContent: "center",
               alignItems: "center",
               overflow: "hidden",
+              height: "80%",
+              width: "100%",
             }}
           >
             <Webcam
@@ -99,9 +111,9 @@ function CameraCustom(props: Props) {
               }}
               ref={webcamRef}
               style={{
-                height: "87vh",
+                height: "100%",
                 width: "100%",
-                objectFit: "fill",
+                objectFit: "cover",
                 transform: `scale(${scaleCamera})`,
               }}
               screenshotQuality={1}

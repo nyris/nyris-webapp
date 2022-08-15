@@ -6,10 +6,12 @@ import IconAdminMobile from "common/assets/icons/admin_mobile.svg";
 import IconCameraMobile from "common/assets/icons/icon_camera_mobile.svg";
 import CameraCustom from "./drawer/cameraCustom";
 
-interface Props {}
+interface Props {
+  onLoadingMobile?: any;
+}
 
 function FooterMobile(props: Props): JSX.Element {
-  const {} = props;
+  const { onLoadingMobile } = props;
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const handleCheckMatchLink = (match: any, location: any) => {
     let active = false;
@@ -81,6 +83,7 @@ function FooterMobile(props: Props): JSX.Element {
           onToggleModal={() => {
             setOpenModalCamera(!isOpenModalCamera);
           }}
+          onLoading={onLoadingMobile}
         />
       </Box>
     </Box>

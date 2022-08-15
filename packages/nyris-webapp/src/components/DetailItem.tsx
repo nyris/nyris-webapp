@@ -12,6 +12,8 @@ import { useEffect } from "react";
 import IconOpenLink from "common/assets/icons/Union.svg";
 import IconSearchImage from "common/assets/icons/icon_search_image2.svg";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import { useMediaQuery } from "react-responsive";
+import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 interface Props {
   numberResult?: number;
   results?: any;
@@ -32,17 +34,16 @@ function DetailItem(props: Props) {
     onSearchImage,
     moreInfoText,
   } = props;
-  console.log("props", props);
   const [collapDescription, setCollapDescription] = useState(false);
   const { img, title, sku, main_offer_link, brand } = dataItem;
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
+  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+
   const [urlImage, setUrlImage] = useState<string>("");
   useEffect(() => {
     checkDataItemResult(dataItem);
     handlerCheckUrlImage(dataItem?.main_image_link);
   }, [dataItem]);
-
-  console.log("3213232 dataItem", dataItem);
 
   const handlerCheckUrlImage = (url: any, timeout?: number) => {
     timeout = timeout || 5000;
@@ -91,11 +92,25 @@ function DetailItem(props: Props) {
 
   return (
     <Box className="box-modal-default" borderRadius={12}>
-      <Box className="ml-auto" style={{ width: "fit-content", marginRight: 5 }}>
-        <Button style={{ padding: 0 }} onClick={handlerCloseModal}>
-          <CloseOutlinedIcon style={{ fontSize: 20, color: "#55566B" }} />
-        </Button>
-      </Box>
+      {!isMobile ? (
+        <Box
+          className="ml-auto"
+          style={{ width: "fit-content", marginRight: 5 }}
+        >
+          <Button style={{ padding: 0 }} onClick={handlerCloseModal}>
+            <CloseOutlinedIcon style={{ fontSize: 20, color: "#55566B" }} />
+          </Button>
+        </Box>
+      ) : (
+        <Box
+          className="mr-auto"
+          style={{ width: "fit-content", marginLeft: 5 }}
+        >
+          <Button style={{ padding: 0 }} onClick={handlerCloseModal}>
+            <KeyboardArrowLeftIcon style={{ fontSize: 25, color: "#55566B" }} />
+          </Button>
+        </Box>
+      )}
 
       <Box className="box-carosel">
         <DefaultCarousel imgItem={dataImageCarousel} />
@@ -197,7 +212,6 @@ function DetailItem(props: Props) {
                     padding: 0,
                   }}
                   onClick={() => window.open(`${main_offer_link}`, "_blank")}
-                  
                 >
                   <Typography className="text-f18 fw-600 text-white">
                     {moreInfoText ? moreInfoText : "MORE INFO"}

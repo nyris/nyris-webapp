@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -29,6 +29,7 @@ import {
   setSelectedRegion,
   setRequestImage,
   setImageSearchInput,
+  reset,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import algoliasearch from "algoliasearch/lite";
@@ -59,6 +60,7 @@ const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
 
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
+  const refBoxResult = useRef(null);
   const stateGlobal = useAppSelector((state) => state);
   const { search, settings } = stateGlobal;
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
@@ -87,7 +89,10 @@ function ResultComponent(props: Props) {
   // TODO: hanlder modal:
   const handlerToggleModal = (item: any) => {
     setDataImageModal(item);
-    return setOpenModalImage(true);
+    setOpenModalImage(true);
+    if (isMobile) {
+      dispatch(reset(""));
+    }
   };
 
   const onNextItem = () => {
@@ -139,6 +144,9 @@ function ResultComponent(props: Props) {
 
   // TODO: Search image with url or file
   const getUrlToCanvasFile = async (url: string, position?: number) => {
+    if (isMobile) {
+      setOpenModalImage(false);
+    }
     dispatch(showResults());
     dispatch(loadingActionResults());
     dispatch(setImageSearchInput(url));
@@ -176,7 +184,7 @@ function ResultComponent(props: Props) {
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
 
   return (
-    <Box className={`wrap-main-result loading`}>
+    <div className={`wrap-main-result loading`} ref={refBoxResult}>
       <>
         {isLoading && (
           <Box className="box-wrap-loading">
@@ -185,6 +193,25 @@ function ResultComponent(props: Props) {
             </Box>
           </Box>
         )}
+        {isMobile && isOpenModalImage && (
+          <Box className="box-detail-item-mobile">
+            <DetailItem
+              handlerCloseModal={() => {
+                setOpenModalImage(false);
+              }}
+              onPrevItem={onPrevItem}
+              onNextItem={onNextItem}
+              dataItem={dataImageModal}
+              results={dataResult}
+              onHandlerModalShare={() => setOpenModalShare(true)}
+              onSearchImage={(url: string) => {
+                setLoading(true);
+                getUrlToCanvasFile(url);
+              }}
+            />
+          </Box>
+        )}
+
         <Configure filters={filtersString}></Configure>
         <Box className="box-wrap-result-component">
           {!isMobile && (
@@ -228,22 +255,22 @@ function ResultComponent(props: Props) {
                   {settings.preview && requestImage && (
                     <Box className="col-left">
                       <Box className="box-preview">
-                        {requestImage && (
-                          <Box className="preview-item">
-                            <Preview
-                              key={requestImage?.id}
-                              onSelectionChange={(r: RectCoords) => {
-                                debounceRectCoords(r);
-                              }}
-                              image={requestImage?.canvas}
-                              selection={selectedRegion || defaultSelection}
-                              regions={regions}
-                              maxWidth={320}
-                              maxHeight={320}
-                              dotColor="#FBD914"
-                            />
-                          </Box>
-                        )}
+                        {/* {requestImage && ( */}
+                        <Box className="preview-item">
+                          <Preview
+                            key={requestImage?.id}
+                            onSelectionChange={(r: RectCoords) => {
+                              debounceRectCoords(r);
+                            }}
+                            image={requestImage?.canvas}
+                            selection={selectedRegion || defaultSelection}
+                            regions={regions}
+                            maxWidth={320}
+                            maxHeight={320}
+                            dotColor="#FBD914"
+                          />
+                        </Box>
+                        {/* )} */}
                       </Box>
                       <Box className="box-title_col-left">
                         <Typography style={{ fontSize: 11, color: "#fff" }}>
@@ -452,32 +479,31 @@ function ResultComponent(props: Props) {
         </Box>
 
         {/* TODO: Component modal image */}
-        {
-          !isMobile 
-        }
-        <DefaultModal
-          openModal={isOpenModalImage}
-          handleClose={(e: any) => {
-            setOpenModalImage(false);
-          }}
-        >
-          <DetailItem
-            handlerCloseModal={() => {
+        {!isMobile && (
+          <DefaultModal
+            openModal={isOpenModalImage}
+            handleClose={(e: any) => {
               setOpenModalImage(false);
             }}
-            onPrevItem={onPrevItem}
-            onNextItem={onNextItem}
-            dataItem={dataImageModal}
-            results={dataResult}
-            onHandlerModalShare={() => setOpenModalShare(true)}
-            onSearchImage={(url: string) => {
-              setLoading(true);
-              getUrlToCanvasFile(url);
-            }}
-          />
-        </DefaultModal>
+          >
+            <DetailItem
+              handlerCloseModal={() => {
+                setOpenModalImage(false);
+              }}
+              onPrevItem={onPrevItem}
+              onNextItem={onNextItem}
+              dataItem={dataImageModal}
+              results={dataResult}
+              onHandlerModalShare={() => setOpenModalShare(true)}
+              onSearchImage={(url: string) => {
+                setLoading(true);
+                getUrlToCanvasFile(url);
+              }}
+            />
+          </DefaultModal>
+        )}
       </>
-    </Box>
+    </div>
   );
 }
 

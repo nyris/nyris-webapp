@@ -29,7 +29,7 @@ function Layout({ children }: ReactNode): JSX.Element {
   searchClient.initIndex(indexName);
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
   const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
-
+  const [isLoading, setLoading] = useState<boolean>(false);
   let HeaderApp: any;
   let FooterApp: any;
   let classNameBoxVersion: string = "newVersion";
@@ -54,6 +54,13 @@ function Layout({ children }: ReactNode): JSX.Element {
 
   return (
     <Box position={"relative"} className="wrap-mobile">
+      {isLoading && (
+        <Box className="box-wrap-loading" style={{ zIndex: 1400 }}>
+          <Box className="loadingSpinCT" style={{ top: 0, bottom: 0 }}>
+            <Box className="box-content-spin"></Box>
+          </Box>
+        </Box>
+      )}
       <InstantSearch
         indexName={indexName}
         searchClient={searchClient}
@@ -75,7 +82,7 @@ function Layout({ children }: ReactNode): JSX.Element {
             {children}
           </div>
           <div className="footer-wrap-main">
-            <FooterApp />
+            <FooterApp onLoadingMobile={(val: boolean) => setLoading(val)} />
           </div>
         </div>
         {isMobile && (

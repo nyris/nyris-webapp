@@ -138,6 +138,7 @@
       height: 64px;
       border-top: 1px solid #e9e9ec;
       background-color: #fff;
+      z-index: 11;
       .box-icon-camera-mobile {
         z-index: 10;
         background: #3e36dc;
@@ -394,6 +395,12 @@
     }
     .MuiBackdrop-root {
       background-color: #1e1f31;
+    }
+  }
+
+  .box-detail-item-mobile{
+    .box-modal-default{
+      width: 100%;
     }
   }
 }
