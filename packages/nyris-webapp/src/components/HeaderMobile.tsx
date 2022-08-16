@@ -19,7 +19,22 @@ function HeaderMobile(props: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
+  const [isShowInputSearch, setShowInputSearch] = useState<boolean>(false);
   const history = useHistory();
+  console.log("history.location?.pathname", history.location?.pathname);
+
+  useEffect(() => {
+    if (
+      history.location?.pathname === "/result" ||
+      history.location?.pathname === "/"
+    ) {
+      setShowInputSearch(true);
+    } else {
+      setShowInputSearch(false);
+    }
+  }, [history.location.pathname]);
+
+  console.log("isShowInputSearch", isShowInputSearch);
 
   return (
     <Box className="wrap-header-mobile">
@@ -27,53 +42,52 @@ function HeaderMobile(props: Props): JSX.Element {
         <CustomSearchBox onToggleFilterMobile={onToggleFilterMobile} />
       ) : (
         <>
-          {history.location?.pathname === "/result" ||
-            (history.location?.pathname === "/" && (
-              <div
-                ref={containerRefInputMobile}
-                id="box-input-search"
-                className="d-flex w-100"
-                style={{ alignItems: "center" }}
-              >
-                {history.location?.pathname !== "/" && (
-                  <Box
-                    className="btn-close-header"
-                    style={{ backgroundColor: "#fff" }}
+          {isShowInputSearch && (
+            <div
+              ref={containerRefInputMobile}
+              id="box-input-search"
+              className="d-flex w-100"
+              style={{ alignItems: "center" }}
+            >
+              {history.location?.pathname !== "/" && (
+                <Box
+                  className="btn-close-header"
+                  style={{ backgroundColor: "#fff" }}
+                >
+                  <button
+                    onClick={() => {
+                      dispatch(reset(""));
+                      history.push("/");
+                    }}
+                    style={{
+                      backgroundColor: "#fff",
+                      border: 0,
+                      padding: "0px 0px 0 16px",
+                      display: "flex",
+                    }}
                   >
-                    <button
-                      onClick={() => {
-                        dispatch(reset(""));
-                        history.push("/");
-                      }}
-                      style={{
-                        backgroundColor: "#fff",
-                        border: 0,
-                        padding: "0px 0px 0 16px",
-                        display: "flex",
-                      }}
-                    >
-                      <CloseIcon style={{ fontSize: 20, color: "#3e36dc" }} />
-                    </button>
-                  </Box>
-                )}
-
-                <AutocompleteBasicMobileComponent
-                  containerRefInputMobile={containerRefInputMobile}
-                />
-                <Box className="box-button-input-mobile">
-                  <Button
-                    className="btn-mobile-filter"
-                    onClick={onToggleFilterMobile}
-                  >
-                    <img src={IconFilter} alt="" width={18} height={18} />
-                  </Button>
+                    <CloseIcon style={{ fontSize: 20, color: "#3e36dc" }} />
+                  </button>
                 </Box>
-              </div>
-            ))}
+              )}
+
+              <AutocompleteBasicMobileComponent
+                containerRefInputMobile={containerRefInputMobile}
+              />
+              <Box className="box-button-input-mobile">
+                <Button
+                  className="btn-mobile-filter"
+                  onClick={onToggleFilterMobile}
+                >
+                  <img src={IconFilter} alt="" width={18} height={18} />
+                </Button>
+              </Box>
+            </div>
+          )}
         </>
       )}
     </Box>
   );
 }
 
-export default memo(HeaderMobile);
+export default HeaderMobile;

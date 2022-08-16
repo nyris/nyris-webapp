@@ -53,15 +53,16 @@ import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowBackIosOutlinedIcon from "@material-ui/icons/ArrowBackIosOutlined";
 import { useMediaQuery } from "react-responsive";
-import { scroller } from "react-scroll";
+// import { scroller } from "react-scroll";
 
 interface Props {}
 
 const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
+// const scrollToRef = (ref: any) => window.scrollTo(0, ref.current.offsetTop)
 
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
-  const refBoxResult = useRef(null);
+  const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector((state) => state);
   const { search, settings } = stateGlobal;
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
@@ -78,6 +79,7 @@ function ResultComponent(props: Props) {
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const [statusSwitchButton, setStatusSwitchButton] = useState<boolean>(true);
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+  const executeScroll = () => refBoxResult.current.scrollIntoView();
 
   useEffect(() => {
     if (results?.length === 0) {
@@ -89,6 +91,7 @@ function ResultComponent(props: Props) {
 
   // TODO: hanlder modal:
   const handlerToggleModal = (item: any) => {
+    executeScroll();
     setLoading(true);
     setDataImageModal(item);
     setOpenModalImage(true);
@@ -150,6 +153,7 @@ function ResultComponent(props: Props) {
   // TODO: Search image with url or file
   const getUrlToCanvasFile = async (url: string, position?: number) => {
     if (isMobile) {
+      executeScroll();
       setOpenModalImage(false);
     }
     dispatch(showResults());

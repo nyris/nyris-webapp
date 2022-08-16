@@ -10,6 +10,7 @@ import {
   setRequestImage,
   setSearchResults,
   setSelectedRegion,
+  updateStatusLoading,
 } from "Store/Search";
 import { feedbackClickEpic } from "services/Feedback";
 import { createImage, findByImage, findRegions } from "services/image";
@@ -31,6 +32,7 @@ function AppMobile(props: Props): JSX.Element {
 
   const getUrlToCanvasFile = async (url: string, position?: number) => {
     // onChangeLoading(true);
+    dispatch(updateStatusLoading(true));
     dispatch(showResults());
     dispatch(loadingActionResults());
     dispatch(setImageSearchInput(url));
@@ -49,13 +51,14 @@ function AppMobile(props: Props): JSX.Element {
     return findByImage(image, settings, searchRegion)
       .then((res) => {
         dispatch(setSearchResults(res));
-        // onChangeLoading(false);
+        dispatch(updateStatusLoading(false));
         history.push("/result");
         return dispatch(showFeedback());
       })
       .catch((err: any) => {
         console.log("err getUrlToCanvasFile mobile", err);
       });
+   
   };
 
   return (
