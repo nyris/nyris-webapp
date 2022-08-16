@@ -21,6 +21,9 @@
       align-items: center;
       justify-content: center;
       width: 100%;
+      &.hide {
+        display: none;
+      }
       .wrap-header-mobile {
         width: 100%;
         position: relative;
@@ -132,6 +135,66 @@
         }
       }
       .box-camera-custom {
+      }
+
+      .wrap-main-support-page {
+        width: 100%;
+        background-color: #fff !important;
+        padding: 30px 20px !important;
+        padding-bottom: 0px !important;
+        .col-left {
+          width: 100%;
+          .col-left__bottom {
+            .col-left__bottom__content {
+              width: 100% !important;
+            }
+          }
+          .btn-submit-support {
+            span {
+              text-align: center;
+              display: block;
+              font-size: 14px;
+            }
+          }
+          .box-choose-file-mobile {
+            .col-left,
+            .col-right {
+              width: 50%;
+              display: block;
+              border: 2px solid #2b2c46;
+              button{
+                width: 100%;
+                span{
+                  display: flex;
+                  width: 100%;
+                  svg{
+                    margin-left: auto;
+                  }
+                }
+              }
+            }
+            .col-left{
+              border-right: 1px solid #2b2c46 !important;
+            }
+            .col-right{
+              border-left: 1px solid #2b2c46 !important;
+            }
+          }
+          .box-form {
+            .box-form-control .item-field label {
+              color: #1e1f31 !important;
+            }
+            .box-form-control .item-field .box-input-control {
+              box-shadow: none !important;
+            }
+          }
+          .text-title-support {
+            color: #1e1f31 !important;
+          }
+        }
+        .col-right {
+          display: none;
+        }
       }
     }
     .footer-wrap-main {
@@ -398,25 +461,25 @@
     }
   }
 
-  .box-detail-item-mobile{
-    .box-modal-default{
+  .box-detail-item-mobile {
+    .box-modal-default {
       width: 100%;
     }
   }
-  .wrap-main-profile{
+  .wrap-main-profile {
     height: 100% !important;
     width: 100%;
     background-color: #fff;
-    .box-col-left{
+    .box-col-left {
       padding: 30px 20px;
     }
-    .box-top{
+    .box-top {
       padding: 0 !important;
       display: block !important;
       min-height: 100px !important;
     }
-    .box-bottom{
-      .box-content{
+    .box-bottom {
+      .box-content {
         width: 100% !important;
         background-color: #fff !important;
       }

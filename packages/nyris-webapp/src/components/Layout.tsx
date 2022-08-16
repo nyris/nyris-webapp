@@ -32,7 +32,9 @@ function Layout({ children }: ReactNode): JSX.Element {
   const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const history = useHistory();
-
+  let isShowHeaderMobile =
+    (isMobile && history.location?.pathname === "/result") ||
+    history.location?.pathname === "/";
   useEffect(() => {
     setLoading(loadingSearchAlgolia);
   }, [loadingSearchAlgolia]);
@@ -42,11 +44,12 @@ function Layout({ children }: ReactNode): JSX.Element {
   let classNameBoxVersion: string = "newVersion";
   if (isMobile) {
     classNameBoxVersion = "mobile";
-    HeaderApp = HeaderMobile;
     FooterApp = FooterMobile;
+    HeaderApp = HeaderMobile;
   } else {
     if (themePage.default?.active) {
       classNameBoxVersion = "default";
+
       HeaderApp = HeaderComponent;
       FooterApp = FooterComponent;
     } else if (themePage.materialDesign?.active) {
@@ -58,8 +61,7 @@ function Layout({ children }: ReactNode): JSX.Element {
       FooterApp = FooterNewVersion;
     }
   }
-
-  console.log("search 312321312312", search);
+  console.log("isShowHeaderMobile");
 
   return (
     <Box position={"relative"} className="wrap-mobile">
@@ -75,21 +77,25 @@ function Layout({ children }: ReactNode): JSX.Element {
         searchClient={searchClient}
         searchState={valueTextSearch}
         onSearchStateChange={(state) => {
-          console.log("state", state);
           dispatch(changeValueTextSearch(state));
         }}
       >
         <div className={`layout-main-${classNameBoxVersion}`}>
-          {history.location.pathname !== "/account" && (
-            <div className={`box-header-${classNameBoxVersion}-main`}>
-              <HeaderApp
-                onToggleFilterMobile={() => {
-                  setOpenFilter(!isOpenFilter);
-                }}
-              />
-            </div>
-          )}
-
+          <div
+            className={
+              !isMobile
+                ? `box-header-${classNameBoxVersion}-main`
+                : isShowHeaderMobile
+                ? `box-header-${classNameBoxVersion}-main`
+                : ""
+            }
+          >
+            <HeaderApp
+              onToggleFilterMobile={() => {
+                setOpenFilter(!isOpenFilter);
+              }}
+            />
+          </div>
           <div className={`box-body-${classNameBoxVersion}-wrap-main`}>
             {children}
           </div>

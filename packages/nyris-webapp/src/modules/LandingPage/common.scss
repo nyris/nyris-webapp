@@ -185,10 +185,10 @@ button {
 
 .btn-detail-item {
   background: linear-gradient(to left, #56577c 10%, #2b2c46 80%) !important;
-  background-size: 100% 200% !important; 
+  background-size: 100% 200% !important;
   background-position: left bottom;
   transition: all 1s ease-out;
-  
+
   &:hover {
     background-position: left bottom !important;
     // background-size: 200% 100% !important;
@@ -844,6 +844,10 @@ button {
   box-shadow: 1.33333px 1.33333px 13.3333px rgba(0, 0, 0, 0.3);
   border-radius: 16px;
   padding: 5px;
+}
+.text-f14 {
+  font-family: "Montserrat";
+  font-size: 14px;
 }
 .text-f20 {
   font-family: "Montserrat";
