@@ -83,7 +83,6 @@ function FooterMobile(props: Props): JSX.Element {
           onToggleModal={() => {
             setOpenModalCamera(!isOpenModalCamera);
           }}
-          onLoading={onLoadingMobile}
         />
       </Box>
     </Box>

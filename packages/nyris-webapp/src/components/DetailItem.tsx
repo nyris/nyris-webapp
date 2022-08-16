@@ -35,7 +35,7 @@ function DetailItem(props: Props) {
     moreInfoText,
   } = props;
   const [collapDescription, setCollapDescription] = useState(false);
-  const { img, title, sku, main_offer_link, brand } = dataItem;
+  const { title, sku, main_offer_link, brand } = dataItem;
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
 

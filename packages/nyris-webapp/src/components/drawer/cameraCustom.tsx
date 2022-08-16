@@ -6,23 +6,25 @@ import ReverseCamera from "common/assets/icons/reverse_camera.svg";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import { RectCoords } from "@nyris/nyris-api";
 import { createImage, findByImage } from "services/image";
-import { setRequestImage, setSearchResults } from "Store/Search";
+import {
+  setRequestImage,
+  setSearchResults,
+  updateStatusLoading,
+} from "Store/Search";
 import { showFeedback } from "Store/Nyris";
 import { useHistory } from "react-router-dom";
 interface Props {
   isToggle: boolean;
   onToggleModal?: any;
-  onLoading?: any;
 }
 
 const FACING_MODE_USER = "environment";
 const FACING_MODE_ENVIRONMENT = "user";
 
 function CameraCustom(props: Props) {
-  const { isToggle, onToggleModal, onLoading } = props;
+  const { isToggle, onToggleModal } = props;
   const webcamRef: any = useRef(null);
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
-  // const [loading, setLoading] = useState(true);
   const [scaleCamera, setScaleCamera] = useState<number>(1);
   const stateGlobal = useAppSelector((state) => state);
   const { search, settings } = stateGlobal;
@@ -41,24 +43,22 @@ function CameraCustom(props: Props) {
   }, []);
 
   const handlerFindImage = async (image: any) => {
-    onLoading(true);
+    dispatch(updateStatusLoading(true));
     let searchRegion: RectCoords | undefined = undefined;
     let imageConvert = await createImage(image);
     dispatch(setRequestImage(imageConvert));
     findByImage(imageConvert, settings, searchRegion).then((res: any) => {
       dispatch(setSearchResults(res));
-
-      history.push("/result");
       return dispatch(showFeedback());
     });
     setTimeout(() => {
-      onLoading(false);
+      dispatch(updateStatusLoading(false));
       handlerCloseModal();
+      history.push("/result");
     }, 500);
   };
 
   const handlerCloseModal = () => {
-    // onLoading();
     setFacingMode("environment");
     setScaleCamera(1);
     onToggleModal();

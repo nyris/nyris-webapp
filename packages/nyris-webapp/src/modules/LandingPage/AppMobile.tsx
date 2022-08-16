@@ -58,7 +58,6 @@ function AppMobile(props: Props): JSX.Element {
       });
   };
 
-
   return (
     <>
       <Box className="wrap-content-body">

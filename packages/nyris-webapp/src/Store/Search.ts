@@ -240,6 +240,13 @@ export const searchSlice = createSlice({
         imageThumbSearchInput: payload,
       };
     },
+    updateStatusLoading: (state, data: PayloadAction<any>) => {
+      const { payload } = data;
+      return {
+        ...state,
+        loadingSearchAlgolia: payload,
+      };
+    },
   },
 });
 
@@ -262,5 +269,6 @@ export const {
   updateResultChangePosition,
   setError,
   setImageSearchInput,
+  updateStatusLoading
 } = searchSlice.actions;
 export default searchSlice.reducer;

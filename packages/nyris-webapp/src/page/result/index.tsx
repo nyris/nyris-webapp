@@ -53,6 +53,7 @@ import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowBackIosOutlinedIcon from "@material-ui/icons/ArrowBackIosOutlined";
 import { useMediaQuery } from "react-responsive";
+import { scroller } from "react-scroll";
 
 interface Props {}
 
@@ -88,8 +89,13 @@ function ResultComponent(props: Props) {
 
   // TODO: hanlder modal:
   const handlerToggleModal = (item: any) => {
+    setLoading(true);
     setDataImageModal(item);
     setOpenModalImage(true);
+    window.scrollTo({ top: 0, behavior: "auto" });
+    setTimeout(() => {
+      setLoading(false);
+    }, 400);
     if (isMobile) {
       dispatch(reset(""));
     }
@@ -110,7 +116,6 @@ function ResultComponent(props: Props) {
   };
 
   // TODO: rectCoords
-
   const debounceRectCoords = (value: any) => {
     handlerRectCoords(value);
     dispatch(selectionChanged(value));

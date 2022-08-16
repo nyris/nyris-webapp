@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { ReactNode } from "components/common";
 import "./common.scss";
 import HeaderComponent from "./Header";
@@ -18,11 +18,12 @@ import algoliasearch from "algoliasearch/lite";
 import { changeValueTextSearch } from "Store/Search";
 import { Box } from "@material-ui/core";
 import ExpandablePanelComponent from "./PanelResult";
+import { useHistory } from "react-router-dom";
 
 function Layout({ children }: ReactNode): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
-  const { valueTextSearch } = search;
+  const { valueTextSearch, loadingSearchAlgolia } = search;
   const { themePage } = settings;
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
@@ -30,6 +31,12 @@ function Layout({ children }: ReactNode): JSX.Element {
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
   const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const history = useHistory();
+
+  useEffect(() => {
+    setLoading(loadingSearchAlgolia);
+  }, [loadingSearchAlgolia]);
+
   let HeaderApp: any;
   let FooterApp: any;
   let classNameBoxVersion: string = "newVersion";
@@ -52,6 +59,8 @@ function Layout({ children }: ReactNode): JSX.Element {
     }
   }
 
+  console.log("search 312321312312", search);
+
   return (
     <Box position={"relative"} className="wrap-mobile">
       {isLoading && (
@@ -71,18 +80,21 @@ function Layout({ children }: ReactNode): JSX.Element {
         }}
       >
         <div className={`layout-main-${classNameBoxVersion}`}>
-          <div className={`box-header-${classNameBoxVersion}-main`}>
-            <HeaderApp
-              onToggleFilterMobile={() => {
-                setOpenFilter(!isOpenFilter);
-              }}
-            />
-          </div>
+          {history.location.pathname !== "/account" && (
+            <div className={`box-header-${classNameBoxVersion}-main`}>
+              <HeaderApp
+                onToggleFilterMobile={() => {
+                  setOpenFilter(!isOpenFilter);
+                }}
+              />
+            </div>
+          )}
+
           <div className={`box-body-${classNameBoxVersion}-wrap-main`}>
             {children}
           </div>
           <div className="footer-wrap-main">
-            <FooterApp onLoadingMobile={(val: boolean) => setLoading(val)} />
+            <FooterApp />
           </div>
         </div>
         {isMobile && (

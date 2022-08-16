@@ -403,6 +403,25 @@
       width: 100%;
     }
   }
+  .wrap-main-profile{
+    height: 100% !important;
+    width: 100%;
+    background-color: #fff;
+    .box-col-left{
+      padding: 30px 20px;
+    }
+    .box-top{
+      padding: 0 !important;
+      display: block !important;
+      min-height: 100px !important;
+    }
+    .box-bottom{
+      .box-content{
+        width: 100% !important;
+        background-color: #fff !important;
+      }
+    }
+  }
 }
 
 @media screen and (max-width: 375px) {

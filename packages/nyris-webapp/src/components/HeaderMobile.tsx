@@ -33,7 +33,10 @@ function HeaderMobile(props: Props): JSX.Element {
           style={{ alignItems: "center" }}
         >
           {history.location?.pathname !== "/" && (
-            <Box className="btn-close-header" style={{ backgroundColor: "#fff" }}>
+            <Box
+              className="btn-close-header"
+              style={{ backgroundColor: "#fff" }}
+            >
               <button
                 onClick={() => {
                   dispatch(reset(""));
@@ -55,6 +58,7 @@ function HeaderMobile(props: Props): JSX.Element {
             containerRefInputMobile={containerRefInputMobile}
           />
           <Box className="box-button-input-mobile">
+            
             <Button
               className="btn-mobile-filter"
               onClick={onToggleFilterMobile}
