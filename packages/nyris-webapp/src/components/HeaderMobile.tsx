@@ -1,12 +1,10 @@
-import { Box, Button, Drawer } from "@material-ui/core";
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import { Box, Button } from "@material-ui/core";
+import React, { useEffect, useRef, useState } from "react";
 import CustomSearchBox from "./input/inputSearch";
-import AutocompleteBasicComponent from "./auto-complete/basic";
 import { useMediaQuery } from "react-responsive";
 import IconFilter from "common/assets/icons/filter_settings.svg";
 import { useAppDispatch } from "Store/Store";
 import { reset } from "Store/Search";
-import IconBack from "common/assets/images/back_arrow.svg";
 import { useHistory } from "react-router-dom";
 import CloseIcon from "@material-ui/icons/Close";
 import AutocompleteBasicMobileComponent from "./auto-complete/basic";
@@ -32,9 +30,8 @@ function HeaderMobile(props: Props): JSX.Element {
     } else {
       setShowInputSearch(false);
     }
-  }, [history.location.pathname]);
+  }, [history.location]);
 
-  console.log("isShowInputSearch", isShowInputSearch);
 
   return (
     <Box className="wrap-header-mobile">

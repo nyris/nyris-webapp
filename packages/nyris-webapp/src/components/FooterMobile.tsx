@@ -11,7 +11,6 @@ interface Props {
 }
 
 function FooterMobile(props: Props): JSX.Element {
-  const { onLoadingMobile } = props;
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const handleCheckMatchLink = (match: any, location: any) => {
     let active = false;

@@ -1,5 +1,5 @@
 import { Box, Drawer } from "@material-ui/core";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import CloseIcon from "@material-ui/icons/Close";
 import ReverseCamera from "common/assets/icons/reverse_camera.svg";
@@ -31,7 +31,7 @@ function CameraCustom(props: Props) {
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
   const [scaleCamera, setScaleCamera] = useState<number>(1);
   const stateGlobal = useAppSelector((state) => state);
-  const { search, settings } = stateGlobal;
+  const { settings } = stateGlobal;
   const history = useHistory();
   const dispatch = useAppDispatch();
 
@@ -68,7 +68,7 @@ function CameraCustom(props: Props) {
     onToggleModal();
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getInputProps } = useDropzone({
     onDrop: async (fs: File[]) => {
       // onChangeLoading(true);
       console.log("321");

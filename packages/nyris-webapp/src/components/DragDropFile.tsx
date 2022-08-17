@@ -3,21 +3,15 @@ import React from "react";
 import { useDropzone } from "react-dropzone";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import { createImage, findByImage, findRegions } from "services/image";
+import { createImage, findByImage } from "services/image";
 import {
   setSearchResults,
-  loadingActionResults,
   setRequestImage,
-  setRegions,
-  setSelectedRegion,
   setImageSearchInput,
 } from "Store/Search";
-import { showFeedback, showResults } from "Store/Nyris";
+import { showFeedback } from "Store/Nyris";
 import { useHistory } from "react-router-dom";
-import ExampleImages from "./ExampleImages";
-import { feedbackClickEpic } from "services/Feedback";
 import { useState } from "react";
-import { RectCoords } from "@nyris/nyris-api";
 import IconDownload from "common/assets/images/Icon_downLoad.svg";
 interface Props {
   acceptTypes: any;
@@ -35,7 +29,6 @@ function DragDropFile(props: Props) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[]) => {
       onChangeLoading(true);
-      console.log("321");
       let payload: any;
       let filters: any[] = [];
       setLoadingLoadFile(true);
@@ -55,7 +48,6 @@ function DragDropFile(props: Props) {
           ...res,
           filters,
         };
-        console.log("payload", payload);
         dispatch(setSearchResults(payload));
         setLoadingLoadFile(false);
         onChangeLoading(false);
@@ -64,32 +56,6 @@ function DragDropFile(props: Props) {
       });
     },
   });
-
-  const getUrlToCanvasFile = async (url: string, position?: number) => {
-    onChangeLoading(true);
-    dispatch(showResults());
-    dispatch(loadingActionResults());
-    dispatch(setImageSearchInput(url));
-    if (position) {
-      feedbackClickEpic(searchState, position);
-    }
-
-    let image = await createImage(url);
-    dispatch(setRequestImage(image));
-    let searchRegion: RectCoords | undefined = undefined;
-    if (settings.regions) {
-      let res = await findRegions(image, settings);
-      dispatch(setRegions(res.regions));
-      searchRegion = res.selectedRegion;
-      dispatch(setSelectedRegion(searchRegion));
-    }
-    return findByImage(image, settings, searchRegion).then((res) => {
-      dispatch(setSearchResults(res));
-      onChangeLoading(false);
-      history.push("/result");
-      return dispatch(showFeedback());
-    });
-  };
 
   return (
     <Box

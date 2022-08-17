@@ -102,7 +102,7 @@ function Profile(props: Props) {
                 {isMobile && (
                   <Box style={{ marginBottom: 10 }}>
                     <a
-                      href="#"
+                      href="/#"
                       style={{
                         fontSize: 12,
                         fontWeight: 500,

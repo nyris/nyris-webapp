@@ -3,7 +3,6 @@ import React from "react";
 import { useMediaQuery } from "react-responsive";
 import IconCamera from "common/assets/images/open_camera.svg";
 import IconQrCode from "common/assets/images/bar_code.svg";
-import CameraCustom from "./drawer/cameraCustom";
 interface ExampleImagesProps {
   images: string[];
   onExampleImageClicked: (url: string) => void;

@@ -3,7 +3,6 @@ import React, {
   memo,
   useEffect,
   useMemo,
-  useRef,
   Fragment,
   useCallback,
 } from "react";
@@ -22,8 +21,6 @@ interface Props {
 
 function AutocompleteBasicComponent(props: Props) {
   const { containerRefInputMobile, refine }: any = props;
-  const panelRootRef = useRef<any | any>(null);
-  const rootRef = useRef<HTMLElement | any>(null);
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);

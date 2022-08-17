@@ -26,8 +26,8 @@ const SearchBox = (props: any) => {
     currentRefinement,
     refine,
     onToggleFilterMobile,
-    // onGetRefInputSearchMobile,
-  }: any = props;
+  }: // onGetRefInputSearchMobile,
+  any = props;
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector((state) => state);
   const { search, settings } = stateGlobal;
@@ -64,14 +64,10 @@ const SearchBox = (props: any) => {
     []
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getInputProps } = useDropzone({
     onDrop: async (fs: File[]) => {
-      // onChangeLoading(true);
-      console.log("321");
       let payload: any;
       let filters: any[] = [];
-      // setLoadingLoadFile(true);
-      console.log("fs", fs);
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
@@ -87,22 +83,14 @@ const SearchBox = (props: any) => {
           ...res,
           filters,
         };
-        console.log("payload", payload);
         dispatch(setSearchResults(payload));
-        // history.push("/result");
-        // return dispatch(showFeedback());
       });
     },
   });
 
   return (
     <Box className="wrap-input-search">
-      <div
-        style={{ padding: 10 }}
-        className="box-input-search d-flex"
-      
-        
-      >
+      <div style={{ padding: 10 }} className="box-input-search d-flex">
         <form noValidate action="" role="search">
           <Box className="box-inp">
             <Box

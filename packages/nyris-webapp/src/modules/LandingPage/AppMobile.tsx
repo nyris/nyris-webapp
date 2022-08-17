@@ -1,7 +1,7 @@
 import { Box, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import { cadExtensions, RectCoords } from "@nyris/nyris-api";
+import {  RectCoords } from "@nyris/nyris-api";
 import { showFeedback, showResults } from "Store/Nyris";
 import {
   loadingActionResults,
@@ -20,14 +20,10 @@ import CameraCustom from "components/drawer/cameraCustom";
 interface Props {}
 
 function AppMobile(props: Props): JSX.Element {
-  const {} = props;
   const history = useHistory();
   const dispatch = useAppDispatch();
   const searchState = useAppSelector((state) => state);
-  const { settings, search } = searchState;
-  const acceptTypes = ["image/*"]
-    .concat(settings.cadSearch ? cadExtensions : [])
-    .join(",");
+  const { settings } = searchState;
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
 
   const getUrlToCanvasFile = async (url: string, position?: number) => {

@@ -32,9 +32,7 @@ import {
   reset,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
-import algoliasearch from "algoliasearch/lite";
 import {
-  InstantSearch,
   Configure,
   HitsPerPage,
   Pagination,
@@ -42,7 +40,6 @@ import {
 import CustomSearchBox from "components/input/inputSearch";
 import { feedbackClickEpic, feedbackSuccessEpic } from "services/Feedback";
 import { createImage, findByImage, findRegions } from "services/image";
-import { AlgoliaSettings } from "../../types";
 import LoadingScreenCustom from "components/LoadingScreen";
 import { Preview } from "@nyris/nyris-react-components";
 import { showHits } from "./MockData";
@@ -53,12 +50,10 @@ import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import ArrowBackIosOutlinedIcon from "@material-ui/icons/ArrowBackIosOutlined";
 import { useMediaQuery } from "react-responsive";
-// import { scroller } from "react-scroll";
 
 interface Props {}
 
 const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
-// const scrollToRef = (ref: any) => window.scrollTo(0, ref.current.offsetTop)
 
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
@@ -70,14 +65,11 @@ function ResultComponent(props: Props) {
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const { results, requestImage, regions, selectedRegion } = search;
   const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
-  const { valueTextSearch } = search;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
   const [isLoading, setLoading] = useState<any>(false);
-  const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
-  const searchClient = algoliasearch(appId, apiKey);
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
-  const [statusSwitchButton, setStatusSwitchButton] = useState<boolean>(true);
+  const [statusSwitchButton] = useState<boolean>(true);
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
   const executeScroll = () => refBoxResult.current.scrollIntoView();
 
@@ -380,7 +372,7 @@ function ResultComponent(props: Props) {
                         <span className="fw-700">Wrong results?</span> share
                         your search with our{" "}
                         <span style={{ textDecoration: "underline" }}>
-                          <a href="#" className="fw-700 text-white">
+                          <a href="/#" className="fw-700 text-white">
                             product experts
                           </a>
                         </span>

@@ -168,7 +168,7 @@ export default function ExpandablePanelComponent({
           </WidgetPanel>
         );
       }),
-    [widgets, refinements, onToggle, panels]
+    [widgets, refinements, onToggle, panels, isMobile]
   );
 
   const onTogglePanelsClick = useCallback(() => {
