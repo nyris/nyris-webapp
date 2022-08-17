@@ -70,32 +70,38 @@ function CameraCustom(props: Props) {
 
   const { getInputProps } = useDropzone({
     onDrop: async (fs: File[]) => {
-      // onChangeLoading(true);
-      console.log("321");
       let payload: any;
       let filters: any[] = [];
-      // setLoadingLoadFile(true);
       console.log("fs", fs);
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
       // TODO support regions
-      return findByImage(image, settings).then((res: any) => {
-        res?.results.map((item: any) => {
-          filters.push({
-            sku: item.sku,
-            score: item.score,
+      dispatch(updateStatusLoading(true));
+      return findByImage(image, settings)
+        .then((res: any) => {
+          res?.results.map((item: any) => {
+            filters.push({
+              sku: item.sku,
+              score: item.score,
+            });
           });
+          payload = {
+            ...res,
+            filters,
+          };
+          dispatch(setSearchResults(payload));
+          setTimeout(() => {
+            dispatch(updateStatusLoading(false));
+            handlerCloseModal();
+            history.push("/result");
+          }, 500);
+        })
+        .catch((e: any) => {
+          console.log("err camera_custom", e);
+          dispatch(updateStatusLoading(false));
+          handlerCloseModal();
         });
-        payload = {
-          ...res,
-          filters,
-        };
-        console.log("payload", payload);
-        dispatch(setSearchResults(payload));
-        // history.push("/result");
-        // return dispatch(showFeedback());
-      });
     },
   });
 
