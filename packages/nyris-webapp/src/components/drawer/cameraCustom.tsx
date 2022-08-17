@@ -7,12 +7,16 @@ import { useAppDispatch, useAppSelector } from "Store/Store";
 import { RectCoords } from "@nyris/nyris-api";
 import { createImage, findByImage } from "services/image";
 import {
+  setImageSearchInput,
   setRequestImage,
   setSearchResults,
   updateStatusLoading,
 } from "Store/Search";
 import { showFeedback } from "Store/Nyris";
 import { useHistory } from "react-router-dom";
+import { useDropzone } from "react-dropzone";
+import IconButton from "@material-ui/core/IconButton";
+import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
 interface Props {
   isToggle: boolean;
   onToggleModal?: any;
@@ -63,6 +67,37 @@ function CameraCustom(props: Props) {
     setScaleCamera(1);
     onToggleModal();
   };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: async (fs: File[]) => {
+      // onChangeLoading(true);
+      console.log("321");
+      let payload: any;
+      let filters: any[] = [];
+      // setLoadingLoadFile(true);
+      console.log("fs", fs);
+      dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
+      let image = await createImage(fs[0]);
+      dispatch(setRequestImage(image));
+      // TODO support regions
+      return findByImage(image, settings).then((res: any) => {
+        res?.results.map((item: any) => {
+          filters.push({
+            sku: item.sku,
+            score: item.score,
+          });
+        });
+        payload = {
+          ...res,
+          filters,
+        };
+        console.log("payload", payload);
+        dispatch(setSearchResults(payload));
+        // history.push("/result");
+        // return dispatch(showFeedback());
+      });
+    },
+  });
 
   return (
     <Box className="box-camera-custom">
@@ -163,6 +198,35 @@ function CameraCustom(props: Props) {
             >
               2
             </button>
+          </div>
+          <div className="wrap-box-input-mobile custom-library">
+            <input
+              accept="image/*"
+              id="icon-button-file"
+              type="file"
+              style={{ display: "none" }}
+              {...getInputProps({
+                onClick: (e) => {
+                  e.stopPropagation();
+                },
+              })}
+            />
+            <label htmlFor="icon-button-file">
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="span"
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "100%",
+                  padding: 7,
+                  backgroundColor: "#F3F3F5",
+                }}
+              >
+                <PhotoLibraryIcon style={{ fontSize: 20, color: "red" }} />
+              </IconButton>
+            </label>
           </div>
         </Box>
       </Drawer>

@@ -162,21 +162,21 @@
               width: 50%;
               display: block;
               border: 2px solid #2b2c46;
-              button{
+              button {
                 width: 100%;
-                span{
+                span {
                   display: flex;
                   width: 100%;
-                  svg{
+                  svg {
                     margin-left: auto;
                   }
                 }
               }
             }
-            .col-left{
+            .col-left {
               border-right: 1px solid #2b2c46 !important;
             }
-            .col-right{
+            .col-right {
               border-left: 1px solid #2b2c46 !important;
             }
           }
@@ -483,6 +483,28 @@
         width: 100% !important;
         background-color: #fff !important;
       }
+    }
+  }
+
+  .wrap-box-input-mobile.custom-library {
+    position: absolute;
+    width: 52px;
+    height: 52px;
+    background-color: #686778b3 !important;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #fff !important;
+    padding: 3px;
+    bottom: 108px;
+    right: 38px;
+    .MuiIconButton-colorPrimary {
+      background-color: transparent !important;
+    }
+    svg {
+      color: #fff !important;
+      font-size: 30px !important;
     }
   }
 }
