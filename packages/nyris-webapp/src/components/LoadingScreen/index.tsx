@@ -135,7 +135,7 @@ function LoadingScreen({
         </Box>
       )}
 
-      {itemShowDefault.length === 0 ? <Box>No item to show</Box> : renderItem}
+      {itemShowDefault.length === 0 ? <Box>No results page.</Box> : renderItem}
     </>
   );
 }
