@@ -31,9 +31,9 @@ const ExampleImages: React.FC<ExampleImagesProps> = ({
         <div className="exImagesWrap">
           {isMobile && (
             <>
-              <Button style={{ padding: 0 }} onClick={onToggleModalCamera}>
+              {/* <Button style={{ padding: 0 }} onClick={onToggleModalCamera}>
                 <img src={IconCamera} alt="" />
-              </Button>
+              </Button> */}
               <Button style={{ padding: 0, transform: "scale(1.1)" }}>
                 <img src={IconQrCode} alt="" />
               </Button>
