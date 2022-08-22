@@ -2,12 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
     <meta
       name="viewport"
-      content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"
+      content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=auto, user-scalable=no"
     />
+    <meta name="theme-color" content="#000000" />
     <link
       rel="apple-touch-icon"
       sizes="57x57"
@@ -112,6 +111,10 @@
       src="https://863a167094994e54bc22149eafac1699.js.ubembed.com"
       async
     ></script>
+    <script>
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

@@ -5,6 +5,7 @@ import React, {
   useMemo,
   Fragment,
   useCallback,
+  useState,
 } from "react";
 import { autocomplete, Pragma } from "@algolia/autocomplete-js";
 import { useAppSelector } from "Store/Store";
@@ -14,7 +15,7 @@ import { popularSearchesPluginCreator } from "components/autocomplete/plugins/po
 import { connectSearchBox } from "react-instantsearch-dom";
 import { debounce } from "lodash";
 import { useHistory } from "react-router-dom";
-import { render } from 'react-dom';
+import { render } from "react-dom";
 interface Props {
   containerRefInputMobile?: any;
 }
@@ -25,6 +26,7 @@ function AutocompleteBasicComponent(props: Props) {
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   const history = useHistory();
+  const [initQuery, setInitQuey] = useState<string>("");
 
   const plugins = useMemo(
     () => [
@@ -48,14 +50,27 @@ function AutocompleteBasicComponent(props: Props) {
       return;
     }
     const autocompleteInstance = autocomplete({
-      container: "#box-input-search",
+      container: containerRefInputMobile.current,
       renderer: {
         createElement: createElement as Pragma,
         Fragment,
       },
-      render({ children }, root) {
-        render(children, root);
+      initialState: {
+        query: initQuery,
       },
+      // render({ children }, root) {
+      //   render(children, root);
+      // },
+      render({ sections, components }, root) {
+        render(
+          <Fragment>
+            <div className="aa-PanelLayout aa-Panel--scollable ">{sections}</div>
+            {/* <components.MyComponent /> */}
+          </Fragment>,
+          root
+        );
+      },
+
       plugins,
       openOnFocus: true,
       onSubmit,
@@ -76,8 +91,9 @@ function AutocompleteBasicComponent(props: Props) {
   // console.log("containerRef", containerRef);
 
   const onSubmit = ({ state }: any) => {
-    console.log("321 state", state);
+    
     debounceSearch(state?.query);
+    setInitQuey(state?.query);
     if (history.location.pathname !== "/result") {
       history.push("/result");
     }
@@ -86,6 +102,7 @@ function AutocompleteBasicComponent(props: Props) {
     debounce((nextValue: any) => refine(nextValue), 200),
     []
   );
+  console.log("initQuery", initQuery);
 
   return <></>;
 }

@@ -1,10 +1,11 @@
 import { Box, Typography } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import {  RectCoords } from "@nyris/nyris-api";
+import { RectCoords } from "@nyris/nyris-api";
 import { showFeedback, showResults } from "Store/Nyris";
 import {
   loadingActionResults,
+  reset,
   setImageSearchInput,
   setRegions,
   setRequestImage,
@@ -25,6 +26,10 @@ function AppMobile(props: Props): JSX.Element {
   const searchState = useAppSelector((state) => state);
   const { settings } = searchState;
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
+
+  useEffect(() => {
+    dispatch(reset(""));
+  }, []);
 
   const getUrlToCanvasFile = async (url: string, position?: number) => {
     // onChangeLoading(true);
@@ -54,7 +59,6 @@ function AppMobile(props: Props): JSX.Element {
       .catch((err: any) => {
         console.log("err getUrlToCanvasFile mobile", err);
       });
-   
   };
 
   return (

@@ -66,7 +66,7 @@ function Layout({ children }: ReactNode): JSX.Element {
   return (
     <Box position={"relative"} className="wrap-mobile">
       {isLoading && (
-        <Box className="box-wrap-loading" style={{ zIndex: 1400 }}>
+        <Box className="box-wrap-loading" style={{ zIndex: 99999999 }}>
           <Box className="loadingSpinCT" style={{ top: 0, bottom: 0 }}>
             <Box className="box-content-spin"></Box>
           </Box>

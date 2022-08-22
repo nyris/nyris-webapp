@@ -1,6 +1,6 @@
 import { Box, Button } from "@material-ui/core";
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import IconSupportMobile from "common/assets/icons/support_mobile.svg";
 import IconAdminMobile from "common/assets/icons/admin_mobile.svg";
 import IconCameraMobile from "common/assets/icons/icon_camera_mobile.svg";
@@ -12,6 +12,7 @@ interface Props {
 
 function FooterMobile(props: Props): JSX.Element {
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
+  const history = useHistory();
   const handleCheckMatchLink = (match: any, location: any) => {
     let active = false;
     if (match?.url === location.pathname) {
@@ -44,38 +45,46 @@ function FooterMobile(props: Props): JSX.Element {
           />
         </Button>
       </Box>
+      {history.location.pathname !== "/" && (
+        <>
+          <Box style={{ padding: 23 }}>
+            <NavLink
+              activeClassName="active"
+              isActive={(match, location) =>
+                handleCheckMatchLink(match, location)
+              }
+              to={"/support"}
+              className="nav-link p-0 menu-children rounded-0"
+            >
+              <img
+                width={24}
+                height={24}
+                src={`${IconSupportMobile}`}
+                alt="support_mobile"
+              />
+            </NavLink>
+          </Box>
 
-      <Box style={{ padding: 23 }}>
-        <NavLink
-          activeClassName="active"
-          isActive={(match, location) => handleCheckMatchLink(match, location)}
-          to={"/support"}
-          className="nav-link p-0 menu-children rounded-0"
-        >
-          <img
-            width={24}
-            height={24}
-            src={`${IconSupportMobile}`}
-            alt="support_mobile"
-          />
-        </NavLink>
-      </Box>
+          <Box style={{ padding: 23 }}>
+            <NavLink
+              activeClassName="active"
+              isActive={(match, location) =>
+                handleCheckMatchLink(match, location)
+              }
+              to={"/account"}
+              className="nav-link p-0 menu-children rounded-0"
+            >
+              <img
+                width={24}
+                height={24}
+                src={`${IconAdminMobile}`}
+                alt="account_page"
+              />
+            </NavLink>
+          </Box>
+        </>
+      )}
 
-      <Box style={{ padding: 23 }}>
-        <NavLink
-          activeClassName="active"
-          isActive={(match, location) => handleCheckMatchLink(match, location)}
-          to={"/account"}
-          className="nav-link p-0 menu-children rounded-0"
-        >
-          <img
-            width={24}
-            height={24}
-            src={`${IconAdminMobile}`}
-            alt="account_page"
-          />
-        </NavLink>
-      </Box>
       <Box className="box-screenshot-camera">
         <CameraCustom
           isToggle={isOpenModalCamera}

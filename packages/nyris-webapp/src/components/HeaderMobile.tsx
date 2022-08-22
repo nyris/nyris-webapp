@@ -21,8 +21,17 @@ function HeaderMobile(props: Props): JSX.Element {
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const [isShowInputSearch, setShowInputSearch] = useState<boolean>(false);
+  const [isShowFilter, setShowFilter] = useState<boolean>(false);
   const history = useHistory();
   console.log("history.location?.pathname", history.location?.pathname);
+
+  useEffect(() => {
+    if (history.location?.pathname === "/result") {
+      setShowFilter(true);
+    } else {
+      setShowFilter(false);
+    }
+  }, [history.location]);
 
   useEffect(() => {
     if (
@@ -79,14 +88,17 @@ function HeaderMobile(props: Props): JSX.Element {
                 <AutocompleteBasicMobileComponent
                   containerRefInputMobile={containerRefInputMobile}
                 />
-                <Box className="box-button-input-mobile">
-                  <Button
-                    className="btn-mobile-filter"
-                    onClick={onToggleFilterMobile}
-                  >
-                    <img src={IconFilter} alt="" width={18} height={18} />
-                  </Button>
-                </Box>
+                
+                {isShowFilter && (
+                  <Box className="box-button-input-mobile">
+                    <Button
+                      className="btn-mobile-filter"
+                      onClick={onToggleFilterMobile}
+                    >
+                      <img src={IconFilter} alt="" width={18} height={18} />
+                    </Button>
+                  </Box>
+                )}
               </div>
             </>
           )}

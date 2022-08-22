@@ -6,15 +6,17 @@
 .layout-main-mobile {
   display: none;
   @media screen and (max-width: 776px) {
-    overflow: hidden;
+    // overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
-    height: calc(100vh);
+    // height: calc(100vh);
     background-color: #fafafa;
+    // min-height: -webkit-fill-available;
+    height: calc(var(--vh, 1vh) * 100);
     .box-header-mobile-main {
-      height: 60px;
+      min-height: 60px;
       border-bottom: 1px solid #e9e9ec;
       background-color: #fff;
       display: flex;

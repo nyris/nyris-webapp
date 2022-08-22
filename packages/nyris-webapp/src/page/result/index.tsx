@@ -30,13 +30,10 @@ import {
   setRequestImage,
   setImageSearchInput,
   reset,
+  updateStatusLoading,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
-import {
-  Configure,
-  HitsPerPage,
-  Pagination,
-} from "react-instantsearch-dom";
+import { Configure, HitsPerPage, Pagination } from "react-instantsearch-dom";
 import CustomSearchBox from "components/input/inputSearch";
 import { feedbackClickEpic, feedbackSuccessEpic } from "services/Feedback";
 import { createImage, findByImage, findRegions } from "services/image";
@@ -71,6 +68,7 @@ function ResultComponent(props: Props) {
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const [statusSwitchButton] = useState<boolean>(true);
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+  const [selectionChange, setSelectionChange] = useState<any[]>([]);
   const executeScroll = () => refBoxResult.current.scrollIntoView();
 
   useEffect(() => {
@@ -113,28 +111,39 @@ function ResultComponent(props: Props) {
   // TODO: rectCoords
   const debounceRectCoords = (value: any) => {
     handlerRectCoords(value);
-    dispatch(selectionChanged(value));
   };
 
   const handlerRectCoords = debounce((value: any) => {
-    setLoading(true);
     return findItemsInSelection(value);
-  }, 200);
+  }, 0);
 
   // TODO: Search offers for image:
-  const findItemsInSelection = (r: RectCoords) => {
+  const findItemsInSelection = async (r: RectCoords) => {
     if (!requestImage) {
       return;
     }
+    dispatch(selectionChanged(r));
+    // setLoading(true);
+    // dispatch(updateStatusLoading(true));
     const { canvas }: any = requestImage;
-    findByImage(canvas, settings, r).then((res) => {
-      const payload = {
-        ...res,
-      };
-      dispatch(updateResultChangePosition(payload));
-      setLoading(false);
-      return dispatch(showFeedback());
+    findImageByApiNyris(canvas, r).then((res: any) => {
+      dispatch(updateResultChangePosition(res));
     });
+    return dispatch(showFeedback());
+  };
+
+  const findImageByApiNyris = async (canvas: any, r: RectCoords) => {
+    let payload = {};
+    return findByImage(canvas, settings, r)
+      .then((res) => {
+        // dispatch(updateStatusLoading(false));
+        return (payload = {
+          ...res,
+        });
+      })
+      .catch((e: any) => {
+        console.log("error call api change selection find image", e);
+      });
   };
 
   // TODO: Handler like dislike
@@ -306,6 +315,7 @@ function ResultComponent(props: Props) {
                             key={requestImage?.id}
                             onSelectionChange={(r: RectCoords) => {
                               debounceRectCoords(r);
+                              // getSelectionChangeSearchImage(r);
                             }}
                             image={requestImage?.canvas}
                             selection={selectedRegion || defaultSelection}
