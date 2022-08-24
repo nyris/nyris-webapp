@@ -1661,9 +1661,7 @@ button {
             color: rgb(30, 31, 49);
             font-size: 16px;
             font-weight: 500;
-            .ais-RefinementList-count {
-              display: none;
-            }
+            
           }
           input[type="checkbox"] {
             background-color: red;
@@ -1830,4 +1828,8 @@ button {
     font-size: 14px;
     line-height: 16px;
   }
+}
+
+.ais-RefinementList-count {
+  display: none !important;
 }

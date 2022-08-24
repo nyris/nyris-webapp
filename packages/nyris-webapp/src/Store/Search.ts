@@ -27,6 +27,7 @@ export interface SearchState {
   configureFilter?: any;
   loadingSearchAlgolia: boolean;
   imageThumbSearchInput?: string;
+  textSearchInputMobile?: string;
 }
 
 // TODO: init state
@@ -51,6 +52,7 @@ const initialState: SearchState = {
   configureFilter: {},
   loadingSearchAlgolia: false,
   imageThumbSearchInput: "",
+  textSearchInputMobile: "",
 };
 
 export const searchSlice = createSlice({
@@ -196,6 +198,7 @@ export const searchSlice = createSlice({
         filters: [],
         loadingSearchAlgolia: false,
         imageThumbSearchInput: "",
+        textSearchInputMobile: "",
       };
     },
 
@@ -247,6 +250,13 @@ export const searchSlice = createSlice({
         loadingSearchAlgolia: payload,
       };
     },
+    updateValueTextSearchMobile: (state, data: PayloadAction<string>) => {
+      const { payload } = data;
+      return {
+        ...state,
+        textSearchInputMobile: payload,
+      };
+    },
   },
 });
 
@@ -269,6 +279,7 @@ export const {
   updateResultChangePosition,
   setError,
   setImageSearchInput,
-  updateStatusLoading
+  updateStatusLoading,
+  updateValueTextSearchMobile,
 } = searchSlice.actions;
 export default searchSlice.reducer;

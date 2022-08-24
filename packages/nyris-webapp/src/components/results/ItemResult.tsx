@@ -76,7 +76,7 @@ function ItemResult(props: Props) {
     };
     img.src = url;
   };
-  
+
   return (
     <Box className="wrap-main-item-result">
       <Box className="box-top">
@@ -99,12 +99,8 @@ function ItemResult(props: Props) {
         {!isHover && urlImage?.length > 1 && (
           <Box className="box-icon-modal">
             <Button
-              onClick={(e: any) => {
-                e.preventDefault();
-                if (urlImage.length > 1) {
-                  onSearchImage(dataItem?.main_image_link);
-                }
-              }}
+              style={{ width: "100%", height: "100%", padding: 0, zIndex: 9 }}
+              onClick={handlerToggleModal}
             >
               <img src={IconSearchImage} alt="" width={30} height={30} />
             </Button>
@@ -112,8 +108,12 @@ function ItemResult(props: Props) {
         )}
         <Box className="box-image">
           <Button
-            style={{ width: "100%", height: "100%", padding: 0, zIndex: 9 }}
-            onClick={handlerToggleModal}
+            onClick={(e: any) => {
+              e.preventDefault();
+              if (urlImage.length > 1) {
+                onSearchImage(dataItem?.main_image_link);
+              }
+            }}
           >
             {urlImage?.length > 1 ? (
               <img

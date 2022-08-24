@@ -23,7 +23,6 @@ function HeaderMobile(props: Props): JSX.Element {
   const [isShowInputSearch, setShowInputSearch] = useState<boolean>(false);
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
   const history = useHistory();
-  console.log("history.location?.pathname", history.location?.pathname);
 
   useEffect(() => {
     if (history.location?.pathname === "/result") {
@@ -88,7 +87,7 @@ function HeaderMobile(props: Props): JSX.Element {
                 <AutocompleteBasicMobileComponent
                   containerRefInputMobile={containerRefInputMobile}
                 />
-                
+
                 {isShowFilter && (
                   <Box className="box-button-input-mobile">
                     <Button
