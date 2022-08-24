@@ -117,7 +117,7 @@ function DragDropFile(props: Props) {
                 className=""
                 style={{ color: "#2B2C46", fontSize: 14 }}
               >
-                <span className="fw-700">Choose a image</span> or drag it here
+                <span className="fw-700">Choose an image</span> or drag it here
               </label>
               <input
                 {...getInputProps()}

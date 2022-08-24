@@ -9,6 +9,7 @@ import {
   setImageSearchInput,
   setRequestImage,
   setSearchResults,
+  updateStatusLoading,
 } from "Store/Search";
 import { debounce, isEmpty } from "lodash";
 import { useCallback } from "react";
@@ -66,25 +67,33 @@ const SearchBox = (props: any) => {
 
   const { getInputProps } = useDropzone({
     onDrop: async (fs: File[]) => {
+      dispatch(updateStatusLoading(true));
       let payload: any;
       let filters: any[] = [];
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
       // TODO support regions
-      return findByImage(image, settings).then((res: any) => {
-        res?.results.map((item: any) => {
-          filters.push({
-            sku: item.sku,
-            score: item.score,
+      return findByImage(image, settings)
+        .then((res: any) => {
+          res?.results.map((item: any) => {
+            filters.push({
+              sku: item.sku,
+              score: item.score,
+            });
           });
+          payload = {
+            ...res,
+            filters,
+          };
+          dispatch(setSearchResults(payload));
+          dispatch(updateStatusLoading(false));
+          history.push("/result");
+        })
+        .catch((e: any) => {
+          console.log("error input search", e);
+          dispatch(updateStatusLoading(false));
         });
-        payload = {
-          ...res,
-          filters,
-        };
-        dispatch(setSearchResults(payload));
-      });
     },
   });
 
