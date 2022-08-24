@@ -61,7 +61,7 @@ const SearchBox = (props: any) => {
   }, [valueInput]);
 
   const debounceSearch = useCallback(
-    debounce((nextValue: any) => refine(nextValue), 0),
+    debounce((nextValue: any) => refine(nextValue), 200),
     []
   );
 

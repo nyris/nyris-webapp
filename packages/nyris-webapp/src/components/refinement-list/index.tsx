@@ -10,7 +10,6 @@ function RefinementList({
   currentRefinement,
   switched,
 }: any) {
-  console.log('currentRefinement', currentRefinement);
   
   return (
     <ul>
