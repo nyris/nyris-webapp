@@ -125,6 +125,7 @@ const SearchBox = (props: any) => {
                 width: "100%",
                 fontSize: 14,
                 color: "#2B2C46",
+                fontStyle: "italic",
               }}
               className="input-search"
               placeholder="Search"
