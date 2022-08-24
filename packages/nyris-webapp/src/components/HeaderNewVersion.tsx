@@ -5,7 +5,10 @@ import "./common.scss";
 import IconAdmin from "common/assets/icons/admin.svg";
 import LogoNyris from "common/assets/icons/nyris_logo.svg";
 import IconSupport from "common/assets/icons/support.svg";
+import { useAppDispatch } from "Store/Store";
+import { reset } from "Store/Search";
 function HeaderNewVersion(): JSX.Element {
+  const dispatch = useAppDispatch();
   const handleCheckMatchLink = (match: any, location: any) => {
     let active = false;
     if (match?.url === location.pathname) {
@@ -17,7 +20,13 @@ function HeaderNewVersion(): JSX.Element {
 
   return (
     <Box className="box-content" display={"flex"}>
-      <NavLink to="/" style={{ lineHeight: 0 }}>
+      <NavLink
+        to="/"
+        style={{ lineHeight: 0 }}
+        onClick={() => {
+          dispatch(reset(""));
+        }}
+      >
         {/* <section id="branding" style={{ height: 32 }} /> */}
         <img width={74} height={19} src={`${LogoNyris}`} alt="nyris logo" />
       </NavLink>
