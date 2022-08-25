@@ -18,7 +18,7 @@ import { debounce } from "lodash";
 import { useHistory } from "react-router-dom";
 import { render } from "react-dom";
 import { updateValueTextSearchMobile } from "Store/Search";
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 interface Props {
   containerRefInputMobile?: any;
 }
@@ -58,8 +58,6 @@ function AutocompleteBasicComponent(props: Props) {
         indexName,
         handerCloseModal() {
           setRefPanelContainer(<div></div>);
-          // refBoxFilter.current?.unmount();
-          // setRefBoxFilter(null);
         },
       }),
     ],
@@ -81,7 +79,14 @@ function AutocompleteBasicComponent(props: Props) {
       },
       translations: {
         detachedCancelButtonText: `‹`,
+        submitButtonTitle: "s",
       },
+      placeholder: textSearchInputMobile ? textSearchInputMobile : "Search",
+      plugins,
+      openOnFocus: true,
+      onSubmit,
+      debug: true,
+      // getSources: {},
       render({ sections, components }, root) {
         render(
           <Fragment>
@@ -93,10 +98,7 @@ function AutocompleteBasicComponent(props: Props) {
           root
         );
       },
-      placeholder: textSearchInputMobile ? textSearchInputMobile : "Search",
-      plugins,
-      openOnFocus: true,
-      onSubmit,
+
       ...props,
     });
     return () => {
@@ -110,7 +112,7 @@ function AutocompleteBasicComponent(props: Props) {
       autocompleteInstance?.destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plugins, refBoxFilter, refPanelContainer]);
+  }, [plugins, refBoxFilter, refPanelContainer, textSearchInputMobile]);
 
   const onSubmit = ({ state }: any) => {
     debounceSearch(state?.query);

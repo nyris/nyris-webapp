@@ -64,13 +64,12 @@ function ResultComponent(props: Props) {
   const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
-  const [isLoading, setLoading] = useState<any>(false);
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const [statusSwitchButton] = useState<boolean>(true);
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
-  const [selectionChange, setSelectionChange] = useState<any[]>([]);
   const executeScroll = () => refBoxResult.current.scrollIntoView();
-
+  const [listSelectionChange, setListSelectionChange] = useState<any[]>([]);
+  const [lastValueChange, setLastValueChange] = useState<any>({});
   useEffect(() => {
     if (results?.length === 0) {
       setDataResult([]);
@@ -82,12 +81,14 @@ function ResultComponent(props: Props) {
   // TODO: hanlder modal:
   const handlerToggleModal = (item: any) => {
     executeScroll();
-    setLoading(true);
+    // setLoading(true);
+    dispatch(updateStatusLoading(true));
     setDataImageModal(item);
     setOpenModalImage(true);
     window.scrollTo({ top: 0, behavior: "auto" });
     setTimeout(() => {
-      setLoading(false);
+      // setLoading(false);
+      dispatch(updateStatusLoading(false));
     }, 400);
     if (isMobile) {
       dispatch(reset(""));
@@ -109,22 +110,21 @@ function ResultComponent(props: Props) {
   };
 
   // TODO: rectCoords
-  const debounceRectCoords = (value: any) => {
-    handlerRectCoords(value);
-  };
+
+  const getLastListSelectionChange = debounce((r: any) => {
+    handlerRectCoords(r);
+  }, 500);
 
   const handlerRectCoords = debounce((value: any) => {
     return findItemsInSelection(value);
-  }, 0);
+  }, 1000);
 
   // TODO: Search offers for image:
   const findItemsInSelection = async (r: RectCoords) => {
     if (!requestImage) {
       return;
     }
-    dispatch(selectionChanged(r));
-    // setLoading(true);
-    // dispatch(updateStatusLoading(true));
+    dispatch(updateStatusLoading(true));
     const { canvas }: any = requestImage;
     findImageByApiNyris(canvas, r).then((res: any) => {
       dispatch(updateResultChangePosition(res));
@@ -136,12 +136,13 @@ function ResultComponent(props: Props) {
     let payload = {};
     return findByImage(canvas, settings, r)
       .then((res) => {
-        // dispatch(updateStatusLoading(false));
+        dispatch(updateStatusLoading(false));
         return (payload = {
           ...res,
         });
       })
       .catch((e: any) => {
+        dispatch(updateStatusLoading(false));
         console.log("error call api change selection find image", e);
       });
   };
@@ -177,9 +178,10 @@ function ResultComponent(props: Props) {
     }
     findByImage(image, settings, searchRegion).then((res) => {
       dispatch(setSearchResults(res));
-      setLoading(false);
+
       return dispatch(showFeedback());
     });
+    dispatch(updateStatusLoading(false));
   };
 
   const nonEmptyFilter: any[] = !requestImage
@@ -193,16 +195,12 @@ function ResultComponent(props: Props) {
     : "";
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
 
+  console.log("321 listSelectionChange", listSelectionChange);
+  console.log("321 lastValueChange", lastValueChange);
+
   return (
     <div className={`wrap-main-result loading`} ref={refBoxResult}>
       <>
-        {isLoading && (
-          <Box className="box-wrap-loading">
-            <Box className="loadingSpinCT">
-              <Box className="box-content-spin"></Box>
-            </Box>
-          </Box>
-        )}
         {isMobile && isOpenModalImage && (
           <Box className="box-detail-item-mobile">
             <DetailItem
@@ -215,7 +213,7 @@ function ResultComponent(props: Props) {
               results={dataResult}
               onHandlerModalShare={() => setOpenModalShare(true)}
               onSearchImage={(url: string) => {
-                setLoading(true);
+                dispatch(updateStatusLoading(true));
                 getUrlToCanvasFile(url);
               }}
             />
@@ -269,9 +267,10 @@ function ResultComponent(props: Props) {
                         <Box className="preview-item">
                           <Preview
                             key={requestImage?.id}
-                            onSelectionChange={(r: RectCoords) => {
-                              debounceRectCoords(r);
-                            }}
+                            onSelectionChange={debounce((r: RectCoords) => {
+                              dispatch(selectionChanged(r));
+                              getLastListSelectionChange(r);
+                            }, 100)}
                             image={requestImage?.canvas}
                             selection={selectedRegion || defaultSelection}
                             regions={regions}
@@ -313,10 +312,10 @@ function ResultComponent(props: Props) {
                         <Box className="preview-item">
                           <Preview
                             key={requestImage?.id}
-                            onSelectionChange={(r: RectCoords) => {
-                              debounceRectCoords(r);
-                              // getSelectionChangeSearchImage(r);
-                            }}
+                            onSelectionChange={debounce((r: RectCoords) => {
+                              dispatch(selectionChanged(r));
+                              getLastListSelectionChange(r);
+                            }, 100)}
                             image={requestImage?.canvas}
                             selection={selectedRegion || defaultSelection}
                             regions={regions}
@@ -338,7 +337,7 @@ function ResultComponent(props: Props) {
                     handlerToggleModal={handlerToggleModal}
                     setOpenModalShare={setOpenModalShare}
                     getUrlToCanvasFile={getUrlToCanvasFile}
-                    setLoading={setLoading}
+                    setLoading={false}
                     sendFeedBackAction={sendFeedBackAction}
                     moreInfoText={moreInfoText}
                   />
@@ -507,7 +506,8 @@ function ResultComponent(props: Props) {
               results={dataResult}
               onHandlerModalShare={() => setOpenModalShare(true)}
               onSearchImage={(url: string) => {
-                setLoading(true);
+                // setLoading(true);
+                dispatch(updateStatusLoading(true));
                 getUrlToCanvasFile(url);
               }}
             />

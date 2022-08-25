@@ -33,7 +33,7 @@ function Hits({
             isHover={false}
             onSearchImage={(url: any) => {
               getUrlToCanvasFile(url);
-              setLoading(true);
+              // setLoading(true);
             }}
             handlerFeedback={(value: string) => {
               sendFeedBackAction(value);

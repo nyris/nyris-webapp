@@ -3,6 +3,8 @@ import { Box } from "@material-ui/core";
 import { connectStateResults } from "react-instantsearch-dom";
 import ItemResult from "components/results/ItemResult";
 import _ from "lodash";
+import { useAppDispatch } from "Store/Store";
+import { updateStatusLoading } from "Store/Search";
 
 interface Props {
   allSearchResults: any;
@@ -23,6 +25,7 @@ function LoadingScreen({
   sendFeedBackAction,
   moreInfoText,
 }: any): JSX.Element {
+  const dispatch = useAppDispatch();
   const [isLoading] = useState<boolean>(false);
   const [hitGroups, setHitGroups] = useState<any>({});
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
@@ -104,7 +107,7 @@ function LoadingScreen({
             isHover={false}
             onSearchImage={(url: string) => {
               getUrlToCanvasFile(url);
-              setLoading(true);
+              dispatch(updateStatusLoading(true));
             }}
             handlerFeedback={(value: string) => {
               sendFeedBackAction(value);

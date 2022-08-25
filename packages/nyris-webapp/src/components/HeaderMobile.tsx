@@ -8,6 +8,7 @@ import { reset } from "Store/Search";
 import { useHistory } from "react-router-dom";
 import CloseIcon from "@material-ui/icons/Close";
 import AutocompleteBasicMobileComponent from "./auto-complete/basic";
+// import $ from "jquery";
 interface Props {
   onToggleFilterMobile?: any;
 }
@@ -23,6 +24,14 @@ function HeaderMobile(props: Props): JSX.Element {
   const [isShowInputSearch, setShowInputSearch] = useState<boolean>(false);
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
   const history = useHistory();
+
+  // useEffect(() => {
+  //   if (imageThumbSearchInput && history.location?.pathname === "/result") {
+  //     setTimeout(() => {
+  //       $(".aa-DetachedSearchButtonIcon").addClass("d-none");
+  //     }, 100);
+  //   }
+  // });
 
   useEffect(() => {
     if (history.location?.pathname === "/result") {
@@ -52,6 +61,11 @@ function HeaderMobile(props: Props): JSX.Element {
           {imageThumbSearchInput && (
             <div className="box-image-search-thumb-mobile">
               <img src={imageThumbSearchInput} alt="img_search" />
+              <button onClick={() => dispatch(reset(""))}>
+                <CloseIcon
+                  style={{ fontSize: 20, color: "#3e36dc", fontWeight: 700 }}
+                />
+              </button>
             </div>
           )}
           {isShowInputSearch && (

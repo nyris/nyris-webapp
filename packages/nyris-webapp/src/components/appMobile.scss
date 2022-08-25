@@ -2,6 +2,9 @@
   body {
     margin: 0px !important;
   }
+  .d-none{
+    display: none !important;
+  }
 }
 .layout-main-mobile {
   display: none;
@@ -16,7 +19,7 @@
     // min-height: -webkit-fill-available;
     height: calc(var(--vh, 1vh) * 100);
     .box-header-mobile-main {
-      min-height: 60px;
+      // min-height: 60px;
       border-bottom: 1px solid #e9e9ec;
       background-color: #fff;
       display: flex;
@@ -29,6 +32,7 @@
       .wrap-header-mobile {
         width: 100%;
         position: relative;
+        padding-top: 7px;
         .box-suggest-search {
           position: absolute;
           bottom: -30px;
@@ -45,7 +49,7 @@
             opacity: 0;
           }
         }
-        .wrap-input-search {
+        .wrap-input-search { 
           width: 100%;
           .box-input-search {
             background-color: #fff;
@@ -63,17 +67,31 @@
         }
       }
       .box-image-search-thumb-mobile {
-        width: 40px;
+        // width: 40px;
         height: 40px;
-        border-radius: 100%;
-        min-width: 40px;
+        min-width: 76px;
         margin-left: 10px;
-        overflow: hidden;
-        border: 1px solid rgba(62, 54, 220, 0.7803921569);
-        padding: 2px;
+        border: 2px solid rgba(62, 54, 220, 0.7803921569);
+        position: relative;
+        display: flex;
+        border-radius: 4px;
+        // margin-right: ;
+        button{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          min-width: 36px !important;
+          background-color: #E4E3FF;
+          border: 0px;
+          svg{
+           
+          }
+        }
         img {
           width: 100%;
           height: 100%;
+          border-radius: 100%;
         }
       }
     }
@@ -115,7 +133,7 @@
         .box-drag-mobile {
           .useExampleImg {
             position: relative !important;
-            left: 5%;
+            padding-left: 5%;
           }
           .box-content-main {
             background-color: initial;
@@ -324,16 +342,17 @@
             width: 100%;
           }
         }
-        
       }
-      .aa-DetachedCancelButton{
+      .aa-DetachedCancelButton {
         font-weight: 500 !important;
         font-size: 30px !important;
-        padding: 0 10px;
         position: relative;
-        color: #55566B;
-        &::after{
-          content: ''
+        color: #55566b;
+        margin-bottom: 2px;
+        padding-left: 5px;
+        padding-right: 9nppx;
+        &::after {
+          content: "";
         }
       }
     }
@@ -347,6 +366,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      width: 30px;
+      padding: 0px;
       svg {
         color: #000 !important;
       }

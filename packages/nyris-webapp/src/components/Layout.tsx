@@ -35,6 +35,7 @@ function Layout({ children }: ReactNode): JSX.Element {
   let isShowHeaderMobile =
     (isMobile && history.location?.pathname === "/result") ||
     history.location?.pathname === "/";
+
   useEffect(() => {
     setLoading(loadingSearchAlgolia);
   }, [loadingSearchAlgolia]);
@@ -61,7 +62,7 @@ function Layout({ children }: ReactNode): JSX.Element {
       FooterApp = FooterNewVersion;
     }
   }
-  console.log("isShowHeaderMobile");
+  console.log("loadingSearchAlgolia", loadingSearchAlgolia);
 
   return (
     <Box position={"relative"} className="wrap-mobile">

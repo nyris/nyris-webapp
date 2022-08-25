@@ -31,6 +31,7 @@
     "framer-motion": "^4.1.17",
     "history": "^4.10.1",
     "jotai": "^1.4.7",
+    "jquery": "^3.6.0",
     "js-cookie": "^3.0.1",
     "konva": "5.0.3",
     "lodash": "^4.17.21",
@@ -86,6 +87,7 @@
     ]
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.14",
     "@types/js-cookie": "^3.0.1",
     "@types/lodash": "^4.14.178",
     "@types/react-instantsearch-dom": "^6.12.2",
