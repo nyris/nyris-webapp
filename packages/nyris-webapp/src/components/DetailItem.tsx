@@ -10,10 +10,11 @@ import { useState } from "react";
 import { isEmpty } from "lodash";
 import { useEffect } from "react";
 import IconOpenLink from "common/assets/icons/Union.svg";
-import IconSearchImage from "common/assets/icons/icon_search_image2.svg";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import { useMediaQuery } from "react-responsive";
-import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
+import CloseIcon from "@material-ui/icons/Close";
+import IconSearchImage from "common/assets/icons/icon_search_image2.svg";
+
 interface Props {
   numberResult?: number;
   results?: any;
@@ -103,23 +104,28 @@ function DetailItem(props: Props) {
         </Box>
       ) : (
         <Box
-          className="mr-auto"
+          className="ml-auto"
           style={{ width: "fit-content", marginLeft: 5 }}
         >
-          <Button style={{ padding: 0 }} onClick={handlerCloseModal}>
-            <KeyboardArrowLeftIcon style={{ fontSize: 25, color: "#55566B" }} />
+          <Button style={{ padding: 5 }} onClick={handlerCloseModal}>
+            <CloseIcon style={{ fontSize: 25, color: "#55566B" }} />
           </Button>
         </Box>
       )}
 
       <Box className="box-carosel">
-        <DefaultCarousel imgItem={dataImageCarousel} />
+        <DefaultCarousel
+          imgItem={dataImageCarousel}
+          onSearchImage={onSearchImage}
+          handlerCloseModal={handlerCloseModal}
+        />
         <Button
           className="icon-style"
           onClick={() => {
             if (urlImage.length > 1) {
               onSearchImage(urlImage);
               handlerCloseModal();
+              return;
             }
           }}
         >
@@ -159,7 +165,9 @@ function DetailItem(props: Props) {
                 </Typography>
               </Box>
               <Typography
-                className="text-f22 fw-600 text-dark"
+                className={
+                  isMobile ? "fw-600 text-dark" : "text-f22 fw-600 text-dark"
+                }
                 style={{ margin: "8px 0px 0 0px" }}
               >
                 {title}

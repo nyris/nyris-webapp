@@ -116,11 +116,11 @@ function SupportPage(props: Props) {
                         : `box-content-main-drop`
                     }
                   >
-                    {isLoading && (
+                    {/* {isLoading && (
                       <Box className="loadingSpinCT">
                         <Box className="box-content-spin"></Box>
                       </Box>
-                    )}
+                    )} */}
 
                     <div
                       className={`box-border`}

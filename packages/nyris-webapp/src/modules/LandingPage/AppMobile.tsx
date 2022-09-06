@@ -32,7 +32,9 @@ function AppMobile(props: Props): JSX.Element {
   }, []);
 
   const getUrlToCanvasFile = async (url: string, position?: number) => {
-    // onChangeLoading(true);
+    if (history.location?.pathname === "/") {
+      history.push("/result");
+    }
     dispatch(updateStatusLoading(true));
     dispatch(showResults());
     dispatch(loadingActionResults());
@@ -49,12 +51,12 @@ function AppMobile(props: Props): JSX.Element {
       searchRegion = res.selectedRegion;
       dispatch(setSelectedRegion(searchRegion));
     }
-    return findByImage(image, settings, searchRegion)
+    findByImage(image, settings, searchRegion)
       .then((res) => {
         dispatch(setSearchResults(res));
         dispatch(updateStatusLoading(false));
-        history.push("/result");
-        return dispatch(showFeedback());
+        dispatch(showFeedback());
+        return;
       })
       .catch((err: any) => {
         console.log("err getUrlToCanvasFile mobile", err);

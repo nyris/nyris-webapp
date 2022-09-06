@@ -17,7 +17,7 @@ export interface SearchState {
   fetchingRegions: boolean;
   fetchingResults: boolean;
   filterOptions: string[];
-  requestImage?: CanvasWithId;
+  requestImage?: CanvasWithId | undefined;
   categoryPredictions: CategoryPrediction[];
   codes: Code[];
   errorMessage: string;
@@ -26,8 +26,9 @@ export interface SearchState {
   filters: any[];
   configureFilter?: any;
   loadingSearchAlgolia: boolean;
-  imageThumbSearchInput?: string;
+  imageThumbSearchInput?: any;
   textSearchInputMobile?: string;
+  isShowModalDetailItemMobile?: boolean;
 }
 
 // TODO: init state
@@ -53,6 +54,7 @@ const initialState: SearchState = {
   loadingSearchAlgolia: false,
   imageThumbSearchInput: "",
   textSearchInputMobile: "",
+  isShowModalDetailItemMobile: false,
 };
 
 export const searchSlice = createSlice({
@@ -95,7 +97,7 @@ export const searchSlice = createSlice({
       selectedRegion: data.payload,
     }),
 
-    setRequestImage: (state, data: PayloadAction<HTMLCanvasElement>) => ({
+    setRequestImage: (state, data: PayloadAction<any>) => ({
       ...state,
       requestImage: {
         canvas: data.payload,
@@ -199,6 +201,16 @@ export const searchSlice = createSlice({
         loadingSearchAlgolia: false,
         imageThumbSearchInput: "",
         textSearchInputMobile: "",
+        isShowModalDetailItemMobile: false,
+      };
+    },
+
+    onResetRequestImage:(state, data: PayloadAction<any>) =>{
+      return {
+        ...state,
+        requestImage: undefined,
+        results: [],
+        regions: [],
       };
     },
 
@@ -257,6 +269,15 @@ export const searchSlice = createSlice({
         textSearchInputMobile: payload,
       };
     },
+    onToggleModalItemDetail: (state, data: PayloadAction<boolean>) => {
+      const { payload } = data;
+      console.log("payload", payload);
+
+      return {
+        ...state,
+        isShowModalDetailItemMobile: payload,
+      };
+    },
   },
 });
 
@@ -281,5 +302,7 @@ export const {
   setImageSearchInput,
   updateStatusLoading,
   updateValueTextSearchMobile,
+  onToggleModalItemDetail,
+  onResetRequestImage
 } = searchSlice.actions;
 export default searchSlice.reducer;

@@ -50,7 +50,7 @@ const SearchBox = (props: any) => {
     if (!isEmpty(valueTextSearch?.query)) {
       setValueInput(valueTextSearch.query);
     }
-    setValueInput(currentRefinement);
+    // setValueInput(currentRefinement);
   }, [currentRefinement, valueTextSearch]);
 
   useEffect(() => {
@@ -112,7 +112,16 @@ const SearchBox = (props: any) => {
               {imageThumbSearchInput && (
                 <Box className="box-image-search-thumb" display={"flex"}>
                   <img src={imageThumbSearchInput} alt="img_search" />
-                  <button onClick={() => dispatch(reset(""))}>
+                  <button
+                    onClick={() => {
+                      if (!valueInput) {
+                        dispatch(reset(""));
+                        history.push("/");
+                      }
+                      dispatch(reset(""));
+                      refine(valueInput);
+                    }}
+                  >
                     <CloseIcon style={{ fontSize: 20, color: "#3e36dc" }} />
                   </button>
                 </Box>
@@ -147,6 +156,11 @@ const SearchBox = (props: any) => {
             <Button
               className="btn-clear-text"
               onClick={() => {
+                if (imageThumbSearchInput) {
+                  setValueInput("");
+                  refine("");
+                  return;
+                }
                 setValueInput("");
                 refine("");
                 dispatch(reset(""));

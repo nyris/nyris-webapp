@@ -12,7 +12,6 @@ interface ExampleImagesProps {
 const ExampleImages: React.FC<ExampleImagesProps> = ({
   images,
   onExampleImageClicked,
-  onToggleModalCamera,
 }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
 
@@ -29,16 +28,6 @@ const ExampleImages: React.FC<ExampleImagesProps> = ({
 
       <div className="exampleImages d-flex justify-center">
         <div className="exImagesWrap">
-          {isMobile && (
-            <>
-              {/* <Button style={{ padding: 0 }} onClick={onToggleModalCamera}>
-                <img src={IconCamera} alt="" />
-              </Button> */}
-              <Button style={{ padding: 0, transform: "scale(1.1)" }}>
-                <img src={IconQrCode} alt="" />
-              </Button>
-            </>
-          )}
           {images.map((i) => {
             return (
               <img

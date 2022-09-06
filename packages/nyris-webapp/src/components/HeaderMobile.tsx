@@ -4,34 +4,28 @@ import CustomSearchBox from "./input/inputSearch";
 import { useMediaQuery } from "react-responsive";
 import IconFilter from "common/assets/icons/filter_settings.svg";
 import { useAppDispatch, useAppSelector } from "Store/Store";
-import { reset } from "Store/Search";
+import { onResetRequestImage, reset, setImageSearchInput } from "Store/Search";
 import { useHistory } from "react-router-dom";
 import CloseIcon from "@material-ui/icons/Close";
 import AutocompleteBasicMobileComponent from "./auto-complete/basic";
 // import $ from "jquery";
 interface Props {
   onToggleFilterMobile?: any;
+  refine?: any;
 }
 
 function HeaderMobile(props: Props): JSX.Element {
-  const { onToggleFilterMobile } = props;
+  const { onToggleFilterMobile, refine } = props;
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector((state) => state);
   const { search } = stateGlobal;
-  const { imageThumbSearchInput } = search;
+  const { imageThumbSearchInput, textSearchInputMobile } = search;
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const [isShowInputSearch, setShowInputSearch] = useState<boolean>(false);
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
+  const [isResetImage, setResetImage] = useState<boolean>(false);
   const history = useHistory();
-
-  // useEffect(() => {
-  //   if (imageThumbSearchInput && history.location?.pathname === "/result") {
-  //     setTimeout(() => {
-  //       $(".aa-DetachedSearchButtonIcon").addClass("d-none");
-  //     }, 100);
-  //   }
-  // });
 
   useEffect(() => {
     if (history.location?.pathname === "/result") {
@@ -51,6 +45,7 @@ function HeaderMobile(props: Props): JSX.Element {
       setShowInputSearch(false);
     }
   }, [history.location]);
+  console.log("textSearchInputMobile", textSearchInputMobile);
 
   return (
     <Box className="wrap-header-mobile">
@@ -61,7 +56,21 @@ function HeaderMobile(props: Props): JSX.Element {
           {imageThumbSearchInput && (
             <div className="box-image-search-thumb-mobile">
               <img src={imageThumbSearchInput} alt="img_search" />
-              <button onClick={() => dispatch(reset(""))}>
+              <button
+                onClick={() => {
+                  if (textSearchInputMobile) {
+                    dispatch(setImageSearchInput(""));
+                    dispatch(onResetRequestImage(""));
+                    setResetImage(true);
+                    setTimeout(() => {
+                      setResetImage(false);
+                    }, 1000);
+                    return;
+                  }
+                  dispatch(reset(""));
+                  history.push("/");
+                }}
+              >
                 <CloseIcon
                   style={{ fontSize: 20, color: "#3e36dc", fontWeight: 700 }}
                 />
@@ -76,30 +85,12 @@ function HeaderMobile(props: Props): JSX.Element {
                 className="d-flex w-100"
                 style={{ alignItems: "center" }}
               >
-                {history.location?.pathname !== "/" && (
-                  <Box
-                    className="btn-close-header"
-                    style={{ backgroundColor: "#fff" }}
-                  >
-                    <button
-                      onClick={() => {
-                        dispatch(reset(""));
-                        history.push("/");
-                      }}
-                      style={{
-                        backgroundColor: "#fff",
-                        border: 0,
-                        padding: "0px 0px 0 16px",
-                        display: "flex",
-                      }}
-                    >
-                      <CloseIcon style={{ fontSize: 20, color: "#3e36dc" }} />
-                    </button>
-                  </Box>
-                )}
-
                 <AutocompleteBasicMobileComponent
                   containerRefInputMobile={containerRefInputMobile}
+                  isiImageThumbSearchInput={
+                    imageThumbSearchInput ? true : false
+                  }
+                  isResetImage={isResetImage}
                 />
 
                 {isShowFilter && (
@@ -121,4 +112,7 @@ function HeaderMobile(props: Props): JSX.Element {
   );
 }
 
+// export default HeaderMobile;
+
+// const HeaderMobile = connectSearchBox<any>(memo(Header));
 export default HeaderMobile;

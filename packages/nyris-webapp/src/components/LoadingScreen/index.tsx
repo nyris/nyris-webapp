@@ -3,15 +3,15 @@ import { Box } from "@material-ui/core";
 import { connectStateResults } from "react-instantsearch-dom";
 import ItemResult from "components/results/ItemResult";
 import _ from "lodash";
-import { useAppDispatch } from "Store/Store";
-import { updateStatusLoading } from "Store/Search";
+import { useAppDispatch, useAppSelector } from "Store/Store";
+import { AppState } from "types";
 
 interface Props {
   allSearchResults: any;
   handlerToggleModal: any;
   setOpenModalShare: any;
   getUrlToCanvasFile: any;
-  setLoading: any;
+  setLoading?: any;
   sendFeedBackAction: any;
   moreInfoText: any;
 }
@@ -21,14 +21,14 @@ function LoadingScreen({
   handlerToggleModal,
   setOpenModalShare,
   getUrlToCanvasFile,
-  setLoading,
   sendFeedBackAction,
   moreInfoText,
 }: any): JSX.Element {
-  const dispatch = useAppDispatch();
-  const [isLoading] = useState<boolean>(false);
+  const { settings, search } = useAppSelector<AppState>((state: any) => state);
+  const { loadingSearchAlgolia } = search;
   const [hitGroups, setHitGroups] = useState<any>({});
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
+
   useEffect(() => {
     if (!allSearchResults?.hits) {
       setItemShowDefault([]);
@@ -91,8 +91,8 @@ function LoadingScreen({
   };
 
   const renderItem = useMemo(() => {
-    if (itemShowDefault.length === 0) {
-      return;
+    if (itemShowDefault.length === 0 && !loadingSearchAlgolia) {
+      return <Box>No items to show.</Box>;
     }
     return itemShowDefault.map((hit: any, i: number) => {
       return (
@@ -107,7 +107,6 @@ function LoadingScreen({
             isHover={false}
             onSearchImage={(url: string) => {
               getUrlToCanvasFile(url);
-              dispatch(updateStatusLoading(true));
             }}
             handlerFeedback={(value: string) => {
               sendFeedBackAction(value);
@@ -128,19 +127,7 @@ function LoadingScreen({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemShowDefault]);
 
-  return (
-    <>
-      {isLoading && (
-        <Box className="box-wrap-loading">
-          <Box className="loadingSpinCT">
-            <Box className="box-content-spin"></Box>
-          </Box>
-        </Box>
-      )}
-
-      {itemShowDefault.length === 0 ? <Box>No items to show.</Box> : renderItem}
-    </>
-  );
+  return <>{renderItem}</>;
 }
 const LoadingScreenCustom = connectStateResults<Props>(LoadingScreen);
 

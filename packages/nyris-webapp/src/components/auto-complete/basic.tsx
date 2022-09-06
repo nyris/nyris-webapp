@@ -8,7 +8,7 @@ import React, {
   useState,
   useRef,
 } from "react";
-import { autocomplete, Pragma } from "@algolia/autocomplete-js";
+import { autocomplete } from "@algolia/autocomplete-js";
 import { useAppDispatch, useAppSelector } from "Store/Store";
 import { AlgoliaSettings, AppState } from "types";
 import algoliasearch from "algoliasearch/lite";
@@ -17,24 +17,45 @@ import { connectSearchBox } from "react-instantsearch-dom";
 import { debounce } from "lodash";
 import { useHistory } from "react-router-dom";
 import { render } from "react-dom";
-import { updateValueTextSearchMobile } from "Store/Search";
-import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
+import {
+  onResetRequestImage,
+  reset,
+  updateValueTextSearchMobile,
+} from "Store/Search";
+import { Box } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 interface Props {
   containerRefInputMobile?: any;
+  isiImageThumbSearchInput?: boolean;
+  isResetImage?: boolean;
 }
 
 function AutocompleteBasicComponent(props: Props) {
-  const { containerRefInputMobile, refine }: any = props;
+  const {
+    containerRefInputMobile,
+    refine,
+    isiImageThumbSearchInput,
+    isResetImage,
+  }: any = props;
   const [refBoxFilter, setRefBoxFilter] = useState<any>(null);
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const panelRootRef = useRef<any>(null);
   const { textSearchInputMobile } = search;
   const panelContainerRef = useRef<HTMLDivElement>(null);
   const [refPanelContainer, setRefPanelContainer] = useState<any>(null);
+
+  useEffect(() => {
+    if (isResetImage) {
+      dispatch(onResetRequestImage(""));
+      setTimeout(() => {
+        refine(textSearchInputMobile);
+      }, 300);
+      return;
+    }
+  }, [isResetImage]);
 
   useEffect(() => {
     setRefPanelContainer(panelContainerRef);
@@ -85,15 +106,12 @@ function AutocompleteBasicComponent(props: Props) {
       plugins,
       openOnFocus: true,
       onSubmit,
-      debug: true,
-      // getSources: {},
       render({ sections, components }, root) {
         render(
           <Fragment>
             <div className="aa-PanelLayout aa-Panel--scollable ">
               {sections}
             </div>
-            {/* <components.MyComponent /> */}
           </Fragment>,
           root
         );
@@ -129,11 +147,36 @@ function AutocompleteBasicComponent(props: Props) {
   return (
     <>
       <div className="panel-container-custom" ref={panelContainerRef} />
+      {history.location?.pathname !== "/" && textSearchInputMobile && (
+        <Box className="btn-close-header" style={{ backgroundColor: "#fff" }}>
+          <button
+            onClick={() => {
+              if (isiImageThumbSearchInput) {
+                dispatch(updateValueTextSearchMobile(""));
+                refine("");
+                return;
+              }
+              dispatch(updateValueTextSearchMobile(""));
+              dispatch(reset(""));
+              refine("");
+              history.push("/");
+            }}
+            style={{
+              backgroundColor: "#fff",
+              border: 0,
+              padding: "0px 0px 0 16px",
+              display: "flex",
+            }}
+          >
+            <CloseIcon style={{ fontSize: 20, color: "#3e36dc" }} />
+          </button>
+        </Box>
+      )}
     </>
   );
 }
 
 const AutocompleteBasicMobileComponent = connectSearchBox<any>(
-  memo(AutocompleteBasicComponent)
+  AutocompleteBasicComponent
 );
 export default AutocompleteBasicMobileComponent;

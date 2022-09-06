@@ -1,8 +1,16 @@
 @media screen and (max-width: 776px) {
+  // @media screen and (-webkit-min-device-pixel-ratio: 0) {
+  //   html {
+  //     background-color: #fff;
+  //   }
+  // }
+  html {
+    background-color: #fff;
+  }
   body {
     margin: 0px !important;
   }
-  .d-none{
+  .d-none {
     display: none !important;
   }
 }
@@ -26,6 +34,7 @@
       align-items: center;
       justify-content: center;
       width: 100%;
+      margin-top: 0px !important;
       &.hide {
         display: none;
       }
@@ -49,7 +58,7 @@
             opacity: 0;
           }
         }
-        .wrap-input-search { 
+        .wrap-input-search {
           width: 100%;
           .box-input-search {
             background-color: #fff;
@@ -75,17 +84,17 @@
         position: relative;
         display: flex;
         border-radius: 4px;
+        max-width: 80px !important;
         // margin-right: ;
-        button{
+        button {
           display: flex;
           justify-content: center;
           align-items: center;
           height: 100%;
           min-width: 36px !important;
-          background-color: #E4E3FF;
+          background-color: #e4e3ff;
           border: 0px;
-          svg{
-           
+          svg {
           }
         }
         img {
@@ -511,11 +520,6 @@
     }
   }
 
-  .box-detail-item-mobile {
-    .box-modal-default {
-      width: 100%;
-    }
-  }
   .wrap-main-profile {
     height: 100% !important;
     width: 100%;
@@ -564,15 +568,49 @@
   .aa-Panel {
     overflow: initial !important;
   }
-  // .aa-DetachedContainer .aa-PanelLayout {
-  //   overflow: initial !important;
-  //   .btn-back {
-  //     position: absolute;
-  //     top: -50px;
-  //     z-index: 999;
-  //     background-color: red;
-  //   }
-  // }
+
+  .box-modal-default {
+    width: 90% !important;
+    height: 100% !important;
+    margin: auto !important;
+    .box-carosel .carousel-root {
+      height: 80% !important;
+    }
+    .box-content {
+      margin: 0px !important;
+    }
+    .box-top {
+      .btn-detail-item {
+        margin: 10px 0 !important;
+      }
+    }
+
+    .box-carosel {
+      min-height: initial;
+      height: 280px !important;
+      min-height: initial !important;
+      .carousel {
+        .thumbs-wrapper {
+          // display: none;
+        }
+      }
+    }
+  }
+
+  .box-footer-mobile {
+    background-color: #fff;
+  }
+
+  .box-slider-image-result {
+    button {
+      // width: 100% !important;
+      // height: 100% !important;
+      span {
+        // width: 100% !important;
+        // height: 100% !important;
+      }
+    }
+  }
 }
 
 @media screen and (max-width: 375px) {

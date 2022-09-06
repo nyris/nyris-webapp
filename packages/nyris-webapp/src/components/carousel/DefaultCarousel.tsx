@@ -5,11 +5,12 @@ import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import ChevronLeftOutlinedIcon from "@material-ui/icons/ChevronLeftOutlined";
 interface Props {
   imgItem: any[];
+  onSearchImage?: any;
+  handlerCloseModal?: any;
 }
 
 function DefaultCarousel(props: Props) {
-  const { imgItem } = props;
-  console.log("imgItem", imgItem);
+  const { imgItem, onSearchImage, handlerCloseModal } = props;
 
   return (
     <Carousel
@@ -18,6 +19,10 @@ function DefaultCarousel(props: Props) {
       showStatus={false}
       showIndicators={false}
       className={imgItem.length > 1 ? "" : "hide-btn-arrow"}
+      onClickItem={(index: number, item: React.ReactNode) => {
+        handlerCloseModal();
+        onSearchImage(imgItem[0].url);
+      }}
       renderArrowNext={(onClickHandler, hasPrev, label) => (
         <Button onClick={onClickHandler} className="btn-carousel-right">
           <ChevronRightOutlinedIcon
@@ -37,8 +42,16 @@ function DefaultCarousel(props: Props) {
     >
       {imgItem?.map((item: any, index: any) => {
         return (
-          <Box key={index} style={{height: '100%'}}>
-            <img style={{height: '100%'}} src={imgItem ? item?.url : ""} alt="image_product" />
+          <Box
+            key={index}
+            style={{ height: "100%" }}
+            className="box-slider-image-result"
+          >
+            <img
+              style={{ height: "100%" }}
+              src={imgItem ? item?.url : ""}
+              alt="image_product"
+            />
           </Box>
         );
       })}
@@ -47,3 +60,4 @@ function DefaultCarousel(props: Props) {
 }
 
 export default DefaultCarousel;
+// thumbs animated

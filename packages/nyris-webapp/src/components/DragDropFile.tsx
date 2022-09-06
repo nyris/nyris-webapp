@@ -129,16 +129,6 @@ function DragDropFile(props: Props) {
                 style={{ display: "block" }}
               />
             </Box>
-            {/* <Box style={{ marginTop: 19, zIndex: 109 }} className="box-thumb">
-              <Box display={"flex"} alignItems={"flex-end"}>
-                <ExampleImages
-                  images={settings.exampleImages}
-                  onExampleImageClicked={(url: string) => {
-                    return getUrlToCanvasFile(url);
-                  }}
-                />
-              </Box>
-            </Box> */}
           </>
         )}
       </div>

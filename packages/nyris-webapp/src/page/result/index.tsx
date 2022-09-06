@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -29,8 +29,8 @@ import {
   setSelectedRegion,
   setRequestImage,
   setImageSearchInput,
-  reset,
   updateStatusLoading,
+  onToggleModalItemDetail,
 } from "Store/Search";
 import { showFeedback, showResults } from "Store/Nyris";
 import { Configure, HitsPerPage, Pagination } from "react-instantsearch-dom";
@@ -60,16 +60,27 @@ function ResultComponent(props: Props) {
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [numberResult, setNumberResult] = useState<number>(0);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
-  const { results, requestImage, regions, selectedRegion } = search;
+  const {
+    results,
+    requestImage,
+    regions,
+    selectedRegion,
+  } = search;
   const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const [statusSwitchButton] = useState<boolean>(true);
+  const [selectionChange, setSelectionChange] = useState<any>({});
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
   const executeScroll = () => refBoxResult.current.scrollIntoView();
-  const [listSelectionChange, setListSelectionChange] = useState<any[]>([]);
-  const [lastValueChange, setLastValueChange] = useState<any>({});
+
+  useEffect(() => {
+    if (selectionChange) {
+      findItemsInSelection(selectionChange);
+    }
+  }, [selectionChange]);
+
   useEffect(() => {
     if (results?.length === 0) {
       setDataResult([]);
@@ -78,21 +89,21 @@ function ResultComponent(props: Props) {
     setDataResult(results);
   }, [results]);
 
+  useEffect(() => {
+    if (requestImage) {
+      executeScroll();
+    }
+  }, [requestImage]);
+
   // TODO: hanlder modal:
   const handlerToggleModal = (item: any) => {
-    executeScroll();
-    // setLoading(true);
+    setOpenModalImage(true);
+    dispatch(onToggleModalItemDetail(true));
     dispatch(updateStatusLoading(true));
     setDataImageModal(item);
-    setOpenModalImage(true);
-    window.scrollTo({ top: 0, behavior: "auto" });
     setTimeout(() => {
-      // setLoading(false);
       dispatch(updateStatusLoading(false));
     }, 400);
-    if (isMobile) {
-      dispatch(reset(""));
-    }
   };
 
   const onNextItem = () => {
@@ -113,14 +124,14 @@ function ResultComponent(props: Props) {
 
   const getLastListSelectionChange = debounce((r: any) => {
     handlerRectCoords(r);
-  }, 500);
+  }, 0);
 
   const handlerRectCoords = debounce((value: any) => {
     return findItemsInSelection(value);
-  }, 1000);
+  }, 100);
 
   // TODO: Search offers for image:
-  const findItemsInSelection = async (r: RectCoords) => {
+  const findItemsInSelection = debounce(async (r: RectCoords) => {
     if (!requestImage) {
       return;
     }
@@ -130,7 +141,7 @@ function ResultComponent(props: Props) {
       dispatch(updateResultChangePosition(res));
     });
     return dispatch(showFeedback());
-  };
+  }, 1000);
 
   const findImageByApiNyris = async (canvas: any, r: RectCoords) => {
     let payload = {};
@@ -154,9 +165,11 @@ function ResultComponent(props: Props) {
 
   // TODO: Search image with url or file
   const getUrlToCanvasFile = async (url: string, position?: number) => {
+    dispatch(updateStatusLoading(true));
     if (isMobile) {
       executeScroll();
-      setOpenModalImage(false);
+      // setOpenModalImage(false);
+      dispatch(onToggleModalItemDetail(false));
     }
     dispatch(showResults());
     dispatch(loadingActionResults());
@@ -178,10 +191,10 @@ function ResultComponent(props: Props) {
     }
     findByImage(image, settings, searchRegion).then((res) => {
       dispatch(setSearchResults(res));
-
-      return dispatch(showFeedback());
+      dispatch(showFeedback());
+      dispatch(updateStatusLoading(false));
+      return;
     });
-    dispatch(updateStatusLoading(false));
   };
 
   const nonEmptyFilter: any[] = !requestImage
@@ -195,30 +208,31 @@ function ResultComponent(props: Props) {
     : "";
   const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
 
-  console.log("321 listSelectionChange", listSelectionChange);
-  console.log("321 lastValueChange", lastValueChange);
-
   return (
     <div className={`wrap-main-result loading`} ref={refBoxResult}>
       <>
-        {isMobile && isOpenModalImage && (
-          <Box className="box-detail-item-mobile">
-            <DetailItem
-              handlerCloseModal={() => {
-                setOpenModalImage(false);
-              }}
-              onPrevItem={onPrevItem}
-              onNextItem={onNextItem}
-              dataItem={dataImageModal}
-              results={dataResult}
-              onHandlerModalShare={() => setOpenModalShare(true)}
-              onSearchImage={(url: string) => {
-                dispatch(updateStatusLoading(true));
-                getUrlToCanvasFile(url);
-              }}
-            />
-          </Box>
-        )}
+        {/* TODO: Mobile - Modal detail item  */}
+        <DefaultModal
+          openModal={isOpenModalImage}
+          handleClose={(e: any) => {
+            setOpenModalImage(false);
+          }}
+        >
+          <DetailItem
+            handlerCloseModal={() => {
+              setOpenModalImage(false);
+            }}
+            onPrevItem={onPrevItem}
+            onNextItem={onNextItem}
+            dataItem={dataImageModal}
+            results={dataResult}
+            onHandlerModalShare={() => setOpenModalShare(true)}
+            onSearchImage={(url: string) => {
+              dispatch(updateStatusLoading(true));
+              getUrlToCanvasFile(url);
+            }}
+          />
+        </DefaultModal>
 
         <Configure filters={filtersString}></Configure>
         <Box className="box-wrap-result-component">
@@ -263,14 +277,13 @@ function ResultComponent(props: Props) {
                   {settings.preview && requestImage && (
                     <Box className="col-left">
                       <Box className="box-preview">
-                        {/* {requestImage && ( */}
                         <Box className="preview-item">
                           <Preview
                             key={requestImage?.id}
                             onSelectionChange={debounce((r: RectCoords) => {
                               dispatch(selectionChanged(r));
                               getLastListSelectionChange(r);
-                            }, 100)}
+                            }, 0)}
                             image={requestImage?.canvas}
                             selection={selectedRegion || defaultSelection}
                             regions={regions}
@@ -279,7 +292,6 @@ function ResultComponent(props: Props) {
                             dotColor="#FBD914"
                           />
                         </Box>
-                        {/* )} */}
                       </Box>
                       <Box className="box-title_col-left">
                         <Typography style={{ fontSize: 11, color: "#fff" }}>
@@ -290,9 +302,7 @@ function ResultComponent(props: Props) {
                   )}
                   {/* TODO: Filter list Choose */}
                   <Box className="col-left__bottom">
-                    <ExpandablePanelComponent
-                    // onToogleApplyFillter={onToogleApplyFillter}
-                    />
+                    <ExpandablePanelComponent />
                   </Box>
                 </Box>
               )}
@@ -312,10 +322,15 @@ function ResultComponent(props: Props) {
                         <Box className="preview-item">
                           <Preview
                             key={requestImage?.id}
-                            onSelectionChange={debounce((r: RectCoords) => {
+                            // onSelectionChange={debounce((r: RectCoords) => {
+                            //   dispatch(selectionChanged(r));
+                            //   // handlerRectCoords(r);
+                            //   findItemsInSelection(r)
+                            // }, 100)}
+                            onSelectionChange={(r: RectCoords) => {
                               dispatch(selectionChanged(r));
-                              getLastListSelectionChange(r);
-                            }, 100)}
+                              setSelectionChange(r);
+                            }}
                             image={requestImage?.canvas}
                             selection={selectedRegion || defaultSelection}
                             regions={regions}
@@ -518,4 +533,4 @@ function ResultComponent(props: Props) {
   );
 }
 
-export default ResultComponent;
+export default memo(ResultComponent);

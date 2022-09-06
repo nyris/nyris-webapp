@@ -556,9 +556,21 @@ button {
       height: 159px;
       z-index: 10;
       position: relative;
+      button{
+        height: 100% !important;
+        padding: 0;
+        span{
+          height: 100%;
+        }
+      }
+      label: {
+        height: 100%;
+        display: block;
+      }
       .img-style {
         // width: 160px !important;
-        height: 159px !important;
+        width: 100% !important;
+        height: 100% !important;
       }
       &:hover .box-hover {
         display: flex;
@@ -1661,7 +1673,6 @@ button {
             color: rgb(30, 31, 49);
             font-size: 16px;
             font-weight: 500;
-            
           }
           input[type="checkbox"] {
             background-color: red;
@@ -1813,6 +1824,9 @@ button {
           font-size: 14px;
           font-family: "Montserrat";
           font-style: normal;
+          em{
+            font-style: initial !important;
+          }
         }
       }
     }
@@ -1837,14 +1851,14 @@ button {
   padding-left: 6px;
   padding-right: 6px;
   margin-left: 3px;
-  &::after{
-    content: '(';
+  &::after {
+    content: "(";
     position: absolute;
     top: 0;
     left: 0;
   }
-  &::before{
-    content: ')';
+  &::before {
+    content: ")";
     position: absolute;
     top: 0;
     right: 0;

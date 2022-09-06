@@ -6,8 +6,9 @@ import IconDisLike from "common/assets/icons/icon_dislike.svg";
 import IconShare from "common/assets/icons/Fill.svg";
 import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
 import IconOpenLink from "common/assets/icons/Union.svg";
-import IconSearchImage from "common/assets/icons/icon_search_image2.svg";
+// import IconSearchImage from "common/assets/icons/icon_search_image2.svg";
 import NoImage from "common/assets/images/unnamed.png";
+import { useMediaQuery } from "react-responsive";
 interface Props {
   dataItem: any;
   handlerToggleModal?: any;
@@ -41,7 +42,7 @@ function ItemResult(props: Props) {
   } = props;
   const [urlImage, setUrlImage] = useState<string>("");
   const { sku, title, brand, main_offer_link, collap } = dataItem;
-
+  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
   useEffect(() => {
     if (main_image_link) {
       handlerCheckUrlImage(main_image_link);
@@ -96,14 +97,12 @@ function ItemResult(props: Props) {
             </Button>
           </Box>
         )}
-        {!isHover && urlImage?.length > 1 && (
+        {!isHover && urlImage?.length > 1 && isMobile && (
           <Box className="box-icon-modal">
             <Button
               style={{ width: "100%", height: "100%", padding: 0, zIndex: 9 }}
               onClick={handlerToggleModal}
             >
-              {/* <img src={IconSearchImage} alt="" width={30} height={30} />
-               */}
               <svg
                 width="33"
                 height="32"
@@ -136,6 +135,7 @@ function ItemResult(props: Props) {
         )}
         <Box className="box-image">
           <Button
+            style={{ width: "100%", height: "100%" }}
             onClick={(e: any) => {
               e.preventDefault();
               if (urlImage.length > 1) {

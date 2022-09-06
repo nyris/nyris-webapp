@@ -7,6 +7,8 @@ import { useAppDispatch, useAppSelector } from "Store/Store";
 import { RectCoords } from "@nyris/nyris-api";
 import { createImage, findByImage } from "services/image";
 import {
+  onToggleModalItemDetail,
+  reset,
   setImageSearchInput,
   setRequestImage,
   setSearchResults,
@@ -51,6 +53,8 @@ function CameraCustom(props: Props) {
     let searchRegion: RectCoords | undefined = undefined;
     let imageConvert = await createImage(image);
     dispatch(setRequestImage(imageConvert));
+    dispatch(setImageSearchInput(image));
+    dispatch(onToggleModalItemDetail(false));
     findByImage(imageConvert, settings, searchRegion).then((res: any) => {
       dispatch(setSearchResults(res));
       return dispatch(showFeedback());
