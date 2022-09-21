@@ -28,6 +28,7 @@ function DragDropFile(props: Props) {
   const [isLoadingLoadFile, setLoadingLoadFile] = useState<any>(false);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[]) => {
+      history.push("/result");
       onChangeLoading(true);
       let payload: any;
       let filters: any[] = [];
@@ -51,7 +52,6 @@ function DragDropFile(props: Props) {
         dispatch(setSearchResults(payload));
         setLoadingLoadFile(false);
         onChangeLoading(false);
-        history.push("/result");
         return dispatch(showFeedback());
       });
     },

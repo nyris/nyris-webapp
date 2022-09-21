@@ -62,7 +62,6 @@ function Layout({ children }: ReactNode): JSX.Element {
       FooterApp = FooterNewVersion;
     }
   }
-  console.log("loadingSearchAlgolia", loadingSearchAlgolia);
 
   return (
     <Box position={"relative"} className="wrap-mobile">

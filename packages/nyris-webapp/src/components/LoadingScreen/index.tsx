@@ -91,7 +91,7 @@ function LoadingScreen({
   };
 
   const renderItem = useMemo(() => {
-    if (itemShowDefault.length === 0 && !loadingSearchAlgolia) {
+    if (itemShowDefault.length === 0 && loadingSearchAlgolia) {
       return <Box>No items to show.</Box>;
     }
     return itemShowDefault.map((hit: any, i: number) => {
