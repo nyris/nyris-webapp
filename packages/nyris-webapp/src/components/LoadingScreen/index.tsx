@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { Box } from "@material-ui/core";
 import { connectStateResults } from "react-instantsearch-dom";
 import ItemResult from "components/results/ItemResult";
 import _ from "lodash";
-import { useAppDispatch, useAppSelector } from "Store/Store";
+import { useAppSelector } from "Store/Store";
 import { AppState } from "types";
 
 interface Props {
@@ -24,7 +24,7 @@ function LoadingScreen({
   sendFeedBackAction,
   moreInfoText,
 }: any): JSX.Element {
-  const { settings, search } = useAppSelector<AppState>((state: any) => state);
+  const { search } = useAppSelector<AppState>((state: any) => state);
   const { loadingSearchAlgolia } = search;
   const [hitGroups, setHitGroups] = useState<any>({});
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
@@ -129,6 +129,5 @@ function LoadingScreen({
 
   return <>{renderItem}</>;
 }
-const LoadingScreenCustom = connectStateResults<Props>(LoadingScreen);
-
+const LoadingScreenCustom = connectStateResults<Props>(memo(LoadingScreen));
 export default LoadingScreenCustom;

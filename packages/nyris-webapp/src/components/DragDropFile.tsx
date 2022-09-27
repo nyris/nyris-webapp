@@ -1,5 +1,5 @@
 import { Box, Typography } from "@material-ui/core";
-import React from "react";
+import React, { memo } from "react";
 import { useDropzone } from "react-dropzone";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import { useAppDispatch, useAppSelector } from "Store/Store";
@@ -139,4 +139,4 @@ function DragDropFile(props: Props) {
   );
 }
 
-export default DragDropFile;
+export default memo(DragDropFile);

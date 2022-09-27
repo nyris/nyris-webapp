@@ -23,31 +23,15 @@ import { useMediaQuery } from "react-responsive";
 interface Props {}
 
 function SupportPage(props: Props) {
-  const [imageUpload, setImageUpload] = useState<any[]>([]);
+  const [imageUpload, setImageUpload] = useState<any>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isLoadingLoadFile, setLoadingLoadFile] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
 
-  const onRemoveImage = (value: any) => {
-    setLoading(true);
-    const newArr = imageUpload;
-    setImageUpload(newArr);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  };
-  console.log("imageUpload", imageUpload);
-
-  const onChangeLoading = (value: boolean) => {
-    setLoading(value);
-  };
-
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => {
-      onChangeLoading(true);
-      console.log("321");
-      setLoadingLoadFile(true);
       console.log("fs", fs);
+      setImageUpload(URL.createObjectURL(fs[0]));
     },
   });
 
@@ -108,7 +92,7 @@ function SupportPage(props: Props) {
           >
             <Box className="box-form">
               <form>
-                {!isMobile && (
+                {!isMobile && !imageUpload && (
                   <Box
                     className={
                       !isDragActive && !isLoadingLoadFile
@@ -116,12 +100,6 @@ function SupportPage(props: Props) {
                         : `box-content-main-drop`
                     }
                   >
-                    {/* {isLoading && (
-                      <Box className="loadingSpinCT">
-                        <Box className="box-content-spin"></Box>
-                      </Box>
-                    )} */}
-
                     <div
                       className={`box-border`}
                       style={{ position: "relative" }}
@@ -181,38 +159,32 @@ function SupportPage(props: Props) {
                     </div>
                   </Box>
                 )}
-                {!isLoading ? (
+                {imageUpload && (
                   <Box
                     className="box-preview-image"
                     display={"flex"}
                     flexWrap={"wrap"}
+                    style={{
+                      width: 250,
+                      minHeight: 250,
+                      position: "relative",
+                      border: "1px solid",
+                    }}
                   >
-                    {imageUpload &&
-                      imageUpload.map((item: any, index: any) => {
-                        return (
-                          <Box className="box-image w-100" key={index}>
-                            <Button
-                              className="btn-close w-100"
-                              onClick={() => {
-                                const newValue = index;
-                                onRemoveImage(newValue);
-                              }}
-                            >
-                              <CloseOutlinedIcon style={{ fontSize: 12 }} />
-                            </Button>
-                            <img
-                              style={{ height: "100%" }}
-                              src={item.urlImage}
-                              key={index}
-                              alt={`${index}`}
-                            />
-                          </Box>
-                        );
-                      })}
+                    <Button
+                      style={{ position: "absolute", right: 0, top: 0 }}
+                      onClick={() => setImageUpload(null)}
+                    >
+                      <CloseOutlinedIcon />
+                    </Button>
+                    <img
+                      style={{ height: "100%", width: "100%" }}
+                      src={imageUpload}
+                      alt={`321`}
+                    />
                   </Box>
-                ) : (
-                  <CircularProgress />
                 )}
+
                 {/* TODO: Box form */}
                 <Box mb={2} mt={4} className="box-form-control">
                   <Grid container>

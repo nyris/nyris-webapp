@@ -68,6 +68,9 @@ const SearchBox = (props: any) => {
   const { getInputProps } = useDropzone({
     onDrop: async (fs: File[]) => {
       dispatch(updateStatusLoading(true));
+      if (history.location.pathname !== "/result") {
+        history.push("/result");
+      }
       let payload: any;
       let filters: any[] = [];
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
@@ -88,7 +91,6 @@ const SearchBox = (props: any) => {
           };
           dispatch(setSearchResults(payload));
           dispatch(updateStatusLoading(false));
-          history.push("/result");
         })
         .catch((e: any) => {
           console.log("error input search", e);
@@ -148,9 +150,11 @@ const SearchBox = (props: any) => {
               }}
               ref={focusInp}
             />
-            <Box className="icon-search">
-              <img src={IconSearch} alt="" width={24} height={24} />
-            </Box>
+            {!imageThumbSearchInput && (
+              <Box className="icon-search">
+                <img src={IconSearch} alt="" width={24} height={24} />
+              </Box>
+            )}
           </Box>
           {history.location.pathname === "/result" && (
             <Button

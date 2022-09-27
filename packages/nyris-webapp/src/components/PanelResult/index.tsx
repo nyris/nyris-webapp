@@ -82,6 +82,7 @@ function WidgetPanel({ children, onToggle, panelId, ...props }: any) {
     () => onToggle(panelId),
     [onToggle, panelId]
   );
+
   return (
     <ExpandablePanelCustom onToggle={onToggleMemoized} {...props}>
       {children}
@@ -154,8 +155,9 @@ export default function ExpandablePanelComponent({
         const refinement = refinements[i];
         const panelId = getPanelId(refinement);
         const panelAttributes = getPanelAttributes(refinement);
+        console.log("widget", i, widget?.props?.custom_category        );
 
-        return (
+        return widget ? (
           <WidgetPanel
             key={panelId}
             panelId={panelId}
@@ -166,6 +168,8 @@ export default function ExpandablePanelComponent({
           >
             {widget}
           </WidgetPanel>
+        ) : (
+          <></>
         );
       }),
     [widgets, refinements, onToggle, panels, isMobile]

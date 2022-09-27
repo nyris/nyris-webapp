@@ -48,7 +48,7 @@ function DefaultCarousel(props: Props) {
             className="box-slider-image-result"
           >
             <img
-              style={{ height: "100%" }}
+              style={{ maxHeight: "400px" }}
               src={imgItem ? item?.url : ""}
               alt="image_product"
             />

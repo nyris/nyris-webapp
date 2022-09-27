@@ -17,7 +17,7 @@
 .layout-main-mobile {
   display: none;
   @media screen and (max-width: 776px) {
-    // overflow: hidden;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -41,7 +41,7 @@
       .wrap-header-mobile {
         width: 100%;
         position: relative;
-        padding-top: 7px;
+        padding: 7px 0px;
         .box-suggest-search {
           position: absolute;
           bottom: -30px;
@@ -173,6 +173,9 @@
             .wrap-main-item-result {
               width: 180px;
               max-width: 180px !important;
+              &:first-child {
+                margin-top: 0px !important;
+              }
             }
           }
         }
@@ -608,6 +611,21 @@
       span {
         // width: 100% !important;
         // height: 100% !important;
+      }
+    }
+  }
+
+  .box-modal-default {
+    max-width: 90vw;
+    .box-carosel ul.thumbs {
+      max-width: 300px;
+      overflow: auto;
+      margin: auto;
+      display: block !important;
+      text-align: center;
+      .thumb{
+        margin: 0px !important;
+        text-align: center;
       }
     }
   }

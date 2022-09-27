@@ -53,18 +53,6 @@ function AppNewVersion(props: Props) {
 
   const CustomInfiniteHits = connectInfiniteHits(InfiniteHits);
 
-  // const nonEmptyFilter: any[] = !search?.requestImage
-  //   ? []
-  //   : ["sku:DOES_NOT_EXIST<score=1>"];
-  // // Build filter using reverse position for stable item order
-  // const filterSkus: any = search?.results
-  //   ? search?.results
-  //       .slice()
-  //       .reverse()
-  //       .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
-  //   : "";
-  // const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
-
   return (
     <Box className={`box-content-main ${isLoading ? "loading" : ""}`}>
       {isMobile && (

@@ -73,7 +73,8 @@ function ResultComponent(props: Props) {
   const [statusSwitchButton] = useState<boolean>(true);
   const [selectionChange, setSelectionChange] = useState<any>({});
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
-  const executeScroll = () => refBoxResult.current.scrollIntoView();
+
+  const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
 
   useEffect(() => {
     if (selectionChange) {
@@ -312,7 +313,7 @@ function ResultComponent(props: Props) {
                   settings.preview && "ml-auto mr-auto"
                 } ${isMobile && "col-right-result-mobile"}`}
               >
-                <Box className="wrap-box-refinements">
+                <Box className="wrap-box-refinements" style={{marginBottom: 10}}>
                   <CurrentRefinements statusSwitchButton={statusSwitchButton} />
                 </Box>
                 {isMobile && settings.preview && requestImage && (
@@ -322,11 +323,6 @@ function ResultComponent(props: Props) {
                         <Box className="preview-item">
                           <Preview
                             key={requestImage?.id}
-                            // onSelectionChange={debounce((r: RectCoords) => {
-                            //   dispatch(selectionChanged(r));
-                            //   // handlerRectCoords(r);
-                            //   findItemsInSelection(r)
-                            // }, 100)}
                             onSelectionChange={(r: RectCoords) => {
                               dispatch(selectionChanged(r));
                               setSelectionChange(r);
@@ -364,7 +360,6 @@ function ResultComponent(props: Props) {
                       padding: "0 20%",
                     }}
                   >
-                    {/* <CustomPagination /> */}
                     <Pagination
                       showFirst={false}
                       translations={{
@@ -521,7 +516,6 @@ function ResultComponent(props: Props) {
               results={dataResult}
               onHandlerModalShare={() => setOpenModalShare(true)}
               onSearchImage={(url: string) => {
-                // setLoading(true);
                 dispatch(updateStatusLoading(true));
                 getUrlToCanvasFile(url);
               }}

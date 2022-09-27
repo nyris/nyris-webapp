@@ -369,12 +369,12 @@ button {
     min-height: 330px;
     position: relative;
     .thumbs-wrapper {
-      margin: 0px !important;
+      margin: 10px !important;
     }
     ul.thumbs {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      // display: flex;
+      // justify-content: center;
+      // align-items: center;
       .thumb {
         width: 40px !important;
         height: 40px;
@@ -1331,17 +1331,20 @@ button {
         height: 100%;
         .icon-search {
           display: flex;
-          position: absolute;
-          left: 12px;
-          top: 0;
+          // position: absolute;
+          // left: 12px;
+          // top: 0;
           bottom: 0;
           margin: auto;
+          order: 0;
         }
       }
     }
     .input-search {
       // padding: 0 6px;
-      padding-left: 40px;
+      // padding-left: 40px;
+      padding-left: 6px;
+      order: 2;
       width: 100%;
       border: 0px !important;
       &::placeholder {

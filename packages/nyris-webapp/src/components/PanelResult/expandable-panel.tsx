@@ -37,26 +37,9 @@ function ExpandablePanelComponent({
   const searchResults = useAtomValue(searchResultsAtom) as SearchResults;
   const hasRefinements = useHasRefinements(searchResults, attributes);
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
-  // const [isLoading, setLoading] = useState<boolean>(false);
-  // useEffect(() => {
-  //   if (isOpened) {
-  //     setLoading(true);
-  //     setTimeout(() => {
-  //       setLoading(false);
-  //     }, 1000);
-  //   }
-  // }, [isOpened]);
 
   return (
     <Box>
-      {/* {isLoading && (
-        <Box className="box-wrap-loading">
-          <Box className="loadingSpinCT" style={{top: 0, bottom: 0}}>
-            <Box className="box-content-spin"></Box>
-          </Box>
-        </Box>
-      )} */}
-
       <div
         className={classNames(
           "border-neutral-light",
