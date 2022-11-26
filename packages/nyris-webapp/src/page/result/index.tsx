@@ -1,4 +1,3 @@
-import React, { memo, useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -6,47 +5,59 @@ import {
   InputBase,
   Paper,
   Typography,
-} from "@material-ui/core";
-import IconWhatsApp from "common/assets/icons/icon_whatapps.svg";
-import IconEmail from "common/assets/icons/email_share.svg";
-import IconWeChat from "common/assets/icons/icon_chat.svg";
-import IconSupport from "common/assets/icons/support3.svg";
-import { useAppDispatch, useAppSelector } from "Store/Store";
-import { debounce } from "lodash";
-import KeyboardArrowRightOutlinedIcon from "@material-ui/icons/KeyboardArrowRightOutlined";
-import FooterResult from "components/FooterResult";
-import DefaultModal from "components/modal/DefaultModal";
-import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
-import DetailItem from "components/DetailItem";
-import FileCopyOutlinedIcon from "@material-ui/icons/FileCopyOutlined";
-import { RectCoords } from "@nyris/nyris-api";
+} from '@material-ui/core';
+import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
+import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
+import KeyboardArrowRightOutlinedIcon from '@material-ui/icons/KeyboardArrowRightOutlined';
+import { RectCoords } from '@nyris/nyris-api';
+import { Preview } from '@nyris/nyris-react-components';
+import IconEmail from 'common/assets/icons/email_share.svg';
+import IconWeChat from 'common/assets/icons/icon_chat.svg';
+import IconWhatsApp from 'common/assets/icons/icon_whatapps.svg';
+import IconSupport from 'common/assets/icons/support3.svg';
+import DetailItem from 'components/DetailItem';
+import FooterResult from 'components/FooterResult';
+import CustomSearchBox from 'components/input/inputSearch';
+import LoadingScreenCustom from 'components/LoadingScreen';
+import DefaultModal from 'components/modal/DefaultModal';
+import ExpandablePanelComponent from 'components/PanelResult';
+import { debounce } from 'lodash';
+import React, {
+  memo,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import {
-  setSearchResults,
+  Configure,
+  CurrentRefinements,
+  HitsPerPage,
+  Pagination,
+} from 'react-instantsearch-dom';
+import { useMediaQuery } from 'react-responsive';
+import { Link } from 'react-router-dom';
+import { feedbackClickEpic, feedbackSuccessEpic } from 'services/Feedback';
+import { createImage, findByImage, findRegions } from 'services/image';
+import { showFeedback, showResults } from 'Store/Nyris';
+import {
   loadingActionResults,
-  selectionChanged,
-  updateResultChangePosition,
-  setRegions,
-  setSelectedRegion,
-  setRequestImage,
-  setImageSearchInput,
-  updateStatusLoading,
   onToggleModalItemDetail,
-} from "Store/Search";
-import { showFeedback, showResults } from "Store/Nyris";
-import { Configure, HitsPerPage, Pagination } from "react-instantsearch-dom";
-import CustomSearchBox from "components/input/inputSearch";
-import { feedbackClickEpic, feedbackSuccessEpic } from "services/Feedback";
-import { createImage, findByImage, findRegions } from "services/image";
-import LoadingScreenCustom from "components/LoadingScreen";
-import { Preview } from "@nyris/nyris-react-components";
-import { showHits } from "./MockData";
-import { Link } from "react-router-dom";
-import ExpandablePanelComponent from "components/PanelResult";
-import { CurrentRefinements } from "components/current-refinements/current-refinements";
-import ArrowLeftIcon from "@material-ui/icons/ArrowLeft";
-import ArrowRightIcon from "@material-ui/icons/ArrowRight";
-import ArrowBackIosOutlinedIcon from "@material-ui/icons/ArrowBackIosOutlined";
-import { useMediaQuery } from "react-responsive";
+  selectionChanged,
+  setImageSearchInput,
+  setRegions,
+  setRequestImage,
+  setSearchResults,
+  setSelectedRegion,
+  updateResultChangePosition,
+  updateStatusLoading,
+} from 'Store/Search';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { showHits } from './MockData';
 
 interface Props {}
 
@@ -55,25 +66,20 @@ const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
   const refBoxResult: any = useRef(null);
-  const stateGlobal = useAppSelector((state) => state);
+  const stateGlobal = useAppSelector((state: any) => state);
   const { search, settings } = stateGlobal;
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [numberResult, setNumberResult] = useState<number>(0);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
-  const {
-    results,
-    requestImage,
-    regions,
-    selectedRegion,
-  } = search;
+  const { results, requestImage, regions, selectedRegion } = search;
   const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const [statusSwitchButton] = useState<boolean>(true);
   const [selectionChange, setSelectionChange] = useState<any>({});
-  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
-
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+  const [imageSelection, setImageSelection] = useState(selectedRegion);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
 
   useEffect(() => {
@@ -121,47 +127,42 @@ function ResultComponent(props: Props) {
     setNumberResult(numberResult - 1);
   };
 
-  // TODO: rectCoords
-
-  const getLastListSelectionChange = debounce((r: any) => {
-    handlerRectCoords(r);
-  }, 0);
-
-  const handlerRectCoords = debounce((value: any) => {
-    return findItemsInSelection(value);
-  }, 100);
+  const findImageByApiNyris = useCallback(
+    async (canvas: any, r: RectCoords) => {
+      return findByImage(canvas, settings, r)
+        .then(res => {
+          dispatch(updateStatusLoading(false));
+          return {
+            ...res,
+          };
+        })
+        .catch((e: any) => {
+          dispatch(updateStatusLoading(false));
+          console.log('error call api change selection find image', e);
+        });
+    },
+    [],
+  );
 
   // TODO: Search offers for image:
-  const findItemsInSelection = debounce(async (r: RectCoords) => {
-    if (!requestImage) {
-      return;
-    }
-    dispatch(updateStatusLoading(true));
-    const { canvas }: any = requestImage;
-    findImageByApiNyris(canvas, r).then((res: any) => {
-      dispatch(updateResultChangePosition(res));
-    });
-    return dispatch(showFeedback());
-  }, 1000);
-
-  const findImageByApiNyris = async (canvas: any, r: RectCoords) => {
-    let payload = {};
-    return findByImage(canvas, settings, r)
-      .then((res) => {
-        dispatch(updateStatusLoading(false));
-        return (payload = {
-          ...res,
-        });
-      })
-      .catch((e: any) => {
-        dispatch(updateStatusLoading(false));
-        console.log("error call api change selection find image", e);
+  const findItemsInSelection = useCallback(
+    debounce(async (r: RectCoords) => {
+      if (!requestImage) {
+        return;
+      }
+      dispatch(updateStatusLoading(true));
+      const { canvas }: any = requestImage;
+      findImageByApiNyris(canvas, r).then((res: any) => {
+        dispatch(updateResultChangePosition(res));
       });
-  };
+      return dispatch(showFeedback());
+    }, 1000),
+    [requestImage, findImageByApiNyris],
+  );
 
   // TODO: Handler like dislike
   const sendFeedBackAction = async (type: string) => {
-    feedbackSuccessEpic(stateGlobal, type === "like");
+    feedbackSuccessEpic(stateGlobal, type === 'like');
   };
 
   // TODO: Search image with url or file
@@ -190,7 +191,7 @@ function ResultComponent(props: Props) {
       dispatch(setRegions(res.regions));
       dispatch(setSelectedRegion(searchRegion));
     }
-    findByImage(image, settings, searchRegion).then((res) => {
+    findByImage(image, settings, searchRegion).then(res => {
       dispatch(setSearchResults(res));
       dispatch(showFeedback());
       dispatch(updateStatusLoading(false));
@@ -200,14 +201,21 @@ function ResultComponent(props: Props) {
 
   const nonEmptyFilter: any[] = !requestImage
     ? []
-    : ["sku:DOES_NOT_EXIST<score=1>"];
+    : ['sku:DOES_NOT_EXIST<score=1>'];
   const filterSkus: any = search?.results
     ? search?.results
         .slice()
         .reverse()
         .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
-    : "";
-  const filtersString = [...nonEmptyFilter, ...filterSkus].join(" OR ");
+    : '';
+  const filtersString = [...nonEmptyFilter, ...filterSkus].join(' OR ');
+  const debouncedOnImageSelectionChange = useCallback(
+    debounce((r: RectCoords) => {
+      dispatch(selectionChanged(r));
+      findItemsInSelection(r);
+    }, 500),
+    [findItemsInSelection],
+  );
 
   return (
     <div className={`wrap-main-result loading`} ref={refBoxResult}>
@@ -245,22 +253,22 @@ function ResultComponent(props: Props) {
           <Box className="box-result">
             <>
               <Box className="btn-open-support">
-                <Link to={"/support"} style={{ color: "#3E36DC" }}>
+                <Link to={'/support'} style={{ color: '#3E36DC' }}>
                   <img src={IconSupport} alt="" width={16} height={16} />
                 </Link>
               </Box>
               {!isMobile && (
                 <Box
                   className={`wrap-main-col-left ${
-                    toggleColLeft ? "toggle" : ""
+                    toggleColLeft ? 'toggle' : ''
                   }`}
                 >
                   <Box className="box-toggle-coloumn">
                     <Button
                       style={
                         requestImage && !toggleColLeft
-                          ? { color: "#fff" }
-                          : { color: "#55566b" }
+                          ? { color: '#fff' }
+                          : { color: '#55566b' }
                       }
                       onClick={() => {
                         setToggleColLeft(!toggleColLeft);
@@ -281,12 +289,12 @@ function ResultComponent(props: Props) {
                         <Box className="preview-item">
                           <Preview
                             key={requestImage?.id}
-                            onSelectionChange={debounce((r: RectCoords) => {
-                              dispatch(selectionChanged(r));
-                              getLastListSelectionChange(r);
-                            }, 0)}
+                            onSelectionChange={(r: RectCoords) => {
+                              setImageSelection(r);
+                              debouncedOnImageSelectionChange(r);
+                            }}
                             image={requestImage?.canvas}
-                            selection={selectedRegion || defaultSelection}
+                            selection={imageSelection || defaultSelection}
                             regions={regions}
                             maxWidth={320}
                             maxHeight={320}
@@ -295,7 +303,7 @@ function ResultComponent(props: Props) {
                         </Box>
                       </Box>
                       <Box className="box-title_col-left">
-                        <Typography style={{ fontSize: 11, color: "#fff" }}>
+                        <Typography style={{ fontSize: 11, color: '#fff' }}>
                           Adjust the selection frame for better results.
                         </Typography>
                       </Box>
@@ -310,10 +318,13 @@ function ResultComponent(props: Props) {
 
               <Box
                 className={`col-right ${
-                  settings.preview && "ml-auto mr-auto"
-                } ${isMobile && "col-right-result-mobile"}`}
+                  settings.preview && 'ml-auto mr-auto'
+                } ${isMobile && 'col-right-result-mobile'}`}
               >
-                <Box className="wrap-box-refinements" style={{marginBottom: 10}}>
+                <Box
+                  className="wrap-box-refinements"
+                  style={{ marginBottom: 10 }}
+                >
                   <CurrentRefinements statusSwitchButton={statusSwitchButton} />
                 </Box>
                 {isMobile && settings.preview && requestImage && (
@@ -324,11 +335,11 @@ function ResultComponent(props: Props) {
                           <Preview
                             key={requestImage?.id}
                             onSelectionChange={(r: RectCoords) => {
-                              dispatch(selectionChanged(r));
-                              setSelectionChange(r);
+                              setImageSelection(r);
+                              debouncedOnImageSelectionChange(r);
                             }}
                             image={requestImage?.canvas}
-                            selection={selectedRegion || defaultSelection}
+                            selection={imageSelection || defaultSelection}
                             regions={regions}
                             maxWidth={320}
                             maxHeight={320}
@@ -341,7 +352,7 @@ function ResultComponent(props: Props) {
                 )}
                 <Box
                   className={`box-item-result ${
-                    requestImage ? "ml-auto mr-auto" : "ml-auto mr-auto"
+                    requestImage ? 'ml-auto mr-auto' : 'ml-auto mr-auto'
                   }`}
                 >
                   <LoadingScreenCustom
@@ -355,18 +366,18 @@ function ResultComponent(props: Props) {
                   <Box
                     className="pagination-result"
                     style={{
-                      width: "100%",
-                      margin: "20px auto",
-                      padding: "0 20%",
+                      width: '100%',
+                      margin: '20px auto',
+                      padding: '0 20%',
                     }}
                   >
                     <Pagination
                       showFirst={false}
                       translations={{
                         previous: (
-                          <ArrowLeftIcon style={{ color: "#161616" }} />
+                          <ArrowLeftIcon style={{ color: '#161616' }} />
                         ),
-                        next: <ArrowRightIcon style={{ color: "#161616" }} />,
+                        next: <ArrowRightIcon style={{ color: '#161616' }} />,
                       }}
                     />
                   </Box>
@@ -376,21 +387,21 @@ function ResultComponent(props: Props) {
                       style={{
                         height: 86,
                         background:
-                          "linear-gradient(360deg, #56577C 0%, #2B2C46 100%)",
-                        width: "100%",
+                          'linear-gradient(360deg, #56577C 0%, #2B2C46 100%)',
+                        width: '100%',
                       }}
                     >
                       <Typography
                         style={{
                           fontSize: 11,
-                          color: "#fff",
-                          textAlign: "center",
+                          color: '#fff',
+                          textAlign: 'center',
                           marginTop: 18,
                         }}
                       >
                         <span className="fw-700">Wrong results?</span> share
-                        your search with our{" "}
-                        <span style={{ textDecoration: "underline" }}>
+                        your search with our{' '}
+                        <span style={{ textDecoration: 'underline' }}>
                           <a href="/#" className="fw-700 text-white">
                             product experts
                           </a>
@@ -407,11 +418,11 @@ function ResultComponent(props: Props) {
               <Box className="box-notify">
                 <FooterResult search={search}>
                   <Box
-                    display={"flex"}
-                    style={{ padding: "0 20px" }}
+                    display={'flex'}
+                    style={{ padding: '0 20px' }}
                     className="box-change-hit-items"
                   >
-                    Items per page:{" "}
+                    Items per page:{' '}
                     <HitsPerPage items={showHits} defaultRefinement={20} />
                   </Box>
                 </FooterResult>
@@ -426,14 +437,14 @@ function ResultComponent(props: Props) {
             <Box className="box-modal-default box-modal-share">
               <Box
                 className="ml-auto"
-                style={{ width: "fit-content", marginRight: 5 }}
+                style={{ width: 'fit-content', marginRight: 5 }}
               >
                 <Button
                   style={{ padding: 0 }}
                   onClick={() => setOpenModalShare(false)}
                 >
                   <CloseOutlinedIcon
-                    style={{ fontSize: 12, color: "#55566B" }}
+                    style={{ fontSize: 12, color: '#55566B' }}
                   />
                 </Button>
               </Box>
@@ -444,8 +455,8 @@ function ResultComponent(props: Props) {
                 <Paper component="form" className="box-input">
                   <InputBase
                     className="text-f9 text-gray"
-                    style={{ width: "100%" }}
-                    value={"https://www.go..."}
+                    style={{ width: '100%' }}
+                    value={'https://www.go...'}
                   />
                   <IconButton
                     color="secondary"
@@ -459,11 +470,11 @@ function ResultComponent(props: Props) {
                 <Box
                   mt={1}
                   className="box-media-share"
-                  display={"flex"}
-                  style={{ height: "100%" }}
+                  display={'flex'}
+                  style={{ height: '100%' }}
                 >
                   <Button style={{ padding: 0 }}>
-                    <Box display={"flex"} alignItems={"center"}>
+                    <Box display={'flex'} alignItems={'center'}>
                       <img
                         width={40}
                         height={40}
@@ -472,8 +483,8 @@ function ResultComponent(props: Props) {
                       />
                     </Box>
                   </Button>
-                  <Button style={{ padding: 0, margin: "0 20px" }}>
-                    <Box display={"flex"} alignItems={"center"}>
+                  <Button style={{ padding: 0, margin: '0 20px' }}>
+                    <Box display={'flex'} alignItems={'center'}>
                       <img
                         src={IconWeChat}
                         width={40}
@@ -483,7 +494,7 @@ function ResultComponent(props: Props) {
                     </Box>
                   </Button>
                   <Button style={{ padding: 0 }}>
-                    <Box display={"flex"} alignItems={"center"}>
+                    <Box display={'flex'} alignItems={'center'}>
                       <img
                         src={IconWhatsApp}
                         width={40}

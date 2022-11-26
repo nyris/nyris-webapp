@@ -1,24 +1,23 @@
 import { Box, Drawer } from "@material-ui/core";
-import React, { useCallback, useRef, useState } from "react";
-import Webcam from "react-webcam";
+import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import ReverseCamera from "common/assets/icons/reverse_camera.svg";
-import { useAppDispatch, useAppSelector } from "Store/Store";
+import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
 import { RectCoords } from "@nyris/nyris-api";
+import ReverseCamera from "common/assets/icons/reverse_camera.svg";
+import React, { useCallback, useRef, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { useHistory } from "react-router-dom";
+import Webcam from "react-webcam";
 import { createImage, findByImage } from "services/image";
+import { showFeedback } from "Store/Nyris";
 import {
   onToggleModalItemDetail,
-  reset,
   setImageSearchInput,
   setRequestImage,
   setSearchResults,
   updateStatusLoading,
 } from "Store/Search";
-import { showFeedback } from "Store/Nyris";
-import { useHistory } from "react-router-dom";
-import { useDropzone } from "react-dropzone";
-import IconButton from "@material-ui/core/IconButton";
-import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
+import { useAppDispatch, useAppSelector } from "Store/Store";
 interface Props {
   isToggle: boolean;
   onToggleModal?: any;

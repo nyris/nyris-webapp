@@ -1,10 +1,9 @@
-import {
+import NyrisAPI, {
   NyrisAPISettings,
   RectCoords,
   selectFirstCenteredRegion,
-  urlOrBlobToCanvas,
+  urlOrBlobToCanvas
 } from "@nyris/nyris-api";
-import NyrisAPI from "@nyris/nyris-api";
 import { isEqual } from "lodash";
 
 export const defaultRect = { x1: 0, x2: 1, y1: 0, y2: 1 };

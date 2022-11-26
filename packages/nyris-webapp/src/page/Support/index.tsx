@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Checkbox,
-  CircularProgress,
   FormControlLabel,
   Grid,
   InputAdornment,
@@ -10,22 +9,20 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useState } from "react";
 import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
-import { useDropzone } from "react-dropzone";
 import { makeFileHandler } from "@nyris/nyris-react-components";
-import IconUsers from "common/assets/icons/icon_users.svg";
-import IconPhone from "common/assets/icons/icon_phone.svg";
-import IconEmail from "common/assets/icons/icon_email.svg";
 import IconCompany from "common/assets/icons/icon_company.svg";
+import IconEmail from "common/assets/icons/icon_email.svg";
+import IconPhone from "common/assets/icons/icon_phone.svg";
 import IconTextArea from "common/assets/icons/icon_textArea.svg";
+import IconUsers from "common/assets/icons/icon_users.svg";
+import React, { useState } from "react";
+import { useDropzone } from "react-dropzone";
 import { useMediaQuery } from "react-responsive";
 interface Props {}
 
 function SupportPage(props: Props) {
   const [imageUpload, setImageUpload] = useState<any>();
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [isLoadingLoadFile, setLoadingLoadFile] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -95,7 +92,7 @@ function SupportPage(props: Props) {
                 {!isMobile && !imageUpload && (
                   <Box
                     className={
-                      !isDragActive && !isLoadingLoadFile
+                      !isDragActive
                         ? `box-content-main`
                         : `box-content-main-drop`
                     }

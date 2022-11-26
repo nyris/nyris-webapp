@@ -1,8 +1,8 @@
-import React, { memo, useEffect, useMemo, useState } from "react";
 import { Box } from "@material-ui/core";
-import { connectStateResults } from "react-instantsearch-dom";
 import ItemResult from "components/results/ItemResult";
 import _ from "lodash";
+import React, { memo, useEffect, useMemo, useState } from "react";
+import { connectStateResults } from "react-instantsearch-dom";
 import { useAppSelector } from "Store/Store";
 import { AppState } from "types";
 

@@ -1,8 +1,6 @@
-import { Button, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import React from "react";
 import { useMediaQuery } from "react-responsive";
-import IconCamera from "common/assets/images/open_camera.svg";
-import IconQrCode from "common/assets/images/bar_code.svg";
 interface ExampleImagesProps {
   images: string[];
   onExampleImageClicked: (url: string) => void;

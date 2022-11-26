@@ -1,19 +1,19 @@
-import React, { memo, useEffect, useState } from "react";
+import { Box, Button, Typography } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
 import classNames from "classnames";
+import { Collapse } from "components/collapse/collapse";
 import { useAtomValue } from "jotai/utils";
 import type { MouseEventHandler } from "react";
+import React, { memo } from "react";
 import type {
   CurrentRefinementsProvided,
   SearchResults,
 } from "react-instantsearch-core";
 import { connectCurrentRefinements } from "react-instantsearch-dom";
+import { useMediaQuery } from "react-responsive";
 import { useHasRefinements } from ".";
 import { searchResultsAtom } from "./virtual-state-results";
-import { Box, Button, Typography } from "@material-ui/core";
-import RemoveIcon from "@material-ui/icons/Remove";
-import AddIcon from "@material-ui/icons/Add";
-import { Collapse } from "components/collapse/collapse";
-import { useMediaQuery } from "react-responsive";
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;

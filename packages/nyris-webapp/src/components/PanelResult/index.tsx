@@ -1,20 +1,20 @@
+import { Box, Button } from "@material-ui/core";
+import { ClearRefinements } from "components/clear-refinements/clear-refinements";
+import { DynamicWidgetsCT } from "components/dynamic-widgets/dynamic-widgets";
+import IconLabel from "components/icon-label/icon-label";
+import { atom, useAtom } from "jotai";
+import { orderBy } from "lodash";
 import React, { useCallback, useEffect, useMemo } from "react";
 import type {
   CurrentRefinementsProvided,
   SearchResults,
 } from "react-instantsearch-core";
-import { getPanelAttributes, getPanelId } from "./refinements";
-import { atom, useAtom } from "jotai";
-import { ExpandablePanelCustom } from "./expandable-panel";
-import { DynamicWidgetsCT } from "components/dynamic-widgets/dynamic-widgets";
-import { Box, Button } from "@material-ui/core";
-import IconLabel from "components/icon-label/icon-label";
-import { useAppSelector } from "Store/Store";
 import { RefinementList } from "react-instantsearch-dom";
-import { orderBy } from "lodash";
 import { useMediaQuery } from "react-responsive";
-import { ClearRefinements } from "components/clear-refinements/clear-refinements";
 import { useHistory } from "react-router-dom";
+import { useAppSelector } from "Store/Store";
+import { ExpandablePanelCustom } from "./expandable-panel";
+import { getPanelAttributes, getPanelId } from "./refinements";
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -155,7 +155,6 @@ export default function ExpandablePanelComponent({
         const refinement = refinements[i];
         const panelId = getPanelId(refinement);
         const panelAttributes = getPanelAttributes(refinement);
-        console.log("widget", i, widget?.props?.custom_category        );
 
         return widget ? (
           <WidgetPanel

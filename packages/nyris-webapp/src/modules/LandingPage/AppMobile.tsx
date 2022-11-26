@@ -1,7 +1,11 @@
 import { Box, Typography } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "Store/Store";
 import { RectCoords } from "@nyris/nyris-api";
+import CameraCustom from "components/drawer/cameraCustom";
+import ExampleImages from "components/ExampleImages";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { feedbackClickEpic } from "services/Feedback";
+import { createImage, findByImage, findRegions } from "services/image";
 import { showFeedback, showResults } from "Store/Nyris";
 import {
   loadingActionResults,
@@ -13,11 +17,7 @@ import {
   setSelectedRegion,
   updateStatusLoading,
 } from "Store/Search";
-import { feedbackClickEpic } from "services/Feedback";
-import { createImage, findByImage, findRegions } from "services/image";
-import { useHistory } from "react-router-dom";
-import ExampleImages from "components/ExampleImages";
-import CameraCustom from "components/drawer/cameraCustom";
+import { useAppDispatch, useAppSelector } from "Store/Store";
 interface Props {}
 
 function AppMobile(props: Props): JSX.Element {

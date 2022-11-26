@@ -1,13 +1,13 @@
 import { Box, Button } from "@material-ui/core";
-import React, { useEffect, useRef, useState } from "react";
-import CustomSearchBox from "./input/inputSearch";
-import { useMediaQuery } from "react-responsive";
-import IconFilter from "common/assets/icons/filter_settings.svg";
-import { useAppDispatch, useAppSelector } from "Store/Store";
-import { onResetRequestImage, reset, setImageSearchInput } from "Store/Search";
-import { useHistory } from "react-router-dom";
 import CloseIcon from "@material-ui/icons/Close";
+import IconFilter from "common/assets/icons/filter_settings.svg";
+import React, { useEffect, useRef, useState } from "react";
+import { useMediaQuery } from "react-responsive";
+import { useHistory } from "react-router-dom";
+import { onResetRequestImage, reset, setImageSearchInput } from "Store/Search";
+import { useAppDispatch, useAppSelector } from "Store/Store";
 import AutocompleteBasicMobileComponent from "./auto-complete/basic";
+import CustomSearchBox from "./input/inputSearch";
 // import $ from "jquery";
 interface Props {
   onToggleFilterMobile?: any;
@@ -15,7 +15,7 @@ interface Props {
 }
 
 function HeaderMobile(props: Props): JSX.Element {
-  const { onToggleFilterMobile, refine } = props;
+  const { onToggleFilterMobile } = props;
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector((state) => state);
   const { search } = stateGlobal;

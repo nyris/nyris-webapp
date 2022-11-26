@@ -1,28 +1,25 @@
 import { Box } from "@material-ui/core";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./common.scss";
 // import TranslateIcon from "common/assets/icons/translate_icon.svg";
-import DragDropFile from "components/DragDropFile";
 import { cadExtensions } from "@nyris/nyris-api";
-import { useAppDispatch, useAppSelector } from "Store/Store";
-import {  setUpdateSession } from "Store/Search";
-import { Link } from "react-router-dom";
-import {
-  Configure,
-  connectInfiniteHits,
-} from "react-instantsearch-dom";
 import algoliasearch from "algoliasearch/lite";
+import IconSupport from "common/assets/icons/support3.svg";
+import DragDropFile from "components/DragDropFile";
 import CustomSearchBox from "components/input/inputSearch";
+import { connectInfiniteHits } from "react-instantsearch-dom";
+import { useMediaQuery } from "react-responsive";
+import { Link } from "react-router-dom";
+import { setUpdateSession } from "Store/Search";
+import { useAppDispatch, useAppSelector } from "Store/Store";
 import { createSessionByApi } from "../../services/session";
 import { AlgoliaSettings } from "../../types";
-import IconSupport from "common/assets/icons/support3.svg";
-import { useMediaQuery } from "react-responsive";
 
 interface Props {}
 
 function AppNewVersion(props: Props) {
   const dispatch = useAppDispatch();
-  const { settings, search } = useAppSelector((state) => state);
+  const { settings } = useAppSelector((state) => state);
   const [isLoading, setLoading] = useState<boolean>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);

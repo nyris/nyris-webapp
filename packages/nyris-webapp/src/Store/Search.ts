@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CanvasWithId } from "types";
-import { Code, RectCoords, Region } from "@nyris/nyris-api";
+import { Code, RectCoords, Region } from '@nyris/nyris-api';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { CanvasWithId } from 'types';
 
 interface CategoryPrediction {
   name: string;
@@ -42,23 +42,23 @@ const initialState: SearchState = {
   filterOptions: [],
   categoryPredictions: [],
   codes: [],
-  errorMessage: "",
+  errorMessage: '',
   valueTextSearch: {
-    configure: { filters: "" },
+    configure: { filters: '' },
     page: 1,
-    refinementList: "",
+    refinementList: '',
   },
   resultSearchText: [],
   filters: [],
   configureFilter: {},
   loadingSearchAlgolia: false,
-  imageThumbSearchInput: "",
-  textSearchInputMobile: "",
+  imageThumbSearchInput: '',
+  textSearchInputMobile: '',
   isShowModalDetailItemMobile: false,
 };
 
 export const searchSlice = createSlice({
-  name: "search",
+  name: 'search',
   initialState,
   reducers: {
     setSearchResults: (state, data) => {
@@ -71,6 +71,7 @@ export const searchSlice = createSlice({
         duration,
         filters,
       } = payload;
+
       return {
         ...state,
         filters,
@@ -91,7 +92,7 @@ export const searchSlice = createSlice({
 
     setSelectedRegion: (
       state,
-      data: PayloadAction<RectCoords | undefined>
+      data: PayloadAction<RectCoords | undefined>,
     ) => ({
       ...state,
       selectedRegion: data.payload,
@@ -130,14 +131,14 @@ export const searchSlice = createSlice({
       };
     },
 
-    loadingActionResults: (state) => {
+    loadingActionResults: state => {
       return {
         ...state,
         fetchingResults: true,
       };
     },
 
-    loadingActionRegions: (state) => {
+    loadingActionRegions: state => {
       return {
         ...state,
         fetchingRegions: true,
@@ -194,18 +195,18 @@ export const searchSlice = createSlice({
         filterOptions: [],
         categoryPredictions: [],
         codes: [],
-        errorMessage: "",
+        errorMessage: '',
         valueTextSearch: {},
         resultSearchText: [],
         filters: [],
         loadingSearchAlgolia: false,
-        imageThumbSearchInput: "",
-        textSearchInputMobile: "",
+        imageThumbSearchInput: '',
+        textSearchInputMobile: '',
         isShowModalDetailItemMobile: false,
       };
     },
 
-    onResetRequestImage:(state, data: PayloadAction<any>) =>{
+    onResetRequestImage: (state, data: PayloadAction<any>) => {
       return {
         ...state,
         requestImage: undefined,
@@ -271,7 +272,7 @@ export const searchSlice = createSlice({
     },
     onToggleModalItemDetail: (state, data: PayloadAction<boolean>) => {
       const { payload } = data;
-      console.log("payload", payload);
+      console.log('payload', payload);
 
       return {
         ...state,
@@ -303,6 +304,6 @@ export const {
   updateStatusLoading,
   updateValueTextSearchMobile,
   onToggleModalItemDetail,
-  onResetRequestImage
+  onResetRequestImage,
 } = searchSlice.actions;
 export default searchSlice.reducer;

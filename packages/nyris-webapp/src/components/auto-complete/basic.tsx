@@ -1,29 +1,28 @@
-import React, {
-  createElement,
-  memo,
-  useEffect,
-  useMemo,
-  Fragment,
-  useCallback,
-  useState,
-  useRef,
-} from "react";
 import { autocomplete } from "@algolia/autocomplete-js";
-import { useAppDispatch, useAppSelector } from "Store/Store";
-import { AlgoliaSettings, AppState } from "types";
+import { Box } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import algoliasearch from "algoliasearch/lite";
 import { popularSearchesPluginCreator } from "components/autocomplete/plugins/popular-searches/popular-searches";
-import { connectSearchBox } from "react-instantsearch-dom";
 import { debounce } from "lodash";
-import { useHistory } from "react-router-dom";
+import React, {
+  createElement,
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { render } from "react-dom";
+import { connectSearchBox } from "react-instantsearch-dom";
+import { useHistory } from "react-router-dom";
 import {
   onResetRequestImage,
   reset,
   updateValueTextSearchMobile,
 } from "Store/Search";
-import { Box } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+import { useAppDispatch, useAppSelector } from "Store/Store";
+import { AlgoliaSettings, AppState } from "types";
 interface Props {
   containerRefInputMobile?: any;
   isiImageThumbSearchInput?: boolean;
