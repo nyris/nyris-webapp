@@ -1,13 +1,13 @@
-import { Box, Button } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import IconFilter from "common/assets/icons/filter_settings.svg";
-import React, { useEffect, useRef, useState } from "react";
-import { useMediaQuery } from "react-responsive";
-import { useHistory } from "react-router-dom";
-import { onResetRequestImage, reset, setImageSearchInput } from "Store/Search";
-import { useAppDispatch, useAppSelector } from "Store/Store";
-import AutocompleteBasicMobileComponent from "./auto-complete/basic";
-import CustomSearchBox from "./input/inputSearch";
+import { Box, Button } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import IconFilter from 'common/assets/icons/filter_settings.svg';
+import React, { useEffect, useRef, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
+import { useHistory } from 'react-router-dom';
+import { onResetRequestImage, reset, setImageSearchInput } from 'Store/Search';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+import AutocompleteBasicMobileComponent from './auto-complete/basic';
+import CustomSearchBox from './input/inputSearch';
 // import $ from "jquery";
 interface Props {
   onToggleFilterMobile?: any;
@@ -17,10 +17,10 @@ interface Props {
 function HeaderMobile(props: Props): JSX.Element {
   const { onToggleFilterMobile } = props;
   const dispatch = useAppDispatch();
-  const stateGlobal = useAppSelector((state) => state);
+  const stateGlobal = useAppSelector(state => state);
   const { search } = stateGlobal;
   const { imageThumbSearchInput, textSearchInputMobile } = search;
-  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const [isShowInputSearch, setShowInputSearch] = useState<boolean>(false);
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
@@ -28,7 +28,7 @@ function HeaderMobile(props: Props): JSX.Element {
   const history = useHistory();
 
   useEffect(() => {
-    if (history.location?.pathname === "/result") {
+    if (history.location?.pathname === '/result') {
       setShowFilter(true);
     } else {
       setShowFilter(false);
@@ -37,42 +37,41 @@ function HeaderMobile(props: Props): JSX.Element {
 
   useEffect(() => {
     if (
-      history.location?.pathname === "/result" ||
-      history.location?.pathname === "/"
+      history.location?.pathname === '/result' ||
+      history.location?.pathname === '/'
     ) {
       setShowInputSearch(true);
     } else {
       setShowInputSearch(false);
     }
   }, [history.location]);
-  console.log("textSearchInputMobile", textSearchInputMobile);
 
   return (
     <Box className="wrap-header-mobile">
       {!isMobile ? (
         <CustomSearchBox onToggleFilterMobile={onToggleFilterMobile} />
       ) : (
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           {imageThumbSearchInput && (
             <div className="box-image-search-thumb-mobile">
               <img src={imageThumbSearchInput} alt="img_search" />
               <button
                 onClick={() => {
                   if (textSearchInputMobile) {
-                    dispatch(setImageSearchInput(""));
-                    dispatch(onResetRequestImage(""));
+                    dispatch(setImageSearchInput(''));
+                    dispatch(onResetRequestImage(''));
                     setResetImage(true);
                     setTimeout(() => {
                       setResetImage(false);
                     }, 1000);
                     return;
                   }
-                  dispatch(reset(""));
-                  history.push("/");
+                  dispatch(reset(''));
+                  history.push('/');
                 }}
               >
                 <CloseIcon
-                  style={{ fontSize: 20, color: "#3e36dc", fontWeight: 700 }}
+                  style={{ fontSize: 20, color: '#3e36dc', fontWeight: 700 }}
                 />
               </button>
             </div>
@@ -83,7 +82,7 @@ function HeaderMobile(props: Props): JSX.Element {
                 ref={containerRefInputMobile}
                 id="box-input-search"
                 className="d-flex w-100"
-                style={{ alignItems: "center" }}
+                style={{ alignItems: 'center' }}
               >
                 <AutocompleteBasicMobileComponent
                   containerRefInputMobile={containerRefInputMobile}

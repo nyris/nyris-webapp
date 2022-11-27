@@ -77,16 +77,9 @@ function ResultComponent(props: Props) {
   const [dataImageModal, setDataImageModal] = useState<any>();
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const [statusSwitchButton] = useState<boolean>(true);
-  const [selectionChange, setSelectionChange] = useState<any>({});
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [imageSelection, setImageSelection] = useState(selectedRegion);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
-
-  useEffect(() => {
-    if (selectionChange) {
-      findItemsInSelection(selectionChange);
-    }
-  }, [selectionChange]);
 
   useEffect(() => {
     if (results?.length === 0) {

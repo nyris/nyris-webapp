@@ -1,37 +1,37 @@
-import { Box, Drawer } from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
-import { RectCoords } from "@nyris/nyris-api";
-import ReverseCamera from "common/assets/icons/reverse_camera.svg";
-import React, { useCallback, useRef, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { useHistory } from "react-router-dom";
-import Webcam from "react-webcam";
-import { createImage, findByImage } from "services/image";
-import { showFeedback } from "Store/Nyris";
+import { Box, Drawer } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
+import { RectCoords } from '@nyris/nyris-api';
+import ReverseCamera from 'common/assets/icons/reverse_camera.svg';
+import React, { useCallback, useRef, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { useHistory } from 'react-router-dom';
+import Webcam from 'react-webcam';
+import { createImage, findByImage } from 'services/image';
+import { showFeedback } from 'Store/Nyris';
 import {
   onToggleModalItemDetail,
   setImageSearchInput,
   setRequestImage,
   setSearchResults,
   updateStatusLoading,
-} from "Store/Search";
-import { useAppDispatch, useAppSelector } from "Store/Store";
+} from 'Store/Search';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
 interface Props {
   isToggle: boolean;
   onToggleModal?: any;
 }
 
-const FACING_MODE_USER = "environment";
-const FACING_MODE_ENVIRONMENT = "user";
+const FACING_MODE_USER = 'environment';
+const FACING_MODE_ENVIRONMENT = 'user';
 
 function CameraCustom(props: Props) {
   const { isToggle, onToggleModal } = props;
   const webcamRef: any = useRef(null);
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
   const [scaleCamera, setScaleCamera] = useState<number>(1);
-  const stateGlobal = useAppSelector((state) => state);
+  const stateGlobal = useAppSelector(state => state);
   const { settings } = stateGlobal;
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -40,10 +40,10 @@ function CameraCustom(props: Props) {
     aspectRatio: 0.6666666667,
   };
   const handleClick = useCallback(() => {
-    setFacingMode((prevState) =>
+    setFacingMode(prevState =>
       prevState === FACING_MODE_USER
         ? FACING_MODE_ENVIRONMENT
-        : FACING_MODE_USER
+        : FACING_MODE_USER,
     );
   }, []);
 
@@ -61,12 +61,12 @@ function CameraCustom(props: Props) {
     setTimeout(() => {
       dispatch(updateStatusLoading(false));
       handlerCloseModal();
-      history.push("/result");
+      history.push('/result');
     }, 500);
   };
 
   const handlerCloseModal = () => {
-    setFacingMode("environment");
+    setFacingMode('environment');
     setScaleCamera(1);
     onToggleModal();
   };
@@ -75,7 +75,6 @@ function CameraCustom(props: Props) {
     onDrop: async (fs: File[]) => {
       let payload: any;
       let filters: any[] = [];
-      console.log("fs", fs);
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
@@ -97,11 +96,11 @@ function CameraCustom(props: Props) {
           setTimeout(() => {
             dispatch(updateStatusLoading(false));
             handlerCloseModal();
-            history.push("/result");
+            history.push('/result');
           }, 500);
         })
         .catch((e: any) => {
-          console.log("err camera_custom", e);
+          console.log('err camera_custom', e);
           dispatch(updateStatusLoading(false));
           handlerCloseModal();
         });
@@ -111,14 +110,14 @@ function CameraCustom(props: Props) {
   return (
     <Box className="box-camera-custom">
       <Drawer
-        anchor={"bottom"}
+        anchor={'bottom'}
         open={isToggle}
         onClose={handlerCloseModal}
         className="modal-togggle-cam"
       >
         <Box className="wrap-camera">
           <button className="btn-close-modal right" onClick={handlerCloseModal}>
-            <CloseIcon style={{ fontSize: 20, color: "#fff" }} />
+            <CloseIcon style={{ fontSize: 20, color: '#fff' }} />
           </button>
           <button className="btn-close-modal left" onClick={handlerCloseModal}>
             <svg
@@ -136,18 +135,18 @@ function CameraCustom(props: Props) {
           </button>
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              overflow: "hidden",
-              height: "80%",
-              width: "100%",
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              overflow: 'hidden',
+              height: '80%',
+              width: '100%',
             }}
           >
             <Webcam
               audio={false}
-              height={"100vh"}
-              width={"100%"}
+              height={'100vh'}
+              width={'100%'}
               screenshotFormat="image/jpeg"
               videoConstraints={{
                 ...videoConstraints,
@@ -155,9 +154,9 @@ function CameraCustom(props: Props) {
               }}
               ref={webcamRef}
               style={{
-                height: "100%",
-                width: "100%",
-                objectFit: "cover",
+                height: '100%',
+                width: '100%',
+                objectFit: 'cover',
                 transform: `scale(${scaleCamera})`,
               }}
               screenshotQuality={1}
@@ -190,19 +189,19 @@ function CameraCustom(props: Props) {
 
           <div className="box-scale-camera">
             <button
-              className={`${scaleCamera === 1 && "active"}`}
+              className={`${scaleCamera === 1 && 'active'}`}
               onClick={() => setScaleCamera(1)}
             >
               1
             </button>
             <button
-              className={`${scaleCamera === 1.5 && "active"}`}
+              className={`${scaleCamera === 1.5 && 'active'}`}
               onClick={() => setScaleCamera(1.5)}
             >
               1.5
             </button>
             <button
-              className={`${scaleCamera === 2 && "active"}`}
+              className={`${scaleCamera === 2 && 'active'}`}
               onClick={() => setScaleCamera(2)}
             >
               2
@@ -213,9 +212,9 @@ function CameraCustom(props: Props) {
               accept="image/*"
               id="icon-button-file"
               type="file"
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
               {...getInputProps({
-                onClick: (e) => {
+                onClick: e => {
                   e.stopPropagation();
                 },
               })}
@@ -228,12 +227,12 @@ function CameraCustom(props: Props) {
                 style={{
                   width: 32,
                   height: 32,
-                  borderRadius: "100%",
+                  borderRadius: '100%',
                   padding: 7,
-                  backgroundColor: "#F3F3F5",
+                  backgroundColor: '#F3F3F5',
                 }}
               >
-                <PhotoLibraryIcon style={{ fontSize: 20, color: "red" }} />
+                <PhotoLibraryIcon style={{ fontSize: 20, color: 'red' }} />
               </IconButton>
             </label>
           </div>
