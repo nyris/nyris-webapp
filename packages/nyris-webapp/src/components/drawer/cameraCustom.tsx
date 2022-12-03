@@ -18,6 +18,7 @@ import {
   updateStatusLoading,
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
+
 interface Props {
   isToggle: boolean;
   onToggleModal?: any;
@@ -37,6 +38,8 @@ function CameraCustom(props: Props) {
   const dispatch = useAppDispatch();
 
   const videoConstraints = {
+    width: 1920,
+    height: 1080,
     aspectRatio: 0.6666666667,
   };
   const handleClick = useCallback(() => {
@@ -147,7 +150,9 @@ function CameraCustom(props: Props) {
               audio={false}
               height={'100vh'}
               width={'100%'}
+              imageSmoothing={true}
               screenshotFormat="image/jpeg"
+              forceScreenshotSourceSize={true}
               videoConstraints={{
                 ...videoConstraints,
                 facingMode,
