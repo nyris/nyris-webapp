@@ -113,7 +113,7 @@
         margin-top: auto;
         height: 336px;
         width: 100%;
-        background-image: url("../common/assets/images/bgDragmobile.svg");
+        background-image: url('../common/assets/images/bgDragmobile.svg');
         background-repeat: no-repeat;
         background-size: cover;
         z-index: 0;
@@ -121,7 +121,7 @@
         padding-top: 74px;
         overflow: hidden;
         &::after {
-          content: "";
+          content: '';
           position: absolute;
           width: 100%;
           height: 100%;
@@ -364,7 +364,7 @@
         padding-left: 5px;
         padding-right: 9nppx;
         &::after {
-          content: "";
+          content: '';
         }
       }
     }
@@ -445,7 +445,7 @@
         left: 0;
         right: 0;
         margin: auto;
-        bottom: 108px;
+        bottom: 44px;
         width: fit-content;
         background-color: transparent;
         border: 1px solid #fff;
@@ -459,13 +459,12 @@
         position: absolute;
         left: 38px;
         margin: auto;
-        bottom: 108px;
+        bottom: 45px;
         padding: 0;
         background-color: transparent;
-        border: 0px;
+        border: 0;
       }
       video {
-        border-radius: 17px;
         overflow: hidden;
       }
     }
@@ -480,6 +479,7 @@
       align-items: center;
       justify-content: center;
       padding: 0;
+      z-index: 1;
       &.right {
         right: 21px;
         border-radius: 100%;
@@ -492,7 +492,7 @@
     }
     .box-scale-camera {
       position: absolute;
-      bottom: 198px;
+      bottom: 135px;
       left: 0;
       right: 0;
       margin: auto;
@@ -554,7 +554,7 @@
     align-items: center;
     border: 2px solid #fff !important;
     padding: 3px;
-    bottom: 108px;
+    bottom: 53px;
     right: 38px;
     .MuiIconButton-colorPrimary {
       background-color: transparent !important;
@@ -623,7 +623,7 @@
       margin: auto;
       display: block !important;
       text-align: center;
-      .thumb{
+      .thumb {
         margin: 0px !important;
         text-align: center;
       }

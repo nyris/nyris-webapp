@@ -142,7 +142,7 @@ function CameraCustom(props: Props) {
               justifyContent: 'center',
               alignItems: 'center',
               overflow: 'hidden',
-              height: '80%',
+              height: '100vh',
               width: '100%',
             }}
           >
