@@ -13,7 +13,7 @@ import {
 import { showFeedback } from "Store/Nyris";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
-import IconDownload from "common/assets/images/Icon_downLoad.svg";
+import IconUpload from "common/assets/images/Icon_Upload.svg";
 interface Props {
   acceptTypes: any;
   onChangeLoading?: any;
@@ -113,7 +113,7 @@ function DragDropFile(props: Props) {
               })}
             >
               <Box style={{ marginBottom: 16 }}>
-                <img src={IconDownload} alt="" width={48} height={48} />
+                <img src={IconUpload} alt="" width={48} height={48} />
               </Box>
               <label
                 htmlFor="select_file"
