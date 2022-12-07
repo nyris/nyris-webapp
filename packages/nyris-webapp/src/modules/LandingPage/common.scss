@@ -397,9 +397,14 @@ button {
     .icon-style {
       border-radius: 100%;
       position: absolute;
-      bottom: 50px;
+      bottom: 70px;
       right: 16px;
       z-index: 9;
+
+      @media only screen and (max-width: 900px)  {
+        bottom: 50px;
+      }
+
       button {
         padding: 0;
       }
