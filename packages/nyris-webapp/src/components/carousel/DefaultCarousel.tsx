@@ -1,8 +1,9 @@
-import { Box, Button } from "@material-ui/core";
-import React from "react";
-import { Carousel } from "react-responsive-carousel";
-import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
-import ChevronLeftOutlinedIcon from "@material-ui/icons/ChevronLeftOutlined";
+import { Box, Button } from '@material-ui/core';
+import { useMediaQuery } from 'react-responsive';
+import React from 'react';
+import { Carousel } from 'react-responsive-carousel';
+import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
+import ChevronLeftOutlinedIcon from '@material-ui/icons/ChevronLeftOutlined';
 interface Props {
   imgItem: any[];
   onSearchImage?: any;
@@ -11,14 +12,16 @@ interface Props {
 
 function DefaultCarousel(props: Props) {
   const { imgItem, onSearchImage, handlerCloseModal } = props;
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   return (
     <Carousel
-      showThumbs={true}
+      showThumbs={isMobile ? false : true}
       infiniteLoop={false}
       showStatus={false}
       showIndicators={false}
-      className={imgItem.length > 1 ? "" : "hide-btn-arrow"}
+      thumbWidth={40}
+      className={imgItem.length > 1 ? '' : 'hide-btn-arrow'}
       onClickItem={(index: number, item: React.ReactNode) => {
         handlerCloseModal();
         onSearchImage(imgItem[0].url);
@@ -27,7 +30,7 @@ function DefaultCarousel(props: Props) {
         <Button onClick={onClickHandler} className="btn-carousel-right">
           <ChevronRightOutlinedIcon
             className="icon-ct"
-            style={{ color: "#55566B" }}
+            style={{ color: '#55566B' }}
           />
         </Button>
       )}
@@ -35,7 +38,7 @@ function DefaultCarousel(props: Props) {
         <Button onClick={onClickHandler} className="btn-carousel-left">
           <ChevronLeftOutlinedIcon
             className="icon-ct"
-            style={{ color: "#55566B" }}
+            style={{ color: '#55566B' }}
           />
         </Button>
       )}
@@ -44,12 +47,12 @@ function DefaultCarousel(props: Props) {
         return (
           <Box
             key={index}
-            style={{ height: "100%" }}
+            style={{ height: '100%' }}
             className="box-slider-image-result"
           >
             <img
-              style={{ maxHeight: "400px" }}
-              src={imgItem ? item?.url : ""}
+              style={{ maxHeight: '400px' }}
+              src={imgItem ? item?.url : ''}
               alt="image_product"
             />
           </Box>
