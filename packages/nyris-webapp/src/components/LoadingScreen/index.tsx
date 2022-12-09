@@ -1,10 +1,10 @@
-import { Box } from "@material-ui/core";
-import ItemResult from "components/results/ItemResult";
-import _ from "lodash";
-import React, { memo, useEffect, useMemo, useState } from "react";
-import { connectStateResults } from "react-instantsearch-dom";
-import { useAppSelector } from "Store/Store";
-import { AppState } from "types";
+import { Box } from '@material-ui/core';
+import ItemResult from 'components/results/ItemResult';
+import { groupBy } from 'lodash';
+import React, { memo, useEffect, useMemo, useState } from 'react';
+import { connectStateResults } from 'react-instantsearch-dom';
+import { useAppSelector } from 'Store/Store';
+import { AppState } from 'types';
 
 interface Props {
   allSearchResults: any;
@@ -42,9 +42,12 @@ function LoadingScreen({
   const setListHitDefault = (hits: any) => {
     let newArrayShowGroup: any = [];
     let newArrayShowItem: any = [];
-    const groupHits = _.groupBy(hits, "group_id");
-    setHitGroups(groupHits);
-    newArrayShowGroup = Object.values(groupHits);
+    const groupHits = hits.filter(
+      (hit: { group_id: string }) => hit.group_id !== '',
+    );
+    const groups = groupBy(groupHits, 'group_id');
+    setHitGroups(groups);
+    newArrayShowGroup = Object.values(groups);
     newArrayShowGroup.forEach((item: any) => {
       let payload: any;
       if (item.length >= 2) {
@@ -70,7 +73,7 @@ function LoadingScreen({
     const group_id = hit.group_id;
     let newItemList = [...itemShowDefault];
     const firstArr = newItemList.slice(0, index + 1);
-    firstArr.filter((item) => item.group_id === group_id)[0].collap = false;
+    firstArr.filter(item => item.group_id === group_id)[0].collap = false;
     let secondArr = newItemList.slice(index + 1, newItemList.length);
     let otherItemsInGroup = [...hitGroups[group_id]];
     otherItemsInGroup.shift();
@@ -82,9 +85,9 @@ function LoadingScreen({
     const group_id = hit.group_id;
     let newItemList = [...itemShowDefault];
     const firstArr = newItemList.slice(0, index + 1);
-    firstArr.filter((item) => item.group_id === group_id)[0].collap = true;
+    firstArr.filter(item => item.group_id === group_id)[0].collap = true;
     let secondArr = newItemList.slice(index + 1, newItemList.length);
-    secondArr = secondArr.filter((item) => {
+    secondArr = secondArr.filter(item => {
       return item.group_id !== group_id;
     });
     setItemShowDefault(firstArr.concat(secondArr));
