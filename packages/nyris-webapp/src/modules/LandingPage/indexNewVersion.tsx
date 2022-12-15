@@ -1,30 +1,30 @@
-import { Box } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import "./common.scss";
+import { Box } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import './common.scss';
 // import TranslateIcon from "common/assets/icons/translate_icon.svg";
-import { cadExtensions } from "@nyris/nyris-api";
-import algoliasearch from "algoliasearch/lite";
-import IconSupport from "common/assets/icons/support3.svg";
-import DragDropFile from "components/DragDropFile";
-import CustomSearchBox from "components/input/inputSearch";
-import { connectInfiniteHits } from "react-instantsearch-dom";
-import { useMediaQuery } from "react-responsive";
-import { Link } from "react-router-dom";
-import { setUpdateSession } from "Store/Search";
-import { useAppDispatch, useAppSelector } from "Store/Store";
-import { createSessionByApi } from "../../services/session";
-import { AlgoliaSettings } from "../../types";
+import { cadExtensions } from '@nyris/nyris-api';
+import algoliasearch from 'algoliasearch/lite';
+import IconSupport from 'common/assets/icons/support3.svg';
+import DragDropFile from 'components/DragDropFile';
+import CustomSearchBox from 'components/input/inputSearch';
+import { connectInfiniteHits } from 'react-instantsearch-dom';
+import { useMediaQuery } from 'react-responsive';
+import { Link } from 'react-router-dom';
+import { setUpdateSession } from 'Store/Search';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { createSessionByApi } from '../../services/session';
+import { AlgoliaSettings } from '../../types';
 
 interface Props {}
 
 function AppNewVersion(props: Props) {
   const dispatch = useAppDispatch();
-  const { settings } = useAppSelector((state) => state);
+  const { settings } = useAppSelector(state => state);
   const [isLoading, setLoading] = useState<boolean>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   searchClient.initIndex(indexName);
-  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   useEffect(() => {
     const createSession = async () => {
@@ -36,9 +36,9 @@ function AppNewVersion(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const acceptTypes = ["image/*"]
+  const acceptTypes = ['image/*']
     .concat(settings.cadSearch ? cadExtensions : [])
-    .join(",");
+    .join(',');
 
   const InfiniteHits = ({ hits }: any) => {
     return <div></div>;
@@ -51,21 +51,21 @@ function AppNewVersion(props: Props) {
   const CustomInfiniteHits = connectInfiniteHits(InfiniteHits);
 
   return (
-    <Box className={`box-content-main ${isLoading ? "loading" : ""}`}>
+    <Box className={`box-content-main ${isLoading ? 'loading' : ''}`}>
       {isMobile && (
         <Box className="btn-open-support">
-          <Link to={"/support"} style={{ color: "#3E36DC" }}>
+          <Link to={'/support'} style={{ color: '#3E36DC' }}>
             <img src={IconSupport} alt="" width={16} height={16} />
           </Link>
         </Box>
       )}
       <Box className="box-content_top">
         <Box className="fw-700 text-f32 text-dark2">
-          <h1>Visual Search Suite – Nyris</h1>
+          <h1>{settings.headerText}</h1>
         </Box>
         <div className="box-input">
           <div className="wrap-input-search">
-            <div style={{ display: "none" }}>
+            <div style={{ display: 'none' }}>
               <CustomInfiniteHits />
             </div>
             <CustomSearchBox />

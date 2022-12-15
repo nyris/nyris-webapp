@@ -1,14 +1,16 @@
-import { Box, Grid } from "@material-ui/core";
-import React from "react";
-import { NavLink } from "react-router-dom";
-import "./common.scss";
-import IconAdmin from "common/assets/icons/admin.svg";
-import LogoNyris from "common/assets/icons/nyris_logo.svg";
-import IconSupport from "common/assets/icons/support.svg";
-import { useAppDispatch } from "Store/Store";
-import { reset } from "Store/Search";
+import { Box, Grid } from '@material-ui/core';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import './common.scss';
+import IconAdmin from 'common/assets/icons/admin.svg';
+import LogoNyris from 'common/assets/icons/nyris_logo.svg';
+import IconSupport from 'common/assets/icons/support.svg';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { reset } from 'Store/Search';
 function HeaderNewVersion(): JSX.Element {
   const dispatch = useAppDispatch();
+  const { settings } = useAppSelector(state => state);
+
   const handleCheckMatchLink = (match: any, location: any) => {
     let active = false;
     if (match?.url === location.pathname) {
@@ -19,16 +21,21 @@ function HeaderNewVersion(): JSX.Element {
   };
 
   return (
-    <Box className="box-content" display={"flex"}>
+    <Box className="box-content" display={'flex'}>
       <NavLink
         to="/"
         style={{ lineHeight: 0 }}
         onClick={() => {
-          dispatch(reset(""));
+          dispatch(reset(''));
         }}
       >
         {/* <section id="branding" style={{ height: 32 }} /> */}
-        <img width={74} height={19} src={`${LogoNyris}`} alt="nyris logo" />
+        <img
+          width={74}
+          height={19}
+          src={settings.themePage.searchSuite?.appBarLogoUrl}
+          alt={settings.themePage.searchSuite?.appBarLogoUrlAlt}
+        />
       </NavLink>
       <Grid container className="nav-menu">
         {/* <Grid item className="item-nav">
@@ -70,7 +77,7 @@ function HeaderNewVersion(): JSX.Element {
             isActive={(match, location) =>
               handleCheckMatchLink(match, location)
             }
-            to={"/support"}
+            to={'/support'}
             className="nav-link p-0 menu-children rounded-0"
           >
             <span className="d-none d-sm-block ms-4 px-2 py-1 border-bottom-1">
@@ -87,7 +94,7 @@ function HeaderNewVersion(): JSX.Element {
             isActive={(match, location) =>
               handleCheckMatchLink(match, location)
             }
-            to={"/account"}
+            to={'/account'}
             className="nav-link p-0 menu-children rounded-0"
           >
             <span className="d-none d-sm-block ms-4 px-2 py-1 border-bottom-1">
