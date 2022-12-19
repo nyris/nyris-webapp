@@ -617,16 +617,8 @@
 
   .box-modal-default {
     max-width: 90vw;
-    .box-carosel ul.thumbs {
-      max-width: 300px;
-      overflow: auto;
-      margin: auto;
-      display: block !important;
-      text-align: center;
-      .thumb {
-        margin: 0px !important;
-        text-align: center;
-      }
+    .box-carosel .thumbs-wrapper {
+      width: 300px;
     }
   }
 }

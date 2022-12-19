@@ -12,11 +12,10 @@ interface Props {
 
 function DefaultCarousel(props: Props) {
   const { imgItem, onSearchImage, handlerCloseModal } = props;
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   return (
     <Carousel
-      showThumbs={isMobile ? false : true}
+      showThumbs={true}
       infiniteLoop={false}
       showStatus={false}
       showIndicators={false}

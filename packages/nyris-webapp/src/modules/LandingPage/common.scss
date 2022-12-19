@@ -362,37 +362,56 @@ button {
       background-color: initial !important;
     }
   }
+  .carousel {
+    display: flex;
+    justify-content: center;
+  }
   .carousel .control-next.control-arrow,
   .control-prev.control-arrow {
     top: 35%;
     opacity: 1;
   }
   .carousel .control-next.control-arrow:before {
-    border: solid #2b2c45;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-    margin: 0px;
-    transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
+    border: 0px;
+    @media only screen and (min-width: 776px) {
+      border: solid #2b2c45;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 3px;
+      margin: 0px;
+      transform: rotate(-45deg);
+      -webkit-transform: rotate(-45deg);
+    }
   }
   .carousel .control-prev.control-arrow:before {
-    border: solid #2b2c45;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-    margin: 0px;
-    transform: rotate(135deg);
-    -webkit-transform: rotate(135deg);
+    border: 0px;
+    @media only screen and (min-width: 776px) {
+      border: solid #2b2c45;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 3px;
+      margin: 0px;
+      transform: rotate(135deg);
+      -webkit-transform: rotate(135deg);
+    }
   }
-
+  .carousel .slide img {
+    @media only screen and (max-width: 776px) {
+      width: 100%;
+      vertical-align: top;
+      border: 0;
+      height: 300px;
+      object-fit: cover;
+      object-position: bottom;
+    }
+  }
   .box-carosel {
     height: 60%;
     padding: 0px 14px;
     min-height: 330px;
     position: relative;
     .thumbs-wrapper {
-      // margin: 10px !important;
+      margin-right: 10px !important;
     }
     ul.thumbs {
       // display: flex;
@@ -401,6 +420,7 @@ button {
       .thumb {
         border: 0px;
         height: 40px;
+        margin-right: 0px;
       }
       .thumb.selected {
         border: 2px solid #e0e0e0 !important;
@@ -430,7 +450,7 @@ button {
       right: 16px;
       z-index: 9;
 
-      @media only screen and (max-width: 900px) {
+      @media only screen and (max-width: 776px) {
         bottom: 50px;
       }
 
