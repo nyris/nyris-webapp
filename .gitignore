@@ -34,3 +34,5 @@ public/js/settings.js
 .idea/
 
 packages/nyris-webapp/.prettierrc.json
+
+packages/nyris-webapp/.prettierrc

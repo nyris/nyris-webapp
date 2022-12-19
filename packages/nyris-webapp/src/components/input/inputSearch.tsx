@@ -18,11 +18,9 @@ import {useAppDispatch, useAppSelector} from "Store/Store";
 
 const SearchBox = (props: any) => {
     const {
-        currentRefinement,
         refine,
         onToggleFilterMobile,
-    }: // onGetRefInputSearchMobile,
-        any = props;
+    }:  any = props;
     // const containerRefInputMobile = useRef<HTMLDivElement>(null);
     const stateGlobal = useAppSelector((state) => state);
     const {search, settings} = stateGlobal;
