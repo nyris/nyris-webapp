@@ -25,14 +25,7 @@ import LoadingScreenCustom from 'components/LoadingScreen';
 import DefaultModal from 'components/modal/DefaultModal';
 import ExpandablePanelComponent from 'components/PanelResult';
 import { debounce } from 'lodash';
-import React, {
-  memo,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
+import React, { memo, useEffect, useRef, useState, useCallback } from 'react';
 import {
   Configure,
   CurrentRefinements,
@@ -134,7 +127,7 @@ function ResultComponent(props: Props) {
           console.log('error call api change selection find image', e);
         });
     },
-    [],
+    [settings, dispatch],
   );
 
   // TODO: Search offers for image:

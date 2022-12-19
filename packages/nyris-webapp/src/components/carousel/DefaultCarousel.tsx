@@ -1,5 +1,4 @@
 import { Box, Button } from '@material-ui/core';
-import { useMediaQuery } from 'react-responsive';
 import React from 'react';
 import { Carousel } from 'react-responsive-carousel';
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';

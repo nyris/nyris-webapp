@@ -1,9 +1,9 @@
-import { autocomplete } from "@algolia/autocomplete-js";
-import { Box } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import algoliasearch from "algoliasearch/lite";
-import { popularSearchesPluginCreator } from "components/autocomplete/plugins/popular-searches/popular-searches";
-import { debounce } from "lodash";
+import { autocomplete } from '@algolia/autocomplete-js';
+import { Box } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import algoliasearch from 'algoliasearch/lite';
+import { popularSearchesPluginCreator } from 'components/autocomplete/plugins/popular-searches/popular-searches';
+import { debounce } from 'lodash';
 import React, {
   createElement,
   Fragment,
@@ -12,17 +12,17 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { render } from "react-dom";
-import { connectSearchBox } from "react-instantsearch-dom";
-import { useHistory } from "react-router-dom";
+} from 'react';
+import { render } from 'react-dom';
+import { connectSearchBox } from 'react-instantsearch-dom';
+import { useHistory } from 'react-router-dom';
 import {
   onResetRequestImage,
   reset,
   updateValueTextSearchMobile,
-} from "Store/Search";
-import { useAppDispatch, useAppSelector } from "Store/Store";
-import { AlgoliaSettings, AppState } from "types";
+} from 'Store/Search';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { AlgoliaSettings, AppState } from 'types';
 interface Props {
   containerRefInputMobile?: any;
   isiImageThumbSearchInput?: boolean;
@@ -48,13 +48,13 @@ function AutocompleteBasicComponent(props: Props) {
 
   useEffect(() => {
     if (isResetImage) {
-      dispatch(onResetRequestImage(""));
+      dispatch(onResetRequestImage(''));
       setTimeout(() => {
         refine(textSearchInputMobile);
       }, 300);
       return;
     }
-  }, [isResetImage]);
+  }, [isResetImage, dispatch, refine, textSearchInputMobile]);
 
   useEffect(() => {
     setRefPanelContainer(panelContainerRef);
@@ -62,7 +62,7 @@ function AutocompleteBasicComponent(props: Props) {
 
   useEffect(() => {
     setRefBoxFilter(containerRefInputMobile);
-  }, []);
+  }, [containerRefInputMobile]);
 
   const plugins = useMemo(
     () => [
@@ -71,8 +71,8 @@ function AutocompleteBasicComponent(props: Props) {
         onSelect({ item }: any) {
           dispatch(updateValueTextSearchMobile(item?.keyword));
           refine(`${item?.keyword}`);
-          if (history.location.pathname !== "/result") {
-            history.push("/result");
+          if (history.location.pathname !== '/result') {
+            history.push('/result');
           }
         },
         indexName,
@@ -82,7 +82,7 @@ function AutocompleteBasicComponent(props: Props) {
       }),
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [searchClient]
+    [searchClient],
   );
 
   useEffect(() => {
@@ -92,16 +92,16 @@ function AutocompleteBasicComponent(props: Props) {
     const autocompleteInstance = autocomplete({
       container: refBoxFilter.current,
       panelContainer: refPanelContainer.current,
-      panelPlacement: "full-width",
+      panelPlacement: 'full-width',
       renderer: { createElement, Fragment, render: () => {} },
       initialState: {
         query: textSearchInputMobile,
       },
       translations: {
         detachedCancelButtonText: `‹`,
-        submitButtonTitle: "s",
+        submitButtonTitle: 's',
       },
-      placeholder: textSearchInputMobile ? textSearchInputMobile : "Search",
+      placeholder: textSearchInputMobile ? textSearchInputMobile : 'Search',
       plugins,
       openOnFocus: true,
       onSubmit,
@@ -112,7 +112,7 @@ function AutocompleteBasicComponent(props: Props) {
               {sections}
             </div>
           </Fragment>,
-          root
+          root,
         );
       },
 
@@ -121,7 +121,7 @@ function AutocompleteBasicComponent(props: Props) {
     return () => {
       // Waiting for an 'unsubscribe' method on Autocomplete plugin API
       plugins.forEach((plugin: any) => {
-        if (typeof plugin.unsubscribe === "function") {
+        if (typeof plugin.unsubscribe === 'function') {
           plugin.unsubscribe();
         }
       });
@@ -134,40 +134,40 @@ function AutocompleteBasicComponent(props: Props) {
   const onSubmit = ({ state }: any) => {
     debounceSearch(state?.query);
     dispatch(updateValueTextSearchMobile(state?.query));
-    if (history.location.pathname !== "/result") {
-      history.push("/result");
+    if (history.location.pathname !== '/result') {
+      history.push('/result');
     }
   };
   const debounceSearch = useCallback(
     debounce((nextValue: any) => refine(nextValue), 200),
-    []
+    [],
   );
 
   return (
     <>
       <div className="panel-container-custom" ref={panelContainerRef} />
-      {history.location?.pathname !== "/" && textSearchInputMobile && (
-        <Box className="btn-close-header" style={{ backgroundColor: "#fff" }}>
+      {history.location?.pathname !== '/' && textSearchInputMobile && (
+        <Box className="btn-close-header" style={{ backgroundColor: '#fff' }}>
           <button
             onClick={() => {
               if (isiImageThumbSearchInput) {
-                dispatch(updateValueTextSearchMobile(""));
-                refine("");
+                dispatch(updateValueTextSearchMobile(''));
+                refine('');
                 return;
               }
-              dispatch(updateValueTextSearchMobile(""));
-              dispatch(reset(""));
-              refine("");
-              history.push("/");
+              dispatch(updateValueTextSearchMobile(''));
+              dispatch(reset(''));
+              refine('');
+              history.push('/');
             }}
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
               border: 0,
-              padding: "0px 0px 0 16px",
-              display: "flex",
+              padding: '0px 0px 0 16px',
+              display: 'flex',
             }}
           >
-            <CloseIcon style={{ fontSize: 20, color: "#3e36dc" }} />
+            <CloseIcon style={{ fontSize: 20, color: '#3e36dc' }} />
           </button>
         </Box>
       )}
@@ -176,6 +176,6 @@ function AutocompleteBasicComponent(props: Props) {
 }
 
 const AutocompleteBasicMobileComponent = connectSearchBox<any>(
-  AutocompleteBasicComponent
+  AutocompleteBasicComponent,
 );
 export default AutocompleteBasicMobileComponent;

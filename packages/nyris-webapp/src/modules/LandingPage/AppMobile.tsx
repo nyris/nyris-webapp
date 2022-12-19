@@ -1,12 +1,12 @@
-import { Box, Typography } from "@material-ui/core";
-import { RectCoords } from "@nyris/nyris-api";
-import CameraCustom from "components/drawer/cameraCustom";
-import ExampleImages from "components/ExampleImages";
-import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { feedbackClickEpic } from "services/Feedback";
-import { createImage, findByImage, findRegions } from "services/image";
-import { showFeedback, showResults } from "Store/Nyris";
+import { Box, Typography } from '@material-ui/core';
+import { RectCoords } from '@nyris/nyris-api';
+import CameraCustom from 'components/drawer/cameraCustom';
+import ExampleImages from 'components/ExampleImages';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { feedbackClickEpic } from 'services/Feedback';
+import { createImage, findByImage, findRegions } from 'services/image';
+import { showFeedback, showResults } from 'Store/Nyris';
 import {
   loadingActionResults,
   reset,
@@ -16,24 +16,24 @@ import {
   setSearchResults,
   setSelectedRegion,
   updateStatusLoading,
-} from "Store/Search";
-import { useAppDispatch, useAppSelector } from "Store/Store";
+} from 'Store/Search';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
 interface Props {}
 
 function AppMobile(props: Props): JSX.Element {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const searchState = useAppSelector((state) => state);
+  const searchState = useAppSelector(state => state);
   const { settings } = searchState;
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(reset(""));
-  }, []);
+    dispatch(reset(''));
+  }, [dispatch]);
 
   const getUrlToCanvasFile = async (url: string, position?: number) => {
-    if (history.location?.pathname === "/") {
-      history.push("/result");
+    if (history.location?.pathname === '/') {
+      history.push('/result');
     }
     dispatch(updateStatusLoading(true));
     dispatch(showResults());
@@ -52,14 +52,14 @@ function AppMobile(props: Props): JSX.Element {
       dispatch(setSelectedRegion(searchRegion));
     }
     findByImage(image, settings, searchRegion)
-      .then((res) => {
+      .then(res => {
         dispatch(setSearchResults(res));
         dispatch(updateStatusLoading(false));
         dispatch(showFeedback());
         return;
       })
       .catch((err: any) => {
-        console.log("err getUrlToCanvasFile mobile", err);
+        console.log('err getUrlToCanvasFile mobile', err);
       });
   };
 
