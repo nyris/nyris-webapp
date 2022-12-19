@@ -411,7 +411,7 @@ button {
     min-height: 330px;
     position: relative;
     .thumbs-wrapper {
-      margin-right: 10px !important;
+      margin: 10px !important;
     }
     ul.thumbs {
       // display: flex;
@@ -489,7 +489,6 @@ button {
     background-color: #fafafa;
     padding: 16px;
     min-height: 138px;
-    margin-top: auto;
     height: 40%;
     .MuiIconButton-label {
       width: 100% !important;
