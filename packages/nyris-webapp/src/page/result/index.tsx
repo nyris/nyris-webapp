@@ -28,6 +28,7 @@ import { debounce } from 'lodash';
 import React, { memo, useEffect, useRef, useState, useCallback } from 'react';
 import {
   Configure,
+  connectStateResults,
   CurrentRefinements,
   HitsPerPage,
   Pagination,
@@ -52,7 +53,9 @@ import {
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from './MockData';
 
-interface Props {}
+interface Props {
+  allSearchResults: any;
+}
 
 const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
 
@@ -357,15 +360,17 @@ function ResultComponent(props: Props) {
                       padding: '0 20%',
                     }}
                   >
-                    <Pagination
-                      showFirst={false}
-                      translations={{
-                        previous: (
-                          <ArrowLeftIcon style={{ color: '#161616' }} />
-                        ),
-                        next: <ArrowRightIcon style={{ color: '#161616' }} />,
-                      }}
-                    />
+                    {props.allSearchResults?.hits.length > 0 && (
+                      <Pagination
+                        showFirst={false}
+                        translations={{
+                          previous: (
+                            <ArrowLeftIcon style={{ color: '#161616' }} />
+                          ),
+                          next: <ArrowRightIcon style={{ color: '#161616' }} />,
+                        }}
+                      />
+                    )}
                   </Box>
                   {isMobile && (
                     <Box
@@ -523,5 +528,4 @@ function ResultComponent(props: Props) {
     </div>
   );
 }
-
-export default memo(ResultComponent);
+export default connectStateResults<Props>(memo(ResultComponent));
