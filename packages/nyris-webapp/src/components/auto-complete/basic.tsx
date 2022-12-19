@@ -1,6 +1,4 @@
 import { autocomplete } from '@algolia/autocomplete-js';
-import { Box } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import algoliasearch from 'algoliasearch/lite';
 import { popularSearchesPluginCreator } from 'components/autocomplete/plugins/popular-searches/popular-searches';
 import { debounce } from 'lodash';
@@ -16,11 +14,7 @@ import React, {
 import { render } from 'react-dom';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { useHistory } from 'react-router-dom';
-import {
-  onResetRequestImage,
-  reset,
-  updateValueTextSearchMobile,
-} from 'Store/Search';
+import { onResetRequestImage, updateValueTextSearchMobile } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AlgoliaSettings, AppState } from 'types';
 interface Props {
@@ -30,12 +24,7 @@ interface Props {
 }
 
 function AutocompleteBasicComponent(props: Props) {
-  const {
-    containerRefInputMobile,
-    refine,
-    isiImageThumbSearchInput,
-    isResetImage,
-  }: any = props;
+  const { containerRefInputMobile, refine, isResetImage }: any = props;
   const [refBoxFilter, setRefBoxFilter] = useState<any>(null);
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
@@ -143,36 +132,7 @@ function AutocompleteBasicComponent(props: Props) {
     [],
   );
 
-  return (
-    <>
-      <div className="panel-container-custom" ref={panelContainerRef} />
-      {history.location?.pathname !== '/' && textSearchInputMobile && (
-        <Box className="btn-close-header" style={{ backgroundColor: '#fff' }}>
-          <button
-            onClick={() => {
-              if (isiImageThumbSearchInput) {
-                dispatch(updateValueTextSearchMobile(''));
-                refine('');
-                return;
-              }
-              dispatch(updateValueTextSearchMobile(''));
-              dispatch(reset(''));
-              refine('');
-              history.push('/');
-            }}
-            style={{
-              backgroundColor: '#fff',
-              border: 0,
-              padding: '0px 0px 0 16px',
-              display: 'flex',
-            }}
-          >
-            <CloseIcon style={{ fontSize: 20, color: '#3e36dc' }} />
-          </button>
-        </Box>
-      )}
-    </>
-  );
+  return <div className="panel-container-custom" ref={panelContainerRef} />;
 }
 
 const AutocompleteBasicMobileComponent = connectSearchBox<any>(

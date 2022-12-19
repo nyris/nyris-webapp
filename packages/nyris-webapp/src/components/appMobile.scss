@@ -405,14 +405,10 @@
   #box-input-search {
     position: relative;
     .box-button-input-mobile {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      right: 24px;
-      z-index: 999;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding-right: 20px;
       button {
         background-color: #f7f7f7;
         border-radius: 100%;
@@ -421,11 +417,7 @@
       }
     }
     .btn-close-header {
-      position: absolute;
-      right: calc(64px + 25px);
-      top: 0;
-      bottom: 0;
-      z-index: 11;
+      padding-right: 10px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -564,7 +556,9 @@
       font-size: 30px !important;
     }
   }
-
+  .aa-InputWrapperSuffix {
+    display: none;
+  }
   .aa-DetachedSearchButtonPlaceholder {
     color: #1e1f31 !important;
   }
