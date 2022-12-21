@@ -190,7 +190,7 @@ function DetailItem(props: Props) {
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    color: '#3E36DC',
+                    color: settings.themePage.searchSuite?.secondaryColor,
                     fontSize: 14,
                     textTransform: 'initial',
                     paddingLeft: 0,
@@ -198,7 +198,9 @@ function DetailItem(props: Props) {
                   onClick={() => setCollapDescription(!collapDescription)}
                 >
                   View full description
-                  <KeyboardArrowDownIcon />
+                  <KeyboardArrowDownIcon
+                    htmlColor={settings.themePage.searchSuite?.secondaryColor}
+                  />
                 </Button>
                 <Collapse in={collapDescription}>
                   <Typography style={{ fontSize: 14 }}>

@@ -272,7 +272,13 @@ function ResultComponent(props: Props) {
                     </Button>
                   </Box>
                   {settings.preview && requestImage && (
-                    <Box className="col-left">
+                    <Box
+                      className="col-left"
+                      style={{
+                        background:
+                          settings?.themePage?.searchSuite?.primaryColor,
+                      }}
+                    >
                       <Box className="box-preview">
                         <Box className="preview-item">
                           <Preview
