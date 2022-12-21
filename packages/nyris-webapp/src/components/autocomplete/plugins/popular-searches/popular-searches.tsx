@@ -34,24 +34,24 @@ export function popularSearchesPluginCreator({
           }
         },
         templates: {
-          header() {
+      /*    header() {
             return (
               <div>
                 <span className="aa-SourceHeaderTitle">Suggested searches</span>
               </div>
             );
-          },
+          },*/
           item({ item }: any) {
             return (
               <div className="aa-ItemWrapper d-flex">
-                <div className="aa-ItemContent">
+                {/*<div className="aa-ItemContent">
                   <div className="aa-ItemContentBody">
                     <div className="aa-ItemContentTitle">
                       <Typography>{item.keyword}</Typography>
                     </div>
                   </div>
-                </div>
-                <div className="aa-ItemActions">
+                </div>*/}
+             {/*   <div className="aa-ItemActions">
                   <button
                     type="button"
                     className="aa-ItemActionButton"
@@ -62,7 +62,7 @@ export function popularSearchesPluginCreator({
                       onTapAhead(item);
                     }}
                   ></button>
-                </div>
+                </div>*/}
               </div>
             );
           },
