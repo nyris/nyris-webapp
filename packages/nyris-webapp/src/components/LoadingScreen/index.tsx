@@ -95,7 +95,7 @@ function LoadingScreen({
 
   const renderItem = useMemo(() => {
     if (itemShowDefault.length === 0 && !loadingSearchAlgolia) {
-      return <Box>No items to show.</Box>;
+      return <Box>No products were found matching your search criteria.</Box>;
     }
     return itemShowDefault.map((hit: any, i: number) => {
       return (
