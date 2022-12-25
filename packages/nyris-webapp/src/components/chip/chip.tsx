@@ -10,25 +10,11 @@ export default function ChipComponent({
   ...props
 }: any) {
   return (
-    <div
-      type="native"
-      className={className}
-      {...props}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        fontSize: '12px',
-        fontWeight: '600',
-        cursor: 'pointer',
-        padding: '2px 4px 2px 4px',
-        backgroundColor: '#e4e4e58f',
-        borderRadius: '5px',
-      }}
-    >
+    <Button type="native" className={className} {...props}>
       {children}
       {closeIcon && (
         <CloseOutlinedIcon style={{ fontSize: '16px', fontWeight: 'bold' }} />
       )}
-    </div>
+    </Button>
   );
 }

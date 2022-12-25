@@ -1,9 +1,9 @@
-import React from "react";
-import { Button } from "@material-ui/core";
-import { memo, useCallback } from "react";
-import isEqual from "react-fast-compare";
-import type { CurrentRefinementsProvided } from "react-instantsearch-core";
-import { connectCurrentRefinements } from "react-instantsearch-dom";
+import React from 'react';
+import { Button } from '@material-ui/core';
+import { memo, useCallback } from 'react';
+import isEqual from 'react-fast-compare';
+import type { CurrentRefinementsProvided } from 'react-instantsearch-core';
+import { connectCurrentRefinements } from 'react-instantsearch-dom';
 
 export type ClearRefinementsProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -13,7 +13,7 @@ export type ClearRefinementsProps = CurrentRefinementsProvided & {
 
 function ClearRefinementsComponent({
   children,
-  type = "native",
+  type = 'native',
   className,
   items,
   refine,
@@ -27,9 +27,9 @@ function ClearRefinementsComponent({
       className={className}
       onClick={handleButtonClick}
       style={{
-        color: "#3E36DC",
-        fontWeight: "bold",
-        textTransform: "capitalize",
+        color: '#E31B5D',
+        fontWeight: 'bold',
+        textTransform: 'capitalize',
         padding: 0,
       }}
     >
@@ -39,5 +39,5 @@ function ClearRefinementsComponent({
 }
 
 export const ClearRefinements = connectCurrentRefinements<any>(
-  memo(ClearRefinementsComponent, isEqual)
+  memo(ClearRefinementsComponent, isEqual),
 );

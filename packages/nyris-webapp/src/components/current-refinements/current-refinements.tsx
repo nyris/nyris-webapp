@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { m } from 'framer-motion';
 import { atom } from 'jotai';
 import { useMemo } from 'react';
-import { groupBy } from 'lodash';
 import type {
   CurrentRefinementsProvided,
   RefinementValue,
@@ -45,63 +44,50 @@ function CurrentRefinementsComponent({
 
   const refinements = useMemo(
     () =>
-      groupBy(
-        newItems.reduce((acc: CurrentRefinement[], current) => {
-          return [
-            ...acc,
-            ...getCurrentRefinement(current, settings?.refinements),
-          ];
-        }, []),
-        'category',
-      ),
+      newItems.reduce((acc: CurrentRefinement[], current) => {
+        return [
+          ...acc,
+          ...getCurrentRefinement(current, settings?.refinements),
+        ];
+      }, []),
     [settings, newItems],
   );
 
-  if (!Object.keys(refinements).length) {
+  if (!refinements.length) {
     return null;
   }
 
   return (
     <div className={className}>
       <ul className="flex flex-wrap gap-3">
-        {Object.keys(refinements).map(key => {
+        {refinements.map(refinement => {
           return (
-            <div
-              style={{
-                display: 'flex',
-                columnGap: '5px',
-                alignItems: 'center',
-              }}
-            >
-              <div className="text-f14 fw-700">{key}:</div>
-
-              {refinements[key].map(refinement => {
-                return (
-                  <ChipComponent
-                    closeIcon={true}
-                    onClick={() => refine(refinement.value)}
-                  >
-                    <div
-                      className="capitalize"
-                      style={{
-                        marginLeft: 5,
-                        textTransform: 'capitalize',
-                        marginRight: 10,
-                      }}
-                    >
-                      {refinement.label}
-                    </div>
-                  </ChipComponent>
-                );
-              })}
-            </div>
+            <m.li key={[refinement.category, refinement.label].join(':')}>
+              <ChipComponent
+                closeIcon={true}
+                onClick={() => refine(refinement.value)}
+              >
+                {refinement.category && (
+                  <div className="text-f12">{refinement.category}:</div>
+                )}
+                <div
+                  className="capitalize fw-700"
+                  style={{
+                    marginLeft: 5,
+                    textTransform: 'capitalize',
+                    marginRight: 10,
+                  }}
+                >
+                  {refinement.label}
+                </div>
+              </ChipComponent>
+            </m.li>
           );
         })}
-
         <li
           key="clear"
           className={classNames('flex items-center', {
-            hidden: Object.keys(refinements).length < 2,
+            hidden: refinements.length < 2,
           })}
         >
           <ClearRefinements className="text-f12 fw-600">
