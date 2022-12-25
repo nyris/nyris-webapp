@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
-import classNames from "classnames";
-import { m } from "framer-motion";
-import { atom } from "jotai";
-import { useMemo } from "react";
+import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
+import { m } from 'framer-motion';
+import { atom } from 'jotai';
+import { useMemo } from 'react';
+import { groupBy } from 'lodash';
 import type {
   CurrentRefinementsProvided,
   RefinementValue,
-} from "react-instantsearch-core";
-import { connectCurrentRefinements } from "react-instantsearch-dom";
-import { getCurrentRefinement } from "./getCurrentRefinement";
-import { ClearRefinements } from "components/clear-refinements/clear-refinements";
-import ChipComponent from "components/chip/chip";
-import { useAppSelector } from "Store/Store";
+} from 'react-instantsearch-core';
+import { connectCurrentRefinements } from 'react-instantsearch-dom';
+import { getCurrentRefinement } from './getCurrentRefinement';
+import { ClearRefinements } from 'components/clear-refinements/clear-refinements';
+import ChipComponent from 'components/chip/chip';
+import { useAppSelector } from 'Store/Store';
 
 export type CurrentRefinementsProps = CurrentRefinementsProvided & {
   header?: string;
@@ -33,7 +34,7 @@ function CurrentRefinementsComponent({
   className,
   statusSwitchButton,
 }: CurrentRefinementsProps) {
-  const stateGlobal = useAppSelector((state) => state);
+  const stateGlobal = useAppSelector(state => state);
   const { settings } = stateGlobal;
   const [newItems, setListItems] = useState<any[]>([]);
 
@@ -44,50 +45,63 @@ function CurrentRefinementsComponent({
 
   const refinements = useMemo(
     () =>
-    newItems.reduce((acc: CurrentRefinement[], current) => {
-        return [
-          ...acc,
-          ...getCurrentRefinement(current, settings?.refinements),
-        ];
-      }, []),
-    [settings, newItems]
+      groupBy(
+        newItems.reduce((acc: CurrentRefinement[], current) => {
+          return [
+            ...acc,
+            ...getCurrentRefinement(current, settings?.refinements),
+          ];
+        }, []),
+        'category',
+      ),
+    [settings, newItems],
   );
 
-  if (!refinements.length) {
+  if (!Object.keys(refinements).length) {
     return null;
   }
 
   return (
     <div className={className}>
       <ul className="flex flex-wrap gap-3">
-        {refinements.map((refinement) => {
+        {Object.keys(refinements).map(key => {
           return (
-            <m.li key={[refinement.category, refinement.label].join(":")}>
-              <ChipComponent
-                closeIcon={true}
-                onClick={() => refine(refinement.value)}
-              >
-                {refinement.category && (
-                  <div className="text-f12 fw-700">{refinement.category}:</div>
-                )}
-                <div
-                  className="capitalize"
-                  style={{
-                    marginLeft: 5,
-                    textTransform: "capitalize",
-                    marginRight: 10,
-                  }}
-                >
-                  {refinement.label}
-                </div>
-              </ChipComponent>
-            </m.li>
+            <div
+              style={{
+                display: 'flex',
+                columnGap: '5px',
+                alignItems: 'center',
+              }}
+            >
+              <div className="text-f14 fw-700">{key}:</div>
+
+              {refinements[key].map(refinement => {
+                return (
+                  <ChipComponent
+                    closeIcon={true}
+                    onClick={() => refine(refinement.value)}
+                  >
+                    <div
+                      className="capitalize"
+                      style={{
+                        marginLeft: 5,
+                        textTransform: 'capitalize',
+                        marginRight: 10,
+                      }}
+                    >
+                      {refinement.label}
+                    </div>
+                  </ChipComponent>
+                );
+              })}
+            </div>
           );
         })}
+
         <li
           key="clear"
-          className={classNames("flex items-center", {
-            hidden: refinements.length < 2,
+          className={classNames('flex items-center', {
+            hidden: Object.keys(refinements).length < 2,
           })}
         >
           <ClearRefinements className="text-f12 fw-600">
@@ -100,5 +114,5 @@ function CurrentRefinementsComponent({
 }
 
 export const CurrentRefinements = connectCurrentRefinements<any>(
-  CurrentRefinementsComponent
+  CurrentRefinementsComponent,
 );

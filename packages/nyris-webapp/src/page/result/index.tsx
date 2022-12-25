@@ -18,6 +18,7 @@ import IconEmail from 'common/assets/icons/email_share.svg';
 import IconWeChat from 'common/assets/icons/icon_chat.svg';
 import IconWhatsApp from 'common/assets/icons/icon_whatapps.svg';
 import IconSupport from 'common/assets/icons/support3.svg';
+import { CurrentRefinements } from 'components/current-refinements/current-refinements';
 import DetailItem from 'components/DetailItem';
 import FooterResult from 'components/FooterResult';
 import CustomSearchBox from 'components/input/inputSearch';
@@ -29,7 +30,6 @@ import React, { memo, useEffect, useRef, useState, useCallback } from 'react';
 import {
   Configure,
   connectStateResults,
-  CurrentRefinements,
   HitsPerPage,
   Pagination,
 } from 'react-instantsearch-dom';
@@ -72,7 +72,6 @@ function ResultComponent(props: Props) {
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
-  const [statusSwitchButton] = useState<boolean>(true);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [imageSelection, setImageSelection] = useState(selectedRegion);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
@@ -314,7 +313,7 @@ function ResultComponent(props: Props) {
                   className="wrap-box-refinements"
                   style={{ marginBottom: 10 }}
                 >
-                  <CurrentRefinements statusSwitchButton={statusSwitchButton} />
+                  <CurrentRefinements statusSwitchButton={true} />
                 </Box>
                 {isMobile && settings.preview && requestImage && (
                   <Box className="col-left">
