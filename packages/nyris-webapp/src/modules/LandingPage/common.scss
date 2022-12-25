@@ -1582,7 +1582,8 @@ button {
               left: 10px;
             }
             textarea {
-              padding: 10px 25px;
+              padding: 10px 25px 10px 35px;
+              font-size: 14px;
             }
           }
         }
@@ -1602,7 +1603,8 @@ button {
           justify-content: space-between;
         }
       }
-      .box-preview-image {
+      .box-preview-image,
+      .box-preview-image-mobile {
         .box-image {
           position: relative;
           width: fit-content !important;

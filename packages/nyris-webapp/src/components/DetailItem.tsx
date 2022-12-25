@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Button, Collapse, Grid, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import DefaultCarousel from './carousel/DefaultCarousel';
 import IconSupport from 'common/assets/icons/item_support_icon.svg';
 import IconLike from 'common/assets/icons/icon_like.svg';
 import IconDisLike from 'common/assets/icons/icon_dislike.svg';
@@ -14,6 +13,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useMediaQuery } from 'react-responsive';
 import CloseIcon from '@material-ui/icons/Close';
 import IconSearchImage from 'common/assets/icons/icon_search_image2.svg';
+import {ImagePreviewCarousel} from "./carousel/ImagePreviewCarousel";
 
 interface Props {
   numberResult?: number;
@@ -114,7 +114,7 @@ function DetailItem(props: Props) {
       )}
 
       <Box className="box-carosel">
-        <DefaultCarousel
+        <ImagePreviewCarousel
           imgItem={dataImageCarousel}
           onSearchImage={onSearchImage}
           handlerCloseModal={handlerCloseModal}

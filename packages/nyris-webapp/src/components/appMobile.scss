@@ -107,9 +107,9 @@
     .box-body-mobile-wrap-main {
       position: fixed;
       bottom: 64px;
-      padding-top: 110px;
+      top: 0;
       scroll-padding-top: 110px;
-      height: 100%;
+      height: calc(100% - 63px);
       display: flex;
       width: 100%;
       overflow-y: auto;
@@ -191,7 +191,14 @@
         width: 100%;
         background-color: #fff !important;
         padding: 30px 20px !important;
-        padding-bottom: 0px !important;
+        padding-bottom: 0 !important;
+        padding-top: 0!important;
+        margin-top: 0;
+
+        .box-preview-image{
+          display: none;
+        }
+
         .col-left {
           width: 100%;
           .col-left__bottom {

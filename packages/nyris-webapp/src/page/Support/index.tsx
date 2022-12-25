@@ -24,6 +24,8 @@ interface Props {}
 function SupportPage(props: Props) {
   const [imageUpload, setImageUpload] = useState<any>();
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+  const inputFileRef:any = React.useRef(null);
+  const inputFileSnapRef:any = React.useRef(null);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => {
@@ -31,6 +33,12 @@ function SupportPage(props: Props) {
       setImageUpload(URL.createObjectURL(fs[0]));
     },
   });
+
+    const getImageMobile = (e:any) => {
+
+        setImageUpload(URL.createObjectURL(e.target.files[0]));
+
+    }
 
   return (
     <Box className="wrap-main-support-page" display={"flex"}>
@@ -175,6 +183,7 @@ function SupportPage(props: Props) {
                       <CloseOutlinedIcon />
                     </Button>
                     <img
+                        className="support-img-preview"
                       style={{ height: "100%", width: "100%" }}
                       src={imageUpload}
                       alt={`321`}
@@ -208,8 +217,8 @@ function SupportPage(props: Props) {
                                 <img
                                   src={IconUsers}
                                   alt="icon_user"
-                                  width={12}
-                                  height={12}
+                                  width={17}
+                                  height={17}
                                 />
                               </InputAdornment>
                             ),
@@ -229,8 +238,8 @@ function SupportPage(props: Props) {
                                 <img
                                   src={IconEmail}
                                   alt="icon_phone"
-                                  width={12}
-                                  height={12}
+                                  width={17}
+                                  height={17}
                                 />
                               </InputAdornment>
                             ),
@@ -260,8 +269,8 @@ function SupportPage(props: Props) {
                                 <img
                                   src={IconPhone}
                                   alt="icon_phone"
-                                  width={12}
-                                  height={12}
+                                  width={17}
+                                  height={17}
                                 />
                               </InputAdornment>
                             ),
@@ -281,8 +290,8 @@ function SupportPage(props: Props) {
                                 <img
                                   src={IconCompany}
                                   alt="icon_phone"
-                                  width={12}
-                                  height={12}
+                                  width={17}
+                                  height={17}
                                 />
                               </InputAdornment>
                             ),
@@ -300,8 +309,8 @@ function SupportPage(props: Props) {
                             <img
                               src={IconTextArea}
                               alt="icon_user"
-                              width={12}
-                              height={12}
+                              width={17}
+                              height={17}
                             />
                           </Box>
                           <TextareaAutosize
@@ -321,10 +330,12 @@ function SupportPage(props: Props) {
                     display={"flex"}
                   >
                     <Box className="col-left">
-                      <Button>
+                      <Button onClick={()=>{
+                          inputFileRef.current.click();
+                      }}>
                         <Typography
                           className="text-f14 fw-700"
-                          style={{ fontSize: 14 }}
+                          style={{ fontSize: 14, textTransform:"none"  }}
                         >
                           Choose file
                         </Typography>
@@ -341,14 +352,16 @@ function SupportPage(props: Props) {
                           />
                         </svg>
                       </Button>
+                        <input hidden type="file" ref={inputFileRef} onChange={getImageMobile}/>
                     </Box>
+
                     <Box className="col-right">
-                      <Button>
+                      <Button onClick={()=>{inputFileSnapRef.current.click()}}>
                         <Typography
                           className="text-f14 fw-700"
-                          style={{ fontSize: 14 }}
+                          style={{ fontSize: 14, textTransform:"none" }}
                         >
-                          Snap picture
+                          Snap a picture
                         </Typography>
                         <svg
                           width="16"
@@ -365,9 +378,41 @@ function SupportPage(props: Props) {
                           />
                         </svg>
                       </Button>
+                        <input hidden type="file" ref={inputFileSnapRef} onChange={getImageMobile}/>
+
                     </Box>
-                  </Box>
-                )}
+                  </Box>)}
+
+                  {
+
+                      (isMobile && imageUpload) && (
+                          <Box
+                              className="box-preview-image-mobile"
+                              display={"flex"}
+                              flexWrap={"wrap"}
+                              style={{
+                                  width: 100,
+                                  minHeight: 100,
+                                  position: "relative",
+                                  border: "1px solid",
+                                  marginTop: "10px"
+                              }}
+                          >
+                              <Button
+                                  style={{ position: "absolute", right: 0, top: 0, padding: 0 }}
+                                  onClick={() => setImageUpload(null)}
+                              >
+                                  <CloseOutlinedIcon />
+                              </Button>
+                              <img
+                                  className="support-img-preview"
+                                  style={{ height: "100%", width: "100%" }}
+                                  src={imageUpload}
+                                  alt={`321`}
+                              />
+                          </Box>
+                      )
+                  }
                 <Box display={"flex"} flexDirection={"column"}>
                   <FormControlLabel
                     control={<Checkbox className="text-white" />}
@@ -390,10 +435,11 @@ function SupportPage(props: Props) {
                     <Button
                       className="text-white fw-700 color border-rd-0 btn-submit-support"
                       style={{
-                        padding: "5px 10px",
+                        padding: "8px 12px",
                         backgroundColor: "#3E36DC",
                         width: "100%",
                         borderRadius: 5,
+                          marginBottom: "40px"
                       }}
                     >
                       SEND MESSAGE
