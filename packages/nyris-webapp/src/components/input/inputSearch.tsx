@@ -49,6 +49,13 @@ const SearchBox = (props: any) => {
     }
   }, [query, refine]);
 
+  useEffect(() => {
+    if (imageThumbSearchInput) {
+      setValueInput('');
+      refine('');
+    }
+  }, [imageThumbSearchInput]);
+
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
       if (value) {
@@ -96,15 +103,15 @@ const SearchBox = (props: any) => {
     },
   });
 
-  const onChangeText = (event:any) => {
+  const onChangeText = (event: any) => {
     setValueInput(event.currentTarget.value);
     // debounceSearch(event.currentTarget.value);
     searchOrRedirect(event.currentTarget.value);
-    if(event.currentTarget.value==="") {
+    if (event.currentTarget.value === '') {
       setValueInput('');
       refine('');
     }
-  }
+  };
 
   return (
     <Box className="wrap-input-search">
