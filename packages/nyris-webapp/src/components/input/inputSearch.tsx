@@ -96,6 +96,16 @@ const SearchBox = (props: any) => {
     },
   });
 
+  const onChangeText = (event:any) => {
+    setValueInput(event.currentTarget.value);
+    // debounceSearch(event.currentTarget.value);
+    searchOrRedirect(event.currentTarget.value);
+    if(event.currentTarget.value==="") {
+      setValueInput('');
+      refine('');
+    }
+  }
+
   return (
     <Box className="wrap-input-search">
       <div style={{ padding: 10 }} className="box-input-search d-flex">
@@ -138,11 +148,7 @@ const SearchBox = (props: any) => {
               className="input-search"
               placeholder="Search"
               value={valueInput}
-              onChange={event => {
-                setValueInput(event.currentTarget.value);
-                // debounceSearch(event.currentTarget.value);
-                searchOrRedirect(event.currentTarget.value);
-              }}
+              onChange={onChangeText}
               ref={focusInp}
             />
             {!imageThumbSearchInput && (
