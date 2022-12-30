@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useLayoutEffect} from "react";
 import {
   Box,
   Button,
@@ -8,11 +8,18 @@ import {
 } from "@material-ui/core";
 import BgColor from "common/assets/images/Rectangle.png";
 import { useMediaQuery } from "react-responsive";
+import {useHistory} from "react-router-dom";
 
 interface Props {}
 
 function Profile(props: Props) {
   const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+  const history = useHistory();
+  useLayoutEffect(() => {
+    history.push({
+      pathname: '/',
+    });
+    },[] );
 
   return (
     <Box className="wrap-main-profile">

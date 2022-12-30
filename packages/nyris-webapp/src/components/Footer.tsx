@@ -5,12 +5,12 @@ import {
   MenuItem,
   Select,
   Typography,
-} from "@material-ui/core";
-import React from "react";
-import { Link } from "react-router-dom";
-import { connectPagination } from "react-instantsearch-dom";
-import ArrowLeftOutlinedIcon from "@material-ui/icons/ArrowLeftOutlined";
-import ArrowRightOutlinedIcon from "@material-ui/icons/ArrowRightOutlined";
+} from '@material-ui/core';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { connectPagination } from 'react-instantsearch-dom';
+import ArrowLeftOutlinedIcon from '@material-ui/icons/ArrowLeftOutlined';
+import ArrowRightOutlinedIcon from '@material-ui/icons/ArrowRightOutlined';
 
 function Pagination({ currentRefinement, nbPages, refine, children }: any) {
   return (
@@ -18,11 +18,11 @@ function Pagination({ currentRefinement, nbPages, refine, children }: any) {
       container
       justifyContent="space-between"
       alignItems="center"
-      style={{ height: "100%" }}
+      style={{ height: '100%' }}
     >
       {children}
 
-      <Grid item className="item-notify">
+      {/*hidden_as_required <Grid item className="item-notify">
         <Typography className="text-f12 text-center">
           <span className="fw-600" style={{ color: "#2B2C46" }}>
             Didn’t find what you were looking for?
@@ -33,13 +33,13 @@ function Pagination({ currentRefinement, nbPages, refine, children }: any) {
           </Link>
           .
         </Typography>
-      </Grid>
+      </Grid> */}
       <Grid item className="item-notify-right" style={{ minWidth: 32 }}>
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
           <Box
-            display={"flex"}
-            alignItems={"center"}
-            style={{ borderRight: "1px solid #e9e9ec", paddingRight: 20 }}
+            display={'flex'}
+            alignItems={'center'}
+            style={{ borderRight: '1px solid #e9e9ec', paddingRight: 20 }}
           >
             <Select
               labelId="demo-simple-select-label"
@@ -53,7 +53,7 @@ function Pagination({ currentRefinement, nbPages, refine, children }: any) {
               })}
             </Select>
             <Box>
-              <Typography className="text-f12" style={{ color: "#2B2C46" }}>
+              <Typography className="text-f12" style={{ color: '#2B2C46' }}>
                 of {nbPages} pages
               </Typography>
             </Box>
@@ -61,7 +61,7 @@ function Pagination({ currentRefinement, nbPages, refine, children }: any) {
           <Box>
             <Button
               className="btn-prev"
-              style={{ borderRight: "1px solid #e9e9ec" }}
+              style={{ borderRight: '1px solid #e9e9ec' }}
               onClick={() => {
                 if (1 === currentRefinement) {
                   return;

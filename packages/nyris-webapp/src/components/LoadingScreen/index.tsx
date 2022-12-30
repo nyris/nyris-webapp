@@ -95,7 +95,11 @@ function LoadingScreen({
 
   const renderItem = useMemo(() => {
     if (itemShowDefault.length === 0 && !loadingSearchAlgolia) {
-      return <Box>No products were found matching your search criteria.</Box>;
+      return (
+        <Box style={{ marginTop: '50px' }}>
+          No products were found matching your search criteria.
+        </Box>
+      );
     }
     return itemShowDefault.map((hit: any, i: number) => {
       return (

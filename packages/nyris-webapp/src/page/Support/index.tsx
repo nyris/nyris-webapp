@@ -16,29 +16,35 @@ import IconEmail from "common/assets/icons/icon_email.svg";
 import IconPhone from "common/assets/icons/icon_phone.svg";
 import IconTextArea from "common/assets/icons/icon_textArea.svg";
 import IconUsers from "common/assets/icons/icon_users.svg";
-import React, { useState } from "react";
+import React, {useLayoutEffect, useState} from "react";
 import { useDropzone } from "react-dropzone";
 import { useMediaQuery } from "react-responsive";
+import {useHistory} from "react-router-dom";
 interface Props {}
 
 function SupportPage(props: Props) {
-  const [imageUpload, setImageUpload] = useState<any>();
-  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
-  const inputFileRef:any = React.useRef(null);
-  const inputFileSnapRef:any = React.useRef(null);
+    const [imageUpload, setImageUpload] = useState<any>();
+    const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+    const inputFileRef:any = React.useRef(null);
+    const inputFileSnapRef:any = React.useRef(null);
+    const history = useHistory();
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => {
       console.log("fs", fs);
       setImageUpload(URL.createObjectURL(fs[0]));
     },
-  });
+    });
 
     const getImageMobile = (e:any) => {
-
-        setImageUpload(URL.createObjectURL(e.target.files[0]));
-
+      setImageUpload(URL.createObjectURL(e.target.files[0]));
     }
+
+    useLayoutEffect(() => {
+        history.push({
+            pathname: '/',
+        });
+    },[] );
 
   return (
     <Box className="wrap-main-support-page" display={"flex"}>

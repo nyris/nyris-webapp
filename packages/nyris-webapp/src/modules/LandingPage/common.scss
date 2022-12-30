@@ -958,6 +958,11 @@ button {
     justify-content: space-between;
     // overflow: auto;
     position: relative;
+    @media screen and (max-width: 776px) {
+      padding-top: 50px;
+      padding-bottom: 50px;
+
+    }
     .btn-open-support {
       background: linear-gradient(45deg, #3e36dc 14.84%, #00ff94 85.16%);
       width: 50px;
@@ -1433,10 +1438,13 @@ button {
     }
   }
 }
-
-.box-panigation {
-  .ais-Pagination {
+.ais-Pagination {
+  @media screen and (max-width: 776px) {
+    margin-bottom: 50px;  
   }
+}
+.box-panigation {
+
   .ais-Pagination-list {
     display: flex;
     justify-content: center;
@@ -1801,7 +1809,6 @@ button {
 }
 
 .pagination-result {
-  padding: 10px;
   .ais-Pagination-list {
     flex-wrap: nowrap !important;
     text-align: center;

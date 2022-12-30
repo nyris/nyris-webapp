@@ -62,6 +62,8 @@ function HeaderNewVersion(): JSX.Element {
           </NavLink>
         </Grid>
          */}
+
+          {/*hidden_as_required
         <Grid item className="item-nav">
           <NavLink
             activeClassName="active"
@@ -77,6 +79,8 @@ function HeaderNewVersion(): JSX.Element {
             </span>
           </NavLink>
         </Grid>
+
+
         <Grid item className="item-nav">
           <NavLink
             activeClassName="active"
@@ -91,7 +95,7 @@ function HeaderNewVersion(): JSX.Element {
               <img width={20} height={20} src={`${IconAdmin}`} alt="" />
             </span>
           </NavLink>
-        </Grid>
+        </Grid>*/}
       </Grid>
     </Box>
   );

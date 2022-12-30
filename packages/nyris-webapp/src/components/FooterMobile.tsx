@@ -45,7 +45,7 @@ function FooterMobile(props: Props): JSX.Element {
           />
         </Button>
       </Box>
-      {history.location.pathname !== "/" && (
+     {/* hidden_as_required {history.location.pathname !== "/" && (
         <>
           <Box style={{ padding: 23 }}>
             <NavLink
@@ -83,7 +83,7 @@ function FooterMobile(props: Props): JSX.Element {
             </NavLink>
           </Box>
         </>
-      )}
+      )}*/}
 
       <Box className="box-screenshot-camera">
         <CameraCustom

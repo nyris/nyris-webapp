@@ -371,7 +371,7 @@ function ResultComponent(props: Props) {
                       />
                     )}
                   </Box>
-                  {isMobile && (
+                  {/* {isMobile && (
                     <Box
                       className="box-title_col-left"
                       style={{
@@ -398,7 +398,7 @@ function ResultComponent(props: Props) {
                         </span>
                       </Typography>
                     </Box>
-                  )}
+                  )} */}
                 </Box>
               </Box>
             </>
@@ -412,7 +412,9 @@ function ResultComponent(props: Props) {
                     style={{ padding: '0 20px' }}
                     className="box-change-hit-items"
                   >
-                    Items per page:{' '}
+                    <span style={{ paddingRight: '10px' }}>
+                      Items per page:
+                    </span>
                     <HitsPerPage items={showHits} defaultRefinement={20} />
                   </Box>
                 </FooterResult>

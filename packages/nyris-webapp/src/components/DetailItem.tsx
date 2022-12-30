@@ -199,7 +199,7 @@ function DetailItem(props: Props) {
               <Box
                 style={{
                   padding: '0px 16px',
-                  marginBottom: 25,
+                  // marginBottom: 25,
                   background:
                     'linear-gradient(270deg, #56577C 0%, #2B2C46 100%)',
                   boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
@@ -231,6 +231,8 @@ function DetailItem(props: Props) {
           </Grid>
         </Box>
 
+        {/*
+        hidden_as_required
         <Box className="box-bottom">
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
@@ -289,7 +291,7 @@ function DetailItem(props: Props) {
               </Box>
             </Grid>
           </Grid>
-        </Box>
+        </Box>*/}
       </Box>
     </Box>
   );

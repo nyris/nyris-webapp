@@ -243,6 +243,7 @@ function ItemResult(props: Props) {
                     </Grid>
                 </Box>
 
+                {/*hidden_as_required
                 <Box className="box-bottom" style={{marginBottom: 14}}>
                     <Grid container justifyContent="space-between" alignItems="center">
                         <Grid item>
@@ -307,7 +308,7 @@ function ItemResult(props: Props) {
                             </Box>
                         </Grid>
                     </Grid>
-                </Box>
+                </Box>*/}
             </Box>
         </Box>
     );
