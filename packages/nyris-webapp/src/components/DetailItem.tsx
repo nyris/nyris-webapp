@@ -158,7 +158,7 @@ function DetailItem(props: Props) {
               <Box
                 borderRadius={16}
                 style={{
-                  backgroundColor: '#E4E3FF',
+                  backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
                   width: 'fit-content',
                   padding: '3px 5px',
                   marginTop: 8,

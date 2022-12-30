@@ -166,11 +166,11 @@ function ItemResult(props: Props) {
                 mt={1}
                 mb={1}
                 style={{
-                  background: "#E4E3FF",
-                  borderRadius: "6px",
-                  display: "flex",
-                  width: "fit-content",
-                  padding: "2px 5px",
+                  background: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                  borderRadius: '6px',
+                  display: 'flex',
+                  width: 'fit-content',
+                  padding: '2px 5px',
                 }}
               >
                 <Typography

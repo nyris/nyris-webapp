@@ -61,7 +61,13 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       ) : (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {imageThumbSearchInput && (
-            <div className="box-image-search-thumb-mobile">
+            <div
+              style={{
+                border: `2px solid ${settings.themePage.searchSuite?.secondaryColor}c7`,
+                backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+              }}
+              className="box-image-search-thumb-mobile"
+            >
               <img src={imageThumbSearchInput} alt="img_search" />
               <button
                 onClick={() => {

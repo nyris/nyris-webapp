@@ -1783,14 +1783,12 @@ button {
 .box-image-search-thumb {
   z-index: 11;
   position: relative;
-  border: 2px solid #3e36dcc7;
   height: 100%;
   padding: 0 4px;
   border-radius: 21px;
   justify-content: space-between;
   align-items: center;
   min-width: 70px;
-  background-color: rgb(62 54 220 / 15%);
   img {
     width: 32px;
     height: 32px;
@@ -1830,7 +1828,7 @@ button {
         right: 0;
         width: 16px;
         height: 4px;
-        background-color: #3e36dc;
+        background-color: #161616;
         margin: auto;
         bottom: -11px;
       }

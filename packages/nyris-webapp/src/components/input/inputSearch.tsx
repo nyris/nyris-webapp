@@ -126,7 +126,14 @@ const SearchBox = (props: any) => {
               }
             >
               {imageThumbSearchInput && (
-                <Box className="box-image-search-thumb" display={'flex'}>
+                <Box
+                  style={{
+                    border: `2px solid ${settings.themePage.searchSuite?.secondaryColor}c7`,
+                    backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                  }}
+                  className="box-image-search-thumb"
+                  display={'flex'}
+                >
                   <img src={imageThumbSearchInput} alt="img_search" />
                   <button
                     onClick={() => {
