@@ -70,6 +70,9 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             >
               <img src={imageThumbSearchInput} alt="img_search" />
               <button
+                style={{
+                  backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                }}
                 onClick={() => {
                   if (textSearchInputMobile) {
                     dispatch(setImageSearchInput(''));
@@ -145,7 +148,13 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                           display: 'flex',
                         }}
                       >
-                        <CloseIcon style={{ fontSize: 20, color: '#3e36dc' }} />
+                        <CloseIcon
+                          style={{
+                            fontSize: 20,
+                            color:
+                              settings.themePage.searchSuite?.secondaryColor,
+                          }}
+                        />
                       </button>
                     </Box>
                   )}

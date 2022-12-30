@@ -1001,13 +1001,9 @@ button {
       &.toggle {
         width: 32px;
         padding: 0px;
-        div {
-          // display: none;
-        }
         .box-preview {
           border: 0px;
-          .preview-item {
-          }
+         
         }
         .button-toggle {
           right: -5px;
@@ -1495,12 +1491,6 @@ button {
   margin: auto;
   .col-left {
     width: 50%;
-    // background-color: #322bb0;
-    .col-left__top {
-      // background-color: #3e36dc;
-      // min-height: 170px;
-    }
-
     .col-left__bottom {
       .box-form {
         // max-width: 224px;

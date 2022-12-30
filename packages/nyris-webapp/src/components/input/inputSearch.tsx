@@ -145,7 +145,12 @@ const SearchBox = (props: any) => {
                       refine(valueInput);
                     }}
                   >
-                    <CloseIcon style={{ fontSize: 20, color: '#3e36dc' }} />
+                    <CloseIcon
+                      style={{
+                        fontSize: 20,
+                        color: settings.themePage.searchSuite?.secondaryColor,
+                      }}
+                    />
                   </button>
                 </Box>
               )}
