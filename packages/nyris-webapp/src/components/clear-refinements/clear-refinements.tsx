@@ -4,6 +4,8 @@ import { memo, useCallback } from 'react';
 import isEqual from 'react-fast-compare';
 import type { CurrentRefinementsProvided } from 'react-instantsearch-core';
 import { connectCurrentRefinements } from 'react-instantsearch-dom';
+import { useAppSelector } from 'Store/Store';
+import { AppState } from 'types';
 
 export type ClearRefinementsProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -19,6 +21,7 @@ function ClearRefinementsComponent({
   refine,
 }: ClearRefinementsProps) {
   const handleButtonClick = useCallback(() => refine(items), [refine, items]);
+  const { settings } = useAppSelector<AppState>((state: any) => state);
 
   return (
     <Button
@@ -27,7 +30,7 @@ function ClearRefinementsComponent({
       className={className}
       onClick={handleButtonClick}
       style={{
-        color: '#E31B5D',
+        color: settings.themePage.searchSuite?.secondaryColor,
         fontWeight: 'bold',
         textTransform: 'capitalize',
         padding: 0,

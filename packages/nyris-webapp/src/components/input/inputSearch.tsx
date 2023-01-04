@@ -126,7 +126,14 @@ const SearchBox = (props: any) => {
               }
             >
               {imageThumbSearchInput && (
-                <Box className="box-image-search-thumb" display={'flex'}>
+                <Box
+                  style={{
+                    border: `2px solid ${settings.themePage.searchSuite?.secondaryColor}c7`,
+                    backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                  }}
+                  className="box-image-search-thumb"
+                  display={'flex'}
+                >
                   <img src={imageThumbSearchInput} alt="img_search" />
                   <button
                     onClick={() => {
@@ -138,7 +145,12 @@ const SearchBox = (props: any) => {
                       refine(valueInput);
                     }}
                   >
-                    <CloseIcon style={{ fontSize: 20, color: '#3e36dc' }} />
+                    <CloseIcon
+                      style={{
+                        fontSize: 20,
+                        color: settings.themePage.searchSuite?.secondaryColor,
+                      }}
+                    />
                   </button>
                 </Box>
               )}

@@ -184,7 +184,6 @@ button {
 }
 
 .btn-detail-item {
-  background: linear-gradient(to left, #56577c 10%, #2b2c46 80%) !important;
   background-size: 100% 200% !important;
   background-position: left bottom;
   transition: all 1s ease-out;
@@ -1002,13 +1001,9 @@ button {
       &.toggle {
         width: 32px;
         padding: 0px;
-        div {
-          // display: none;
-        }
         .box-preview {
           border: 0px;
-          .preview-item {
-          }
+         
         }
         .button-toggle {
           right: -5px;
@@ -1017,7 +1012,6 @@ button {
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #1e1f31;
       max-width: 320px;
       .box-preview {
         padding: 30px;
@@ -1497,12 +1491,6 @@ button {
   margin: auto;
   .col-left {
     width: 50%;
-    // background-color: #322bb0;
-    .col-left__top {
-      // background-color: #3e36dc;
-      // min-height: 170px;
-    }
-
     .col-left__bottom {
       .box-form {
         // max-width: 224px;
@@ -1785,14 +1773,12 @@ button {
 .box-image-search-thumb {
   z-index: 11;
   position: relative;
-  border: 2px solid #3e36dcc7;
   height: 100%;
   padding: 0 4px;
   border-radius: 21px;
   justify-content: space-between;
   align-items: center;
   min-width: 70px;
-  background-color: rgb(62 54 220 / 15%);
   img {
     width: 32px;
     height: 32px;
@@ -1832,7 +1818,7 @@ button {
         right: 0;
         width: 16px;
         height: 4px;
-        background-color: #3e36dc;
+        background-color: #161616;
         margin: auto;
         bottom: -11px;
       }

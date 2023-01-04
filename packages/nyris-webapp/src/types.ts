@@ -1,6 +1,6 @@
-import { NyrisAPISettings } from "@nyris/nyris-api";
-import { NyrisAppState } from "Store/Nyris";
-import { SearchState } from "Store/Search";
+import { NyrisAPISettings } from '@nyris/nyris-api';
+import { NyrisAppState } from 'Store/Nyris';
+import { SearchState } from 'Store/Search';
 
 export interface MDSettings {
   customFontFamily?: string;
@@ -36,7 +36,8 @@ export interface AppSettings extends NyrisAPISettings {
   themePage: ThemeChoice;
   algolia?: AlgoliaSettings;
   moreInfoText?: string;
-  refinements?: any
+  refinements?: any;
+  headerText?: string;
 }
 
 export interface DefaultThemeSettings {
@@ -46,6 +47,10 @@ export interface DefaultThemeSettings {
 export interface SearchSuiteSettings {
   active?: boolean;
   moreInfoText: string;
+  appBarLogoUrl: string;
+  appBarLogoUrlAlt: string;
+  primaryColor: string;
+  secondaryColor: string;
 }
 
 export interface ThemeChoice {

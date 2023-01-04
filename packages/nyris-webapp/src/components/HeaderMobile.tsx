@@ -12,6 +12,7 @@ import {
   updateValueTextSearchMobile,
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { AppState } from 'types';
 import AutocompleteBasicMobileComponent from './auto-complete/basic';
 import CustomSearchBox from './input/inputSearch';
 // import $ from "jquery";
@@ -32,6 +33,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
   const [isResetImage, setResetImage] = useState<boolean>(false);
   const history = useHistory();
+  const { settings } = useAppSelector<AppState>((state: any) => state);
 
   useEffect(() => {
     if (history.location?.pathname === '/result') {
@@ -59,9 +61,18 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       ) : (
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {imageThumbSearchInput && (
-            <div className="box-image-search-thumb-mobile">
+            <div
+              style={{
+                border: `2px solid ${settings.themePage.searchSuite?.secondaryColor}c7`,
+                backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+              }}
+              className="box-image-search-thumb-mobile"
+            >
               <img src={imageThumbSearchInput} alt="img_search" />
               <button
+                style={{
+                  backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                }}
                 onClick={() => {
                   if (textSearchInputMobile) {
                     dispatch(setImageSearchInput(''));
@@ -77,7 +88,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 }}
               >
                 <CloseIcon
-                  style={{ fontSize: 20, color: '#3e36dc', fontWeight: 700 }}
+                  style={{
+                    fontSize: 20,
+                    color: settings.themePage.searchSuite?.secondaryColor,
+                    fontWeight: 700,
+                  }}
                 />
               </button>
             </div>
@@ -133,7 +148,13 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                           display: 'flex',
                         }}
                       >
-                        <CloseIcon style={{ fontSize: 20, color: '#3e36dc' }} />
+                        <CloseIcon
+                          style={{
+                            fontSize: 20,
+                            color:
+                              settings.themePage.searchSuite?.secondaryColor,
+                          }}
+                        />
                       </button>
                     </Box>
                   )}

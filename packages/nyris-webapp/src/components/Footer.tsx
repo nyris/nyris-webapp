@@ -11,8 +11,12 @@ import { Link } from 'react-router-dom';
 import { connectPagination } from 'react-instantsearch-dom';
 import ArrowLeftOutlinedIcon from '@material-ui/icons/ArrowLeftOutlined';
 import ArrowRightOutlinedIcon from '@material-ui/icons/ArrowRightOutlined';
+import { useAppSelector } from 'Store/Store';
+import { AppState } from 'types';
 
 function Pagination({ currentRefinement, nbPages, refine, children }: any) {
+  const { settings } = useAppSelector<AppState>((state: any) => state);
+
   return (
     <Grid
       container
@@ -24,11 +28,14 @@ function Pagination({ currentRefinement, nbPages, refine, children }: any) {
 
       {/*hidden_as_required <Grid item className="item-notify">
         <Typography className="text-f12 text-center">
-          <span className="fw-600" style={{ color: "#2B2C46" }}>
+          <span className="fw-600" style={{ color: '#2B2C46' }}>
             Didn’t find what you were looking for?
           </span>
-          <span style={{ color: "#2B2C46" }}>Share your search with our</span>
-          <Link to={"/support"} style={{ color: "#3E36DC" }}>
+          <span style={{ color: '#2B2C46' }}>Share your search with our</span>
+          <Link
+            to={'/support'}
+            style={{ color: settings.themePage.searchSuite?.secondaryColor }}
+          >
             product experts
           </Link>
           .

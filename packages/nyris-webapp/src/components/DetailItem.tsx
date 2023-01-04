@@ -12,8 +12,11 @@ import IconOpenLink from 'common/assets/icons/Union.svg';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useMediaQuery } from 'react-responsive';
 import CloseIcon from '@material-ui/icons/Close';
-import IconSearchImage from 'common/assets/icons/icon_search_image2.svg';
 import {ImagePreviewCarousel} from "./carousel/ImagePreviewCarousel";
+import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
+
+import { AppState } from 'types';
+import { useAppSelector } from 'Store/Store';
 
 interface Props {
   numberResult?: number;
@@ -39,6 +42,7 @@ function DetailItem(props: Props) {
   const { title, sku, main_offer_link, brand } = dataItem;
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+  const { settings } = useAppSelector<AppState>((state: any) => state);
 
   const [urlImage, setUrlImage] = useState<string>('');
   useEffect(() => {
@@ -129,7 +133,9 @@ function DetailItem(props: Props) {
             }
           }}
         >
-          <img src={IconSearchImage} alt="icon_picture" />
+          <IconSearchImage
+            color={settings.themePage.searchSuite?.secondaryColor}
+          />
         </Button>
       </Box>
 
@@ -152,14 +158,18 @@ function DetailItem(props: Props) {
               <Box
                 borderRadius={16}
                 style={{
-                  backgroundColor: '#E4E3FF',
+                  backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
                   width: 'fit-content',
                   padding: '3px 5px',
                   marginTop: 8,
                 }}
               >
                 <Typography
-                  style={{ color: '#3E36DC', fontSize: 10, fontWeight: 700 }}
+                  style={{
+                    color: settings.themePage.searchSuite?.secondaryColor,
+                    fontSize: 10,
+                    fontWeight: 700,
+                  }}
                 >
                   {brand}
                 </Typography>
@@ -180,7 +190,7 @@ function DetailItem(props: Props) {
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    color: '#3E36DC',
+                    color: settings.themePage.searchSuite?.secondaryColor,
                     fontSize: 14,
                     textTransform: 'initial',
                     paddingLeft: 0,
@@ -188,7 +198,9 @@ function DetailItem(props: Props) {
                   onClick={() => setCollapDescription(!collapDescription)}
                 >
                   View full description
-                  <KeyboardArrowDownIcon />
+                  <KeyboardArrowDownIcon
+                    htmlColor={settings.themePage.searchSuite?.secondaryColor}
+                  />
                 </Button>
                 <Collapse in={collapDescription}>
                   <Typography style={{ fontSize: 14 }}>
@@ -199,9 +211,8 @@ function DetailItem(props: Props) {
               <Box
                 style={{
                   padding: '0px 16px',
+                  background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}cc 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
                   // marginBottom: 25,
-                  background:
-                    'linear-gradient(270deg, #56577C 0%, #2B2C46 100%)',
                   boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                   borderRadius: 4,
                   height: 48,

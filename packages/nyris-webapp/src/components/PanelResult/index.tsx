@@ -1,20 +1,21 @@
-import { Box, Button } from "@material-ui/core";
-import { ClearRefinements } from "components/clear-refinements/clear-refinements";
-import { DynamicWidgetsCT } from "components/dynamic-widgets/dynamic-widgets";
-import IconLabel from "components/icon-label/icon-label";
-import { atom, useAtom } from "jotai";
-import { orderBy } from "lodash";
-import React, { useCallback, useEffect, useMemo } from "react";
+import { Box, Button } from '@material-ui/core';
+import { ClearRefinements } from 'components/clear-refinements/clear-refinements';
+import { DynamicWidgetsCT } from 'components/dynamic-widgets/dynamic-widgets';
+import IconLabel from 'components/icon-label/icon-label';
+import { atom, useAtom } from 'jotai';
+import { orderBy } from 'lodash';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import type {
   CurrentRefinementsProvided,
   SearchResults,
-} from "react-instantsearch-core";
-import { RefinementList } from "react-instantsearch-dom";
-import { useMediaQuery } from "react-responsive";
-import { useHistory } from "react-router-dom";
-import { useAppSelector } from "Store/Store";
-import { ExpandablePanelCustom } from "./expandable-panel";
-import { getPanelAttributes, getPanelId } from "./refinements";
+} from 'react-instantsearch-core';
+import { RefinementList } from 'react-instantsearch-dom';
+import { useMediaQuery } from 'react-responsive';
+import { useHistory } from 'react-router-dom';
+import { useAppSelector } from 'Store/Store';
+import { AppState } from 'types';
+import { ExpandablePanelCustom } from './expandable-panel';
+import { getPanelAttributes, getPanelId } from './refinements';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -31,7 +32,7 @@ export type Panels = {
 
 export function useHasRefinements(
   searchResults: SearchResults,
-  attributes: string[] = []
+  attributes: string[] = [],
 ) {
   const facets = useMemo(() => {
     const disjunctiveFacets = searchResults?.disjunctiveFacets || [];
@@ -42,8 +43,8 @@ export function useHasRefinements(
   const hasRefinements = useMemo(() => {
     let found = !attributes.length;
 
-    facets.forEach((facet) => {
-      attributes?.forEach((attribute) => {
+    facets.forEach(facet => {
+      attributes?.forEach(attribute => {
         if (facet.name === attribute && facet.data) {
           found = true;
         }
@@ -59,20 +60,20 @@ export function useHasRefinements(
 function togglePanels(panels: Panels, val: boolean) {
   return Object.keys(panels).reduce(
     (acc, panelKey) => ({ ...acc, [panelKey]: val }),
-    {}
+    {},
   );
 }
 
 export const refinementsPanelsExpandedAtom = atom(
-  (get) =>
-    Boolean(Object.values(get(refinementsPanelsAtom)).find((v) => v === true)),
+  get =>
+    Boolean(Object.values(get(refinementsPanelsAtom)).find(v => v === true)),
   (get, set, update: (prev: boolean) => boolean) => {
     const expanded = update(get(refinementsPanelsExpandedAtom));
     set(
       refinementsPanelsAtom,
-      togglePanels(get(refinementsPanelsAtom), expanded)
+      togglePanels(get(refinementsPanelsAtom), expanded),
     );
-  }
+  },
 );
 
 export const refinementsPanelsAtom = atom<Panels>({});
@@ -80,7 +81,7 @@ export const refinementsPanelsAtom = atom<Panels>({});
 function WidgetPanel({ children, onToggle, panelId, ...props }: any) {
   const onToggleMemoized = useCallback(
     () => onToggle(panelId),
-    [onToggle, panelId]
+    [onToggle, panelId],
   );
 
   return (
@@ -94,25 +95,25 @@ export default function ExpandablePanelComponent({
   dynamicWidgets = true,
   onToogleApplyFillter,
 }: any) {
-  const stateGlobal = useAppSelector((state) => state);
+  const stateGlobal = useAppSelector(state => state);
   const { settings } = stateGlobal;
   const { refinements } = settings;
   const [panels, setPanels] = useAtom(refinementsPanelsAtom);
   const [refinementsPanelsExpanded, setRefinementsPanelsExpanded] = useAtom(
-    refinementsPanelsExpandedAtom
+    refinementsPanelsExpandedAtom,
   );
   const history = useHistory();
-  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   // Set initial panels value
   useEffect(() => {
-    setPanels((prevPanels) => ({
+    setPanels(prevPanels => ({
       ...prevPanels,
       ...refinements.reduce(
         (acc: any, current: any) => ({
           ...acc,
           [getPanelId(current)]: Boolean(current.isExpanded),
         }),
-        {}
+        {},
       ),
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -120,14 +121,14 @@ export default function ExpandablePanelComponent({
 
   const onToggle = useCallback(
     (panelId: string) => {
-      setPanels((prevPanels) => {
+      setPanels(prevPanels => {
         return {
           ...prevPanels,
           [panelId]: !prevPanels[panelId],
         };
       });
     },
-    [setPanels]
+    [setPanels],
   );
 
   const widgets = useMemo(
@@ -139,14 +140,14 @@ export default function ExpandablePanelComponent({
             attribute={refinement.attribute}
             {...refinement.options}
             translations={{
-              noResults: "No results",
-              placeholder: "",
+              noResults: 'No results',
+              placeholder: '',
             }}
-            transformItems={(items: any) => orderBy(items, "label", "asc")}
+            transformItems={(items: any) => orderBy(items, 'label', 'asc')}
           />
         );
       }),
-    [refinements]
+    [refinements],
   );
 
   const widgetsPanels = useMemo(
@@ -171,7 +172,7 @@ export default function ExpandablePanelComponent({
           <></>
         );
       }),
-    [widgets, refinements, onToggle, panels, isMobile]
+    [widgets, refinements, onToggle, panels, isMobile],
   );
 
   const onTogglePanelsClick = useCallback(() => {
@@ -180,8 +181,8 @@ export default function ExpandablePanelComponent({
 
   const handlerApplyfillter = () => {
     onToogleApplyFillter();
-    if (history.location.pathname !== "/result") {
-      history.push("/result");
+    if (history.location.pathname !== '/result') {
+      history.push('/result');
     }
   };
 
@@ -189,16 +190,16 @@ export default function ExpandablePanelComponent({
     <>
       <div className="wrap-main-header-panel">
         {!isMobile && (
-          <Box style={{ borderBottom: "1px solid #E0E0E0" }}>
+          <Box style={{ borderBottom: '1px solid #E0E0E0' }}>
             <Button
               className="text-neutral-darkest"
               onClick={onTogglePanelsClick}
-              style={{ justifyContent: "flex-end" }}
+              style={{ justifyContent: 'flex-end' }}
             >
               <IconLabel
-                icon={refinementsPanelsExpanded ? "remove" : "add"}
+                icon={refinementsPanelsExpanded ? 'remove' : 'add'}
                 label={`${
-                  refinementsPanelsExpanded ? "Collapse" : "Expand"
+                  refinementsPanelsExpanded ? 'Collapse' : 'Expand'
                 } all`}
               />
             </Button>
@@ -221,8 +222,8 @@ export default function ExpandablePanelComponent({
           <Button
             className="text-white"
             style={{
-              width: "100%",
-              backgroundColor: "#3E36DC",
+              width: '100%',
+              backgroundColor: settings.themePage.searchSuite?.secondaryColor,
               fontWeight: 700,
               fontSize: 14,
               borderRadius: 0,

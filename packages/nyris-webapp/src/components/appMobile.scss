@@ -80,22 +80,17 @@
         height: 40px;
         min-width: 76px;
         margin-left: 10px;
-        border: 2px solid rgba(62, 54, 220, 0.7803921569);
         position: relative;
         display: flex;
         border-radius: 4px;
         max-width: 80px !important;
-        // margin-right: ;
         button {
           display: flex;
           justify-content: center;
           align-items: center;
           height: 100%;
           min-width: 36px !important;
-          background-color: #e4e3ff;
           border: 0px;
-          svg {
-          }
         }
         img {
           width: 100%;

@@ -272,7 +272,13 @@ function ResultComponent(props: Props) {
                     </Button>
                   </Box>
                   {settings.preview && requestImage && (
-                    <Box className="col-left">
+                    <Box
+                      className="col-left"
+                      style={{
+                        backgroundColor:
+                          settings?.themePage?.searchSuite?.primaryColor,
+                      }}
+                    >
                       <Box className="box-preview">
                         <Box className="preview-item">
                           <Preview
@@ -316,7 +322,13 @@ function ResultComponent(props: Props) {
                   <CurrentRefinements statusSwitchButton={true} />
                 </Box>
                 {isMobile && settings.preview && requestImage && (
-                  <Box className="col-left">
+                  <Box
+                    style={{
+                      backgroundColor:
+                        settings?.themePage?.searchSuite?.primaryColor,
+                    }}
+                    className="col-left"
+                  >
                     <Box className="box-preview">
                       {requestImage && (
                         <Box className="preview-item">
