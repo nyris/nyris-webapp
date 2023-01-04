@@ -67,7 +67,7 @@ function ResultComponent(props: Props) {
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [numberResult, setNumberResult] = useState<number>(0);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
-  const { results, requestImage, regions, selectedRegion } = search;
+  const { results, requestImage, regions, selectedRegion, keyFilter } = search;
   const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
@@ -117,7 +117,18 @@ function ResultComponent(props: Props) {
 
   const findImageByApiNyris = useCallback(
     async (canvas: any, r: RectCoords) => {
-      return findByImage(canvas, settings, r)
+      const preFilter = [
+        {
+          key: settings.filterType,
+          values: [`${keyFilter}`],
+        },
+      ];
+      return findByImage({
+        image: canvas,
+        settings,
+        region: r,
+        filters: keyFilter ? preFilter : undefined,
+      })
         .then(res => {
           dispatch(updateStatusLoading(false));
           return {
@@ -179,7 +190,18 @@ function ResultComponent(props: Props) {
       dispatch(setRegions(res.regions));
       dispatch(setSelectedRegion(searchRegion));
     }
-    findByImage(image, settings, searchRegion).then(res => {
+    const preFilter = [
+      {
+        key: settings.filterType,
+        values: [`${keyFilter}`],
+      },
+    ];
+    findByImage({
+      image,
+      settings,
+      region: searchRegion,
+      filters: preFilter,
+    }).then(res => {
       dispatch(setSearchResults(res));
       dispatch(showFeedback());
       dispatch(updateStatusLoading(false));

@@ -51,7 +51,7 @@ function AppMobile(props: Props): JSX.Element {
       searchRegion = res.selectedRegion;
       dispatch(setSelectedRegion(searchRegion));
     }
-    findByImage(image, settings, searchRegion)
+    findByImage({ image, settings, region: searchRegion })
       .then(res => {
         dispatch(setSearchResults(res));
         dispatch(updateStatusLoading(false));

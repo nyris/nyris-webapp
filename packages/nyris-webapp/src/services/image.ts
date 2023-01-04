@@ -2,14 +2,17 @@ import NyrisAPI, {
   NyrisAPISettings,
   RectCoords,
   selectFirstCenteredRegion,
-  urlOrBlobToCanvas
-} from "@nyris/nyris-api";
-import { isEqual } from "lodash";
-
+  urlOrBlobToCanvas,
+} from '@nyris/nyris-api';
+import { isEqual } from 'lodash';
+export interface Filter {
+  key?: string;
+  values: string[];
+}
 export const defaultRect = { x1: 0, x2: 1, y1: 0, y2: 1 };
 
 export const createImage = async (
-  fileOrUrl: File | string | HTMLCanvasElement
+  fileOrUrl: File | string | HTMLCanvasElement,
 ) => {
   const image =
     fileOrUrl instanceof HTMLCanvasElement
@@ -20,7 +23,7 @@ export const createImage = async (
 
 export const findRegions = async (
   image: HTMLCanvasElement,
-  settings: NyrisAPISettings
+  settings: NyrisAPISettings,
 ) => {
   const nyrisApi = new NyrisAPI(settings);
   let regions = await nyrisApi.findRegions(image);
@@ -33,17 +36,23 @@ export const findRegions = async (
   };
 };
 
-export const findByImage = (
-  image: HTMLCanvasElement,
-  settings: NyrisAPISettings,
-  region?: RectCoords
-) => {
+export const findByImage = ({
+  image,
+  settings,
+  region,
+  filters,
+}: {
+  image: HTMLCanvasElement;
+  settings: NyrisAPISettings;
+  region?: RectCoords;
+  filters?: Filter[];
+}) => {
   const nyrisApi = new NyrisAPI(settings);
   let options = {};
   if (region) {
     options = { cropRect: region };
   }
-  return nyrisApi.findByImage(image, options);
+  return nyrisApi.findByImage(image, options, filters);
 };
 
 export const findByCadFile = (file: File, settings: NyrisAPISettings) => {

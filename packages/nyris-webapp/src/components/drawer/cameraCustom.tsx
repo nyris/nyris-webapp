@@ -57,10 +57,12 @@ function CameraCustom(props: Props) {
     dispatch(setRequestImage(imageConvert));
     dispatch(setImageSearchInput(image));
     dispatch(onToggleModalItemDetail(false));
-    findByImage(imageConvert, settings, searchRegion).then((res: any) => {
-      dispatch(setSearchResults(res));
-      return dispatch(showFeedback());
-    });
+    findByImage({ image: imageConvert, settings, region: searchRegion }).then(
+      (res: any) => {
+        dispatch(setSearchResults(res));
+        return dispatch(showFeedback());
+      },
+    );
     setTimeout(() => {
       dispatch(updateStatusLoading(false));
       handlerCloseModal();
@@ -83,7 +85,7 @@ function CameraCustom(props: Props) {
       dispatch(setRequestImage(image));
       // TODO support regions
       dispatch(updateStatusLoading(true));
-      return findByImage(image, settings)
+      return findByImage({ image, settings })
         .then((res: any) => {
           res?.results.map((item: any) => {
             filters.push({
