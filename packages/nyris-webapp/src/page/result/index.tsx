@@ -208,7 +208,6 @@ function ResultComponent(props: Props) {
       return;
     });
   };
-
   const nonEmptyFilter: any[] = !requestImage
     ? []
     : ['sku:DOES_NOT_EXIST<score=1>'];
@@ -218,7 +217,13 @@ function ResultComponent(props: Props) {
         .reverse()
         .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
     : '';
-  const filtersString = [...nonEmptyFilter, ...filterSkus].join(' OR ');
+  const filterSkusString = [...nonEmptyFilter, ...filterSkus].join(' OR ');
+  const filterString = keyFilter
+    ? filterSkusString
+      ? `(${filterSkusString}) AND Maschinentyp:'${keyFilter}'`
+      : `Maschinentyp:'${keyFilter}'`
+    : filterSkusString;
+
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
       dispatch(selectionChanged(r));
@@ -253,7 +258,7 @@ function ResultComponent(props: Props) {
           />
         </DefaultModal>
 
-        <Configure filters={filtersString}></Configure>
+        <Configure filters={filterString}></Configure>
         <Box className="box-wrap-result-component">
           {!isMobile && (
             <div className="box-search">

@@ -217,13 +217,6 @@ const SearchBox = (props: any) => {
               value={valueInput}
               onChange={onChangeText}
               ref={focusInp}
-              disabled={
-                !!(
-                  settings.preFilterOption &&
-                  keyFilter &&
-                  !imageThumbSearchInput
-                )
-              }
             />
           </Box>
 
@@ -313,11 +306,7 @@ const SearchBox = (props: any) => {
           )}
         </form>
       </div>
-      {!!(settings.preFilterOption && keyFilter && !imageThumbSearchInput) && (
-        <Typography style={{ fontSize: 11, textAlign: 'center', marginTop: 5 }}>
-          Upload image to search with pre-filtering.
-        </Typography>
-      )}
+
       {settings.preFilterOption && (
         <DefaultModal
           openModal={isOpenModalFilterDesktop}
