@@ -42,12 +42,16 @@ function LoadingScreen({
   const setListHitDefault = (hits: any) => {
     let newArrayShowGroup: any = [];
     let newArrayShowItem: any = [];
+
     const groupHits = hits.filter(
-      (hit: { group_id: string }) => hit.group_id !== '',
+      (hit: { group_id: string }) => hit.group_id && hit.group_id !== '',
     );
     const groups = groupBy(groupHits, 'group_id');
     setHitGroups(groups);
     newArrayShowGroup = Object.values(groups);
+    if (newArrayShowGroup.length === 0) {
+      return hits;
+    }
     newArrayShowGroup.forEach((item: any) => {
       let payload: any;
       if (item.length >= 2) {
