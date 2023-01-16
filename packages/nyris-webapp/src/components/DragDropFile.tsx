@@ -9,6 +9,7 @@ import {
   setRequestImage,
   setImageSearchInput,
   updateStatusLoading,
+  loadingActionResults,
 } from 'Store/Search';
 import { showFeedback } from 'Store/Nyris';
 import { useHistory } from 'react-router-dom';
@@ -34,6 +35,7 @@ function DragDropFile(props: Props) {
     onDrop: async (fs: File[]) => {
       history.push('/result');
       dispatch(updateStatusLoading(true));
+      dispatch(loadingActionResults());
       onChangeLoading(true);
       let payload: any;
       let filters: any[] = [];

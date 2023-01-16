@@ -16,6 +16,7 @@ import {
   setRequestImage,
   setSearchResults,
   updateStatusLoading,
+  loadingActionResults,
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 
@@ -52,6 +53,8 @@ function CameraCustom(props: Props) {
 
   const handlerFindImage = async (image: any) => {
     dispatch(updateStatusLoading(true));
+    dispatch(loadingActionResults());
+
     let searchRegion: RectCoords | undefined = undefined;
     let imageConvert = await createImage(image);
     dispatch(setRequestImage(imageConvert));

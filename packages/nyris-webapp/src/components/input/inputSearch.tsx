@@ -20,6 +20,7 @@ import {
   setSearchResults,
   updateStatusLoading,
   setUpdateKeyFilterDesktop,
+  loadingActionResults,
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -30,7 +31,7 @@ const SearchBox = (props: any) => {
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-  const { imageThumbSearchInput, valueTextSearch, keyFilter } = search;
+  const { imageThumbSearchInput, keyFilter } = search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -78,6 +79,7 @@ const SearchBox = (props: any) => {
   const { getInputProps } = useDropzone({
     onDrop: async (fs: File[]) => {
       dispatch(updateStatusLoading(true));
+      dispatch(loadingActionResults());
       if (history.location.pathname !== '/result') {
         history.push('/result');
       }

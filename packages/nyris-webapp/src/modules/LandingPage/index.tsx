@@ -115,6 +115,7 @@ const LandingPageApp = () => {
     debounce(value => {
       dispatch(selectionChanged(value));
       feedbackRegionEpic(searchState, value);
+      dispatch(loadingActionResults());
       findByImage({ image: requestImage!!.canvas, settings, region: value })
         .then(res => {
           dispatch(searchFileImageNonRegion(res));

@@ -239,6 +239,7 @@ export const searchSlice = createSlice({
       const { results } = payload;
       return {
         ...state,
+        fetchingResults: false,
         results,
       };
     },

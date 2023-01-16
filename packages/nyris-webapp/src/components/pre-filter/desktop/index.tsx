@@ -91,8 +91,6 @@ function FilterComponent(props: Props) {
     handleClose();
   };
 
-  console.log('resultFilter', Object.keys(resultFilter).length);
-
   return (
     <Box
       className="box-child-component-filter-desktop"

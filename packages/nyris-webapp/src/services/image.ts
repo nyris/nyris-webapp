@@ -49,6 +49,8 @@ export const findByImage = ({
 }) => {
   const nyrisApi = new NyrisAPI(settings);
   let options = {};
+  console.log({ filters });
+
   if (region) {
     options = { cropRect: region };
   }

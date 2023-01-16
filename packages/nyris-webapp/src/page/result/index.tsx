@@ -25,8 +25,16 @@ import CustomSearchBox from 'components/input/inputSearch';
 import LoadingScreenCustom from 'components/LoadingScreen';
 import DefaultModal from 'components/modal/DefaultModal';
 import ExpandablePanelComponent from 'components/PanelResult';
-import { debounce } from 'lodash';
-import React, { memo, useEffect, useRef, useState, useCallback } from 'react';
+import { useQuery } from 'hooks/useQuery';
+import { debounce, isEmpty } from 'lodash';
+import React, {
+  memo,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   Configure,
   connectStateResults,
@@ -63,11 +71,19 @@ function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector((state: any) => state);
+  const query = useQuery();
   const { search, settings } = stateGlobal;
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [numberResult, setNumberResult] = useState<number>(0);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
-  const { results, requestImage, regions, selectedRegion, keyFilter } = search;
+  const {
+    results,
+    requestImage,
+    regions,
+    selectedRegion,
+    keyFilter,
+    fetchingResults,
+  } = search;
   const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
@@ -75,6 +91,7 @@ function ResultComponent(props: Props) {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [imageSelection, setImageSelection] = useState(selectedRegion);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
+  const [filterString, setFilterString] = useState<string>();
 
   useEffect(() => {
     if (results?.length === 0) {
@@ -116,13 +133,14 @@ function ResultComponent(props: Props) {
   };
 
   const findImageByApiNyris = useCallback(
-    async (canvas: any, r: RectCoords) => {
+    async (canvas: any, r?: RectCoords) => {
       const preFilter = [
         {
           key: settings.filterType,
           values: [`${keyFilter}`],
         },
       ];
+      dispatch(loadingActionResults());
       return findByImage({
         image: canvas,
         settings,
@@ -140,7 +158,7 @@ function ResultComponent(props: Props) {
           console.log('error call api change selection find image', e);
         });
     },
-    [settings, dispatch],
+    [settings, dispatch, keyFilter],
   );
 
   // TODO: Search offers for image:
@@ -200,7 +218,7 @@ function ResultComponent(props: Props) {
       image,
       settings,
       region: searchRegion,
-      filters: preFilter,
+      filters: keyFilter ? preFilter : undefined,
     }).then(res => {
       dispatch(setSearchResults(res));
       dispatch(showFeedback());
@@ -218,11 +236,39 @@ function ResultComponent(props: Props) {
         .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
     : '';
   const filterSkusString = [...nonEmptyFilter, ...filterSkus].join(' OR ');
-  const filterString = keyFilter
-    ? filterSkusString
-      ? `(${filterSkusString}) AND Maschinentyp:'${keyFilter}'`
-      : `Maschinentyp:'${keyFilter}'`
-    : filterSkusString;
+
+  useEffect(() => {
+    const searchQuery = query.get('query') || '';
+    if (requestImage || isEmpty(searchQuery)) return;
+
+    const filter = keyFilter ? `Maschinentyp:'${keyFilter}'` : '';
+    setFilterString(filter);
+  }, [keyFilter, requestImage]);
+
+  useEffect(() => {
+    if (!requestImage) {
+      return;
+    }
+    dispatch(updateStatusLoading(true));
+    const { canvas }: any = requestImage;
+    findImageByApiNyris(canvas).then((res: any) => {
+      // setPreFilter(keyFilter);
+      dispatch(updateResultChangePosition(res));
+    });
+    dispatch(showFeedback());
+
+    return () => {};
+  }, [keyFilter]);
+
+  useEffect(() => {
+    if (!requestImage) return;
+    const filter = keyFilter
+      ? filterSkusString
+        ? `(${filterSkusString}) AND Maschinentyp:'${keyFilter}'`
+        : `Maschinentyp:'${keyFilter}'`
+      : filterSkusString;
+    setFilterString(filter);
+  }, [filterSkusString]);
 
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
