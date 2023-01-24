@@ -14,6 +14,8 @@ interface Props {
   setLoading?: any;
   sendFeedBackAction: any;
   moreInfoText: any;
+  requestImage?: any;
+  searchQuery?: string;
 }
 
 function LoadingScreen({
@@ -23,6 +25,8 @@ function LoadingScreen({
   getUrlToCanvasFile,
   sendFeedBackAction,
   moreInfoText,
+  searchQuery,
+  requestImage,
 }: any): JSX.Element {
   const { search } = useAppSelector<AppState>((state: any) => state);
   const { loadingSearchAlgolia } = search;
@@ -98,6 +102,13 @@ function LoadingScreen({
   };
 
   const renderItem = useMemo(() => {
+    if (!requestImage && !search.valueTextSearch.query) {
+      return (
+        <Box style={{ marginTop: '50px' }}>
+          Please upload an image or enter a keyword to search.
+        </Box>
+      );
+    }
     if (itemShowDefault.length === 0 && !loadingSearchAlgolia) {
       return (
         <Box style={{ marginTop: '50px' }}>
@@ -136,7 +147,7 @@ function LoadingScreen({
       );
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemShowDefault]);
+  }, [itemShowDefault, searchQuery, requestImage]);
 
   return <>{renderItem}</>;
 }

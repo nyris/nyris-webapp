@@ -38,6 +38,7 @@ export interface AppSettings extends NyrisAPISettings {
   moreInfoText?: string;
   refinements?: any;
   preFilterOption?: boolean;
+  postFilterOption?: boolean;
   filterType?: string;
   headerText?: string;
 }

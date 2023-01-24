@@ -186,7 +186,7 @@ const SearchBox = (props: any) => {
               </Box>
             )}
 
-            {keyFilter && (
+            {keyFilter && !isMobile && (
               <Box
                 className="box-key-filter"
                 style={{ order: 0, marginRight: 5 }}

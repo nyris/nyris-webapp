@@ -1939,6 +1939,9 @@ button {
     width: 70%;
     height: 80%;
     margin: auto;
+    &.isMobile {
+      width: 100%;
+    }
     .box-child-component-filter-desktop {
       background-color: #fff;
       width: 100%;

@@ -6,6 +6,7 @@ import { getFilters, searchFilters } from 'services/filter';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { setUpdateKeyFilterDesktop } from 'Store/Search';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import { useMediaQuery } from 'react-responsive';
 interface Props {
   handleClose?: any;
   // onChangeKeyFilter?: any;
@@ -15,30 +16,24 @@ function FilterComponent(props: Props) {
   const { handleClose } = props;
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector(state => state);
-  const { settings } = stateGlobal;
+  const { settings, search } = stateGlobal;
   const [resultFilter, setResultFilter] = useState<any>([]);
-  const [valueSearch, setValueSearch] = useState<string>('');
   const [itemChoose, setItemChoose] = useState<string>('');
   const [keyFilter, setKeyFilter] = useState<string | null>('');
   const [isLoading, setLoading] = useState<boolean>(false);
   const [columns, setColumns] = useState<number>(0);
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   useEffect(() => {
     setLoading(true);
     getDataFilterDesktop();
   }, []);
 
-  useEffect(() => {
-    if (!valueSearch) {
-      getDataFilterDesktop();
-    }
-    handerFilterSearch(valueSearch);
-  }, [valueSearch]);
-
   const getDataFilterDesktop = async () => {
     const dataResultFilter = getFilters(1000, settings)
       .then(res => {
-        const arrResult = res[0].values;
+        const arrResult =
+          res.find(value => value.key === settings.filterType)?.values || [];
         const newResult = arrResult.sort().reduce((a: any, c: any) => {
           let k = c[0].toLocaleUpperCase();
           if (a[k]) a[k].push(c);
@@ -65,9 +60,12 @@ function FilterComponent(props: Props) {
     setKeyFilter(value);
   };
 
-  const handerFilterSearch = async (value: any) => {
-    if (!value) return;
-    const data = await searchFilters('machineType', value, settings)
+  const filterSearchHandler = async (value: any) => {
+    if (!value) {
+      getDataFilterDesktop();
+      return;
+    }
+    const data = await searchFilters(settings.filterType, value, settings)
       .then(res => {
         // console.log("res", res);
         const newResult = res.sort().reduce((a: any, c: any) => {
@@ -81,7 +79,7 @@ function FilterComponent(props: Props) {
         return;
       })
       .catch((e: any) => {
-        console.log('err handerFilterSearch', e);
+        console.log('err filterSearchHandler', e);
       });
     return data;
   };
@@ -96,9 +94,18 @@ function FilterComponent(props: Props) {
       className="box-child-component-filter-desktop"
       display={'flex'}
       flexDirection={'column'}
+      style={{ position: 'relative' }}
     >
+      {isMobile && (
+        <Typography
+          style={{ color: '#000', fontSize: '35px', fontWeight: 700 }}
+        >
+          Select a model
+        </Typography>
+      )}
       <Box
         className="box-top"
+        style={isMobile ? { padding: 0 } : undefined}
         display={'flex'}
         justifyContent={'space-between'}
         alignItems={'center'}
@@ -107,8 +114,9 @@ function FilterComponent(props: Props) {
           className="box-input-search-filter"
           display={'flex'}
           justifyItems={'center'}
+          style={isMobile ? { width: '100%' } : undefined}
         >
-          {!keyFilter && (
+          {(!keyFilter || isMobile) && (
             <Box
               className="icon-search"
               style={{ marginRight: 11 }}
@@ -116,11 +124,17 @@ function FilterComponent(props: Props) {
               justifyContent={'center'}
               alignItems={'center'}
             >
-              <img src={IconSearch} alt="" width={18} height={18} />
+              <img
+                style={{ maxWidth: 'fit-content' }}
+                src={IconSearch}
+                alt=""
+                width={18}
+                height={18}
+              />
             </Box>
           )}
 
-          {keyFilter && (
+          {keyFilter && !isMobile && (
             <Box display={'flex'} className="box-keyFilter">
               <Typography className="keyFilter">{keyFilter}</Typography>
               <Button style={{ padding: 0 }} onClick={() => setKeyFilter('')}>
@@ -132,22 +146,39 @@ function FilterComponent(props: Props) {
           <input
             className="input-search-filter"
             placeholder="Search a machine"
-            style={{ minWidth: 512 }}
-            value={valueSearch}
+            style={{ minWidth: isMobile ? 'auto' : 512 }}
             onChange={(e: any) => {
-              setValueSearch(e.target.value);
+              filterSearchHandler(e.target.value);
             }}
           />
         </Box>
-        <Button onClick={handleClose}>
-          <CloseIcon />
-        </Button>
+        {!isMobile && (
+          <Button onClick={handleClose}>
+            <CloseIcon />
+          </Button>
+        )}
+      </Box>
+      <Box style={{ margin: '10px 16px' }}>
+        {keyFilter && isMobile && (
+          <Box
+            display={'flex'}
+            className="box-keyFilter"
+            style={{ display: 'inline-flex' }}
+          >
+            <Typography className="keyFilter">{keyFilter}</Typography>
+            <Button style={{ padding: 0 }} onClick={() => setKeyFilter('')}>
+              <CloseIcon style={{ fontSize: 12, color: '#2B2C46' }} />
+            </Button>
+          </Box>
+        )}
       </Box>
       <Box
         className="box-bottom"
         height={'100%'}
         style={
-          columns <= 4
+          isMobile
+            ? { columnCount: 1, marginBottom: itemChoose ? '50px' : '0px' }
+            : columns <= 4
             ? { columnCount: columns, height: '100%' }
             : { columnCount: 4 }
         }
@@ -194,10 +225,51 @@ function FilterComponent(props: Props) {
 
         {!resultFilter && !isLoading && <Typography>No result</Typography>}
       </Box>
-      {itemChoose && (
+      {itemChoose && !isMobile && (
         <Box
           className="footer"
           style={{ height: 64, marginTop: 'auto' }}
+          display={'flex'}
+        >
+          <Button
+            className="button-left"
+            style={{
+              width: '50%',
+              backgroundColor: '#1E1F31',
+              color: '#fff',
+              borderRadius: 0,
+              justifyContent: 'flex-start',
+            }}
+            onClick={() => handleClose()}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="button-right"
+            style={{
+              width: '50%',
+              backgroundColor: '#3E36DC',
+              color: '#fff',
+              borderRadius: 0,
+              justifyContent: 'flex-start',
+            }}
+            onClick={() => onHandlerSubmitData()}
+          >
+            Apply
+          </Button>
+        </Box>
+      )}
+      {itemChoose && isMobile && (
+        <Box
+          className="footer"
+          style={{
+            height: 64,
+            marginTop: 'auto',
+            position: 'fixed',
+            bottom: '0px',
+            left: '0px',
+            width: '100vw',
+          }}
           display={'flex'}
         >
           <Button

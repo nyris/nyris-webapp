@@ -12,7 +12,7 @@ import IconOpenLink from 'common/assets/icons/Union.svg';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useMediaQuery } from 'react-responsive';
 import CloseIcon from '@material-ui/icons/Close';
-import {ImagePreviewCarousel} from "./carousel/ImagePreviewCarousel";
+import { ImagePreviewCarousel } from './carousel/ImagePreviewCarousel';
 import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
 
 import { AppState } from 'types';
@@ -184,30 +184,33 @@ function DetailItem(props: Props) {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Box className="w-100">
-                <Button
-                  className="w-100"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    color: settings.themePage.searchSuite?.secondaryColor,
-                    fontSize: 14,
-                    textTransform: 'initial',
-                    paddingLeft: 0,
-                  }}
-                  onClick={() => setCollapDescription(!collapDescription)}
-                >
-                  View full description
-                  <KeyboardArrowDownIcon
-                    htmlColor={settings.themePage.searchSuite?.secondaryColor}
-                  />
-                </Button>
-                <Collapse in={collapDescription}>
-                  <Typography style={{ fontSize: 14 }}>
-                    {dataItem?.keyword}
-                  </Typography>
-                </Collapse>
-              </Box>
+              {dataItem?.keyword && (
+                <Box className="w-100">
+                  <Button
+                    className="w-100"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      color: settings.themePage.searchSuite?.secondaryColor,
+                      fontSize: 14,
+                      textTransform: 'initial',
+                      paddingLeft: 0,
+                    }}
+                    onClick={() => setCollapDescription(!collapDescription)}
+                  >
+                    View full description
+                    <KeyboardArrowDownIcon
+                      htmlColor={settings.themePage.searchSuite?.secondaryColor}
+                    />
+                  </Button>
+                  <Collapse in={collapDescription}>
+                    <Typography style={{ fontSize: 14 }}>
+                      {dataItem?.keyword}
+                    </Typography>
+                  </Collapse>
+                </Box>
+              )}
+
               <Box
                 style={{
                   padding: '0px 16px',

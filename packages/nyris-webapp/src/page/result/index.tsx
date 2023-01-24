@@ -72,6 +72,7 @@ function ResultComponent(props: Props) {
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector((state: any) => state);
   const query = useQuery();
+  const searchQuery = query.get('query') || '';
   const { search, settings } = stateGlobal;
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [numberResult, setNumberResult] = useState<number>(0);
@@ -104,6 +105,7 @@ function ResultComponent(props: Props) {
   useEffect(() => {
     if (requestImage) {
       executeScroll();
+      setImageSelection(null);
     }
   }, [requestImage]);
 
@@ -238,10 +240,9 @@ function ResultComponent(props: Props) {
   const filterSkusString = [...nonEmptyFilter, ...filterSkus].join(' OR ');
 
   useEffect(() => {
-    const searchQuery = query.get('query') || '';
     if (requestImage || isEmpty(searchQuery)) return;
 
-    const filter = keyFilter ? `Maschinentyp:'${keyFilter}'` : '';
+    const filter = keyFilter ? `keywords:'${keyFilter}'` : '';
     setFilterString(filter);
   }, [keyFilter, requestImage]);
 
@@ -264,8 +265,8 @@ function ResultComponent(props: Props) {
     if (!requestImage) return;
     const filter = keyFilter
       ? filterSkusString
-        ? `(${filterSkusString}) AND Maschinentyp:'${keyFilter}'`
-        : `Maschinentyp:'${keyFilter}'`
+        ? `(${filterSkusString}) AND keywords:'${keyFilter}'`
+        : `keywords:'${keyFilter}'`
       : filterSkusString;
     setFilterString(filter);
   }, [filterSkusString]);
@@ -319,74 +320,84 @@ function ResultComponent(props: Props) {
                 </Link>
               </Box>
               {!isMobile && (
-                <Box
-                  className={`wrap-main-col-left ${
-                    toggleColLeft ? 'toggle' : ''
-                  }`}
-                >
-                  <Box className="box-toggle-coloumn">
-                    <Button
-                      style={
-                        requestImage && !toggleColLeft
-                          ? { color: '#fff' }
-                          : { color: '#55566b' }
-                      }
-                      onClick={() => {
-                        setToggleColLeft(!toggleColLeft);
-                      }}
-                    >
-                      {toggleColLeft ? (
-                        <KeyboardArrowRightOutlinedIcon
-                          style={{ fontSize: 30 }}
-                        />
-                      ) : (
-                        <ArrowBackIosOutlinedIcon style={{ fontSize: 20 }} />
-                      )}
-                    </Button>
-                  </Box>
-                  {settings.preview && requestImage && (
+                <>
+                  {((!settings.postFilterOption && requestImage) ||
+                    settings.postFilterOption) && (
                     <Box
-                      className="col-left"
-                      style={{
-                        backgroundColor:
-                          settings?.themePage?.searchSuite?.primaryColor,
-                      }}
+                      className={`wrap-main-col-left ${
+                        toggleColLeft ? 'toggle' : ''
+                      }`}
                     >
-                      <Box className="box-preview">
-                        <Box className="preview-item">
-                          <Preview
-                            key={requestImage?.id}
-                            onSelectionChange={(r: RectCoords) => {
-                              setImageSelection(r);
-                              debouncedOnImageSelectionChange(r);
-                            }}
-                            image={requestImage?.canvas}
-                            selection={imageSelection || defaultSelection}
-                            regions={regions}
-                            maxWidth={320}
-                            maxHeight={320}
-                            dotColor="#FBD914"
-                          />
+                      <Box className="box-toggle-coloumn">
+                        <Button
+                          style={
+                            requestImage && !toggleColLeft
+                              ? { color: '#fff' }
+                              : { color: '#55566b' }
+                          }
+                          onClick={() => {
+                            setToggleColLeft(!toggleColLeft);
+                          }}
+                        >
+                          {toggleColLeft ? (
+                            <KeyboardArrowRightOutlinedIcon
+                              style={{ fontSize: 30 }}
+                            />
+                          ) : (
+                            <ArrowBackIosOutlinedIcon
+                              style={{ fontSize: 20 }}
+                            />
+                          )}
+                        </Button>
+                      </Box>
+                      {settings.preview && requestImage && (
+                        <Box
+                          className="col-left"
+                          style={{
+                            backgroundColor:
+                              settings?.themePage?.searchSuite?.primaryColor,
+                          }}
+                        >
+                          <Box className="box-preview">
+                            <Box className="preview-item">
+                              <Preview
+                                key={requestImage?.id}
+                                onSelectionChange={(r: RectCoords) => {
+                                  setImageSelection(r);
+                                  debouncedOnImageSelectionChange(r);
+                                }}
+                                image={requestImage?.canvas}
+                                selection={imageSelection || defaultSelection}
+                                regions={regions}
+                                maxWidth={320}
+                                maxHeight={320}
+                                dotColor="#FBD914"
+                              />
+                            </Box>
+                          </Box>
+                          <Box className="box-title_col-left">
+                            <Typography style={{ fontSize: 11, color: '#fff' }}>
+                              Adjust the selection frame for better results.
+                            </Typography>
+                          </Box>
                         </Box>
-                      </Box>
-                      <Box className="box-title_col-left">
-                        <Typography style={{ fontSize: 11, color: '#fff' }}>
-                          Adjust the selection frame for better results.
-                        </Typography>
-                      </Box>
+                      )}
+                      {/* TODO: Filter list Choose */}
+                      {settings.postFilterOption && (
+                        <Box className="col-left__bottom">
+                          <ExpandablePanelComponent />
+                        </Box>
+                      )}
                     </Box>
                   )}
-                  {/* TODO: Filter list Choose */}
-                  <Box className="col-left__bottom">
-                    <ExpandablePanelComponent />
-                  </Box>
-                </Box>
+                </>
               )}
 
               <Box
                 className={`col-right ${
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
+                style={{ marginTop: keyFilter ? '50px' : '0px' }}
               >
                 <Box
                   className="wrap-box-refinements"
@@ -435,6 +446,8 @@ function ResultComponent(props: Props) {
                     setLoading={false}
                     sendFeedBackAction={sendFeedBackAction}
                     moreInfoText={moreInfoText}
+                    requestImage={requestImage}
+                    searchQuery={searchQuery}
                   />
                   <Box
                     className="pagination-result"
@@ -444,17 +457,20 @@ function ResultComponent(props: Props) {
                       padding: '0 20%',
                     }}
                   >
-                    {props.allSearchResults?.hits.length > 0 && (
-                      <Pagination
-                        showFirst={false}
-                        translations={{
-                          previous: (
-                            <ArrowLeftIcon style={{ color: '#161616' }} />
-                          ),
-                          next: <ArrowRightIcon style={{ color: '#161616' }} />,
-                        }}
-                      />
-                    )}
+                    {props.allSearchResults?.hits.length > 0 &&
+                      (requestImage || searchQuery) && (
+                        <Pagination
+                          showFirst={false}
+                          translations={{
+                            previous: (
+                              <ArrowLeftIcon style={{ color: '#161616' }} />
+                            ),
+                            next: (
+                              <ArrowRightIcon style={{ color: '#161616' }} />
+                            ),
+                          }}
+                        />
+                      )}
                   </Box>
                   {/* {isMobile && (
                     <Box

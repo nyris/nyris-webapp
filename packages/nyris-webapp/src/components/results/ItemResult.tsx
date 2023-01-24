@@ -1,17 +1,17 @@
-import { Box, Button, Grid, Typography } from "@material-ui/core";
-import ChevronRightOutlinedIcon from "@material-ui/icons/ChevronRightOutlined";
-import IconShare from "common/assets/icons/Fill.svg";
-import IconDisLike from "common/assets/icons/icon_dislike.svg";
-import IconLike from "common/assets/icons/icon_like.svg";
-import IconSupport2 from "common/assets/icons/item_support_icon.svg";
-import IconOpenLink from "common/assets/icons/Union.svg";
-import { ReactComponent as Expand } from "common/assets/icons/expand.svg";
+import { Box, Button, Grid, Typography } from '@material-ui/core';
+import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
+import IconShare from 'common/assets/icons/Fill.svg';
+import IconDisLike from 'common/assets/icons/icon_dislike.svg';
+import IconLike from 'common/assets/icons/icon_like.svg';
+import IconSupport2 from 'common/assets/icons/item_support_icon.svg';
+import IconOpenLink from 'common/assets/icons/Union.svg';
+import { ReactComponent as Expand } from 'common/assets/icons/expand.svg';
 
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from 'react';
 // import IconSearchImage from "common/assets/icons/icon_search_image2.svg";
-import NoImage from "common/assets/images/unnamed.png";
-import { AppState } from "types";
-import { useAppSelector } from "Store/Store";
+import NoImage from 'common/assets/images/unnamed.png';
+import { AppState } from 'types';
+import { useAppSelector } from 'Store/Store';
 
 interface Props {
   dataItem: any;
@@ -44,7 +44,7 @@ function ItemResult(props: Props) {
     main_image_link,
     indexItem,
   } = props;
-  const [urlImage, setUrlImage] = useState<string>("");
+  const [urlImage, setUrlImage] = useState<string>('');
   const { settings } = useAppSelector<AppState>((state: any) => state);
 
   const { sku, title, brand, main_offer_link, collap } = dataItem;
@@ -71,7 +71,7 @@ function ItemResult(props: Props) {
     img.onerror = img.onabort = function () {
       if (!timedOut) {
         clearTimeout(timer);
-        setUrlImage("");
+        setUrlImage('');
       }
     };
     img.onload = function () {
@@ -91,7 +91,7 @@ function ItemResult(props: Props) {
           <Box className="btn-show-result">
             <Button onClick={handlerShowGroup}>
               Show group
-              <ChevronRightOutlinedIcon style={{ fontSize: "10px" }} />
+              <ChevronRightOutlinedIcon style={{ fontSize: '10px' }} />
             </Button>
           </Box>
         )}
@@ -99,14 +99,14 @@ function ItemResult(props: Props) {
           <Box className="btn-show-result">
             <Button onClick={handlerHideGroup}>
               Close group
-              <ChevronRightOutlinedIcon style={{ fontSize: "10px" }} />
+              <ChevronRightOutlinedIcon style={{ fontSize: '10px' }} />
             </Button>
           </Box>
         )}
         {!isHover && urlImage?.length > 1 && (
           <Box className="box-icon-modal">
             <Button
-              style={{ width: "100%", height: "100%", padding: 0, zIndex: 9 }}
+              style={{ width: '100%', height: '100%', padding: 0, zIndex: 9 }}
               onClick={handlerToggleModal}
             >
               <Expand color={settings.themePage.searchSuite?.secondaryColor} />
@@ -115,7 +115,7 @@ function ItemResult(props: Props) {
         )}
         <Box className="box-image">
           <Button
-            style={{ width: "100%", height: "100%" }}
+            style={{ width: '100%', height: '100%' }}
             onClick={(e: any) => {
               e.preventDefault();
               if (urlImage.length > 1) {
@@ -129,14 +129,14 @@ function ItemResult(props: Props) {
                 key={main_image_link}
                 alt="image_item"
                 className="img-style"
-                style={{ width: "100%", height: "100%" }}
+                style={{ width: '100%', height: '100%' }}
               />
             ) : (
               <img
                 src={NoImage}
                 alt="image_item"
                 className="img-style"
-                style={{ width: "100%", height: "100%" }}
+                style={{ width: '100%', height: '100%' }}
               />
             )}
           </Button>
@@ -150,15 +150,19 @@ function ItemResult(props: Props) {
 
       <Box
         className="box-content"
-        display={"flex"}
-        style={{ flexDirection: "column", backgroundColor: "#F3F3F5" }}
+        display={'flex'}
+        style={{
+          flexDirection: 'column',
+          backgroundColor: '#F3F3F5',
+          minHeight: '170px',
+        }}
       >
         <Box className="box-top">
           <Grid container justifyContent="space-between">
             <Grid item xs={12}>
               <Typography
                 className="text-f10 max-line-1 fw-400"
-                style={{ color: "#2B2C46" }}
+                style={{ color: '#2B2C46' }}
               >
                 {sku}
               </Typography>
@@ -185,39 +189,39 @@ function ItemResult(props: Props) {
               </Box>
               <Typography
                 className="text-f12 fw-600 max-line-3"
-                style={{ color: "#1E1F31" }}
+                style={{ color: '#1E1F31' }}
               >
                 {title}
               </Typography>
               <Box
                 style={{
-                  boxShadow: "-2px 2px 4px rgba(170, 171, 181, 0.5)",
+                  boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                   // marginBottom: 22,
                   height: 40,
                   background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}cc 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
                   borderRadius: 4,
-                  padding: "0 8px",
+                  padding: '0 8px',
                 }}
-                display={"flex"}
-                justifyItems={"center"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
+                display={'flex'}
+                justifyItems={'center'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
                 mt={2}
               >
                 <Button
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    width: "100%",
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
                     padding: 0,
                   }}
-                  onClick={() => window.open(`${main_offer_link}`, "_blank")}
+                  onClick={() => window.open(`${main_offer_link}`, '_blank')}
                 >
                   <Typography
                     className="text-f12 fw-600 text-white"
-                    style={{ textTransform: "uppercase" }}
+                    style={{ textTransform: 'uppercase' }}
                   >
-                    {moreInfoText ? moreInfoText : "MORE INFO"}
+                    {moreInfoText ? moreInfoText : 'MORE INFO'}
                   </Typography>
                   <img src={IconOpenLink} alt="" />
                 </Button>
