@@ -1,3 +1,4 @@
+import React, { memo, useEffect, useRef, useState, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -27,14 +28,6 @@ import DefaultModal from 'components/modal/DefaultModal';
 import ExpandablePanelComponent from 'components/PanelResult';
 import { useQuery } from 'hooks/useQuery';
 import { debounce, isEmpty } from 'lodash';
-import React, {
-  memo,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-} from 'react';
 import {
   Configure,
   connectStateResults,
@@ -77,14 +70,7 @@ function ResultComponent(props: Props) {
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [numberResult, setNumberResult] = useState<number>(0);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
-  const {
-    results,
-    requestImage,
-    regions,
-    selectedRegion,
-    keyFilter,
-    fetchingResults,
-  } = search;
+  const { results, requestImage, regions, selectedRegion, keyFilter } = search;
   const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
   const [dataResult, setDataResult] = useState<any[]>([]);
   const [dataImageModal, setDataImageModal] = useState<any>();
@@ -244,7 +230,7 @@ function ResultComponent(props: Props) {
 
     const filter = keyFilter ? `keywords:'${keyFilter}'` : '';
     setFilterString(filter);
-  }, [keyFilter, requestImage]);
+  }, [keyFilter, requestImage, searchQuery]);
 
   useEffect(() => {
     if (!requestImage) {
@@ -259,6 +245,7 @@ function ResultComponent(props: Props) {
     dispatch(showFeedback());
 
     return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keyFilter]);
 
   useEffect(() => {
@@ -269,6 +256,7 @@ function ResultComponent(props: Props) {
         : `keywords:'${keyFilter}'`
       : filterSkusString;
     setFilterString(filter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterSkusString]);
 
   const debouncedOnImageSelectionChange = useCallback(

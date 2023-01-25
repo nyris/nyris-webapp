@@ -1,10 +1,7 @@
-import { Box, Button } from "@material-ui/core";
-import React, { useState } from "react";
-import { NavLink, useHistory } from "react-router-dom";
-import IconSupportMobile from "common/assets/icons/support_mobile.svg";
-import IconAdminMobile from "common/assets/icons/admin_mobile.svg";
-import IconCameraMobile from "common/assets/icons/icon_camera_mobile.svg";
-import CameraCustom from "./drawer/cameraCustom";
+import { Box, Button } from '@material-ui/core';
+import React, { useState } from 'react';
+import IconCameraMobile from 'common/assets/icons/icon_camera_mobile.svg';
+import CameraCustom from './drawer/cameraCustom';
 
 interface Props {
   onLoadingMobile?: any;
@@ -12,24 +9,23 @@ interface Props {
 
 function FooterMobile(props: Props): JSX.Element {
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
-  const history = useHistory();
-  const handleCheckMatchLink = (match: any, location: any) => {
-    let active = false;
-    if (match?.url === location.pathname) {
-      active = true;
-    }
+  // const handleCheckMatchLink = (match: any, location: any) => {
+  //   let active = false;
+  //   if (match?.url === location.pathname) {
+  //     active = true;
+  //   }
 
-    return active;
-  };
+  //   return active;
+  // };
 
   return (
     <Box
       className="box-footer-mobile"
-      display={"flex"}
-      position={"relative"}
-      alignItems={"center"}
-      height={"100%"}
-      justifyContent={"flex-end"}
+      display={'flex'}
+      position={'relative'}
+      alignItems={'center'}
+      height={'100%'}
+      justifyContent={'flex-end'}
     >
       <Box className="box-icon-camera-mobile">
         <Button
@@ -45,7 +41,7 @@ function FooterMobile(props: Props): JSX.Element {
           />
         </Button>
       </Box>
-     {/* hidden_as_required {history.location.pathname !== "/" && (
+      {/* hidden_as_required {history.location.pathname !== "/" && (
         <>
           <Box style={{ padding: 23 }}>
             <NavLink

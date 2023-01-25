@@ -1,25 +1,25 @@
-import React,{useLayoutEffect} from "react";
+import React, { useLayoutEffect } from 'react';
 import {
   Box,
   Button,
   FormControlLabel,
   Grid,
   Typography,
-} from "@material-ui/core";
-import BgColor from "common/assets/images/Rectangle.png";
-import { useMediaQuery } from "react-responsive";
-import {useHistory} from "react-router-dom";
+} from '@material-ui/core';
+import BgColor from 'common/assets/images/Rectangle.png';
+import { useMediaQuery } from 'react-responsive';
+import { useHistory } from 'react-router-dom';
 
 interface Props {}
 
 function Profile(props: Props) {
-  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const history = useHistory();
   useLayoutEffect(() => {
     history.push({
       pathname: '/',
     });
-    },[] );
+  }, [history]);
 
   return (
     <Box className="wrap-main-profile">
@@ -56,7 +56,7 @@ function Profile(props: Props) {
                   control={<input />}
                   label="Name"
                   className="w-100"
-                  style={{ alignItems: "flex-start", margin: 0 }}
+                  style={{ alignItems: 'flex-start', margin: 0 }}
                 />
               </Box>
               <Box mt={1}>
@@ -64,7 +64,7 @@ function Profile(props: Props) {
                   labelPlacement="top"
                   control={<input />}
                   label="E-mail"
-                  style={{ alignItems: "flex-start", margin: 0 }}
+                  style={{ alignItems: 'flex-start', margin: 0 }}
                   className="w-100"
                 />
               </Box>
@@ -73,7 +73,7 @@ function Profile(props: Props) {
                   labelPlacement="top"
                   control={<input />}
                   label="Password"
-                  style={{ alignItems: "flex-start", margin: 0 }}
+                  style={{ alignItems: 'flex-start', margin: 0 }}
                   className="w-100"
                 />
               </Box>
@@ -89,7 +89,7 @@ function Profile(props: Props) {
                       labelPlacement="top"
                       control={<input />}
                       label="Company"
-                      style={{ alignItems: "flex-start", margin: 0 }}
+                      style={{ alignItems: 'flex-start', margin: 0 }}
                       className="w-100"
                     />
                   </Box>
@@ -98,7 +98,7 @@ function Profile(props: Props) {
                       labelPlacement="top"
                       control={<input />}
                       label="Role"
-                      style={{ alignItems: "flex-start", margin: 0 }}
+                      style={{ alignItems: 'flex-start', margin: 0 }}
                       className="w-100"
                     />
                   </Box>
@@ -113,7 +113,7 @@ function Profile(props: Props) {
                       style={{
                         fontSize: 12,
                         fontWeight: 500,
-                        color: "#3E36DC",
+                        color: '#3E36DC',
                       }}
                     >
                       Reset password

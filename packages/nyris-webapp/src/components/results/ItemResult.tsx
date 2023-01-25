@@ -1,9 +1,5 @@
 import { Box, Button, Grid, Typography } from '@material-ui/core';
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
-import IconShare from 'common/assets/icons/Fill.svg';
-import IconDisLike from 'common/assets/icons/icon_dislike.svg';
-import IconLike from 'common/assets/icons/icon_like.svg';
-import IconSupport2 from 'common/assets/icons/item_support_icon.svg';
 import IconOpenLink from 'common/assets/icons/Union.svg';
 import { ReactComponent as Expand } from 'common/assets/icons/expand.svg';
 
@@ -33,10 +29,8 @@ function ItemResult(props: Props) {
   const {
     dataItem,
     handlerToggleModal,
-    handlerToggleModalShare,
     isHover = false,
     onSearchImage,
-    handlerFeedback,
     handlerGroupItem,
     isGroupItem,
     moreInfoText,

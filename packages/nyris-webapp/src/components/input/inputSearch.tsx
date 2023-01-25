@@ -61,6 +61,7 @@ const SearchBox = (props: any) => {
       setValueInput('');
       refine('');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageThumbSearchInput]);
 
   const searchOrRedirect = useCallback(

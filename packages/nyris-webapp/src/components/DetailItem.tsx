@@ -1,10 +1,6 @@
 import React from 'react';
 import { Box, Button, Collapse, Grid, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import IconSupport from 'common/assets/icons/item_support_icon.svg';
-import IconLike from 'common/assets/icons/icon_like.svg';
-import IconDisLike from 'common/assets/icons/icon_dislike.svg';
-import IconShare from 'common/assets/icons/Fill.svg';
 import { useState } from 'react';
 import { isEmpty } from 'lodash';
 import { useEffect } from 'react';
@@ -31,13 +27,7 @@ interface Props {
 }
 
 function DetailItem(props: Props) {
-  const {
-    handlerCloseModal,
-    dataItem,
-    onHandlerModalShare,
-    onSearchImage,
-    moreInfoText,
-  } = props;
+  const { handlerCloseModal, dataItem, onSearchImage, moreInfoText } = props;
   const [collapDescription, setCollapDescription] = useState(false);
   const { title, sku, main_offer_link, brand } = dataItem;
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);

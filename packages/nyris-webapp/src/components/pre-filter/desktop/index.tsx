@@ -16,18 +16,13 @@ function FilterComponent(props: Props) {
   const { handleClose } = props;
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector(state => state);
-  const { settings, search } = stateGlobal;
+  const { settings } = stateGlobal;
   const [resultFilter, setResultFilter] = useState<any>([]);
   const [itemChoose, setItemChoose] = useState<string>('');
   const [keyFilter, setKeyFilter] = useState<string | null>('');
   const [isLoading, setLoading] = useState<boolean>(false);
   const [columns, setColumns] = useState<number>(0);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-
-  useEffect(() => {
-    setLoading(true);
-    getDataFilterDesktop();
-  }, []);
 
   const getDataFilterDesktop = async () => {
     const dataResultFilter = getFilters(1000, settings)
@@ -51,6 +46,12 @@ function FilterComponent(props: Props) {
     }, 500);
     return dataResultFilter;
   };
+
+  useEffect(() => {
+    setLoading(true);
+    getDataFilterDesktop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleAlignment = (
     event: React.MouseEvent<HTMLElement>,

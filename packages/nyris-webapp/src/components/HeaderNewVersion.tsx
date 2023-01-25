@@ -2,23 +2,20 @@ import { Box, Grid } from '@material-ui/core';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './common.scss';
-import IconAdmin from 'common/assets/icons/admin.svg';
-import LogoNyris from 'common/assets/icons/nyris_logo.svg';
-import IconSupport from 'common/assets/icons/support.svg';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { reset } from 'Store/Search';
 function HeaderNewVersion(): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings } = useAppSelector(state => state);
 
-  const handleCheckMatchLink = (match: any, location: any) => {
-    let active = false;
-    if (match?.url === location.pathname) {
-      active = true;
-    }
+  // const handleCheckMatchLink = (match: any, location: any) => {
+  //   let active = false;
+  //   if (match?.url === location.pathname) {
+  //     active = true;
+  //   }
 
-    return active;
-  };
+  //   return active;
+  // };
 
   return (
     <Box className="box-content" display={'flex'}>
@@ -70,7 +67,7 @@ function HeaderNewVersion(): JSX.Element {
         </Grid>
          */}
 
-          {/*hidden_as_required
+        {/*hidden_as_required
         <Grid item className="item-nav">
           <NavLink
             activeClassName="active"

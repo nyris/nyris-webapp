@@ -1,4 +1,4 @@
-import {Box, Button, Typography} from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { MultipleQueriesQuery } from '@algolia/client-search';
 import algoliasearch from 'algoliasearch/lite';
 import { ReactNode } from 'components/common';
@@ -6,7 +6,7 @@ import React, { memo, useMemo, useState } from 'react';
 import { InstantSearch } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
-import {changeValueTextSearch, setPreFilterDropdown, setUpdateKeyFilterDesktop} from 'Store/Search';
+import { changeValueTextSearch, setPreFilterDropdown } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AlgoliaSettings, AppState } from '../types';
 import './appMobile.scss';
@@ -21,12 +21,11 @@ import HeaderMobile from './HeaderMobile';
 import HeaderNewVersion from './HeaderNewVersion';
 import ExpandablePanelComponent from './PanelResult';
 import FilterComponent from 'components/pre-filter/desktop';
-import CloseIcon from "@material-ui/icons/Close";
 
 function Layout({ children }: ReactNode): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
-  const { valueTextSearch, loadingSearchAlgolia, preFilterDropdown, keyFilter } = search;
+  const { valueTextSearch, loadingSearchAlgolia, preFilterDropdown } = search;
   const { themePage } = settings;
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -147,16 +146,17 @@ function Layout({ children }: ReactNode): JSX.Element {
           </Box>
         )}
         {isMobile && preFilterDropdown && (
-            <Box
-                className={`box-fillter open`}
-                position={"absolute"}
-            >
-              <div className={"wrap-filter-destop"}>
-                <div className={"bg-white box-filter-destop isMobile"}>
-                  <FilterComponent handleClose={()=> dispatch(setPreFilterDropdown(!preFilterDropdown))}/>
-                </div>
+          <Box className={`box-fillter open`} position={'absolute'}>
+            <div className={'wrap-filter-destop'}>
+              <div className={'bg-white box-filter-destop isMobile'}>
+                <FilterComponent
+                  handleClose={() =>
+                    dispatch(setPreFilterDropdown(!preFilterDropdown))
+                  }
+                />
               </div>
-            </Box>
+            </div>
+          </Box>
         )}
       </InstantSearch>
     </Box>
