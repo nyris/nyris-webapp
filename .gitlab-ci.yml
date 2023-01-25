@@ -5,7 +5,7 @@ stages:
 build:
   stage: build
   tags: [ builder, integration ]
-  image: node:12
+  image: node:14.10.0
   artifacts:
     paths:
       - npm-packages
@@ -24,7 +24,7 @@ build:
 publish to npm:
   stage: publish
   when: manual
-  image: node:12
+  image: node:14.10.0
   tags: [ builder, integration ]
   script:
     - mkdir -p ~/
