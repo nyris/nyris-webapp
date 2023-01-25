@@ -28,7 +28,6 @@
     .box-header-mobile-main {
       // min-height: 60px;
       z-index: 100;
-      border-bottom: 1px solid #e9e9ec;
       background-color: #fff;
       display: flex;
       align-items: center;
@@ -42,6 +41,7 @@
         width: 100%;
         position: relative;
         padding: 7px 0px;
+        border-bottom: 1px solid #e9e9ec;
         .box-suggest-search {
           position: absolute;
           bottom: -30px;

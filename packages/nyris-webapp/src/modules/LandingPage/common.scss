@@ -1061,21 +1061,22 @@ button {
         display: flex;
         flex-wrap: wrap;
         gap: 24px;
-        // justify-content: space-between;
-        // margin: 16px 0;
-        // margin-right: auto !important;
         .wrap-main-item-result {
           max-width: 192px;
           width: 192px;
           margin: 20px 0px;
           border-radius: 4px;
           overflow: hidden;
+          &:first-child {
+            margin-top: 5px !important;
+          }
+        } &:first-child {
+          margin-top: 0px !important;
         }
         ul {
           padding: 0;
           display: flex;
           flex-wrap: wrap;
-          // justify-content: center;
           li {
             list-style: none;
             width: 174px;
@@ -1365,7 +1366,7 @@ button {
     padding: 0px !important;
     height: 42px;
     overflow: hidden;
-    padding-right: 10px !important;
+    padding-right: 5px !important;
     form {
       width: 100%;
       display: flex;
@@ -1761,7 +1762,6 @@ button {
 
 .wrap-box-refinements {
   width: 100%;
-  margin-top: 16px;
   ul {
     display: flex;
     flex-wrap: wrap;

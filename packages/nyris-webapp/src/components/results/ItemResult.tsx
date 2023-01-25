@@ -123,7 +123,7 @@ function ItemResult(props: Props) {
               }
             }}
           >
-            {urlImage?.length > 1 ? (
+            {main_image_link ? (
               <img
                 src={main_image_link}
                 key={main_image_link}

@@ -397,12 +397,11 @@ function ResultComponent(props: Props) {
                 className={`col-right ${
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
-                style={{ marginTop: keyFilter ? '50px' : '0px' }}
+                style={{
+                  marginTop: keyFilter ? '50px' : isMobile ? '10px' : '0px',
+                }}
               >
-                <Box
-                  className="wrap-box-refinements"
-                  style={{ marginBottom: 10 }}
-                >
+                <Box className="wrap-box-refinements">
                   <CurrentRefinements statusSwitchButton={true} />
                 </Box>
                 {isMobile && settings.preview && requestImage && (
@@ -410,6 +409,7 @@ function ResultComponent(props: Props) {
                     style={{
                       backgroundColor:
                         settings?.themePage?.searchSuite?.primaryColor,
+                      marginBottom: '15px',
                     }}
                     className="col-left"
                   >
@@ -434,11 +434,7 @@ function ResultComponent(props: Props) {
                     </Box>
                   </Box>
                 )}
-                <Box
-                  className={`box-item-result ${
-                    requestImage ? 'ml-auto mr-auto' : 'ml-auto mr-auto'
-                  }`}
-                >
+                <Box className={'box-item-result ml-auto mr-auto'}>
                   <LoadingScreenCustom
                     handlerToggleModal={handlerToggleModal}
                     setOpenModalShare={setOpenModalShare}
@@ -447,7 +443,7 @@ function ResultComponent(props: Props) {
                     sendFeedBackAction={sendFeedBackAction}
                     moreInfoText={moreInfoText}
                     requestImage={requestImage}
-                    searchQuery={searchQuery}
+                    searchQuery={search.valueTextSearch.query}
                   />
                   <Box
                     className="pagination-result"
@@ -458,7 +454,7 @@ function ResultComponent(props: Props) {
                     }}
                   >
                     {props.allSearchResults?.hits.length > 0 &&
-                      (requestImage || searchQuery) && (
+                      (requestImage || search.valueTextSearch.query) && (
                         <Pagination
                           showFirst={false}
                           translations={{
