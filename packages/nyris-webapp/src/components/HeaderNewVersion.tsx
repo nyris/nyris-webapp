@@ -21,7 +21,7 @@ function HeaderNewVersion(): JSX.Element {
     <Box className="box-content" display={'flex'}>
       <NavLink
         to="/"
-        style={{ lineHeight: 0 }}
+        style={{ lineHeight: 0, paddingLeft: '10px' }}
         onClick={() => {
           dispatch(reset(''));
         }}

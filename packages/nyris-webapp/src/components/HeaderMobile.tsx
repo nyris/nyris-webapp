@@ -123,6 +123,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                         imageThumbSearchInput ? true : false
                       }
                       isResetImage={isResetImage}
+                      imageThumbSearchInput={imageThumbSearchInput}
                     />
 
                     {isShowFilter && settings.postFilterOption && (

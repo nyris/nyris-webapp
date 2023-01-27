@@ -34,14 +34,16 @@ function LoadingScreen({
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!allSearchResults?.hits) {
-      setItemShowDefault([]);
-      return;
+    if (search?.valueTextSearch.query === allSearchResults?.query) {
+      if (!allSearchResults?.hits) {
+        setItemShowDefault([]);
+        return;
+      }
+      const listHistDefaultGroups = setListHitDefault(allSearchResults?.hits);
+      setItemShowDefault(listHistDefaultGroups);
     }
-    const listHistDefaultGroups = setListHitDefault(allSearchResults?.hits);
-    setItemShowDefault(listHistDefaultGroups);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allSearchResults?.hits]);
+  }, [allSearchResults?.hits, search?.valueTextSearch]);
 
   const setListHitDefault = (hits: any) => {
     let newArrayShowGroup: any = [];
@@ -147,7 +149,7 @@ function LoadingScreen({
       );
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemShowDefault, searchQuery, requestImage]);
+  }, [itemShowDefault, searchQuery, requestImage, search.valueTextSearch]);
 
   return <>{renderItem}</>;
 }

@@ -292,8 +292,8 @@ function ResultComponent(props: Props) {
             }}
           />
         </DefaultModal>
+        {filterString && <Configure filters={filterString}></Configure>}
 
-        <Configure filters={filterString}></Configure>
         <Box className="box-wrap-result-component">
           {!isMobile && (
             <div className="box-search">
@@ -386,7 +386,7 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  marginTop: keyFilter ? '50px' : isMobile ? '10px' : '0px',
+                  marginTop: keyFilter ? '50px' : isMobile ? '15px' : '0px',
                 }}
               >
                 <Box className="wrap-box-refinements">

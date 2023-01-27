@@ -101,7 +101,9 @@ function Layout({ children }: ReactNode): JSX.Element {
         searchClient={conditionalQuery}
         searchState={valueTextSearch}
         onSearchStateChange={state => {
-          dispatch(changeValueTextSearch(state));
+          if (state.page && state.query !== undefined) {
+            dispatch(changeValueTextSearch(state));
+          }
         }}
       >
         <div className={`layout-main-${classNameBoxVersion}`}>
