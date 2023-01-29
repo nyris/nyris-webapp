@@ -9,7 +9,6 @@ import { AppState } from 'types';
 interface Props {
   allSearchResults: any;
   handlerToggleModal: any;
-  setOpenModalShare: any;
   getUrlToCanvasFile: any;
   setLoading?: any;
   sendFeedBackAction: any;
@@ -20,8 +19,6 @@ interface Props {
 
 function LoadingScreen({
   allSearchResults,
-  handlerToggleModal,
-  setOpenModalShare,
   getUrlToCanvasFile,
   sendFeedBackAction,
   moreInfoText,
@@ -34,14 +31,12 @@ function LoadingScreen({
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
 
   useEffect(() => {
-    if (search?.valueTextSearch.query === allSearchResults?.query) {
-      if (!allSearchResults?.hits) {
-        setItemShowDefault([]);
-        return;
-      }
-      const listHistDefaultGroups = setListHitDefault(allSearchResults?.hits);
-      setItemShowDefault(listHistDefaultGroups);
+    if (!allSearchResults?.hits) {
+      setItemShowDefault([]);
+      return;
     }
+    const listHistDefaultGroups = setListHitDefault(allSearchResults?.hits);
+    setItemShowDefault(listHistDefaultGroups);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSearchResults?.hits, search?.valueTextSearch]);
 
@@ -123,10 +118,6 @@ function LoadingScreen({
         <Box key={i}>
           <ItemResult
             dataItem={hit}
-            handlerToggleModal={() => {
-              handlerToggleModal(hit);
-            }}
-            handlerToggleModalShare={() => setOpenModalShare(true)}
             indexItem={i}
             isHover={false}
             onSearchImage={(url: string) => {

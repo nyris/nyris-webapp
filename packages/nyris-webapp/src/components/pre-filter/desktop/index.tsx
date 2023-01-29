@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { setUpdateKeyFilterDesktop } from 'Store/Search';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import { useMediaQuery } from 'react-responsive';
+import { isEmpty } from 'lodash';
 interface Props {
   handleClose?: any;
   // onChangeKeyFilter?: any;
@@ -76,7 +77,7 @@ function FilterComponent(props: Props) {
           return a;
         }, {});
         setResultFilter(newResult);
-        setColumns(Object.keys(newResult).length);
+        setColumns(4);
         return;
       })
       .catch((e: any) => {
@@ -224,7 +225,9 @@ function FilterComponent(props: Props) {
           );
         })}
 
-        {!resultFilter && !isLoading && <Typography>No result</Typography>}
+        {isEmpty(resultFilter) && !isLoading && (
+          <Typography>No result found</Typography>
+        )}
       </Box>
       {itemChoose && !isMobile && (
         <Box

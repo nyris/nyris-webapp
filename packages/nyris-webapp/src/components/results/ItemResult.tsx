@@ -1,19 +1,36 @@
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';
+import IconShare from 'common/assets/icons/Fill.svg';
+import IconDisLike from 'common/assets/icons/icon_dislike.svg';
+import IconLike from 'common/assets/icons/icon_like.svg';
 import { ReactComponent as Expand } from 'common/assets/icons/expand.svg';
-
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
+import IconEmail from 'common/assets/icons/email_share.svg';
+import IconWeChat from 'common/assets/icons/icon_chat.svg';
+import IconWhatsApp from 'common/assets/icons/icon_whatapps.svg';
 import React, { memo, useEffect, useState } from 'react';
-// import IconSearchImage from "common/assets/icons/icon_search_image2.svg";
 import NoImage from 'common/assets/images/unnamed.png';
 import { AppState } from 'types';
-import { useAppSelector } from 'Store/Store';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+import DefaultModal from 'components/modal/DefaultModal';
+import DetailItem from 'components/DetailItem';
+import { useMediaQuery } from 'react-responsive';
+import { onToggleModalItemDetail, updateStatusLoading } from 'Store/Search';
+import { useVisualSearch } from 'hooks/useVisualSearch';
 
 interface Props {
   dataItem: any;
   handlerToggleModal?: any;
   handleClose?: () => void;
-  handlerToggleModalShare?: () => void;
   isHover?: boolean;
   indexItem?: number;
   onSearchImage?: any;
@@ -28,21 +45,25 @@ interface Props {
 function ItemResult(props: Props) {
   const {
     dataItem,
-    handlerToggleModal,
     isHover = false,
     onSearchImage,
     handlerGroupItem,
+    handlerFeedback,
     isGroupItem,
     moreInfoText,
     handlerCloseGroup,
     main_image_link,
     indexItem,
   } = props;
+  const dispatch = useAppDispatch();
   const [urlImage, setUrlImage] = useState<string>('');
   const { settings } = useAppSelector<AppState>((state: any) => state);
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+  const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
+  const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
 
   const { sku, title, brand, main_offer_link, collap } = dataItem;
-
+  const { getUrlToCanvasFile } = useVisualSearch();
   useEffect(() => {
     if (main_image_link) {
       handlerCheckUrlImage(main_image_link);
@@ -78,8 +99,165 @@ function ItemResult(props: Props) {
     img.src = url;
   };
 
+  const handlerToggleModal = (item: any) => {
+    setOpenModalImage(true);
+    dispatch(onToggleModalItemDetail(true));
+    dispatch(updateStatusLoading(true));
+    setTimeout(() => {
+      dispatch(updateStatusLoading(false));
+    }, 400);
+  };
+
   return (
     <Box className="wrap-main-item-result">
+      {/* TODO: Component modal image */}
+      {!isMobile && (
+        <DefaultModal
+          openModal={isOpenModalImage}
+          handleClose={(e: any) => {
+            setOpenModalImage(false);
+          }}
+        >
+          <DetailItem
+            handlerCloseModal={() => {
+              setOpenModalImage(false);
+            }}
+            dataItem={dataItem}
+            onHandlerModalShare={() => setOpenModalShare(true)}
+            onSearchImage={(url: string) => {
+              dispatch(updateStatusLoading(true));
+              getUrlToCanvasFile(url);
+            }}
+          />
+        </DefaultModal>
+      )}
+      {/* TODO: Component modal share */}
+      <DefaultModal
+        openModal={isOpenModalShare}
+        handleClose={() => setOpenModalShare(false)}
+      >
+        <Box
+          className="box-modal-default box-modal-share"
+          style={{ padding: '4px' }}
+        >
+          <Box
+            className="ml-auto"
+            style={{ width: 'fit-content', marginRight: 5 }}
+          >
+            <Button
+              style={{ padding: 0 }}
+              onClick={() => setOpenModalShare(false)}
+            >
+              <CloseOutlinedIcon style={{ fontSize: 16, color: '#55566B' }} />
+            </Button>
+          </Box>
+          <Box className="box-content-box-share">
+            <Typography
+              className="text-f12 text-gray text-bold"
+              style={{ marginBottom: '5px' }}
+            >
+              Share
+            </Typography>
+            <Paper component="form" className="box-input">
+              <Box
+                className="text-f9 text-gray"
+                style={{
+                  width: '100%',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  paddingRight: '10px',
+                }}
+              >
+                {dataItem.main_image_link}
+              </Box>
+              <IconButton
+                color="secondary"
+                aria-label="directions"
+                style={{ padding: '4px' }}
+                onClick={() => {
+                  navigator.clipboard.writeText(dataItem.main_image_link);
+                }}
+              >
+                <FileCopyOutlinedIcon style={{ fontSize: 14 }} />
+              </IconButton>
+            </Paper>
+            <Paper
+              component="form"
+              className="box-input"
+              style={{ marginTop: '12px', marginBottom: '8px' }}
+            >
+              <Box
+                className="text-f9 text-gray"
+                style={{
+                  width: '100%',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  paddingRight: '10px',
+                }}
+              >
+                <span style={{ fontWeight: 'bold' }}>SKU</span> {dataItem.sku}
+              </Box>
+              <IconButton
+                color="secondary"
+                aria-label="directions"
+                style={{ padding: '4px' }}
+                onClick={() => {
+                  navigator.clipboard.writeText(dataItem.sku);
+                }}
+              >
+                <FileCopyOutlinedIcon style={{ fontSize: 14 }} />
+              </IconButton>
+            </Paper>
+            <Box
+              className="box-media-share"
+              display={'flex'}
+              style={{ marginTop: '18px' }}
+            >
+              <a
+                style={{ padding: 0 }}
+                href={`mailto:support@nyris.io?subject=subject&body= ${encodeURIComponent(
+                  'SKU: ' +
+                    dataItem.sku +
+                    '\r\n' +
+                    'Image Link: ' +
+                    dataItem.main_image_link,
+                )} `}
+              >
+                <Box display={'flex'} alignItems={'center'}>
+                  <img
+                    width={40}
+                    height={40}
+                    src={IconEmail}
+                    alt="icon_email"
+                  />
+                </Box>
+              </a>
+              <Button style={{ padding: 0, margin: '0 20px' }}>
+                <Box display={'flex'} alignItems={'center'}>
+                  <img
+                    src={IconWeChat}
+                    width={40}
+                    height={40}
+                    alt="icon_email"
+                  />
+                </Box>
+              </Button>
+              <Button style={{ padding: 0 }}>
+                <Box display={'flex'} alignItems={'center'}>
+                  <img
+                    src={IconWhatsApp}
+                    width={40}
+                    height={40}
+                    alt="icon_email"
+                  />
+                </Box>
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </DefaultModal>
       <Box className="box-top">
         {isGroupItem && collap && (
           <Box className="btn-show-result">
@@ -148,10 +326,9 @@ function ItemResult(props: Props) {
         style={{
           flexDirection: 'column',
           backgroundColor: '#F3F3F5',
-          minHeight: '170px',
         }}
       >
-        <Box className="box-top">
+        <Box className="box-top" style={{ minHeight: '150px' }}>
           <Grid container justifyContent="space-between">
             <Grid item xs={12}>
               <Typography
@@ -224,71 +401,77 @@ function ItemResult(props: Props) {
           </Grid>
         </Box>
 
-        {/* <Box className="box-bottom" style={{ marginBottom: 14 }}>
+        <Box className="box-bottom" style={{ marginBottom: 6, marginTop: 10 }}>
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
-              <Box display={"flex"} alignItems={"center"}>
+              <Box display={'flex'} alignItems={'center'}>
                 <Button
                   className="btn-item"
-                  onClick={() => handlerFeedback("like")}
+                  style={{ padding: '6px' }}
+                  onClick={() => handlerFeedback('like')}
                 >
                   <img
                     src={IconLike}
                     alt="image_item"
                     className="icon_action"
-                    style={{ width: "1rem" }}
+                    style={{ width: '16px', height: '16px' }}
                   />
                 </Button>
               </Box>
             </Grid>
             <Grid item>
-              <Box display={"flex"} alignItems={"center"}>
+              <Box display={'flex'} alignItems={'center'}>
                 <Button
+                  style={{ padding: '6px' }}
                   className="btn-item"
-                  onClick={() => handlerFeedback("dislike")}
+                  onClick={() => handlerFeedback('dislike')}
                 >
                   <img
                     src={IconDisLike}
                     alt="image_item"
                     className="icon_action"
-                    style={{ width: "1rem" }}
+                    style={{ width: '16px', height: '16px' }}
                   />
                 </Button>
               </Box>
             </Grid>
             <Grid item>
-              <Box display={"flex"} alignItems={"center"}>
-                <Button className="btn-item" onClick={handlerToggleModalShare}>
+              <Box display={'flex'} alignItems={'center'}>
+                <Button
+                  style={{ padding: '6px' }}
+                  className="btn-item"
+                  onClick={() => setOpenModalShare(true)}
+                >
                   <img
                     src={IconShare}
                     alt="image_item"
                     className="icon_action"
-                    style={{ width: "1rem" }}
+                    style={{ width: '16px', height: '16px' }}
                   />
                 </Button>
               </Box>
             </Grid>
-            <Grid item>
-              <Box display={"flex"} alignItems={"center"}>
+            {/* <Grid item>
+              <Box display={'flex'} alignItems={'center'}>
                 <Button className="btn-item">
                   <Box
                     className=""
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
                   >
                     <img
-                      src={IconSupport2}
+                      src={IconShare}
                       alt="image_item"
                       className="icon_support"
-                      style={{ width: "1rem" }}
+                      style={{ width: '1rem' }}
                     />
                   </Box>
                 </Button>
               </Box>
-            </Grid>
+            </Grid> */}
           </Grid>
-        </Box> */}
+        </Box>
       </Box>
     </Box>
   );

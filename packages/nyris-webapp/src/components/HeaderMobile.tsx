@@ -189,7 +189,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     backgroundColor:
                       preFilterDropdown || keyFilter
                         ? `${settings.themePage.searchSuite?.secondaryColor}26`
-                        : '#fff',
+                        : '#f3f3f5',
                     margin: '0 12px',
                   }}
                 >

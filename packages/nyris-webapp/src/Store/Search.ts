@@ -30,8 +30,8 @@ export interface SearchState {
   textSearchInputMobile?: string;
   isShowModalDetailItemMobile?: boolean;
   keyFilter?: string;
-  preFilterDropdown?:boolean;
-  setPreFilterDropdown?:any;
+  preFilterDropdown?: boolean;
+  setPreFilterDropdown?: any;
 }
 
 // TODO: init state
@@ -59,7 +59,7 @@ const initialState: SearchState = {
   textSearchInputMobile: '',
   isShowModalDetailItemMobile: false,
   keyFilter: '',
-  preFilterDropdown: false
+  preFilterDropdown: false,
 };
 
 export const searchSlice = createSlice({
@@ -209,7 +209,7 @@ export const searchSlice = createSlice({
         textSearchInputMobile: '',
         isShowModalDetailItemMobile: false,
         keyFilter: '',
-        preFilterDropdown: false
+        preFilterDropdown: false,
       };
     },
 
@@ -217,6 +217,7 @@ export const searchSlice = createSlice({
       return {
         ...state,
         requestImage: undefined,
+        imageThumbSearchInput: '',
         results: [],
         regions: [],
       };
@@ -327,6 +328,6 @@ export const {
   onToggleModalItemDetail,
   onResetRequestImage,
   setUpdateKeyFilterDesktop,
-  setPreFilterDropdown
+  setPreFilterDropdown,
 } = searchSlice.actions;
 export default searchSlice.reducer;

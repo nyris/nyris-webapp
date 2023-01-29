@@ -12,7 +12,7 @@
     "@material-ui/data-grid": "^4.0.0-alpha.37",
     "@material-ui/icons": "^4.4.1",
     "@material-ui/lab": "^4.0.0-alpha.60",
-    "@nyris/nyris-api": "^0.3.18",
+    "@nyris/nyris-api": "0.3.19",
     "@nyris/nyris-react-components": "^0.3.5",
     "@reduxjs/toolkit": "^1.6.1",
     "@splidejs/react-splide": "^0.7.12",

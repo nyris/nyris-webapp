@@ -2,11 +2,15 @@ import { Box } from '@material-ui/core';
 import { MultipleQueriesQuery } from '@algolia/client-search';
 import algoliasearch from 'algoliasearch/lite';
 import { ReactNode } from 'components/common';
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { InstantSearch } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
-import { changeValueTextSearch, setPreFilterDropdown } from 'Store/Search';
+import {
+  changeValueTextSearch,
+  onResetRequestImage,
+  setPreFilterDropdown,
+} from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AlgoliaSettings, AppState } from '../types';
 import './appMobile.scss';
@@ -34,6 +38,12 @@ function Layout({ children }: ReactNode): JSX.Element {
   let isShowHeaderMobile =
     (isMobile && history.location?.pathname === '/result') ||
     history.location?.pathname === '/';
+
+  useEffect(() => {
+    if (history.location?.pathname === '/') {
+      dispatch(onResetRequestImage(''));
+    }
+  }, [history.location]);
 
   let HeaderApp: any;
   let FooterApp: any;

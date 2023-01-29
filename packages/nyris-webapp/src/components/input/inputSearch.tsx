@@ -53,6 +53,10 @@ const SearchBox = (props: any) => {
     if (!isEmpty(searchQuery)) {
       setValueInput(searchQuery);
       refine(searchQuery);
+      // not an ideal solution: fixes text search not working from landing page
+      setTimeout(() => {
+        refine(searchQuery);
+      }, 100);
     }
   }, [query, refine]);
 

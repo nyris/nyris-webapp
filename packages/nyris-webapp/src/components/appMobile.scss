@@ -104,7 +104,7 @@
       bottom: 64px;
       top: 0;
       scroll-padding-top: 110px;
-      height: calc(100% - 63px);
+      height: calc(100% - 52px);
       display: flex;
       width: 100%;
       overflow-y: auto;
@@ -142,7 +142,6 @@
         .box-drag-mobile {
           .useExampleImg {
             position: relative !important;
-            padding-left: 5%;
           }
           .box-content-main {
             background-color: initial;
@@ -253,7 +252,7 @@
     .footer-wrap-main {
       position: fixed;
       bottom: 0;
-      height: 64px;
+      height: 52px;
       flex: 1 1 auto;
       width: 100%;
       padding: 0;

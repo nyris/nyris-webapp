@@ -10,16 +10,15 @@ import { useMediaQuery } from 'react-responsive';
 import CloseIcon from '@material-ui/icons/Close';
 import { ImagePreviewCarousel } from './carousel/ImagePreviewCarousel';
 import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
-
+import IconShare from 'common/assets/icons/Fill.svg';
+import IconDisLike from 'common/assets/icons/icon_dislike.svg';
+import IconLike from 'common/assets/icons/icon_like.svg';
 import { AppState } from 'types';
 import { useAppSelector } from 'Store/Store';
 
 interface Props {
   numberResult?: number;
-  results?: any;
   handlerCloseModal: () => void;
-  onNextItem?: () => void;
-  onPrevItem?: () => void;
   dataItem?: any;
   onHandlerModalShare?: () => void;
   onSearchImage?: any;
@@ -27,7 +26,13 @@ interface Props {
 }
 
 function DetailItem(props: Props) {
-  const { handlerCloseModal, dataItem, onSearchImage, moreInfoText } = props;
+  const {
+    handlerCloseModal,
+    dataItem,
+    onSearchImage,
+    moreInfoText,
+    onHandlerModalShare,
+  } = props;
   const [collapDescription, setCollapDescription] = useState(false);
   const { title, sku, main_offer_link, brand } = dataItem;
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
@@ -234,10 +239,7 @@ function DetailItem(props: Props) {
             </Grid>
           </Grid>
         </Box>
-
-        {/*
-        hidden_as_required
-        <Box className="box-bottom">
+        <Box className="box-bottom" style={{ marginBottom: 6, marginTop: 18 }}>
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
               <Box display={'flex'} alignItems={'center'}>
@@ -275,7 +277,7 @@ function DetailItem(props: Props) {
                 </Button>
               </Box>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
               <Box display={'flex'} alignItems={'center'}>
                 <Button className="btn-item">
                   <Box
@@ -293,9 +295,9 @@ function DetailItem(props: Props) {
                   </Box>
                 </Button>
               </Box>
-            </Grid>
+            </Grid> */}
           </Grid>
-        </Box>*/}
+        </Box>
       </Box>
     </Box>
   );

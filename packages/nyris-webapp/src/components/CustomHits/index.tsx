@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connectHits } from "react-instantsearch-dom";
-import ItemResult from "components/results/ItemResult";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connectHits } from 'react-instantsearch-dom';
+import ItemResult from 'components/results/ItemResult';
 
 function Hits({
   hits,
@@ -16,7 +16,6 @@ function Hits({
     setDataResultToAlgolia(hits);
   };
 
-
   return (
     <>
       {handleSearch}
@@ -25,10 +24,6 @@ function Hits({
           <ItemResult
             key={index}
             dataItem={hit}
-            handlerToggleModal={() => {
-              handlerToggleModal(hit);
-            }}
-            handlerToggleModalShare={() => setOpenModalShare(true)}
             indexItem={hit?.__position}
             isHover={false}
             onSearchImage={(url: any) => {
