@@ -6,10 +6,7 @@ import ItemResult from 'components/results/ItemResult';
 function Hits({
   hits,
   setDataResultToAlgolia,
-  handlerToggleModal,
-  setOpenModalShare,
   getUrlToCanvasFile,
-  setLoading,
   sendFeedBackAction,
 }: any): JSX.Element {
   const handleSearch = () => {

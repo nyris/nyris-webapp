@@ -43,6 +43,7 @@ function Layout({ children }: ReactNode): JSX.Element {
     if (history.location?.pathname === '/') {
       dispatch(onResetRequestImage(''));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history.location]);
 
   let HeaderApp: any;
