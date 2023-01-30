@@ -26,6 +26,7 @@ function FilterComponent(props: Props) {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const getDataFilterDesktop = async () => {
+    setLoading(true);
     const dataResultFilter = getFilters(1000, settings)
       .then(res => {
         const arrResult =
@@ -49,7 +50,6 @@ function FilterComponent(props: Props) {
   };
 
   useEffect(() => {
-    setLoading(true);
     getDataFilterDesktop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

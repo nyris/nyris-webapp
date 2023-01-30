@@ -52,8 +52,6 @@ function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector((state: any) => state);
-  const query = useQuery();
-  const searchQuery = query.get('query') || '';
   const { search, settings } = stateGlobal;
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const { requestImage, regions, selectedRegion, keyFilter } = search;
@@ -191,11 +189,11 @@ function ResultComponent(props: Props) {
   useEffect(() => {
     document.title = 'Search results';
 
-    if (requestImage || isEmpty(searchQuery)) return;
+    if (requestImage || isEmpty(search.valueTextSearch.query)) return;
 
     const filter = keyFilter ? `keywords:'${keyFilter}'` : '';
     setFilterString(filter);
-  }, [keyFilter, requestImage, searchQuery]);
+  }, [keyFilter, requestImage, search.valueTextSearch.query]);
 
   useEffect(() => {
     if (!requestImage) {
@@ -346,7 +344,7 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  marginTop: keyFilter ? '50px' : isMobile ? '15px' : '0px',
+                  marginTop: keyFilter ? '64px' : isMobile ? '15px' : '0px',
                 }}
               >
                 <Box className="wrap-box-refinements">

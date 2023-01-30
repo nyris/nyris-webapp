@@ -9,9 +9,10 @@ import {
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';
 import IconShare from 'common/assets/icons/Fill.svg';
-import IconDisLike from 'common/assets/icons/icon_dislike.svg';
-import IconLike from 'common/assets/icons/icon_like.svg';
+
 import { ReactComponent as Expand } from 'common/assets/icons/expand.svg';
+import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
+import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import IconEmail from 'common/assets/icons/email_share.svg';
@@ -410,12 +411,7 @@ function ItemResult(props: Props) {
                   style={{ padding: '6px' }}
                   onClick={() => handlerFeedback('like')}
                 >
-                  <img
-                    src={IconLike}
-                    alt="image_item"
-                    className="icon_action"
-                    style={{ width: '16px', height: '16px' }}
-                  />
+                  <IconLike color="#000" width={16} height={16} />
                 </Button>
               </Box>
             </Grid>
@@ -426,12 +422,7 @@ function ItemResult(props: Props) {
                   className="btn-item"
                   onClick={() => handlerFeedback('dislike')}
                 >
-                  <img
-                    src={IconDisLike}
-                    alt="image_item"
-                    className="icon_action"
-                    style={{ width: '16px', height: '16px' }}
-                  />
+                  <IconDisLike color="#000" width={16} height={16} />
                 </Button>
               </Box>
             </Grid>

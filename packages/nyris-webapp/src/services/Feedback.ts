@@ -10,7 +10,10 @@ export const feedbackSuccessEpic = async (
   success: boolean,
 ) => {
   const { search, settings } = state;
-  return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
+  const sessionId = search.sessionId;
+  const requestId = search.requestId || search.sessionId;
+
+  return await sendFeedbackByApi(settings, sessionId, requestId, {
     event: 'feedback',
     data: { success },
   });

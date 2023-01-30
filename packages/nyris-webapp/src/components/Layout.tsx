@@ -10,6 +10,7 @@ import {
   changeValueTextSearch,
   onResetRequestImage,
   setPreFilterDropdown,
+  setUpdateSession,
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AlgoliaSettings, AppState } from '../types';
@@ -25,6 +26,7 @@ import HeaderMobile from './HeaderMobile';
 import HeaderNewVersion from './HeaderNewVersion';
 import ExpandablePanelComponent from './PanelResult';
 import FilterComponent from 'components/pre-filter/desktop';
+import { createSessionByApi } from 'services/session';
 
 function Layout({ children }: ReactNode): JSX.Element {
   const dispatch = useAppDispatch();
@@ -38,6 +40,16 @@ function Layout({ children }: ReactNode): JSX.Element {
   let isShowHeaderMobile =
     (isMobile && history.location?.pathname === '/result') ||
     history.location?.pathname === '/';
+
+  useEffect(() => {
+    const createSession = async () => {
+      let payload = await createSessionByApi(settings);
+      dispatch(setUpdateSession(payload));
+    };
+
+    createSession().catch(console.log);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (history.location?.pathname === '/') {

@@ -26,16 +26,6 @@ function AppNewVersion(props: Props) {
   searchClient.initIndex(indexName);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
-  useEffect(() => {
-    const createSession = async () => {
-      let payload = await createSessionByApi(settings);
-      dispatch(setUpdateSession(payload));
-    };
-
-    createSession().catch(console.log);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const acceptTypes = ['image/*']
     .concat(settings.cadSearch ? cadExtensions : [])
     .join(',');
