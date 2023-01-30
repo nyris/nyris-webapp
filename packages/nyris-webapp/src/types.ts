@@ -8,7 +8,6 @@ export interface MDSettings {
   appBarTitle: string;
   appBarCustomBackgroundColor?: string;
   appBarCustomTextColor?: string;
-
   primaryColor: string;
   secondaryColor: string;
   resultFirstRowProperty: string;
@@ -40,6 +39,7 @@ export interface AppSettings extends NyrisAPISettings {
   preFilterOption?: boolean;
   postFilterOption?: boolean;
   filterType?: string;
+  alogoliaFilterField?: string;
   headerText?: string;
 }
 
@@ -52,6 +52,7 @@ export interface SearchSuiteSettings {
   moreInfoText: string;
   appBarLogoUrl: string;
   appBarLogoUrlAlt: string;
+  headerColor: string;
   primaryColor: string;
   secondaryColor: string;
 }

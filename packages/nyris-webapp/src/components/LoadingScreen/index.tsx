@@ -107,7 +107,7 @@ function LoadingScreen({
     }
     if (itemShowDefault.length === 0 && !loadingSearchAlgolia) {
       return (
-        <Box style={{ marginTop: '50px' }}>
+        <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
           No products were found matching your search criteria.
         </Box>
       );

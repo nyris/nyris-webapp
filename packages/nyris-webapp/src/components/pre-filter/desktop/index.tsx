@@ -70,14 +70,15 @@ function FilterComponent(props: Props) {
     const data = await searchFilters(settings.filterType, value, settings)
       .then(res => {
         // console.log("res", res);
-        const newResult = res.sort().reduce((a: any, c: any) => {
-          let k = c[0].toLocaleUpperCase();
-          if (a[k]) a[k].push(c);
-          else a[k] = [c];
-          return a;
-        }, {});
-        setResultFilter(newResult);
-        setColumns(4);
+        if (res.length > 0) {
+          setResultFilter({ [res[0][0].toLocaleUpperCase()]: res });
+          if (res.length <= 20) setColumns(1);
+          else if (res.length <= 40) setColumns(2);
+          else setColumns(4);
+        } else {
+          setResultFilter({});
+          setColumns(4);
+        }
         return;
       })
       .catch((e: any) => {

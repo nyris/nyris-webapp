@@ -175,9 +175,16 @@ function ResultComponent(props: Props) {
 
     if (requestImage || isEmpty(search.valueTextSearch.query)) return;
 
-    const filter = keyFilter ? `keywords:'${keyFilter}'` : '';
+    const filter = keyFilter
+      ? `${settings.alogoliaFilterField}:'${keyFilter}'`
+      : '';
     setFilterString(filter);
-  }, [keyFilter, requestImage, search.valueTextSearch.query]);
+  }, [
+    keyFilter,
+    requestImage,
+    search.valueTextSearch.query,
+    settings.alogoliaFilterField,
+  ]);
 
   useEffect(() => {
     if (!requestImage) {
@@ -199,12 +206,12 @@ function ResultComponent(props: Props) {
     if (!requestImage) return;
     const filter = keyFilter
       ? filterSkusString
-        ? `(${filterSkusString}) AND keywords:'${keyFilter}'`
-        : `keywords:'${keyFilter}'`
+        ? `(${filterSkusString}) AND ${settings.alogoliaFilterField}:'${keyFilter}'`
+        : `${settings.alogoliaFilterField}:'${keyFilter}'`
       : filterSkusString;
     setFilterString(filter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterSkusString]);
+  }, [filterSkusString, settings.alogoliaFilterField]);
 
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {

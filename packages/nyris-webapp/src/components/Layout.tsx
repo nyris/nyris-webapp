@@ -140,7 +140,7 @@ function Layout({ children }: ReactNode): JSX.Element {
             }
             style={{
               ...(classNameBoxVersion === 'newVersion'
-                ? { background: settings.themePage.searchSuite?.primaryColor }
+                ? { background: settings.themePage.searchSuite?.headerColor }
                 : {}),
             }}
           >
