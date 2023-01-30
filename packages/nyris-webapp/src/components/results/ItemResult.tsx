@@ -123,6 +123,7 @@ function ItemResult(props: Props) {
             handlerCloseModal={() => {
               setOpenModalImage(false);
             }}
+            handlerFeedback={handlerFeedback}
             dataItem={dataItem}
             onHandlerModalShare={() => setOpenModalShare(true)}
             onSearchImage={(url: string) => {

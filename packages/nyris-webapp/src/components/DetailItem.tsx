@@ -23,6 +23,7 @@ interface Props {
   onHandlerModalShare?: () => void;
   onSearchImage?: any;
   moreInfoText?: string;
+  handlerFeedback: any;
 }
 
 function DetailItem(props: Props) {
@@ -32,6 +33,7 @@ function DetailItem(props: Props) {
     onSearchImage,
     moreInfoText,
     onHandlerModalShare,
+    handlerFeedback,
   } = props;
   const [collapDescription, setCollapDescription] = useState(false);
   const { title, sku, main_offer_link, brand } = dataItem;
@@ -243,7 +245,10 @@ function DetailItem(props: Props) {
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
               <Box display={'flex'} alignItems={'center'}>
-                <Button className="btn-item">
+                <Button
+                  className="btn-item"
+                  onClick={() => handlerFeedback('like')}
+                >
                   <img
                     src={IconLike}
                     alt="image_item"
@@ -255,7 +260,10 @@ function DetailItem(props: Props) {
             </Grid>
             <Grid item>
               <Box display={'flex'} alignItems={'center'}>
-                <Button className="btn-item">
+                <Button
+                  className="btn-item"
+                  onClick={() => handlerFeedback('dislike')}
+                >
                   <img
                     src={IconDisLike}
                     alt="image_item"
