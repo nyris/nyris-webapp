@@ -8,7 +8,6 @@ import { AppState } from 'types';
 
 interface Props {
   allSearchResults: any;
-  handlerToggleModal: any;
   getUrlToCanvasFile: any;
   setLoading?: any;
   sendFeedBackAction: any;

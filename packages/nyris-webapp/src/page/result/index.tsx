@@ -8,13 +8,10 @@ import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import IconSupport from 'common/assets/icons/support3.svg';
 import { CurrentRefinements } from 'components/current-refinements/current-refinements';
-import DetailItem from 'components/DetailItem';
 import FooterResult from 'components/FooterResult';
 import CustomSearchBox from 'components/input/inputSearch';
 import LoadingScreenCustom from 'components/LoadingScreen';
-import DefaultModal from 'components/modal/DefaultModal';
 import ExpandablePanelComponent from 'components/PanelResult';
-import { useQuery } from 'hooks/useQuery';
 import { debounce, isEmpty } from 'lodash';
 import {
   Configure,
@@ -53,10 +50,8 @@ function ResultComponent(props: Props) {
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector((state: any) => state);
   const { search, settings } = stateGlobal;
-  const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const { requestImage, regions, selectedRegion, keyFilter } = search;
   const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
-  const [dataImageModal, setDataImageModal] = useState<any>();
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [imageSelection, setImageSelection] = useState(selectedRegion);
@@ -69,17 +64,6 @@ function ResultComponent(props: Props) {
       setImageSelection(null);
     }
   }, [requestImage]);
-
-  // TODO: hanlder modal:
-  const handlerToggleModal = (item: any) => {
-    setOpenModalImage(true);
-    dispatch(onToggleModalItemDetail(true));
-    dispatch(updateStatusLoading(true));
-    setDataImageModal(item);
-    setTimeout(() => {
-      dispatch(updateStatusLoading(false));
-    }, 400);
-  };
 
   const findImageByApiNyris = useCallback(
     async (canvas: any, r?: RectCoords) => {
@@ -234,7 +218,7 @@ function ResultComponent(props: Props) {
     <div className={`wrap-main-result loading`} ref={refBoxResult}>
       <>
         {/* TODO: Mobile - Modal detail item  */}
-        <DefaultModal
+        {/* <DefaultModal
           openModal={isOpenModalImage}
           handleClose={(e: any) => {
             setOpenModalImage(false);
@@ -244,13 +228,14 @@ function ResultComponent(props: Props) {
             handlerCloseModal={() => {
               setOpenModalImage(false);
             }}
+            handlerFeedback={sendFeedBackAction}
             dataItem={dataImageModal}
             onSearchImage={(url: string) => {
               dispatch(updateStatusLoading(true));
               getUrlToCanvasFile(url);
             }}
           />
-        </DefaultModal>
+        </DefaultModal> */}
         {filterString && <Configure filters={filterString}></Configure>}
         <Box className="box-wrap-result-component">
           {!isMobile && (
@@ -382,7 +367,6 @@ function ResultComponent(props: Props) {
                 )}
                 <Box className={'box-item-result ml-auto mr-auto'}>
                   <LoadingScreenCustom
-                    handlerToggleModal={handlerToggleModal}
                     getUrlToCanvasFile={getUrlToCanvasFile}
                     setLoading={false}
                     sendFeedBackAction={sendFeedBackAction}

@@ -24,7 +24,6 @@ import { AppState } from 'types';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import DetailItem from 'components/DetailItem';
-import { useMediaQuery } from 'react-responsive';
 import { onToggleModalItemDetail, updateStatusLoading } from 'Store/Search';
 import { useVisualSearch } from 'hooks/useVisualSearch';
 
@@ -59,7 +58,6 @@ function ItemResult(props: Props) {
   const dispatch = useAppDispatch();
   const [urlImage, setUrlImage] = useState<string>('');
   const { settings } = useAppSelector<AppState>((state: any) => state);
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
 
@@ -112,27 +110,26 @@ function ItemResult(props: Props) {
   return (
     <Box className="wrap-main-item-result">
       {/* TODO: Component modal image */}
-      {!isMobile && (
-        <DefaultModal
-          openModal={isOpenModalImage}
-          handleClose={(e: any) => {
+      <DefaultModal
+        openModal={isOpenModalImage}
+        handleClose={(e: any) => {
+          setOpenModalImage(false);
+        }}
+      >
+        <DetailItem
+          handlerCloseModal={() => {
             setOpenModalImage(false);
           }}
-        >
-          <DetailItem
-            handlerCloseModal={() => {
-              setOpenModalImage(false);
-            }}
-            handlerFeedback={handlerFeedback}
-            dataItem={dataItem}
-            onHandlerModalShare={() => setOpenModalShare(true)}
-            onSearchImage={(url: string) => {
-              dispatch(updateStatusLoading(true));
-              getUrlToCanvasFile(url);
-            }}
-          />
-        </DefaultModal>
-      )}
+          handlerFeedback={handlerFeedback}
+          dataItem={dataItem}
+          onHandlerModalShare={() => setOpenModalShare(true)}
+          onSearchImage={(url: string) => {
+            dispatch(updateStatusLoading(true));
+            getUrlToCanvasFile(url);
+          }}
+        />
+      </DefaultModal>
+
       {/* TODO: Component modal share */}
       <DefaultModal
         openModal={isOpenModalShare}
