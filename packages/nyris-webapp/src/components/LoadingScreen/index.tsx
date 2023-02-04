@@ -100,7 +100,7 @@ function LoadingScreen({
   const renderItem = useMemo(() => {
     if (!requestImage && !search.valueTextSearch.query) {
       return (
-        <Box style={{ marginTop: '50px' }}>
+        <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
           Please upload an image or enter a keyword to search.
         </Box>
       );

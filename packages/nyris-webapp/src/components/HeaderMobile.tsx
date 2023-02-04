@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
 
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
@@ -16,8 +16,10 @@ import {
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppState } from 'types';
-import AutocompleteBasicMobileComponent from './auto-complete/basic';
 import CustomSearchBox from './input/inputSearch';
+import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
+import { debounce, isEmpty } from 'lodash';
+import { useQuery } from 'hooks/useQuery';
 interface Props {
   onToggleFilterMobile?: any;
   refine?: any;
@@ -34,11 +36,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     keyFilter,
     preFilterDropdown,
   } = search;
+  const query = useQuery();
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const [isShowInputSearch, setShowInputSearch] = useState<boolean>(false);
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
-  const [isResetImage, setResetImage] = useState<boolean>(false);
   const history = useHistory();
   const { settings } = useAppSelector<AppState>((state: any) => state);
 
@@ -51,6 +53,12 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   }, [history.location]);
 
   useEffect(() => {
+    if (imageThumbSearchInput !== '') {
+      dispatch(updateValueTextSearchMobile(''));
+    }
+  }, [imageThumbSearchInput, dispatch]);
+
+  useEffect(() => {
     if (
       history.location?.pathname === '/result' ||
       history.location?.pathname === '/'
@@ -61,6 +69,42 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     }
   }, [history.location]);
 
+  useEffect(() => {
+    const searchQuery = query.get('query') || '';
+    if (!isEmpty(searchQuery)) {
+      dispatch(updateValueTextSearchMobile(searchQuery));
+      refine(searchQuery);
+      // not an ideal solution: fixes text search not working from landing page
+      setTimeout(() => {
+        refine(searchQuery);
+      }, 100);
+    }
+  }, [query, refine, dispatch]);
+
+  const searchOrRedirect = useCallback(
+    debounce((value: any) => {
+      if (value) {
+        history.push({
+          pathname: '/result',
+          search: `?query=${value}`,
+        });
+      } else {
+        history.push('/result');
+      }
+    }, 500),
+    [],
+  );
+
+  const onChangeText = (event: any) => {
+    // debounceSearch(event.currentTarget.value);
+    searchOrRedirect(event.currentTarget.value);
+    if (event.currentTarget.value === '') {
+      dispatch(updateValueTextSearchMobile(''));
+      refine('');
+    } else {
+      dispatch(updateValueTextSearchMobile(event.currentTarget.value));
+    }
+  };
   return (
     <Box style={{ width: '100%' }}>
       <Box className="wrap-header-mobile">
@@ -86,10 +130,12 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                       if (textSearchInputMobile) {
                         dispatch(setImageSearchInput(''));
                         dispatch(onResetRequestImage(''));
-                        setResetImage(true);
-                        setTimeout(() => {
-                          setResetImage(false);
-                        }, 1000);
+                        // setTimeout(() => {
+                        //   refine(textSearchInputMobile);
+                        // }, 300);
+                        // setTimeout(() => {
+                        //   setResetImage(false);
+                        // }, 1000);
                         return;
                       }
                       dispatch(reset(''));
@@ -114,18 +160,36 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     className="d-flex w-100"
                     style={{
                       alignItems: 'center',
-                      flexDirection: 'row-reverse',
                     }}
                   >
-                    <AutocompleteBasicMobileComponent
-                      containerRefInputMobile={containerRefInputMobile}
-                      isiImageThumbSearchInput={
-                        imageThumbSearchInput ? true : false
-                      }
-                      isResetImage={isResetImage}
-                      imageThumbSearchInput={imageThumbSearchInput}
+                    {!textSearchInputMobile && (
+                      <Box
+                        style={{
+                          paddingLeft: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <IconSearch width={20} height={20} />
+                      </Box>
+                    )}
+                    <input
+                      style={{
+                        border: '0px',
+                        width: '100%',
+                        fontSize: 14,
+                        paddingLeft: '12px',
+                        paddingRight: '4px',
+                        color: '#2B2C46',
+                        fontStyle: 'italic',
+                        outline: 'none',
+                      }}
+                      className="input-search"
+                      placeholder="Search"
+                      value={textSearchInputMobile}
+                      onChange={onChangeText}
+                      // ref={focusInp}
                     />
-
                     {isShowFilter && settings.postFilterOption && (
                       <Box className="box-button-input-mobile">
                         <Button
@@ -158,7 +222,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                             style={{
                               backgroundColor: '#fff',
                               border: 0,
-                              padding: '0px 16px 0 0px',
                               display: 'flex',
                             }}
                           >
@@ -217,29 +280,45 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       </Box>
       {keyFilter && isMobile && (
         <Box
-          className="box-key-filter"
+          className="ml-auto mr-auto"
           style={{
-            display: 'inline-flex',
-            margin: '12px 5px 5px 5px',
-            border: '2px solid black',
-            borderRadius: 3,
-            padding: '2px 7px',
-            background: '#efefef',
-            color: 'black',
+            display: 'flex',
+            columnGap: '16px',
+            alignItems: 'center',
+            // justifyContent: 'space-between',
+            // margin: '12px 12px 5px 12px',
+            marginTop: '12px',
+            marginBottom: '5px',
+            paddingLeft: '16px',
+            paddingRight: '16px',
           }}
         >
-          <Typography>{keyFilter}</Typography>
-          <Button
-            onClick={() => dispatch(setUpdateKeyFilterDesktop(''))}
-            style={{ padding: '6px 2px' }}
+          <Typography color="textPrimary">Pre-filter:</Typography>
+          <Box
+            className="box-key-filter"
+            style={{
+              display: 'inline-flex',
+              border: '2px solid black',
+              borderRadius: 3,
+              padding: '2px 5px',
+              background: '#efefef',
+              color: 'black',
+              alignItems: 'center',
+            }}
           >
-            <CloseIcon
-              style={{
-                fontSize: 12,
-                color: '#2B2C46',
-              }}
-            />
-          </Button>
+            <Typography>{keyFilter}</Typography>
+            <Button
+              style={{ paddingRight: '0px' }}
+              onClick={() => dispatch(setUpdateKeyFilterDesktop(''))}
+            >
+              <CloseIcon
+                style={{
+                  fontSize: 16,
+                  color: '#2B2C46',
+                }}
+              />
+            </Button>
+          </Box>
         </Box>
       )}
     </Box>

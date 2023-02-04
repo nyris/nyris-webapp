@@ -207,85 +207,91 @@ function DetailItem(props: Props) {
                   </Collapse>
                 </Box>
               )}
-
-              <Box
-                style={{
-                  padding: '0px 16px',
-                  background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}cc 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
-                  // marginBottom: 25,
-                  boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                  borderRadius: 4,
-                  height: 48,
-                }}
-                display={'flex'}
-                justifyContent={'space-between'}
-                alignItems={'center'}
-                mt={2}
-                className="btn-detail-item"
-              >
-                <Button
+              {settings.showMoreInfo && (
+                <Box
                   style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    padding: 0,
+                    padding: '0px 16px',
+                    background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}cc 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
+                    // marginBottom: 25,
+                    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                    borderRadius: 4,
+                    height: 48,
                   }}
-                  onClick={() => window.open(`${main_offer_link}`, '_blank')}
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                  alignItems={'center'}
+                  mt={2}
+                  className="btn-detail-item"
                 >
-                  <Typography className="text-f18 fw-600 text-white">
-                    {moreInfoText ? moreInfoText : 'MORE INFO'}
-                  </Typography>
-                  <img src={IconOpenLink} alt="" style={{ width: 23 }} />
-                </Button>
-              </Box>
+                  <Button
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      padding: 0,
+                    }}
+                    onClick={() => window.open(`${main_offer_link}`, '_blank')}
+                  >
+                    <Typography className="text-f18 fw-600 text-white">
+                      {moreInfoText ? moreInfoText : 'MORE INFO'}
+                    </Typography>
+                    <img src={IconOpenLink} alt="" style={{ width: 23 }} />
+                  </Button>
+                </Box>
+              )}
             </Grid>
           </Grid>
         </Box>
-        <Box className="box-bottom" style={{ marginBottom: 6, marginTop: 18 }}>
-          <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
-              <Box display={'flex'} alignItems={'center'}>
-                <Button
-                  className="btn-item"
-                  onClick={() => handlerFeedback('like')}
-                >
-                  <img
-                    src={IconLike}
-                    alt="image_item"
-                    className="icon_action"
-                    style={{ width: '30px' }}
-                  />
-                </Button>
-              </Box>
-            </Grid>
-            <Grid item>
-              <Box display={'flex'} alignItems={'center'}>
-                <Button
-                  className="btn-item"
-                  onClick={() => handlerFeedback('dislike')}
-                >
-                  <img
-                    src={IconDisLike}
-                    alt="image_item"
-                    className="icon_action"
-                    style={{ width: '30px' }}
-                  />
-                </Button>
-              </Box>
-            </Grid>
-            <Grid item>
-              <Box display={'flex'} alignItems={'center'}>
-                <Button className="btn-item" onClick={onHandlerModalShare}>
-                  <img
-                    src={IconShare}
-                    alt="image_item"
-                    className="icon_action"
-                    style={{ width: '30px' }}
-                  />
-                </Button>
-              </Box>
-            </Grid>
-            {/* <Grid item>
+
+        {settings.showFeedbackAndShare && (
+          <Box
+            className="box-bottom"
+            style={{ marginBottom: 6, marginTop: 18 }}
+          >
+            <Grid container justifyContent="space-between" alignItems="center">
+              <Grid item>
+                <Box display={'flex'} alignItems={'center'}>
+                  <Button
+                    className="btn-item"
+                    onClick={() => handlerFeedback('like')}
+                  >
+                    <img
+                      src={IconLike}
+                      alt="image_item"
+                      className="icon_action"
+                      style={{ width: '30px' }}
+                    />
+                  </Button>
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box display={'flex'} alignItems={'center'}>
+                  <Button
+                    className="btn-item"
+                    onClick={() => handlerFeedback('dislike')}
+                  >
+                    <img
+                      src={IconDisLike}
+                      alt="image_item"
+                      className="icon_action"
+                      style={{ width: '30px' }}
+                    />
+                  </Button>
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box display={'flex'} alignItems={'center'}>
+                  <Button className="btn-item" onClick={onHandlerModalShare}>
+                    <img
+                      src={IconShare}
+                      alt="image_item"
+                      className="icon_action"
+                      style={{ width: '30px' }}
+                    />
+                  </Button>
+                </Box>
+              </Grid>
+              {/* <Grid item>
               <Box display={'flex'} alignItems={'center'}>
                 <Button className="btn-item">
                   <Box
@@ -304,8 +310,9 @@ function DetailItem(props: Props) {
                 </Button>
               </Box>
             </Grid> */}
-          </Grid>
-        </Box>
+            </Grid>
+          </Box>
+        )}
       </Box>
     </Box>
   );

@@ -148,7 +148,7 @@ function FilterComponent(props: Props) {
 
           <input
             className="input-search-filter"
-            placeholder="Search a machine"
+            placeholder="Search"
             style={{ minWidth: isMobile ? 'auto' : 512 }}
             onChange={(e: any) => {
               filterSearchHandler(e.target.value);

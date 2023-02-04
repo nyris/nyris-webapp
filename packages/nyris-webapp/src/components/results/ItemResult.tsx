@@ -16,8 +16,8 @@ import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import IconEmail from 'common/assets/icons/email_share.svg';
-import IconWeChat from 'common/assets/icons/icon_chat.svg';
-import IconWhatsApp from 'common/assets/icons/icon_whatapps.svg';
+// import IconWeChat from 'common/assets/icons/icon_chat.svg';
+// import IconWhatsApp from 'common/assets/icons/icon_whatapps.svg';
 import React, { memo, useEffect, useState } from 'react';
 import NoImage from 'common/assets/images/unnamed.png';
 import { AppState } from 'types';
@@ -157,30 +157,33 @@ function ItemResult(props: Props) {
             >
               Share
             </Typography>
-            <Paper component="form" className="box-input">
-              <Box
-                className="text-f9 text-gray"
-                style={{
-                  width: '100%',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  paddingRight: '10px',
-                }}
-              >
-                {dataItem.main_image_link}
-              </Box>
-              <IconButton
-                color="secondary"
-                aria-label="directions"
-                style={{ padding: '4px' }}
-                onClick={() => {
-                  navigator.clipboard.writeText(dataItem.main_image_link);
-                }}
-              >
-                <FileCopyOutlinedIcon style={{ fontSize: 14 }} />
-              </IconButton>
-            </Paper>
+            {dataItem.main_image_link && (
+              <Paper component="form" className="box-input">
+                <Box
+                  className="text-f9 text-gray"
+                  style={{
+                    width: '100%',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    paddingRight: '10px',
+                  }}
+                >
+                  {dataItem.main_image_link}
+                </Box>
+                <IconButton
+                  color="secondary"
+                  aria-label="directions"
+                  style={{ padding: '4px' }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(dataItem.main_image_link);
+                  }}
+                >
+                  <FileCopyOutlinedIcon style={{ fontSize: 14 }} />
+                </IconButton>
+              </Paper>
+            )}
+
             <Paper
               component="form"
               className="box-input"
@@ -194,9 +197,14 @@ function ItemResult(props: Props) {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   paddingRight: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
-                <span style={{ fontWeight: 'bold' }}>SKU</span> {dataItem.sku}
+                <span style={{ fontWeight: 'bold', paddingRight: '4px' }}>
+                  SKU:
+                </span>{' '}
+                {dataItem.sku}
               </Box>
               <IconButton
                 color="secondary"
@@ -216,12 +224,13 @@ function ItemResult(props: Props) {
             >
               <a
                 style={{ padding: 0 }}
-                href={`mailto:support@nyris.io?subject=subject&body= ${encodeURIComponent(
+                href={`mailto:support@nyris.io?subject=GF-Sparepart-Search&body= ${encodeURIComponent(
                   'SKU: ' +
                     dataItem.sku +
                     '\r\n' +
-                    'Image Link: ' +
-                    dataItem.main_image_link,
+                    (dataItem.main_image_link
+                      ? `Image Link: ${dataItem.main_image_link}`
+                      : ''),
                 )} `}
               >
                 <Box display={'flex'} alignItems={'center'}>
@@ -233,7 +242,7 @@ function ItemResult(props: Props) {
                   />
                 </Box>
               </a>
-              <Button style={{ padding: 0, margin: '0 20px' }}>
+              {/* <Button style={{ padding: 0, margin: '0 20px' }}>
                 <Box display={'flex'} alignItems={'center'}>
                   <img
                     src={IconWeChat}
@@ -252,7 +261,7 @@ function ItemResult(props: Props) {
                     alt="icon_email"
                   />
                 </Box>
-              </Button>
+              </Button> */}
             </Box>
           </Box>
         </Box>
@@ -327,13 +336,22 @@ function ItemResult(props: Props) {
           backgroundColor: '#F3F3F5',
         }}
       >
-        <Box className="box-top" style={{ minHeight: '150px' }}>
+        <Box
+          className="box-top"
+          style={{ minHeight: settings.showMoreInfo ? '150px' : '90px' }}
+        >
           <Grid container justifyContent="space-between">
             <Grid item xs={12}>
               <Typography
-                className="text-f10 max-line-1 fw-400"
+                className="text-f10 max-line-1 fw-400 d-flex"
                 style={{ color: '#2B2C46' }}
               >
+                <Typography
+                  className="text-f10 max-line-1 fw-400"
+                  style={{ color: '#2B2C46', paddingRight: '4px' }}
+                >
+                  SKU:
+                </Typography>
                 {sku}
               </Typography>
               <Box
@@ -352,9 +370,12 @@ function ItemResult(props: Props) {
                   style={{
                     color: settings.themePage.searchSuite?.secondaryColor,
                     fontSize: 8,
+                    letterSpacing: '1px',
                   }}
                 >
-                  {brand}
+                  {brand || settings.algolia?.indexName === 'terex-production'
+                    ? 'TEREX'
+                    : ''}
                 </Typography>
               </Box>
               <Typography
@@ -363,84 +384,90 @@ function ItemResult(props: Props) {
               >
                 {title}
               </Typography>
-              <Box
-                style={{
-                  boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
-                  // marginBottom: 22,
-                  height: 40,
-                  background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}cc 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
-                  borderRadius: 4,
-                  padding: '0 8px',
-                }}
-                display={'flex'}
-                justifyItems={'center'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
-                mt={2}
-              >
-                <Button
+              {settings.showMoreInfo && (
+                <Box
                   style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    padding: 0,
+                    boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                    // marginBottom: 22,
+                    height: 40,
+                    background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}cc 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
+                    borderRadius: 4,
+                    padding: '0 8px',
                   }}
-                  onClick={() => window.open(`${main_offer_link}`, '_blank')}
+                  display={'flex'}
+                  justifyItems={'center'}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                  mt={2}
                 >
-                  <Typography
-                    className="text-f12 fw-600 text-white"
-                    style={{ textTransform: 'uppercase' }}
+                  <Button
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      padding: 0,
+                    }}
+                    onClick={() => window.open(`${main_offer_link}`, '_blank')}
                   >
-                    {moreInfoText ? moreInfoText : 'MORE INFO'}
-                  </Typography>
-                  <img src={IconOpenLink} alt="" />
-                </Button>
-              </Box>
+                    <Typography
+                      className="text-f12 fw-600 text-white"
+                      style={{ textTransform: 'uppercase' }}
+                    >
+                      {moreInfoText ? moreInfoText : 'MORE INFO'}
+                    </Typography>
+                    <img src={IconOpenLink} alt="" />
+                  </Button>
+                </Box>
+              )}
             </Grid>
           </Grid>
         </Box>
 
-        <Box className="box-bottom" style={{ marginBottom: 6, marginTop: 10 }}>
-          <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
-              <Box display={'flex'} alignItems={'center'}>
-                <Button
-                  className="btn-item"
-                  style={{ padding: '6px' }}
-                  onClick={() => handlerFeedback('like')}
-                >
-                  <IconLike color="#000" width={16} height={16} />
-                </Button>
-              </Box>
-            </Grid>
-            <Grid item>
-              <Box display={'flex'} alignItems={'center'}>
-                <Button
-                  style={{ padding: '6px' }}
-                  className="btn-item"
-                  onClick={() => handlerFeedback('dislike')}
-                >
-                  <IconDisLike color="#000" width={16} height={16} />
-                </Button>
-              </Box>
-            </Grid>
-            <Grid item>
-              <Box display={'flex'} alignItems={'center'}>
-                <Button
-                  style={{ padding: '6px' }}
-                  className="btn-item"
-                  onClick={() => setOpenModalShare(true)}
-                >
-                  <img
-                    src={IconShare}
-                    alt="image_item"
-                    className="icon_action"
-                    style={{ width: '16px', height: '16px' }}
-                  />
-                </Button>
-              </Box>
-            </Grid>
-            {/* <Grid item>
+        {settings.showFeedbackAndShare && (
+          <Box
+            className="box-bottom"
+            style={{ marginBottom: 6, marginTop: 10 }}
+          >
+            <Grid container justifyContent="space-between" alignItems="center">
+              <Grid item>
+                <Box display={'flex'} alignItems={'center'}>
+                  <Button
+                    className="btn-item"
+                    style={{ padding: '6px' }}
+                    onClick={() => handlerFeedback('like')}
+                  >
+                    <IconLike color="#000" width={16} height={16} />
+                  </Button>
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box display={'flex'} alignItems={'center'}>
+                  <Button
+                    style={{ padding: '6px' }}
+                    className="btn-item"
+                    onClick={() => handlerFeedback('dislike')}
+                  >
+                    <IconDisLike color="#000" width={16} height={16} />
+                  </Button>
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box display={'flex'} alignItems={'center'}>
+                  <Button
+                    style={{ padding: '6px' }}
+                    className="btn-item"
+                    onClick={() => setOpenModalShare(true)}
+                  >
+                    <img
+                      src={IconShare}
+                      alt="image_item"
+                      className="icon_action"
+                      style={{ width: '16px', height: '16px' }}
+                    />
+                  </Button>
+                </Box>
+              </Grid>
+              {/* <Grid item>
               <Box display={'flex'} alignItems={'center'}>
                 <Button className="btn-item">
                   <Box
@@ -459,8 +486,9 @@ function ItemResult(props: Props) {
                 </Button>
               </Box>
             </Grid> */}
-          </Grid>
-        </Box>
+            </Grid>
+          </Box>
+        )}
       </Box>
     </Box>
   );
