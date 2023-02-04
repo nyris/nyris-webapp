@@ -101,7 +101,7 @@ function FilterComponent(props: Props) {
     >
       {isMobile && (
         <Typography
-          style={{ color: '#000', fontSize: '35px', fontWeight: 700 }}
+          style={{ color: '#000', fontSize: '24px', fontWeight: 700 }}
         >
           Select a model
         </Typography>
@@ -149,7 +149,7 @@ function FilterComponent(props: Props) {
           <input
             className="input-search-filter"
             placeholder="Search"
-            style={{ minWidth: isMobile ? 'auto' : 512 }}
+            style={{ minWidth: isMobile ? '100%' : 512 }}
             onChange={(e: any) => {
               filterSearchHandler(e.target.value);
             }}

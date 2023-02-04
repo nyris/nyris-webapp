@@ -1934,6 +1934,9 @@ button {
 }
 
 .wrap-filter-destop {
+  
+    width: 90%;
+
   .box-filter-destop {
     background-color: #fff;
     width: 70%;
@@ -1966,7 +1969,7 @@ button {
       }
       .box-bottom {
         column-gap: 30px;
-        padding: 24px 32px;
+        padding: 0px 20px;
         flex-wrap: wrap;
         width: 100%;
         max-width: 100%;
