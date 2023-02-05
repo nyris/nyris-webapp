@@ -4,6 +4,7 @@ import { memo } from 'react';
 import { connectStateResults } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
+import { setPreFilterDropdown } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AlgoliaSettings, AppState } from 'types';
 import FooterComponent from './Footer';
@@ -15,13 +16,15 @@ import HeaderMdComponent from './HeaderMd';
 import HeaderMobile from './HeaderMobile';
 import HeaderNewVersion from './HeaderNewVersion';
 import ExpandablePanelComponent from './PanelResult';
+import FilterComponent from './pre-filter/desktop';
 
 function AppContainerComponent({
   isSearchStalled,
   children,
 }: any): JSX.Element {
+  const dispatch = useAppDispatch();
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
-  const { loadingSearchAlgolia, fetchingResults } = search;
+  const { fetchingResults, loadingSearchAlgolia, preFilterDropdown } = search;
   const { themePage } = settings;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
@@ -73,7 +76,7 @@ function AppContainerComponent({
           }
           style={{
             ...(classNameBoxVersion === 'newVersion'
-              ? { background: settings.themePage.searchSuite?.primaryColor }
+              ? { background: settings.themePage.searchSuite?.headerColor }
               : {}),
           }}
         >
@@ -83,6 +86,7 @@ function AppContainerComponent({
             }}
           />
         </div>
+
         <div className={`box-body-${classNameBoxVersion}-wrap-main`}>
           {children}
         </div>
@@ -100,6 +104,19 @@ function AppContainerComponent({
               setOpenFilter(!isOpenFilter);
             }}
           />
+        </Box>
+      )}
+      {isMobile && preFilterDropdown && (
+        <Box className={`box-fillter open`} position={'absolute'}>
+          <div className={'wrap-filter-destop'}>
+            <div className={'bg-white box-filter-destop isMobile'}>
+              <FilterComponent
+                handleClose={() =>
+                  dispatch(setPreFilterDropdown(!preFilterDropdown))
+                }
+              />
+            </div>
+          </div>
         </Box>
       )}
     </>

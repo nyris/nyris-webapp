@@ -23,17 +23,26 @@ function LoadingScreen({
   moreInfoText,
   searchQuery,
   requestImage,
+  isSearchStalled,
 }: any): JSX.Element {
   const { search } = useAppSelector<AppState>((state: any) => state);
   const { loadingSearchAlgolia } = search;
   const [hitGroups, setHitGroups] = useState<any>({});
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
+  const [algoliaRequest, setAlgoliaRequest] = useState(false);
 
   useEffect(() => {
-    if (!allSearchResults?.hits) {
+    if (isSearchStalled) {
+      setAlgoliaRequest(true);
+    }
+  }, [isSearchStalled]);
+
+  useEffect(() => {
+    if (!allSearchResults?.hits?.length) {
       setItemShowDefault([]);
       return;
     }
+    setAlgoliaRequest(false);
     const listHistDefaultGroups = setListHitDefault(allSearchResults?.hits);
     setItemShowDefault(listHistDefaultGroups);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,7 +93,6 @@ function LoadingScreen({
     secondArr = otherItemsInGroup.concat(secondArr);
     setItemShowDefault(firstArr.concat(secondArr));
   };
-
   const handlerCloseGroup = (hit: any, index: number) => {
     const group_id = hit.group_id;
     let newItemList = [...itemShowDefault];
@@ -98,14 +106,19 @@ function LoadingScreen({
   };
 
   const renderItem = useMemo(() => {
-    if (!requestImage && !search.valueTextSearch.query) {
+    if (!requestImage && !search.valueTextSearch.query && !isSearchStalled) {
       return (
         <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
           Please upload an image or enter a keyword to search.
         </Box>
       );
     }
-    if (itemShowDefault.length === 0 && !loadingSearchAlgolia) {
+    if (
+      itemShowDefault.length === 0 &&
+      !loadingSearchAlgolia &&
+      !isSearchStalled &&
+      (algoliaRequest || requestImage)
+    ) {
       return (
         <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
           No products were found matching your search criteria.
@@ -139,7 +152,14 @@ function LoadingScreen({
       );
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemShowDefault, searchQuery, requestImage, search.valueTextSearch]);
+  }, [
+    itemShowDefault,
+    searchQuery,
+    requestImage,
+    search.valueTextSearch,
+    isSearchStalled,
+    algoliaRequest,
+  ]);
 
   return <>{renderItem}</>;
 }
