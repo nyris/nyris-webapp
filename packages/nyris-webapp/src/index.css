@@ -791,8 +791,8 @@ a img.aligncenter {
   position: relative;
   width: 100%;
   height: 90vh;
-  height: -webkit-calc(100vh - 30px);
-  height: calc(100vh - 30px);
+  height: -webkit-calc(100svh - 30px);
+  height: calc(100svh - 30px);
   background: #031f2b;
   transition: height 300ms;
 }

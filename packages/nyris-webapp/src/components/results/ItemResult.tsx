@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
-} from '@material-ui/core';
+import { Box, Button, Grid, Typography } from '@material-ui/core';
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';
 import IconShare from 'common/assets/icons/Fill.svg';
@@ -13,9 +6,6 @@ import IconShare from 'common/assets/icons/Fill.svg';
 import { ReactComponent as Expand } from 'common/assets/icons/expand.svg';
 import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
 import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
-import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
-import IconEmail from 'common/assets/icons/email_share.svg';
 // import IconWeChat from 'common/assets/icons/icon_chat.svg';
 // import IconWhatsApp from 'common/assets/icons/icon_whatapps.svg';
 import React, { memo, useEffect, useState } from 'react';
@@ -24,8 +14,14 @@ import { AppState } from 'types';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import DetailItem from 'components/DetailItem';
-import { onToggleModalItemDetail, updateStatusLoading } from 'Store/Search';
+import {
+  onToggleModalItemDetail,
+  setMobileDetailsPreview,
+  updateStatusLoading,
+} from 'Store/Search';
 import { useVisualSearch } from 'hooks/useVisualSearch';
+import { useMediaQuery } from 'react-responsive';
+import { ShareModal } from '../ShareModal';
 
 interface Props {
   dataItem: any;
@@ -40,6 +36,7 @@ interface Props {
   moreInfoText?: string;
   handlerCloseGroup?: any;
   main_image_link?: any;
+  setSelectedItem?: any;
 }
 
 function ItemResult(props: Props) {
@@ -54,12 +51,15 @@ function ItemResult(props: Props) {
     handlerCloseGroup,
     main_image_link,
     indexItem,
+    setSelectedItem,
   } = props;
   const dispatch = useAppDispatch();
   const [urlImage, setUrlImage] = useState<string>('');
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+  const [feedback, setFeedback] = useState('none');
 
   const { sku, title, brand, main_offer_link, collap } = dataItem;
   const { getUrlToCanvasFile } = useVisualSearch();
@@ -99,6 +99,13 @@ function ItemResult(props: Props) {
   };
 
   const handlerToggleModal = (item: any) => {
+    if (isMobile) {
+      setSelectedItem(item);
+      dispatch(setMobileDetailsPreview(true));
+      document.getElementById('wrap-main-result')?.scrollIntoView();
+      return;
+    }
+    dispatch(setMobileDetailsPreview(false));
     setOpenModalImage(true);
     dispatch(onToggleModalItemDetail(true));
     dispatch(updateStatusLoading(true));
@@ -111,7 +118,7 @@ function ItemResult(props: Props) {
     <Box className="wrap-main-item-result">
       {/* TODO: Component modal image */}
       <DefaultModal
-        openModal={isOpenModalImage}
+        openModal={isOpenModalImage && !isMobile}
         handleClose={(e: any) => {
           setOpenModalImage(false);
         }}
@@ -131,141 +138,11 @@ function ItemResult(props: Props) {
       </DefaultModal>
 
       {/* TODO: Component modal share */}
-      <DefaultModal
-        openModal={isOpenModalShare}
-        handleClose={() => setOpenModalShare(false)}
-      >
-        <Box
-          className="box-modal-default box-modal-share"
-          style={{ padding: '4px' }}
-        >
-          <Box
-            className="ml-auto"
-            style={{ width: 'fit-content', marginRight: 5 }}
-          >
-            <Button
-              style={{ padding: 0 }}
-              onClick={() => setOpenModalShare(false)}
-            >
-              <CloseOutlinedIcon style={{ fontSize: 16, color: '#55566B' }} />
-            </Button>
-          </Box>
-          <Box className="box-content-box-share">
-            <Typography
-              className="text-f12 text-gray text-bold"
-              style={{ marginBottom: '5px' }}
-            >
-              Share
-            </Typography>
-            {dataItem.main_image_link && (
-              <Paper component="form" className="box-input">
-                <Box
-                  className="text-f9 text-gray"
-                  style={{
-                    width: '100%',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    paddingRight: '10px',
-                  }}
-                >
-                  {dataItem.main_image_link}
-                </Box>
-                <IconButton
-                  color="secondary"
-                  aria-label="directions"
-                  style={{ padding: '4px' }}
-                  onClick={() => {
-                    navigator.clipboard.writeText(dataItem.main_image_link);
-                  }}
-                >
-                  <FileCopyOutlinedIcon style={{ fontSize: 14 }} />
-                </IconButton>
-              </Paper>
-            )}
-
-            <Paper
-              component="form"
-              className="box-input"
-              style={{ marginTop: '12px', marginBottom: '8px' }}
-            >
-              <Box
-                className="text-f9 text-gray"
-                style={{
-                  width: '100%',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  paddingRight: '10px',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <span style={{ fontWeight: 'bold', paddingRight: '4px' }}>
-                  SKU:
-                </span>{' '}
-                {dataItem.sku}
-              </Box>
-              <IconButton
-                color="secondary"
-                aria-label="directions"
-                style={{ padding: '4px' }}
-                onClick={() => {
-                  navigator.clipboard.writeText(dataItem.sku);
-                }}
-              >
-                <FileCopyOutlinedIcon style={{ fontSize: 14 }} />
-              </IconButton>
-            </Paper>
-            <Box
-              className="box-media-share"
-              display={'flex'}
-              style={{ marginTop: '18px' }}
-            >
-              <a
-                style={{ padding: 0 }}
-                href={`mailto:support@nyris.io?subject=GF-Sparepart-Search&body= ${encodeURIComponent(
-                  'SKU: ' +
-                    dataItem.sku +
-                    '\r\n' +
-                    (dataItem.main_image_link
-                      ? `Image Link: ${dataItem.main_image_link}`
-                      : ''),
-                )} `}
-              >
-                <Box display={'flex'} alignItems={'center'}>
-                  <img
-                    width={40}
-                    height={40}
-                    src={IconEmail}
-                    alt="icon_email"
-                  />
-                </Box>
-              </a>
-              {/* <Button style={{ padding: 0, margin: '0 20px' }}>
-                <Box display={'flex'} alignItems={'center'}>
-                  <img
-                    src={IconWeChat}
-                    width={40}
-                    height={40}
-                    alt="icon_email"
-                  />
-                </Box>
-              </Button>
-              <Button style={{ padding: 0 }}>
-                <Box display={'flex'} alignItems={'center'}>
-                  <img
-                    src={IconWhatsApp}
-                    width={40}
-                    height={40}
-                    alt="icon_email"
-                  />
-                </Box>
-              </Button> */}
-            </Box>
-          </Box>
-        </Box>
-      </DefaultModal>
+      <ShareModal
+        setModalState={setOpenModalShare}
+        dataItem={dataItem}
+        isOpen={isOpenModalShare}
+      />
       <Box className="box-top">
         {isGroupItem && collap && (
           <Box className="btn-show-result">
@@ -287,7 +164,7 @@ function ItemResult(props: Props) {
           <Box className="box-icon-modal">
             <Button
               style={{ width: '100%', height: '100%', padding: 0, zIndex: 9 }}
-              onClick={handlerToggleModal}
+              onClick={() => handlerToggleModal(dataItem)}
             >
               <Expand color={settings.themePage.searchSuite?.secondaryColor} />
             </Button>
@@ -298,6 +175,7 @@ function ItemResult(props: Props) {
             style={{ width: '100%', height: '100%' }}
             onClick={(e: any) => {
               e.preventDefault();
+              dispatch(setMobileDetailsPreview(false));
               if (urlImage.length > 1) {
                 onSearchImage(dataItem?.main_image_link);
               }
@@ -434,9 +312,16 @@ function ItemResult(props: Props) {
                   <Button
                     className="btn-item"
                     style={{ padding: '6px' }}
-                    onClick={() => handlerFeedback('like')}
+                    onClick={() => {
+                      handlerFeedback('like');
+                      setFeedback('like');
+                    }}
                   >
-                    <IconLike color="#000" width={16} height={16} />
+                    <IconLike
+                      width={16}
+                      height={16}
+                      color={feedback === 'like' ? '#3E36DC' : '#000000'}
+                    />
                   </Button>
                 </Box>
               </Grid>
@@ -445,9 +330,16 @@ function ItemResult(props: Props) {
                   <Button
                     style={{ padding: '6px' }}
                     className="btn-item"
-                    onClick={() => handlerFeedback('dislike')}
+                    onClick={() => {
+                      handlerFeedback('dislike');
+                      setFeedback('dislike');
+                    }}
                   >
-                    <IconDisLike color="#000" width={16} height={16} />
+                    <IconDisLike
+                      width={16}
+                      height={16}
+                      color={feedback === 'dislike' ? '#CC1854' : '#000000'}
+                    />
                   </Button>
                 </Box>
               </Grid>

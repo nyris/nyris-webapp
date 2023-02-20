@@ -1,10 +1,10 @@
-import { Box } from '@material-ui/core';
+import {Box} from '@material-ui/core';
 import ItemResult from 'components/results/ItemResult';
-import { groupBy } from 'lodash';
-import React, { memo, useEffect, useMemo, useState } from 'react';
-import { connectStateResults } from 'react-instantsearch-dom';
-import { useAppSelector } from 'Store/Store';
-import { AppState } from 'types';
+import {groupBy} from 'lodash';
+import React, {memo, useEffect, useMemo, useState} from 'react';
+import {connectStateResults} from 'react-instantsearch-dom';
+import {useAppSelector} from 'Store/Store';
+import {AppState} from 'types';
 
 interface Props {
   allSearchResults: any;
@@ -14,19 +14,21 @@ interface Props {
   moreInfoText: any;
   requestImage?: any;
   searchQuery?: string;
+  setSelectedItem: any;
 }
 
 function LoadingScreen({
-  allSearchResults,
-  getUrlToCanvasFile,
-  sendFeedBackAction,
-  moreInfoText,
-  searchQuery,
-  requestImage,
-  isSearchStalled,
-}: any): JSX.Element {
-  const { search } = useAppSelector<AppState>((state: any) => state);
-  const { loadingSearchAlgolia } = search;
+                         allSearchResults,
+                         getUrlToCanvasFile,
+                         sendFeedBackAction,
+                         moreInfoText,
+                         searchQuery,
+                         requestImage,
+                         isSearchStalled,
+                         setSelectedItem
+                       }: any): JSX.Element {
+  const {search} = useAppSelector<AppState>((state: any) => state);
+  const {loadingSearchAlgolia} = search;
   const [hitGroups, setHitGroups] = useState<any>({});
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
   const [algoliaRequest, setAlgoliaRequest] = useState(false);
@@ -53,7 +55,7 @@ function LoadingScreen({
     let newArrayShowItem: any = [];
 
     const groupHits = hits.filter(
-      (hit: { group_id: string }) => hit.group_id && hit.group_id !== '',
+            (hit: { group_id: string }) => hit.group_id && hit.group_id !== '',
     );
     const groups = groupBy(groupHits, 'group_id');
     setHitGroups(groups);
@@ -108,47 +110,48 @@ function LoadingScreen({
   const renderItem = useMemo(() => {
     if (!requestImage && !search.valueTextSearch.query && !isSearchStalled) {
       return (
-        <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
-          Please upload an image or enter a keyword to search.
-        </Box>
+              <Box style={{marginTop: '50px', width: '100%', textAlign: 'center'}}>
+                Please upload an image or enter a keyword to search.
+              </Box>
       );
     }
     if (
-      itemShowDefault.length === 0 &&
-      !loadingSearchAlgolia &&
-      !isSearchStalled &&
-      (algoliaRequest || requestImage)
+            itemShowDefault.length === 0 &&
+            !loadingSearchAlgolia &&
+            !isSearchStalled &&
+            (algoliaRequest || requestImage)
     ) {
       return (
-        <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
-          No products were found matching your search criteria.
-        </Box>
+              <Box style={{marginTop: '50px', width: '100%', textAlign: 'center'}}>
+                No products were found matching your search criteria.
+              </Box>
       );
     }
     return itemShowDefault.map((hit: any, i: number) => {
       return (
-        <Box key={i}>
-          <ItemResult
-            dataItem={hit}
-            indexItem={i}
-            isHover={false}
-            onSearchImage={(url: string) => {
-              getUrlToCanvasFile(url);
-            }}
-            handlerFeedback={(value: string) => {
-              sendFeedBackAction(value);
-            }}
-            handlerGroupItem={(hitItem: any, index: number) =>
-              handlerGroupItem(hitItem, index)
-            }
-            handlerCloseGroup={(hitItem: any, index: number) =>
-              handlerCloseGroup(hitItem, index)
-            }
-            isGroupItem={hit?.isGroup}
-            moreInfoText={moreInfoText}
-            main_image_link={hit?.main_image_link}
-          />
-        </Box>
+              <Box key={i}>
+                <ItemResult
+                        dataItem={hit}
+                        indexItem={i}
+                        isHover={false}
+                        onSearchImage={(url: string) => {
+                          getUrlToCanvasFile(url);
+                        }}
+                        handlerFeedback={(value: string) => {
+                          sendFeedBackAction(value);
+                        }}
+                        handlerGroupItem={(hitItem: any, index: number) =>
+                                handlerGroupItem(hitItem, index)
+                        }
+                        handlerCloseGroup={(hitItem: any, index: number) =>
+                                handlerCloseGroup(hitItem, index)
+                        }
+                        isGroupItem={hit?.isGroup}
+                        moreInfoText={moreInfoText}
+                        main_image_link={hit?.main_image_link}
+                        setSelectedItem={setSelectedItem}
+                />
+              </Box>
       );
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -163,5 +166,6 @@ function LoadingScreen({
 
   return <>{renderItem}</>;
 }
+
 const LoadingScreenCustom = connectStateResults<Props>(memo(LoadingScreen));
 export default LoadingScreenCustom;

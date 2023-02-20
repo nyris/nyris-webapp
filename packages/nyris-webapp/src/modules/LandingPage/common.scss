@@ -293,8 +293,7 @@ button {
 }
 
 .box-modal-default {
-  min-height: 230px;
-  width: 640px;
+  width: 408px;
   min-height: 468px;
   min-width: 330px;
   display: flex;
@@ -486,7 +485,7 @@ button {
 
   .box-content {
     background-color: #fafafa;
-    padding: 16px;
+    padding: 16px 24px;
     min-height: 138px;
     height: 40%;
     .MuiIconButton-label {
@@ -952,7 +951,7 @@ button {
     }
   }
   .box-result {
-    height: calc(100vh - 180px);
+    height: calc(100svh - 180px);
     display: flex;
     justify-content: space-between;
     // overflow: auto;
@@ -1503,7 +1502,7 @@ button {
 
 .wrap-main-support-page {
   background-color: #2b2c46;
-  min-height: calc(100vh - 32px);
+  min-height: calc(100svh - 32px);
   // max-width: 1280px;
   padding: 40px;
   margin: auto;

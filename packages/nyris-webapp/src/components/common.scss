@@ -1,11 +1,11 @@
 .layout-main-newVersion {
-  height: 100vh;
+  height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
   .box-header-newVersion-main {
-    height: 54px;
+    height: 40px;
     // background: #2b2c46;
     .box-content {
       max-width: 1280px;
@@ -48,7 +48,7 @@
     }
   }
   .box-body-newVersion-wrap-main {
-    height: calc(100% - 54px);
+    height: calc(100% - 40px);
     // overflow: auto;
   }
 }

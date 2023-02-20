@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import './common.scss';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { reset } from 'Store/Search';
+
 function HeaderNewVersion(): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings } = useAppSelector(state => state);
@@ -28,8 +29,8 @@ function HeaderNewVersion(): JSX.Element {
       >
         {/* <section id="branding" style={{ height: 32 }} /> */}
         <img
-          width={170}
-          height={52}
+          width={84}
+          height={30}
           src={settings.themePage.searchSuite?.appBarLogoUrl}
           alt={settings.themePage.searchSuite?.appBarLogoUrlAlt}
         />

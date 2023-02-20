@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useRef, useState, useCallback } from 'react';
-import { Box, Button, Typography } from '@material-ui/core';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { Box, Button, Collapse, Typography } from '@material-ui/core';
 import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
@@ -38,6 +38,8 @@ import {
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from './MockData';
+import { MobileDetails } from '../../components/MobileDetails';
+import { ShareModal } from '../../components/ShareModal';
 
 interface Props {
   allSearchResults: any;
@@ -50,13 +52,21 @@ function ResultComponent(props: Props) {
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector((state: any) => state);
   const { search, settings } = stateGlobal;
-  const { requestImage, regions, selectedRegion, keyFilter } = search;
+  const {
+    requestImage,
+    regions,
+    selectedRegion,
+    keyFilter,
+    mobileDetailsPreview,
+  } = search;
   const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [imageSelection, setImageSelection] = useState(selectedRegion);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
   const [filterString, setFilterString] = useState<string>();
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
 
   useEffect(() => {
     if (requestImage) {
@@ -222,27 +232,12 @@ function ResultComponent(props: Props) {
   );
 
   return (
-    <div className={`wrap-main-result loading`} ref={refBoxResult}>
+    <div
+      className={`wrap-main-result loading`}
+      id="wrap-main-result"
+      ref={refBoxResult}
+    >
       <>
-        {/* TODO: Mobile - Modal detail item  */}
-        {/* <DefaultModal
-          openModal={isOpenModalImage}
-          handleClose={(e: any) => {
-            setOpenModalImage(false);
-          }}
-        >
-          <DetailItem
-            handlerCloseModal={() => {
-              setOpenModalImage(false);
-            }}
-            handlerFeedback={sendFeedBackAction}
-            dataItem={dataImageModal}
-            onSearchImage={(url: string) => {
-              dispatch(updateStatusLoading(true));
-              getUrlToCanvasFile(url);
-            }}
-          />
-        </DefaultModal> */}
         {filterString && <Configure filters={filterString}></Configure>}
         <Box className="box-wrap-result-component">
           {!isMobile && (
@@ -250,7 +245,10 @@ function ResultComponent(props: Props) {
               <CustomSearchBox />
             </div>
           )}
-          <Box className="box-result">
+          <Box
+            className="box-result"
+            style={mobileDetailsPreview ? { paddingTop: 0 } : {}}
+          >
             <>
               <Box className="btn-open-support">
                 <Link to={'/support'} style={{ color: '#3E36DC' }}>
@@ -297,7 +295,10 @@ function ResultComponent(props: Props) {
                           }}
                         >
                           <Box className="box-preview">
-                            <Box className="preview-item">
+                            <Box
+                              className="preview-item"
+                              style={{ backgroundColor: 'white' }}
+                            >
                               <Preview
                                 key={requestImage?.id}
                                 onSelectionChange={(r: RectCoords) => {
@@ -342,36 +343,62 @@ function ResultComponent(props: Props) {
                 <Box className="wrap-box-refinements">
                   <CurrentRefinements statusSwitchButton={true} />
                 </Box>
-                {isMobile && settings.preview && requestImage && (
-                  <Box
-                    style={{
-                      backgroundColor:
-                        settings?.themePage?.searchSuite?.primaryColor,
-                      marginBottom: '15px',
-                    }}
-                    className="col-left"
-                  >
-                    <Box className="box-preview">
-                      {requestImage && (
-                        <Box className="preview-item">
-                          <Preview
-                            key={requestImage?.id}
-                            onSelectionChange={(r: RectCoords) => {
-                              setImageSelection(r);
-                              debouncedOnImageSelectionChange(r);
-                            }}
-                            image={requestImage?.canvas}
-                            selection={imageSelection || defaultSelection}
-                            regions={regions}
-                            maxWidth={320}
-                            maxHeight={320}
-                            dotColor="#3E36DC"
-                          />
+                {isMobile &&
+                  settings.preview &&
+                  requestImage &&
+                  !mobileDetailsPreview && (
+                    <Box
+                      className="col-left"
+                      style={{
+                        backgroundColor:
+                          settings?.themePage?.searchSuite?.primaryColor,
+                        marginBottom: '15px',
+                      }}
+                    >
+                      {
+                        <Box className="box-preview">
+                          <Box
+                            className="preview-item"
+                            style={{ backgroundColor: 'white' }}
+                          >
+                            <Preview
+                              key={requestImage?.id}
+                              onSelectionChange={(r: RectCoords) => {
+                                setImageSelection(r);
+                                debouncedOnImageSelectionChange(r);
+                              }}
+                              image={requestImage?.canvas}
+                              selection={imageSelection || defaultSelection}
+                              regions={regions}
+                              maxWidth={320}
+                              maxHeight={320}
+                              dotColor="#3E36DC"
+                            />
+                          </Box>
                         </Box>
-                      )}
+                      }
                     </Box>
-                  </Box>
+                  )}
+                {isMobile && (
+                  <Collapse in={mobileDetailsPreview}>
+                    {selectedItem && (
+                      <Box
+                        className="col-left"
+                        style={{
+                          backgroundColor: '#fff',
+                          marginBottom: '15px',
+                        }}
+                      >
+                        <MobileDetails
+                          item={selectedItem}
+                          setOpenModalShare={setOpenModalShare}
+                          handlerFeedback={sendFeedBackAction}
+                        />
+                      </Box>
+                    )}
+                  </Collapse>
                 )}
+
                 <Box className={'box-item-result ml-auto mr-auto'}>
                   <LoadingScreenCustom
                     getUrlToCanvasFile={getUrlToCanvasFile}
@@ -380,6 +407,7 @@ function ResultComponent(props: Props) {
                     moreInfoText={moreInfoText}
                     requestImage={requestImage}
                     searchQuery={search.valueTextSearch.query}
+                    setSelectedItem={setSelectedItem}
                   />
                   <Box
                     className="pagination-result"
@@ -455,8 +483,16 @@ function ResultComponent(props: Props) {
             </Box>
           )}
         </Box>
+        {mobileDetailsPreview && (
+          <ShareModal
+            setModalState={setOpenModalShare}
+            dataItem={selectedItem}
+            isOpen={isOpenModalShare}
+          />
+        )}
       </>
     </div>
   );
 }
+
 export default connectStateResults<Props>(memo(ResultComponent));

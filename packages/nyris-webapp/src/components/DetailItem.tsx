@@ -1,24 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Collapse, Grid, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import { useState } from 'react';
-import { isEmpty } from 'lodash';
-import { useEffect } from 'react';
 import IconOpenLink from 'common/assets/icons/Union.svg';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useMediaQuery } from 'react-responsive';
-import CloseIcon from '@material-ui/icons/Close';
 import { ImagePreviewCarousel } from './carousel/ImagePreviewCarousel';
 import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
-import IconShare from 'common/assets/icons/Fill.svg';
-import IconDisLike from 'common/assets/icons/icon_dislike.svg';
-import IconLike from 'common/assets/icons/icon_like.svg';
+import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
+import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
+import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
 import { AppState } from 'types';
 import { useAppSelector } from 'Store/Store';
+import { prepareImageList } from '../helpers/CommonHelper';
 
 interface Props {
   numberResult?: number;
-  handlerCloseModal: () => void;
+  handlerCloseModal?: () => void;
   dataItem?: any;
   onHandlerModalShare?: () => void;
   onSearchImage?: any;
@@ -40,7 +37,7 @@ function DetailItem(props: Props) {
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = useAppSelector<AppState>((state: any) => state);
-
+  const [feedback, setFeedback] = useState('none');
   const [urlImage, setUrlImage] = useState<string>('');
   useEffect(() => {
     checkDataItemResult(dataItem);
@@ -69,47 +66,23 @@ function DetailItem(props: Props) {
   };
 
   const checkDataItemResult = (dataItem: any) => {
-    if (!dataItem) {
-      return setDataImageCarouSel([]);
-    }
-    let valueKey: any[] = [];
-    const newObject = dataItem;
-    for (let key in newObject) {
-      if (key?.includes('recognition_image_link')) {
-        if (!isEmpty(newObject[key])) {
-          valueKey.push({
-            url: newObject[key],
-          });
-        }
-      } else {
-        if (key === 'main_image_link') {
-          valueKey.push({
-            url: newObject[key],
-          });
-        }
-      }
-    }
+    const valueKey = prepareImageList(dataItem);
     setDataImageCarouSel(valueKey);
   };
 
   return (
-    <Box className="box-modal-default" borderRadius={12}>
-      {!isMobile ? (
+    <Box
+      className="box-modal-default"
+      borderRadius={12}
+      style={isMobile ? { margin: 0 } : {}}
+    >
+      {!isMobile && (
         <Box
           className="ml-auto"
           style={{ width: 'fit-content', marginRight: 5 }}
         >
-          <Button style={{ padding: 0 }} onClick={handlerCloseModal}>
+          <Button style={{ padding: 0 }} onClick={() => handlerCloseModal?.()}>
             <CloseOutlinedIcon style={{ fontSize: 20, color: '#55566B' }} />
-          </Button>
-        </Box>
-      ) : (
-        <Box
-          className="ml-auto"
-          style={{ width: 'fit-content', marginLeft: 5 }}
-        >
-          <Button style={{ padding: 5 }} onClick={handlerCloseModal}>
-            <CloseIcon style={{ fontSize: 25, color: '#55566B' }} />
           </Button>
         </Box>
       )}
@@ -118,22 +91,24 @@ function DetailItem(props: Props) {
         <ImagePreviewCarousel
           imgItem={dataImageCarousel}
           onSearchImage={onSearchImage}
-          handlerCloseModal={handlerCloseModal}
+          handlerCloseModal={() => handlerCloseModal?.()}
         />
-        <Button
-          className="icon-style"
-          onClick={() => {
-            if (urlImage.length > 1) {
-              onSearchImage(urlImage);
-              handlerCloseModal();
-              return;
-            }
-          }}
-        >
-          <IconSearchImage
-            color={settings.themePage.searchSuite?.secondaryColor}
-          />
-        </Button>
+        {!isMobile && (
+          <Button
+            className="icon-style"
+            onClick={() => {
+              if (urlImage.length > 1) {
+                onSearchImage(urlImage);
+                handlerCloseModal?.();
+                return;
+              }
+            }}
+          >
+            <IconSearchImage
+              color={settings.themePage.searchSuite?.secondaryColor}
+            />
+          </Button>
+        )}
       </Box>
 
       <Box
@@ -144,33 +119,36 @@ function DetailItem(props: Props) {
           borderBottomLeftRadius: 12,
           borderBottomRightRadius: 12,
           marginBottom: 19,
+          backgroundColor: '#F3F3F5',
         }}
       >
         <Box className="box-top">
           <Grid container justifyContent="space-between">
             <Grid item xs={12}>
-              <Typography className="text-f10 fw-500 max-line-1">
+              <Typography className="text-f13 fw-500 max-line-1">
                 SKU: {sku}
               </Typography>
-              <Box
-                borderRadius={16}
-                style={{
-                  backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
-                  width: 'fit-content',
-                  padding: '3px 5px',
-                  marginTop: 8,
-                }}
-              >
-                <Typography
+              {brand && (
+                <Box
+                  borderRadius={16}
                   style={{
-                    color: settings.themePage.searchSuite?.secondaryColor,
-                    fontSize: 10,
-                    fontWeight: 700,
+                    backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                    width: 'fit-content',
+                    padding: '3px 5px',
+                    marginTop: 8,
                   }}
                 >
-                  {brand}
-                </Typography>
-              </Box>
+                  <Typography
+                    style={{
+                      color: settings.themePage.searchSuite?.secondaryColor,
+                      fontSize: 10,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {brand}
+                  </Typography>
+                </Box>
+              )}
               <Typography
                 className={
                   isMobile ? 'fw-600 text-dark' : 'text-f22 fw-600 text-dark'
@@ -246,20 +224,22 @@ function DetailItem(props: Props) {
         {settings.showFeedbackAndShare && (
           <Box
             className="box-bottom"
-            style={{ marginBottom: 6, marginTop: 18 }}
+            style={{ marginBottom: 6, marginTop: 28 }}
           >
             <Grid container justifyContent="space-between" alignItems="center">
               <Grid item>
                 <Box display={'flex'} alignItems={'center'}>
                   <Button
-                    className="btn-item"
-                    onClick={() => handlerFeedback('like')}
+                    className="btn-item btn-action-item"
+                    onClick={() => {
+                      handlerFeedback('like');
+                      setFeedback('like');
+                    }}
                   >
-                    <img
-                      src={IconLike}
-                      alt="image_item"
-                      className="icon_action"
-                      style={{ width: '30px' }}
+                    <IconLike
+                      width={30}
+                      height={30}
+                      color={feedback === 'like' ? '#3E36DC' : '#000000'}
                     />
                   </Button>
                 </Box>
@@ -267,27 +247,27 @@ function DetailItem(props: Props) {
               <Grid item>
                 <Box display={'flex'} alignItems={'center'}>
                   <Button
-                    className="btn-item"
-                    onClick={() => handlerFeedback('dislike')}
+                    className="btn-item btn-action-item"
+                    onClick={() => {
+                      handlerFeedback('dislike');
+                      setFeedback('dislike');
+                    }}
                   >
-                    <img
-                      src={IconDisLike}
-                      alt="image_item"
-                      className="icon_action"
-                      style={{ width: '30px' }}
+                    <IconDisLike
+                      width={30}
+                      height={30}
+                      color={feedback === 'dislike' ? '#CC1854' : '#000000'}
                     />
                   </Button>
                 </Box>
               </Grid>
               <Grid item>
                 <Box display={'flex'} alignItems={'center'}>
-                  <Button className="btn-item" onClick={onHandlerModalShare}>
-                    <img
-                      src={IconShare}
-                      alt="image_item"
-                      className="icon_action"
-                      style={{ width: '30px' }}
-                    />
+                  <Button
+                    className="btn-item btn-action-item"
+                    onClick={onHandlerModalShare}
+                  >
+                    <IconShare width={30} height={30} />
                   </Button>
                 </Box>
               </Grid>

@@ -32,6 +32,7 @@ export interface SearchState {
   keyFilter?: string;
   preFilterDropdown?: boolean;
   setPreFilterDropdown?: any;
+  mobileDetailsPreview?: boolean;
 }
 
 // TODO: init state
@@ -60,6 +61,7 @@ const initialState: SearchState = {
   isShowModalDetailItemMobile: false,
   keyFilter: '',
   preFilterDropdown: false,
+  mobileDetailsPreview: false
 };
 
 export const searchSlice = createSlice({
@@ -210,6 +212,7 @@ export const searchSlice = createSlice({
         isShowModalDetailItemMobile: false,
         keyFilter: '',
         preFilterDropdown: false,
+        mobileDetailsPreview: false
       };
     },
 
@@ -301,6 +304,12 @@ export const searchSlice = createSlice({
         preFilterDropdown: data.payload,
       };
     },
+    setMobileDetailsPreview: (state, data: PayloadAction<boolean>) => {
+      return {
+        ...state,
+        mobileDetailsPreview: data.payload,
+      };
+    },
   },
 });
 
@@ -329,5 +338,6 @@ export const {
   onResetRequestImage,
   setUpdateKeyFilterDesktop,
   setPreFilterDropdown,
+  setMobileDetailsPreview
 } = searchSlice.actions;
 export default searchSlice.reducer;
