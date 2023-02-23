@@ -47,7 +47,6 @@ function ItemResult(props: Props) {
     handlerGroupItem,
     handlerFeedback,
     isGroupItem,
-    moreInfoText,
     handlerCloseGroup,
     main_image_link,
     indexItem,

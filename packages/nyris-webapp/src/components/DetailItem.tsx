@@ -28,7 +28,6 @@ function DetailItem(props: Props) {
     handlerCloseModal,
     dataItem,
     onSearchImage,
-    moreInfoText,
     onHandlerModalShare,
     handlerFeedback,
   } = props;
