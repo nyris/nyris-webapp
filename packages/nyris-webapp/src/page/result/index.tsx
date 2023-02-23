@@ -59,7 +59,7 @@ function ResultComponent(props: Props) {
     keyFilter,
     mobileDetailsPreview,
   } = search;
-  const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
+  const moreInfoText = settings?.productCtaText;
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [imageSelection, setImageSelection] = useState(selectedRegion);

@@ -289,7 +289,7 @@ function ItemResult(props: Props) {
                       className="text-f12 fw-600 text-white"
                       style={{ textTransform: 'uppercase' }}
                     >
-                      {moreInfoText ? moreInfoText : 'MORE INFO'}
+                      {settings.productCtaText || 'MORE INFO'}
                     </Typography>
                     <img src={IconOpenLink} alt="" />
                   </Button>

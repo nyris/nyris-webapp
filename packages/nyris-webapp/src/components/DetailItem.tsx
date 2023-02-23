@@ -173,7 +173,7 @@ function DetailItem(props: Props) {
                     }}
                     onClick={() => setCollapDescription(!collapDescription)}
                   >
-                    View full description
+                    view details
                     <KeyboardArrowDownIcon
                       htmlColor={settings.themePage.searchSuite?.secondaryColor}
                     />
@@ -211,7 +211,7 @@ function DetailItem(props: Props) {
                     onClick={() => window.open(`${main_offer_link}`, '_blank')}
                   >
                     <Typography className="text-f18 fw-600 text-white">
-                      {moreInfoText ? moreInfoText : 'MORE INFO'}
+                      {settings.productCtaText || 'MORE INFO'}
                     </Typography>
                     <img src={IconOpenLink} alt="" style={{ width: 23 }} />
                   </Button>

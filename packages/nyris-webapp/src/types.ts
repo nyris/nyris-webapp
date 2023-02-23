@@ -34,9 +34,11 @@ export interface AppSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
   themePage: ThemeChoice;
   algolia?: AlgoliaSettings;
-  moreInfoText?: string;
+  productCtaText?: string;
+  appTitle?: string;
   refinements?: any;
   preFilterOption?: boolean;
+  preFilterTitle?: string;
   postFilterOption?: boolean;
   showFeedbackAndShare?: boolean;
   showMoreInfo?: boolean;
@@ -52,7 +54,6 @@ export interface DefaultThemeSettings {
 
 export interface SearchSuiteSettings {
   active?: boolean;
-  moreInfoText: string;
   appBarLogoUrl: string;
   appBarLogoUrlAlt: string;
   headerColor: string;

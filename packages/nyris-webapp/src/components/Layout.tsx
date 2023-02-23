@@ -53,6 +53,7 @@ function Layout({ children }: ReactNode): JSX.Element {
 
   useEffect(() => {
     if (history.location?.pathname === '/') {
+      document.title = settings.appTitle || '';
       dispatch(onResetRequestImage(''));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -99,13 +99,19 @@ function FilterComponent(props: Props) {
       flexDirection={'column'}
       style={{ position: 'relative' }}
     >
-      {isMobile && (
-        <Typography
-          style={{ color: '#000', fontSize: '24px', fontWeight: 700 }}
-        >
-          Select a model
-        </Typography>
-      )}
+      <Typography
+        style={{
+          color: '#000',
+          fontSize: '24px',
+          fontWeight: 700,
+          paddingLeft: isMobile ? '0px' : '14px',
+          marginBottom: isMobile ? '0px' : '-8px',
+          marginTop: isMobile ? '0px' : '24px',
+        }}
+      >
+        {settings.preFilterTitle}
+      </Typography>
+
       <Box
         className="box-top"
         style={isMobile ? { padding: 0 } : undefined}
@@ -155,12 +161,14 @@ function FilterComponent(props: Props) {
             }}
           />
         </Box>
+
         {!isMobile && (
           <Button onClick={handleClose}>
             <CloseIcon />
           </Button>
         )}
       </Box>
+
       <Box style={{ margin: '10px 16px' }}>
         {keyFilter && isMobile && (
           <Box
