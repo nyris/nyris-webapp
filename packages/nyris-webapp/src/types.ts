@@ -43,6 +43,7 @@ export interface AppSettings extends NyrisAPISettings {
   filterType?: string;
   alogoliaFilterField?: string;
   headerText?: string;
+  brandName?: string;
 }
 
 export interface DefaultThemeSettings {

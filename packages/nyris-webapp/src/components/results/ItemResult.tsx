@@ -251,9 +251,7 @@ function ItemResult(props: Props) {
                     letterSpacing: '1px',
                   }}
                 >
-                  {brand || settings.algolia?.indexName === 'terex-production'
-                    ? 'TEREX'
-                    : ''}
+                  {brand || settings.brandName}
                 </Typography>
               </Box>
               <Typography

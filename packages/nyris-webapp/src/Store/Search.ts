@@ -61,7 +61,7 @@ const initialState: SearchState = {
   isShowModalDetailItemMobile: false,
   keyFilter: '',
   preFilterDropdown: false,
-  mobileDetailsPreview: false
+  mobileDetailsPreview: false,
 };
 
 export const searchSlice = createSlice({
@@ -210,9 +210,9 @@ export const searchSlice = createSlice({
         imageThumbSearchInput: '',
         textSearchInputMobile: '',
         isShowModalDetailItemMobile: false,
-        keyFilter: '',
+        keyFilter: state.keyFilter || '',
         preFilterDropdown: false,
-        mobileDetailsPreview: false
+        mobileDetailsPreview: false,
       };
     },
 
@@ -338,6 +338,6 @@ export const {
   onResetRequestImage,
   setUpdateKeyFilterDesktop,
   setPreFilterDropdown,
-  setMobileDetailsPreview
+  setMobileDetailsPreview,
 } = searchSlice.actions;
 export default searchSlice.reducer;

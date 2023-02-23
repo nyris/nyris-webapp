@@ -24,7 +24,10 @@ function AppMobile(props: Props): JSX.Element {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const searchState = useAppSelector(state => state);
-  const { settings } = searchState;
+  const {
+    settings,
+    search: { keyFilter },
+  } = searchState;
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
 
   useEffect(() => {
@@ -51,7 +54,18 @@ function AppMobile(props: Props): JSX.Element {
       searchRegion = res.selectedRegion;
       dispatch(setSelectedRegion(searchRegion));
     }
-    findByImage({ image, settings, region: searchRegion })
+    const preFilter = [
+      {
+        key: settings.filterType,
+        values: [`${keyFilter}`],
+      },
+    ];
+    findByImage({
+      image,
+      settings,
+      region: searchRegion,
+      filters: keyFilter ? preFilter : undefined,
+    })
       .then(res => {
         dispatch(setSearchResults(res));
         dispatch(updateStatusLoading(false));

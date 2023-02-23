@@ -2,6 +2,8 @@ import { Box, Button } from '@material-ui/core';
 import React, { useState } from 'react';
 import IconCameraMobile from 'common/assets/icons/icon_camera_mobile.svg';
 import CameraCustom from './drawer/cameraCustom';
+import { ReactComponent as Home } from 'common/assets/icons/home.svg';
+import { NavLink, useHistory } from 'react-router-dom';
 
 interface Props {
   onLoadingMobile?: any;
@@ -9,6 +11,8 @@ interface Props {
 
 function FooterMobile(props: Props): JSX.Element {
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
+  const history = useHistory();
+
   // const handleCheckMatchLink = (match: any, location: any) => {
   //   let active = false;
   //   if (match?.url === location.pathname) {
@@ -25,8 +29,22 @@ function FooterMobile(props: Props): JSX.Element {
       position={'relative'}
       alignItems={'center'}
       height={'100%'}
-      justifyContent={'flex-end'}
     >
+      <NavLink
+        style={{
+          width: '70px',
+          display: 'flex',
+          justifyContent: 'center',
+          height: '100%',
+          alignItems: 'center',
+          backgroundColor: history.location.pathname === '/' ? '#E4E3FF' : '',
+        }}
+        activeClassName="active"
+        to={'/'}
+        className="nav-link p-0 menu-children rounded-0"
+      >
+        <Home color={history.location.pathname === '/' ? '#3E36DC' : '#000'} />
+      </NavLink>
       <Box className="box-icon-camera-mobile">
         <Button
           onClick={() => {
