@@ -41,7 +41,7 @@ function CameraCustom(props: Props) {
   const videoConstraints = {
     width: 1920,
     height: 1080,
-    aspectRatio: 0.6666666667,
+    aspectRatio: 1.33333333333,
   };
   const handleClick = useCallback(() => {
     setFacingMode(prevState =>
