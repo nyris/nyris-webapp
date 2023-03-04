@@ -28,6 +28,12 @@ function DefaultModal(props: Props): JSX.Element {
         justifyContent: 'center',
         alignItems: 'center',
       }}
+      // BackdropProps={{
+      //   style: {
+      //     backgroundColor: '#2B2C46',
+      //     opacity: 0.85,
+      //   },
+      // }}
     >
       <div className={classNameComponentChild}>{children}</div>
     </Modal>

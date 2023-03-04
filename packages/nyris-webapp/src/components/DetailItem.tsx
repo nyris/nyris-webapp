@@ -75,16 +75,15 @@ function DetailItem(props: Props) {
       borderRadius={12}
       style={isMobile ? { margin: 0 } : {}}
     >
-      {!isMobile && (
-        <Box
-          className="ml-auto"
-          style={{ width: 'fit-content', marginRight: 5 }}
-        >
-          <Button style={{ padding: 0 }} onClick={() => handlerCloseModal?.()}>
-            <CloseOutlinedIcon style={{ fontSize: 20, color: '#55566B' }} />
-          </Button>
-        </Box>
-      )}
+      {
+              !isMobile && (
+                      <Box className="ml-auto" style={{width: 'fit-content', marginRight: 4}}>
+                        <Button style={{padding: 0}} onClick={() => handlerCloseModal?.()}>
+                          <CloseOutlinedIcon style={{fontSize: 20, color: '#55566B'}}/>
+                        </Button>
+                      </Box>
+              )
+      }
 
       <Box className="box-carosel">
         <ImagePreviewCarousel
@@ -127,7 +126,7 @@ function DetailItem(props: Props) {
               <Typography className="text-f13 fw-500 max-line-1">
                 SKU: {sku}
               </Typography>
-              {brand && (
+              {(brand || settings.brandName) && (
                 <Box
                   borderRadius={16}
                   style={{
@@ -140,11 +139,11 @@ function DetailItem(props: Props) {
                   <Typography
                     style={{
                       color: settings.themePage.searchSuite?.secondaryColor,
-                      fontSize: 10,
+                      fontSize: 12,
                       fontWeight: 700,
                     }}
                   >
-                    {brand}
+                    {brand || settings.brandName}
                   </Typography>
                 </Box>
               )}
@@ -188,10 +187,10 @@ function DetailItem(props: Props) {
                 <Box
                   style={{
                     padding: '0px 16px',
-                    background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}cc 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
+                    background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}bb 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
                     // marginBottom: 25,
                     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                    borderRadius: 4,
+                    borderRadius: isMobile ? 25 : 4,
                     height: 48,
                   }}
                   display={'flex'}
@@ -209,7 +208,7 @@ function DetailItem(props: Props) {
                     }}
                     onClick={() => window.open(`${main_offer_link}`, '_blank')}
                   >
-                    <Typography className="text-f18 fw-600 text-white">
+                    <Typography className="text-f18 fw-700 text-white">
                       {settings.productCtaText || 'MORE INFO'}
                     </Typography>
                     <img src={IconOpenLink} alt="" style={{ width: 23 }} />
@@ -229,7 +228,7 @@ function DetailItem(props: Props) {
               <Grid item>
                 <Box display={'flex'} alignItems={'center'}>
                   <Button
-                    className="btn-item btn-action-item"
+                    className="btn-item"
                     onClick={() => {
                       handlerFeedback('like');
                       setFeedback('like');
@@ -246,7 +245,7 @@ function DetailItem(props: Props) {
               <Grid item>
                 <Box display={'flex'} alignItems={'center'}>
                   <Button
-                    className="btn-item btn-action-item"
+                    className="btn-item"
                     onClick={() => {
                       handlerFeedback('dislike');
                       setFeedback('dislike');
@@ -262,11 +261,8 @@ function DetailItem(props: Props) {
               </Grid>
               <Grid item>
                 <Box display={'flex'} alignItems={'center'}>
-                  <Button
-                    className="btn-item btn-action-item"
-                    onClick={onHandlerModalShare}
-                  >
-                    <IconShare width={30} height={30} />
+                  <Button className="btn-item" onClick={onHandlerModalShare}>
+                    <IconShare width={30} height={30} color="#AAABB5" />
                   </Button>
                 </Box>
               </Grid>

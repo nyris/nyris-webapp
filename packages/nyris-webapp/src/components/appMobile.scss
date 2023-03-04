@@ -695,16 +695,6 @@
       }
     }
 
-    .box-bottom {
-      .btn-action-item:focus > span > svg > path {
-        fill: #00C070;
-      }
-
-      .btn-action-item > span > svg > path {
-        fill: #AAABB5;
-      }
-    }
-
     &.box-modal-share {
       width: 85vw !important;
     }

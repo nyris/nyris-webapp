@@ -1958,10 +1958,17 @@ button {
             margin-left: 11px;
           }
           .input-search-filter {
-            border: 0px !important;
+            border: 0 !important;
+            width: 100%;
             background-color: transparent;
             &:focus-visible {
               outline: none !important;
+            }
+            @media only screen and (min-width: 776px) {
+              width: 400px;
+            }
+            @media only screen and (min-width: 980px) {
+              width: 512px;
             }
           }
         }

@@ -2,12 +2,9 @@ import { Box, Button, Grid, Typography } from '@material-ui/core';
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';
 import IconShare from 'common/assets/icons/Fill.svg';
-
 import { ReactComponent as Expand } from 'common/assets/icons/expand.svg';
 import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
 import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
-// import IconWeChat from 'common/assets/icons/icon_chat.svg';
-// import IconWhatsApp from 'common/assets/icons/icon_whatapps.svg';
 import React, { memo, useEffect, useState } from 'react';
 import NoImage from 'common/assets/images/unnamed.png';
 import { AppState } from 'types';
@@ -220,42 +217,43 @@ function ItemResult(props: Props) {
           <Grid container justifyContent="space-between">
             <Grid item xs={12}>
               <Typography
-                className="text-f10 max-line-1 fw-400 d-flex"
-                style={{ color: '#2B2C46' }}
+                className="text-f12 max-line-1 fw-400 d-flex"
+                style={{ color: '#2B2C46', marginTop: 10 }}
               >
                 <Typography
-                  className="text-f10 max-line-1 fw-400"
+                  className="text-f12 max-line-1 fw-400"
                   style={{ color: '#2B2C46', paddingRight: '4px' }}
                 >
                   SKU:
                 </Typography>
                 {sku}
               </Typography>
-              <Box
-                mt={1}
-                mb={1}
-                style={{
-                  background: `${settings.themePage.searchSuite?.secondaryColor}26`,
-                  borderRadius: '6px',
-                  display: 'flex',
-                  width: 'fit-content',
-                  padding: '2px 5px',
-                }}
-              >
-                <Typography
-                  className="fw-700"
+              {(!!brand || !!settings.brandName) && (
+                <Box
+                  mt={1}
                   style={{
-                    color: settings.themePage.searchSuite?.secondaryColor,
-                    fontSize: 8,
-                    letterSpacing: '1px',
+                    background: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                    borderRadius: '6px',
+                    display: 'flex',
+                    width: 'fit-content',
+                    padding: '2px 5px',
                   }}
                 >
-                  {brand || settings.brandName}
-                </Typography>
-              </Box>
+                  <Typography
+                    className="fw-700"
+                    style={{
+                      color: settings.themePage.searchSuite?.secondaryColor,
+                      fontSize: 10,
+                      letterSpacing: '1px',
+                    }}
+                  >
+                    {brand || settings.brandName}
+                  </Typography>
+                </Box>
+              )}
               <Typography
-                className="text-f12 fw-600 max-line-3"
-                style={{ color: '#1E1F31' }}
+                className="text-f13 fw-600 max-line-3"
+                style={{ color: '#1E1F31', marginTop: 15 }}
               >
                 {title}
               </Typography>
@@ -265,9 +263,9 @@ function ItemResult(props: Props) {
                     boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                     // marginBottom: 22,
                     height: 40,
-                    background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}cc 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
-                    borderRadius: 4,
-                    padding: '0 8px',
+                    background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}bb 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
+                    borderRadius: isMobile ? 25 : 4,
+                    padding: '0 16px',
                   }}
                   display={'flex'}
                   justifyItems={'center'}
@@ -285,12 +283,12 @@ function ItemResult(props: Props) {
                     onClick={() => window.open(`${main_offer_link}`, '_blank')}
                   >
                     <Typography
-                      className="text-f12 fw-600 text-white"
+                      className="text-f12 fw-700 text-white"
                       style={{ textTransform: 'uppercase' }}
                     >
                       {settings.productCtaText || 'MORE INFO'}
                     </Typography>
-                    <img src={IconOpenLink} alt="" />
+                    <img src={IconOpenLink} alt="more-info" width={20}/>
                   </Button>
                 </Box>
               )}
