@@ -8,7 +8,7 @@ import { setUpdateKeyFilterDesktop } from 'Store/Search';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import { useMediaQuery } from 'react-responsive';
 import { isEmpty } from 'lodash';
-import { Skeleton } from "@material-ui/lab";
+import { Skeleton } from '@material-ui/lab';
 
 interface Props {
   handleClose?: any;
@@ -44,9 +44,10 @@ function FilterComponent(props: Props) {
       })
       .catch((e: any) => {
         console.log('err getDataFilterDesktop', e);
-      }).finally(() => {
-            setLoading(false);
       })
+      .finally(() => {
+        setLoading(false);
+      });
 
     return dataResultFilter;
   };
@@ -193,8 +194,8 @@ function FilterComponent(props: Props) {
           isMobile
             ? { columnCount: 1, marginBottom: itemChoose ? '50px' : '0px' }
             : columns <= 4
-            ? { columnCount: columns, height: '100%', paddingBottom: 20}
-            : { columnCount: 4 , paddingBottom: 20}
+            ? { columnCount: columns, height: '100%', paddingBottom: 20 }
+            : { columnCount: 4, paddingBottom: 20 }
         }
       >
         {Object.entries(resultFilter).map(([key, value]: any, i: any) => {
@@ -236,24 +237,24 @@ function FilterComponent(props: Props) {
             </Box>
           );
         })}
-        {
-                isLoading &&
-                <Box style={{columnCount: isMobile ? 1 : 4}}>
-                  {
-                    Array(12).fill("").map((_, index) => {
-                      return (
-                              <Box key={index} mb={5}>
-                                <Skeleton animation={"pulse"} height={30} width={60}/>
-                                {
-                                  Array(6).fill("").map((_, index) =>
-                                          <Skeleton animation={"pulse"} height={30}/>)
-                                }
-                              </Box>
-                      )
-                    })
-                  }
-                </Box>
-        }
+        {isLoading && (
+          <Box style={{ columnCount: isMobile ? 1 : 4 }}>
+            {Array(12)
+              .fill('')
+              .map((_, index) => {
+                return (
+                  <Box key={index} mb={5}>
+                    <Skeleton animation={'pulse'} height={30} width={60} />
+                    {Array(6)
+                      .fill('')
+                      .map((_, index) => (
+                        <Skeleton animation={'pulse'} height={30} />
+                      ))}
+                  </Box>
+                );
+              })}
+          </Box>
+        )}
         {isEmpty(resultFilter) && !isLoading && (
           <Typography>No result found</Typography>
         )}

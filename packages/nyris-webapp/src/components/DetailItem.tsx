@@ -75,15 +75,14 @@ function DetailItem(props: Props) {
       borderRadius={12}
       style={isMobile ? { margin: 0 } : {}}
     >
-      {
-              !isMobile && (
-                      <Box className="ml-auto" style={{width: 'fit-content', marginRight: 4}}>
-                        <Button style={{padding: 0}} onClick={() => handlerCloseModal?.()}>
-                          <CloseOutlinedIcon style={{fontSize: 20, color: '#55566B'}}/>
-                        </Button>
-                      </Box>
-              )
-      }
+        <Box
+          className="ml-auto"
+          style={{ width: 'fit-content', marginRight: 4 }}
+        >
+          <Button style={{ padding: 0 }} onClick={() => handlerCloseModal?.()}>
+            <CloseOutlinedIcon style={{ fontSize: 20, color: '#55566B' }} />
+          </Button>
+        </Box>
 
       <Box className="box-carosel">
         <ImagePreviewCarousel

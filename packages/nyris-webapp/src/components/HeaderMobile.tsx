@@ -36,7 +36,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     textSearchInputMobile,
     keyFilter,
     preFilterDropdown,
-    mobileDetailsPreview,
   } = search;
   const query = useQuery();
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -111,7 +110,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     <Box style={{ width: '100%' }}>
       <Box
         className="wrap-header-mobile"
-        style={mobileDetailsPreview ? { display: 'none' } : {}}
       >
         {!isMobile ? (
           <CustomSearchBox onToggleFilterMobile={onToggleFilterMobile} />

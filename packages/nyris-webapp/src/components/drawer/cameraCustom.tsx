@@ -39,7 +39,7 @@ function CameraCustom(props: Props) {
   const dispatch = useAppDispatch();
 
   const videoConstraints = {
-    width: 1920,
+    width: 1080,
     height: 1080,
     aspectRatio: 1.33333333333,
   };

@@ -13,7 +13,6 @@ import DefaultModal from 'components/modal/DefaultModal';
 import DetailItem from 'components/DetailItem';
 import {
   onToggleModalItemDetail,
-  setMobileDetailsPreview,
   updateStatusLoading,
 } from 'Store/Search';
 import { useVisualSearch } from 'hooks/useVisualSearch';
@@ -33,7 +32,6 @@ interface Props {
   moreInfoText?: string;
   handlerCloseGroup?: any;
   main_image_link?: any;
-  setSelectedItem?: any;
 }
 
 function ItemResult(props: Props) {
@@ -47,7 +45,6 @@ function ItemResult(props: Props) {
     handlerCloseGroup,
     main_image_link,
     indexItem,
-    setSelectedItem,
   } = props;
   const dispatch = useAppDispatch();
   const [urlImage, setUrlImage] = useState<string>('');
@@ -95,13 +92,6 @@ function ItemResult(props: Props) {
   };
 
   const handlerToggleModal = (item: any) => {
-    if (isMobile) {
-      setSelectedItem(item);
-      dispatch(setMobileDetailsPreview(true));
-      document.getElementById('wrap-main-result')?.scrollIntoView();
-      return;
-    }
-    dispatch(setMobileDetailsPreview(false));
     setOpenModalImage(true);
     dispatch(onToggleModalItemDetail(true));
     dispatch(updateStatusLoading(true));
@@ -114,7 +104,7 @@ function ItemResult(props: Props) {
     <Box className="wrap-main-item-result">
       {/* TODO: Component modal image */}
       <DefaultModal
-        openModal={isOpenModalImage && !isMobile}
+        openModal={isOpenModalImage}
         handleClose={(e: any) => {
           setOpenModalImage(false);
         }}
@@ -171,7 +161,6 @@ function ItemResult(props: Props) {
             style={{ width: '100%', height: '100%' }}
             onClick={(e: any) => {
               e.preventDefault();
-              dispatch(setMobileDetailsPreview(false));
               if (urlImage.length > 1) {
                 onSearchImage(dataItem?.main_image_link);
               }
@@ -288,7 +277,7 @@ function ItemResult(props: Props) {
                     >
                       {settings.productCtaText || 'MORE INFO'}
                     </Typography>
-                    <img src={IconOpenLink} alt="more-info" width={20}/>
+                    <img src={IconOpenLink} alt="more-info" width={20} />
                   </Button>
                 </Box>
               )}

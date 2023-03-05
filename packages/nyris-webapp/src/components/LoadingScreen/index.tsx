@@ -14,7 +14,6 @@ interface Props {
   moreInfoText: any;
   requestImage?: any;
   searchQuery?: string;
-  setSelectedItem: any;
 }
 
 function LoadingScreen({
@@ -24,8 +23,7 @@ function LoadingScreen({
                          moreInfoText,
                          searchQuery,
                          requestImage,
-                         isSearchStalled,
-                         setSelectedItem
+                         isSearchStalled
                        }: any): JSX.Element {
   const {search} = useAppSelector<AppState>((state: any) => state);
   const {loadingSearchAlgolia} = search;
@@ -149,7 +147,6 @@ function LoadingScreen({
                         isGroupItem={hit?.isGroup}
                         moreInfoText={moreInfoText}
                         main_image_link={hit?.main_image_link}
-                        setSelectedItem={setSelectedItem}
                 />
               </Box>
       );
