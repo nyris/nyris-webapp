@@ -1,9 +1,10 @@
 import { Box, Button } from '@material-ui/core';
 import React, { useState } from 'react';
-import IconCameraMobile from 'common/assets/icons/icon_camera_mobile.svg';
+import { ReactComponent as IconCameraMobile } from 'common/assets/icons/icon_camera_mobile.svg';
 import CameraCustom from './drawer/cameraCustom';
 import { ReactComponent as Home } from 'common/assets/icons/home.svg';
 import { NavLink, useHistory } from 'react-router-dom';
+import { useAppSelector } from 'Store/Store';
 
 interface Props {
   onLoadingMobile?: any;
@@ -12,6 +13,7 @@ interface Props {
 function FooterMobile(props: Props): JSX.Element {
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const history = useHistory();
+  const { settings } = useAppSelector(state => state);
 
   // const handleCheckMatchLink = (match: any, location: any) => {
   //   let active = false;
@@ -37,26 +39,33 @@ function FooterMobile(props: Props): JSX.Element {
           justifyContent: 'center',
           height: '100%',
           alignItems: 'center',
-          backgroundColor: history.location.pathname === '/' ? '#E4E3FF' : '',
+          backgroundColor:
+            history.location.pathname === '/'
+              ? `${settings.themePage.searchSuite?.primaryColor}21`
+              : '',
         }}
         activeClassName="active"
         to={'/'}
         className="nav-link p-0 menu-children rounded-0"
       >
-        <Home color={history.location.pathname === '/' ? '#3E36DC' : '#000'} />
+        <Home
+          color={
+            history.location.pathname === '/'
+              ? settings.themePage.searchSuite?.primaryColor
+              : '#000'
+          }
+        />
       </NavLink>
-      <Box className="box-icon-camera-mobile">
+      <Box
+        style={{ background: settings.themePage.searchSuite?.primaryColor }}
+        className="box-icon-camera-mobile"
+      >
         <Button
           onClick={() => {
             setOpenModalCamera(!isOpenModalCamera);
           }}
         >
-          <img
-            width={28}
-            height={28}
-            src={`${IconCameraMobile}`}
-            alt="open_camera_mobile"
-          />
+          <IconCameraMobile color="#FFFF" />
         </Button>
       </Box>
       {/* hidden_as_required {history.location.pathname !== "/" && (

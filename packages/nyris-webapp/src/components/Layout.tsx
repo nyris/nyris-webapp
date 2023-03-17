@@ -172,7 +172,11 @@ function Layout({ children }: ReactNode): JSX.Element {
           </Box>
         )}
         {isMobile && preFilterDropdown && (
-          <Box className={`box-fillter open`} position={'absolute'}>
+          <Box
+            className={`box-fillter open`}
+            position={'absolute'}
+            style={{ top: '87px' }}
+          >
             <div className={'wrap-filter-destop'}>
               <div className={'bg-white box-filter-destop isMobile'}>
                 <FilterComponent

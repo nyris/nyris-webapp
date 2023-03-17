@@ -5,7 +5,7 @@ import { ReactComponent as IconFilter } from 'common/assets/icons/filter_setting
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
-import { useHistory } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import {
   onResetRequestImage,
   reset,
@@ -55,9 +55,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
 
   useEffect(() => {
     if (imageThumbSearchInput !== '') {
+      history.push('/result');
       dispatch(updateValueTextSearchMobile(''));
+      refine('');
     }
-  }, [imageThumbSearchInput, dispatch]);
+  }, [imageThumbSearchInput, dispatch, refine, history]);
 
   useEffect(() => {
     if (
@@ -109,8 +111,32 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   return (
     <Box style={{ width: '100%' }}>
       <Box
-        className="wrap-header-mobile"
+        className="box-content"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          height: '40px',
+          borderBottom: '1px solid #e9e9ec',
+          background: settings.themePage.searchSuite?.headerColor,
+        }}
       >
+        <NavLink
+          to="/"
+          style={{ lineHeight: 0, paddingLeft: '10px' }}
+          onClick={() => {
+            dispatch(reset(''));
+          }}
+        >
+          {/* <section id="branding" style={{ height: 32 }} /> */}
+          <img
+            width={90}
+            height={30}
+            src={settings.themePage.searchSuite?.appBarLogoUrl}
+            alt={settings.themePage.searchSuite?.appBarLogoUrlAlt}
+          />
+        </NavLink>
+      </Box>
+      <Box className="wrap-header-mobile">
         {!isMobile ? (
           <CustomSearchBox onToggleFilterMobile={onToggleFilterMobile} />
         ) : (
@@ -180,23 +206,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                         <IconSearch width={20} height={20} />
                       </Box>
                     )}
-                    <input
-                      style={{
-                        border: '0px',
-                        width: '100%',
-                        fontSize: 14,
-                        paddingLeft: '12px',
-                        paddingRight: '4px',
-                        color: '#2B2C46',
-                        fontStyle: 'italic',
-                        outline: 'none',
-                      }}
-                      className="input-search"
-                      placeholder="Search"
+                    <Input
                       value={textSearchInputMobile}
                       onChange={onChangeText}
-                      // ref={focusInp}
                     />
+
                     {isShowFilter && settings.postFilterOption && (
                       <Box className="box-button-input-mobile">
                         <Button
@@ -217,6 +231,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                           <button
                             onClick={() => {
                               if (imageThumbSearchInput) {
+                                history.push('/result');
                                 dispatch(updateValueTextSearchMobile(''));
                                 refine('');
                                 return;
@@ -334,3 +349,42 @@ function HeaderMobileComponent(props: Props): JSX.Element {
 
 const HeaderMobile = connectSearchBox<any>(memo(HeaderMobileComponent));
 export default HeaderMobile;
+
+const INPUT_ID = 'mobile-input-search';
+
+const Input = ({ value, onChange }: any) => {
+  useEffect(() => {
+    const element = document.getElementById(INPUT_ID);
+    const inputEventFn = (keyboardEvent: any) => {
+      if (keyboardEvent.key === 'Enter') {
+        element?.blur();
+      }
+    };
+
+    element?.addEventListener('keyup', inputEventFn, false);
+
+    return () => {
+      element?.removeEventListener('scroll', inputEventFn, false);
+    };
+  }, []);
+
+  return (
+    <input
+      style={{
+        border: '0px',
+        width: '100%',
+        fontSize: 14,
+        paddingLeft: '12px',
+        paddingRight: '4px',
+        color: '#2B2C46',
+        fontStyle: 'italic',
+        outline: 'none',
+      }}
+      className="input-search"
+      placeholder="Search"
+      value={value}
+      onChange={onChange}
+      id={INPUT_ID}
+    />
+  );
+};

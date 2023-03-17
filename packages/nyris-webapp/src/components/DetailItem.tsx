@@ -28,7 +28,7 @@ function DetailItem(props: Props) {
     handlerCloseModal,
     dataItem,
     onSearchImage,
-    onHandlerModalShare,
+    // onHandlerModalShare,
     handlerFeedback,
   } = props;
   const [collapDescription, setCollapDescription] = useState(false);
@@ -75,14 +75,11 @@ function DetailItem(props: Props) {
       borderRadius={12}
       style={isMobile ? { margin: 0 } : {}}
     >
-        <Box
-          className="ml-auto"
-          style={{ width: 'fit-content', marginRight: 4 }}
-        >
-          <Button style={{ padding: 0 }} onClick={() => handlerCloseModal?.()}>
-            <CloseOutlinedIcon style={{ fontSize: 20, color: '#55566B' }} />
-          </Button>
-        </Box>
+      <Box className="ml-auto" style={{ width: 'fit-content', marginRight: 4 }}>
+        <Button style={{ padding: 0 }} onClick={() => handlerCloseModal?.()}>
+          <CloseOutlinedIcon style={{ fontSize: 20, color: '#55566B' }} />
+        </Button>
+      </Box>
 
       <Box className="box-carosel">
         <ImagePreviewCarousel
@@ -125,6 +122,28 @@ function DetailItem(props: Props) {
               <Typography className="text-f13 fw-500 max-line-1">
                 SKU: {sku}
               </Typography>
+              {settings.warehouseVariant && (
+                <Typography
+                  className="text-f13 max-line-1 fw-500"
+                  style={{
+                    marginTop: 10,
+                    display: 'inline-block',
+                  }}
+                >
+                  <span style={{ marginRight: 3 }}>
+                    {' '}
+                    {dataItem.custom_id_key_3}:
+                  </span>
+                  <span
+                    style={{
+                      color: dataItem.custom_id_value_3 ? '#00C070' : '#c54545',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {dataItem.custom_id_value_3 || 0}
+                  </span>
+                </Typography>
+              )}
               {(brand || settings.brandName) && (
                 <Box
                   borderRadius={16}
@@ -146,14 +165,21 @@ function DetailItem(props: Props) {
                   </Typography>
                 </Box>
               )}
-              <Typography
-                className={
-                  isMobile ? 'fw-600 text-dark' : 'text-f22 fw-600 text-dark'
-                }
-                style={{ margin: '8px 0px 0 0px' }}
-              >
-                {title}
-              </Typography>
+              {!settings.warehouseVariant && (
+                <Typography
+                  className={
+                    isMobile ? 'fw-600 text-dark' : 'text-f22 fw-600 text-dark'
+                  }
+                  style={{
+                    margin: '8px 0px 0 0px',
+                    display: 'inline-block',
+                    maxWidth: '100%',
+                    wordWrap: 'break-word',
+                  }}
+                >
+                  {title}
+                </Typography>
+              )}
             </Grid>
             <Grid item xs={12}>
               {dataItem?.keyword && (
@@ -182,15 +208,13 @@ function DetailItem(props: Props) {
                   </Collapse>
                 </Box>
               )}
-              {settings.showMoreInfo && (
+              {(settings.showMoreInfo || settings.warehouseVariant) && (
                 <Box
                   style={{
-                    padding: '0px 16px',
                     background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}bb 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
                     // marginBottom: 25,
                     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                     borderRadius: isMobile ? 25 : 4,
-                    height: 48,
                   }}
                   display={'flex'}
                   justifyContent={'space-between'}
@@ -203,20 +227,77 @@ function DetailItem(props: Props) {
                       display: 'flex',
                       justifyContent: 'space-between',
                       width: '100%',
-                      padding: 0,
+                      padding: '0px 12px',
+                      minHeight: !settings.warehouseVariant ? 48 : 64,
                     }}
                     onClick={() => window.open(`${main_offer_link}`, '_blank')}
                   >
-                    <Typography className="text-f18 fw-700 text-white">
-                      {settings.productCtaText || 'MORE INFO'}
+                    <Typography
+                      className="text-f18 fw-700 text-white max-line-2"
+                      align="left"
+                      style={{
+                        textTransform: !settings.warehouseVariant
+                          ? 'uppercase'
+                          : 'none',
+                        letterSpacing: '0.55px',
+                      }}
+                    >
+                      {settings.warehouseVariant
+                        ? title
+                        : settings.productCtaText || 'MORE INFO'}
                     </Typography>
-                    <img src={IconOpenLink} alt="" style={{ width: 23 }} />
+                    <img
+                      src={IconOpenLink}
+                      alt=""
+                      style={{ width: 23, marginLeft: 5 }}
+                    />
                   </Button>
                 </Box>
               )}
             </Grid>
           </Grid>
         </Box>
+
+        {settings.warehouseVariant && (
+          <Box
+            display="flex"
+            justifyContent={'space-between'}
+            mt={2}
+            style={{ color: '#2B2C46' }}
+            gridGap={20}
+          >
+            <Box
+              style={{
+                backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                padding: '5px 10px',
+                borderRadius: 4,
+                width: '100%',
+              }}
+            >
+              <div style={{ fontSize: 15, fontWeight: 500 }}>
+                {dataItem.custom_id_key_2}
+              </div>
+              <div style={{ fontSize: 17, fontWeight: 700 }}>
+                {dataItem.custom_id_value_2 || 'N/A'}
+              </div>
+            </Box>
+            <Box
+              style={{
+                backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                padding: '5px 10px',
+                borderRadius: 4,
+                width: '100%',
+              }}
+            >
+              <div style={{ fontSize: 15, fontWeight: 500 }}>
+                {dataItem.custom_id_key_1}
+              </div>
+              <div style={{ fontSize: 17, fontWeight: 700 }}>
+                {dataItem.custom_id_value_1 || 'N/A'}
+              </div>
+            </Box>
+          </Box>
+        )}
 
         {settings.showFeedbackAndShare && (
           <Box
@@ -260,8 +341,8 @@ function DetailItem(props: Props) {
               </Grid>
               <Grid item>
                 <Box display={'flex'} alignItems={'center'}>
-                  <Button className="btn-item" onClick={onHandlerModalShare}>
-                    <IconShare width={30} height={30} color="#AAABB5" />
+                  <Button className="btn-item" onClick={() => false}>
+                    <IconShare width={30} height={30} color="gray" />
                   </Button>
                 </Box>
               </Grid>

@@ -29,7 +29,7 @@ function HeaderNewVersion(): JSX.Element {
       >
         {/* <section id="branding" style={{ height: 32 }} /> */}
         <img
-          width={84}
+          width={90}
           height={30}
           src={settings.themePage.searchSuite?.appBarLogoUrl}
           alt={settings.themePage.searchSuite?.appBarLogoUrlAlt}

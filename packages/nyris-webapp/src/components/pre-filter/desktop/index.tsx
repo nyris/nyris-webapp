@@ -19,10 +19,12 @@ function FilterComponent(props: Props) {
   const { handleClose } = props;
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector(state => state);
-  const { settings } = stateGlobal;
+  const {
+    settings,
+    search: { keyFilter: keyFilterState },
+  } = stateGlobal;
   const [resultFilter, setResultFilter] = useState<any>([]);
-  const [itemChoose, setItemChoose] = useState<string>('');
-  const [keyFilter, setKeyFilter] = useState<string | null>('');
+  const [keyFilter, setKeyFilter] = useState<string>(keyFilterState || '');
   const [isLoading, setLoading] = useState<boolean>(false);
   const [columns, setColumns] = useState<number>(0);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -61,7 +63,6 @@ function FilterComponent(props: Props) {
     event: React.MouseEvent<HTMLElement>,
     value: any,
   ) => {
-    setItemChoose(value);
     setKeyFilter(value);
   };
 
@@ -91,7 +92,7 @@ function FilterComponent(props: Props) {
   };
 
   const onHandlerSubmitData = () => {
-    dispatch(setUpdateKeyFilterDesktop(itemChoose));
+    dispatch(setUpdateKeyFilterDesktop(keyFilter));
     handleClose();
   };
 
@@ -192,7 +193,7 @@ function FilterComponent(props: Props) {
         height={'100%'}
         style={
           isMobile
-            ? { columnCount: 1, marginBottom: itemChoose ? '50px' : '0px' }
+            ? { columnCount: 1, marginBottom: keyFilter ? '50px' : '0px' }
             : columns <= 4
             ? { columnCount: columns, height: '100%', paddingBottom: 20 }
             : { columnCount: 4, paddingBottom: 20 }
@@ -212,7 +213,7 @@ function FilterComponent(props: Props) {
                 {key}
               </Typography>
               <ToggleButtonGroup
-                value={itemChoose}
+                value={keyFilter}
                 exclusive
                 onChange={handleAlignment}
                 aria-label=""
@@ -225,7 +226,6 @@ function FilterComponent(props: Props) {
                       aria-label={item}
                       className="item-btn"
                       onChange={() => {
-                        setItemChoose(item);
                         setKeyFilter(item);
                       }}
                     >
@@ -259,7 +259,7 @@ function FilterComponent(props: Props) {
           <Typography>No result found</Typography>
         )}
       </Box>
-      {itemChoose && !isMobile && (
+      {keyFilter && !isMobile && (
         <Box
           className="footer"
           style={{ height: 64, marginTop: 'auto' }}
@@ -269,7 +269,7 @@ function FilterComponent(props: Props) {
             className="button-left"
             style={{
               width: '50%',
-              backgroundColor: '#1E1F31',
+              backgroundColor: '#000000',
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
@@ -282,7 +282,7 @@ function FilterComponent(props: Props) {
             className="button-right"
             style={{
               width: '50%',
-              backgroundColor: '#3E36DC',
+              backgroundColor: settings.themePage.searchSuite?.primaryColor,
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
@@ -293,7 +293,7 @@ function FilterComponent(props: Props) {
           </Button>
         </Box>
       )}
-      {itemChoose && isMobile && (
+      {keyFilter && isMobile && (
         <Box
           className="footer"
           style={{
@@ -310,7 +310,7 @@ function FilterComponent(props: Props) {
             className="button-left"
             style={{
               width: '50%',
-              backgroundColor: '#1E1F31',
+              backgroundColor: '#000000',
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
@@ -323,7 +323,7 @@ function FilterComponent(props: Props) {
             className="button-right"
             style={{
               width: '50%',
-              backgroundColor: '#3E36DC',
+              backgroundColor: settings.themePage.searchSuite?.primaryColor,
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',

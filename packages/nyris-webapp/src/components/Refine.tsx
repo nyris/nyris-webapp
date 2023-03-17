@@ -21,11 +21,6 @@ const RefineComponent = (props: any) => {
     }, 100);
   }, [query, dispatch]);
 
-  useEffect(() => {
-    console.log({ textSearchInputMobile });
-    return () => {};
-  }, [textSearchInputMobile]);
-
   return <></>;
 };
 

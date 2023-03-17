@@ -135,16 +135,6 @@
         padding-top: 74px;
         overflow: hidden;
 
-        &::after {
-          content: '';
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          background-color: #2b2c46cc;
-          z-index: -1;
-          left: 0;
-          top: 0;
-        }
 
         .box-content-body {
           z-index: 2;
@@ -298,13 +288,11 @@
       padding-right: 0px;
       padding-bottom: 0px;
       padding-left: 0px;
-      border-top: 1px solid #e9e9ec;
       background-color: #fff;
       z-index: 11;
 
       .box-icon-camera-mobile {
         z-index: 10;
-        background: #3e36dc;
         box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4);
         border-radius: 100%;
         position: absolute;

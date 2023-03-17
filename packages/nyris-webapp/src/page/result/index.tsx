@@ -106,7 +106,7 @@ function ResultComponent(props: Props) {
         dispatch(updateResultChangePosition(res));
       });
       return dispatch(showFeedback());
-    }, 1000),
+    }, 250),
     [requestImage, findImageByApiNyris],
   );
 
@@ -324,7 +324,8 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  marginTop: keyFilter ? '64px' : isMobile ? '15px' : '0px',
+                  marginTop:
+                    keyFilter && isMobile ? '95px' : isMobile ? '50px' : '0px',
                 }}
               >
                 <Box className="wrap-box-refinements">

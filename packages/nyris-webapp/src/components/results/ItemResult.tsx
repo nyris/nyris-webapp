@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Typography } from '@material-ui/core';
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';
-import IconShare from 'common/assets/icons/Fill.svg';
+import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
 import { ReactComponent as Expand } from 'common/assets/icons/expand.svg';
 import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
 import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
@@ -11,13 +11,10 @@ import { AppState } from 'types';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import DetailItem from 'components/DetailItem';
-import {
-  onToggleModalItemDetail,
-  updateStatusLoading,
-} from 'Store/Search';
-import { useVisualSearch } from 'hooks/useVisualSearch';
+import { onToggleModalItemDetail, updateStatusLoading } from 'Store/Search';
 import { useMediaQuery } from 'react-responsive';
 import { ShareModal } from '../ShareModal';
+import { truncateString } from 'helpers/truncateString';
 
 interface Props {
   dataItem: any;
@@ -55,7 +52,6 @@ function ItemResult(props: Props) {
   const [feedback, setFeedback] = useState('none');
 
   const { sku, title, brand, main_offer_link, collap } = dataItem;
-  const { getUrlToCanvasFile } = useVisualSearch();
   useEffect(() => {
     if (main_image_link) {
       handlerCheckUrlImage(main_image_link);
@@ -99,9 +95,16 @@ function ItemResult(props: Props) {
       dispatch(updateStatusLoading(false));
     }, 400);
   };
+  console.log({ dataItem });
 
   return (
-    <Box className="wrap-main-item-result">
+    <Box
+      className="wrap-main-item-result"
+      // style={{
+      //   height: 'calc(100% - 25px)',
+      //   backgroundColor: 'rgb(243, 243, 245)',
+      // }}
+    >
       {/* TODO: Component modal image */}
       <DefaultModal
         openModal={isOpenModalImage}
@@ -118,7 +121,7 @@ function ItemResult(props: Props) {
           onHandlerModalShare={() => setOpenModalShare(true)}
           onSearchImage={(url: string) => {
             dispatch(updateStatusLoading(true));
-            getUrlToCanvasFile(url);
+            onSearchImage(url);
           }}
         />
       </DefaultModal>
@@ -206,17 +209,39 @@ function ItemResult(props: Props) {
           <Grid container justifyContent="space-between">
             <Grid item xs={12}>
               <Typography
-                className="text-f12 max-line-1 fw-400 d-flex"
-                style={{ color: '#2B2C46', marginTop: 10 }}
+                className="text-f12 max-line-1 fw-400"
+                style={{
+                  color: '#2B2C46',
+                  marginTop: 10,
+                  display: 'inline-block',
+                }}
               >
+                <span style={{ marginRight: 3 }}>SKU:</span> {sku}
+              </Typography>
+
+              {settings.warehouseVariant && (
                 <Typography
                   className="text-f12 max-line-1 fw-400"
-                  style={{ color: '#2B2C46', paddingRight: '4px' }}
+                  style={{
+                    color: '#2B2C46',
+                    marginTop: 10,
+                    display: 'inline-block',
+                  }}
                 >
-                  SKU:
+                  <span style={{ marginRight: 3 }}>
+                    {dataItem.custom_id_key_3}:
+                  </span>
+                  <span
+                    style={{
+                      color: dataItem.custom_id_value_3 ? '#00C070' : '#c54545',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {dataItem.custom_id_value_3 || 0}
+                  </span>
                 </Typography>
-                {sku}
-              </Typography>
+              )}
+
               {(!!brand || !!settings.brandName) && (
                 <Box
                   mt={1}
@@ -234,19 +259,26 @@ function ItemResult(props: Props) {
                       color: settings.themePage.searchSuite?.secondaryColor,
                       fontSize: 10,
                       letterSpacing: '1px',
+                      maxWidth: '160px',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
                     }}
                   >
                     {brand || settings.brandName}
                   </Typography>
                 </Box>
               )}
-              <Typography
-                className="text-f13 fw-600 max-line-3"
-                style={{ color: '#1E1F31', marginTop: 15 }}
-              >
-                {title}
-              </Typography>
-              {settings.showMoreInfo && (
+              {!settings.warehouseVariant && (
+                <Typography
+                  className="text-f13 fw-600 max-line-3"
+                  style={{ color: '#1E1F31', marginTop: 15 }}
+                >
+                  {title}
+                </Typography>
+              )}
+
+              {(settings.showMoreInfo || settings.warehouseVariant) && (
                 <Box
                   style={{
                     boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
@@ -254,7 +286,7 @@ function ItemResult(props: Props) {
                     height: 40,
                     background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}bb 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
                     borderRadius: isMobile ? 25 : 4,
-                    padding: '0 16px',
+                    padding: '0 12px',
                   }}
                   display={'flex'}
                   justifyItems={'center'}
@@ -272,10 +304,25 @@ function ItemResult(props: Props) {
                     onClick={() => window.open(`${main_offer_link}`, '_blank')}
                   >
                     <Typography
-                      className="text-f12 fw-700 text-white"
-                      style={{ textTransform: 'uppercase' }}
+                      className="text-white max-line-2"
+                      style={{
+                        textTransform: !settings.warehouseVariant
+                          ? 'uppercase'
+                          : 'none',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontWeight: !settings.warehouseVariant ? 700 : 500,
+                        fontSize: !settings.warehouseVariant ? '12px' : '11px',
+                        letterSpacing: '0.27px',
+                        wordBreak: !settings.warehouseVariant
+                          ? 'normal'
+                          : 'break-all',
+                      }}
+                      align="left"
                     >
-                      {settings.productCtaText || 'MORE INFO'}
+                      {settings.warehouseVariant
+                        ? title
+                        : settings.productCtaText || 'MORE INFO'}
                     </Typography>
                     <img src={IconOpenLink} alt="more-info" width={20} />
                   </Button>
@@ -285,7 +332,64 @@ function ItemResult(props: Props) {
           </Grid>
         </Box>
 
-        {settings.showFeedbackAndShare && (
+        {settings.warehouseVariant && (
+          <Box
+            display="flex"
+            justifyContent={'space-between'}
+            style={{ color: '#2B2C46', marginTop: '12px' }}
+            gridGap={10}
+          >
+            <Box
+              style={{
+                backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                padding: '5px 10px',
+                borderRadius: 4,
+                width: '100%',
+              }}
+            >
+              <div style={{ fontSize: 10, fontWeight: 500 }}>
+                {dataItem.custom_id_key_2}
+              </div>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {dataItem.custom_id_value_2 || 'N/A'}
+              </div>
+            </Box>
+
+            <Box
+              style={{
+                backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                padding: '5px 10px',
+                borderRadius: 4,
+                width: '100%',
+              }}
+            >
+              <div style={{ fontSize: 10, fontWeight: 500 }}>
+                {dataItem.custom_id_key_1}
+              </div>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {dataItem.custom_id_value_1 || 'N/A'}
+              </div>
+            </Box>
+          </Box>
+        )}
+
+        {settings.showFeedbackAndShare && !settings.warehouseVariant && (
           <Box
             className="box-bottom"
             style={{ marginBottom: 6, marginTop: 10 }}
@@ -332,14 +436,9 @@ function ItemResult(props: Props) {
                   <Button
                     style={{ padding: '6px' }}
                     className="btn-item"
-                    onClick={() => setOpenModalShare(true)}
+                    onClick={() => false}
                   >
-                    <img
-                      src={IconShare}
-                      alt="image_item"
-                      className="icon_action"
-                      style={{ width: '16px', height: '16px' }}
-                    />
+                    <IconShare width={16} height={16} color="#808080" />
                   </Button>
                 </Box>
               </Grid>

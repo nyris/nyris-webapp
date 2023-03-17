@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, Button, Tooltip, Typography } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import CloseIcon from '@material-ui/icons/Close';
@@ -11,7 +11,7 @@ import { useDropzone } from 'react-dropzone';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
-import { createImage, findByImage } from 'services/image';
+import { createImage, findByImage, findRegions } from 'services/image';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
 
 import {
@@ -22,10 +22,13 @@ import {
   updateStatusLoading,
   setUpdateKeyFilterDesktop,
   loadingActionResults,
+  setRegions,
+  setSelectedRegion,
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import FilterComponent from 'components/pre-filter/desktop';
+import { RectCoords } from '@nyris/nyris-api';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
@@ -64,6 +67,7 @@ const SearchBox = (props: any) => {
     if (imageThumbSearchInput) {
       setValueInput('');
       refine('');
+      history.push('/result');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageThumbSearchInput]);
@@ -91,6 +95,7 @@ const SearchBox = (props: any) => {
       }
       let payload: any;
       let filters: any[] = [];
+      let region: RectCoords | undefined;
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
@@ -101,10 +106,18 @@ const SearchBox = (props: any) => {
         },
       ];
 
+      if (settings.regions) {
+        let res = await findRegions(image, settings);
+        dispatch(setRegions(res.regions));
+        region = res.selectedRegion;
+        dispatch(setSelectedRegion(region));
+      }
+
       return findByImage({
         image,
         settings,
         filters: keyFilter ? preFilter : undefined,
+        region,
       })
         .then((res: any) => {
           res?.results.map((item: any) => {
@@ -136,6 +149,7 @@ const SearchBox = (props: any) => {
       refine('');
     }
   };
+
   return (
     <Box className="wrap-input-search">
       <div style={{ padding: 10 }} className="box-input-search d-flex">
@@ -159,23 +173,29 @@ const SearchBox = (props: any) => {
                   display={'flex'}
                 >
                   <img src={imageThumbSearchInput} alt="img_search" />
-                  <button
-                    onClick={() => {
-                      if (!valueInput) {
-                        dispatch(reset(''));
-                        history.push('/');
-                      }
-                      dispatch(reset(''));
-                      refine(valueInput);
-                    }}
+                  <Tooltip
+                    title="Clear image search"
+                    placement="top"
+                    arrow={true}
                   >
-                    <CloseIcon
-                      style={{
-                        fontSize: 20,
-                        color: settings.themePage.searchSuite?.secondaryColor,
+                    <button
+                      onClick={() => {
+                        if (!valueInput) {
+                          dispatch(reset(''));
+                          history.push('/');
+                        }
+                        dispatch(reset(''));
+                        refine(valueInput);
                       }}
-                    />
-                  </button>
+                    >
+                      <CloseIcon
+                        style={{
+                          fontSize: 20,
+                          color: settings.themePage.searchSuite?.secondaryColor,
+                        }}
+                      />
+                    </button>
+                  </Tooltip>
                 </Box>
               )}
             </Box>
@@ -199,17 +219,19 @@ const SearchBox = (props: any) => {
                 style={{ order: 0, marginRight: 5 }}
               >
                 <Typography>{keyFilter}</Typography>
-                <Button
-                  onClick={() => dispatch(setUpdateKeyFilterDesktop(''))}
-                  style={{ padding: '6px 2px' }}
-                >
-                  <CloseIcon
-                    style={{
-                      fontSize: 12,
-                      color: '#2B2C46',
-                    }}
-                  />
-                </Button>
+                <Tooltip title="Remove pre-filter" placement="top" arrow={true}>
+                  <Button
+                    onClick={() => dispatch(setUpdateKeyFilterDesktop(''))}
+                    style={{ padding: '6px 2px' }}
+                  >
+                    <CloseIcon
+                      style={{
+                        fontSize: 12,
+                        color: '#2B2C46',
+                      }}
+                    />
+                  </Button>
+                </Tooltip>
               </Box>
             )}
 
@@ -245,24 +267,33 @@ const SearchBox = (props: any) => {
                 history.push('/');
               }}
             >
-              <ClearOutlinedIcon style={{ fontSize: 16, color: '#2B2C46' }} />
+              <Tooltip title="clear text search" placement="top" arrow={true}>
+                <ClearOutlinedIcon style={{ fontSize: 16, color: '#2B2C46' }} />
+              </Tooltip>
             </Button>
           )}
           {!isMobile ? (
             <div className="wrap-box-input-mobile d-flex">
               {settings.preFilterOption && (
-                <Button
-                  onClick={() => setToggleModalFilterDesktop(true)}
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: '100%',
-                    backgroundColor: '#fff',
-                    marginRight: 7,
-                  }}
+                <Tooltip
+                  title="Add or change pre-filter"
+                  placement="top"
+                  arrow={true}
+                  style={{ backgroundColor: '#000000' }}
                 >
-                  <IconFilter />
-                </Button>
+                  <Button
+                    onClick={() => setToggleModalFilterDesktop(true)}
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: '100%',
+                      backgroundColor: '#fff',
+                      marginRight: 7,
+                    }}
+                  >
+                    <IconFilter />
+                  </Button>
+                </Tooltip>
               )}
               <input
                 accept="image/*"
@@ -275,22 +306,28 @@ const SearchBox = (props: any) => {
                   },
                 })}
               />
-              <label htmlFor="icon-button-file">
-                <IconButton
-                  color="primary"
-                  aria-label="upload picture"
-                  component="span"
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: '100%',
-                    backgroundColor: '#fff',
-                    padding: 7,
-                  }}
-                >
-                  <img src={IconCamera} alt="" width={18} height={18} />
-                </IconButton>
-              </label>
+              <Tooltip
+                title="Search with an image"
+                placement="top"
+                arrow={true}
+              >
+                <label htmlFor="icon-button-file">
+                  <IconButton
+                    color="primary"
+                    aria-label="upload picture"
+                    component="span"
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: '100%',
+                      backgroundColor: '#fff',
+                      padding: 7,
+                    }}
+                  >
+                    <img src={IconCamera} alt="" width={18} height={18} />
+                  </IconButton>
+                </label>
+              </Tooltip>
             </div>
           ) : (
             <Box>
