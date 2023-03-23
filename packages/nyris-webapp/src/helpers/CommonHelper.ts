@@ -9,14 +9,14 @@ export const prepareImageList = (dataItem: any) => {
   }
 
   for (let key in newObject) {
-    if (key?.includes('additional_image_link')) {
+    if (key?.includes('image(recognition)')) {
       if (!isEmpty(newObject[key])) {
         valueKey.push({
           url: newObject[key],
         });
       }
     } else {
-      if (key === 'main_image_link') {
+      if (key === 'image(main_similarity)') {
         valueKey.push({
           url: newObject[key],
         });

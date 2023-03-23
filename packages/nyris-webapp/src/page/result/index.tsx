@@ -228,7 +228,12 @@ function ResultComponent(props: Props) {
       ref={refBoxResult}
     >
       <>
-        {filterString && <Configure filters={filterString}></Configure>}
+        {filterString && (
+          <Configure
+            query={search.valueTextSearch.query}
+            filters={filterString}
+          ></Configure>
+        )}
         <Box className="box-wrap-result-component">
           {!isMobile && (
             <div className="box-search">

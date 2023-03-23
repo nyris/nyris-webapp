@@ -29,6 +29,7 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import FilterComponent from 'components/pre-filter/desktop';
 import { RectCoords } from '@nyris/nyris-api';
+import { truncateString } from 'helpers/truncateString';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
@@ -218,7 +219,15 @@ const SearchBox = (props: any) => {
                 className="box-key-filter"
                 style={{ order: 0, marginRight: 5 }}
               >
-                <Typography>{keyFilter}</Typography>
+                <Tooltip
+                  title={keyFilter}
+                  placement="top"
+                  arrow={true}
+                  disableHoverListener={keyFilter.length < 16}
+                >
+                  <Typography>{truncateString(keyFilter, 15)}</Typography>
+                </Tooltip>
+
                 <Tooltip title="Remove pre-filter" placement="top" arrow={true}>
                   <Button
                     onClick={() => dispatch(setUpdateKeyFilterDesktop(''))}

@@ -129,10 +129,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         >
           {/* <section id="branding" style={{ height: 32 }} /> */}
           <img
-            width={90}
-            height={30}
+            // width={90}
+            // height={30}
             src={settings.themePage.searchSuite?.appBarLogoUrl}
             alt={settings.themePage.searchSuite?.appBarLogoUrlAlt}
+            style={{ aspectRatio: 1, width: '110px', height: '24px' }}
           />
         </NavLink>
       </Box>

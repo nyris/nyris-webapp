@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, Button, Tooltip, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import IconSearch from 'common/assets/icons/icon_search.svg';
@@ -9,6 +9,7 @@ import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import { useMediaQuery } from 'react-responsive';
 import { isEmpty } from 'lodash';
 import { Skeleton } from '@material-ui/lab';
+import { truncateString } from 'helpers/truncateString';
 
 interface Props {
   handleClose?: any;
@@ -212,6 +213,7 @@ function FilterComponent(props: Props) {
               >
                 {key}
               </Typography>
+
               <ToggleButtonGroup
                 value={keyFilter}
                 exclusive
@@ -221,16 +223,24 @@ function FilterComponent(props: Props) {
               >
                 {value.map((item: any, index: any) => {
                   return (
-                    <ToggleButton
-                      value={item}
-                      aria-label={item}
-                      className="item-btn"
-                      onChange={() => {
-                        setKeyFilter(item);
-                      }}
+                    <Tooltip
+                      key={item}
+                      title={item}
+                      placement="top"
+                      arrow={true}
+                      disableHoverListener={item.length < 20}
                     >
-                      {item}
-                    </ToggleButton>
+                      <ToggleButton
+                        value={item}
+                        aria-label={item}
+                        className="item-btn"
+                        onChange={() => {
+                          setKeyFilter(item);
+                        }}
+                      >
+                        {truncateString(item, !isMobile ? 20 : 35)}
+                      </ToggleButton>
+                    </Tooltip>
                   );
                 })}
               </ToggleButtonGroup>

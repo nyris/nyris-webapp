@@ -659,7 +659,7 @@ button {
 
   .box-content {
     background-color: #e9e9ec;
-    padding: 8px 12px;
+    padding: 8px 8px;
     min-height: 82px;
     justify-content: space-between;
     .box-top {
@@ -1943,8 +1943,7 @@ button {
 
 .wrap-filter-destop {
   
-    width: 90%;
-
+   
   .box-filter-destop {
     background-color: #fff;
     width: 70%;
@@ -2066,4 +2065,24 @@ button {
     text-transform: uppercase;
   }
 }
+.modal-container {
+  /* width */
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
 
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}

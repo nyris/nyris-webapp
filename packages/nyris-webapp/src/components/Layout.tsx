@@ -177,7 +177,10 @@ function Layout({ children }: ReactNode): JSX.Element {
             position={'absolute'}
             style={{ top: '87px' }}
           >
-            <div className={'wrap-filter-destop'}>
+            <div
+              style={{ width: !isMobile ? '90%' : '100%' }}
+              className={'wrap-filter-destop'}
+            >
               <div className={'bg-white box-filter-destop isMobile'}>
                 <FilterComponent
                   handleClose={() =>

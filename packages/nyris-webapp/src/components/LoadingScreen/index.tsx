@@ -146,7 +146,7 @@ function LoadingScreen({
             }
             isGroupItem={hit?.isGroup}
             moreInfoText={moreInfoText}
-            main_image_link={hit?.main_image_link}
+            main_image_link={hit['image(main_similarity)']}
           />
         </Box>
       );

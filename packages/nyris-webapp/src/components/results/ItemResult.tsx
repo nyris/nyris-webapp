@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Tooltip, Typography } from '@material-ui/core';
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';
 import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
@@ -12,7 +12,6 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import DetailItem from 'components/DetailItem';
 import { onToggleModalItemDetail, updateStatusLoading } from 'Store/Search';
-import { useMediaQuery } from 'react-responsive';
 import { ShareModal } from '../ShareModal';
 import { truncateString } from 'helpers/truncateString';
 
@@ -48,7 +47,6 @@ function ItemResult(props: Props) {
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [feedback, setFeedback] = useState('none');
 
   const { sku, title, brand, main_offer_link, collap } = dataItem;
@@ -165,7 +163,7 @@ function ItemResult(props: Props) {
             onClick={(e: any) => {
               e.preventDefault();
               if (urlImage.length > 1) {
-                onSearchImage(dataItem?.main_image_link);
+                onSearchImage(main_image_link);
               }
             }}
           >
@@ -175,7 +173,7 @@ function ItemResult(props: Props) {
                 key={main_image_link}
                 alt="image_item"
                 className="img-style"
-                style={{ width: '100%', height: '100%' }}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             ) : (
               <img
@@ -243,31 +241,38 @@ function ItemResult(props: Props) {
               )}
 
               {(!!brand || !!settings.brandName) && (
-                <Box
-                  mt={1}
-                  style={{
-                    background: `${settings.themePage.searchSuite?.secondaryColor}26`,
-                    borderRadius: '6px',
-                    display: 'flex',
-                    width: 'fit-content',
-                    padding: '2px 5px',
-                  }}
+                <Tooltip
+                  title={brand}
+                  placement="top"
+                  arrow={true}
+                  disableHoverListener={brand.length < 22}
                 >
-                  <Typography
-                    className="fw-700"
+                  <Box
+                    mt={1}
                     style={{
-                      color: settings.themePage.searchSuite?.secondaryColor,
-                      fontSize: 10,
-                      letterSpacing: '1px',
-                      maxWidth: '160px',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
+                      background: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                      borderRadius: '6px',
+                      display: 'flex',
+                      width: 'fit-content',
+                      padding: '2px 5px',
                     }}
                   >
-                    {brand || settings.brandName}
-                  </Typography>
-                </Box>
+                    <Typography
+                      className="fw-700"
+                      style={{
+                        color: settings.themePage.searchSuite?.secondaryColor,
+                        fontSize: 10,
+                        letterSpacing: '1px',
+                        maxWidth: '160px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {truncateString(brand, 22) || settings.brandName}
+                    </Typography>
+                  </Box>
+                </Tooltip>
               )}
               {!settings.warehouseVariant && (
                 <Typography
@@ -279,54 +284,69 @@ function ItemResult(props: Props) {
               )}
 
               {(settings.showMoreInfo || settings.warehouseVariant) && (
-                <Box
-                  style={{
-                    boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
-                    // marginBottom: 22,
-                    height: 40,
-                    background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}bb 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
-                    borderRadius: isMobile ? 25 : 4,
-                    padding: '0 12px',
-                  }}
-                  display={'flex'}
-                  justifyItems={'center'}
-                  alignItems={'center'}
-                  justifyContent={'space-between'}
-                  mt={2}
+                <Tooltip
+                  title={title}
+                  placement="top"
+                  arrow={true}
+                  disableHoverListener={
+                    title.length < 35 || !settings.warehouseVariant
+                  }
                 >
-                  <Button
+                  <Box
                     style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                      padding: 0,
+                      boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                      // marginBottom: 22,
+                      height: 40,
+                      background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}bb 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
+                      borderRadius: 4,
+                      padding: '0px 8px',
                     }}
-                    onClick={() => window.open(`${main_offer_link}`, '_blank')}
+                    display={'flex'}
+                    justifyItems={'center'}
+                    alignItems={'center'}
+                    justifyContent={'space-between'}
+                    mt={2}
                   >
-                    <Typography
-                      className="text-white max-line-2"
+                    <Button
                       style={{
-                        textTransform: !settings.warehouseVariant
-                          ? 'uppercase'
-                          : 'none',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        fontWeight: !settings.warehouseVariant ? 700 : 500,
-                        fontSize: !settings.warehouseVariant ? '12px' : '11px',
-                        letterSpacing: '0.27px',
-                        wordBreak: !settings.warehouseVariant
-                          ? 'normal'
-                          : 'break-all',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        padding: 0,
                       }}
-                      align="left"
+                      onClick={() =>
+                        window.open(`${main_offer_link}`, '_blank')
+                      }
                     >
-                      {settings.warehouseVariant
-                        ? title
-                        : settings.productCtaText || 'MORE INFO'}
-                    </Typography>
-                    <img src={IconOpenLink} alt="more-info" width={20} />
-                  </Button>
-                </Box>
+                      <Typography
+                        className="text-white max-line-2"
+                        style={{
+                          textTransform: !settings.warehouseVariant
+                            ? 'uppercase'
+                            : 'none',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          fontWeight: !settings.warehouseVariant ? 700 : 500,
+                          fontSize: !settings.warehouseVariant
+                            ? '12px'
+                            : '11px',
+                          letterSpacing: '0.27px',
+                          wordBreak: !settings.warehouseVariant
+                            ? 'normal'
+                            : 'break-all',
+                          maxWidth: '136px',
+                          paddingRight: '8px',
+                        }}
+                        align="left"
+                      >
+                        {settings.warehouseVariant
+                          ? truncateString(title, 35)
+                          : settings.productCtaText || 'MORE INFO'}
+                      </Typography>
+                      <img src={IconOpenLink} alt="more-info" width={20} />
+                    </Button>
+                  </Box>
+                </Tooltip>
               )}
             </Grid>
           </Grid>

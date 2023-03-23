@@ -22,7 +22,7 @@ function DefaultModal(props: Props): JSX.Element {
     <Modal
       open={openModal}
       onClose={handleClose}
-      className={classNameModal}
+      className={`modal-container ${classNameModal || ''}`}
       style={{
         display: 'flex',
         justifyContent: 'center',
@@ -35,7 +35,12 @@ function DefaultModal(props: Props): JSX.Element {
       //   },
       // }}
     >
-      <div className={classNameComponentChild}>{children}</div>
+      <div
+        className={classNameComponentChild}
+        style={{ overflowY: 'hidden', maxHeight: '95vh', borderRadius: 12 }}
+      >
+        {children}
+      </div>
     </Modal>
   );
 }
