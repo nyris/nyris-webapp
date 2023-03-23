@@ -173,7 +173,11 @@ const SearchBox = (props: any) => {
                   className="box-image-search-thumb"
                   display={'flex'}
                 >
-                  <img src={imageThumbSearchInput} alt="img_search" />
+                  <img
+                    src={imageThumbSearchInput}
+                    style={{ objectFit: 'contain' }}
+                    alt="img_search"
+                  />
                   <Tooltip
                     title="Clear image search"
                     placement="top"

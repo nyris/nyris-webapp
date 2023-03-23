@@ -43,7 +43,7 @@ export const ImagePreviewCarousel = (props: Props) => {
       <SplideSlide key={slide.url} className={thumbs ? '' : 'img-container'}>
         <img
           alt="preview"
-          style={{ objectFit: 'contain' }}
+          style={{ objectFit: 'contain', minHeight: '400px' }}
           src={slide.url}
           onClick={() => {
             if (!thumbs) {

@@ -153,7 +153,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 >
                   <img
                     src={imageThumbSearchInput}
-                    style={{ maxWidth: '39px' }}
+                    style={{ maxWidth: '39px', objectFit: 'contain' }}
                     alt="img_search"
                   />
                   <button

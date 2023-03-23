@@ -93,8 +93,6 @@ function ItemResult(props: Props) {
       dispatch(updateStatusLoading(false));
     }, 400);
   };
-  console.log({ dataItem });
-
   return (
     <Box
       className="wrap-main-item-result"
