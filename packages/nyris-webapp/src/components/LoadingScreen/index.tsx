@@ -159,6 +159,7 @@ function LoadingScreen({
     search.valueTextSearch,
     isSearchStalled,
     algoliaRequest,
+    loadingSearchAlgolia,
   ]);
 
   return <>{renderItem}</>;
