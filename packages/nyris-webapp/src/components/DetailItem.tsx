@@ -12,6 +12,7 @@ import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
 import { AppState } from 'types';
 import { useAppSelector } from 'Store/Store';
 import { prepareImageList } from '../helpers/CommonHelper';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 interface Props {
   numberResult?: number;
@@ -198,19 +199,28 @@ function DetailItem(props: Props) {
                         color: settings.themePage.searchSuite?.secondaryColor,
                         fontSize: 14,
                         textTransform: 'initial',
-                        paddingLeft: 0,
+                        paddingLeft: 5,
+                        marginTop: 5,
                       }}
-                      onClick={() => setCollapDescription(!collapDescription)}
+                      onClick={() => setCollapDescription(e => !e)}
                     >
                       View details
-                      <KeyboardArrowDownIcon
-                        htmlColor={
-                          settings.themePage.searchSuite?.secondaryColor
-                        }
-                      />
+                      {collapDescription ? (
+                        <KeyboardArrowUpIcon
+                          htmlColor={
+                            settings.themePage.searchSuite?.secondaryColor
+                          }
+                        />
+                      ) : (
+                        <KeyboardArrowDownIcon
+                          htmlColor={
+                            settings.themePage.searchSuite?.secondaryColor
+                          }
+                        />
+                      )}
                     </Button>
                     <Collapse in={collapDescription}>
-                      <Typography style={{ fontSize: 14 }}>
+                      <Typography style={{ fontSize: 14, paddingTop: 5 }}>
                         {dataItem?.keyword}
                       </Typography>
                     </Collapse>
