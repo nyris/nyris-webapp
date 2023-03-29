@@ -216,26 +216,30 @@ function ItemResult(props: Props) {
               </Typography>
 
               {settings.warehouseVariant && (
-                <Typography
-                  className="text-f12 max-line-1 fw-400"
-                  style={{
-                    color: '#2B2C46',
-                    marginTop: 10,
-                    display: 'inline-block',
-                  }}
-                >
-                  <span style={{ marginRight: 3 }}>
-                    {dataItem.custom_id_key_3}:
-                  </span>
-                  <span
+                <Box>
+                  <Typography
+                    className="text-f12 max-line-1 fw-400"
                     style={{
-                      color: dataItem.custom_id_value_3 ? '#00C070' : '#c54545',
-                      fontWeight: 600,
+                      color: '#2B2C46',
+                      marginTop: 10,
+                      display: 'inline-block',
                     }}
                   >
-                    {dataItem.custom_id_value_3 || 0}
-                  </span>
-                </Typography>
+                    <span style={{ marginRight: 3 }}>
+                      {dataItem.custom_id_key_3}:
+                    </span>
+                    <span
+                      style={{
+                        color: dataItem.custom_id_value_3
+                          ? '#00C070'
+                          : '#c54545',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {dataItem.custom_id_value_3 || 0}
+                    </span>
+                  </Typography>
+                </Box>
               )}
 
               {(!!brand || !!settings.brandName) && (
@@ -243,7 +247,7 @@ function ItemResult(props: Props) {
                   title={brand}
                   placement="top"
                   arrow={true}
-                  disableHoverListener={brand.length < 22}
+                  disableHoverListener={brand?.length < 22 || !brand}
                 >
                   <Box
                     mt={1}

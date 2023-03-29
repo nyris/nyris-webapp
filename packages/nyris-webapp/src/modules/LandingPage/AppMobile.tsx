@@ -56,7 +56,7 @@ function AppMobile(props: Props): JSX.Element {
     }
     const preFilter = [
       {
-        key: settings.filterType,
+        key: settings.visualSearchFilterKey,
         values: [`${keyFilter}`],
       },
     ];

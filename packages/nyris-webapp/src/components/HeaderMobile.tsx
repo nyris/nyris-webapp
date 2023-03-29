@@ -115,7 +115,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         style={{
           display: 'flex',
           alignItems: 'center',
-          height: '40px',
+          height: '50px',
           borderBottom: '1px solid #e9e9ec',
           background: settings.themePage.searchSuite?.headerColor,
         }}
@@ -133,7 +133,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             // height={30}
             src={settings.themePage.searchSuite?.appBarLogoUrl}
             alt={settings.themePage.searchSuite?.appBarLogoUrlAlt}
-            style={{ aspectRatio: 1, width: '110px', height: '24px' }}
+            style={{
+              aspectRatio: 1,
+              width: settings.themePage.searchSuite?.logoWidth,
+              height: settings.themePage.searchSuite?.logoHeight,
+            }}
           />
         </NavLink>
       </Box>

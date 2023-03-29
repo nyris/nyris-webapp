@@ -43,7 +43,7 @@ export interface AppSettings extends NyrisAPISettings {
   postFilterOption?: boolean;
   showFeedbackAndShare?: boolean;
   showMoreInfo?: boolean;
-  filterType?: string;
+  visualSearchFilterKey?: string;
   alogoliaFilterField?: string;
   headerText?: string;
   brandName?: string;
@@ -58,6 +58,8 @@ export interface SearchSuiteSettings {
   appBarLogoUrl: string;
   appBarLogoUrlAlt: string;
   headerColor: string;
+  logoWidth: string;
+  logoHeight: string;
   mobileFooterImageColor: string;
   primaryColor: string;
   secondaryColor: string;

@@ -102,7 +102,7 @@ const SearchBox = (props: any) => {
       dispatch(setRequestImage(image));
       const preFilter = [
         {
-          key: settings.filterType,
+          key: settings.visualSearchFilterKey,
           values: [`${keyFilter}`],
         },
       ];

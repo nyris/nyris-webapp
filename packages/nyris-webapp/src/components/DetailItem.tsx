@@ -42,7 +42,9 @@ function DetailItem(props: Props) {
   useEffect(() => {
     if (dataItem) {
       checkDataItemResult(dataItem);
-      handlerCheckUrlImage(dataItem['image(main_similarity)']);
+      handlerCheckUrlImage(
+        dataItem['image(main_similarity)'] || dataItem['main_image_link'],
+      );
     }
   }, [dataItem]);
 
@@ -69,6 +71,7 @@ function DetailItem(props: Props) {
 
   const checkDataItemResult = (dataItem: any) => {
     const valueKey = prepareImageList(dataItem);
+
     setDataImageCarouSel(valueKey);
   };
 
@@ -83,7 +86,7 @@ function DetailItem(props: Props) {
           <CloseOutlinedIcon style={{ fontSize: 20, color: '#55566B' }} />
         </Button>
       </Box>
-      <Box style={{ overflowY: 'auto', maxHeight: '95vh' }}>
+      <Box style={{ overflowY: 'auto', maxHeight: '90svh' }}>
         <Box className="box-carosel">
           <ImagePreviewCarousel
             imgItem={dataImageCarousel}
@@ -115,7 +118,7 @@ function DetailItem(props: Props) {
             flexDirection: 'column',
             borderBottomLeftRadius: 12,
             borderBottomRightRadius: 12,
-            marginBottom: 19,
+            paddingBottom: 19,
             backgroundColor: '#F3F3F5',
           }}
         >
@@ -125,6 +128,14 @@ function DetailItem(props: Props) {
                 <Typography className="text-f13 fw-500 max-line-1">
                   SKU: {sku}
                 </Typography>
+                {dataItem.keyword_1 && (
+                  <Typography
+                    className="text-f13 fw-500 max-line-1"
+                    style={{ marginTop: '8px' }}
+                  >
+                    Manufacturer Number: {dataItem.keyword_1}
+                  </Typography>
+                )}
                 {settings.warehouseVariant && (
                   <Typography
                     className="text-f13 max-line-1 fw-500"
@@ -134,7 +145,6 @@ function DetailItem(props: Props) {
                     }}
                   >
                     <span style={{ marginRight: 3 }}>
-                      {' '}
                       {dataItem.custom_id_key_3}:
                     </span>
                     <span

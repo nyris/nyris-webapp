@@ -31,7 +31,11 @@ function HeaderNewVersion(): JSX.Element {
         <img
           src={settings.themePage.searchSuite?.appBarLogoUrl}
           alt={settings.themePage.searchSuite?.appBarLogoUrlAlt}
-          style={{ aspectRatio: 1, width: '120px', height: '26px' }}
+          style={{
+            aspectRatio: 1,
+            width: settings.themePage.searchSuite?.logoWidth,
+            height: settings.themePage.searchSuite?.logoHeight,
+          }}
         />
       </NavLink>
       <Grid container className="nav-menu">

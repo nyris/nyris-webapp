@@ -35,7 +35,8 @@ function FilterComponent(props: Props) {
     const dataResultFilter = getFilters(1000, settings)
       .then(res => {
         const arrResult =
-          res.find(value => value.key === settings.filterType)?.values || [];
+          res.find(value => value.key === settings.visualSearchFilterKey)
+            ?.values || [];
         const newResult = arrResult.sort().reduce((a: any, c: any) => {
           let k = c[0].toLocaleUpperCase();
           if (a[k]) a[k].push(c);
@@ -72,7 +73,11 @@ function FilterComponent(props: Props) {
       getDataFilterDesktop();
       return;
     }
-    const data = await searchFilters(settings.filterType, value, settings)
+    const data = await searchFilters(
+      settings.visualSearchFilterKey,
+      encodeURIComponent(value),
+      settings,
+    )
       .then(res => {
         // console.log("res", res);
         if (res.length > 0) {

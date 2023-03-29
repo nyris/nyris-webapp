@@ -13,7 +13,8 @@ type PropsType = {
 
 export const ShareModal = (props: PropsType) => {
   const { dataItem, isOpen, setModalState } = props;
-  const main_image_link = dataItem['image(main_similarity)'];
+  const main_image_link =
+    dataItem['image(main_similarity)'] || dataItem['main_image_link'];
   return (
     <DefaultModal openModal={isOpen} handleClose={() => setModalState(false)}>
       <Box
