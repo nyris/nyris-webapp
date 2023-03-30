@@ -38,12 +38,11 @@ import {
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from './MockData';
+import { DEFAULT_REGION } from '../../constants';
 
 interface Props {
   allSearchResults: any;
 }
-
-const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
 
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
@@ -54,14 +53,20 @@ function ResultComponent(props: Props) {
   const moreInfoText = settings?.productCtaText;
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-  const [imageSelection, setImageSelection] = useState(selectedRegion);
+  const [imageSelection, setImageSelection] = useState<any>(null);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
   const [filterString, setFilterString] = useState<string>();
 
   useEffect(() => {
+    if (selectedRegion) {
+      setImageSelection(selectedRegion);
+    }
+  }, [selectedRegion]);
+
+  useEffect(() => {
     if (requestImage) {
       executeScroll();
-      setImageSelection(null);
+      setImageSelection(DEFAULT_REGION);
     }
   }, [requestImage]);
 
@@ -298,7 +303,7 @@ function ResultComponent(props: Props) {
                                   debouncedOnImageSelectionChange(r);
                                 }}
                                 image={requestImage?.canvas}
-                                selection={imageSelection || defaultSelection}
+                                selection={imageSelection || DEFAULT_REGION}
                                 regions={regions}
                                 maxWidth={320}
                                 maxHeight={320}
@@ -358,7 +363,7 @@ function ResultComponent(props: Props) {
                               debouncedOnImageSelectionChange(r);
                             }}
                             image={requestImage?.canvas}
-                            selection={imageSelection || defaultSelection}
+                            selection={imageSelection || DEFAULT_REGION}
                             regions={regions}
                             maxWidth={320}
                             maxHeight={320}

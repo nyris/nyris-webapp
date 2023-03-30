@@ -3,18 +3,22 @@ import React, { memo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { makeFileHandler } from '@nyris/nyris-react-components';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { createImage, findByImage } from 'services/image';
+import { createImage, findByImage, findRegions } from 'services/image';
 import {
   setSearchResults,
   setRequestImage,
   setImageSearchInput,
   updateStatusLoading,
   loadingActionResults,
+  setRegions,
+  setSelectedRegion,
 } from 'Store/Search';
 import { showFeedback } from 'Store/Nyris';
 import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import IconUpload from 'common/assets/images/Icon_Upload.svg';
+import { RectCoords } from '@nyris/nyris-api';
+
 interface Props {
   acceptTypes: any;
   onChangeLoading?: any;
@@ -50,10 +54,18 @@ function DragDropFile(props: Props) {
           values: [`${keyFilter}`],
         },
       ];
-      // TODO support regions
+      let region: RectCoords | undefined;
+      if (settings.regions) {
+        let res = await findRegions(image, settings);
+        dispatch(setRegions(res.regions));
+        region = res.selectedRegion;
+        dispatch(setSelectedRegion(region));
+      }
+
       return findByImage({
         image,
         settings,
+        region,
         filters: keyFilter ? preFilter : undefined,
       }).then((res: any) => {
         res?.results.map((item: any) => {

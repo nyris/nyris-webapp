@@ -1,6 +1,7 @@
 import { Code, RectCoords, Region } from '@nyris/nyris-api';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CanvasWithId } from 'types';
+import { DEFAULT_REGION } from '../constants';
 
 interface CategoryPrediction {
   name: string;
@@ -95,13 +96,13 @@ export const searchSlice = createSlice({
       regions: data.payload,
     }),
 
-    setSelectedRegion: (
-      state,
-      data: PayloadAction<RectCoords | undefined>,
-    ) => ({
-      ...state,
-      selectedRegion: data.payload,
-    }),
+    setSelectedRegion: (state, data: PayloadAction<RectCoords | undefined>) => {
+      console.log(data.payload);
+      return {
+        ...state,
+        selectedRegion: data.payload,
+      };
+    },
 
     setRequestImage: (state, data: PayloadAction<any>) => ({
       ...state,
@@ -193,7 +194,7 @@ export const searchSlice = createSlice({
       return {
         results: [],
         regions: [],
-        selectedRegion: { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 },
+        selectedRegion: DEFAULT_REGION,
         requestImage: undefined,
         fetchingResults: false,
         fetchingRegions: false,
@@ -299,7 +300,7 @@ export const searchSlice = createSlice({
         ...state,
         preFilterDropdown: data.payload,
       };
-    }
+    },
   },
 });
 
