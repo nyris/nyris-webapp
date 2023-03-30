@@ -1,10 +1,10 @@
-import { Box, Button } from "@material-ui/core";
-import React, { useState } from "react";
-import { NavLink, useHistory } from "react-router-dom";
-import IconSupportMobile from "common/assets/icons/support_mobile.svg";
-import IconAdminMobile from "common/assets/icons/admin_mobile.svg";
-import IconCameraMobile from "common/assets/icons/icon_camera_mobile.svg";
-import CameraCustom from "./drawer/cameraCustom";
+import { Box, Button } from '@material-ui/core';
+import React, { useState } from 'react';
+import { ReactComponent as IconCameraMobile } from 'common/assets/icons/icon_camera_mobile.svg';
+import CameraCustom from './drawer/cameraCustom';
+import { ReactComponent as Home } from 'common/assets/icons/home.svg';
+import { NavLink, useHistory } from 'react-router-dom';
+import { useAppSelector } from 'Store/Store';
 
 interface Props {
   onLoadingMobile?: any;
@@ -13,39 +13,62 @@ interface Props {
 function FooterMobile(props: Props): JSX.Element {
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const history = useHistory();
-  const handleCheckMatchLink = (match: any, location: any) => {
-    let active = false;
-    if (match?.url === location.pathname) {
-      active = true;
-    }
+  const { settings } = useAppSelector(state => state);
 
-    return active;
-  };
+  // const handleCheckMatchLink = (match: any, location: any) => {
+  //   let active = false;
+  //   if (match?.url === location.pathname) {
+  //     active = true;
+  //   }
+
+  //   return active;
+  // };
 
   return (
     <Box
       className="box-footer-mobile"
-      display={"flex"}
-      position={"relative"}
-      alignItems={"center"}
-      height={"100%"}
-      justifyContent={"flex-end"}
+      display={'flex'}
+      position={'relative'}
+      alignItems={'center'}
+      height={'100%'}
     >
-      <Box className="box-icon-camera-mobile">
+      <NavLink
+        style={{
+          width: '70px',
+          display: 'flex',
+          justifyContent: 'center',
+          height: '100%',
+          alignItems: 'center',
+          backgroundColor:
+            history.location.pathname === '/'
+              ? `${settings.themePage.searchSuite?.primaryColor}21`
+              : '',
+        }}
+        activeClassName="active"
+        to={'/'}
+        className="nav-link p-0 menu-children rounded-0"
+      >
+        <Home
+          color={
+            history.location.pathname === '/'
+              ? settings.themePage.searchSuite?.primaryColor
+              : '#000'
+          }
+        />
+      </NavLink>
+      <Box
+        style={{ background: settings.themePage.searchSuite?.primaryColor }}
+        className="box-icon-camera-mobile"
+      >
         <Button
           onClick={() => {
             setOpenModalCamera(!isOpenModalCamera);
           }}
         >
-          <img
-            width={28}
-            height={28}
-            src={`${IconCameraMobile}`}
-            alt="open_camera_mobile"
-          />
+          <IconCameraMobile color="#FFFF" />
         </Button>
       </Box>
-     {/* hidden_as_required {history.location.pathname !== "/" && (
+      {/* hidden_as_required {history.location.pathname !== "/" && (
         <>
           <Box style={{ padding: 23 }}>
             <NavLink

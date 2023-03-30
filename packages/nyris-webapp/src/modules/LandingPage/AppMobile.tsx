@@ -24,7 +24,10 @@ function AppMobile(props: Props): JSX.Element {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const searchState = useAppSelector(state => state);
-  const { settings } = searchState;
+  const {
+    settings,
+    search: { keyFilter },
+  } = searchState;
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
 
   useEffect(() => {
@@ -51,7 +54,18 @@ function AppMobile(props: Props): JSX.Element {
       searchRegion = res.selectedRegion;
       dispatch(setSelectedRegion(searchRegion));
     }
-    findByImage(image, settings, searchRegion)
+    const preFilter = [
+      {
+        key: settings.visualSearchFilterKey,
+        values: [`${keyFilter}`],
+      },
+    ];
+    findByImage({
+      image,
+      settings,
+      region: searchRegion,
+      filters: keyFilter ? preFilter : undefined,
+    })
       .then(res => {
         dispatch(setSearchResults(res));
         dispatch(updateStatusLoading(false));
@@ -65,8 +79,18 @@ function AppMobile(props: Props): JSX.Element {
 
   return (
     <>
-      <Box className="wrap-content-body">
-        <Box className="title-top">
+      <Box className="wrap-content-body" style={{ position: 'relative' }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: '1px',
+            height: '100%',
+            width: '100%',
+            zIndex: 1,
+            background: `${settings.themePage.searchSuite?.mobileFooterImageColor}`,
+          }}
+        ></div>
+        <Box style={{ position: 'inherit', zIndex: 100 }} className="title-top">
           <Typography className="text-center text-white">
             Snap a photo or attach any image in the <br /> following formats:
           </Typography>
@@ -74,7 +98,10 @@ function AppMobile(props: Props): JSX.Element {
             jpg, png, svg, pdf or tiff
           </Typography>
         </Box>
-        <Box className="box-drag-mobile">
+        <Box
+          style={{ position: 'inherit', zIndex: 100 }}
+          className="box-drag-mobile"
+        >
           <ExampleImages
             images={settings.exampleImages}
             onExampleImageClicked={(url: string) => {

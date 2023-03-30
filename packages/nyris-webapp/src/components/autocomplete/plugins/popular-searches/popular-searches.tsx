@@ -3,7 +3,6 @@ import type { OnSelectParams } from '@algolia/autocomplete-core';
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
 import type { AutocompleteQuerySuggestionsHit } from '@algolia/autocomplete-plugin-query-suggestions/dist/esm/types';
 import type { SearchClient } from 'algoliasearch/lite';
-import { Typography } from '@material-ui/core';
 
 type PopularSearchesPluginCreatorParams = {
   searchClient: SearchClient;
@@ -34,7 +33,7 @@ export function popularSearchesPluginCreator({
           }
         },
         templates: {
-      /*    header() {
+          /*    header() {
             return (
               <div>
                 <span className="aa-SourceHeaderTitle">Suggested searches</span>
@@ -51,7 +50,7 @@ export function popularSearchesPluginCreator({
                     </div>
                   </div>
                 </div>*/}
-             {/*   <div className="aa-ItemActions">
+                {/*   <div className="aa-ItemActions">
                   <button
                     type="button"
                     className="aa-ItemActionButton"

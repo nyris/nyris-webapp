@@ -1,6 +1,7 @@
 import { Code, RectCoords, Region } from '@nyris/nyris-api';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CanvasWithId } from 'types';
+import { DEFAULT_REGION } from '../constants';
 
 interface CategoryPrediction {
   name: string;
@@ -29,6 +30,9 @@ export interface SearchState {
   imageThumbSearchInput?: any;
   textSearchInputMobile?: string;
   isShowModalDetailItemMobile?: boolean;
+  keyFilter?: string;
+  preFilterDropdown?: boolean;
+  setPreFilterDropdown?: any;
 }
 
 // TODO: init state
@@ -55,6 +59,8 @@ const initialState: SearchState = {
   imageThumbSearchInput: '',
   textSearchInputMobile: '',
   isShowModalDetailItemMobile: false,
+  keyFilter: '',
+  preFilterDropdown: false,
 };
 
 export const searchSlice = createSlice({
@@ -90,13 +96,13 @@ export const searchSlice = createSlice({
       regions: data.payload,
     }),
 
-    setSelectedRegion: (
-      state,
-      data: PayloadAction<RectCoords | undefined>,
-    ) => ({
-      ...state,
-      selectedRegion: data.payload,
-    }),
+    setSelectedRegion: (state, data: PayloadAction<RectCoords | undefined>) => {
+      console.log(data.payload);
+      return {
+        ...state,
+        selectedRegion: data.payload,
+      };
+    },
 
     setRequestImage: (state, data: PayloadAction<any>) => ({
       ...state,
@@ -188,7 +194,7 @@ export const searchSlice = createSlice({
       return {
         results: [],
         regions: [],
-        selectedRegion: { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 },
+        selectedRegion: DEFAULT_REGION,
         requestImage: undefined,
         fetchingResults: false,
         fetchingRegions: false,
@@ -203,6 +209,8 @@ export const searchSlice = createSlice({
         imageThumbSearchInput: '',
         textSearchInputMobile: '',
         isShowModalDetailItemMobile: false,
+        keyFilter: state.keyFilter || '',
+        preFilterDropdown: false,
       };
     },
 
@@ -210,6 +218,7 @@ export const searchSlice = createSlice({
       return {
         ...state,
         requestImage: undefined,
+        imageThumbSearchInput: '',
         results: [],
         regions: [],
       };
@@ -236,6 +245,7 @@ export const searchSlice = createSlice({
       const { results } = payload;
       return {
         ...state,
+        fetchingResults: false,
         results,
       };
     },
@@ -272,11 +282,23 @@ export const searchSlice = createSlice({
     },
     onToggleModalItemDetail: (state, data: PayloadAction<boolean>) => {
       const { payload } = data;
-      console.log('payload', payload);
 
       return {
         ...state,
         isShowModalDetailItemMobile: payload,
+      };
+    },
+    setUpdateKeyFilterDesktop: (state, data: PayloadAction<string>) => {
+      const { payload } = data;
+      return {
+        ...state,
+        keyFilter: payload,
+      };
+    },
+    setPreFilterDropdown: (state, data: PayloadAction<boolean>) => {
+      return {
+        ...state,
+        preFilterDropdown: data.payload,
       };
     },
   },
@@ -305,5 +327,7 @@ export const {
   updateValueTextSearchMobile,
   onToggleModalItemDetail,
   onResetRequestImage,
+  setUpdateKeyFilterDesktop,
+  setPreFilterDropdown,
 } = searchSlice.actions;
 export default searchSlice.reducer;

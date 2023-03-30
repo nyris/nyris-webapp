@@ -1,13 +1,8 @@
-import { Grid, Typography } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connectPagination } from 'react-instantsearch-dom';
-import { useAppSelector } from 'Store/Store';
-import { AppState } from 'types';
 
 function Pagination({ children }: any) {
-  const { settings } = useAppSelector<AppState>((state: any) => state);
-
   return (
     <Grid
       container

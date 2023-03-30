@@ -8,14 +8,17 @@ import React, { useCallback, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useHistory } from 'react-router-dom';
 import Webcam from 'react-webcam';
-import { createImage, findByImage } from 'services/image';
-import { showFeedback } from 'Store/Nyris';
+import { createImage, findByImage, findRegions } from 'services/image';
+// import { showFeedback } from 'Store/Nyris';
 import {
   onToggleModalItemDetail,
   setImageSearchInput,
   setRequestImage,
   setSearchResults,
   updateStatusLoading,
+  loadingActionResults,
+  setRegions,
+  setSelectedRegion,
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 
@@ -38,9 +41,9 @@ function CameraCustom(props: Props) {
   const dispatch = useAppDispatch();
 
   const videoConstraints = {
-    width: 1920,
+    width: 1080,
     height: 1080,
-    aspectRatio: 0.6666666667,
+    aspectRatio: 1.33333333333,
   };
   const handleClick = useCallback(() => {
     setFacingMode(prevState =>
@@ -52,15 +55,25 @@ function CameraCustom(props: Props) {
 
   const handlerFindImage = async (image: any) => {
     dispatch(updateStatusLoading(true));
-    let searchRegion: RectCoords | undefined = undefined;
+    dispatch(loadingActionResults());
+
+    let region: RectCoords | undefined;
     let imageConvert = await createImage(image);
     dispatch(setRequestImage(imageConvert));
     dispatch(setImageSearchInput(image));
     dispatch(onToggleModalItemDetail(false));
-    findByImage(imageConvert, settings, searchRegion).then((res: any) => {
-      dispatch(setSearchResults(res));
-      return dispatch(showFeedback());
-    });
+    if (settings.regions) {
+      let res = await findRegions(imageConvert, settings);
+      dispatch(setRegions(res.regions));
+      region = res.selectedRegion;
+      dispatch(setSelectedRegion(region));
+    }
+    // findByImage({ image: imageConvert, settings, region: region }).then(
+    //   (res: any) => {
+    //     dispatch(setSearchResults(res));
+    //     return dispatch(showFeedback());
+    //   },
+    // );
     setTimeout(() => {
       dispatch(updateStatusLoading(false));
       handlerCloseModal();
@@ -78,12 +91,18 @@ function CameraCustom(props: Props) {
     onDrop: async (fs: File[]) => {
       let payload: any;
       let filters: any[] = [];
+      let region: RectCoords | undefined;
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
-      // TODO support regions
+      if (settings.regions) {
+        let res = await findRegions(image, settings);
+        dispatch(setRegions(res.regions));
+        region = res.selectedRegion;
+        dispatch(setSelectedRegion(region));
+      }
       dispatch(updateStatusLoading(true));
-      return findByImage(image, settings)
+      return findByImage({ image, settings, region })
         .then((res: any) => {
           res?.results.map((item: any) => {
             filters.push({
@@ -119,10 +138,22 @@ function CameraCustom(props: Props) {
         className="modal-togggle-cam"
       >
         <Box className="wrap-camera">
-          <button className="btn-close-modal right" onClick={handlerCloseModal}>
+          <button
+            className="btn-close-modal right"
+            style={{
+              backgroundColor: settings.themePage.searchSuite?.primaryColor,
+            }}
+            onClick={handlerCloseModal}
+          >
             <CloseIcon style={{ fontSize: 20, color: '#fff' }} />
           </button>
-          <button className="btn-close-modal left" onClick={handlerCloseModal}>
+          <button
+            className="btn-close-modal left"
+            style={{
+              backgroundColor: settings.themePage.searchSuite?.primaryColor,
+            }}
+            onClick={handlerCloseModal}
+          >
             <svg
               width="18"
               height="10"
@@ -142,13 +173,13 @@ function CameraCustom(props: Props) {
               justifyContent: 'center',
               alignItems: 'center',
               overflow: 'hidden',
-              height: '100vh',
+              height: '100svh',
               width: '100%',
             }}
           >
             <Webcam
               audio={false}
-              height={'100vh'}
+              height={'100svh'}
               width={'100%'}
               imageSmoothing={true}
               screenshotFormat="image/jpeg"
@@ -192,21 +223,44 @@ function CameraCustom(props: Props) {
             <img src={ReverseCamera} alt="" width={52} height={52} />
           </button>
 
-          <div className="box-scale-camera">
+          <div
+            className="box-scale-camera"
+            style={{
+              backgroundColor: settings.themePage.searchSuite?.secondaryColor,
+            }}
+          >
             <button
               className={`${scaleCamera === 1 && 'active'}`}
+              style={{
+                backgroundColor:
+                  scaleCamera === 1 && 'active'
+                    ? settings.themePage.searchSuite?.primaryColor
+                    : '',
+              }}
               onClick={() => setScaleCamera(1)}
             >
               1
             </button>
             <button
               className={`${scaleCamera === 1.5 && 'active'}`}
+              style={{
+                backgroundColor:
+                  scaleCamera === 1.5 && 'active'
+                    ? settings.themePage.searchSuite?.primaryColor
+                    : '',
+              }}
               onClick={() => setScaleCamera(1.5)}
             >
               1.5
             </button>
             <button
               className={`${scaleCamera === 2 && 'active'}`}
+              style={{
+                backgroundColor:
+                  scaleCamera === 2 && 'active'
+                    ? settings.themePage.searchSuite?.primaryColor
+                    : '',
+              }}
               onClick={() => setScaleCamera(2)}
             >
               2
@@ -214,11 +268,11 @@ function CameraCustom(props: Props) {
           </div>
           <div className="wrap-box-input-mobile custom-library">
             <input
-              accept="image/*"
               id="icon-button-file"
               type="file"
               style={{ display: 'none' }}
               {...getInputProps({
+                accept: 'image/png,image/jpeg',
                 onClick: e => {
                   e.stopPropagation();
                 },

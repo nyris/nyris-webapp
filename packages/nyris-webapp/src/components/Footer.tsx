@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Box,
   Button,
@@ -6,17 +7,11 @@ import {
   Select,
   Typography,
 } from '@material-ui/core';
-import React from 'react';
-import { Link } from 'react-router-dom';
 import { connectPagination } from 'react-instantsearch-dom';
 import ArrowLeftOutlinedIcon from '@material-ui/icons/ArrowLeftOutlined';
 import ArrowRightOutlinedIcon from '@material-ui/icons/ArrowRightOutlined';
-import { useAppSelector } from 'Store/Store';
-import { AppState } from 'types';
 
 function Pagination({ currentRefinement, nbPages, refine, children }: any) {
-  const { settings } = useAppSelector<AppState>((state: any) => state);
-
   return (
     <Grid
       container

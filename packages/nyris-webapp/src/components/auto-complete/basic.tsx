@@ -21,10 +21,16 @@ interface Props {
   containerRefInputMobile?: any;
   isiImageThumbSearchInput?: boolean;
   isResetImage?: boolean;
+  imageThumbSearchInput?: any;
 }
 
 function AutocompleteBasicComponent(props: Props) {
-  const { containerRefInputMobile, refine, isResetImage }: any = props;
+  const {
+    containerRefInputMobile,
+    refine,
+    isResetImage,
+    imageThumbSearchInput,
+  }: any = props;
   const [refBoxFilter, setRefBoxFilter] = useState<any>(null);
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
@@ -44,6 +50,12 @@ function AutocompleteBasicComponent(props: Props) {
       return;
     }
   }, [isResetImage, dispatch, refine, textSearchInputMobile]);
+
+  useEffect(() => {
+    if (imageThumbSearchInput !== '') {
+      dispatch(updateValueTextSearchMobile(''));
+    }
+  }, [imageThumbSearchInput, dispatch]);
 
   useEffect(() => {
     setRefPanelContainer(panelContainerRef);

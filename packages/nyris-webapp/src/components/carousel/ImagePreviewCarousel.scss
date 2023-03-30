@@ -16,6 +16,8 @@
 
 .thumbs-list{
   margin: 15px 0;
+  display: flex;
+  justify-content: center;
 }
 
 .img-container {
@@ -25,7 +27,7 @@
   img {
     max-height: 400px;
     @media only screen and (max-width: 776px) {
-        max-height: 215px;
+        max-height: 335px;
     }
   }
 }

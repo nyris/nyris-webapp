@@ -13,7 +13,6 @@ import { RefinementList } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import { useAppSelector } from 'Store/Store';
-import { AppState } from 'types';
 import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
 

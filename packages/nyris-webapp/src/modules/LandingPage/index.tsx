@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { RectCoords, cadExtensions, isCadFile } from "@nyris/nyris-api";
+import React, { useCallback, useEffect, useState } from 'react';
+import { RectCoords, cadExtensions, isCadFile } from '@nyris/nyris-api';
 
-import { useAppDispatch, useAppSelector } from "Store/Store";
+import { useAppDispatch, useAppSelector } from 'Store/Store';
 import {
   setSearchResults,
   loadingActionResults,
@@ -11,7 +11,7 @@ import {
   setRegions,
   setSelectedRegion,
   setError,
-} from "Store/Search";
+} from 'Store/Search';
 import {
   feedbackNegative,
   feedbackSubmitPositive,
@@ -20,37 +20,37 @@ import {
   showFeedback,
   showResults,
   showStart,
-} from "Store/Nyris";
+} from 'Store/Nyris';
 import {
   createImage,
   findByCadFile,
   findByImage,
   findRegions,
-} from "services/image";
-import { debounce } from "lodash";
+} from 'services/image';
+import { debounce } from 'lodash';
 import {
   feedbackClickEpic,
   feedbackRegionEpic,
   feedbackSuccessEpic,
-} from "services/Feedback";
-import AppMD from "./AppMD";
-import App from "./App";
-import { AppHandlers, AppProps } from "./propsType";
-import { defaultMdSettings } from "../../defaults";
-import { useMediaQuery } from "react-responsive";
-import AppMobile from "./AppMobile";
+} from 'services/Feedback';
+import AppMD from './AppMD';
+import App from './App';
+import { AppHandlers, AppProps } from './propsType';
+import { defaultMdSettings } from '../../defaults';
+import { useMediaQuery } from 'react-responsive';
+import AppMobile from './AppMobile';
 
 const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
 
 const LandingPageApp = () => {
   const dispatch = useAppDispatch();
-  const searchState = useAppSelector((state) => state);
+  const searchState = useAppSelector(state => state);
   const [selection, setSelection] = useState<RectCoords>(defaultSelection);
   const { settings, search, nyris } = searchState;
   const { fetchingRegions, fetchingResults, requestImage, selectedRegion } =
     search;
   const { showPart } = nyris;
-  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   // update selection, if it is not the default one
   useEffect(() => {
     if (selectedRegion) {
@@ -60,13 +60,13 @@ const LandingPageApp = () => {
     }
   }, [selectedRegion]);
 
-  const acceptTypes = ["image/*"]
+  const acceptTypes = ['image/*']
     .concat(settings.cadSearch ? cadExtensions : [])
-    .join(",");
+    .join(',');
 
   function scrollTop() {
     // TODO might require polyfill for ios and edge
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }
 
   const onLinkClick = (_position: number, url: string) => {
@@ -94,44 +94,47 @@ const LandingPageApp = () => {
           dispatch(setRegions(foundRegions));
           dispatch(setSelectedRegion(searchRegion));
         }
-        return findByImage(image, settings, searchRegion).then((res) => {
-          dispatch(setSearchResults(res));
-          dispatch(showFeedback());
-        });
+        return findByImage({ image, settings, region: searchRegion }).then(
+          res => {
+            dispatch(setSearchResults(res));
+            dispatch(showFeedback());
+          },
+        );
       }
     } catch (e) {
       // TODO show error messages
       dispatch(
         setError(
-          "There was an error while performing the request. Please try again later."
-        )
+          'There was an error while performing the request. Please try again later.',
+        ),
       );
     }
   };
 
   const debouncedSetRectCoords = useCallback(
-    debounce((value) => {
+    debounce(value => {
       dispatch(selectionChanged(value));
       feedbackRegionEpic(searchState, value);
-      findByImage(requestImage!!.canvas, settings, value)
-        .then((res) => {
+      dispatch(loadingActionResults());
+      findByImage({ image: requestImage!!.canvas, settings, region: value })
+        .then(res => {
           dispatch(searchFileImageNonRegion(res));
           dispatch(showFeedback());
         })
-        .catch((e) => console.warn("catch", e));
+        .catch(e => console.warn('catch', e));
     }, 1200),
-    [requestImage, searchState]
+    [requestImage, searchState],
   );
 
   const handlers: AppHandlers = {
-    onExampleImageClick: (url) => {
+    onExampleImageClick: url => {
       startSearch(url);
     },
     onCameraClick: () => dispatch(showCamera),
     onCaptureCanceled: () => dispatch(showStart),
-    onCaptureComplete: (i) => startSearch(i),
+    onCaptureComplete: i => startSearch(i),
     onCloseFeedback: () => dispatch(hideFeedback),
-    onFileDropped: (f) => startSearch(f),
+    onFileDropped: f => startSearch(f),
     onImageClick: (position, url) => {
       startSearch(url);
       feedbackClickEpic(searchState, position);
@@ -145,8 +148,8 @@ const LandingPageApp = () => {
       dispatch(feedbackNegative());
       feedbackSuccessEpic(searchState, false);
     },
-    onSelectFile: (f) => startSearch(f),
-    onSelectionChange: (r) => {
+    onSelectFile: f => startSearch(f),
+    onSelectionChange: r => {
       setSelection(r);
       debouncedSetRectCoords(r);
     },
@@ -170,8 +173,6 @@ const LandingPageApp = () => {
     mdSettings: settings.themePage.materialDesign || defaultMdSettings,
     feedbackState: nyris.feedbackState,
   };
-
-  
 
   return isMobile ? (
     <AppMobile {...props} />

@@ -1,32 +1,18 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  InputBase,
-  Paper,
-  Typography,
-} from '@material-ui/core';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { Box, Button, Typography } from '@material-ui/core';
 import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import KeyboardArrowRightOutlinedIcon from '@material-ui/icons/KeyboardArrowRightOutlined';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
-import IconEmail from 'common/assets/icons/email_share.svg';
-import IconWeChat from 'common/assets/icons/icon_chat.svg';
-import IconWhatsApp from 'common/assets/icons/icon_whatapps.svg';
 import IconSupport from 'common/assets/icons/support3.svg';
 import { CurrentRefinements } from 'components/current-refinements/current-refinements';
-import DetailItem from 'components/DetailItem';
 import FooterResult from 'components/FooterResult';
 import CustomSearchBox from 'components/input/inputSearch';
 import LoadingScreenCustom from 'components/LoadingScreen';
-import DefaultModal from 'components/modal/DefaultModal';
 import ExpandablePanelComponent from 'components/PanelResult';
-import { debounce } from 'lodash';
-import React, { memo, useEffect, useRef, useState, useCallback } from 'react';
+import { debounce, isEmpty } from 'lodash';
 import {
   Configure,
   connectStateResults,
@@ -52,72 +38,53 @@ import {
 } from 'Store/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from './MockData';
+import { DEFAULT_REGION } from '../../constants';
 
 interface Props {
   allSearchResults: any;
 }
-
-const defaultSelection = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
 
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector((state: any) => state);
   const { search, settings } = stateGlobal;
-  const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
-  const [numberResult, setNumberResult] = useState<number>(0);
-  const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
-  const { results, requestImage, regions, selectedRegion } = search;
-  const moreInfoText = settings?.themePage?.searchSuite?.moreInfoText;
-  const [dataResult, setDataResult] = useState<any[]>([]);
-  const [dataImageModal, setDataImageModal] = useState<any>();
+  const { requestImage, regions, selectedRegion, keyFilter } = search;
+  const moreInfoText = settings?.productCtaText;
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-  const [imageSelection, setImageSelection] = useState(selectedRegion);
+  const [imageSelection, setImageSelection] = useState<any>(null);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
+  const [filterString, setFilterString] = useState<string>();
 
   useEffect(() => {
-    if (results?.length === 0) {
-      setDataResult([]);
-      return;
+    if (selectedRegion) {
+      setImageSelection(selectedRegion);
     }
-    setDataResult(results);
-  }, [results]);
+  }, [selectedRegion]);
 
   useEffect(() => {
     if (requestImage) {
       executeScroll();
+      setImageSelection(DEFAULT_REGION);
     }
   }, [requestImage]);
 
-  // TODO: hanlder modal:
-  const handlerToggleModal = (item: any) => {
-    setOpenModalImage(true);
-    dispatch(onToggleModalItemDetail(true));
-    dispatch(updateStatusLoading(true));
-    setDataImageModal(item);
-    setTimeout(() => {
-      dispatch(updateStatusLoading(false));
-    }, 400);
-  };
-
-  const onNextItem = () => {
-    if (numberResult === results.length) {
-      return;
-    }
-    setNumberResult(numberResult + 1);
-  };
-
-  const onPrevItem = () => {
-    if (numberResult === 0) {
-      return;
-    }
-    setNumberResult(numberResult - 1);
-  };
-
   const findImageByApiNyris = useCallback(
-    async (canvas: any, r: RectCoords) => {
-      return findByImage(canvas, settings, r)
+    async (canvas: any, r?: RectCoords) => {
+      const preFilter = [
+        {
+          key: settings.filterType,
+          values: [`${keyFilter}`],
+        },
+      ];
+      dispatch(loadingActionResults());
+      return findByImage({
+        image: canvas,
+        settings,
+        region: r,
+        filters: keyFilter ? preFilter : undefined,
+      })
         .then(res => {
           dispatch(updateStatusLoading(false));
           return {
@@ -129,7 +96,7 @@ function ResultComponent(props: Props) {
           console.log('error call api change selection find image', e);
         });
     },
-    [settings, dispatch],
+    [settings, dispatch, keyFilter],
   );
 
   // TODO: Search offers for image:
@@ -144,7 +111,7 @@ function ResultComponent(props: Props) {
         dispatch(updateResultChangePosition(res));
       });
       return dispatch(showFeedback());
-    }, 1000),
+    }, 250),
     [requestImage, findImageByApiNyris],
   );
 
@@ -179,14 +146,24 @@ function ResultComponent(props: Props) {
       dispatch(setRegions(res.regions));
       dispatch(setSelectedRegion(searchRegion));
     }
-    findByImage(image, settings, searchRegion).then(res => {
+    const preFilter = [
+      {
+        key: settings.filterType,
+        values: [`${keyFilter}`],
+      },
+    ];
+    findByImage({
+      image,
+      settings,
+      region: searchRegion,
+      filters: keyFilter ? preFilter : undefined,
+    }).then(res => {
       dispatch(setSearchResults(res));
       dispatch(showFeedback());
       dispatch(updateStatusLoading(false));
       return;
     });
   };
-
   const nonEmptyFilter: any[] = !requestImage
     ? []
     : ['sku:DOES_NOT_EXIST<score=1>'];
@@ -196,7 +173,51 @@ function ResultComponent(props: Props) {
         .reverse()
         .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
     : '';
-  const filtersString = [...nonEmptyFilter, ...filterSkus].join(' OR ');
+  const filterSkusString = [...nonEmptyFilter, ...filterSkus].join(' OR ');
+
+  useEffect(() => {
+    document.title = 'Search results';
+
+    if (requestImage || isEmpty(search.valueTextSearch.query)) return;
+
+    const filter = keyFilter
+      ? `${settings.alogoliaFilterField}:'${keyFilter}'`
+      : '';
+    setFilterString(filter);
+  }, [
+    keyFilter,
+    requestImage,
+    search.valueTextSearch.query,
+    settings.alogoliaFilterField,
+  ]);
+
+  useEffect(() => {
+    if (!requestImage) {
+      return;
+    }
+    dispatch(updateStatusLoading(true));
+    const { canvas }: any = requestImage;
+    findImageByApiNyris(canvas).then((res: any) => {
+      // setPreFilter(keyFilter);
+      dispatch(updateResultChangePosition(res));
+    });
+    dispatch(showFeedback());
+
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keyFilter]);
+
+  useEffect(() => {
+    if (!requestImage) return;
+    const filter = keyFilter
+      ? filterSkusString
+        ? `(${filterSkusString}) AND ${settings.alogoliaFilterField}:'${keyFilter}'`
+        : `${settings.alogoliaFilterField}:'${keyFilter}'`
+      : filterSkusString;
+    setFilterString(filter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterSkusString, settings.alogoliaFilterField]);
+
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
       dispatch(selectionChanged(r));
@@ -206,32 +227,18 @@ function ResultComponent(props: Props) {
   );
 
   return (
-    <div className={`wrap-main-result loading`} ref={refBoxResult}>
+    <div
+      className={`wrap-main-result loading`}
+      id="wrap-main-result"
+      ref={refBoxResult}
+    >
       <>
-        {/* TODO: Mobile - Modal detail item  */}
-        <DefaultModal
-          openModal={isOpenModalImage}
-          handleClose={(e: any) => {
-            setOpenModalImage(false);
-          }}
-        >
-          <DetailItem
-            handlerCloseModal={() => {
-              setOpenModalImage(false);
-            }}
-            onPrevItem={onPrevItem}
-            onNextItem={onNextItem}
-            dataItem={dataImageModal}
-            results={dataResult}
-            onHandlerModalShare={() => setOpenModalShare(true)}
-            onSearchImage={(url: string) => {
-              dispatch(updateStatusLoading(true));
-              getUrlToCanvasFile(url);
-            }}
-          />
-        </DefaultModal>
-
-        <Configure filters={filtersString}></Configure>
+        {filterString && (
+          <Configure
+            query={search.valueTextSearch.query}
+            filters={filterString}
+          ></Configure>
+        )}
         <Box className="box-wrap-result-component">
           {!isMobile && (
             <div className="box-search">
@@ -246,92 +253,109 @@ function ResultComponent(props: Props) {
                 </Link>
               </Box>
               {!isMobile && (
-                <Box
-                  className={`wrap-main-col-left ${
-                    toggleColLeft ? 'toggle' : ''
-                  }`}
-                >
-                  <Box className="box-toggle-coloumn">
-                    <Button
-                      style={
-                        requestImage && !toggleColLeft
-                          ? { color: '#fff' }
-                          : { color: '#55566b' }
-                      }
-                      onClick={() => {
-                        setToggleColLeft(!toggleColLeft);
-                      }}
-                    >
-                      {toggleColLeft ? (
-                        <KeyboardArrowRightOutlinedIcon
-                          style={{ fontSize: 30 }}
-                        />
-                      ) : (
-                        <ArrowBackIosOutlinedIcon style={{ fontSize: 20 }} />
-                      )}
-                    </Button>
-                  </Box>
-                  {settings.preview && requestImage && (
+                <>
+                  {((!settings.postFilterOption && requestImage) ||
+                    settings.postFilterOption) && (
                     <Box
-                      className="col-left"
-                      style={{
-                        backgroundColor:
-                          settings?.themePage?.searchSuite?.primaryColor,
-                      }}
+                      className={`wrap-main-col-left ${
+                        toggleColLeft ? 'toggle' : ''
+                      }`}
                     >
-                      <Box className="box-preview">
-                        <Box className="preview-item">
-                          <Preview
-                            key={requestImage?.id}
-                            onSelectionChange={(r: RectCoords) => {
-                              setImageSelection(r);
-                              debouncedOnImageSelectionChange(r);
-                            }}
-                            image={requestImage?.canvas}
-                            selection={imageSelection || defaultSelection}
-                            regions={regions}
-                            maxWidth={320}
-                            maxHeight={320}
-                            dotColor="#FBD914"
-                          />
+                      <Box className="box-toggle-coloumn">
+                        <Button
+                          style={
+                            requestImage && !toggleColLeft
+                              ? { color: '#fff' }
+                              : { color: '#55566b' }
+                          }
+                          onClick={() => {
+                            setToggleColLeft(!toggleColLeft);
+                          }}
+                        >
+                          {toggleColLeft ? (
+                            <KeyboardArrowRightOutlinedIcon
+                              style={{ fontSize: 30 }}
+                            />
+                          ) : (
+                            <ArrowBackIosOutlinedIcon
+                              style={{ fontSize: 20 }}
+                            />
+                          )}
+                        </Button>
+                      </Box>
+                      {settings.preview && requestImage && (
+                        <Box
+                          className="col-left"
+                          style={{
+                            backgroundColor:
+                              settings?.themePage?.searchSuite?.primaryColor,
+                          }}
+                        >
+                          <Box className="box-preview">
+                            <Box
+                              className="preview-item"
+                              style={{ backgroundColor: 'white' }}
+                            >
+                              <Preview
+                                key={requestImage?.id}
+                                onSelectionChange={(r: RectCoords) => {
+                                  setImageSelection(r);
+                                  debouncedOnImageSelectionChange(r);
+                                }}
+                                image={requestImage?.canvas}
+                                selection={imageSelection || DEFAULT_REGION}
+                                regions={regions}
+                                maxWidth={320}
+                                maxHeight={320}
+                                dotColor="#FBD914"
+                              />
+                            </Box>
+                          </Box>
+                          <Box className="box-title_col-left">
+                            <Typography style={{ fontSize: 11, color: '#fff' }}>
+                              Adjust the selection frame for better results.
+                            </Typography>
+                          </Box>
                         </Box>
-                      </Box>
-                      <Box className="box-title_col-left">
-                        <Typography style={{ fontSize: 11, color: '#fff' }}>
-                          Adjust the selection frame for better results.
-                        </Typography>
-                      </Box>
+                      )}
+                      {/* TODO: Filter list Choose */}
+                      {settings.postFilterOption && (
+                        <Box className="col-left__bottom">
+                          <ExpandablePanelComponent />
+                        </Box>
+                      )}
                     </Box>
                   )}
-                  {/* TODO: Filter list Choose */}
-                  <Box className="col-left__bottom">
-                    <ExpandablePanelComponent />
-                  </Box>
-                </Box>
+                </>
               )}
 
               <Box
                 className={`col-right ${
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
+                style={{
+                  marginTop:
+                    keyFilter && isMobile ? '95px' : isMobile ? '50px' : '0px',
+                }}
               >
-                <Box
-                  className="wrap-box-refinements"
-                  style={{ marginBottom: 10 }}
-                >
+                <Box className="wrap-box-refinements">
                   <CurrentRefinements statusSwitchButton={true} />
                 </Box>
                 {isMobile && settings.preview && requestImage && (
                   <Box
+                    className="col-left"
                     style={{
                       backgroundColor:
                         settings?.themePage?.searchSuite?.primaryColor,
+                      marginBottom: '15px',
                     }}
-                    className="col-left"
                   >
-                    <Box className="box-preview">
-                      {requestImage && (
-                        <Box className="preview-item">
+                    {
+                      <Box className="box-preview">
+                        <Box
+                          className="preview-item"
+                          style={{ backgroundColor: 'white' }}
+                        >
                           <Preview
                             key={requestImage?.id}
                             onSelectionChange={(r: RectCoords) => {
@@ -339,29 +363,26 @@ function ResultComponent(props: Props) {
                               debouncedOnImageSelectionChange(r);
                             }}
                             image={requestImage?.canvas}
-                            selection={imageSelection || defaultSelection}
+                            selection={imageSelection || DEFAULT_REGION}
                             regions={regions}
                             maxWidth={320}
                             maxHeight={320}
                             dotColor="#3E36DC"
                           />
                         </Box>
-                      )}
-                    </Box>
+                      </Box>
+                    }
                   </Box>
                 )}
-                <Box
-                  className={`box-item-result ${
-                    requestImage ? 'ml-auto mr-auto' : 'ml-auto mr-auto'
-                  }`}
-                >
+
+                <Box className={'box-item-result ml-auto mr-auto'}>
                   <LoadingScreenCustom
-                    handlerToggleModal={handlerToggleModal}
-                    setOpenModalShare={setOpenModalShare}
                     getUrlToCanvasFile={getUrlToCanvasFile}
                     setLoading={false}
                     sendFeedBackAction={sendFeedBackAction}
                     moreInfoText={moreInfoText}
+                    requestImage={requestImage}
+                    searchQuery={search.valueTextSearch.query}
                   />
                   <Box
                     className="pagination-result"
@@ -371,17 +392,20 @@ function ResultComponent(props: Props) {
                       padding: '0 20%',
                     }}
                   >
-                    {props.allSearchResults?.hits.length > 0 && (
-                      <Pagination
-                        showFirst={false}
-                        translations={{
-                          previous: (
-                            <ArrowLeftIcon style={{ color: '#161616' }} />
-                          ),
-                          next: <ArrowRightIcon style={{ color: '#161616' }} />,
-                        }}
-                      />
-                    )}
+                    {props.allSearchResults?.hits.length > 0 &&
+                      (requestImage || search.valueTextSearch.query) && (
+                        <Pagination
+                          showFirst={false}
+                          translations={{
+                            previous: (
+                              <ArrowLeftIcon style={{ color: '#161616' }} />
+                            ),
+                            next: (
+                              <ArrowRightIcon style={{ color: '#161616' }} />
+                            ),
+                          }}
+                        />
+                      )}
                   </Box>
                   {/* {isMobile && (
                     <Box
@@ -433,112 +457,10 @@ function ResultComponent(props: Props) {
               </Box>
             </Box>
           )}
-          {/* TODO: Component modal share */}
-          <DefaultModal
-            openModal={isOpenModalShare}
-            handleClose={() => setOpenModalShare(false)}
-          >
-            <Box className="box-modal-default box-modal-share">
-              <Box
-                className="ml-auto"
-                style={{ width: 'fit-content', marginRight: 5 }}
-              >
-                <Button
-                  style={{ padding: 0 }}
-                  onClick={() => setOpenModalShare(false)}
-                >
-                  <CloseOutlinedIcon
-                    style={{ fontSize: 12, color: '#55566B' }}
-                  />
-                </Button>
-              </Box>
-              <Box className="box-content-box-share">
-                <Typography className="text-f12 text-gray text-bold">
-                  Share
-                </Typography>
-                <Paper component="form" className="box-input">
-                  <InputBase
-                    className="text-f9 text-gray"
-                    style={{ width: '100%' }}
-                    value={'https://www.go...'}
-                  />
-                  <IconButton
-                    color="secondary"
-                    aria-label="directions"
-                    style={{ padding: 0 }}
-                  >
-                    <FileCopyOutlinedIcon style={{ fontSize: 8 }} />
-                  </IconButton>
-                </Paper>
-
-                <Box
-                  mt={1}
-                  className="box-media-share"
-                  display={'flex'}
-                  style={{ height: '100%' }}
-                >
-                  <Button style={{ padding: 0 }}>
-                    <Box display={'flex'} alignItems={'center'}>
-                      <img
-                        width={40}
-                        height={40}
-                        src={IconEmail}
-                        alt="icon_email"
-                      />
-                    </Box>
-                  </Button>
-                  <Button style={{ padding: 0, margin: '0 20px' }}>
-                    <Box display={'flex'} alignItems={'center'}>
-                      <img
-                        src={IconWeChat}
-                        width={40}
-                        height={40}
-                        alt="icon_email"
-                      />
-                    </Box>
-                  </Button>
-                  <Button style={{ padding: 0 }}>
-                    <Box display={'flex'} alignItems={'center'}>
-                      <img
-                        src={IconWhatsApp}
-                        width={40}
-                        height={40}
-                        alt="icon_email"
-                      />
-                    </Box>
-                  </Button>
-                </Box>
-              </Box>
-            </Box>
-          </DefaultModal>
         </Box>
-
-        {/* TODO: Component modal image */}
-        {!isMobile && (
-          <DefaultModal
-            openModal={isOpenModalImage}
-            handleClose={(e: any) => {
-              setOpenModalImage(false);
-            }}
-          >
-            <DetailItem
-              handlerCloseModal={() => {
-                setOpenModalImage(false);
-              }}
-              onPrevItem={onPrevItem}
-              onNextItem={onNextItem}
-              dataItem={dataImageModal}
-              results={dataResult}
-              onHandlerModalShare={() => setOpenModalShare(true)}
-              onSearchImage={(url: string) => {
-                dispatch(updateStatusLoading(true));
-                getUrlToCanvasFile(url);
-              }}
-            />
-          </DefaultModal>
-        )}
       </>
     </div>
   );
 }
+
 export default connectStateResults<Props>(memo(ResultComponent));

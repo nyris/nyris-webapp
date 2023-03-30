@@ -2,39 +2,40 @@ import { Box, Grid } from '@material-ui/core';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './common.scss';
-import IconAdmin from 'common/assets/icons/admin.svg';
-import LogoNyris from 'common/assets/icons/nyris_logo.svg';
-import IconSupport from 'common/assets/icons/support.svg';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { reset } from 'Store/Search';
+
 function HeaderNewVersion(): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings } = useAppSelector(state => state);
 
-  const handleCheckMatchLink = (match: any, location: any) => {
-    let active = false;
-    if (match?.url === location.pathname) {
-      active = true;
-    }
+  // const handleCheckMatchLink = (match: any, location: any) => {
+  //   let active = false;
+  //   if (match?.url === location.pathname) {
+  //     active = true;
+  //   }
 
-    return active;
-  };
+  //   return active;
+  // };
 
   return (
     <Box className="box-content" display={'flex'}>
       <NavLink
         to="/"
-        style={{ lineHeight: 0 }}
+        style={{ lineHeight: 0, paddingLeft: '10px' }}
         onClick={() => {
           dispatch(reset(''));
         }}
       >
         {/* <section id="branding" style={{ height: 32 }} /> */}
         <img
-          width={74}
-          height={19}
           src={settings.themePage.searchSuite?.appBarLogoUrl}
           alt={settings.themePage.searchSuite?.appBarLogoUrlAlt}
+          style={{
+            aspectRatio: 1,
+            width: settings.themePage.searchSuite?.logoWidth,
+            height: settings.themePage.searchSuite?.logoHeight,
+          }}
         />
       </NavLink>
       <Grid container className="nav-menu">
@@ -70,7 +71,7 @@ function HeaderNewVersion(): JSX.Element {
         </Grid>
          */}
 
-          {/*hidden_as_required
+        {/*hidden_as_required
         <Grid item className="item-nav">
           <NavLink
             activeClassName="active"
