@@ -204,16 +204,24 @@ function ItemResult(props: Props) {
         >
           <Grid container justifyContent="space-between">
             <Grid item xs={12}>
-              <Typography
-                className="text-f12 max-line-1 fw-400"
-                style={{
-                  color: '#2B2C46',
-                  marginTop: 10,
-                  display: 'inline-block',
-                }}
+              <Tooltip
+                title={sku}
+                placement="top"
+                arrow={true}
+                disableHoverListener={sku?.length < 19 || !sku}
               >
-                <span style={{ marginRight: 3 }}>SKU:</span> {sku}
-              </Typography>
+                <Typography
+                  className="text-f12 max-line-1 fw-400"
+                  style={{
+                    color: '#2B2C46',
+                    marginTop: 10,
+                    display: 'inline-block',
+                  }}
+                >
+                  <span style={{ marginRight: 3 }}>SKU:</span>
+                  {truncateString(sku, 19)}
+                </Typography>
+              </Tooltip>
 
               {settings.warehouseVariant && (
                 <Box>

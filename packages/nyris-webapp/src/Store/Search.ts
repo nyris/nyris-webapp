@@ -97,7 +97,6 @@ export const searchSlice = createSlice({
     }),
 
     setSelectedRegion: (state, data: PayloadAction<RectCoords | undefined>) => {
-      console.log(data.payload);
       return {
         ...state,
         selectedRegion: data.payload,
