@@ -1,6 +1,6 @@
 {
   "name": "@nyris/nyris-webapp",
-  "version": "0.3.5",
+  "version": "0.3.21",
   "homepage": "./",
   "dependencies": {
     "@algolia/autocomplete-js": "^1.7.1",
@@ -13,7 +13,7 @@
     "@material-ui/icons": "^4.4.1",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@nyris/nyris-api": "0.3.19",
-    "@nyris/nyris-react-components": "^0.3.5",
+    "@nyris/nyris-react-components": "^0.3.21",
     "@reduxjs/toolkit": "^1.6.1",
     "@splidejs/react-splide": "^0.7.12",
     "@types/blueimp-load-image": "^2.23.4",
