@@ -328,7 +328,7 @@ export default class NyrisAPI {
       data: blob,
       headers,
     });
-    let regions: NyrisRegionResult[] = response.data;
+    let regions: NyrisRegionResult[] = response.data.regions;
     return regions.map((r) => ({
       className: r.className,
       confidence: r.confidence,
