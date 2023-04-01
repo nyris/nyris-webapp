@@ -9,7 +9,7 @@ export interface RectCoords {
 }
 
 export type Region = {
-  className?: string;
+  classId?: string;
   confidence?: number;
   normalizedRect: RectCoords;
 };

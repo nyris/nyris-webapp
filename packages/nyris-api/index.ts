@@ -322,7 +322,9 @@ export default class NyrisAPI {
     let blob = await canvasToJpgBlob(resizedCroppedCanvas, this.jpegQuality);
 
     let headers = this.getRegionRequestHeaders("image/jpeg");
-    let response = await this.httpClient.request<NyrisRegionResult[]>({
+    let response = await this.httpClient.request<{
+      regions: NyrisRegionResult[];
+    }>({
       method: "POST",
       url: this.regionProposalUrl,
       data: blob,
@@ -330,7 +332,7 @@ export default class NyrisAPI {
     });
     let regions: NyrisRegionResult[] = response.data.regions;
     return regions.map((r) => ({
-      className: r.className,
+      classId: r.classId,
       confidence: r.confidence,
       normalizedRect: {
         x1: r.region.left / scaledSize.w,
