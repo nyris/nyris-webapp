@@ -13,6 +13,7 @@ import { AppState } from 'types';
 import { useAppSelector } from 'Store/Store';
 import { prepareImageList } from '../helpers/CommonHelper';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import NoImage from '../common/assets/images/unnamed.png';
 
 interface Props {
   numberResult?: number;
@@ -87,13 +88,29 @@ function DetailItem(props: Props) {
         </Button>
       </Box>
       <Box style={{ overflowY: 'auto', maxHeight: '90svh' }}>
-        <Box className="box-carosel">
-          <ImagePreviewCarousel
-            imgItem={dataImageCarousel}
-            onSearchImage={onSearchImage}
-            handlerCloseModal={() => handlerCloseModal?.()}
-          />
-          {!isMobile && (
+        <Box
+          className="box-carosel"
+          style={
+            dataImageCarousel.length === 0
+              ? { display: 'flex', justifyContent: 'center' }
+              : {}
+          }
+        >
+          {dataImageCarousel.length > 0 ? (
+            <ImagePreviewCarousel
+              imgItem={dataImageCarousel}
+              onSearchImage={onSearchImage}
+              handlerCloseModal={() => handlerCloseModal?.()}
+            />
+          ) : (
+            <img
+              src={NoImage}
+              alt="image_item"
+              className="img-style"
+              style={{ width: '300px', height: '300px', padding: '8px' }}
+            />
+          )}
+          {!isMobile && dataImageCarousel.length > 0 && (
             <Button
               className="icon-style"
               onClick={() => {

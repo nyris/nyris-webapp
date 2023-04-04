@@ -145,7 +145,7 @@ function ItemResult(props: Props) {
             </Button>
           </Box>
         )}
-        {!isHover && urlImage?.length > 1 && (
+        {!isHover && (
           <Box className="box-icon-modal">
             <Button
               style={{ width: '100%', height: '100%', padding: 0, zIndex: 9 }}
@@ -178,7 +178,7 @@ function ItemResult(props: Props) {
                 src={NoImage}
                 alt="image_item"
                 className="img-style"
-                style={{ width: '100%', height: '100%' }}
+                style={{ width: '100%', height: '100%', objectFit: "cover" }}
               />
             )}
           </Button>
