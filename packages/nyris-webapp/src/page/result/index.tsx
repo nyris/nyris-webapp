@@ -74,7 +74,7 @@ function ResultComponent(props: Props) {
     async (canvas: any, r?: RectCoords) => {
       const preFilter = [
         {
-          key: settings.filterType,
+          key: settings.visualSearchFilterKey,
           values: [`${keyFilter}`],
         },
       ];
@@ -148,7 +148,7 @@ function ResultComponent(props: Props) {
     }
     const preFilter = [
       {
-        key: settings.filterType,
+        key: settings.visualSearchFilterKey,
         values: [`${keyFilter}`],
       },
     ];

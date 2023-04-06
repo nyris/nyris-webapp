@@ -54,7 +54,7 @@ export const useVisualSearch = () => {
       }
       const preFilter = [
         {
-          key: settings.filterType,
+          key: settings.visualSearchFilterKey,
           values: [`${keyFilter}`],
         },
       ];
