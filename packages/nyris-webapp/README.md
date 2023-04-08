@@ -19,7 +19,7 @@ This repository is home to the related nyris-api, nyris-webapp and nyris-widget 
 ## Configuration
 
 The configuration file is `public/js/settings.js`. You can use the example file as a guide.
-Look at `SearchServiceSettings` in `src/types.ts` for a complete list.
+Look at `AppSettings` in `src/types.ts` for a complete list.
 
 ## Architecture
 

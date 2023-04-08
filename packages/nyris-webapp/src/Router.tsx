@@ -1,15 +1,9 @@
-import React, { memo } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
-// import Page404 from "Page/Exception/404";
-import Login from "page/Auth/login";
-import Layout from "components/Layout";
-import { ReactNode } from "components/common";
-import App from "App";
-import ResultComponent from "page/result";
-import SearchHistory from "page/History";
-import Saved from "page/Saved";
-import Profile from "page/Profile";
-import SupportPage from "page/Support";
+import React, { memo } from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
+import Layout from 'components/Layout';
+import { ReactNode } from 'components/common';
+import App from 'App';
+import ResultComponent from 'page/result';
 
 interface PrivateRouteProps {
   component: ReactNode;
@@ -35,7 +29,6 @@ function Router(): JSX.Element {
 
   return (
     <Switch>
-      <Route exact strict path="/login" component={Login} />
       <Layout>
         <Switch>
           <PrivateRoute
@@ -51,34 +44,6 @@ function Router(): JSX.Element {
             strict
             path="/result"
             component={ResultComponent}
-          />
-          <PrivateRoute
-            authed={!!accessToken}
-            exact
-            strict
-            path="/search-history"
-            component={SearchHistory}
-          />
-          <PrivateRoute
-            authed={!!accessToken}
-            exact
-            strict
-            path="/saved"
-            component={Saved}
-          />
-          <PrivateRoute
-            authed={!!accessToken}
-            exact
-            strict
-            path="/account"
-            component={Profile}
-          />
-          <PrivateRoute
-            authed={!!accessToken}
-            exact
-            strict
-            path="/support"
-            component={SupportPage}
           />
         </Switch>
       </Layout>

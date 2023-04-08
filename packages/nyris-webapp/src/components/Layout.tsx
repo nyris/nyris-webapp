@@ -16,12 +16,8 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AlgoliaSettings, AppState } from '../types';
 import './appMobile.scss';
 import './common.scss';
-import FooterComponent from './Footer';
-import FooterMD from './FooterMD';
 import FooterMobile from './FooterMobile';
 import FooterNewVersion from './FooterNewVersion';
-import HeaderComponent from './Header';
-import HeaderMdComponent from './HeaderMd';
 import HeaderMobile from './HeaderMobile';
 import HeaderNewVersion from './HeaderNewVersion';
 import ExpandablePanelComponent from './PanelResult';
@@ -32,7 +28,6 @@ function Layout({ children }: ReactNode): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
   const { valueTextSearch, loadingSearchAlgolia, preFilterDropdown } = search;
-  const { themePage } = settings;
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
@@ -67,19 +62,8 @@ function Layout({ children }: ReactNode): JSX.Element {
     FooterApp = FooterMobile;
     HeaderApp = HeaderMobile;
   } else {
-    if (themePage.default?.active) {
-      classNameBoxVersion = 'default';
-
-      HeaderApp = HeaderComponent;
-      FooterApp = FooterComponent;
-    } else if (themePage.materialDesign?.active) {
-      classNameBoxVersion = 'materialDesign';
-      HeaderApp = HeaderMdComponent;
-      FooterApp = FooterMD;
-    } else {
-      HeaderApp = HeaderNewVersion;
-      FooterApp = FooterNewVersion;
-    }
+    HeaderApp = HeaderNewVersion;
+    FooterApp = FooterNewVersion;
   }
 
   const conditionalQuery = useMemo(() => {
@@ -141,7 +125,7 @@ function Layout({ children }: ReactNode): JSX.Element {
             }
             style={{
               ...(classNameBoxVersion === 'newVersion'
-                ? { background: settings.themePage.searchSuite?.headerColor }
+                ? { background: settings.theme?.headerColor }
                 : {}),
             }}
           >

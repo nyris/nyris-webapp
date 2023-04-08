@@ -297,7 +297,7 @@ function FilterComponent(props: Props) {
             className="button-right"
             style={{
               width: '50%',
-              backgroundColor: settings.themePage.searchSuite?.primaryColor,
+              backgroundColor: settings.theme?.primaryColor,
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
@@ -338,7 +338,7 @@ function FilterComponent(props: Props) {
             className="button-right"
             style={{
               width: '50%',
-              backgroundColor: settings.themePage.searchSuite?.primaryColor,
+              backgroundColor: settings.theme?.primaryColor,
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',

@@ -151,7 +151,7 @@ function ItemResult(props: Props) {
               style={{ width: '100%', height: '100%', padding: 0, zIndex: 9 }}
               onClick={() => handlerToggleModal(dataItem)}
             >
-              <Expand color={settings.themePage.searchSuite?.secondaryColor} />
+              <Expand color={settings.theme?.secondaryColor} />
             </Button>
           </Box>
         )}
@@ -178,7 +178,7 @@ function ItemResult(props: Props) {
                 src={NoImage}
                 alt="image_item"
                 className="img-style"
-                style={{ width: '100%', height: '100%', objectFit: "cover" }}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             )}
           </Button>
@@ -260,7 +260,7 @@ function ItemResult(props: Props) {
                   <Box
                     mt={1}
                     style={{
-                      background: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                      background: `${settings.theme?.secondaryColor}26`,
                       borderRadius: '6px',
                       display: 'flex',
                       width: 'fit-content',
@@ -270,7 +270,7 @@ function ItemResult(props: Props) {
                     <Typography
                       className="fw-700"
                       style={{
-                        color: settings.themePage.searchSuite?.secondaryColor,
+                        color: settings.theme?.secondaryColor,
                         fontSize: 10,
                         letterSpacing: '1px',
                         maxWidth: '160px',
@@ -307,7 +307,7 @@ function ItemResult(props: Props) {
                       boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                       // marginBottom: 22,
                       height: 40,
-                      background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}bb 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
+                      background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
                       borderRadius: 4,
                       padding: '0px 8px',
                     }}
@@ -371,7 +371,7 @@ function ItemResult(props: Props) {
           >
             <Box
               style={{
-                backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                backgroundColor: `${settings.theme?.secondaryColor}26`,
                 padding: '5px 10px',
                 borderRadius: 4,
                 width: '100%',
@@ -395,7 +395,7 @@ function ItemResult(props: Props) {
 
             <Box
               style={{
-                backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                backgroundColor: `${settings.theme?.secondaryColor}26`,
                 padding: '5px 10px',
                 borderRadius: 4,
                 width: '100%',

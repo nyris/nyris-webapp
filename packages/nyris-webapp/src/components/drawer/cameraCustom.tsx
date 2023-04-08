@@ -68,12 +68,6 @@ function CameraCustom(props: Props) {
       region = res.selectedRegion;
       dispatch(setSelectedRegion(region));
     }
-    // findByImage({ image: imageConvert, settings, region: region }).then(
-    //   (res: any) => {
-    //     dispatch(setSearchResults(res));
-    //     return dispatch(showFeedback());
-    //   },
-    // );
     setTimeout(() => {
       dispatch(updateStatusLoading(false));
       handlerCloseModal();
@@ -141,7 +135,7 @@ function CameraCustom(props: Props) {
           <button
             className="btn-close-modal right"
             style={{
-              backgroundColor: settings.themePage.searchSuite?.primaryColor,
+              backgroundColor: settings.theme?.primaryColor,
             }}
             onClick={handlerCloseModal}
           >
@@ -150,7 +144,7 @@ function CameraCustom(props: Props) {
           <button
             className="btn-close-modal left"
             style={{
-              backgroundColor: settings.themePage.searchSuite?.primaryColor,
+              backgroundColor: settings.theme?.primaryColor,
             }}
             onClick={handlerCloseModal}
           >
@@ -226,7 +220,7 @@ function CameraCustom(props: Props) {
           <div
             className="box-scale-camera"
             style={{
-              backgroundColor: settings.themePage.searchSuite?.secondaryColor,
+              backgroundColor: settings.theme?.secondaryColor,
             }}
           >
             <button
@@ -234,7 +228,7 @@ function CameraCustom(props: Props) {
               style={{
                 backgroundColor:
                   scaleCamera === 1 && 'active'
-                    ? settings.themePage.searchSuite?.primaryColor
+                    ? settings.theme?.primaryColor
                     : '',
               }}
               onClick={() => setScaleCamera(1)}
@@ -246,7 +240,7 @@ function CameraCustom(props: Props) {
               style={{
                 backgroundColor:
                   scaleCamera === 1.5 && 'active'
-                    ? settings.themePage.searchSuite?.primaryColor
+                    ? settings.theme?.primaryColor
                     : '',
               }}
               onClick={() => setScaleCamera(1.5)}
@@ -258,7 +252,7 @@ function CameraCustom(props: Props) {
               style={{
                 backgroundColor:
                   scaleCamera === 2 && 'active'
-                    ? settings.themePage.searchSuite?.primaryColor
+                    ? settings.theme?.primaryColor
                     : '',
               }}
               onClick={() => setScaleCamera(2)}

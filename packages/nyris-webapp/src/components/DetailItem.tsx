@@ -121,9 +121,7 @@ function DetailItem(props: Props) {
                 }
               }}
             >
-              <IconSearchImage
-                color={settings.themePage.searchSuite?.secondaryColor}
-              />
+              <IconSearchImage color={settings.theme?.secondaryColor} />
             </Button>
           )}
         </Box>
@@ -180,7 +178,7 @@ function DetailItem(props: Props) {
                   <Box
                     borderRadius={16}
                     style={{
-                      backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                      backgroundColor: `${settings.theme?.secondaryColor}26`,
                       width: 'fit-content',
                       padding: '3px 5px',
                       marginTop: 8,
@@ -188,7 +186,7 @@ function DetailItem(props: Props) {
                   >
                     <Typography
                       style={{
-                        color: settings.themePage.searchSuite?.secondaryColor,
+                        color: settings.theme?.secondaryColor,
                         fontSize: 12,
                         fontWeight: 700,
                       }}
@@ -223,7 +221,7 @@ function DetailItem(props: Props) {
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        color: settings.themePage.searchSuite?.secondaryColor,
+                        color: settings.theme?.secondaryColor,
                         fontSize: 14,
                         textTransform: 'initial',
                         paddingLeft: 5,
@@ -234,15 +232,11 @@ function DetailItem(props: Props) {
                       View details
                       {collapDescription ? (
                         <KeyboardArrowUpIcon
-                          htmlColor={
-                            settings.themePage.searchSuite?.secondaryColor
-                          }
+                          htmlColor={settings.theme?.secondaryColor}
                         />
                       ) : (
                         <KeyboardArrowDownIcon
-                          htmlColor={
-                            settings.themePage.searchSuite?.secondaryColor
-                          }
+                          htmlColor={settings.theme?.secondaryColor}
                         />
                       )}
                     </Button>
@@ -256,7 +250,7 @@ function DetailItem(props: Props) {
                 {(settings.showMoreInfo || settings.warehouseVariant) && (
                   <Box
                     style={{
-                      background: `linear-gradient(270deg, ${settings.themePage.searchSuite?.primaryColor}bb 0%, ${settings.themePage.searchSuite?.primaryColor} 100%)`,
+                      background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
                       // marginBottom: 25,
                       boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                       borderRadius: 4,
@@ -315,7 +309,7 @@ function DetailItem(props: Props) {
             >
               <Box
                 style={{
-                  backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                  backgroundColor: `${settings.theme?.secondaryColor}26`,
                   padding: '5px 10px',
                   borderRadius: 4,
                   width: '100%',
@@ -330,7 +324,7 @@ function DetailItem(props: Props) {
               </Box>
               <Box
                 style={{
-                  backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                  backgroundColor: `${settings.theme?.secondaryColor}26`,
                   padding: '5px 10px',
                   borderRadius: 4,
                   width: '100%',

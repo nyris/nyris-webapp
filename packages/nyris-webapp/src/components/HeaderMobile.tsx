@@ -117,7 +117,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
           alignItems: 'center',
           height: '50px',
           borderBottom: '1px solid #e9e9ec',
-          background: settings.themePage.searchSuite?.headerColor,
+          background: settings.theme?.headerColor,
         }}
       >
         <NavLink
@@ -127,16 +127,13 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             dispatch(reset(''));
           }}
         >
-          {/* <section id="branding" style={{ height: 32 }} /> */}
           <img
-            // width={90}
-            // height={30}
-            src={settings.themePage.searchSuite?.appBarLogoUrl}
-            alt={settings.themePage.searchSuite?.appBarLogoUrlAlt}
+            src={settings.theme?.appBarLogoUrl}
+            alt="logo"
             style={{
               aspectRatio: 1,
-              width: settings.themePage.searchSuite?.logoWidth,
-              height: settings.themePage.searchSuite?.logoHeight,
+              width: settings.theme?.logoWidth,
+              height: settings.theme?.logoHeight,
             }}
           />
         </NavLink>
@@ -150,8 +147,8 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               {imageThumbSearchInput && (
                 <div
                   style={{
-                    border: `2px solid ${settings.themePage.searchSuite?.secondaryColor}c7`,
-                    backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                    border: `2px solid ${settings.theme?.secondaryColor}c7`,
+                    backgroundColor: `${settings.theme?.secondaryColor}26`,
                   }}
                   className="box-image-search-thumb-mobile"
                 >
@@ -162,7 +159,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   />
                   <button
                     style={{
-                      backgroundColor: `${settings.themePage.searchSuite?.secondaryColor}26`,
+                      backgroundColor: `${settings.theme?.secondaryColor}26`,
                     }}
                     onClick={() => {
                       if (textSearchInputMobile) {
@@ -183,7 +180,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     <CloseIcon
                       style={{
                         fontSize: 20,
-                        color: settings.themePage.searchSuite?.secondaryColor,
+                        color: settings.theme?.secondaryColor,
                         fontWeight: 700,
                       }}
                     />
@@ -255,9 +252,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                             <CloseIcon
                               style={{
                                 fontSize: 20,
-                                color:
-                                  settings.themePage.searchSuite
-                                    ?.secondaryColor,
+                                color: settings.theme?.secondaryColor,
                               }}
                             />
                           </button>
@@ -278,7 +273,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     borderRadius: '100%',
                     backgroundColor:
                       preFilterDropdown || keyFilter
-                        ? `${settings.themePage.searchSuite?.secondaryColor}26`
+                        ? `${settings.theme?.secondaryColor}26`
                         : '#f3f3f5',
                     margin: '0 12px',
                   }}
@@ -287,15 +282,13 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     <CloseIcon
                       style={{
                         fontSize: 16,
-                        color: settings.themePage.searchSuite?.secondaryColor,
+                        color: settings.theme?.secondaryColor,
                       }}
                     />
                   ) : (
                     <IconFilter
                       color={
-                        keyFilter
-                          ? settings.themePage.searchSuite?.secondaryColor
-                          : '#000'
+                        keyFilter ? settings.theme?.secondaryColor : '#000'
                       }
                     />
                   )}

@@ -20,7 +20,7 @@ function Pagination({ children }: any) {
           <span style={{ color: '#2B2C46' }}>Share your search with our</span>
           <Link
             to={'/support'}
-            style={{ color: settings.themePage.searchSuite?.secondaryColor }}
+            style={{ color: settings.theme?.secondaryColor }}
           >
             product experts
           </Link>
