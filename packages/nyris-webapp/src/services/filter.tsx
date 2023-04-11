@@ -14,7 +14,7 @@ export const getFilters = async (
 };
 
 export const searchFilters = async (
-  key: any = 'machineType',
+  key: any = '',
   value: string,
   settingsNyris: NyrisAPISettings,
 ) => {

@@ -222,7 +222,7 @@ export default function ExpandablePanelComponent({
             className="text-white"
             style={{
               width: '100%',
-              backgroundColor: settings.themePage.searchSuite?.secondaryColor,
+              backgroundColor: settings.theme?.secondaryColor,
               fontWeight: 700,
               fontSize: 14,
               borderRadius: 0,

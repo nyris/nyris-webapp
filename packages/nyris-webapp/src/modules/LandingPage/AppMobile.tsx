@@ -87,7 +87,7 @@ function AppMobile(props: Props): JSX.Element {
             height: '100%',
             width: '100%',
             zIndex: 1,
-            background: `${settings.themePage.searchSuite?.mobileFooterImageColor}`,
+            background: `${settings.theme?.mobileFooterImageColor}`,
           }}
         ></div>
         <Box style={{ position: 'inherit', zIndex: 100 }} className="title-top">

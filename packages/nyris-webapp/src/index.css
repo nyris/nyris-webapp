@@ -1700,3 +1700,16 @@ a img.aligncenter {
   
 }
 
+/* Css Common all page */
+.d-flex {
+  display: flex !important;
+}
+.justify-center {
+  justify-content: center;
+}
+.flex-end {
+  align-items: flex-end;
+}
+.flex-center {
+  align-items: center;
+}

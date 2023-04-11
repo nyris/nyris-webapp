@@ -30,7 +30,7 @@ function ClearRefinementsComponent({
       className={className}
       onClick={handleButtonClick}
       style={{
-        color: settings.themePage.searchSuite?.secondaryColor,
+        color: settings.theme.secondaryColor,
         fontWeight: 'bold',
         textTransform: 'capitalize',
         padding: 0,
