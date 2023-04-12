@@ -1,0 +1,50 @@
+stages:
+  - build
+  - publish
+
+build:
+  stage: build
+  tags: [ builder, integration ]
+  image: node:12
+  artifacts:
+    paths:
+      - npm-packages
+    expire_in: 30 days
+  script:
+    - mkdir npm-packages
+    - npm ci
+    - npx lerna bootstrap
+    - npx lerna run build
+    - (cd packages/nyris-react-components && npm pack && mv nyris-nyris-react-components-*.tgz ../../npm-packages/)
+    - (cd packages/nyris-api && npm pack && mv nyris-nyris-api-*.tgz ../../npm-packages/)
+    - (cd packages/nyris-widget && npm pack && mv nyris-nyris-widget-*.tgz ../../npm-packages/)
+    - (cd packages/nyris-webapp && npm pack && mv nyris-nyris-webapp-*.tgz ../../npm-packages/)
+
+
+publish to npm:
+  stage: publish
+  when: manual
+  image: node:12
+  tags: [ builder, integration ]
+  script:
+    - mkdir -p ~/
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+    - npm publish ./npm-packages/nyris-nyris-api-*.tgz --access public
+    - npm publish ./npm-packages/nyris-nyris-react-components-*.tgz --access public
+    - npm publish ./npm-packages/nyris-nyris-widget-*.tgz --access public
+    - npm publish ./npm-packages/nyris-nyris-webapp-*.tgz --access public
+
+
+#publish to github:
+#  stage: publish
+#  when: manual
+#  image: alpine/git
+#  tags: [ builder, integration ]
+#  script:
+#    - mkdir -p ~/.ssh
+#    - ssh-keyscan github.com >> ~/.ssh/known_hosts
+#    - chmod 600 $SSH_KEY
+#    - export GIT_SSH_COMMAND='ssh -i $SSH_KEY'
+#    - git remote add github git@github.com:nyris/nyris-webapp.git
+#    - git push --follow-tags github HEAD:$CI_COMMIT_REF_NAME
+

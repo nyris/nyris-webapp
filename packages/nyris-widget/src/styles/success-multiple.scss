@@ -1,0 +1,175 @@
+.nyris__success-multiple {
+
+  & .nyris__main-content {
+    padding-bottom: 18px;
+  }
+
+  &-summary {
+    @include flex-center();
+    @include transparent-dark(0.26);
+    align-self: stretch;
+    flex-shrink: 0;
+    height: 48px;
+    margin: 15px 0;
+    padding: 0 4px;
+    border-radius: 5px;
+
+    .nyris__main--wide & {
+      @media (min-width: 680px) {
+        position: absolute;
+        right: 30px;
+        top: 15px;
+        width: 300px;
+      }
+    }
+  }
+
+  &-thumb {
+    @include rounded-rect(40px, 40px, 3px);
+    background-position: center center;
+    background-size: cover;
+  }
+
+  &-desc {
+    flex-grow: 1;
+
+    & > div {
+      margin: 0 5px;
+    }
+  }
+
+  &-name {
+    font-weight: bold;
+  }
+
+  &-refine.nyris__button {
+    @include rounded-rect(100px, 36px, 18px);
+    margin: 0 2px;
+
+    & > span {
+      margin-right: 13px;
+    }
+
+    & > svg {
+      top: 10px;
+    }
+  }
+
+  &-result-list {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-self: stretch;
+    flex-grow: 1;
+    padding-top: 5%;
+    overflow-y: scroll;
+    max-height: 480px;
+
+    @media #{$desktop-query} {
+      padding-top: 0;
+    }
+  }
+
+  &-result {
+    position: relative;
+    width: 50%;
+    margin-top: -5%;
+    padding-bottom: 55%; // to keep aspect ratio
+
+
+    .nyris__main--wide & {
+      @media screen and (min-width: 900px) {
+        width: 33%;
+        padding-bottom: 36.3%; // to keep aspect ratio
+      }
+      @media screen and (min-width: 1180px) {
+        width: 25%;
+        padding-bottom: 27.5%; // to keep aspect ratio
+      }
+    }
+    
+    &-box {
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 4px;
+      right: 4px;
+      border-radius: 5px;
+      border: solid 1px silver;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      color: $color-heading;
+
+      @media #{desktop-query} {
+        max-height: 172px;
+      }
+    }
+
+    // result mosaic
+    @media #{$mobile-query} {
+      &:nth-child(4n+2) &-box {
+        bottom: 11.23%;
+      }
+
+      &:nth-child(4n+3) {
+        margin-top: 0;
+      }
+
+      &:nth-child(4n+3) &-box {
+        bottom: 11.23%;
+      }
+
+      &:nth-child(4n+4) {
+        margin-top: -5.5%;
+      }
+      
+      &:nth-child(4n+4) &-box {
+        top: 2.8%;
+        bottom: 10.2%
+      }
+    }
+
+    @media #{$desktop-query} {
+      width: 50%;
+      margin-top: 0;
+      padding-bottom: 50%; // to keep aspect ratio
+      max-height: 180px;
+    }
+  }
+
+  &-product-image {
+    flex-grow: 1;
+    background: no-repeat center center;
+    background-size: contain;
+    z-index: 0;
+  }
+
+  &-product-panel {
+    position: relative;
+    height: 38px;
+    padding: 4px;
+    font-size: 11px;
+    border-top: 1px solid #dedede;
+    & > div {
+      overflow: hidden;
+      white-space: nowrap;
+       &:first-child {
+         font-weight: bold;
+       }
+    }
+  }
+
+  &-product-arrow {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: #fff;
+    margin: 2px;
+    height: 38px;
+    width: 42px;
+    text-align: right;
+    display:none;
+  }
+}

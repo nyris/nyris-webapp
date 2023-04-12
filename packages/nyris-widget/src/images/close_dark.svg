@@ -1,0 +1,6 @@
+<svg class="nyris__close-dark" width="8px" height="8px" viewBox="0 0 10 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke="#000000" stroke-width="2" transform="translate(1,1)">
+    <path d="M7.5,0.5 L0.5,7.5"></path>
+    <path d="M0.5,0.5 L7.5,7.5"></path>
+  </g>
+</svg>

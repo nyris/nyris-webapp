@@ -1,0 +1,22 @@
+{
+  "name": "@nyris/nyris-api",
+  "version": "0.3.23",
+  "homepage": "https://github.com/nyris/nyris-webapp",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@types/blueimp-load-image": "^2.23.4",
+    "@types/node": "12.7.2",
+    "axios": "^0.21.1",
+    "blueimp-canvas-to-blob": "^3.16.0",
+    "blueimp-load-image": "^2.24.0"
+  },
+  "devDependencies": {
+    "rxjs": "^6.5.3",
+    "typescript": "3.6.2"
+  }
+}

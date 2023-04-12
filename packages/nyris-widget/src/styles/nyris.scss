@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css?family=Asap');
+
+@import 'settings';
+@import 'mixins';
+
+#nyris-mount-point {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  font-family: 'Asap', sans-serif;
+  font-size: $fs-base;
+  z-index: 10000;	
+}
+
+.nyris {
+  &__icon {
+    @include inline-flex-center();
+    @include circle(64px);
+    margin: 25px 25px;
+    border: 1px solid $color-icon-border;
+    background-color: $color-background;
+    box-shadow: $shadow;
+    cursor: pointer;
+    
+    &-text {
+      @include inline-flex-center();
+      @include rounded-rect(168px, 36px, 18px);
+      position: absolute;
+      top: -20px;
+      right: 25px;
+      font-weight: bold;
+      border: 1px solid $color-icon-border;
+      background-color: $color-background;
+      box-shadow: $shadow;
+    }
+  }
+
+  &__main {
+    @include flex-column-spread();
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 30px 30px 18px 30px;
+    background-color: $color-background;
+
+    @media #{$desktop-query} {
+      bottom: 124px;
+      right: 80px;
+      max-height: 540px;
+      max-width: 360px;
+      margin-top: auto;
+      margin-left: auto;
+      border: 1px solid $color-box-border;
+      border-radius: 9px;
+      box-shadow: $shadow;
+
+      &.nyris__main--wide {
+        transition: max-width 300ms;
+        @media (min-width: 680px) {
+          max-width: 540px;
+        }
+        @media (min-width: 900px) {
+          max-width: 820px;
+        }
+        @media (min-width: 1180px) {
+          max-width: 1100px;
+        }
+      }
+    }
+    
+    &-heading {
+      margin-left: 8px;
+      margin-bottom: 5px;
+      font-size: 23px;
+      letter-spacing: 0.34px;
+      color: $color-heading;
+      
+      &--big {
+        font-size: 44px;
+      }
+    }
+    
+    &-description {
+      margin-left: 8px;
+      opacity: 0.66;
+      font-size: 14px;
+      letter-spacing: 0.28px;
+      color: $color-text;
+    }
+
+    &-content {
+      @include flex-column-center();
+      @include flex-filler();
+      width: 100%;
+      margin: 10px 0 0;
+
+      @media #{$mobile-query} {
+        &--desktop {
+          display: none;
+        }
+
+        &--mobile {
+          display: flex;
+        }
+      }
+
+      @media #{$desktop-query} {
+        &--desktop {
+          display: flex;
+        }
+
+        &--mobile {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &__container {
+    @include flex-column-spread();
+    @include flex-filler();
+  }
+
+  &__screen {
+    @include flex-column-spread();
+    @include flex-filler();
+    align-items: left;
+  }
+
+  &__close {
+    position: absolute;
+    right: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+
+    & > svg{
+      margin-top: 1px;
+    }
+    
+    &-text {
+      display: none;
+      margin-right: 10px;
+    }
+
+    &-dark {
+      display: block;
+    }
+    &-light {
+      display: none;
+    }
+
+
+    &:hover {
+      background-color: lighten($color-button-dark, 20%);
+    }
+
+    @media #{$desktop-query} {
+      border: 1px solid $color-box-border;
+      box-shadow: $shadow;
+      background-color: $color-button-dark;
+      color: $color-button-text;
+      @include rounded-rect(90px, 36px, 18px);
+      top: -60px;
+      right: 0px;
+      &-text {
+        display: inline-block;
+      }
+
+      &-dark {
+        display: none;
+      }
+      &-light {
+        display: block;
+      }
+    }
+  }
+  
+  &__button {
+    @include flex-center();
+    @include rounded-rect(264px, 48px, 24px);
+    position: relative;
+    flex-shrink: 0;
+    max-width: 100%;
+    margin: 18px;
+    font-weight: bold;
+    color: $color-button-text;
+    background-image: $base-gradient;
+    cursor: pointer;
+
+    &:hover {
+      background-image: $hover-gradient;
+    }
+
+    &--icon-left > svg {
+      position: absolute;
+      left: 15px;
+      top: 15px;
+    }
+
+    &--icon-right > svg {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+    }
+
+    &--disabled {
+      background-image: none;
+      background-color: gainsboro;
+    }
+
+    &--ghost {
+      border: 2px solid $color-primary;
+      color: $color-text;
+      background-color: $color-background;
+      background-image: none;
+
+      &:hover {
+        background-color: #f5f4ff;
+        background-image: none;
+        color: $color-text;
+      }
+    }
+  }
+
+  &--purple {
+    color: #3023ae;
+  }
+}
+
+.nyris__footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: $fs-footer;
+  letter-spacing: 0.21px;
+  color: $color-footer-text;
+  
+  & a {
+    text-decoration: none;
+    color: $color-footer-link;
+      &:hover {
+      color: $color-footer-link-hover;
+    }
+  }
+}
+
+.nyris__fail {
+  & .nyris__main-description {
+    margin-top: -14px;
+  }
+
+  & .nyris__button {
+    margin: 6px;
+  }
+
+  & a {
+    font-weight: bold;
+    letter-spacing: 0.28px;
+    line-height: 20px;
+    color: $color-text;
+    text-decoration: none;
+
+    &.nyris__button {
+      color: $color-button-text;
+
+      &:hover {
+        color: $color-button-text;
+      }
+    }
+
+    &.nyris__button--ghost {
+      color: $color-primary;
+      margin-top: 60px;
+
+      &:hover {
+        color: $color-primary;
+      }
+    }
+
+    &:hover {
+      color: $color-text;
+      text-decoration: none;
+    }
+  }
+}
+
+@import 'hello';
+@import 'reselect';
+@import 'success-multiple';
+@import 'success-single';
+@import 'wait';
