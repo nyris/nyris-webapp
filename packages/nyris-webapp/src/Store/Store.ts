@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { combineReducers } from 'redux';
-import Auth from 'Store/Auth';
+import Auth from 'Store/auth/Auth';
 import { AppSettings } from 'types';
 import { getUrlParam } from 'utils';
-import Search from 'Store/Search';
-import Nyris from 'Store/Nyris';
-import { defaultSettings } from '../defaults';
+import Search from 'Store/search/Search';
+import Nyris from 'Store/nyris/Nyris';
+import { defaultSettings } from './constants';
 
 declare var settings: AppSettings;
 

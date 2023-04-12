@@ -16,7 +16,7 @@ interface Props {
   searchQuery?: string;
 }
 
-function LoadingScreen({
+function ProductListComponent({
   allSearchResults,
   getUrlToCanvasFile,
   sendFeedBackAction,
@@ -167,5 +167,5 @@ function LoadingScreen({
   return <>{renderItem}</>;
 }
 
-const LoadingScreenCustom = connectStateResults<Props>(memo(LoadingScreen));
-export default LoadingScreenCustom;
+const ProductList = connectStateResults<Props>(memo(ProductListComponent));
+export default ProductList;

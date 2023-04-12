@@ -5,8 +5,8 @@ import 'typeface-roboto';
 import 'index.css';
 
 import { useMediaQuery } from 'react-responsive';
-import AppMD from 'modules/LandingPage/AppMD';
-import AppMobile from 'modules/LandingPage/AppMobile';
+import AppMD from 'page/landingPage/AppMD';
+import AppMobile from 'page/landingPage/AppMobile';
 
 function App(): JSX.Element {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });

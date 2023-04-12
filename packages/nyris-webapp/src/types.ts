@@ -1,6 +1,6 @@
 import { NyrisAPISettings } from '@nyris/nyris-api';
-import { NyrisAppState } from 'Store/Nyris';
-import { SearchState } from 'Store/Search';
+import { NyrisAppState } from 'Store/nyris/types';
+import { SearchState } from 'Store/search/types';
 
 export interface AlgoliaSettings {
   apiKey: string;

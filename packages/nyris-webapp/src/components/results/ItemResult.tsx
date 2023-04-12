@@ -11,7 +11,10 @@ import { AppState } from 'types';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import DetailItem from 'components/DetailItem';
-import { onToggleModalItemDetail, updateStatusLoading } from 'Store/Search';
+import {
+  onToggleModalItemDetail,
+  updateStatusLoading,
+} from 'Store/search/Search';
 import { ShareModal } from '../ShareModal';
 import { truncateString } from 'helpers/truncateString';
 
@@ -94,14 +97,7 @@ function ItemResult(props: Props) {
     }, 400);
   };
   return (
-    <Box
-      className="wrap-main-item-result"
-      // style={{
-      //   height: 'calc(100% - 25px)',
-      //   backgroundColor: 'rgb(243, 243, 245)',
-      // }}
-    >
-      {/* TODO: Component modal image */}
+    <Box className="wrap-main-item-result">
       <DefaultModal
         openModal={isOpenModalImage}
         handleClose={(e: any) => {
@@ -122,7 +118,6 @@ function ItemResult(props: Props) {
         />
       </DefaultModal>
 
-      {/* TODO: Component modal share */}
       <ShareModal
         setModalState={setOpenModalShare}
         dataItem={dataItem}
@@ -419,7 +414,7 @@ function ItemResult(props: Props) {
           </Box>
         )}
 
-        {settings.showFeedbackAndShare && !settings.warehouseVariant && (
+        {settings.showFeedbackAndShare && (
           <Box
             className="box-bottom"
             style={{ marginBottom: 6, marginTop: 10 }}

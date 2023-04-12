@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { feedbackClickEpic } from 'services/Feedback';
 import { createImage, findByImage, findRegions } from 'services/image';
-import { showFeedback, showResults } from 'Store/Nyris';
+import { showFeedback, showResults } from 'Store/nyris/Nyris';
 import {
   loadingActionResults,
   onToggleModalItemDetail,
@@ -13,7 +13,7 @@ import {
   setSearchResults,
   setSelectedRegion,
   updateStatusLoading,
-} from 'Store/Search';
+} from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 
 export const useVisualSearch = () => {

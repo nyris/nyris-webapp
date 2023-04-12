@@ -12,9 +12,7 @@ import { Link } from 'react-router-dom';
 import { useAppSelector } from 'Store/Store';
 import { AlgoliaSettings } from '../../types';
 
-interface Props {}
-
-function AppMD(props: Props) {
+function AppMD() {
   const { settings } = useAppSelector(state => state);
   const [isLoading, setLoading] = useState<boolean>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;

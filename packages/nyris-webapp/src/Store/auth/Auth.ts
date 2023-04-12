@@ -1,17 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import jscookie from "js-cookie";
-
-interface InitialStateTypes {
-  accessToken?: string | Record<string, unknown> | null;
-  name?: string | null;
-  role?: string | null;
-}
-
-interface LoginResponse {
-  access_token?: string | Record<string, unknown> | null;
-  name?: string | null;
-  role?: string | null;
-}
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import jscookie from 'js-cookie';
+import { InitialStateTypes, LoginResponse } from './types';
 
 const initialState: InitialStateTypes = {
   accessToken: null,
@@ -20,7 +9,7 @@ const initialState: InitialStateTypes = {
 };
 
 export const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     login: (state, data: PayloadAction<LoginResponse>) => {
@@ -31,11 +20,11 @@ export const authSlice = createSlice({
       //   jscookie.set("token", payload?.access_token);
       // }
     },
-    logout: (state) => {
+    logout: state => {
       state.accessToken = null;
       state.name = null;
       state.role = null;
-      jscookie.remove("token");
+      jscookie.remove('token');
     },
   },
 });

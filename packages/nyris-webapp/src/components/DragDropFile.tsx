@@ -12,8 +12,8 @@ import {
   loadingActionResults,
   setRegions,
   setSelectedRegion,
-} from 'Store/Search';
-import { showFeedback } from 'Store/Nyris';
+} from 'Store/search/Search';
+import { showFeedback } from 'Store/nyris/Nyris';
 import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import IconUpload from 'common/assets/images/Icon_Upload.svg';

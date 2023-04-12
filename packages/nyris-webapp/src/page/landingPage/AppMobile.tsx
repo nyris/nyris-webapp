@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { feedbackClickEpic } from 'services/Feedback';
 import { createImage, findByImage, findRegions } from 'services/image';
-import { showFeedback, showResults } from 'Store/Nyris';
+import { showFeedback, showResults } from 'Store/nyris/Nyris';
 import {
   loadingActionResults,
   reset,
@@ -16,11 +16,10 @@ import {
   setSearchResults,
   setSelectedRegion,
   updateStatusLoading,
-} from 'Store/Search';
+} from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-interface Props {}
 
-function AppMobile(props: Props): JSX.Element {
+function AppMobile(): JSX.Element {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const searchState = useAppSelector(state => state);
