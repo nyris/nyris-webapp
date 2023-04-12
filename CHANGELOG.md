@@ -3,7 +3,15 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.3.23 - 2023-04-11
+## 0.3.24 - 2023-04-12
+
+### Removed
+
+- Purged Material design support
+- Removed unused routes and pages
+- Removed unused components
+- Removed unused settings
+
 
 ### Added
 
