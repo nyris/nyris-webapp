@@ -1,12 +1,9 @@
-import { useAppDispatch, useAppSelector } from "Store/Store";
-import {
-  feedbackNegative,
-  feedbackSubmitPositive,
-  NyrisFeedbackState,
-} from "Store/Nyris";
-import React from "react";
-import { Animate } from "react-move";
-import { feedbackSuccessEpic } from "services/Feedback";
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { feedbackNegative, feedbackSubmitPositive } from 'Store/nyris/Nyris';
+import { NyrisFeedbackState } from 'Store/nyris/types';
+import React from 'react';
+import { Animate } from 'react-move';
+import { feedbackSuccessEpic } from 'services/Feedback';
 interface FeedbackProps {
   feedbackState: NyrisFeedbackState;
   onClose?: () => void;
@@ -14,7 +11,7 @@ interface FeedbackProps {
 
 const Feedback: React.FC<FeedbackProps> = ({ feedbackState, onClose }) => {
   let inner: any = null;
-  const state = useAppSelector((state) => state);
+  const state = useAppSelector(state => state);
   const dispatch = useAppDispatch();
   const onPositiveFeedback = (data: boolean) => {
     feedbackSuccessEpic(state, data);
@@ -26,7 +23,7 @@ const Feedback: React.FC<FeedbackProps> = ({ feedbackState, onClose }) => {
   };
 
   switch (feedbackState) {
-    case "question":
+    case 'question':
       inner = (
         <div className="feedbackForm">
           <p>Did you find what you were looking for?</p>
@@ -45,14 +42,14 @@ const Feedback: React.FC<FeedbackProps> = ({ feedbackState, onClose }) => {
         </div>
       );
       break;
-    case "positive":
+    case 'positive':
       inner = (
         <div className="feedbackMessage positive">
           Great, thank you for your feedback!
         </div>
       );
       break;
-    case "negative":
+    case 'negative':
       inner = (
         <div className="feedbackMessage negative">
           We saved your request so we can track down the issue and improve the
@@ -71,7 +68,7 @@ const Feedback: React.FC<FeedbackProps> = ({ feedbackState, onClose }) => {
   }
   return (
     <Animate
-      show={feedbackState !== "hidden"}
+      show={feedbackState !== 'hidden'}
       start={{ y: 100, opacity: 0 }}
       enter={{ y: [0], opacity: [1] }}
       leave={{ y: [100], opacity: [0] }}

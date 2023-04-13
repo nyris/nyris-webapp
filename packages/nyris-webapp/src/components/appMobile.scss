@@ -1,9 +1,5 @@
 @media screen and (max-width: 776px) {
-  // @media screen and (-webkit-min-device-pixel-ratio: 0) {
-  //   html {
-  //     background-color: #fff;
-  //   }
-  // }
+
   html {
     background-color: #fff;
   }
@@ -675,11 +671,7 @@
       min-height: initial;
       min-height: initial !important;
 
-      .carousel {
-        .thumbs-wrapper {
-          // display: none;
-        }
-      }
+      
     }
 
     &.box-modal-share {
@@ -690,17 +682,6 @@
   .box-footer-mobile {
     border-top: 1px solid lightgray;
     background-color: #fff;
-  }
-
-  .box-slider-image-result {
-    button {
-      // width: 100% !important;
-      // height: 100% !important;
-      span {
-        // width: 100% !important;
-        // height: 100% !important;
-      }
-    }
   }
 
   .box-modal-default {

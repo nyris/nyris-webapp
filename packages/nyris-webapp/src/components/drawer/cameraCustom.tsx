@@ -9,7 +9,6 @@ import { useDropzone } from 'react-dropzone';
 import { useHistory } from 'react-router-dom';
 import Webcam from 'react-webcam';
 import { createImage, findByImage, findRegions } from 'services/image';
-// import { showFeedback } from 'Store/Nyris';
 import {
   onToggleModalItemDetail,
   setImageSearchInput,
@@ -19,7 +18,7 @@ import {
   loadingActionResults,
   setRegions,
   setSelectedRegion,
-} from 'Store/Search';
+} from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 
 interface Props {

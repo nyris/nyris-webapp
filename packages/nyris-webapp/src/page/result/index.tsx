@@ -10,7 +10,7 @@ import IconSupport from 'common/assets/icons/support3.svg';
 import { CurrentRefinements } from 'components/current-refinements/current-refinements';
 import FooterResult from 'components/FooterResult';
 import CustomSearchBox from 'components/input/inputSearch';
-import LoadingScreenCustom from 'components/LoadingScreen';
+import ProductList from 'components/ProductList';
 import ExpandablePanelComponent from 'components/PanelResult';
 import { debounce, isEmpty } from 'lodash';
 import {
@@ -23,7 +23,7 @@ import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import { feedbackClickEpic, feedbackSuccessEpic } from 'services/Feedback';
 import { createImage, findByImage, findRegions } from 'services/image';
-import { showFeedback, showResults } from 'Store/Nyris';
+import { showFeedback, showResults } from 'Store/nyris/Nyris';
 import {
   loadingActionResults,
   onToggleModalItemDetail,
@@ -35,9 +35,9 @@ import {
   setSelectedRegion,
   updateResultChangePosition,
   updateStatusLoading,
-} from 'Store/Search';
+} from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { showHits } from './MockData';
+import { showHits } from '../../constants';
 import { DEFAULT_REGION } from '../../constants';
 
 interface Props {
@@ -287,8 +287,7 @@ function ResultComponent(props: Props) {
                         <Box
                           className="col-left"
                           style={{
-                            backgroundColor:
-                              settings?.themePage?.searchSuite?.primaryColor,
+                            backgroundColor: settings?.theme?.primaryColor,
                           }}
                         >
                           <Box className="box-preview">
@@ -335,7 +334,7 @@ function ResultComponent(props: Props) {
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
                   marginTop:
-                    keyFilter && isMobile ? '95px' : isMobile ? '50px' : '0px',
+                    keyFilter && isMobile ? '105px' : isMobile ? '60px' : '0px',
                 }}
               >
                 <Box className="wrap-box-refinements">
@@ -345,8 +344,7 @@ function ResultComponent(props: Props) {
                   <Box
                     className="col-left"
                     style={{
-                      backgroundColor:
-                        settings?.themePage?.searchSuite?.primaryColor,
+                      backgroundColor: settings?.theme?.primaryColor,
                       marginBottom: '15px',
                     }}
                   >
@@ -376,7 +374,7 @@ function ResultComponent(props: Props) {
                 )}
 
                 <Box className={'box-item-result ml-auto mr-auto'}>
-                  <LoadingScreenCustom
+                  <ProductList
                     getUrlToCanvasFile={getUrlToCanvasFile}
                     setLoading={false}
                     sendFeedBackAction={sendFeedBackAction}

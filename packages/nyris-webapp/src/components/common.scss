@@ -6,6 +6,8 @@
   overflow: hidden;
   .box-header-newVersion-main {
     height: 50px;
+    min-height: 50px;
+
     // background: #2b2c46;
     .box-content {
       max-width: 1280px;

@@ -4,7 +4,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconSearch from 'common/assets/icons/icon_search.svg';
 import { getFilters, searchFilters } from 'services/filter';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { setUpdateKeyFilterDesktop } from 'Store/Search';
+import { setUpdateKeyFilterDesktop } from 'Store/search/Search';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import { useMediaQuery } from 'react-responsive';
 import { isEmpty } from 'lodash';
@@ -16,7 +16,7 @@ interface Props {
   // onChangeKeyFilter?: any;
 }
 
-function FilterComponent(props: Props) {
+function PreFilterComponent(props: Props) {
   const { handleClose } = props;
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector(state => state);
@@ -353,4 +353,4 @@ function FilterComponent(props: Props) {
   );
 }
 
-export default FilterComponent;
+export default PreFilterComponent;
