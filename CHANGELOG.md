@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.25 - 2023-04-14
+
+### Added
+
+- Added internationalization support
+- Added enable/disable for share option 
+
 ## 0.3.24 - 2023-04-12
 
 ### Removed

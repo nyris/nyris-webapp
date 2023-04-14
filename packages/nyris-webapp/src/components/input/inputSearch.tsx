@@ -24,12 +24,13 @@ import {
   loadingActionResults,
   setRegions,
   setSelectedRegion,
-} from 'Store/Search';
+} from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
-import FilterComponent from 'components/pre-filter/desktop';
+import PreFilterComponent from 'components/pre-filter';
 import { RectCoords } from '@nyris/nyris-api';
 import { truncateString } from 'helpers/truncateString';
+import { useTranslation } from 'react-i18next';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
@@ -45,7 +46,7 @@ const SearchBox = (props: any) => {
   const query = useQuery();
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] =
     useState<boolean>(false);
-
+  const { t } = useTranslation();
   useEffect(() => {
     if (focusInp?.current) {
       focusInp?.current.focus();
@@ -257,7 +258,7 @@ const SearchBox = (props: any) => {
                 fontStyle: 'italic',
               }}
               className="input-search"
-              placeholder="Search"
+              placeholder={t('Search')}
               value={valueInput}
               onChange={onChangeText}
               ref={focusInp}
@@ -362,7 +363,7 @@ const SearchBox = (props: any) => {
           classNameModal="wrap-filter-destop"
           classNameComponentChild="bg-white box-filter-destop"
         >
-          <FilterComponent
+          <PreFilterComponent
             handleClose={() => setToggleModalFilterDesktop(false)}
           />
         </DefaultModal>

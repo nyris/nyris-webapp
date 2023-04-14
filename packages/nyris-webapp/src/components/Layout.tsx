@@ -11,17 +11,16 @@ import {
   onResetRequestImage,
   setPreFilterDropdown,
   setUpdateSession,
-} from 'Store/Search';
+} from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AlgoliaSettings, AppState } from '../types';
 import './appMobile.scss';
 import './common.scss';
 import FooterMobile from './FooterMobile';
-import FooterNewVersion from './FooterNewVersion';
 import HeaderMobile from './HeaderMobile';
-import HeaderNewVersion from './HeaderNewVersion';
+import Header from './Header';
 import ExpandablePanelComponent from './PanelResult';
-import FilterComponent from 'components/pre-filter/desktop';
+import PreFilterComponent from 'components/pre-filter';
 import { createSessionByApi } from 'services/session';
 
 function Layout({ children }: ReactNode): JSX.Element {
@@ -62,8 +61,7 @@ function Layout({ children }: ReactNode): JSX.Element {
     FooterApp = FooterMobile;
     HeaderApp = HeaderMobile;
   } else {
-    HeaderApp = HeaderNewVersion;
-    FooterApp = FooterNewVersion;
+    HeaderApp = Header;
   }
 
   const conditionalQuery = useMemo(() => {
@@ -139,9 +137,11 @@ function Layout({ children }: ReactNode): JSX.Element {
           <div className={`box-body-${classNameBoxVersion}-wrap-main`}>
             {children}
           </div>
-          <div className="footer-wrap-main">
-            <FooterApp />
-          </div>
+          {isMobile && (
+            <div className="footer-wrap-main">
+              <FooterApp />
+            </div>
+          )}
         </div>
         {isMobile && (
           <Box
@@ -166,7 +166,7 @@ function Layout({ children }: ReactNode): JSX.Element {
               className={'wrap-filter-destop'}
             >
               <div className={'bg-white box-filter-destop isMobile'}>
-                <FilterComponent
+                <PreFilterComponent
                   handleClose={() =>
                     dispatch(setPreFilterDropdown(!preFilterDropdown))
                   }

@@ -1,6 +1,6 @@
 import { NyrisAPISettings } from '@nyris/nyris-api';
-import { NyrisAppState } from 'Store/Nyris';
-import { SearchState } from 'Store/Search';
+import { NyrisAppState } from 'Store/nyris/types';
+import { SearchState } from 'Store/search/types';
 
 export interface AlgoliaSettings {
   apiKey: string;
@@ -30,10 +30,12 @@ export interface AppSettings extends NyrisAPISettings {
   alogoliaFilterField?: string;
   headerText?: string;
   brandName?: string;
+  shareOption?: boolean;
+  language?: string;
+  itemIdLabel?: string;
 }
 
 export interface SearchSuiteSettings {
-  active?: boolean;
   appBarLogoUrl?: string;
   headerColor?: string;
   logoWidth?: string;

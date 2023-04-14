@@ -1,67 +1,7 @@
-import { Code, RectCoords, Region } from '@nyris/nyris-api';
+import { RectCoords, Region } from '@nyris/nyris-api';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CanvasWithId } from 'types';
-import { DEFAULT_REGION } from '../constants';
-
-interface CategoryPrediction {
-  name: string;
-  score: number;
-}
-
-export interface SearchState {
-  results: any[];
-  duration?: number;
-  requestId?: string;
-  sessionId?: string;
-  regions: Region[];
-  selectedRegion?: RectCoords;
-  fetchingRegions: boolean;
-  fetchingResults: boolean;
-  filterOptions: string[];
-  requestImage?: CanvasWithId | undefined;
-  categoryPredictions: CategoryPrediction[];
-  codes: Code[];
-  errorMessage: string;
-  valueTextSearch: any;
-  resultSearchText: any[];
-  filters: any[];
-  configureFilter?: any;
-  loadingSearchAlgolia: boolean;
-  imageThumbSearchInput?: any;
-  textSearchInputMobile?: string;
-  isShowModalDetailItemMobile?: boolean;
-  keyFilter?: string;
-  preFilterDropdown?: boolean;
-  setPreFilterDropdown?: any;
-}
-
-// TODO: init state
-const initialState: SearchState = {
-  results: [],
-  regions: [],
-  selectedRegion: undefined,
-  requestImage: undefined,
-  fetchingResults: false,
-  fetchingRegions: false,
-  filterOptions: [],
-  categoryPredictions: [],
-  codes: [],
-  errorMessage: '',
-  valueTextSearch: {
-    configure: { filters: '' },
-    page: 1,
-    refinementList: '',
-  },
-  resultSearchText: [],
-  filters: [],
-  configureFilter: {},
-  loadingSearchAlgolia: false,
-  imageThumbSearchInput: '',
-  textSearchInputMobile: '',
-  isShowModalDetailItemMobile: false,
-  keyFilter: '',
-  preFilterDropdown: false,
-};
+import { DEFAULT_REGION } from '../../constants';
+import { initialState } from './search.initialState';
 
 export const searchSlice = createSlice({
   name: 'search',

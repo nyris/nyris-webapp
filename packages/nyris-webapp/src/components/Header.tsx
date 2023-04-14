@@ -1,35 +1,34 @@
-import React from "react";
+import { Box } from '@material-ui/core';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import './common.scss';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { reset } from 'Store/search/Search';
 
-function HeaderComponent(): JSX.Element {
+function Header(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const { settings } = useAppSelector(state => state);
   return (
-    <div className="navWrap">
-      <div className="wrapper" style={{ padding: 0 }}>
-        <section id="branding" />
-        <div id="menu" className="menuWrap" role="navigation">
-          <ul>
-            <li>
-              <a
-                href="https://nyris.io/imprint/#privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://nyris.io/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Visit our Website
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <Box className="box-content" display={'flex'}>
+      <NavLink
+        to="/"
+        style={{ lineHeight: 0, paddingLeft: '10px' }}
+        onClick={() => {
+          dispatch(reset(''));
+        }}
+      >
+        <img
+          src={settings.theme?.appBarLogoUrl}
+          alt="logo"
+          style={{
+            aspectRatio: 1,
+            width: settings.theme?.logoWidth,
+            height: settings.theme?.logoHeight,
+          }}
+        />
+      </NavLink>
+    </Box>
   );
 }
 
-export default HeaderComponent;
+export default Header;

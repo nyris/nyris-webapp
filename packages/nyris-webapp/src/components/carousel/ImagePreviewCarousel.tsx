@@ -31,8 +31,9 @@ export const ImagePreviewCarousel = (props: Props) => {
       gap: '1rem',
       pagination: false,
       arrows: false,
+      width: isMobile ? 340 : 370,
     }),
-    [],
+    [isMobile],
   );
 
   const thumbsOptions: Options = useMemo(

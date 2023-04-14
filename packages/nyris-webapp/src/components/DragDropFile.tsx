@@ -12,12 +12,13 @@ import {
   loadingActionResults,
   setRegions,
   setSelectedRegion,
-} from 'Store/Search';
-import { showFeedback } from 'Store/Nyris';
+} from 'Store/search/Search';
+import { showFeedback } from 'Store/nyris/Nyris';
 import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import IconUpload from 'common/assets/images/Icon_Upload.svg';
 import { RectCoords } from '@nyris/nyris-api';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   acceptTypes: any;
@@ -35,6 +36,7 @@ function DragDropFile(props: Props) {
     search: { keyFilter },
   } = searchState;
   const [isLoadingLoadFile, setLoadingLoadFile] = useState<any>(false);
+  const { t } = useTranslation();
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[]) => {
       history.push('/result');
@@ -147,7 +149,10 @@ function DragDropFile(props: Props) {
                 className=""
                 style={{ color: '#2B2C46', fontSize: 14 }}
               >
-                <span className="fw-700">Choose an image</span> or drag it here
+                <span className="fw-700" style={{ paddingRight: '4px' }}>
+                  {t('Choose an image')}
+                </span>
+                {t('or drag it here')}
               </label>
               <input
                 {...getInputProps()}
