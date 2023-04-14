@@ -8,7 +8,7 @@ import { useMediaQuery } from 'react-responsive';
 import AppMD from 'page/landingPage/AppMD';
 import AppMobile from 'page/landingPage/AppMobile';
 import i18n from 'i18next';
-import { initReactI18next, useTranslation } from 'react-i18next';
+import { initReactI18next } from 'react-i18next';
 import { useAppSelector } from 'Store/Store';
 import { translations } from 'translations';
 
