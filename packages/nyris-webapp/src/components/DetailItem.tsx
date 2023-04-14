@@ -14,6 +14,7 @@ import { useAppSelector } from 'Store/Store';
 import { prepareImageList } from '../helpers/CommonHelper';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import NoImage from '../common/assets/images/unnamed.png';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   numberResult?: number;
@@ -75,6 +76,7 @@ function DetailItem(props: Props) {
 
     setDataImageCarouSel(valueKey);
   };
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -141,14 +143,14 @@ function DetailItem(props: Props) {
             <Grid container justifyContent="space-between">
               <Grid item xs={12}>
                 <Typography className="text-f13 fw-500 max-line-1">
-                  SKU: {sku}
+                  {settings.itemIdLabel || 'SKU'}: {sku}
                 </Typography>
                 {dataItem.keyword_1 && (
                   <Typography
                     className="text-f13 fw-500 max-line-1"
                     style={{ marginTop: '8px' }}
                   >
-                    Manufacturer Number: {dataItem.keyword_1}
+                    {t('Manufacturer Number')}: {dataItem.keyword_1}
                   </Typography>
                 )}
                 {settings.warehouseVariant && (
@@ -351,7 +353,13 @@ function DetailItem(props: Props) {
                 alignItems="center"
               >
                 <Grid item>
-                  <Box display={'flex'} alignItems={'center'}>
+                  <Box
+                    display={'flex'}
+                    justifyContent={
+                      settings.shareOption ? 'space-between' : 'space-around'
+                    }
+                    alignItems={'center'}
+                  >
                     <Button
                       className="btn-item"
                       onClick={() => {
@@ -384,13 +392,15 @@ function DetailItem(props: Props) {
                     </Button>
                   </Box>
                 </Grid>
-                <Grid item>
-                  <Box display={'flex'} alignItems={'center'}>
-                    <Button className="btn-item" onClick={() => false}>
-                      <IconShare width={30} height={30} color="gray" />
-                    </Button>
-                  </Box>
-                </Grid>
+                {settings.shareOption && (
+                  <Grid item>
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Button className="btn-item" onClick={() => false}>
+                        <IconShare width={30} height={30} color="gray" />
+                      </Button>
+                    </Box>
+                  </Grid>
+                )}
                 {/* <Grid item>
               <Box display={'flex'} alignItems={'center'}>
                 <Button className="btn-item">

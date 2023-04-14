@@ -30,10 +30,12 @@ export interface AppSettings extends NyrisAPISettings {
   alogoliaFilterField?: string;
   headerText?: string;
   brandName?: string;
+  shareOption?: boolean;
+  language?: string;
+  itemIdLabel?: string;
 }
 
 export interface SearchSuiteSettings {
-  active?: boolean;
   appBarLogoUrl?: string;
   headerColor?: string;
   logoWidth?: string;

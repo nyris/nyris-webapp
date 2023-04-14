@@ -17,6 +17,7 @@ import {
 } from 'Store/search/Search';
 import { ShareModal } from '../ShareModal';
 import { truncateString } from 'helpers/truncateString';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   dataItem: any;
@@ -51,7 +52,7 @@ function ItemResult(props: Props) {
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const [feedback, setFeedback] = useState('none');
-
+  const { t } = useTranslation();
   const { sku, title, brand, main_offer_link, collap } = dataItem;
   useEffect(() => {
     if (main_image_link) {
@@ -127,7 +128,7 @@ function ItemResult(props: Props) {
         {isGroupItem && collap && (
           <Box className="btn-show-result">
             <Button onClick={handlerShowGroup}>
-              Show group
+              {t('Show group')}
               <ChevronRightOutlinedIcon style={{ fontSize: '10px' }} />
             </Button>
           </Box>
@@ -135,7 +136,7 @@ function ItemResult(props: Props) {
         {isGroupItem && !collap && (
           <Box className="btn-show-result">
             <Button onClick={handlerHideGroup}>
-              Close group
+              {t('Close group')}
               <ChevronRightOutlinedIcon style={{ fontSize: '10px' }} />
             </Button>
           </Box>
@@ -213,7 +214,9 @@ function ItemResult(props: Props) {
                     display: 'inline-block',
                   }}
                 >
-                  <span style={{ marginRight: 3 }}>SKU:</span>
+                  <span style={{ marginRight: 3 }}>
+                    {settings.itemIdLabel || 'SKU'}:
+                  </span>
                   {truncateString(sku, 19)}
                 </Typography>
               </Tooltip>
@@ -419,7 +422,13 @@ function ItemResult(props: Props) {
             className="box-bottom"
             style={{ marginBottom: 6, marginTop: 10 }}
           >
-            <Grid container justifyContent="space-between" alignItems="center">
+            <Grid
+              container
+              justifyContent={
+                settings.shareOption ? 'space-between' : 'space-around'
+              }
+              alignItems="center"
+            >
               <Grid item>
                 <Box display={'flex'} alignItems={'center'}>
                   <Button
@@ -456,17 +465,19 @@ function ItemResult(props: Props) {
                   </Button>
                 </Box>
               </Grid>
-              <Grid item>
-                <Box display={'flex'} alignItems={'center'}>
-                  <Button
-                    style={{ padding: '6px' }}
-                    className="btn-item"
-                    onClick={() => false}
-                  >
-                    <IconShare width={16} height={16} color="#808080" />
-                  </Button>
-                </Box>
-              </Grid>
+              {settings.shareOption && (
+                <Grid item>
+                  <Box display={'flex'} alignItems={'center'}>
+                    <Button
+                      style={{ padding: '6px' }}
+                      className="btn-item"
+                      onClick={() => false}
+                    >
+                      <IconShare width={16} height={16} color="#808080" />
+                    </Button>
+                  </Box>
+                </Grid>
+              )}
               {/* <Grid item>
               <Box display={'flex'} alignItems={'center'}>
                 <Button className="btn-item">
