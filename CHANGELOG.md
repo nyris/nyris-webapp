@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.26 - 2023-04-17
+
+### Fixed
+
+- Fixed object detection appearing twice NYRIS-5625
+
 ## 0.3.25 - 2023-04-14
 
 ### Added
