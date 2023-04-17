@@ -49,6 +49,7 @@ export const searchSlice = createSlice({
         canvas: data.payload,
         id: Math.random().toString(),
       },
+      regions: [],
     }),
 
     selectionChanged: (state, data: PayloadAction<RectCoords>) => {
