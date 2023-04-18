@@ -39,6 +39,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
 import { DEFAULT_REGION } from '../../constants';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   allSearchResults: any;
@@ -56,7 +57,7 @@ function ResultComponent(props: Props) {
   const [imageSelection, setImageSelection] = useState<any>(null);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
   const [filterString, setFilterString] = useState<string>();
-
+  const { t } = useTranslation();
   useEffect(() => {
     if (selectedRegion) {
       setImageSelection(selectedRegion);
@@ -312,7 +313,10 @@ function ResultComponent(props: Props) {
                           </Box>
                           <Box className="box-title_col-left">
                             <Typography style={{ fontSize: 11, color: '#fff' }}>
-                              Adjust the selection frame for better results.
+                              {t(
+                                'Adjust the selection frame for better results',
+                              )}
+                              .
                             </Typography>
                           </Box>
                         </Box>
@@ -447,7 +451,7 @@ function ResultComponent(props: Props) {
                     className="box-change-hit-items"
                   >
                     <span style={{ paddingRight: '10px' }}>
-                      Items per page:
+                      {t('Items per page')}:
                     </span>
                     <HitsPerPage items={showHits} defaultRefinement={20} />
                   </Box>
