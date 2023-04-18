@@ -349,17 +349,13 @@ function DetailItem(props: Props) {
             >
               <Grid
                 container
-                justifyContent="space-between"
+                justifyContent={
+                  settings.shareOption ? 'space-between' : 'space-around'
+                }
                 alignItems="center"
               >
                 <Grid item>
-                  <Box
-                    display={'flex'}
-                    justifyContent={
-                      settings.shareOption ? 'space-between' : 'space-around'
-                    }
-                    alignItems={'center'}
-                  >
+                  <Box display={'flex'} alignItems={'center'}>
                     <Button
                       className="btn-item"
                       onClick={() => {
