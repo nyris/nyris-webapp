@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## 0.3.26 - 2023-04-17
+
+### Added
+
+- Added translation for multiple labels - NYRIS-5627
+### Fixed
+
+- Fixed detail item modal feedback buttons are not centered
+
 
 ## 0.3.26 - 2023-04-17
 
