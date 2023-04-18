@@ -281,7 +281,11 @@ const SearchBox = (props: any) => {
                 history.push('/');
               }}
             >
-              <Tooltip title="clear text search" placement="top" arrow={true}>
+              <Tooltip
+                title={t('Clear text search')}
+                placement="top"
+                arrow={true}
+              >
                 <ClearOutlinedIcon style={{ fontSize: 16, color: '#2B2C46' }} />
               </Tooltip>
             </Button>
@@ -321,7 +325,7 @@ const SearchBox = (props: any) => {
                 })}
               />
               <Tooltip
-                title="Search with an image"
+                title={t('Search with an image')}
                 placement="top"
                 arrow={true}
               >
