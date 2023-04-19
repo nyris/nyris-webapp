@@ -53,7 +53,7 @@ function ItemResult(props: Props) {
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const [feedback, setFeedback] = useState('none');
   const { t } = useTranslation();
-  const { sku, title, brand, main_offer_link, collap } = dataItem;
+  const { sku, title, brand, main_offer_link, product_link, collap } = dataItem;
   useEffect(() => {
     if (main_image_link) {
       handlerCheckUrlImage(main_image_link);
@@ -323,7 +323,10 @@ function ItemResult(props: Props) {
                         padding: 0,
                       }}
                       onClick={() =>
-                        window.open(`${main_offer_link}`, '_blank')
+                        window.open(
+                          `${product_link || main_offer_link}`,
+                          '_blank',
+                        )
                       }
                     >
                       <Typography

@@ -35,7 +35,7 @@ function DetailItem(props: Props) {
     handlerFeedback,
   } = props;
   const [collapDescription, setCollapDescription] = useState(false);
-  const { title, sku, main_offer_link, brand } = dataItem;
+  const { title, sku, main_offer_link, product_link, brand } = dataItem;
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = useAppSelector<AppState>((state: any) => state);
@@ -272,7 +272,10 @@ function DetailItem(props: Props) {
                         minHeight: !settings.warehouseVariant ? 48 : 64,
                       }}
                       onClick={() =>
-                        window.open(`${main_offer_link}`, '_blank')
+                        window.open(
+                          `${product_link || main_offer_link}`,
+                          '_blank',
+                        )
                       }
                     >
                       <Typography
