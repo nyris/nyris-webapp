@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-## 0.3.26 - 2023-04-17
+
+## 0.3.28 - 2023-04-19
+
+### Added
+
+- Link product cta to product_link
+
+
+## 0.3.27 - 2023-04-18
 
 ### Added
 
