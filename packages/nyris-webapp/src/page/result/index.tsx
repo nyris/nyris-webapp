@@ -172,7 +172,7 @@ function ResultComponent(props: Props) {
     ? search?.results
         .slice()
         .reverse()
-        .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}>`)
+        .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}> `)
     : '';
   const filterSkusString = [...nonEmptyFilter, ...filterSkus].join(' OR ');
 
