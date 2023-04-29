@@ -35,9 +35,10 @@ function CameraCustom(props: Props) {
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
   const [scaleCamera, setScaleCamera] = useState<number>(1);
   const stateGlobal = useAppSelector(state => state);
-  const { settings } = stateGlobal;
+  const { search, settings } = stateGlobal;
   const history = useHistory();
   const dispatch = useAppDispatch();
+  const { keyFilter } = search;
 
   const videoConstraints = {
     width: 1080,
@@ -55,23 +56,55 @@ function CameraCustom(props: Props) {
   const handlerFindImage = async (image: any) => {
     dispatch(updateStatusLoading(true));
     dispatch(loadingActionResults());
-
+    if (history.location.pathname !== '/result') {
+      history.push('/result');
+    }
     let region: RectCoords | undefined;
     let imageConvert = await createImage(image);
     dispatch(setRequestImage(imageConvert));
     dispatch(setImageSearchInput(image));
     dispatch(onToggleModalItemDetail(false));
+    handlerCloseModal();
+
     if (settings.regions) {
       let res = await findRegions(imageConvert, settings);
       dispatch(setRegions(res.regions));
       region = res.selectedRegion;
       dispatch(setSelectedRegion(region));
     }
-    setTimeout(() => {
-      dispatch(updateStatusLoading(false));
-      handlerCloseModal();
-      history.push('/result');
-    }, 500);
+
+    const preFilter = [
+      {
+        key: settings.visualSearchFilterKey,
+        values: [`${keyFilter}`],
+      },
+    ];
+    let filters: any[] = [];
+
+    findByImage({
+      image: imageConvert,
+      settings,
+      filters: keyFilter ? preFilter : undefined,
+      region,
+    })
+      .then((res: any) => {
+        res?.results.map((item: any) => {
+          filters.push({
+            sku: item.sku,
+            score: item.score,
+          });
+        });
+        const payload = {
+          ...res,
+          filters,
+        };
+        dispatch(setSearchResults(payload));
+        dispatch(updateStatusLoading(false));
+      })
+      .catch((e: any) => {
+        console.log('error input search', e);
+        dispatch(updateStatusLoading(false));
+      });
   };
 
   const handlerCloseModal = () => {
