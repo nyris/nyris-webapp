@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.29 - 2023-04-29
+
+### Fixed
+
+- Fixed results not showing when there are two visual search matches
+- Fixed mobile camera is sending full image for visual search
+
 ## 0.3.28 - 2023-04-19
 
 ### Added
