@@ -7,8 +7,8 @@ export const translations = {
       'Manufacturer Number': 'Manufacturer Number',
       'Close group': 'Close group',
       'Show group': 'Show group',
-      'Adjust the selection frame for better results':
-        'Adjust the selection frame for better results',
+      'Adjust the search frame around your object for improved results':
+        'Adjust the search frame around your object for improved results',
       'Items per page': 'Items per page',
       'Search with an image': 'Search with an image',
       'Clear text search': 'Clear text search',
@@ -22,7 +22,7 @@ export const translations = {
       'Manufacturer Number': 'Herst. Teile-Nr.',
       'Close group': 'Schließe Gruppe',
       'Show group': 'Zeige Gruppe',
-      'Adjust the selection frame for better results':
+      'Adjust the search frame around your object for improved results':
         'Anpassen des Rahmens für bessere Ergebnisse',
       'Items per page': 'Artikel pro Seite',
       'Search with an image': 'Bildsuche',
