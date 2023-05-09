@@ -1,5 +1,4 @@
 import React, {
-  Fragment,
   memo,
   useCallback,
   useEffect,
@@ -50,7 +49,6 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
 import { DEFAULT_REGION } from '../../constants';
 import { useTranslation } from 'react-i18next';
-import { AppState } from 'types';
 
 interface Props {
   allSearchResults: any;
@@ -370,8 +368,7 @@ function ResultComponent(props: Props) {
                                 regions={filteredRegions}
                                 maxWidth={320}
                                 maxHeight={320}
-                                dotColor={settings.theme.primaryColor}
-                                gripColor={settings.theme.primaryColor}
+                                dotColor={'#ffffff4d'}
                               />
                             </Box>
                           </Box>
@@ -443,8 +440,7 @@ function ResultComponent(props: Props) {
                             regions={filteredRegions}
                             maxWidth={320}
                             maxHeight={320}
-                            dotColor={settings.theme.primaryColor}
-                            gripColor={settings.theme.primaryColor}
+                            dotColor={'#ffffff4d'}
                           />
                         </Box>
                         {showAdjustInfo && (

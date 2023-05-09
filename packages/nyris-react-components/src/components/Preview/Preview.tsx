@@ -22,8 +22,6 @@ interface PreviewProps {
   maxHeight: number;
   /** Color of the dot, which is rendered center of not selected regions. */
   dotColor: string;
-  /** Color of the grip, which is rendered corners of the selected regions. */
-  gripColor: string;
 }
 
 /** @internal State of the Preview component */
@@ -111,10 +109,10 @@ function scaleToPreviewPixels(
   { x1, x2, y1, y2 }: RectCoords
 ) {
   return {
-    x1: x1 * width,
-    x2: x2 * width,
-    y1: y1 * height,
-    y2: y2 * height,
+    x1: Math.max(x1 * width, 5),
+    x2: Math.min(x2 * width, width - 5),
+    y1: Math.max(y1 * height, 5),
+    y2: Math.min(y2 * height, height - 5),
   };
 }
 
@@ -127,7 +125,6 @@ const Preview = ({
   onSelectionChange,
   regions,
   dotColor,
-  gripColor,
 }: PreviewProps) => {
   let { w: width, h: height } = getThumbSizeLongestEdge(
     maxWidth,
@@ -167,11 +164,11 @@ const Preview = ({
   };
 
   const handleDragBoundRect = ({ x, y }: { x: number; y: number }) => {
-    let elemWidth = x2 - x1;
-    let elemHeight = y2 - y1;
+    let elemWidth = x2 - x1 + 5;
+    let elemHeight = y2 - y1 + 5;
     return {
-      x: Math.max(Math.min(x, width - elemWidth), 0),
-      y: Math.max(Math.min(y, height - elemHeight), 0),
+      x: Math.max(Math.min(x, width - elemWidth), 5),
+      y: Math.max(Math.min(y, height - elemHeight), 5),
     };
   };
 
@@ -352,22 +349,18 @@ const Preview = ({
       {/* grips */}
       <Layer>
         {/* top left */}
-        <Rect
-          fill="black"
-          opacity={darkOpacity}
-          width={8}
-          height={6}
-          x={x1}
-          y={y1}
-        />
         <Path
           data="M2 18V10C2 5.58172 5.58172 2 10 2H18"
-          stroke={gripColor}
+          stroke={"white"}
           strokeWidth={5}
           strokeLinecap="round"
           opacity={1}
-          x={x1}
-          y={y1}
+          x={x1 - 3}
+          y={y1 - 3}
+          shadowColor={"#000000"}
+          shadowBlur={4}
+          shadowOffset={{ x: 0, y: 0 }}
+          shadowOpacity={0.25}
         />
         <Rect
           draggable={true}
@@ -382,24 +375,19 @@ const Preview = ({
           y={y1}
         />
         {/* top right */}
-        <Rect
-          fill="black"
-          opacity={darkOpacity}
-          width={8}
-          height={6}
-          x={x2}
-          y={y1}
-          offsetX={8}
-        />
         <Path
           data="M2 2L10 2C14.4183 2 18 5.58172 18 10L18 18"
-          stroke={gripColor}
+          stroke={"white"}
           strokeWidth={5}
           strokeLinecap="round"
           opacity={1}
-          x={x2}
-          y={y1}
+          x={x2 + 3}
+          y={y1 - 3}
           offsetX={gripSize}
+          shadowColor={"#000000"}
+          shadowBlur={4}
+          shadowOffset={{ x: 0, y: 0 }}
+          shadowOpacity={0.25}
         />
         <Rect
           draggable={true}
@@ -415,24 +403,19 @@ const Preview = ({
           offsetX={gripSize}
         />
         {/* bottom left */}
-        <Rect
-          fill="black"
-          opacity={darkOpacity}
-          width={8}
-          height={6}
-          x={x1}
-          y={y2}
-          offsetY={6}
-        />
         <Path
           data="M18 18L10 18C5.58172 18 2 14.4183 2 10L2 2"
-          stroke={gripColor}
+          stroke={"white"}
           strokeWidth={5}
           strokeLinecap="round"
           opacity={1}
-          x={x1}
-          y={y2}
+          x={x1 - 3}
+          y={y2 + 3}
           offsetY={gripSize}
+          shadowColor={"#000000"}
+          shadowBlur={4}
+          shadowOffset={{ x: 0, y: 0 }}
+          shadowOpacity={0.25}
         />
         <Rect
           draggable={true}
@@ -448,26 +431,20 @@ const Preview = ({
           offsetY={gripSize}
         />
         {/* bottom right */}
-        <Rect
-          fill="black"
-          opacity={darkOpacity}
-          width={8}
-          height={6}
-          x={x2}
-          y={y2}
-          offsetY={6}
-          offsetX={8}
-        />
         <Path
           data="M18 2L18 10C18 14.4183 14.4183 18 10 18L2 18"
-          stroke={gripColor}
+          stroke={"white"}
           strokeWidth={5}
           strokeLinecap="round"
-          x={x2}
-          y={y2}
+          x={x2 + 3}
+          y={y2 + 3}
           opacity={1}
           offsetY={gripSize}
           offsetX={gripSize}
+          shadowColor={"#000000"}
+          shadowBlur={4}
+          shadowOffset={{ x: 0, y: 0 }}
+          shadowOpacity={0.25}
         />
         <Rect
           opacity={1}
@@ -511,11 +488,11 @@ const Preview = ({
                 onMouseOver={() => setState({ dotHover: true })}
                 onMouseOut={() => setState({ dotHover: false })}
                 key={key}
-                radius={7}
+                radius={3}
                 {...position}
                 stroke={dotColor}
                 fill="white"
-                strokeWidth={5}
+                strokeWidth={9}
               />
             ))}
           </Layer>
