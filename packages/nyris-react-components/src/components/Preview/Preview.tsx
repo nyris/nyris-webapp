@@ -488,11 +488,11 @@ const Preview = ({
                 onMouseOver={() => setState({ dotHover: true })}
                 onMouseOut={() => setState({ dotHover: false })}
                 key={key}
-                radius={3}
+                radius={7}
                 {...position}
                 stroke={dotColor}
                 fill="white"
-                strokeWidth={9}
+                strokeWidth={5}
               />
             ))}
           </Layer>

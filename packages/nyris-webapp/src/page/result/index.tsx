@@ -59,13 +59,16 @@ function ResultComponent(props: Props) {
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector((state: any) => state);
   const { search, settings } = stateGlobal;
+
   const {
     requestImage,
     regions,
     selectedRegion,
     keyFilter,
     loadingSearchAlgolia,
+    imageThumbSearchInput,
   } = search;
+
   const moreInfoText = settings?.productCtaText;
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -74,25 +77,26 @@ function ResultComponent(props: Props) {
   const [filterString, setFilterString] = useState<string>();
   const { t } = useTranslation();
   const [showAdjustInfo, setAdjustInfo] = useState(false);
-  const imageIdRef = useRef(null);
+  const imageUploadRef = useRef(null);
 
   useEffect(() => {
     if (
       !loadingSearchAlgolia &&
-      requestImage &&
-      requestImage?.id !== imageIdRef.current
+      (imageThumbSearchInput.includes('blob:') ||
+        imageThumbSearchInput.includes('data:')) &&
+      imageUploadRef.current !== imageThumbSearchInput
     ) {
       setAdjustInfo(true);
       const timeout = setTimeout(() => {
         setAdjustInfo(false);
-      }, 3000);
-      imageIdRef.current = requestImage?.id;
+      }, 5000);
+      imageUploadRef.current = imageThumbSearchInput;
       return () => {
         clearTimeout(timeout);
         setAdjustInfo(false);
       };
     }
-  }, [requestImage, loadingSearchAlgolia]);
+  }, [imageThumbSearchInput, loadingSearchAlgolia]);
 
   useEffect(() => {
     if (selectedRegion) {
@@ -368,7 +372,7 @@ function ResultComponent(props: Props) {
                                 regions={filteredRegions}
                                 maxWidth={320}
                                 maxHeight={320}
-                                dotColor={'#ffffff4d'}
+                                dotColor={'#FBD914'}
                               />
                             </Box>
                           </Box>
@@ -440,7 +444,7 @@ function ResultComponent(props: Props) {
                             regions={filteredRegions}
                             maxWidth={320}
                             maxHeight={320}
-                            dotColor={'#ffffff4d'}
+                            dotColor={'#FBD914'}
                           />
                         </Box>
                         {showAdjustInfo && (
@@ -448,7 +452,10 @@ function ResultComponent(props: Props) {
                             className="box-title_col-left"
                             display="flex"
                             alignItems="center"
-                            style={{ backgroundColor: '#3E36DC' }}
+                            style={{
+                              backgroundColor: '#3E36DC',
+                              marginBottom: '35px',
+                            }}
                           >
                             <IconInfo style={{ marginRight: 2 }} />
                             <Typography style={{ fontSize: 9, color: '#fff' }}>
