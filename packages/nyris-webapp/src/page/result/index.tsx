@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Box, Button, Typography } from '@material-ui/core';
 import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
@@ -13,6 +20,8 @@ import CustomSearchBox from 'components/input/inputSearch';
 import ProductList from 'components/ProductList';
 import ExpandablePanelComponent from 'components/PanelResult';
 import { debounce, isEmpty } from 'lodash';
+import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
+
 import {
   Configure,
   connectStateResults,
@@ -50,7 +59,16 @@ function ResultComponent(props: Props) {
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector((state: any) => state);
   const { search, settings } = stateGlobal;
-  const { requestImage, regions, selectedRegion, keyFilter } = search;
+
+  const {
+    requestImage,
+    regions,
+    selectedRegion,
+    keyFilter,
+    loadingSearchAlgolia,
+    imageThumbSearchInput,
+  } = search;
+
   const moreInfoText = settings?.productCtaText;
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -58,6 +76,28 @@ function ResultComponent(props: Props) {
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
   const [filterString, setFilterString] = useState<string>();
   const { t } = useTranslation();
+  const [showAdjustInfo, setAdjustInfo] = useState(false);
+  const imageUploadRef = useRef(null);
+
+  useEffect(() => {
+    if (
+      !loadingSearchAlgolia &&
+      (imageThumbSearchInput.includes('blob:') ||
+        imageThumbSearchInput.includes('data:')) &&
+      imageUploadRef.current !== imageThumbSearchInput
+    ) {
+      setAdjustInfo(true);
+      const timeout = setTimeout(() => {
+        setAdjustInfo(false);
+      }, 5000);
+      imageUploadRef.current = imageThumbSearchInput;
+      return () => {
+        clearTimeout(timeout);
+        setAdjustInfo(false);
+      };
+    }
+  }, [imageThumbSearchInput, loadingSearchAlgolia]);
+
   useEffect(() => {
     if (selectedRegion) {
       setImageSelection(selectedRegion);
@@ -227,6 +267,35 @@ function ResultComponent(props: Props) {
     [findItemsInSelection],
   );
 
+  const filteredRegions = useMemo(
+    () =>
+      regions.filter(
+        (region: {
+          normalizedRect: { x1: any; x2: any; y1: any; y2: any };
+        }) => {
+          if (
+            region.normalizedRect.x1 === imageSelection.x1 &&
+            region.normalizedRect.x2 === imageSelection.x2 &&
+            region.normalizedRect.y1 === imageSelection.y1 &&
+            region.normalizedRect.y2 === imageSelection.y2
+          ) {
+            return false;
+          }
+          if (
+            imageSelection.x1 === 0 &&
+            imageSelection.x2 === 1 &&
+            imageSelection.y1 === 0 &&
+            imageSelection.y2 === 1
+          ) {
+            return false;
+          }
+
+          return true;
+        },
+      ),
+    [imageSelection, regions],
+  );
+
   return (
     <div
       className={`wrap-main-result loading`}
@@ -264,11 +333,7 @@ function ResultComponent(props: Props) {
                     >
                       <Box className="box-toggle-coloumn">
                         <Button
-                          style={
-                            requestImage && !toggleColLeft
-                              ? { color: '#fff' }
-                              : { color: '#55566b' }
-                          }
+                          style={{ color: '#55566b' }}
                           onClick={() => {
                             setToggleColLeft(!toggleColLeft);
                           }}
@@ -287,9 +352,9 @@ function ResultComponent(props: Props) {
                       {settings.preview && requestImage && (
                         <Box
                           className="col-left"
-                          style={{
-                            backgroundColor: settings?.theme?.primaryColor,
-                          }}
+                          // style={{
+                          //   backgroundColor: settings?.theme?.primaryColor,
+                          // }}
                         >
                           <Box className="box-preview">
                             <Box
@@ -304,21 +369,31 @@ function ResultComponent(props: Props) {
                                 }}
                                 image={requestImage?.canvas}
                                 selection={imageSelection || DEFAULT_REGION}
-                                regions={regions}
+                                regions={filteredRegions}
                                 maxWidth={320}
                                 maxHeight={320}
-                                dotColor="#FBD914"
+                                dotColor={'#FBD914'}
                               />
                             </Box>
                           </Box>
-                          <Box className="box-title_col-left">
-                            <Typography style={{ fontSize: 11, color: '#fff' }}>
-                              {t(
-                                'Adjust the selection frame for better results',
-                              )}
-                              .
-                            </Typography>
-                          </Box>
+                          {showAdjustInfo && (
+                            <Box
+                              className="box-title_col-left"
+                              display="flex"
+                              alignItems="center"
+                              style={{ backgroundColor: '#3E36DC' }}
+                            >
+                              <IconInfo style={{ marginRight: 2 }} />
+                              <Typography
+                                style={{ fontSize: 9, color: '#fff' }}
+                              >
+                                {t(
+                                  'Adjust the search frame around your object for improved results',
+                                )}
+                                .
+                              </Typography>
+                            </Box>
+                          )}
                         </Box>
                       )}
                       {/* TODO: Filter list Choose */}
@@ -366,12 +441,31 @@ function ResultComponent(props: Props) {
                             }}
                             image={requestImage?.canvas}
                             selection={imageSelection || DEFAULT_REGION}
-                            regions={regions}
+                            regions={filteredRegions}
                             maxWidth={320}
                             maxHeight={320}
-                            dotColor="#3E36DC"
+                            dotColor={'#FBD914'}
                           />
                         </Box>
+                        {showAdjustInfo && (
+                          <Box
+                            className="box-title_col-left"
+                            display="flex"
+                            alignItems="center"
+                            style={{
+                              backgroundColor: '#3E36DC',
+                              marginBottom: '35px',
+                            }}
+                          >
+                            <IconInfo style={{ marginRight: 2 }} />
+                            <Typography style={{ fontSize: 9, color: '#fff' }}>
+                              {t(
+                                'Adjust the search frame around your object for improved results',
+                              )}
+                              .
+                            </Typography>
+                          </Box>
+                        )}
                       </Box>
                     }
                   </Box>
@@ -409,34 +503,6 @@ function ResultComponent(props: Props) {
                         />
                       )}
                   </Box>
-                  {/* {isMobile && (
-                    <Box
-                      className="box-title_col-left"
-                      style={{
-                        height: 86,
-                        background:
-                          'linear-gradient(360deg, #56577C 0%, #2B2C46 100%)',
-                        width: '100%',
-                      }}
-                    >
-                      <Typography
-                        style={{
-                          fontSize: 11,
-                          color: '#fff',
-                          textAlign: 'center',
-                          marginTop: 18,
-                        }}
-                      >
-                        <span className="fw-700">Wrong results?</span> share
-                        your search with our{' '}
-                        <span style={{ textDecoration: 'underline' }}>
-                          <a href="/#" className="fw-700 text-white">
-                            product experts
-                          </a>
-                        </span>
-                      </Typography>
-                    </Box>
-                  )} */}
                 </Box>
               </Box>
             </>

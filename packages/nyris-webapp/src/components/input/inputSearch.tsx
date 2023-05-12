@@ -159,9 +159,10 @@ const SearchBox = (props: any) => {
           <Box className="box-inp">
             <Box
               style={{
-                height: '100%',
+                height: '75%',
                 order: 1,
                 paddingLeft: imageThumbSearchInput || keyFilter ? 0 : 10,
+                marginLeft: keyFilter ? 0 : 5,
               }}
             >
               {imageThumbSearchInput && (
@@ -185,6 +186,7 @@ const SearchBox = (props: any) => {
                     arrow={true}
                   >
                     <button
+                      type="button"
                       onClick={() => {
                         if (!valueInput) {
                           dispatch(reset(''));
@@ -222,7 +224,11 @@ const SearchBox = (props: any) => {
             {keyFilter && !isMobile && (
               <Box
                 className="box-key-filter"
-                style={{ order: 0, marginRight: 5 }}
+                style={{
+                  order: 0,
+                  marginRight: 5,
+                  border: `2px solid ${settings.theme?.secondaryColor}c7`,
+                }}
               >
                 <Tooltip
                   title={keyFilter}
@@ -240,8 +246,8 @@ const SearchBox = (props: any) => {
                   >
                     <CloseIcon
                       style={{
-                        fontSize: 12,
-                        color: '#2B2C46',
+                        fontSize: 20,
+                        color: settings.theme?.secondaryColor,
                       }}
                     />
                   </Button>
@@ -268,7 +274,6 @@ const SearchBox = (props: any) => {
           {history.location.pathname === '/result' && valueInput && (
             <Button
               className="btn-clear-text"
-              style={{ marginRight: 5 }}
               onClick={() => {
                 if (imageThumbSearchInput) {
                   setValueInput('');
@@ -305,8 +310,7 @@ const SearchBox = (props: any) => {
                       width: 32,
                       height: 32,
                       borderRadius: '100%',
-                      backgroundColor: '#fff',
-                      marginRight: 7,
+                      marginRight: 10,
                     }}
                   >
                     <IconFilter />
@@ -338,7 +342,6 @@ const SearchBox = (props: any) => {
                       width: 32,
                       height: 32,
                       borderRadius: '100%',
-                      backgroundColor: '#fff',
                       padding: 7,
                     }}
                   >
