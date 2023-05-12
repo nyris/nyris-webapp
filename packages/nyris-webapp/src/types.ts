@@ -8,6 +8,20 @@ export interface AlgoliaSettings {
   indexName: string;
 }
 
+export interface Field {
+  ctaLinkField: string;
+  productName: string;
+  productDetails: string;
+  manufacturerNumber: string;
+  productTag: string;
+  warehouseNumber: string;
+  warehouseNumberValue: string;
+  warehouseShelfNumber: string;
+  warehouseShelfNumberValue: string;
+  warehouseStock: string;
+  warehouseStockValue: string;
+}
+
 export interface AppSettings extends NyrisAPISettings {
   exampleImages: string[];
   preview: boolean;
@@ -33,6 +47,7 @@ export interface AppSettings extends NyrisAPISettings {
   shareOption?: boolean;
   language?: string;
   itemIdLabel?: string;
+  field: Field;
 }
 
 export interface SearchSuiteSettings {

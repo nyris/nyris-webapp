@@ -18,4 +18,17 @@ export const defaultSettings: AppSettings = {
     '^https?://(www.)?dai.ly/',
   ],
   theme: {},
+  field: {
+    ctaLinkField: '',
+    productName: '',
+    productDetails: '',
+    manufacturerNumber: '',
+    productTag: '',
+    warehouseNumber: '',
+    warehouseNumberValue: '',
+    warehouseShelfNumber: '',
+    warehouseShelfNumberValue: '',
+    warehouseStock: '',
+    warehouseStockValue: '',
+  },
 };
