@@ -412,8 +412,12 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  marginTop:
-                    keyFilter && isMobile ? '105px' : isMobile ? '60px' : '0px',
+                  paddingTop:
+                    keyFilter && isMobile
+                      ? '105px'
+                      : isMobile
+                      ? '60px'
+                      : '40px',
                 }}
               >
                 <Box className="wrap-box-refinements">
