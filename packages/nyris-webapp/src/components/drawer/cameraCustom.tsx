@@ -118,6 +118,7 @@ function CameraCustom(props: Props) {
       let payload: any;
       let filters: any[] = [];
       let region: RectCoords | undefined;
+      dispatch(updateStatusLoading(true));
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
@@ -127,7 +128,6 @@ function CameraCustom(props: Props) {
         region = res.selectedRegion;
         dispatch(setSelectedRegion(region));
       }
-      dispatch(updateStatusLoading(true));
       return findByImage({ image, settings, region })
         .then((res: any) => {
           res?.results.map((item: any) => {

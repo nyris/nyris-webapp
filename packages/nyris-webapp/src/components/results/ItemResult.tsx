@@ -53,7 +53,9 @@ function ItemResult(props: Props) {
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const [feedback, setFeedback] = useState('none');
   const { t } = useTranslation();
-  const { sku, title, brand, main_offer_link, product_link, collap } = dataItem;
+  const { sku, collap } = dataItem;
+  const brand = dataItem[settings.field.productTag];
+
   useEffect(() => {
     if (main_image_link) {
       handlerCheckUrlImage(main_image_link);
@@ -192,12 +194,10 @@ function ItemResult(props: Props) {
         style={{
           flexDirection: 'column',
           backgroundColor: '#F3F3F5',
+          flexGrow: 1,
         }}
       >
-        <Box
-          className="box-top"
-          style={{ minHeight: settings.showMoreInfo ? '150px' : '90px' }}
-        >
+        <Box className="box-top" style={{ minHeight: '90px' }}>
           <Grid container justifyContent="space-between">
             <Grid item xs={12}>
               <Tooltip
@@ -210,14 +210,14 @@ function ItemResult(props: Props) {
                   className="text-f12 max-line-1 fw-400"
                   style={{
                     color: '#2B2C46',
-                    marginTop: 10,
+                    marginTop: 12,
                     display: 'inline-block',
                   }}
                 >
                   <span style={{ marginRight: 3 }}>
                     {settings.itemIdLabel || 'SKU'}:
                   </span>
-                  {truncateString(sku, 19)}
+                  {truncateString(sku, 16)}
                 </Typography>
               </Tooltip>
 
@@ -227,22 +227,21 @@ function ItemResult(props: Props) {
                     className="text-f12 max-line-1 fw-400"
                     style={{
                       color: '#2B2C46',
-                      marginTop: 10,
                       display: 'inline-block',
                     }}
                   >
                     <span style={{ marginRight: 3 }}>
-                      {dataItem.custom_id_key_3}:
+                      {dataItem[settings.field.warehouseStock]}:
                     </span>
                     <span
                       style={{
-                        color: dataItem.custom_id_value_3
+                        color: dataItem[settings.field.warehouseStockValue]
                           ? '#00C070'
                           : '#c54545',
                         fontWeight: 600,
                       }}
                     >
-                      {dataItem.custom_id_value_3 || 0}
+                      {dataItem[settings.field.warehouseStockValue] || 0}
                     </span>
                   </Typography>
                 </Box>
@@ -256,13 +255,13 @@ function ItemResult(props: Props) {
                   disableHoverListener={brand?.length < 22 || !brand}
                 >
                   <Box
-                    mt={1}
                     style={{
                       background: `${settings.theme?.secondaryColor}26`,
                       borderRadius: '6px',
                       display: 'flex',
                       width: 'fit-content',
                       padding: '2px 5px',
+                      marginTop: 3,
                     }}
                   >
                     <Typography
@@ -285,203 +284,201 @@ function ItemResult(props: Props) {
               {!settings.warehouseVariant && (
                 <Typography
                   className="text-f13 fw-600 max-line-3"
-                  style={{ color: '#1E1F31', marginTop: 15 }}
+                  style={{ color: '#1E1F31', marginTop: 12 }}
                 >
-                  {title}
+                  {dataItem[settings.field.productName]}
                 </Typography>
-              )}
-
-              {(settings.showMoreInfo || settings.warehouseVariant) && (
-                <Tooltip
-                  title={title}
-                  placement="top"
-                  arrow={true}
-                  disableHoverListener={
-                    title.length < 35 || !settings.warehouseVariant
-                  }
-                >
-                  <Box
-                    style={{
-                      boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
-                      // marginBottom: 22,
-                      height: 40,
-                      background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
-                      borderRadius: 4,
-                      padding: '0px 8px',
-                    }}
-                    display={'flex'}
-                    justifyItems={'center'}
-                    alignItems={'center'}
-                    justifyContent={'space-between'}
-                    mt={2}
-                  >
-                    <Button
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                        padding: 0,
-                      }}
-                      onClick={() =>
-                        window.open(
-                          `${product_link || main_offer_link}`,
-                          '_blank',
-                        )
-                      }
-                    >
-                      <Typography
-                        className="text-white max-line-2"
-                        style={{
-                          textTransform: !settings.warehouseVariant
-                            ? 'uppercase'
-                            : 'none',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          fontWeight: !settings.warehouseVariant ? 700 : 500,
-                          fontSize: !settings.warehouseVariant
-                            ? '12px'
-                            : '11px',
-                          letterSpacing: '0.27px',
-                          wordBreak: !settings.warehouseVariant
-                            ? 'normal'
-                            : 'break-all',
-                          maxWidth: '136px',
-                          paddingRight: '8px',
-                        }}
-                        align="left"
-                      >
-                        {settings.warehouseVariant
-                          ? truncateString(title, 35)
-                          : settings.productCtaText || 'MORE INFO'}
-                      </Typography>
-                      <img src={IconOpenLink} alt="more-info" width={20} />
-                    </Button>
-                  </Box>
-                </Tooltip>
               )}
             </Grid>
           </Grid>
         </Box>
-
-        {settings.warehouseVariant && (
-          <Box
-            display="flex"
-            justifyContent={'space-between'}
-            style={{ color: '#2B2C46', marginTop: '12px' }}
-            gridGap={10}
-          >
-            <Box
-              style={{
-                backgroundColor: `${settings.theme?.secondaryColor}26`,
-                padding: '5px 10px',
-                borderRadius: 4,
-                width: '100%',
-              }}
-            >
-              <div style={{ fontSize: 10, fontWeight: 500 }}>
-                {dataItem.custom_id_key_2}
-              </div>
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 700,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {dataItem.custom_id_value_2 || 'N/A'}
-              </div>
-            </Box>
-
-            <Box
-              style={{
-                backgroundColor: `${settings.theme?.secondaryColor}26`,
-                padding: '5px 10px',
-                borderRadius: 4,
-                width: '100%',
-              }}
-            >
-              <div style={{ fontSize: 10, fontWeight: 500 }}>
-                {dataItem.custom_id_key_1}
-              </div>
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 700,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {dataItem.custom_id_value_1 || 'N/A'}
-              </div>
-            </Box>
-          </Box>
-        )}
-
-        {settings.showFeedbackAndShare && (
-          <Box
-            className="box-bottom"
-            style={{ marginBottom: 6, marginTop: 10 }}
-          >
-            <Grid
-              container
-              justifyContent={
-                settings.shareOption ? 'space-between' : 'space-around'
+        <div>
+          {(settings.showMoreInfo || settings.warehouseVariant) && (
+            <Tooltip
+              title={dataItem[settings.field.productName]}
+              placement="top"
+              arrow={true}
+              disableHoverListener={
+                dataItem[settings.field.productName].length < 35 ||
+                !settings.warehouseVariant
               }
-              alignItems="center"
             >
-              <Grid item>
-                <Box display={'flex'} alignItems={'center'}>
-                  <Button
-                    className="btn-item"
-                    style={{ padding: '6px' }}
-                    onClick={() => {
-                      handlerFeedback('like');
-                      setFeedback('like');
+              <Box
+                style={{
+                  boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                  // marginBottom: 22,
+                  height: 40,
+                  background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
+                  borderRadius: 4,
+                  padding: '0px 8px',
+                  marginTop: '12px',
+                }}
+                display={'flex'}
+                justifyItems={'center'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
+              >
+                <Button
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    padding: 0,
+                  }}
+                  onClick={() =>
+                    window.open(
+                      `${dataItem[settings.field.ctaLinkField]}`,
+                      '_blank',
+                    )
+                  }
+                >
+                  <Typography
+                    className="text-white max-line-2"
+                    style={{
+                      textTransform: !settings.warehouseVariant
+                        ? 'uppercase'
+                        : 'none',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      fontWeight: !settings.warehouseVariant ? 700 : 500,
+                      fontSize: !settings.warehouseVariant ? '12px' : '11px',
+                      letterSpacing: '0.27px',
+                      wordBreak: !settings.warehouseVariant
+                        ? 'normal'
+                        : 'break-all',
+                      maxWidth: '136px',
+                      paddingRight: '8px',
                     }}
+                    align="left"
                   >
-                    <IconLike
-                      width={16}
-                      height={16}
-                      color={feedback === 'like' ? '#3E36DC' : '#000000'}
-                    />
-                  </Button>
-                </Box>
-              </Grid>
-              <Grid item>
-                <Box display={'flex'} alignItems={'center'}>
-                  <Button
-                    style={{ padding: '6px' }}
-                    className="btn-item"
-                    onClick={() => {
-                      handlerFeedback('dislike');
-                      setFeedback('dislike');
-                    }}
-                  >
-                    <IconDisLike
-                      width={16}
-                      height={16}
-                      color={feedback === 'dislike' ? '#CC1854' : '#000000'}
-                    />
-                  </Button>
-                </Box>
-              </Grid>
-              {settings.shareOption && (
+                    {settings.warehouseVariant
+                      ? truncateString(dataItem[settings.field.productName], 35)
+                      : settings.productCtaText || 'MORE INFO'}
+                  </Typography>
+                  <img src={IconOpenLink} alt="more-info" width={20} />
+                </Button>
+              </Box>
+            </Tooltip>
+          )}
+          {settings.warehouseVariant && (
+            <Box
+              display="flex"
+              justifyContent={'space-between'}
+              style={{ color: '#2B2C46', marginTop: '12px' }}
+              gridGap={10}
+            >
+              <Box
+                style={{
+                  backgroundColor: `${settings.theme?.secondaryColor}26`,
+                  padding: '5px 10px',
+                  borderRadius: 4,
+                  width: '100%',
+                }}
+              >
+                <div style={{ fontSize: 10, fontWeight: 500 }}>
+                  {dataItem.custom_id_key_2}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {dataItem.custom_id_value_2 || 'N/A'}
+                </div>
+              </Box>
+
+              <Box
+                style={{
+                  backgroundColor: `${settings.theme?.secondaryColor}26`,
+                  padding: '5px 10px',
+                  borderRadius: 4,
+                  width: '100%',
+                }}
+              >
+                <div style={{ fontSize: 10, fontWeight: 500 }}>
+                  {dataItem.custom_id_key_1}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {dataItem.custom_id_value_1 || 'N/A'}
+                </div>
+              </Box>
+            </Box>
+          )}
+
+          {settings.showFeedbackAndShare && (
+            <Box
+              className="box-bottom"
+              style={{ marginBottom: 6, marginTop: 12 }}
+            >
+              <Grid
+                container
+                justifyContent={
+                  settings.shareOption ? 'space-between' : 'space-around'
+                }
+                alignItems="center"
+              >
+                <Grid item>
+                  <Box display={'flex'} alignItems={'center'}>
+                    <Button
+                      className="btn-item"
+                      style={{ padding: '6px' }}
+                      onClick={() => {
+                        handlerFeedback('like');
+                        setFeedback('like');
+                      }}
+                    >
+                      <IconLike
+                        width={16}
+                        height={16}
+                        color={feedback === 'like' ? '#3E36DC' : '#000000'}
+                      />
+                    </Button>
+                  </Box>
+                </Grid>
                 <Grid item>
                   <Box display={'flex'} alignItems={'center'}>
                     <Button
                       style={{ padding: '6px' }}
                       className="btn-item"
-                      onClick={() => false}
+                      onClick={() => {
+                        handlerFeedback('dislike');
+                        setFeedback('dislike');
+                      }}
                     >
-                      <IconShare width={16} height={16} color="#808080" />
+                      <IconDisLike
+                        width={16}
+                        height={16}
+                        color={feedback === 'dislike' ? '#CC1854' : '#000000'}
+                      />
                     </Button>
                   </Box>
                 </Grid>
-              )}
-              {/* <Grid item>
+                {settings.shareOption && (
+                  <Grid item>
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Button
+                        style={{ padding: '6px' }}
+                        className="btn-item"
+                        onClick={() => false}
+                      >
+                        <IconShare width={16} height={16} color="#808080" />
+                      </Button>
+                    </Box>
+                  </Grid>
+                )}
+                {/* <Grid item>
               <Box display={'flex'} alignItems={'center'}>
                 <Button className="btn-item">
                   <Box
@@ -500,9 +497,10 @@ function ItemResult(props: Props) {
                 </Button>
               </Box>
             </Grid> */}
-            </Grid>
-          </Box>
-        )}
+              </Grid>
+            </Box>
+          )}
+        </div>
       </Box>
     </Box>
   );

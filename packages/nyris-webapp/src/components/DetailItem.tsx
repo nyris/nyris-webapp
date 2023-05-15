@@ -35,12 +35,14 @@ function DetailItem(props: Props) {
     handlerFeedback,
   } = props;
   const [collapDescription, setCollapDescription] = useState(false);
-  const { title, sku, main_offer_link, product_link, brand } = dataItem;
+  const { sku } = dataItem;
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const [feedback, setFeedback] = useState('none');
   const [urlImage, setUrlImage] = useState<string>('');
+  const brand = dataItem[settings.field.productTag];
+
   useEffect(() => {
     if (dataItem) {
       checkDataItemResult(dataItem);
@@ -145,34 +147,35 @@ function DetailItem(props: Props) {
                 <Typography className="text-f13 fw-500 max-line-1">
                   {settings.itemIdLabel || 'SKU'}: {sku}
                 </Typography>
-                {dataItem.keyword_1 && (
+                {dataItem[settings.field.manufacturerNumber] && (
                   <Typography
                     className="text-f13 fw-500 max-line-1"
-                    style={{ marginTop: '8px' }}
+                    style={{ marginTop: '12px' }}
                   >
-                    {t('Manufacturer Number')}: {dataItem.keyword_1}
+                    {t('Manufacturer Number')}:{' '}
+                    {dataItem[settings.field.manufacturerNumber]}
                   </Typography>
                 )}
                 {settings.warehouseVariant && (
                   <Typography
                     className="text-f13 max-line-1 fw-500"
                     style={{
-                      marginTop: 10,
+                      marginTop: 12,
                       display: 'inline-block',
                     }}
                   >
                     <span style={{ marginRight: 3 }}>
-                      {dataItem.custom_id_key_3}:
+                      {dataItem[settings.field.warehouseStock]}:
                     </span>
                     <span
                       style={{
-                        color: dataItem.custom_id_value_3
+                        color: dataItem[settings.field.warehouseStockValue]
                           ? '#00C070'
                           : '#c54545',
                         fontWeight: 600,
                       }}
                     >
-                      {dataItem.custom_id_value_3 || 0}
+                      {dataItem[settings.field.warehouseStockValue] || 0}
                     </span>
                   </Typography>
                 )}
@@ -183,7 +186,7 @@ function DetailItem(props: Props) {
                       backgroundColor: `${settings.theme?.secondaryColor}26`,
                       width: 'fit-content',
                       padding: '3px 5px',
-                      marginTop: 8,
+                      marginTop: 12,
                     }}
                   >
                     <Typography
@@ -205,18 +208,18 @@ function DetailItem(props: Props) {
                         : 'text-f22 fw-600 text-dark'
                     }
                     style={{
-                      margin: '8px 0px 0 0px',
+                      marginTop: '12px',
                       display: 'inline-block',
                       maxWidth: '100%',
                       wordWrap: 'break-word',
                     }}
                   >
-                    {title}
+                    {dataItem[settings.field.productName]}
                   </Typography>
                 )}
               </Grid>
               <Grid item xs={12}>
-                {dataItem?.keyword && (
+                {dataItem[settings.field.productDetails] && (
                   <Box className="w-100">
                     <Button
                       className="w-100"
@@ -227,7 +230,7 @@ function DetailItem(props: Props) {
                         fontSize: 14,
                         textTransform: 'initial',
                         paddingLeft: 5,
-                        marginTop: 5,
+                        marginTop: 12,
                       }}
                       onClick={() => setCollapDescription(e => !e)}
                     >
@@ -244,7 +247,7 @@ function DetailItem(props: Props) {
                     </Button>
                     <Collapse in={collapDescription}>
                       <Typography style={{ fontSize: 14, paddingTop: 5 }}>
-                        {dataItem?.keyword}
+                        {dataItem[settings.field.productDetails]}
                       </Typography>
                     </Collapse>
                   </Box>
@@ -256,11 +259,11 @@ function DetailItem(props: Props) {
                       // marginBottom: 25,
                       boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                       borderRadius: 4,
+                      marginTop: 12,
                     }}
                     display={'flex'}
                     justifyContent={'space-between'}
                     alignItems={'center'}
-                    mt={2}
                     className="btn-detail-item"
                   >
                     <Button
@@ -273,7 +276,7 @@ function DetailItem(props: Props) {
                       }}
                       onClick={() =>
                         window.open(
-                          `${product_link || main_offer_link}`,
+                          `${dataItem[settings.field.ctaLinkField]}`,
                           '_blank',
                         )
                       }
@@ -289,7 +292,7 @@ function DetailItem(props: Props) {
                         }}
                       >
                         {settings.warehouseVariant
-                          ? title
+                          ? dataItem[settings.field.productName]
                           : settings.productCtaText || 'MORE INFO'}
                       </Typography>
                       <img
@@ -308,8 +311,7 @@ function DetailItem(props: Props) {
             <Box
               display="flex"
               justifyContent={'space-between'}
-              mt={2}
-              style={{ color: '#2B2C46' }}
+              style={{ color: '#2B2C46', marginTop: 12 }}
               gridGap={20}
             >
               <Box
@@ -321,10 +323,10 @@ function DetailItem(props: Props) {
                 }}
               >
                 <div style={{ fontSize: 15, fontWeight: 500 }}>
-                  {dataItem.custom_id_key_2}
+                  {dataItem[settings.field.warehouseNumber]}
                 </div>
                 <div style={{ fontSize: 17, fontWeight: 700 }}>
-                  {dataItem.custom_id_value_2 || 'N/A'}
+                  {dataItem[settings.field.warehouseNumberValue] || 'N/A'}
                 </div>
               </Box>
               <Box
@@ -336,10 +338,10 @@ function DetailItem(props: Props) {
                 }}
               >
                 <div style={{ fontSize: 15, fontWeight: 500 }}>
-                  {dataItem.custom_id_key_1}
+                  {dataItem[settings.field.warehouseShelfNumber]}
                 </div>
                 <div style={{ fontSize: 17, fontWeight: 700 }}>
-                  {dataItem.custom_id_value_1 || 'N/A'}
+                  {dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'}
                 </div>
               </Box>
             </Box>

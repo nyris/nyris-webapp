@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## 0.3.30 - 2023-05-15
 
+### Added
+
+- Added new crop box UI
+- Added field mappings
 ## 0.3.29 - 2023-04-29
 
 ### Fixed
