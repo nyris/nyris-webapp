@@ -299,7 +299,7 @@ function ItemResult(props: Props) {
               placement="top"
               arrow={true}
               disableHoverListener={
-                dataItem[settings.field.productName].length < 35 ||
+                dataItem[settings.field.productName]?.length < 35 ||
                 !settings.warehouseVariant
               }
             >

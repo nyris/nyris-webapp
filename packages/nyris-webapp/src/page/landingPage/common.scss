@@ -1025,7 +1025,7 @@ button {
       align-items: center;
       max-width: 320px;
       .box-preview {
-        padding: 30px;
+        padding-top: 32px;
         width: 100%;
         // border: 2px dashed #55566b;
         display: flex;
@@ -1034,6 +1034,10 @@ button {
         height: 100%;
         position: relative;
         // transition: ease-in-out 0.5s;
+        @media only screen and (max-width: 776px) {
+          padding-bottom: 32px;
+
+        }
         .preview-item {
           // height: 100%;
           display: flex;
@@ -1072,6 +1076,7 @@ button {
         display: flex;
         flex-wrap: wrap;
         gap: 24px;
+        padding-left: 2px;
         .wrap-main-item-result {
           display: flex;
           flex-direction: column;
@@ -1103,7 +1108,7 @@ button {
   }
 
   .box-notify {
-    height: 40px;
+    height: 50px;
     background: #f3f3f5;
     border-top: 1px solid #e9e9ec;
     .select-choose-page {

@@ -198,11 +198,14 @@ const Preview = ({
 
     let { x: newX, y: newY } = evt.target.getAbsolutePosition();
     let { width: elemWidth, height: elemHeight } = evt.target.getSize();
+    const modifiedX = newX + (elem !== "rect" ? gripPadding : 0);
+    const modifiedY = newY + (elem !== "rect" ? gripPadding : 0);
+
     const newRect = calcNewRect(
       { x1, x2, y1, y2 },
       elem,
-      newX,
-      newY,
+      modifiedX,
+      modifiedY,
       elemWidth,
       elemHeight
     );
@@ -212,6 +215,7 @@ const Preview = ({
       y1: newRect.y1 / height,
       y2: newRect.y2 / height,
     };
+
     notifySelection(newState);
   };
 
@@ -268,6 +272,7 @@ const Preview = ({
   });
 
   let gripSize = 20;
+  let gripPadding = gripSize / 2;
   let darkOpacity = 0.3;
 
   return (
@@ -353,7 +358,7 @@ const Preview = ({
           data="M2 18V10C2 5.58172 5.58172 2 10 2H18"
           stroke={"white"}
           strokeWidth={5}
-          strokeLinecap="round"
+          lineCap="round"
           opacity={1}
           x={x1 - 3}
           y={y1 - 3}
@@ -369,17 +374,17 @@ const Preview = ({
           onMouseOver={() => setState({ tlHover: true })}
           onMouseOut={() => setState({ tlHover: false })}
           opacity={1}
-          width={gripSize}
-          height={gripSize}
-          x={x1}
-          y={y1}
+          width={gripSize + gripPadding}
+          height={gripSize + gripPadding}
+          x={x1 - gripPadding}
+          y={y1 - gripPadding}
         />
         {/* top right */}
         <Path
           data="M2 2L10 2C14.4183 2 18 5.58172 18 10L18 18"
           stroke={"white"}
           strokeWidth={5}
-          strokeLinecap="round"
+          lineCap="round"
           opacity={1}
           x={x2 + 3}
           y={y1 - 3}
@@ -396,18 +401,18 @@ const Preview = ({
           onMouseOver={() => setState({ trHover: true })}
           onMouseOut={() => setState({ trHover: false })}
           opacity={1}
-          width={gripSize}
-          height={gripSize}
-          x={x2}
-          y={y1}
-          offsetX={gripSize}
+          width={gripSize + gripPadding}
+          height={gripSize + gripPadding}
+          x={x2 - gripPadding}
+          y={y1 - gripPadding}
+          offsetX={gripSize - gripPadding}
         />
         {/* bottom left */}
         <Path
           data="M18 18L10 18C5.58172 18 2 14.4183 2 10L2 2"
           stroke={"white"}
           strokeWidth={5}
-          strokeLinecap="round"
+          lineCap="round"
           opacity={1}
           x={x1 - 3}
           y={y2 + 3}
@@ -424,18 +429,18 @@ const Preview = ({
           onMouseOver={() => setState({ blHover: true })}
           onMouseOut={() => setState({ blHover: false })}
           opacity={1}
-          width={gripSize}
-          height={gripSize}
-          x={x1}
-          y={y2}
-          offsetY={gripSize}
+          width={gripSize + gripPadding}
+          height={gripSize + gripPadding}
+          x={x1 - gripPadding}
+          y={y2 - gripPadding}
+          offsetY={gripSize - gripPadding}
         />
         {/* bottom right */}
         <Path
           data="M18 2L18 10C18 14.4183 14.4183 18 10 18L2 18"
           stroke={"white"}
           strokeWidth={5}
-          strokeLinecap="round"
+          lineCap="round"
           x={x2 + 3}
           y={y2 + 3}
           opacity={1}
@@ -453,12 +458,12 @@ const Preview = ({
           dragBoundFunc={handleDragBoundBr}
           onMouseOver={() => setState({ brHover: true })}
           onMouseOut={() => setState({ brHover: false })}
-          x={x2}
-          y={y2}
-          width={gripSize}
-          height={gripSize}
-          offsetY={gripSize}
-          offsetX={gripSize}
+          x={x2 - gripPadding}
+          y={y2 - gripPadding}
+          width={gripSize + gripPadding}
+          height={gripSize + gripPadding}
+          offsetY={gripSize - gripPadding}
+          offsetX={gripSize - gripPadding}
         />
       </Layer>
 

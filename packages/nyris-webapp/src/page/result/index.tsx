@@ -77,6 +77,9 @@ function ResultComponent(props: Props) {
   const [filterString, setFilterString] = useState<string>();
   const { t } = useTranslation();
   const [showAdjustInfo, setAdjustInfo] = useState(false);
+  const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
+    useState(false);
+
   const imageUploadRef = useRef(null);
 
   useEffect(() => {
@@ -89,7 +92,7 @@ function ResultComponent(props: Props) {
       setAdjustInfo(true);
       const timeout = setTimeout(() => {
         setAdjustInfo(false);
-      }, 5000);
+      }, 4000);
       imageUploadRef.current = imageThumbSearchInput;
       return () => {
         clearTimeout(timeout);
@@ -150,6 +153,15 @@ function ResultComponent(props: Props) {
       const { canvas }: any = requestImage;
       findImageByApiNyris(canvas, r).then((res: any) => {
         dispatch(updateResultChangePosition(res));
+        const highConfidence = res.results.find(
+          (data: { score: number }) => data.score >= 0.65,
+        );
+        if (!highConfidence) {
+          setShowAdjustInfoBasedOnConfidence(true);
+        }
+        setTimeout(() => {
+          setShowAdjustInfoBasedOnConfidence(false);
+        }, 4000);
       });
       return dispatch(showFeedback());
     }, 250),
@@ -376,21 +388,31 @@ function ResultComponent(props: Props) {
                               />
                             </Box>
                           </Box>
-                          {showAdjustInfo && (
+                          {(showAdjustInfoBasedOnConfidence ||
+                            showAdjustInfo) && (
                             <Box
                               className="box-title_col-left"
-                              display="flex"
                               alignItems="center"
-                              style={{ backgroundColor: '#3E36DC' }}
+                              style={{
+                                backgroundColor: '#3E36DC',
+                                display: 'flex',
+                                columnGap: '6px',
+                                padding: '5px',
+                              }}
                             >
-                              <IconInfo style={{ marginRight: 2 }} />
+                              <IconInfo />
                               <Typography
-                                style={{ fontSize: 9, color: '#fff' }}
+                                style={{
+                                  fontSize: 10,
+                                  color: '#fff',
+                                  width: '280px',
+                                }}
                               >
-                                {t(
-                                  'Adjust the search frame around your object for improved results',
-                                )}
-                                .
+                                {showAdjustInfo
+                                  ? t(
+                                      'Adjust the search frame around your object for improved results',
+                                    )
+                                  : 'Use the cropping tool for improved image accuracy and enhanced results'}
                               </Typography>
                             </Box>
                           )}
@@ -451,22 +473,32 @@ function ResultComponent(props: Props) {
                             dotColor={'#FBD914'}
                           />
                         </Box>
-                        {showAdjustInfo && (
+                        {(showAdjustInfoBasedOnConfidence ||
+                          showAdjustInfo) && (
                           <Box
                             className="box-title_col-left"
-                            display="flex"
                             alignItems="center"
                             style={{
                               backgroundColor: '#3E36DC',
-                              marginBottom: '35px',
+                              marginBottom: '25px',
+                              display: 'flex',
+                              columnGap: '6px',
+                              padding: '5px',
                             }}
                           >
-                            <IconInfo style={{ marginRight: 2 }} />
-                            <Typography style={{ fontSize: 9, color: '#fff' }}>
-                              {t(
-                                'Adjust the search frame around your object for improved results',
-                              )}
-                              .
+                            <IconInfo />
+                            <Typography
+                              style={{
+                                fontSize: 10,
+                                color: '#fff',
+                                width: '300px',
+                              }}
+                            >
+                              {showAdjustInfo
+                                ? t(
+                                    'Adjust the search frame around your object for improved results',
+                                  )
+                                : 'Use the cropping tool for improved image accuracy and enhanced results'}
                             </Typography>
                           </Box>
                         )}
