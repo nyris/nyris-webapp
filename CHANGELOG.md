@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## 0.3.31 - 2023-06-16
+
+### Added
+
+- Add padding in cropper grip
+- Info text based on score
+### Fixed
+
+- Cropper grip is not rounded
 ## 0.3.30 - 2023-05-15
 
 ### Added
