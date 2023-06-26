@@ -1,5 +1,4 @@
 import { Box, Button } from '@material-ui/core';
-import { ClearRefinements } from 'components/clear-refinements/clear-refinements';
 import { DynamicWidgetsCT } from 'components/dynamic-widgets/dynamic-widgets';
 import IconLabel from 'components/icon-label/icon-label';
 import { atom, useAtom } from 'jotai';
@@ -15,6 +14,7 @@ import { useHistory } from 'react-router-dom';
 import { useAppSelector } from 'Store/Store';
 import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
+import CloseIcon from '@material-ui/icons/Close';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -187,8 +187,8 @@ export default function ExpandablePanelComponent({
 
   return (
     <>
-      <div className="wrap-main-header-panel">
-        {!isMobile && (
+      {!isMobile && (
+        <div className="wrap-main-header-panel">
           <Box style={{ borderBottom: '1px solid #E0E0E0' }}>
             <Button
               className="text-neutral-darkest"
@@ -203,26 +203,58 @@ export default function ExpandablePanelComponent({
               />
             </Button>
           </Box>
-        )}
-      </div>
-      {isMobile && (
-        <Box className="box-top-filter" style={{ paddingBottom: 10 }}>
-          <ClearRefinements>Reset Filters</ClearRefinements>
-        </Box>
+        </div>
       )}
-      <Box className="box-center-filter">
-        <DynamicWidgetsCT enabled={dynamicWidgets}>
-          {widgetsPanels}
-        </DynamicWidgetsCT>
+      <Box>
+        {isMobile && (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              position: 'sticky',
+              top: '0px',
+              zIndex: 100,
+              background: 'white',
+              alignItems: 'center',
+              paddingTop: '10px',
+              paddingRight: '10px',
+            }}
+          >
+            <Button onClick={onToogleApplyFillter}>
+              <CloseIcon />
+            </Button>
+          </div>
+        )}
+        <Box
+          className="box-center-filter"
+          style={{
+            ...(isMobile
+              ? {
+                  paddingLeft: '24px',
+                  paddingRight: '24px',
+                  overflow: 'auto',
+                }
+              : {}),
+          }}
+        >
+          <DynamicWidgetsCT enabled={dynamicWidgets}>
+            {widgetsPanels}
+          </DynamicWidgetsCT>
+        </Box>
       </Box>
-
       {isMobile && (
-        <Box className="box-footer-filter">
+        <Box
+          style={{
+            position: 'sticky',
+            bottom: 0,
+            width: '100%',
+          }}
+        >
           <Button
             className="text-white"
             style={{
               width: '100%',
-              backgroundColor: settings.theme?.secondaryColor,
+              backgroundColor: settings.theme?.primaryColor,
               fontWeight: 700,
               fontSize: 14,
               borderRadius: 0,

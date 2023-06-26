@@ -6,6 +6,10 @@ import { NodeGroup } from "react-move";
 
 type PreviewElem = "tl" | "tr" | "bl" | "br" | "rect";
 
+interface RegionWithShow extends Region {
+  show?: boolean;
+}
+
 /** Properties of the Preview Component. */
 interface PreviewProps {
   /** A canvas to render as the image. */
@@ -13,7 +17,7 @@ interface PreviewProps {
   /** Initial selection on the image, setting this, won't send a selection change event. */
   selection: RectCoords;
   /** List of regions to display on the image */
-  regions: Region[];
+  regions: RegionWithShow[];
   /** Handler for changed selection. */
   onSelectionChange?: (r: RectCoords) => void;
   /** Maximal width of the image to display in pixels. */
@@ -265,9 +269,10 @@ const Preview = ({
     return {
       // get middle of box and map to pixels
       region,
-      key: `${x}-${y}`,
+      key: `${x}-${y}-${i}`,
       x,
       y,
+      show: region.show,
     };
   });
 
@@ -498,6 +503,7 @@ const Preview = ({
                 stroke={dotColor}
                 fill="white"
                 strokeWidth={5}
+                opacity={data.region.show}
               />
             ))}
           </Layer>

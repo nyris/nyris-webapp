@@ -18,6 +18,7 @@ import {
 import { ShareModal } from '../ShareModal';
 import { truncateString } from 'helpers/truncateString';
 import { useTranslation } from 'react-i18next';
+import { useMediaQuery } from 'react-responsive';
 
 interface Props {
   dataItem: any;
@@ -55,6 +56,7 @@ function ItemResult(props: Props) {
   const { t } = useTranslation();
   const { sku, collap } = dataItem;
   const brand = dataItem[settings.field.productTag];
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   useEffect(() => {
     if (main_image_link) {
@@ -197,7 +199,7 @@ function ItemResult(props: Props) {
           flexGrow: 1,
         }}
       >
-        <Box className="box-top" style={{ minHeight: '90px' }}>
+        <Box className="box-top">
           <Grid container justifyContent="space-between">
             <Grid item xs={12}>
               <Tooltip
@@ -281,26 +283,17 @@ function ItemResult(props: Props) {
                   </Box>
                 </Tooltip>
               )}
-              {!settings.warehouseVariant && (
-                <Typography
-                  className="text-f13 fw-600 max-line-3"
-                  style={{ color: '#1E1F31', marginTop: 12 }}
-                >
-                  {dataItem[settings.field.productName]}
-                </Typography>
-              )}
             </Grid>
           </Grid>
         </Box>
         <div>
-          {(settings.showMoreInfo || settings.warehouseVariant) && (
+          {settings.showMoreInfo && (
             <Tooltip
               title={dataItem[settings.field.productName]}
               placement="top"
               arrow={true}
               disableHoverListener={
-                dataItem[settings.field.productName]?.length < 35 ||
-                !settings.warehouseVariant
+                dataItem[settings.field.productName]?.length < 35
               }
             >
               <Box
@@ -335,27 +328,22 @@ function ItemResult(props: Props) {
                   <Typography
                     className="text-white max-line-2"
                     style={{
-                      textTransform: !settings.warehouseVariant
-                        ? 'uppercase'
-                        : 'none',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      fontWeight: !settings.warehouseVariant ? 700 : 500,
-                      fontSize: !settings.warehouseVariant ? '12px' : '11px',
+                      fontWeight: 500,
+                      fontSize: '11px',
                       letterSpacing: '0.27px',
-                      wordBreak: !settings.warehouseVariant
-                        ? 'normal'
-                        : 'break-all',
+                      wordBreak: 'break-all',
                       maxWidth: '136px',
                       paddingRight: '8px',
                     }}
                     align="left"
                   >
-                    {settings.warehouseVariant
-                      ? truncateString(dataItem[settings.field.productName], 35)
-                      : settings.productCtaText || 'MORE INFO'}
+                    {truncateString(dataItem[settings.field.productName], 35)}
                   </Typography>
-                  <img src={IconOpenLink} alt="more-info" width={20} />
+                  {!isMobile && (
+                    <img src={IconOpenLink} alt="more-info" width={20} />
+                  )}
                 </Button>
               </Box>
             </Tooltip>

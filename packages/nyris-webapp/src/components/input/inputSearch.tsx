@@ -1,9 +1,8 @@
-import { Box, Button, Tooltip, Typography } from '@material-ui/core';
+import { Box, Button, Tooltip } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 import IconCamera from 'common/assets/icons/camera.svg';
-import IconSearch from 'common/assets/icons/icon_search.svg';
 import { useQuery } from 'hooks/useQuery';
 import { debounce, isEmpty } from 'lodash';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
@@ -13,6 +12,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import { createImage, findByImage, findRegions } from 'services/image';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
+import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
 
 import {
   reset,
@@ -20,7 +20,6 @@ import {
   setRequestImage,
   setSearchResults,
   updateStatusLoading,
-  setUpdateKeyFilterDesktop,
   loadingActionResults,
   setRegions,
   setSelectedRegion,
@@ -29,7 +28,6 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import PreFilterComponent from 'components/pre-filter';
 import { RectCoords } from '@nyris/nyris-api';
-import { truncateString } from 'helpers/truncateString';
 import { useTranslation } from 'react-i18next';
 
 const SearchBox = (props: any) => {
@@ -153,16 +151,72 @@ const SearchBox = (props: any) => {
   };
 
   return (
-    <Box className="wrap-input-search">
-      <div style={{ padding: 10 }} className="box-input-search d-flex">
+    <div className="wrap-input-search-field">
+      <div className="box-input-search d-flex">
         <form noValidate action="" role="search">
           <Box className="box-inp">
+            <Tooltip
+              title={keyFilter ? keyFilter : 'Add pre-filter'}
+              placement="top"
+              arrow={true}
+              disableHoverListener={!settings.preFilterOption}
+            >
+              <Box
+                className="pre-filter-icon"
+                onClick={() =>
+                  settings.preFilterOption
+                    ? setToggleModalFilterDesktop(true)
+                    : false
+                }
+              >
+                {settings.preFilterOption && (
+                  <div
+                    className="icon-hover"
+                    style={{
+                      ...(keyFilter
+                        ? {
+                            backgroundColor: `${settings.theme?.secondaryColor}26`,
+                          }
+                        : {}),
+                    }}
+                  >
+                    <IconFilter color="black" />
+                  </div>
+                )}
+                {!settings.preFilterOption && (
+                  <IconSearch width={16} height={16} />
+                )}
+                {keyFilter && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '6px',
+                      left: '31px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      background: 'white',
+                      width: '10px',
+                      height: '10px',
+                      borderRadius: '100%',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '8px',
+                        height: '8px',
+                        background: settings.theme?.secondaryColor,
+                        borderRadius: '100%',
+                      }}
+                    ></div>
+                  </div>
+                )}
+              </Box>
+            </Tooltip>
             <Box
               style={{
                 height: '75%',
                 order: 1,
-                paddingLeft: imageThumbSearchInput || keyFilter ? 0 : 10,
-                marginLeft: keyFilter ? 0 : 5,
               }}
             >
               {imageThumbSearchInput && (
@@ -208,60 +262,12 @@ const SearchBox = (props: any) => {
               )}
             </Box>
 
-            {!valueInput && (
-              <Box
-                className="icon-search"
-                style={
-                  imageThumbSearchInput
-                    ? { order: 2, marginLeft: 5 }
-                    : { order: 2 }
-                }
-              >
-                <img src={IconSearch} alt="" width={24} height={24} />
-              </Box>
-            )}
-
-            {keyFilter && !isMobile && (
-              <Box
-                className="box-key-filter"
-                style={{
-                  order: 0,
-                  marginRight: 5,
-                  border: `2px solid ${settings.theme?.secondaryColor}c7`,
-                }}
-              >
-                <Tooltip
-                  title={keyFilter}
-                  placement="top"
-                  arrow={true}
-                  disableHoverListener={keyFilter.length < 16}
-                >
-                  <Typography>{truncateString(keyFilter, 15)}</Typography>
-                </Tooltip>
-
-                <Tooltip title="Remove pre-filter" placement="top" arrow={true}>
-                  <Button
-                    onClick={() => dispatch(setUpdateKeyFilterDesktop(''))}
-                    style={{ padding: '6px 2px' }}
-                  >
-                    <CloseIcon
-                      style={{
-                        fontSize: 20,
-                        color: settings.theme?.secondaryColor,
-                      }}
-                    />
-                  </Button>
-                </Tooltip>
-              </Box>
-            )}
-
             <input
               style={{
                 border: '0px',
                 width: '100%',
                 fontSize: 14,
                 color: '#2B2C46',
-                fontStyle: 'italic',
               }}
               className="input-search"
               placeholder={t('Search')}
@@ -297,26 +303,6 @@ const SearchBox = (props: any) => {
           )}
           {!isMobile ? (
             <div className="wrap-box-input-mobile d-flex">
-              {settings.preFilterOption && (
-                <Tooltip
-                  title="Add or change pre-filter"
-                  placement="top"
-                  arrow={true}
-                  style={{ backgroundColor: '#000000' }}
-                >
-                  <Button
-                    onClick={() => setToggleModalFilterDesktop(true)}
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: '100%',
-                      marginRight: 10,
-                    }}
-                  >
-                    <IconFilter />
-                  </Button>
-                </Tooltip>
-              )}
               <input
                 accept="image/*"
                 id="icon-button-file"
@@ -362,20 +348,19 @@ const SearchBox = (props: any) => {
           )}
         </form>
       </div>
-
       {settings.preFilterOption && (
         <DefaultModal
           openModal={isOpenModalFilterDesktop}
           handleClose={() => setToggleModalFilterDesktop(false)}
-          classNameModal="wrap-filter-destop"
-          classNameComponentChild="bg-white box-filter-destop"
+          classNameModal="wrap-filter-desktop"
+          classNameComponentChild="bg-white box-filter-desktop"
         >
           <PreFilterComponent
             handleClose={() => setToggleModalFilterDesktop(false)}
           />
         </DefaultModal>
       )}
-    </Box>
+    </div>
   );
 };
 

@@ -23,7 +23,6 @@ export interface Field {
 }
 
 export interface AppSettings extends NyrisAPISettings {
-  exampleImages: string[];
   preview: boolean;
   cadSearch?: boolean;
   noImageUrl?: string;
@@ -34,6 +33,7 @@ export interface AppSettings extends NyrisAPISettings {
   productCtaText?: string;
   appTitle?: string;
   refinements?: any;
+  showGroup?: boolean;
   preFilterOption?: boolean;
   warehouseVariant?: boolean;
   preFilterTitle?: string;

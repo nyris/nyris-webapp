@@ -20,7 +20,7 @@ interface Props {
   numberResult?: number;
   handlerCloseModal?: () => void;
   dataItem?: any;
-  onHandlerModalShare?: () => void;
+  onHandlerModalShare: () => void;
   onSearchImage?: any;
   moreInfoText?: string;
   handlerFeedback: any;
@@ -200,25 +200,54 @@ function DetailItem(props: Props) {
                     </Typography>
                   </Box>
                 )}
-                {!settings.warehouseVariant && (
-                  <Typography
-                    className={
-                      isMobile
-                        ? 'fw-600 text-dark'
-                        : 'text-f22 fw-600 text-dark'
-                    }
-                    style={{
-                      marginTop: '12px',
-                      display: 'inline-block',
-                      maxWidth: '100%',
-                      wordWrap: 'break-word',
-                    }}
-                  >
-                    {dataItem[settings.field.productName]}
-                  </Typography>
-                )}
               </Grid>
               <Grid item xs={12}>
+                <Box
+                  style={{
+                    background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
+                    // marginBottom: 25,
+                    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                    borderRadius: 4,
+                    marginTop: 12,
+                  }}
+                  display={'flex'}
+                  justifyContent={'space-between'}
+                  alignItems={'center'}
+                  className="btn-detail-item"
+                >
+                  <Button
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      padding: '0px 12px',
+                      minHeight: 64,
+                    }}
+                    onClick={() =>
+                      window.open(
+                        `${dataItem[settings.field.ctaLinkField]}`,
+                        '_blank',
+                      )
+                    }
+                  >
+                    <Typography
+                      className="text-f18 fw-700 text-white max-line-2"
+                      align="left"
+                      style={{
+                        letterSpacing: '0.55px',
+                        maxWidth: '300px',
+                        paddingRight: '4px',
+                      }}
+                    >
+                      {dataItem[settings.field.productName]}
+                    </Typography>
+                    <img
+                      src={IconOpenLink}
+                      alt=""
+                      style={{ minWidth: 23, marginLeft: 5 }}
+                    />
+                  </Button>
+                </Box>
                 {dataItem[settings.field.productDetails] && (
                   <Box className="w-100">
                     <Button
@@ -250,57 +279,6 @@ function DetailItem(props: Props) {
                         {dataItem[settings.field.productDetails]}
                       </Typography>
                     </Collapse>
-                  </Box>
-                )}
-                {(settings.showMoreInfo || settings.warehouseVariant) && (
-                  <Box
-                    style={{
-                      background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
-                      // marginBottom: 25,
-                      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                      borderRadius: 4,
-                      marginTop: 12,
-                    }}
-                    display={'flex'}
-                    justifyContent={'space-between'}
-                    alignItems={'center'}
-                    className="btn-detail-item"
-                  >
-                    <Button
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                        padding: '0px 12px',
-                        minHeight: !settings.warehouseVariant ? 48 : 64,
-                      }}
-                      onClick={() =>
-                        window.open(
-                          `${dataItem[settings.field.ctaLinkField]}`,
-                          '_blank',
-                        )
-                      }
-                    >
-                      <Typography
-                        className="text-f18 fw-700 text-white max-line-2"
-                        align="left"
-                        style={{
-                          textTransform: !settings.warehouseVariant
-                            ? 'uppercase'
-                            : 'none',
-                          letterSpacing: '0.55px',
-                        }}
-                      >
-                        {settings.warehouseVariant
-                          ? dataItem[settings.field.productName]
-                          : settings.productCtaText || 'MORE INFO'}
-                      </Typography>
-                      <img
-                        src={IconOpenLink}
-                        alt=""
-                        style={{ width: 23, marginLeft: 5 }}
-                      />
-                    </Button>
                   </Box>
                 )}
               </Grid>
@@ -397,7 +375,7 @@ function DetailItem(props: Props) {
                   <Grid item>
                     <Box display={'flex'} alignItems={'center'}>
                       <Button className="btn-item" onClick={() => false}>
-                        <IconShare width={30} height={30} color="gray" />
+                        <IconShare width={30} height={30} color="#000000" />
                       </Button>
                     </Box>
                   </Grid>

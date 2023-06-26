@@ -281,7 +281,7 @@ function ResultComponent(props: Props) {
 
   const filteredRegions = useMemo(
     () =>
-      regions.filter(
+      regions.map(
         (region: {
           normalizedRect: { x1: any; x2: any; y1: any; y2: any };
         }) => {
@@ -291,7 +291,7 @@ function ResultComponent(props: Props) {
             region.normalizedRect.y1 === imageSelection.y1 &&
             region.normalizedRect.y2 === imageSelection.y2
           ) {
-            return false;
+            return { ...region, show: false };
           }
           if (
             imageSelection.x1 === 0 &&
@@ -299,10 +299,10 @@ function ResultComponent(props: Props) {
             imageSelection.y1 === 0 &&
             imageSelection.y2 === 1
           ) {
-            return false;
+            return { ...region, show: false };
           }
 
-          return true;
+          return { ...region, show: true };
         },
       ),
     [imageSelection, regions],
@@ -371,7 +371,10 @@ function ResultComponent(props: Props) {
                           <Box className="box-preview">
                             <Box
                               className="preview-item"
-                              style={{ backgroundColor: 'white' }}
+                              style={{
+                                backgroundColor: 'white',
+                                paddingTop: '40px',
+                              }}
                             >
                               <Preview
                                 key={requestImage?.id}
@@ -400,7 +403,7 @@ function ResultComponent(props: Props) {
                                 padding: '5px',
                               }}
                             >
-                              <IconInfo />
+                              <IconInfo color="white" />
                               <Typography
                                 style={{
                                   fontSize: 10,
@@ -434,17 +437,15 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  paddingTop:
-                    keyFilter && isMobile
-                      ? '105px'
-                      : isMobile
-                      ? '60px'
-                      : '40px',
+                  paddingTop: isMobile ? '16px' : '40px',
                 }}
               >
-                <Box className="wrap-box-refinements">
-                  <CurrentRefinements statusSwitchButton={true} />
-                </Box>
+                {!isMobile && (
+                  <Box className="wrap-box-refinements">
+                    <CurrentRefinements statusSwitchButton={true} />
+                  </Box>
+                )}
+
                 {isMobile && settings.preview && requestImage && (
                   <Box
                     className="col-left"
@@ -468,8 +469,8 @@ function ResultComponent(props: Props) {
                             image={requestImage?.canvas}
                             selection={imageSelection || DEFAULT_REGION}
                             regions={filteredRegions}
-                            maxWidth={320}
-                            maxHeight={320}
+                            maxWidth={240}
+                            maxHeight={240}
                             dotColor={'#FBD914'}
                           />
                         </Box>
@@ -486,7 +487,7 @@ function ResultComponent(props: Props) {
                               padding: '5px',
                             }}
                           >
-                            <IconInfo />
+                            <IconInfo color="white" />
                             <Typography
                               style={{
                                 fontSize: 10,

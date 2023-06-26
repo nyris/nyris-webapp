@@ -9,7 +9,6 @@ export interface SearchServiceSettings {
   regionProposalUrl?: string;
   responseFormat?: string;
   feedbackUrl?: string;
-  exampleImages: string[];
   noImageUrl?: string;
   preview: boolean;
   regions: boolean;
