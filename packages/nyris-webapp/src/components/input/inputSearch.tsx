@@ -150,7 +150,6 @@ const SearchBox = (props: any) => {
           quality: 1.0,
         })
           .then(function (resultBlob) {
-            console.log({ resultBlob });
             handleVisualSearch(resultBlob as Blob);
           })
           .catch(function (error) {
