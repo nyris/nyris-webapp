@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## 0.3.32 - 2023-06-27
+
+### Fixed
+
+- HEIC formatted image is not working
 ## 0.3.31 - 2023-06-16
 
 ### Added
