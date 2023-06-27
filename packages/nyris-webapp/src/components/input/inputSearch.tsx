@@ -163,6 +163,9 @@ const SearchBox = (props: any) => {
             >
               <Box
                 className="pre-filter-icon"
+                style={{
+                  cursor: settings.preFilterOption ? 'pointer' : 'default',
+                }}
                 onClick={() =>
                   settings.preFilterOption
                     ? setToggleModalFilterDesktop(true)

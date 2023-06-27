@@ -459,9 +459,9 @@ function ItemResult(props: Props) {
                       <Button
                         style={{ padding: '6px' }}
                         className="btn-item"
-                        onClick={() => false}
+                        onClick={() => setOpenModalShare(true)}
                       >
-                        <IconShare width={16} height={16} color="#808080" />
+                        <IconShare width={16} height={16} color="#000000" />
                       </Button>
                     </Box>
                   </Grid>

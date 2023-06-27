@@ -31,7 +31,7 @@ function DetailItem(props: Props) {
     handlerCloseModal,
     dataItem,
     onSearchImage,
-    // onHandlerModalShare,
+    onHandlerModalShare,
     handlerFeedback,
   } = props;
   const [collapDescription, setCollapDescription] = useState(false);
@@ -374,7 +374,10 @@ function DetailItem(props: Props) {
                 {settings.shareOption && (
                   <Grid item>
                     <Box display={'flex'} alignItems={'center'}>
-                      <Button className="btn-item" onClick={() => false}>
+                      <Button
+                        className="btn-item"
+                        onClick={() => onHandlerModalShare()}
+                      >
                         <IconShare width={30} height={30} color="#000000" />
                       </Button>
                     </Box>
