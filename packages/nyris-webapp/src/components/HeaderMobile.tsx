@@ -102,6 +102,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       }
     });
     return isApplied;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valueTextSearch?.refinementList]);
 
   const onChangeText = (event: any) => {
