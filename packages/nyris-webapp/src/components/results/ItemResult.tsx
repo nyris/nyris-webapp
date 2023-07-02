@@ -151,7 +151,7 @@ function ItemResult(props: Props) {
               style={{ width: '100%', height: '100%', padding: 0, zIndex: 9 }}
               onClick={() => handlerToggleModal(dataItem)}
             >
-              <Expand color={settings.theme?.secondaryColor} />
+              <Expand color={'#AAABB5'} />
             </Button>
           </Box>
         )}

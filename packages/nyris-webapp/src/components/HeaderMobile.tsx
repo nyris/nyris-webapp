@@ -10,7 +10,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { connectSearchBox } from 'react-instantsearch-dom';
+import { connectSearchBox, connectStateResults } from 'react-instantsearch-dom';
 import { NavLink, useHistory } from 'react-router-dom';
 import {
   reset,
@@ -28,6 +28,7 @@ import { useQuery } from 'hooks/useQuery';
 interface Props {
   onToggleFilterMobile?: any;
   refine?: any;
+  allSearchResults?: any;
 }
 
 function HeaderMobileComponent(props: Props): JSX.Element {
@@ -115,6 +116,13 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       dispatch(updateValueTextSearchMobile(event.currentTarget.value));
     }
   };
+  const disablePostFilter = useMemo(() => {
+    return settings.postFilterOption && props.allSearchResults?.hits.length > 0
+      ? false
+      : true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.postFilterOption, props.allSearchResults?.hits]);
+
   return (
     <div style={{ width: '100%', background: '#fafafa' }}>
       {history.location?.pathname !== '/result' && (
@@ -276,6 +284,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
             }}
             onClick={() => {
+              if (disablePostFilter) return;
               onToggleFilterMobile();
               dispatch(setPreFilterDropdown(false));
             }}
@@ -284,7 +293,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               style={{
                 display: 'flex',
                 background: `${
-                  isPostFilterApplied ? settings.theme?.primaryColor : '#E9E9EC'
+                  disablePostFilter
+                    ? '#F3F3F5'
+                    : isPostFilterApplied
+                    ? settings.theme?.primaryColor
+                    : '#E9E9EC'
                 }`,
                 borderRadius: '40px',
                 width: '40px',
@@ -294,11 +307,17 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               }}
             >
               <FilterIcon
-                color={`${isPostFilterApplied ? 'white' : '#2B2C46'}`}
+                color={`${
+                  disablePostFilter
+                    ? '#E0E0E0'
+                    : isPostFilterApplied
+                    ? 'white'
+                    : '#2B2C46'
+                }`}
               />
             </div>
 
-            {isPostFilterApplied && (
+            {isPostFilterApplied && !disablePostFilter && (
               <div
                 style={{
                   position: 'absolute',
@@ -330,7 +349,9 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   );
 }
 
-const HeaderMobile = connectSearchBox<any>(memo(HeaderMobileComponent));
+const HeaderMobile = connectSearchBox<any>(
+  memo(connectStateResults<Props>(HeaderMobileComponent)),
+);
 export default HeaderMobile;
 
 const INPUT_ID = 'mobile-input-search';

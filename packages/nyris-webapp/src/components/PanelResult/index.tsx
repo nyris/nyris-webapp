@@ -2,7 +2,6 @@ import { Box, Button } from '@material-ui/core';
 import { DynamicWidgetsCT } from 'components/dynamic-widgets/dynamic-widgets';
 import IconLabel from 'components/icon-label/icon-label';
 import { atom, useAtom } from 'jotai';
-import { orderBy } from 'lodash';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import type {
   CurrentRefinementsProvided,
@@ -92,7 +91,8 @@ function WidgetPanel({ children, onToggle, panelId, ...props }: any) {
 
 export default function ExpandablePanelComponent({
   dynamicWidgets = true,
-  onToogleApplyFillter,
+  onApply,
+  disjunctiveFacets,
 }: any) {
   const stateGlobal = useAppSelector(state => state);
   const { settings } = stateGlobal;
@@ -103,6 +103,7 @@ export default function ExpandablePanelComponent({
   );
   const history = useHistory();
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+
   // Set initial panels value
   useEffect(() => {
     setPanels(prevPanels => ({
@@ -142,7 +143,7 @@ export default function ExpandablePanelComponent({
               noResults: 'No results',
               placeholder: '',
             }}
-            transformItems={(items: any) => orderBy(items, 'label', 'asc')}
+            sortBy={['isRefined:desc', 'name:asc']}
           />
         );
       }),
@@ -179,7 +180,7 @@ export default function ExpandablePanelComponent({
   }, [setRefinementsPanelsExpanded]);
 
   const handlerApplyfillter = () => {
-    onToogleApplyFillter();
+    onApply();
     if (history.location.pathname !== '/result') {
       history.push('/result');
     }
@@ -220,7 +221,7 @@ export default function ExpandablePanelComponent({
               paddingRight: '10px',
             }}
           >
-            <Button onClick={onToogleApplyFillter}>
+            <Button onClick={onApply}>
               <CloseIcon />
             </Button>
           </div>

@@ -92,7 +92,7 @@ function ResultComponent(props: Props) {
       setAdjustInfo(true);
       const timeout = setTimeout(() => {
         setAdjustInfo(false);
-      }, 4000);
+      }, 2000);
       imageUploadRef.current = imageThumbSearchInput;
       return () => {
         clearTimeout(timeout);
@@ -161,7 +161,7 @@ function ResultComponent(props: Props) {
         }
         setTimeout(() => {
           setShowAdjustInfoBasedOnConfidence(false);
-        }, 4000);
+        }, 2000);
       });
       return dispatch(showFeedback());
     }, 250),
@@ -308,6 +308,14 @@ function ResultComponent(props: Props) {
     [imageSelection, regions],
   );
 
+  const showPostFilter = useMemo(() => {
+    return settings.postFilterOption && props.allSearchResults?.hits.length > 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.postFilterOption, props.allSearchResults?.hits]);
+
+  const showSidePanel = useMemo(() => {
+    return requestImage || (settings.postFilterOption && showPostFilter);
+  }, [showPostFilter, settings.postFilterOption, requestImage]);
   return (
     <div
       className={`wrap-main-result loading`}
@@ -336,8 +344,7 @@ function ResultComponent(props: Props) {
               </Box>
               {!isMobile && (
                 <>
-                  {((!settings.postFilterOption && requestImage) ||
-                    settings.postFilterOption) && (
+                  {showSidePanel && (
                     <Box
                       className={`wrap-main-col-left ${
                         toggleColLeft ? 'toggle' : ''
@@ -374,21 +381,32 @@ function ResultComponent(props: Props) {
                               style={{
                                 backgroundColor: 'white',
                                 paddingTop: '40px',
+                                width: '100%',
                               }}
                             >
-                              <Preview
-                                key={requestImage?.id}
-                                onSelectionChange={(r: RectCoords) => {
-                                  setImageSelection(r);
-                                  debouncedOnImageSelectionChange(r);
+                              <div
+                                style={{
+                                  backgroundColor:
+                                    settings?.theme?.primaryColor,
+                                  width: '100%',
                                 }}
-                                image={requestImage?.canvas}
-                                selection={imageSelection || DEFAULT_REGION}
-                                regions={filteredRegions}
-                                maxWidth={320}
-                                maxHeight={320}
-                                dotColor={'#FBD914'}
-                              />
+                              >
+                                <Preview
+                                  key={requestImage?.id}
+                                  onSelectionChange={(r: RectCoords) => {
+                                    setImageSelection(r);
+                                    debouncedOnImageSelectionChange(r);
+                                  }}
+                                  image={requestImage?.canvas}
+                                  selection={imageSelection || DEFAULT_REGION}
+                                  regions={filteredRegions}
+                                  maxWidth={320}
+                                  maxHeight={320}
+                                  dotColor={'#FBD914'}
+                                  minCropWidth={60}
+                                  minCropHeight={60}
+                                />
+                              </div>
                             </Box>
                           </Box>
                           {(showAdjustInfoBasedOnConfidence ||
@@ -408,23 +426,23 @@ function ResultComponent(props: Props) {
                                 style={{
                                   fontSize: 10,
                                   color: '#fff',
-                                  width: '280px',
                                 }}
                               >
                                 {showAdjustInfo
-                                  ? t(
-                                      'Adjust the search frame around your object for improved results',
-                                    )
-                                  : 'Use the cropping tool for improved image accuracy and enhanced results'}
+                                  ? t('crop the image for better results')
+                                  : 'crop the image for better results'}
                               </Typography>
                             </Box>
                           )}
                         </Box>
                       )}
-                      {/* TODO: Filter list Choose */}
-                      {settings.postFilterOption && (
+                      {showPostFilter && (
                         <Box className="col-left__bottom">
-                          <ExpandablePanelComponent />
+                          <ExpandablePanelComponent
+                            disjunctiveFacets={
+                              props.allSearchResults.disjunctiveFacets
+                            }
+                          />
                         </Box>
                       )}
                     </Box>
@@ -472,6 +490,8 @@ function ResultComponent(props: Props) {
                             maxWidth={240}
                             maxHeight={240}
                             dotColor={'#FBD914'}
+                            minCropWidth={60}
+                            minCropHeight={60}
                           />
                         </Box>
                         {(showAdjustInfoBasedOnConfidence ||
@@ -481,10 +501,10 @@ function ResultComponent(props: Props) {
                             alignItems="center"
                             style={{
                               backgroundColor: '#3E36DC',
-                              marginBottom: '25px',
                               display: 'flex',
                               columnGap: '6px',
                               padding: '5px',
+                              width: 'fit-content',
                             }}
                           >
                             <IconInfo color="white" />
@@ -492,14 +512,11 @@ function ResultComponent(props: Props) {
                               style={{
                                 fontSize: 10,
                                 color: '#fff',
-                                width: '300px',
                               }}
                             >
                               {showAdjustInfo
-                                ? t(
-                                    'Adjust the search frame around your object for improved results',
-                                  )
-                                : 'Use the cropping tool for improved image accuracy and enhanced results'}
+                                ? t('crop the image for better results')
+                                : 'crop the image for better results'}
                             </Typography>
                           </Box>
                         )}

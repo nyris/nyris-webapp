@@ -20,11 +20,11 @@ import './common.scss';
 import FooterMobile from './FooterMobile';
 import HeaderMobile from './HeaderMobile';
 import Header from './Header';
-import ExpandablePanelComponent from './PanelResult';
 import PreFilterComponent from 'components/pre-filter';
 import { createSessionByApi } from 'services/session';
 import { isUndefined } from 'lodash';
 import ImageCaptureHelpModal from './ImageCaptureHelpModal';
+import MobilePostFilter from './MobilePostFilter';
 
 function Layout({ children }: ReactNode): JSX.Element {
   const dispatch = useAppDispatch();
@@ -157,8 +157,8 @@ function Layout({ children }: ReactNode): JSX.Element {
             position={'absolute'}
             style={{ top: isOpenFilter ? '0px' : '', height: '100%' }}
           >
-            <ExpandablePanelComponent
-              onToogleApplyFillter={() => {
+            <MobilePostFilter
+              onApply={() => {
                 setOpenFilter(!isOpenFilter);
               }}
             />
