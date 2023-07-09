@@ -386,8 +386,7 @@ function ResultComponent(props: Props) {
                             >
                               <div
                                 style={{
-                                  backgroundColor:
-                                    settings?.theme?.primaryColor,
+                                  backgroundColor: '#AAABB5',
                                   width: '100%',
                                 }}
                               >
@@ -468,7 +467,7 @@ function ResultComponent(props: Props) {
                   <Box
                     className="col-left"
                     style={{
-                      backgroundColor: settings?.theme?.primaryColor,
+                      backgroundColor: '#AAABB5',
                       marginBottom: '15px',
                     }}
                   >

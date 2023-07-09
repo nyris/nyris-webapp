@@ -219,7 +219,7 @@ function ItemResult(props: Props) {
                   <span style={{ marginRight: 3 }}>
                     {settings.itemIdLabel || 'SKU'}:
                   </span>
-                  {truncateString(sku, 16)}
+                  {truncateString(sku, 20)}
                 </Typography>
               </Tooltip>
 

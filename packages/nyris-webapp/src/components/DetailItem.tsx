@@ -145,7 +145,7 @@ function DetailItem(props: Props) {
             <Grid container justifyContent="space-between">
               <Grid item xs={12}>
                 <Typography className="text-f13 fw-500 max-line-1">
-                  {settings.itemIdLabel || 'SKU'}: {sku}
+                  {settings.itemIdLabel || 'SKU'}: <span> {sku}</span>
                 </Typography>
                 {dataItem[settings.field.manufacturerNumber] && (
                   <Typography
