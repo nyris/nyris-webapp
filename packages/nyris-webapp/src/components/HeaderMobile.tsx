@@ -293,11 +293,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               style={{
                 display: 'flex',
                 background: `${
-                  disablePostFilter
-                    ? '#F3F3F5'
-                    : isPostFilterApplied
-                    ? settings.theme?.primaryColor
-                    : '#E9E9EC'
+                  disablePostFilter ? '#F3F3F5' : settings.theme?.primaryColor
                 }`,
                 borderRadius: '40px',
                 width: '40px',
@@ -307,13 +303,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               }}
             >
               <FilterIcon
-                color={`${
-                  disablePostFilter
-                    ? '#E0E0E0'
-                    : isPostFilterApplied
-                    ? 'white'
-                    : '#2B2C46'
-                }`}
+                color={`${disablePostFilter ? '#E0E0E0' : 'white'}`}
               />
             </div>
 
