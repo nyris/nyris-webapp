@@ -1,6 +1,6 @@
 import { Box } from '@material-ui/core';
 import ItemResult from 'components/results/ItemResult';
-import { groupBy } from 'lodash';
+import { groupBy, uniqueId } from 'lodash';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { connectStateResults } from 'react-instantsearch-dom';
 import { useAppSelector } from 'Store/Store';
@@ -54,9 +54,13 @@ function ProductListComponent({
     let newArrayShowGroup: any = [];
     let newArrayShowItem: any = [];
 
-    const groupHits = hits.filter(
-      (hit: { group_id: string }) => hit.group_id && hit.group_id !== '',
-    );
+    const groupHits = hits.map((hit: { group_id: string }) => {
+      if (!hit.group_id) {
+        return { ...hit, group_id: uniqueId('random-group-id') };
+      }
+      return hit;
+    });
+
     const groups = groupBy(groupHits, 'group_id');
     setHitGroups(groups);
     newArrayShowGroup = Object.values(groups);
@@ -81,6 +85,7 @@ function ProductListComponent({
         newArrayShowItem.push(payload);
       }
     });
+
     return newArrayShowItem;
   };
 

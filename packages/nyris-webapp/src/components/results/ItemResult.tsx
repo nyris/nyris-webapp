@@ -2,9 +2,9 @@ import { Box, Button, Grid, Tooltip, Typography } from '@material-ui/core';
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';
 import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
-import { ReactComponent as Expand } from 'common/assets/icons/expand.svg';
 import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
 import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
+import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
 import React, { memo, useEffect, useState } from 'react';
 import NoImage from 'common/assets/images/unnamed.png';
 import { AppState } from 'types';
@@ -145,13 +145,17 @@ function ItemResult(props: Props) {
             </Button>
           </Box>
         )}
-        {!isHover && (
+        {!isHover && main_image_link && (
           <Box className="box-icon-modal">
             <Button
               style={{ width: '100%', height: '100%', padding: 0, zIndex: 9 }}
-              onClick={() => handlerToggleModal(dataItem)}
+              onClick={() => {
+                if (urlImage.length > 1) {
+                  onSearchImage(main_image_link);
+                }
+              }}
             >
-              <Expand color={'#AAABB5'} />
+              <IconSearchImage color={settings.theme?.secondaryColor} />
             </Button>
           </Box>
         )}
@@ -160,9 +164,7 @@ function ItemResult(props: Props) {
             style={{ width: '100%', height: '100%' }}
             onClick={(e: any) => {
               e.preventDefault();
-              if (urlImage.length > 1) {
-                onSearchImage(main_image_link);
-              }
+              handlerToggleModal(dataItem);
             }}
           >
             {main_image_link ? (
@@ -355,53 +357,58 @@ function ItemResult(props: Props) {
               style={{ color: '#2B2C46', marginTop: '12px' }}
               gridGap={10}
             >
-              <Box
-                style={{
-                  backgroundColor: `${settings.theme?.secondaryColor}26`,
-                  padding: '5px 10px',
-                  borderRadius: 4,
-                  width: '100%',
-                }}
-              >
-                <div style={{ fontSize: 10, fontWeight: 500 }}>
-                  {dataItem.custom_id_key_2}
-                </div>
-                <div
+              {settings.field.warehouseNumber && (
+                <Box
                   style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    backgroundColor: `${settings.theme?.secondaryColor}26`,
+                    padding: '5px 10px',
+                    borderRadius: 4,
+                    width: '100%',
                   }}
                 >
-                  {dataItem.custom_id_value_2 || 'N/A'}
-                </div>
-              </Box>
+                  <div style={{ fontSize: 10, fontWeight: 500 }}>
+                    {dataItem[settings.field.warehouseNumber]}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {dataItem[settings.field.warehouseNumberValue] || 'N/A'}
+                  </div>
+                </Box>
+              )}
 
-              <Box
-                style={{
-                  backgroundColor: `${settings.theme?.secondaryColor}26`,
-                  padding: '5px 10px',
-                  borderRadius: 4,
-                  width: '100%',
-                }}
-              >
-                <div style={{ fontSize: 10, fontWeight: 500 }}>
-                  {dataItem.custom_id_key_1}
-                </div>
-                <div
+              {settings.field.warehouseShelfNumber && (
+                <Box
                   style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    backgroundColor: `${settings.theme?.secondaryColor}26`,
+                    padding: '5px 10px',
+                    borderRadius: 4,
+                    width: '100%',
                   }}
                 >
-                  {dataItem.custom_id_value_1 || 'N/A'}
-                </div>
-              </Box>
+                  <div style={{ fontSize: 10, fontWeight: 500 }}>
+                    {dataItem[settings.field.warehouseShelfNumber]}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {dataItem[settings.field.warehouseShelfNumberValue] ||
+                      'N/A'}
+                  </div>
+                </Box>
+              )}
             </Box>
           )}
 
@@ -466,25 +473,6 @@ function ItemResult(props: Props) {
                     </Box>
                   </Grid>
                 )}
-                {/* <Grid item>
-              <Box display={'flex'} alignItems={'center'}>
-                <Button className="btn-item">
-                  <Box
-                    className=""
-                    display={'flex'}
-                    justifyContent={'center'}
-                    alignItems={'center'}
-                  >
-                    <img
-                      src={IconShare}
-                      alt="image_item"
-                      className="icon_support"
-                      style={{ width: '1rem' }}
-                    />
-                  </Box>
-                </Button>
-              </Box>
-            </Grid> */}
               </Grid>
             </Box>
           )}
