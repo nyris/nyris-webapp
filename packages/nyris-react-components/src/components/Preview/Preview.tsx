@@ -5,7 +5,7 @@ import Konva from "konva";
 import { NodeGroup } from "react-move";
 
 type PreviewElem = "tl" | "tr" | "bl" | "br" | "rect";
-interface RegionWithShow extends Region {
+interface IRegion extends Region {
   show?: boolean;
 }
 
@@ -16,7 +16,7 @@ interface PreviewProps {
   /** Initial selection on the image, setting this, won't send a selection change event. */
   selection: RectCoords;
   /** List of regions to display on the image */
-  regions: RegionWithShow[];
+  regions: IRegion[];
   /** Handler for changed selection. */
   onSelectionChange?: (r: RectCoords) => void;
   /** Maximal width of the image to display in pixels. */
