@@ -393,6 +393,7 @@ export default class NyrisAPI {
       headers,
       responseType: "json",
     });
+
     return response.data;
   }
 }
