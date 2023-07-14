@@ -146,17 +146,15 @@ function ItemResult(props: Props) {
           </Box>
         )}
         {!isHover && main_image_link && (
-          <Box className="box-icon-modal">
-            <Button
-              style={{ width: '100%', height: '100%', padding: 0, zIndex: 9 }}
-              onClick={() => {
-                if (urlImage.length > 1) {
-                  onSearchImage(main_image_link);
-                }
-              }}
-            >
-              <IconSearchImage color={settings.theme?.secondaryColor} />
-            </Button>
+          <Box
+            className="box-icon-modal"
+            onClick={() => {
+              if (urlImage.length > 1) {
+                onSearchImage(main_image_link);
+              }
+            }}
+          >
+            <IconSearchImage width={16} height={16} color={'#AAABB5'} />
           </Box>
         )}
         <Box className="box-image">

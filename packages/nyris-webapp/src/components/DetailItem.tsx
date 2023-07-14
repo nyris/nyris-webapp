@@ -125,7 +125,7 @@ function DetailItem(props: Props) {
                 }
               }}
             >
-              <IconSearchImage color={settings.theme?.secondaryColor} />
+              <IconSearchImage color={'#AAABB5'} />
             </Button>
           )}
         </Box>
