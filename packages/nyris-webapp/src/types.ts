@@ -23,6 +23,7 @@ export interface Field {
 }
 
 export interface AppSettings extends NyrisAPISettings {
+  exampleImages?: string[]; // deprecated
   preview: boolean;
   cadSearch?: boolean;
   noImageUrl?: string;
