@@ -31,7 +31,6 @@ import PreFilterComponent from 'components/pre-filter';
 import { RectCoords } from '@nyris/nyris-api';
 import { truncateString } from 'helpers/truncateString';
 import { useTranslation } from 'react-i18next';
-import heic2any from 'heic2any';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
@@ -88,76 +87,58 @@ const SearchBox = (props: any) => {
     }, 500),
     [],
   );
-  const handleVisualSearch = async (blob: Blob) => {
-    dispatch(updateStatusLoading(true));
-    dispatch(loadingActionResults());
-    if (history.location.pathname !== '/result') {
-      history.push('/result');
-    }
-    let payload: any;
-    let filters: any[] = [];
-    let region: RectCoords | undefined;
-    dispatch(setImageSearchInput(URL.createObjectURL(blob)));
-    // @ts-ignore
-    let image = await createImage(blob);
-    dispatch(setRequestImage(image));
-    const preFilter = [
-      {
-        key: settings.visualSearchFilterKey,
-        values: [`${keyFilter}`],
-      },
-    ];
 
-    if (settings.regions) {
-      let res = await findRegions(image, settings);
-      dispatch(setRegions(res.regions));
-      region = res.selectedRegion;
-      dispatch(setSelectedRegion(region));
-    }
-
-    return findByImage({
-      image,
-      settings,
-      filters: keyFilter ? preFilter : undefined,
-      region,
-    })
-      .then((res: any) => {
-        res?.results.map((item: any) => {
-          filters.push({
-            sku: item.sku,
-            score: item.score,
-          });
-        });
-        payload = {
-          ...res,
-          filters,
-        };
-        dispatch(setSearchResults(payload));
-        dispatch(updateStatusLoading(false));
-      })
-      .catch((e: any) => {
-        console.log('error input search', e);
-        dispatch(updateStatusLoading(false));
-      });
-  };
   const { getInputProps } = useDropzone({
     onDrop: async (fs: File[]) => {
-      var file = fs[0];
-      if (file.type === 'image/heic') {
-        heic2any({
-          blob: file as Blob,
-          toType: 'image/png',
-          quality: 1.0,
-        })
-          .then(function (resultBlob) {
-            handleVisualSearch(resultBlob as Blob);
-          })
-          .catch(function (error) {
-            console.error('Error converting HEIC to PNG:', error);
-          });
-      } else {
-        handleVisualSearch(fs[0]);
+      dispatch(updateStatusLoading(true));
+      dispatch(loadingActionResults());
+      if (history.location.pathname !== '/result') {
+        history.push('/result');
       }
+      let payload: any;
+      let filters: any[] = [];
+      let region: RectCoords | undefined;
+      dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
+      let image = await createImage(fs[0]);
+      dispatch(setRequestImage(image));
+      const preFilter = [
+        {
+          key: settings.visualSearchFilterKey,
+          values: [`${keyFilter}`],
+        },
+      ];
+
+      if (settings.regions) {
+        let res = await findRegions(image, settings);
+        dispatch(setRegions(res.regions));
+        region = res.selectedRegion;
+        dispatch(setSelectedRegion(region));
+      }
+
+      return findByImage({
+        image,
+        settings,
+        filters: keyFilter ? preFilter : undefined,
+        region,
+      })
+        .then((res: any) => {
+          res?.results.map((item: any) => {
+            filters.push({
+              sku: item.sku,
+              score: item.score,
+            });
+          });
+          payload = {
+            ...res,
+            filters,
+          };
+          dispatch(setSearchResults(payload));
+          dispatch(updateStatusLoading(false));
+        })
+        .catch((e: any) => {
+          console.log('error input search', e);
+          dispatch(updateStatusLoading(false));
+        });
     },
   });
 

@@ -114,7 +114,7 @@ function DetailItem(props: Props) {
               style={{ width: '300px', height: '300px', padding: '8px' }}
             />
           )}
-          {!isMobile && dataImageCarousel.length > 0 && (
+          {dataImageCarousel.length > 0 && (
             <Button
               className="icon-style"
               onClick={() => {
@@ -314,36 +314,42 @@ function DetailItem(props: Props) {
               style={{ color: '#2B2C46', marginTop: 12 }}
               gridGap={20}
             >
-              <Box
-                style={{
-                  backgroundColor: `${settings.theme?.secondaryColor}26`,
-                  padding: '5px 10px',
-                  borderRadius: 4,
-                  width: '100%',
-                }}
-              >
-                <div style={{ fontSize: 15, fontWeight: 500 }}>
-                  {dataItem[settings.field.warehouseNumber]}
-                </div>
-                <div style={{ fontSize: 17, fontWeight: 700 }}>
-                  {dataItem[settings.field.warehouseNumberValue] || 'N/A'}
-                </div>
-              </Box>
-              <Box
-                style={{
-                  backgroundColor: `${settings.theme?.secondaryColor}26`,
-                  padding: '5px 10px',
-                  borderRadius: 4,
-                  width: '100%',
-                }}
-              >
-                <div style={{ fontSize: 15, fontWeight: 500 }}>
-                  {dataItem[settings.field.warehouseShelfNumber]}
-                </div>
-                <div style={{ fontSize: 17, fontWeight: 700 }}>
-                  {dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'}
-                </div>
-              </Box>
+              {settings.field.warehouseNumber && (
+                <Box
+                  style={{
+                    backgroundColor: `${settings.theme?.secondaryColor}26`,
+                    padding: '5px 10px',
+                    borderRadius: 4,
+                    width: '100%',
+                  }}
+                >
+                  <div style={{ fontSize: 15, fontWeight: 500 }}>
+                    {dataItem[settings.field.warehouseNumber]}
+                  </div>
+                  <div style={{ fontSize: 17, fontWeight: 700 }}>
+                    {dataItem[settings.field.warehouseNumberValue] || 'N/A'}
+                  </div>
+                </Box>
+              )}
+
+              {settings.field.warehouseShelfNumber && (
+                <Box
+                  style={{
+                    backgroundColor: `${settings.theme?.secondaryColor}26`,
+                    padding: '5px 10px',
+                    borderRadius: 4,
+                    width: '100%',
+                  }}
+                >
+                  <div style={{ fontSize: 15, fontWeight: 500 }}>
+                    {dataItem[settings.field.warehouseShelfNumber]}
+                  </div>
+                  <div style={{ fontSize: 17, fontWeight: 700 }}>
+                    {dataItem[settings.field.warehouseShelfNumberValue] ||
+                      'N/A'}
+                  </div>
+                </Box>
+              )}
             </Box>
           )}
 
