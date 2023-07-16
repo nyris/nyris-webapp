@@ -103,6 +103,7 @@ function ItemResult(props: Props) {
       dispatch(updateStatusLoading(false));
     }, 400);
   };
+
   return (
     <Box className="wrap-main-item-result">
       <DefaultModal
@@ -294,7 +295,7 @@ function ItemResult(props: Props) {
             placement="top"
             arrow={true}
             disableHoverListener={
-              dataItem[settings.field.productName]?.length < 35
+              dataItem[settings.field.productName]?.length < 45
             }
           >
             <Box
@@ -312,12 +313,15 @@ function ItemResult(props: Props) {
               alignItems={'center'}
               justifyContent={'space-between'}
             >
-              <Button
+              <Box
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   width: '100%',
                   padding: 0,
+                  cursor: dataItem[settings.field?.ctaLinkField]
+                    ? 'pointer'
+                    : 'normal',
                 }}
                 onClick={() => {
                   feedbackConversionEpic(state, indexItem, dataItem.sku);
@@ -336,17 +340,20 @@ function ItemResult(props: Props) {
                     fontSize: '11px',
                     letterSpacing: '0.27px',
                     wordBreak: 'break-all',
-                    maxWidth: '136px',
+                    maxWidth:
+                      !isMobile && dataItem[settings.field?.ctaLinkField]
+                        ? '136px'
+                        : '164x',
                     paddingRight: '8px',
                   }}
                   align="left"
                 >
-                  {truncateString(dataItem[settings.field.productName], 35)}
+                  {truncateString(dataItem[settings.field.productName], 45)}
                 </Typography>
-                {!isMobile && (
+                {!isMobile && dataItem[settings.field?.ctaLinkField] && (
                   <img src={IconOpenLink} alt="more-info" width={20} />
                 )}
-              </Button>
+              </Box>
             </Box>
           </Tooltip>
 
