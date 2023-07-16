@@ -40,7 +40,7 @@ export interface AppSettings extends NyrisAPISettings {
   preFilterTitle?: string;
   postFilterOption?: boolean;
   showFeedbackAndShare?: boolean;
-  showMoreInfo?: boolean;
+  showMoreInfo?: boolean; // deprecated
   visualSearchFilterKey?: string;
   alogoliaFilterField?: string;
   headerText?: string;

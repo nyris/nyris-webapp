@@ -30,7 +30,7 @@ import {
 } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
-import { feedbackClickEpic, feedbackSuccessEpic } from 'services/Feedback';
+import { feedbackRegionEpic, feedbackSuccessEpic } from 'services/Feedback';
 import { createImage, findByImage, findRegions } from 'services/image';
 import { showFeedback, showResults } from 'Store/nyris/Nyris';
 import {
@@ -174,7 +174,7 @@ function ResultComponent(props: Props) {
   };
 
   // TODO: Search image with url or file
-  const getUrlToCanvasFile = async (url: string, position?: number) => {
+  const getUrlToCanvasFile = async (url: string) => {
     dispatch(updateStatusLoading(true));
     if (isMobile) {
       executeScroll();
@@ -187,10 +187,6 @@ function ResultComponent(props: Props) {
     let image = await createImage(url);
     dispatch(setRequestImage(image));
 
-    if (position) {
-      feedbackClickEpic(stateGlobal, position);
-      return;
-    }
     let searchRegion: RectCoords | undefined = undefined;
 
     if (settings.regions) {
@@ -273,10 +269,11 @@ function ResultComponent(props: Props) {
 
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
+      feedbackRegionEpic(stateGlobal, r);
       dispatch(selectionChanged(r));
       findItemsInSelection(r);
     }, 500),
-    [findItemsInSelection],
+    [findItemsInSelection, stateGlobal.search],
   );
 
   const filteredRegions = useMemo(

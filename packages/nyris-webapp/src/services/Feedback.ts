@@ -28,11 +28,27 @@ export const feedbackSuccessEpic = async (
   }
 };
 
-export const feedbackClickEpic = async (state: RootState, position: number) => {
+export const feedbackClickEpic = async (
+  state: RootState,
+  position: number,
+  id?: string,
+) => {
   const { search, settings } = state;
   return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
     event: 'click',
-    data: { positions: [position] },
+    data: { positions: [position], ...(id ? { product_ids: [id] } : {}) },
+  });
+};
+
+export const feedbackConversionEpic = async (
+  state: RootState,
+  position: number,
+  id?: string,
+) => {
+  const { search, settings } = state;
+  return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
+    event: 'conversion',
+    data: { positions: [position], ...(id ? { product_ids: [id] } : {}) },
   });
 };
 

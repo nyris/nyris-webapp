@@ -7,8 +7,7 @@ import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
 import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
 import React, { memo, useEffect, useState } from 'react';
 import NoImage from 'common/assets/images/unnamed.png';
-import { AppState } from 'types';
-import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { RootState, useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import DetailItem from 'components/DetailItem';
 import {
@@ -19,13 +18,14 @@ import { ShareModal } from '../ShareModal';
 import { truncateString } from 'helpers/truncateString';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'react-responsive';
+import { feedbackClickEpic, feedbackConversionEpic } from 'services/Feedback';
 
 interface Props {
   dataItem: any;
   handlerToggleModal?: any;
   handleClose?: () => void;
   isHover?: boolean;
-  indexItem?: number;
+  indexItem: number;
   onSearchImage?: any;
   handlerFeedback?: any;
   handlerGroupItem?: any;
@@ -49,7 +49,8 @@ function ItemResult(props: Props) {
   } = props;
   const dispatch = useAppDispatch();
   const [urlImage, setUrlImage] = useState<string>('');
-  const { settings } = useAppSelector<AppState>((state: any) => state);
+  const state = useAppSelector<RootState>((state: any) => state);
+  const { settings } = state;
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const [feedback, setFeedback] = useState('none');
@@ -94,6 +95,7 @@ function ItemResult(props: Props) {
   };
 
   const handlerToggleModal = (item: any) => {
+    feedbackClickEpic(state, indexItem, item.sku);
     setOpenModalImage(true);
     dispatch(onToggleModalItemDetail(true));
     dispatch(updateStatusLoading(true));
@@ -287,67 +289,67 @@ function ItemResult(props: Props) {
           </Grid>
         </Box>
         <div>
-          {settings.showMoreInfo && (
-            <Tooltip
-              title={dataItem[settings.field.productName]}
-              placement="top"
-              arrow={true}
-              disableHoverListener={
-                dataItem[settings.field.productName]?.length < 35
-              }
+          <Tooltip
+            title={dataItem[settings.field.productName]}
+            placement="top"
+            arrow={true}
+            disableHoverListener={
+              dataItem[settings.field.productName]?.length < 35
+            }
+          >
+            <Box
+              style={{
+                boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                // marginBottom: 22,
+                height: 40,
+                background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
+                borderRadius: 4,
+                padding: '0px 8px',
+                marginTop: '12px',
+              }}
+              display={'flex'}
+              justifyItems={'center'}
+              alignItems={'center'}
+              justifyContent={'space-between'}
             >
-              <Box
+              <Button
                 style={{
-                  boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
-                  // marginBottom: 22,
-                  height: 40,
-                  background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
-                  borderRadius: 4,
-                  padding: '0px 8px',
-                  marginTop: '12px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  padding: 0,
                 }}
-                display={'flex'}
-                justifyItems={'center'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
+                onClick={() => {
+                  feedbackConversionEpic(state, indexItem, dataItem.sku);
+                  window.open(
+                    `${dataItem[settings.field.ctaLinkField]}`,
+                    '_blank',
+                  );
+                }}
               >
-                <Button
+                <Typography
+                  className="text-white max-line-2"
                   style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    padding: 0,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    fontWeight: 500,
+                    fontSize: '11px',
+                    letterSpacing: '0.27px',
+                    wordBreak: 'break-all',
+                    maxWidth: '136px',
+                    paddingRight: '8px',
                   }}
-                  onClick={() =>
-                    window.open(
-                      `${dataItem[settings.field.ctaLinkField]}`,
-                      '_blank',
-                    )
-                  }
+                  align="left"
                 >
-                  <Typography
-                    className="text-white max-line-2"
-                    style={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      fontWeight: 500,
-                      fontSize: '11px',
-                      letterSpacing: '0.27px',
-                      wordBreak: 'break-all',
-                      maxWidth: '136px',
-                      paddingRight: '8px',
-                    }}
-                    align="left"
-                  >
-                    {truncateString(dataItem[settings.field.productName], 35)}
-                  </Typography>
-                  {!isMobile && (
-                    <img src={IconOpenLink} alt="more-info" width={20} />
-                  )}
-                </Button>
-              </Box>
-            </Tooltip>
-          )}
+                  {truncateString(dataItem[settings.field.productName], 35)}
+                </Typography>
+                {!isMobile && (
+                  <img src={IconOpenLink} alt="more-info" width={20} />
+                )}
+              </Button>
+            </Box>
+          </Tooltip>
+
           {settings.warehouseVariant && (
             <Box
               display="flex"

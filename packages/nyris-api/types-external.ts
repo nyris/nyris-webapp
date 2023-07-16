@@ -68,10 +68,16 @@ interface ClickEventPayload {
   data: ClickData;
 }
 
+interface ConversionEventPayload {
+  event: "conversion";
+  data: ClickData;
+}
+
 export type FeedbackEventPayload =
   | SuccessEventPayload
   | RegionEventPayload
-  | ClickEventPayload;
+  | ClickEventPayload
+  | ConversionEventPayload;
 
 export type FeedbackEvent = FeedbackEventPayload & {
   request_id: string;
