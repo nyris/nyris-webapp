@@ -2,7 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-## 0.3.32 - 2023-06-27
+## 0.3.34 - 2023-06-27
+
+### Added
+
+- New landing page UI
+- Search bar UI improvements
+- post-filter & pre-filter
+- show group enable/disable through settings
+- Cropper info message
+- Analytics 
+## 0.3.33 - 2023-06-27
 
 ### Removed
 
