@@ -30,7 +30,7 @@ import {
 } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
-import { feedbackClickEpic, feedbackSuccessEpic } from 'services/Feedback';
+import { feedbackRegionEpic, feedbackSuccessEpic } from 'services/Feedback';
 import { createImage, findByImage, findRegions } from 'services/image';
 import { showFeedback, showResults } from 'Store/nyris/Nyris';
 import {
@@ -92,7 +92,7 @@ function ResultComponent(props: Props) {
       setAdjustInfo(true);
       const timeout = setTimeout(() => {
         setAdjustInfo(false);
-      }, 4000);
+      }, 2000);
       imageUploadRef.current = imageThumbSearchInput;
       return () => {
         clearTimeout(timeout);
@@ -161,7 +161,7 @@ function ResultComponent(props: Props) {
         }
         setTimeout(() => {
           setShowAdjustInfoBasedOnConfidence(false);
-        }, 4000);
+        }, 2000);
       });
       return dispatch(showFeedback());
     }, 250),
@@ -174,7 +174,7 @@ function ResultComponent(props: Props) {
   };
 
   // TODO: Search image with url or file
-  const getUrlToCanvasFile = async (url: string, position?: number) => {
+  const getUrlToCanvasFile = async (url: string) => {
     dispatch(updateStatusLoading(true));
     if (isMobile) {
       executeScroll();
@@ -187,10 +187,6 @@ function ResultComponent(props: Props) {
     let image = await createImage(url);
     dispatch(setRequestImage(image));
 
-    if (position) {
-      feedbackClickEpic(stateGlobal, position);
-      return;
-    }
     let searchRegion: RectCoords | undefined = undefined;
 
     if (settings.regions) {
@@ -273,15 +269,16 @@ function ResultComponent(props: Props) {
 
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
+      feedbackRegionEpic(stateGlobal, r);
       dispatch(selectionChanged(r));
       findItemsInSelection(r);
     }, 500),
-    [findItemsInSelection],
+    [findItemsInSelection, stateGlobal.search],
   );
 
   const filteredRegions = useMemo(
     () =>
-      regions.filter(
+      regions.map(
         (region: {
           normalizedRect: { x1: any; x2: any; y1: any; y2: any };
         }) => {
@@ -291,7 +288,7 @@ function ResultComponent(props: Props) {
             region.normalizedRect.y1 === imageSelection.y1 &&
             region.normalizedRect.y2 === imageSelection.y2
           ) {
-            return false;
+            return { ...region, show: false };
           }
           if (
             imageSelection.x1 === 0 &&
@@ -299,15 +296,23 @@ function ResultComponent(props: Props) {
             imageSelection.y1 === 0 &&
             imageSelection.y2 === 1
           ) {
-            return false;
+            return { ...region, show: false };
           }
 
-          return true;
+          return { ...region, show: true };
         },
       ),
     [imageSelection, regions],
   );
 
+  const showPostFilter = useMemo(() => {
+    return settings.postFilterOption && props.allSearchResults?.hits.length > 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.postFilterOption, props.allSearchResults?.hits]);
+
+  const showSidePanel = useMemo(() => {
+    return requestImage || (settings.postFilterOption && showPostFilter);
+  }, [showPostFilter, settings.postFilterOption, requestImage]);
   return (
     <div
       className={`wrap-main-result loading`}
@@ -336,8 +341,7 @@ function ResultComponent(props: Props) {
               </Box>
               {!isMobile && (
                 <>
-                  {((!settings.postFilterOption && requestImage) ||
-                    settings.postFilterOption) && (
+                  {showSidePanel && (
                     <Box
                       className={`wrap-main-col-left ${
                         toggleColLeft ? 'toggle' : ''
@@ -371,21 +375,34 @@ function ResultComponent(props: Props) {
                           <Box className="box-preview">
                             <Box
                               className="preview-item"
-                              style={{ backgroundColor: 'white' }}
+                              style={{
+                                backgroundColor: 'white',
+                                paddingTop: '40px',
+                                width: '100%',
+                              }}
                             >
-                              <Preview
-                                key={requestImage?.id}
-                                onSelectionChange={(r: RectCoords) => {
-                                  setImageSelection(r);
-                                  debouncedOnImageSelectionChange(r);
+                              <div
+                                style={{
+                                  backgroundColor: '#AAABB5',
+                                  width: '100%',
                                 }}
-                                image={requestImage?.canvas}
-                                selection={imageSelection || DEFAULT_REGION}
-                                regions={filteredRegions}
-                                maxWidth={320}
-                                maxHeight={320}
-                                dotColor={'#FBD914'}
-                              />
+                              >
+                                <Preview
+                                  key={requestImage?.id}
+                                  onSelectionChange={(r: RectCoords) => {
+                                    setImageSelection(r);
+                                    debouncedOnImageSelectionChange(r);
+                                  }}
+                                  image={requestImage?.canvas}
+                                  selection={imageSelection || DEFAULT_REGION}
+                                  regions={filteredRegions}
+                                  maxWidth={320}
+                                  maxHeight={320}
+                                  dotColor={'#FBD914'}
+                                  minCropWidth={60}
+                                  minCropHeight={60}
+                                />
+                              </div>
                             </Box>
                           </Box>
                           {(showAdjustInfoBasedOnConfidence ||
@@ -400,28 +417,28 @@ function ResultComponent(props: Props) {
                                 padding: '5px',
                               }}
                             >
-                              <IconInfo />
+                              <IconInfo color="white" />
                               <Typography
                                 style={{
                                   fontSize: 10,
                                   color: '#fff',
-                                  width: '280px',
                                 }}
                               >
                                 {showAdjustInfo
-                                  ? t(
-                                      'Adjust the search frame around your object for improved results',
-                                    )
-                                  : 'Use the cropping tool for improved image accuracy and enhanced results'}
+                                  ? t('crop the image for better results')
+                                  : 'crop the image for better results'}
                               </Typography>
                             </Box>
                           )}
                         </Box>
                       )}
-                      {/* TODO: Filter list Choose */}
-                      {settings.postFilterOption && (
+                      {showPostFilter && (
                         <Box className="col-left__bottom">
-                          <ExpandablePanelComponent />
+                          <ExpandablePanelComponent
+                            disjunctiveFacets={
+                              props.allSearchResults.disjunctiveFacets
+                            }
+                          />
                         </Box>
                       )}
                     </Box>
@@ -434,22 +451,20 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  paddingTop:
-                    keyFilter && isMobile
-                      ? '105px'
-                      : isMobile
-                      ? '60px'
-                      : '40px',
+                  paddingTop: isMobile ? '16px' : '40px',
                 }}
               >
-                <Box className="wrap-box-refinements">
-                  <CurrentRefinements statusSwitchButton={true} />
-                </Box>
+                {!isMobile && (
+                  <Box className="wrap-box-refinements">
+                    <CurrentRefinements statusSwitchButton={true} />
+                  </Box>
+                )}
+
                 {isMobile && settings.preview && requestImage && (
                   <Box
                     className="col-left"
                     style={{
-                      backgroundColor: settings?.theme?.primaryColor,
+                      backgroundColor: '#AAABB5',
                       marginBottom: '15px',
                     }}
                   >
@@ -468,9 +483,11 @@ function ResultComponent(props: Props) {
                             image={requestImage?.canvas}
                             selection={imageSelection || DEFAULT_REGION}
                             regions={filteredRegions}
-                            maxWidth={320}
-                            maxHeight={320}
+                            maxWidth={240}
+                            maxHeight={240}
                             dotColor={'#FBD914'}
+                            minCropWidth={60}
+                            minCropHeight={60}
                           />
                         </Box>
                         {(showAdjustInfoBasedOnConfidence ||
@@ -480,25 +497,22 @@ function ResultComponent(props: Props) {
                             alignItems="center"
                             style={{
                               backgroundColor: '#3E36DC',
-                              marginBottom: '25px',
                               display: 'flex',
                               columnGap: '6px',
                               padding: '5px',
+                              width: 'fit-content',
                             }}
                           >
-                            <IconInfo />
+                            <IconInfo color="white" />
                             <Typography
                               style={{
                                 fontSize: 10,
                                 color: '#fff',
-                                width: '300px',
                               }}
                             >
                               {showAdjustInfo
-                                ? t(
-                                    'Adjust the search frame around your object for improved results',
-                                  )
-                                : 'Use the cropping tool for improved image accuracy and enhanced results'}
+                                ? t('crop the image for better results')
+                                : 'crop the image for better results'}
                             </Typography>
                           </Box>
                         )}

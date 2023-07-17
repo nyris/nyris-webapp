@@ -25,7 +25,7 @@ function ProductListComponent({
   requestImage,
   isSearchStalled,
 }: any): JSX.Element {
-  const { search } = useAppSelector<AppState>((state: any) => state);
+  const { search, settings } = useAppSelector<AppState>((state: any) => state);
   const { loadingSearchAlgolia } = search;
   const [hitGroups, setHitGroups] = useState<any>({});
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
@@ -43,7 +43,9 @@ function ProductListComponent({
       return;
     }
     setAlgoliaRequest(false);
-    const listHistDefaultGroups = setListHitDefault(allSearchResults?.hits);
+    const listHistDefaultGroups = settings.showGroup
+      ? setListHitDefault(allSearchResults?.hits)
+      : allSearchResults?.hits;
     setItemShowDefault(listHistDefaultGroups);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSearchResults?.hits, search?.valueTextSearch]);
@@ -149,7 +151,7 @@ function ProductListComponent({
             handlerCloseGroup={(hitItem: any, index: number) =>
               handlerCloseGroup(hitItem, index)
             }
-            isGroupItem={hit?.isGroup}
+            isGroupItem={settings.showGroup ? hit?.isGroup : false}
             moreInfoText={moreInfoText}
             main_image_link={
               hit['image(main_similarity)'] || hit['main_image_link']

@@ -9,6 +9,7 @@ export const translations = {
       'Show group': 'Show group',
       'Adjust the search frame around your object for improved results':
         'Adjust the search frame around your object for improved results',
+      'crop the image for better results': 'Crop the image for better results',
       'Items per page': 'Items per page',
       'Search with an image': 'Search with an image',
       'Clear text search': 'Clear text search',
@@ -24,6 +25,9 @@ export const translations = {
       'Show group': 'Zeige Gruppe',
       'Adjust the search frame around your object for improved results':
         'Anpassen des Rahmens für bessere Ergebnisse',
+      'crop the image for better results':
+        'Bildausschnitt anpassen für bessere Ergebnisse',
+
       'Items per page': 'Artikel pro Seite',
       'Search with an image': 'Bildsuche',
       'Clear text search': 'Suchtext löschen',

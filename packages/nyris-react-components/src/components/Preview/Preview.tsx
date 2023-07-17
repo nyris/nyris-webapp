@@ -5,6 +5,9 @@ import Konva from "konva";
 import { NodeGroup } from "react-move";
 
 type PreviewElem = "tl" | "tr" | "bl" | "br" | "rect";
+interface IRegion extends Region {
+  show?: boolean;
+}
 
 /** Properties of the Preview Component. */
 interface PreviewProps {
@@ -13,7 +16,7 @@ interface PreviewProps {
   /** Initial selection on the image, setting this, won't send a selection change event. */
   selection: RectCoords;
   /** List of regions to display on the image */
-  regions: Region[];
+  regions: IRegion[];
   /** Handler for changed selection. */
   onSelectionChange?: (r: RectCoords) => void;
   /** Maximal width of the image to display in pixels. */
@@ -22,6 +25,10 @@ interface PreviewProps {
   maxHeight: number;
   /** Color of the dot, which is rendered center of not selected regions. */
   dotColor: string;
+  /** Minimum width of the cropper to display in pixels. */
+  minCropWidth: number;
+  /** Minimum height of the cropper to display in pixels. */
+  minCropHeight: number;
 }
 
 /** @internal State of the Preview component */
@@ -106,14 +113,32 @@ const calcNewRect = (
 function scaleToPreviewPixels(
   width: number,
   height: number,
-  { x1, x2, y1, y2 }: RectCoords
+  { x1, x2, y1, y2 }: RectCoords,
+  minWidth?: number,
+  minHeight?: number
 ) {
-  return {
+  const cover = {
     x1: Math.max(x1 * width, 5),
     x2: Math.min(x2 * width, width - 5),
     y1: Math.max(y1 * height, 5),
     y2: Math.min(y2 * height, height - 5),
   };
+
+  if (
+    minWidth &&
+    minHeight &&
+    cover.x2 - cover.x1 < minWidth &&
+    cover.y2 - cover.y1 < minHeight
+  ) {
+    return {
+      x1: Math.max(x1 * width - minWidth / 2, 5),
+      x2: Math.min(x2 * width + minWidth / 2, width - 5),
+      y1: Math.max(y1 * height - minHeight / 2, 5),
+      y2: Math.min(y2 * height + minHeight / 2, height - 5),
+    };
+  }
+
+  return cover;
 }
 
 /** The Preview component. */
@@ -125,6 +150,8 @@ const Preview = ({
   onSelectionChange,
   regions,
   dotColor,
+  minCropWidth,
+  minCropHeight,
 }: PreviewProps) => {
   let { w: width, h: height } = getThumbSizeLongestEdge(
     maxWidth,
@@ -132,7 +159,13 @@ const Preview = ({
     image.width,
     image.height
   );
-  const { x1, y1, x2, y2 } = scaleToPreviewPixels(width, height, selection);
+  const { x1, y1, x2, y2 } = scaleToPreviewPixels(
+    width,
+    height,
+    selection,
+    minCropWidth,
+    minCropHeight
+  );
   let [minX, minY] = [100, 100];
 
   const handleDragBoundTl = ({ x, y }: { x: number; y: number }) => {
@@ -265,9 +298,10 @@ const Preview = ({
     return {
       // get middle of box and map to pixels
       region,
-      key: `${x}-${y}`,
+      key: `${x}-${y}-${i}`,
       x,
       y,
+      show: region.show,
     };
   });
 
@@ -498,6 +532,7 @@ const Preview = ({
                 stroke={dotColor}
                 fill="white"
                 strokeWidth={5}
+                opacity={data.region.show}
               />
             ))}
           </Layer>

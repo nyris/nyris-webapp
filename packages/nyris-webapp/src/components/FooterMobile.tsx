@@ -4,7 +4,9 @@ import { ReactComponent as IconCameraMobile } from 'common/assets/icons/icon_cam
 import CameraCustom from './drawer/cameraCustom';
 import { ReactComponent as Home } from 'common/assets/icons/home.svg';
 import { NavLink, useHistory } from 'react-router-dom';
-import { useAppSelector } from 'Store/Store';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
+import { setImageCaptureHelpModal } from 'Store/search/Search';
 
 interface Props {
   onLoadingMobile?: any;
@@ -13,53 +15,90 @@ interface Props {
 function FooterMobile(props: Props): JSX.Element {
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const history = useHistory();
-  const { settings } = useAppSelector(state => state);
+  const {
+    settings,
+    search: { imageCaptureHelpModal },
+  } = useAppSelector(state => state);
+  const dispatch = useAppDispatch();
 
   return (
-    <Box
-      className="box-footer-mobile"
-      display={'flex'}
-      position={'relative'}
-      alignItems={'center'}
-      height={'100%'}
-    >
-      <NavLink
-        style={{
-          width: '70px',
-          display: 'flex',
-          justifyContent: 'center',
-          height: '100%',
-          alignItems: 'center',
-          backgroundColor:
-            history.location.pathname === '/'
-              ? `${settings.theme?.primaryColor}21`
-              : '',
-        }}
-        activeClassName="active"
-        to={'/'}
-        className="nav-link p-0 menu-children rounded-0"
-      >
-        <Home
-          color={
-            history.location.pathname === '/'
-              ? settings.theme?.primaryColor
-              : '#000'
-          }
-        />
-      </NavLink>
+    <>
       <Box
-        style={{ background: settings.theme?.primaryColor }}
-        className="box-icon-camera-mobile"
+        className="box-footer-mobile"
+        display={'flex'}
+        position={'relative'}
+        alignItems={'center'}
+        height={'100%'}
+        justifyContent={'space-between'}
+        style={{ paddingLeft: '40px', paddingRight: '40px' }}
       >
-        <Button
+        <NavLink
+          style={{
+            width: '48px',
+            height: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '100%',
+            backgroundColor:
+              history.location.pathname === '/' && !imageCaptureHelpModal
+                ? `${settings.theme?.primaryColor}21`
+                : '',
+          }}
+          activeClassName="active"
+          to={'/'}
+          className="nav-link p-0 menu-children rounded-0"
           onClick={() => {
-            setOpenModalCamera(!isOpenModalCamera);
+            dispatch(setImageCaptureHelpModal(false));
           }}
         >
-          <IconCameraMobile color="#FFFF" />
-        </Button>
+          <Home
+            color={
+              history.location.pathname === '/' && !imageCaptureHelpModal
+                ? settings.theme?.primaryColor
+                : '#000'
+            }
+          />
+        </NavLink>
+        {history.location?.pathname !== '/' && (
+          <Box className="box-icon-camera-mobile">
+            <Button
+              onClick={() => {
+                setOpenModalCamera(!isOpenModalCamera);
+              }}
+            >
+              <IconCameraMobile color="#000" />
+            </Button>
+          </Box>
+        )}
+        {history.location?.pathname !== '/' && (
+          <div
+            style={{
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '100%',
+              backgroundColor: imageCaptureHelpModal
+                ? `${settings.theme?.primaryColor}21`
+                : '',
+            }}
+            onClick={() => {
+              dispatch(setImageCaptureHelpModal(!imageCaptureHelpModal));
+            }}
+          >
+            <IconInfo
+              fontSize={24}
+              width={24}
+              height={24}
+              color={
+                imageCaptureHelpModal ? settings.theme?.primaryColor : '#000'
+              }
+            />
+          </div>
+        )}
       </Box>
-
       <Box className="box-screenshot-camera">
         <CameraCustom
           isToggle={isOpenModalCamera}
@@ -68,7 +107,7 @@ function FooterMobile(props: Props): JSX.Element {
           }}
         />
       </Box>
-    </Box>
+    </>
   );
 }
 
