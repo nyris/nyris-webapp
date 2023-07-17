@@ -7,8 +7,7 @@ import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
 import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
 import React, { memo, useEffect, useState } from 'react';
 import NoImage from 'common/assets/images/unnamed.png';
-import { AppState } from 'types';
-import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { RootState, useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import DetailItem from 'components/DetailItem';
 import {
@@ -18,13 +17,15 @@ import {
 import { ShareModal } from '../ShareModal';
 import { truncateString } from 'helpers/truncateString';
 import { useTranslation } from 'react-i18next';
+import { useMediaQuery } from 'react-responsive';
+import { feedbackClickEpic, feedbackConversionEpic } from 'services/Feedback';
 
 interface Props {
   dataItem: any;
   handlerToggleModal?: any;
   handleClose?: () => void;
   isHover?: boolean;
-  indexItem?: number;
+  indexItem: number;
   onSearchImage?: any;
   handlerFeedback?: any;
   handlerGroupItem?: any;
@@ -48,13 +49,15 @@ function ItemResult(props: Props) {
   } = props;
   const dispatch = useAppDispatch();
   const [urlImage, setUrlImage] = useState<string>('');
-  const { settings } = useAppSelector<AppState>((state: any) => state);
+  const state = useAppSelector<RootState>((state: any) => state);
+  const { settings } = state;
   const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const [feedback, setFeedback] = useState('none');
   const { t } = useTranslation();
   const { sku, collap } = dataItem;
   const brand = dataItem[settings.field.productTag];
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   useEffect(() => {
     if (main_image_link) {
@@ -92,6 +95,7 @@ function ItemResult(props: Props) {
   };
 
   const handlerToggleModal = (item: any) => {
+    feedbackClickEpic(state, indexItem, item.sku);
     setOpenModalImage(true);
     dispatch(onToggleModalItemDetail(true));
     dispatch(updateStatusLoading(true));
@@ -99,6 +103,7 @@ function ItemResult(props: Props) {
       dispatch(updateStatusLoading(false));
     }, 400);
   };
+
   return (
     <Box className="wrap-main-item-result">
       <DefaultModal
@@ -144,17 +149,15 @@ function ItemResult(props: Props) {
           </Box>
         )}
         {!isHover && main_image_link && (
-          <Box className="box-icon-modal">
-            <Button
-              style={{ width: '100%', height: '100%', padding: 0, zIndex: 9 }}
-              onClick={() => {
-                if (urlImage.length > 1) {
-                  onSearchImage(main_image_link);
-                }
-              }}
-            >
-              <IconSearchImage color={settings.theme?.secondaryColor} />
-            </Button>
+          <Box
+            className="box-icon-modal"
+            onClick={() => {
+              if (urlImage.length > 1) {
+                onSearchImage(main_image_link);
+              }
+            }}
+          >
+            <IconSearchImage width={16} height={16} color={'#AAABB5'} />
           </Box>
         )}
         <Box className="box-image">
@@ -199,7 +202,7 @@ function ItemResult(props: Props) {
           flexGrow: 1,
         }}
       >
-        <Box className="box-top" style={{ minHeight: '90px' }}>
+        <Box className="box-top">
           <Grid container justifyContent="space-between">
             <Grid item xs={12}>
               <Tooltip
@@ -219,7 +222,7 @@ function ItemResult(props: Props) {
                   <span style={{ marginRight: 3 }}>
                     {settings.itemIdLabel || 'SKU'}:
                   </span>
-                  {truncateString(sku, 16)}
+                  {truncateString(sku, 20)}
                 </Typography>
               </Tooltip>
 
@@ -283,85 +286,77 @@ function ItemResult(props: Props) {
                   </Box>
                 </Tooltip>
               )}
-              {!settings.warehouseVariant && (
-                <Typography
-                  className="text-f13 fw-600 max-line-3"
-                  style={{ color: '#1E1F31', marginTop: 12 }}
-                >
-                  {dataItem[settings.field.productName]}
-                </Typography>
-              )}
             </Grid>
           </Grid>
         </Box>
         <div>
-          {(settings.showMoreInfo || settings.warehouseVariant) && (
-            <Tooltip
-              title={dataItem[settings.field.productName]}
-              placement="top"
-              arrow={true}
-              disableHoverListener={
-                dataItem[settings.field.productName]?.length < 35 ||
-                !settings.warehouseVariant
-              }
+          <Tooltip
+            title={dataItem[settings.field.productName]}
+            placement="top"
+            arrow={true}
+            disableHoverListener={
+              dataItem[settings.field.productName]?.length < 45
+            }
+          >
+            <Box
+              style={{
+                boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                // marginBottom: 22,
+                height: 40,
+                background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
+                borderRadius: 4,
+                padding: '0px 8px',
+                marginTop: '12px',
+              }}
+              display={'flex'}
+              justifyItems={'center'}
+              alignItems={'center'}
+              justifyContent={'space-between'}
             >
               <Box
                 style={{
-                  boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
-                  // marginBottom: 22,
-                  height: 40,
-                  background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
-                  borderRadius: 4,
-                  padding: '0px 8px',
-                  marginTop: '12px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  padding: 0,
+                  cursor: dataItem[settings.field?.ctaLinkField]
+                    ? 'pointer'
+                    : 'normal',
                 }}
-                display={'flex'}
-                justifyItems={'center'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
+                onClick={() => {
+                  feedbackConversionEpic(state, indexItem, dataItem.sku);
+                  window.open(
+                    `${dataItem[settings.field.ctaLinkField]}`,
+                    '_blank',
+                  );
+                }}
               >
-                <Button
+                <Typography
+                  className="text-white max-line-2"
                   style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    padding: 0,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    fontWeight: 500,
+                    fontSize: '11px',
+                    letterSpacing: '0.27px',
+                    wordBreak: 'break-all',
+                    maxWidth:
+                      !isMobile && dataItem[settings.field?.ctaLinkField]
+                        ? '136px'
+                        : '164x',
+                    paddingRight: '8px',
                   }}
-                  onClick={() =>
-                    window.open(
-                      `${dataItem[settings.field.ctaLinkField]}`,
-                      '_blank',
-                    )
-                  }
+                  align="left"
                 >
-                  <Typography
-                    className="text-white max-line-2"
-                    style={{
-                      textTransform: !settings.warehouseVariant
-                        ? 'uppercase'
-                        : 'none',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      fontWeight: !settings.warehouseVariant ? 700 : 500,
-                      fontSize: !settings.warehouseVariant ? '12px' : '11px',
-                      letterSpacing: '0.27px',
-                      wordBreak: !settings.warehouseVariant
-                        ? 'normal'
-                        : 'break-all',
-                      maxWidth: '136px',
-                      paddingRight: '8px',
-                    }}
-                    align="left"
-                  >
-                    {settings.warehouseVariant
-                      ? truncateString(dataItem[settings.field.productName], 35)
-                      : settings.productCtaText || 'MORE INFO'}
-                  </Typography>
+                  {truncateString(dataItem[settings.field.productName], 45)}
+                </Typography>
+                {!isMobile && dataItem[settings.field?.ctaLinkField] && (
                   <img src={IconOpenLink} alt="more-info" width={20} />
-                </Button>
+                )}
               </Box>
-            </Tooltip>
-          )}
+            </Box>
+          </Tooltip>
+
           {settings.warehouseVariant && (
             <Box
               display="flex"
@@ -478,9 +473,9 @@ function ItemResult(props: Props) {
                       <Button
                         style={{ padding: '6px' }}
                         className="btn-item"
-                        onClick={() => false}
+                        onClick={() => setOpenModalShare(true)}
                       >
-                        <IconShare width={16} height={16} color="#808080" />
+                        <IconShare width={16} height={16} color="#000000" />
                       </Button>
                     </Box>
                   </Grid>

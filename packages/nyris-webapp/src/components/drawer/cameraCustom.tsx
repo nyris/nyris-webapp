@@ -167,32 +167,13 @@ function CameraCustom(props: Props) {
           <button
             className="btn-close-modal right"
             style={{
-              backgroundColor: settings.theme?.primaryColor,
+              backgroundColor: '#666666',
             }}
             onClick={handlerCloseModal}
           >
             <CloseIcon style={{ fontSize: 20, color: '#fff' }} />
           </button>
-          <button
-            className="btn-close-modal left"
-            style={{
-              backgroundColor: settings.theme?.primaryColor,
-            }}
-            onClick={handlerCloseModal}
-          >
-            <svg
-              width="18"
-              height="10"
-              viewBox="0 0 18 10"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M9 9.5L0 1.60526L1.26 0.5L9 7.28947L16.74 0.5L18 1.60526L9 9.5Z"
-                fill="white"
-              />
-            </svg>
-          </button>
+
           <div
             style={{
               display: 'flex',
@@ -258,10 +239,8 @@ function CameraCustom(props: Props) {
             <button
               className={`${scaleCamera === 1 && 'active'}`}
               style={{
-                backgroundColor:
-                  scaleCamera === 1 && 'active'
-                    ? settings.theme?.primaryColor
-                    : '',
+                backgroundColor: scaleCamera === 1 && 'active' ? 'white' : '',
+                color: scaleCamera === 1 && 'active' ? 'black' : 'white',
               }}
               onClick={() => setScaleCamera(1)}
             >
@@ -270,10 +249,8 @@ function CameraCustom(props: Props) {
             <button
               className={`${scaleCamera === 1.5 && 'active'}`}
               style={{
-                backgroundColor:
-                  scaleCamera === 1.5 && 'active'
-                    ? settings.theme?.primaryColor
-                    : '',
+                backgroundColor: scaleCamera === 1.5 && 'active' ? 'white' : '',
+                color: scaleCamera === 1.5 && 'active' ? 'black' : 'white',
               }}
               onClick={() => setScaleCamera(1.5)}
             >
@@ -282,10 +259,8 @@ function CameraCustom(props: Props) {
             <button
               className={`${scaleCamera === 2 && 'active'}`}
               style={{
-                backgroundColor:
-                  scaleCamera === 2 && 'active'
-                    ? settings.theme?.primaryColor
-                    : '',
+                backgroundColor: scaleCamera === 2 && 'active' ? 'white' : '',
+                color: scaleCamera === 2 && 'active' ? 'black' : 'white',
               }}
               onClick={() => setScaleCamera(2)}
             >

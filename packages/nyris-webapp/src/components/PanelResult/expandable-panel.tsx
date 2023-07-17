@@ -1,19 +1,19 @@
-import { Box, Button, Typography } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
-import classNames from "classnames";
-import { Collapse } from "components/collapse/collapse";
-import { useAtomValue } from "jotai/utils";
-import type { MouseEventHandler } from "react";
-import React, { memo } from "react";
+import { Box, Button, Typography } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+import classNames from 'classnames';
+import { Collapse } from 'components/collapse/collapse';
+import { useAtomValue } from 'jotai/utils';
+import type { MouseEventHandler } from 'react';
+import React, { memo } from 'react';
 import type {
   CurrentRefinementsProvided,
   SearchResults,
-} from "react-instantsearch-core";
-import { connectCurrentRefinements } from "react-instantsearch-dom";
-import { useMediaQuery } from "react-responsive";
-import { useHasRefinements } from ".";
-import { searchResultsAtom } from "./virtual-state-results";
+} from 'react-instantsearch-core';
+import { connectCurrentRefinements } from 'react-instantsearch-dom';
+import { useMediaQuery } from 'react-responsive';
+import { useHasRefinements } from '.';
+import { searchResultsAtom } from './virtual-state-results';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -36,25 +36,25 @@ function ExpandablePanelComponent({
 }: ExpandablePanelProps) {
   const searchResults = useAtomValue(searchResultsAtom) as SearchResults;
   const hasRefinements = useHasRefinements(searchResults, attributes);
-  const isMobile = useMediaQuery({ query: "(max-width: 776px)" });
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   return (
     <Box>
       <div
         className={classNames(
-          "border-neutral-light",
+          'border-neutral-light',
           {
             hidden: !hasRefinements,
           },
-          className
+          className,
         )}
       >
         <Button
           className="w-full flex items-center justify-between group"
           aria-expanded={isOpened}
           style={{ paddingLeft: 0 }}
-          onClick={(e) => {
-            if (typeof onToggle === "function") {
+          onClick={e => {
+            if (typeof onToggle === 'function') {
               onToggle(e);
             }
           }}
@@ -63,8 +63,8 @@ function ExpandablePanelComponent({
             <Typography
               className="fw-700"
               style={{
-                textTransform: "none",
-                fontFamily: "Montserrat !important",
+                textTransform: 'none',
+                fontFamily: 'Montserrat !important',
                 fontSize: 14,
               }}
             >
@@ -87,5 +87,5 @@ function ExpandablePanelComponent({
 }
 
 export const ExpandablePanelCustom = connectCurrentRefinements<any>(
-  memo(ExpandablePanelComponent)
+  memo(ExpandablePanelComponent),
 );

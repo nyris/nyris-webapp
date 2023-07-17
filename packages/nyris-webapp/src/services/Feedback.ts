@@ -5,6 +5,7 @@ import NyrisAPI, {
 } from '@nyris/nyris-api';
 import { RootState } from '../Store/Store';
 import { ToastHelper } from '../helpers/ToastHelper';
+import { toast } from 'react-hot-toast';
 
 export const feedbackSuccessEpic = async (
   state: RootState,
@@ -19,6 +20,7 @@ export const feedbackSuccessEpic = async (
       event: 'feedback',
       data: { success },
     });
+    toast.dismiss();
     ToastHelper.success('Thank you for your feedback.');
     return res;
   } catch (err: any) {
@@ -26,11 +28,27 @@ export const feedbackSuccessEpic = async (
   }
 };
 
-export const feedbackClickEpic = async (state: RootState, position: number) => {
+export const feedbackClickEpic = async (
+  state: RootState,
+  position: number,
+  id?: string,
+) => {
   const { search, settings } = state;
   return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
     event: 'click',
-    data: { positions: [position] },
+    data: { positions: [position], ...(id ? { product_ids: [id] } : {}) },
+  });
+};
+
+export const feedbackConversionEpic = async (
+  state: RootState,
+  position: number,
+  id?: string,
+) => {
+  const { search, settings } = state;
+  return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
+    event: 'conversion',
+    data: { positions: [position], ...(id ? { product_ids: [id] } : {}) },
   });
 };
 

@@ -3,7 +3,6 @@ import { AppSettings } from '../types';
 export const defaultSettings: AppSettings = {
   xOptions: false,
   apiKey: 'UNSET',
-  exampleImages: [],
   preview: true,
   regions: false,
   maxWidth: 500,

@@ -151,6 +151,7 @@ export const searchSlice = createSlice({
         isShowModalDetailItemMobile: false,
         keyFilter: state.keyFilter || '',
         preFilterDropdown: false,
+        imageCaptureHelpModal: false,
       };
     },
 
@@ -241,33 +242,47 @@ export const searchSlice = createSlice({
         preFilterDropdown: data.payload,
       };
     },
+    setImageCaptureHelpModal: (state, data: PayloadAction<boolean>) => {
+      return {
+        ...state,
+        imageCaptureHelpModal: data.payload,
+      };
+    },
+    setFilter: (state, data: PayloadAction<any>) => {
+      return {
+        ...state,
+        filter: data.payload,
+      };
+    },
   },
 });
 
 export const {
-  setSearchResults,
-  selectionChanged,
-  setRequestImage,
-  loadFileSelectRegion,
-  setRegions,
-  setSelectedRegion,
-  loadingActionResults,
-  loadingActionRegions,
-  searchFileImageNonRegion,
   changeValueTextSearch,
-  resultSearchText,
-  updateResults,
-  reset,
   configureFilter,
+  loadFileSelectRegion,
+  loadingActionRegions,
+  loadingActionResults,
+  onResetRequestImage,
+  onToggleModalItemDetail,
+  reset,
+  resultSearchText,
+  searchFileImageNonRegion,
+  selectionChanged,
+  setError,
+  setImageCaptureHelpModal,
+  setImageSearchInput,
+  setPreFilterDropdown,
+  setRegions,
+  setRequestImage,
+  setSearchResults,
+  setSelectedRegion,
+  setUpdateKeyFilterDesktop,
   setUpdateSession,
   updateResultChangePosition,
-  setError,
-  setImageSearchInput,
+  updateResults,
   updateStatusLoading,
   updateValueTextSearchMobile,
-  onToggleModalItemDetail,
-  onResetRequestImage,
-  setUpdateKeyFilterDesktop,
-  setPreFilterDropdown,
+  setFilter,
 } = searchSlice.actions;
 export default searchSlice.reducer;

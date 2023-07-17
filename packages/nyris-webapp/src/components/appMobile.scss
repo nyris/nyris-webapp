@@ -12,12 +12,11 @@
 }
 
 .layout-main-mobile {
-  display: none;
+  height: 100%;
   @media screen and (max-width: 776px) {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     width: 100%;
     // height: calc(100vh);
     background-color: #fafafa;
@@ -37,10 +36,15 @@
       }
 
       .wrap-header-mobile {
+
+        background: #FFFFFF;
+        border-bottom: 1px solid #E9E9EC;
+        box-shadow: 0px 0px 16px rgba(170, 171, 181, 0.5);
+        border-radius: 32px;
+
         width: 100%;
         position: relative;
-        padding: 7px 0px;
-        border-bottom: 1px solid #e9e9ec;
+        height: 48px;;
 
         .box-suggest-search {
           position: absolute;
@@ -109,16 +113,12 @@
       }
     }
     .box-body-mobile-wrap-main {
-      position: fixed;
-      bottom: 64px;
-      top: 0;
-      scroll-padding-top: 110px;
-      height: calc(100% - 52px);
       display: flex;
       width: 100%;
-      overflow-y: auto;
       background-color: #fafafa;
-
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-bottom: 50px;
       .wrap-content-body {
         margin-top: auto;
         height: 336px;
@@ -284,7 +284,7 @@
     .footer-wrap-main {
       position: fixed;
       bottom: 0;
-      height: 52px;
+      height: 64px;
       flex: 1 1 auto;
       width: 100%;
       padding: 0;
@@ -297,7 +297,7 @@
 
       .box-icon-camera-mobile {
         z-index: 10;
-        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4);
+        box-shadow: 0px 0px 16px rgba(85, 86, 107, 0.2);
         border-radius: 100%;
         position: absolute;
         left: 0;
@@ -305,14 +305,14 @@
         width: fit-content;
         margin: auto;
         top: -50%;
-        width: 64px;
-        height: 64px;
-
+        width: 56px;
+        height: 56px;
+        background-color: #FFFFFF;
         button {
           border: 0px !important;
-          padding: 21px 18px;
-          width: 64px;
-          height: 64px;
+          padding: 17px 14px;
+          width: 56px;
+          height: 56px;
         }
       }
     }
@@ -330,9 +330,11 @@
       width: 100%;
       height: calc(100% - 47px);
       background-color: #fff;
-      padding: 10px 24px 24px 24px;
       overflow: auto;
       opacity: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
 
       ul {
         li {
@@ -351,7 +353,7 @@
       }
 
       &.open {
-        z-index: 100;
+        z-index: 1000;
       }
 
       &.close {
@@ -385,11 +387,7 @@
       }
     }
 
-    .box-center-filter {
-      height: 100%;
-      overflow: auto;
-      padding: 0 24px;
-    }
+    
   }
   .aa-DetachedContainer {
     bottom: auto;
@@ -480,18 +478,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding-right: 20px;
 
       button {
         background-color: #f7f7f7;
         border-radius: 100%;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
       }
     }
 
     .btn-close-header {
-      padding-right: 10px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -686,8 +682,8 @@
   }
 
   .box-footer-mobile {
-    border-top: 1px solid lightgray;
-    background-color: #fff;
+    border-top: 1px solid #CACAD1;
+    background-color: #F3F3F5;
   }
 
   .box-modal-default {
@@ -709,6 +705,42 @@
     .wrap-main-item-result {
       width: 170px !important;
       max-width: 180px !important;
+    }
+  }
+}
+.pre-filter-icon {
+  display: flex;
+  min-width: 48px;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid rgb(224, 224, 224);
+  background: rgb(250, 250, 250);
+  border-top-left-radius: 32px;
+  border-bottom-left-radius: 32px;
+
+}
+.take-photo {
+  border-radius: 100%;
+  padding: 3px;
+  background:  linear-gradient(360deg, #E9E9EC 0%, #FFFFFF 44.79%, #AAABB5 100%);
+  .take-photo-wrapper {    
+    border-radius: 100%;
+    padding: 30px;  
+    .outer {
+      border-radius: 100%;
+      padding: 3px;
+      background: linear-gradient(180deg, #AAABB5 0%, #FFFFFF 100%);
+      box-shadow: -2px 10px 24px rgba(43, 44, 70, 0.6);
+    }
+    .inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 192px;
+      height: 192px;
+      border-radius: 100%;
+      background: linear-gradient(180deg, #FFFFFF 30.73%, #C5C5C5 100%);
     }
   }
 }

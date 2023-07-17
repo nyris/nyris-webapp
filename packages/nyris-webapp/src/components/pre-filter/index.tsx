@@ -109,22 +109,37 @@ function PreFilterComponent(props: Props) {
       flexDirection={'column'}
       style={{ position: 'relative' }}
     >
-      <Typography
+      <div
         style={{
-          color: '#000',
-          fontSize: '24px',
-          fontWeight: 700,
-          paddingLeft: isMobile ? '0px' : '14px',
-          marginBottom: isMobile ? '0px' : '-8px',
-          marginTop: isMobile ? '0px' : '24px',
+          background: 'white',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          position: 'sticky',
+          top: 0,
+          zIndex: 100,
         }}
       >
-        {settings.preFilterTitle}
-      </Typography>
+        <Typography
+          style={{
+            color: '#000',
+            fontSize: '24px',
+            fontWeight: 700,
+            paddingLeft: isMobile ? '0px' : '14px',
+            marginBottom: isMobile ? '0px' : '-8px',
+            marginTop: isMobile ? '0px' : '24px',
+          }}
+        >
+          {settings.preFilterTitle}
+        </Typography>
 
+        <Button onClick={handleClose}>
+          <CloseIcon />
+        </Button>
+      </div>
       <Box
         className="box-top"
-        style={isMobile ? { padding: 0 } : undefined}
+        style={isMobile ? { padding: 0, marginTop: '16px' } : undefined}
         display={'flex'}
         justifyContent={'space-between'}
         alignItems={'center'}
@@ -172,16 +187,10 @@ function PreFilterComponent(props: Props) {
             }}
           />
         </Box>
-
-        {!isMobile && (
-          <Button onClick={handleClose}>
-            <CloseIcon />
-          </Button>
-        )}
       </Box>
 
-      <Box style={{ margin: '10px 16px' }}>
-        {keyFilter && isMobile && (
+      {keyFilter && isMobile && (
+        <Box style={{ margin: '10px 16px' }}>
           <Box
             display={'flex'}
             className="box-keyFilter"
@@ -192,8 +201,8 @@ function PreFilterComponent(props: Props) {
               <CloseIcon style={{ fontSize: 12, color: '#2B2C46' }} />
             </Button>
           </Box>
-        )}
-      </Box>
+        </Box>
+      )}
       <Box
         className="box-bottom"
         height={'100%'}
@@ -274,7 +283,7 @@ function PreFilterComponent(props: Props) {
           <Typography>No result found</Typography>
         )}
       </Box>
-      {keyFilter && !isMobile && (
+      {!isMobile && (
         <Box
           className="footer"
           style={{ height: 64, marginTop: 'auto' }}
@@ -308,7 +317,7 @@ function PreFilterComponent(props: Props) {
           </Button>
         </Box>
       )}
-      {keyFilter && isMobile && (
+      {isMobile && (
         <Box
           className="footer"
           style={{

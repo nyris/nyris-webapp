@@ -23,7 +23,7 @@ export interface Field {
 }
 
 export interface AppSettings extends NyrisAPISettings {
-  exampleImages: string[];
+  exampleImages?: string[]; // deprecated
   preview: boolean;
   cadSearch?: boolean;
   noImageUrl?: string;
@@ -34,12 +34,13 @@ export interface AppSettings extends NyrisAPISettings {
   productCtaText?: string;
   appTitle?: string;
   refinements?: any;
+  showGroup?: boolean;
   preFilterOption?: boolean;
   warehouseVariant?: boolean;
   preFilterTitle?: string;
   postFilterOption?: boolean;
   showFeedbackAndShare?: boolean;
-  showMoreInfo?: boolean;
+  showMoreInfo?: boolean; // deprecated
   visualSearchFilterKey?: string;
   alogoliaFilterField?: string;
   headerText?: string;

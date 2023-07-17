@@ -25,7 +25,7 @@ export const ImagePreviewCarousel = (props: Props) => {
 
   const mainOptions: Options = useMemo(
     () => ({
-      type: 'loop',
+      type: 'slide',
       perPage: 1,
       perMove: 1,
       gap: '1rem',

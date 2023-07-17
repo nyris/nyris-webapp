@@ -9,6 +9,7 @@ import { useHistory } from 'react-router-dom';
 import {
   changeValueTextSearch,
   onResetRequestImage,
+  setImageCaptureHelpModal,
   setPreFilterDropdown,
   setUpdateSession,
 } from 'Store/search/Search';
@@ -19,14 +20,21 @@ import './common.scss';
 import FooterMobile from './FooterMobile';
 import HeaderMobile from './HeaderMobile';
 import Header from './Header';
-import ExpandablePanelComponent from './PanelResult';
 import PreFilterComponent from 'components/pre-filter';
 import { createSessionByApi } from 'services/session';
+import { isUndefined } from 'lodash';
+import ImageCaptureHelpModal from './ImageCaptureHelpModal';
+import MobilePostFilter from './MobilePostFilter';
 
 function Layout({ children }: ReactNode): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
-  const { valueTextSearch, loadingSearchAlgolia, preFilterDropdown } = search;
+  const {
+    valueTextSearch,
+    loadingSearchAlgolia,
+    preFilterDropdown,
+    imageCaptureHelpModal,
+  } = search;
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
@@ -128,8 +136,8 @@ function Layout({ children }: ReactNode): JSX.Element {
             }}
           >
             <HeaderApp
-              onToggleFilterMobile={() => {
-                setOpenFilter(!isOpenFilter);
+              onToggleFilterMobile={(show: boolean) => {
+                setOpenFilter(isUndefined(show) ? !isOpenFilter : show);
               }}
             />
           </div>
@@ -147,9 +155,10 @@ function Layout({ children }: ReactNode): JSX.Element {
           <Box
             className={`box-fillter ${isOpenFilter ? 'open' : 'close'} `}
             position={'absolute'}
+            style={{ top: isOpenFilter ? '0px' : '', height: '100%' }}
           >
-            <ExpandablePanelComponent
-              onToogleApplyFillter={() => {
+            <MobilePostFilter
+              onApply={() => {
                 setOpenFilter(!isOpenFilter);
               }}
             />
@@ -159,16 +168,37 @@ function Layout({ children }: ReactNode): JSX.Element {
           <Box
             className={`box-fillter open`}
             position={'absolute'}
-            style={{ top: '97px' }}
+            style={{ top: '0px', height: '100%' }}
           >
             <div
               style={{ width: !isMobile ? '90%' : '100%' }}
-              className={'wrap-filter-destop'}
+              className={'wrap-filter-desktop'}
             >
-              <div className={'bg-white box-filter-destop isMobile'}>
+              <div className={'bg-white box-filter-desktop isMobile'}>
                 <PreFilterComponent
                   handleClose={() =>
                     dispatch(setPreFilterDropdown(!preFilterDropdown))
+                  }
+                />
+              </div>
+            </div>
+          </Box>
+        )}
+
+        {isMobile && imageCaptureHelpModal && (
+          <Box
+            className={`box-fillter open`}
+            position={'absolute'}
+            style={{ top: '0px', height: '100%' }}
+          >
+            <div
+              style={{ width: !isMobile ? '90%' : '100%' }}
+              className={'wrap-filter-desktop'}
+            >
+              <div className={'bg-white box-filter-desktop isMobile'}>
+                <ImageCaptureHelpModal
+                  handleClose={() =>
+                    dispatch(setImageCaptureHelpModal(!imageCaptureHelpModal))
                   }
                 />
               </div>
