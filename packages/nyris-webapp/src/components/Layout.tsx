@@ -189,7 +189,7 @@ function Layout({ children }: ReactNode): JSX.Element {
           <Box
             className={`box-fillter open`}
             position={'absolute'}
-            style={{ top: '0px', height: '100%' }}
+            style={{ top: '0px', height: 'calc(100% - 64px)' }}
           >
             <div
               style={{ width: !isMobile ? '90%' : '100%' }}

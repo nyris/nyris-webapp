@@ -60,7 +60,7 @@ function FooterMobile(props: Props): JSX.Element {
             }
           />
         </NavLink>
-        {history.location?.pathname !== '/' && (
+        {history.location?.pathname !== '/' && !imageCaptureHelpModal && (
           <Box className="box-icon-camera-mobile">
             <Button
               onClick={() => {

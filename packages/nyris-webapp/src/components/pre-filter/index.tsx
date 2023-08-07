@@ -5,7 +5,6 @@ import IconSearch from 'common/assets/icons/icon_search.svg';
 import { getFilters, searchFilters } from 'services/filter';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { setUpdateKeyFilterDesktop } from 'Store/search/Search';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import { useMediaQuery } from 'react-responsive';
 import { isEmpty } from 'lodash';
 import { Skeleton } from '@material-ui/lab';
@@ -37,8 +36,10 @@ function PreFilterComponent(props: Props) {
         const arrResult =
           res.find(value => value.key === settings.visualSearchFilterKey)
             ?.values || [];
+
         const newResult = arrResult.sort().reduce((a: any, c: any) => {
-          let k = c[0].toLocaleUpperCase();
+          if (!c[0]) return a;
+          let k = c[0]?.toLocaleUpperCase();
           if (a[k]) a[k].push(c);
           else a[k] = [c];
           return a;
@@ -60,13 +61,6 @@ function PreFilterComponent(props: Props) {
     getDataFilterDesktop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleAlignment = (
-    event: React.MouseEvent<HTMLElement>,
-    value: any,
-  ) => {
-    setKeyFilter(value);
-  };
 
   const filterSearchHandler = async (value: any) => {
     if (!value) {
@@ -196,7 +190,9 @@ function PreFilterComponent(props: Props) {
             className="box-keyFilter"
             style={{ display: 'inline-flex' }}
           >
-            <Typography className="keyFilter">{keyFilter}</Typography>
+            <Typography className="keyFilter max-line-1">
+              {keyFilter}
+            </Typography>
             <Button style={{ padding: 0 }} onClick={() => setKeyFilter('')}>
               <CloseIcon style={{ fontSize: 12, color: '#2B2C46' }} />
             </Button>
@@ -216,25 +212,25 @@ function PreFilterComponent(props: Props) {
       >
         {Object.entries(resultFilter).map(([key, value]: any, i: any) => {
           return (
-            <Box
-              className="box-group-items"
-              style={
-                columns <= 4 ? { width: 'fit-content' } : { width: '100%' }
-              }
-            >
-              <Typography
-                style={{ fontWeight: 'bold', color: '#000', paddingLeft: 11 }}
+            <Box className="box-group-items" key={key}>
+              <Box
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  rowGap: '12px',
+                  width: '100%',
+                }}
               >
-                {key}
-              </Typography>
+                <Typography
+                  style={{
+                    fontWeight: 'bold',
+                    color: '#000',
+                    fontSize: '12px',
+                  }}
+                >
+                  {key}
+                </Typography>
 
-              <ToggleButtonGroup
-                value={keyFilter}
-                exclusive
-                onChange={handleAlignment}
-                aria-label=""
-                className="box-btn-group"
-              >
                 {value.map((item: any, index: any) => {
                   return (
                     <Tooltip
@@ -242,22 +238,30 @@ function PreFilterComponent(props: Props) {
                       title={item}
                       placement="top"
                       arrow={true}
-                      disableHoverListener={item.length < 20}
+                      disableHoverListener={item.length < 35}
                     >
-                      <ToggleButton
-                        value={item}
+                      <Box
                         aria-label={item}
-                        className="item-btn"
-                        onChange={() => {
+                        style={{
+                          cursor: 'pointer',
+                          fontSize: '12px',
+                          minHeight: '20px',
+                          color: '#2B2C46',
+                          width: '100%',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                        onClick={() => {
                           setKeyFilter(item);
                         }}
                       >
-                        {truncateString(item, !isMobile ? 20 : 35)}
-                      </ToggleButton>
+                        {truncateString(item, !isMobile ? 35 : 35)}
+                      </Box>
                     </Tooltip>
                   );
                 })}
-              </ToggleButtonGroup>
+              </Box>
             </Box>
           );
         })}

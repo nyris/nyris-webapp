@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const ImagePreviewCarousel = (props: Props) => {
-  let { imgItem, onSearchImage, handlerCloseModal } = props;
+  let { imgItem } = props;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const mainRef: any = useRef(null);
   const thumbsRef: any = useRef(null);
@@ -60,12 +60,6 @@ export const ImagePreviewCarousel = (props: Props) => {
           style={{ objectFit: 'contain', minHeight: '400px' }}
           alt="preview"
           src={slide.url}
-          onClick={() => {
-            if (!thumbs) {
-              handlerCloseModal();
-              onSearchImage(slide.url);
-            }
-          }}
         />
       </SplideSlide>
     ));

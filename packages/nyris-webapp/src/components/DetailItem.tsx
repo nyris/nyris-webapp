@@ -79,6 +79,7 @@ function DetailItem(props: Props) {
     setDataImageCarouSel(valueKey);
   };
   const { t } = useTranslation();
+  const ctaLink = dataItem[settings.field?.ctaLinkField];
 
   return (
     <Box
@@ -101,11 +102,7 @@ function DetailItem(props: Props) {
           }
         >
           {dataImageCarousel.length > 0 ? (
-            <ImagePreviewCarousel
-              imgItem={dataImageCarousel}
-              onSearchImage={onSearchImage}
-              handlerCloseModal={() => handlerCloseModal?.()}
-            />
+            <ImagePreviewCarousel imgItem={dataImageCarousel} />
           ) : (
             <img
               src={NoImage}
@@ -215,20 +212,24 @@ function DetailItem(props: Props) {
                   alignItems={'center'}
                   className="btn-detail-item"
                 >
-                  <Button
+                  <Box
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
+                      alignItems: 'center',
                       width: '100%',
                       padding: '0px 12px',
                       minHeight: 64,
+                      cursor: ctaLink ? 'pointer' : 'normal',
                     }}
-                    onClick={() =>
-                      window.open(
-                        `${dataItem[settings.field.ctaLinkField]}`,
-                        '_blank',
-                      )
-                    }
+                    onClick={() => {
+                      if (ctaLink) {
+                        window.open(
+                          `${dataItem[settings.field.ctaLinkField]}`,
+                          '_blank',
+                        );
+                      }
+                    }}
                   >
                     <Typography
                       className="text-f18 fw-700 text-white max-line-2"
@@ -241,12 +242,14 @@ function DetailItem(props: Props) {
                     >
                       {dataItem[settings.field.productName]}
                     </Typography>
-                    <img
-                      src={IconOpenLink}
-                      alt=""
-                      style={{ minWidth: 23, marginLeft: 5 }}
-                    />
-                  </Button>
+                    {ctaLink && (
+                      <img
+                        src={IconOpenLink}
+                        alt=""
+                        style={{ minWidth: 23, marginLeft: 5 }}
+                      />
+                    )}
+                  </Box>
                 </Box>
                 {dataItem[settings.field.productDetails] && (
                   <Box className="w-100">
