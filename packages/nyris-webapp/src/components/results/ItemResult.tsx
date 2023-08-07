@@ -103,7 +103,7 @@ function ItemResult(props: Props) {
       dispatch(updateStatusLoading(false));
     }, 400);
   };
-
+  const ctaLink = dataItem[settings.field?.ctaLinkField];
   return (
     <Box className="wrap-main-item-result">
       <DefaultModal
@@ -185,11 +185,6 @@ function ItemResult(props: Props) {
               />
             )}
           </Button>
-          {isHover && (
-            <Box className="box-hover">
-              <Button>View item</Button>
-            </Box>
-          )}
         </Box>
       </Box>
 
@@ -319,16 +314,13 @@ function ItemResult(props: Props) {
                   justifyContent: 'space-between',
                   width: '100%',
                   padding: 0,
-                  cursor: dataItem[settings.field?.ctaLinkField]
-                    ? 'pointer'
-                    : 'normal',
+                  cursor: ctaLink ? 'pointer' : 'normal',
                 }}
                 onClick={() => {
-                  feedbackConversionEpic(state, indexItem, dataItem.sku);
-                  window.open(
-                    `${dataItem[settings.field.ctaLinkField]}`,
-                    '_blank',
-                  );
+                  if (ctaLink) {
+                    feedbackConversionEpic(state, indexItem, dataItem.sku);
+                    window.open(`${ctaLink}`, '_blank');
+                  }
                 }}
               >
                 <Typography
@@ -340,17 +332,14 @@ function ItemResult(props: Props) {
                     fontSize: '11px',
                     letterSpacing: '0.27px',
                     wordBreak: 'break-all',
-                    maxWidth:
-                      !isMobile && dataItem[settings.field?.ctaLinkField]
-                        ? '136px'
-                        : '164x',
+                    maxWidth: !isMobile && ctaLink ? '136px' : '164x',
                     paddingRight: '8px',
                   }}
                   align="left"
                 >
                   {truncateString(dataItem[settings.field.productName], 45)}
                 </Typography>
-                {!isMobile && dataItem[settings.field?.ctaLinkField] && (
+                {!isMobile && ctaLink && (
                   <img src={IconOpenLink} alt="more-info" width={20} />
                 )}
               </Box>
