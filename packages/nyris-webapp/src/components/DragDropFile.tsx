@@ -19,6 +19,7 @@ import { useState } from 'react';
 import IconUpload from 'common/assets/images/Icon_Upload.svg';
 import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
+import { isEmpty } from 'lodash';
 
 interface Props {
   acceptTypes: any;
@@ -33,7 +34,7 @@ function DragDropFile(props: Props) {
   const searchState = useAppSelector(state => state);
   const {
     settings,
-    search: { keyFilter },
+    search: { preFilter },
   } = searchState;
   const [isLoadingLoadFile, setLoadingLoadFile] = useState<any>(false);
   const { t } = useTranslation();
@@ -50,10 +51,10 @@ function DragDropFile(props: Props) {
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
-      const preFilter = [
+      const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: [`${keyFilter}`],
+          values: Object.keys(preFilter) as string[],
         },
       ];
       let region: RectCoords | undefined;
@@ -68,7 +69,7 @@ function DragDropFile(props: Props) {
         image,
         settings,
         region,
-        filters: keyFilter ? preFilter : undefined,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       }).then((res: any) => {
         res?.results.map((item: any) => {
           filters.push({
