@@ -30,7 +30,7 @@ function FooterMobile(props: Props): JSX.Element {
         alignItems={'center'}
         height={'100%'}
         justifyContent={'space-between'}
-        style={{ paddingLeft: '40px', paddingRight: '40px' }}
+        style={{ paddingLeft: '40px', paddingRight: '40px', height: '64px' }}
       >
         <NavLink
           style={{

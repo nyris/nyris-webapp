@@ -21,7 +21,6 @@ import ProductList from 'components/ProductList';
 import ExpandablePanelComponent from 'components/PanelResult';
 import { debounce, isEmpty } from 'lodash';
 import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
-
 import {
   Configure,
   connectStateResults,
@@ -29,7 +28,6 @@ import {
   Pagination,
 } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
-import { Link } from 'react-router-dom';
 import { feedbackRegionEpic, feedbackSuccessEpic } from 'services/Feedback';
 import { createImage, findByImage, findRegions } from 'services/image';
 import { showFeedback, showResults } from 'Store/nyris/Nyris';
@@ -49,9 +47,12 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
 import { DEFAULT_REGION } from '../../constants';
 import { useTranslation } from 'react-i18next';
+import RfqModal from 'components/rfq/RfqModal';
+import { getCroppedCanvas } from 'helpers/getCroppedCanvas';
 
 interface Props {
   allSearchResults: any;
+  isSearchStalled?: boolean;
 }
 
 function ResultComponent(props: Props) {
@@ -79,9 +80,15 @@ function ResultComponent(props: Props) {
   const [showAdjustInfo, setAdjustInfo] = useState(false);
   const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
     useState(false);
-
+  const [rfqStatus, setRfqStatus] = useState<'inactive' | 'loading' | 'sent'>(
+    'inactive',
+  );
+  const [isRfqModalOpen, setIsRfqModalOpen] = useState(false);
   const imageUploadRef = useRef(null);
-
+  const rfqRef = useRef<any>(null);
+  const [isScrolled, setIsScrolled] = useState<
+    'not-scrolled' | 'scrolled' | 'user-scrolled'
+  >('not-scrolled');
   useEffect(() => {
     if (
       !loadingSearchAlgolia &&
@@ -104,11 +111,14 @@ function ResultComponent(props: Props) {
   useEffect(() => {
     if (selectedRegion) {
       setImageSelection(selectedRegion);
+      setRfqStatus('inactive');
+      setIsScrolled('not-scrolled');
     }
   }, [selectedRegion]);
 
   useEffect(() => {
     if (requestImage) {
+      setIsScrolled('not-scrolled');
       executeScroll();
       setImageSelection(DEFAULT_REGION);
     }
@@ -313,97 +323,218 @@ function ResultComponent(props: Props) {
   const showSidePanel = useMemo(() => {
     return requestImage || (settings.postFilterOption && showPostFilter);
   }, [showPostFilter, settings.postFilterOption, requestImage]);
+
+  const scrollToSection = () => {
+    rfqRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      setIsScrolled('user-scrolled');
+    }, 2000);
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setTimeout(() => {
+        setIsScrolled(s => (s === 'not-scrolled' ? 'scrolled' : s));
+        setTimeout(() => {
+          setIsScrolled(s => (s === 'scrolled' ? 'user-scrolled' : s));
+        }, 5000);
+      }, 1000);
+    };
+    if (requestImage)
+      window.addEventListener('scroll', handleScroll, { capture: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [requestImage]);
+
   return (
-    <div
-      className={`wrap-main-result loading`}
-      id="wrap-main-result"
-      ref={refBoxResult}
-    >
-      <>
-        {filterString && (
-          <Configure
-            query={search.valueTextSearch.query}
-            filters={filterString}
-          ></Configure>
-        )}
-        <Box className="box-wrap-result-component">
-          {!isMobile && (
-            <div className="box-search">
-              <CustomSearchBox />
-            </div>
+    <>
+      <div
+        className={`wrap-main-result loading`}
+        id="wrap-main-result"
+        ref={refBoxResult}
+      >
+        <>
+          <RfqModal
+            requestImage={requestImage}
+            selectedRegion={selectedRegion}
+            setIsRfqModalOpen={setIsRfqModalOpen}
+            isRfqModalOpen={isRfqModalOpen}
+            setRfqStatus={setRfqStatus}
+          />
+          {filterString && (
+            <Configure
+              query={search.valueTextSearch.query}
+              filters={filterString}
+            ></Configure>
           )}
-          <Box className="box-result">
-            <>
-              <Box className="btn-open-support">
-                <Link to={'/support'} style={{ color: '#3E36DC' }}>
-                  <img src={IconSupport} alt="" width={16} height={16} />
-                </Link>
-              </Box>
-              {!isMobile && (
-                <>
-                  {showSidePanel && (
-                    <Box
-                      className={`wrap-main-col-left ${
-                        toggleColLeft ? 'toggle' : ''
-                      }`}
-                    >
-                      <Box className="box-toggle-coloumn">
-                        <Button
-                          style={{ color: '#55566b' }}
-                          onClick={() => {
-                            setToggleColLeft(!toggleColLeft);
-                          }}
-                        >
-                          {toggleColLeft ? (
-                            <KeyboardArrowRightOutlinedIcon
-                              style={{ fontSize: 30 }}
-                            />
-                          ) : (
-                            <ArrowBackIosOutlinedIcon
-                              style={{ fontSize: 20 }}
-                            />
-                          )}
-                        </Button>
-                      </Box>
-                      {settings.preview && requestImage && (
-                        <Box
-                          className="col-left"
-                          // style={{
-                          //   backgroundColor: settings?.theme?.primaryColor,
-                          // }}
-                        >
-                          <Box className="box-preview">
-                            <Box
-                              className="preview-item"
-                              style={{
-                                backgroundColor: 'white',
-                                paddingTop: '40px',
-                                width: '100%',
-                              }}
-                            >
-                              <div
-                                style={{
-                                  backgroundColor: '#AAABB5',
-                                  width: '100%',
-                                }}
-                              >
-                                <Preview
-                                  key={requestImage?.id}
-                                  onSelectionChange={(r: RectCoords) => {
-                                    setImageSelection(r);
-                                    debouncedOnImageSelectionChange(r);
+          <Box className="box-wrap-result-component">
+            {!isMobile && (
+              <div className="box-search">
+                <CustomSearchBox />
+              </div>
+            )}
+            <Box className="box-result">
+              <>
+                {!isMobile && (
+                  <>
+                    {showSidePanel && (
+                      <Box
+                        className={`wrap-main-col-left ${
+                          toggleColLeft ? 'toggle' : ''
+                        }`}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <Box className="box-toggle-coloumn">
+                          <Button
+                            style={{ color: '#55566b' }}
+                            onClick={() => {
+                              setToggleColLeft(!toggleColLeft);
+                            }}
+                          >
+                            {toggleColLeft ? (
+                              <KeyboardArrowRightOutlinedIcon
+                                style={{ fontSize: 30 }}
+                              />
+                            ) : (
+                              <ArrowBackIosOutlinedIcon
+                                style={{ fontSize: 20 }}
+                              />
+                            )}
+                          </Button>
+                        </Box>
+                        <Box>
+                          {settings.preview && requestImage && (
+                            <Box className="col-left">
+                              <Box className="box-preview">
+                                <Box
+                                  className="preview-item"
+                                  style={{
+                                    backgroundColor: 'white',
+                                    paddingTop: '40px',
+                                    width: '100%',
                                   }}
-                                  image={requestImage?.canvas}
-                                  selection={imageSelection || DEFAULT_REGION}
-                                  regions={filteredRegions}
-                                  maxWidth={320}
-                                  maxHeight={320}
-                                  dotColor={'#FBD914'}
-                                  minCropWidth={60}
-                                  minCropHeight={60}
-                                />
-                              </div>
+                                >
+                                  <div
+                                    style={{
+                                      backgroundColor: '#AAABB5',
+                                      width: '100%',
+                                    }}
+                                  >
+                                    <Preview
+                                      key={requestImage?.id}
+                                      onSelectionChange={(r: RectCoords) => {
+                                        setImageSelection(r);
+                                        debouncedOnImageSelectionChange(r);
+                                      }}
+                                      image={requestImage?.canvas}
+                                      selection={
+                                        imageSelection || DEFAULT_REGION
+                                      }
+                                      regions={filteredRegions}
+                                      maxWidth={320}
+                                      maxHeight={320}
+                                      dotColor={'#FBD914'}
+                                      minCropWidth={60}
+                                      minCropHeight={60}
+                                    />
+                                  </div>
+                                </Box>
+                              </Box>
+                              {(showAdjustInfoBasedOnConfidence ||
+                                showAdjustInfo) && (
+                                <Box
+                                  className="box-title_col-left"
+                                  alignItems="center"
+                                  style={{
+                                    backgroundColor: '#3E36DC',
+                                    display: 'flex',
+                                    columnGap: '6px',
+                                    padding: '5px',
+                                  }}
+                                >
+                                  <IconInfo color="white" />
+                                  <Typography
+                                    style={{
+                                      fontSize: 10,
+                                      color: '#fff',
+                                    }}
+                                  >
+                                    {showAdjustInfo
+                                      ? t('crop the image for better results')
+                                      : 'crop the image for better results'}
+                                  </Typography>
+                                </Box>
+                              )}
                             </Box>
+                          )}
+
+                          {showPostFilter && (
+                            <Box className="col-left__bottom">
+                              <ExpandablePanelComponent
+                                disjunctiveFacets={
+                                  props.allSearchResults.disjunctiveFacets
+                                }
+                              />
+                            </Box>
+                          )}
+                        </Box>
+                      </Box>
+                    )}
+                  </>
+                )}
+
+                <Box
+                  className={`col-right ${
+                    settings.preview && 'ml-auto mr-auto'
+                  } ${isMobile && 'col-right-result-mobile'}`}
+                  style={{
+                    paddingTop: isMobile ? '16px' : '40px',
+                    overflow: !isMobile ? 'auto' : '',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  {!isMobile && (
+                    <Box className="wrap-box-refinements">
+                      <CurrentRefinements statusSwitchButton={true} />
+                    </Box>
+                  )}
+
+                  {isMobile && settings.preview && requestImage && (
+                    <Box
+                      className="col-left"
+                      style={{
+                        backgroundColor: '#AAABB5',
+                        marginBottom: '15px',
+                      }}
+                    >
+                      {
+                        <Box className="box-preview">
+                          <Box
+                            className="preview-item"
+                            style={{ backgroundColor: 'white' }}
+                          >
+                            <Preview
+                              key={requestImage?.id}
+                              onSelectionChange={(r: RectCoords) => {
+                                setImageSelection(r);
+                                debouncedOnImageSelectionChange(r);
+                              }}
+                              image={requestImage?.canvas}
+                              selection={imageSelection || DEFAULT_REGION}
+                              regions={filteredRegions}
+                              maxWidth={240}
+                              maxHeight={240}
+                              dotColor={'#FBD914'}
+                              minCropWidth={60}
+                              minCropHeight={60}
+                            />
                           </Box>
                           {(showAdjustInfoBasedOnConfidence ||
                             showAdjustInfo) && (
@@ -415,6 +546,7 @@ function ResultComponent(props: Props) {
                                 display: 'flex',
                                 columnGap: '6px',
                                 padding: '5px',
+                                width: 'fit-content',
                               }}
                             >
                               <IconInfo color="white" />
@@ -431,153 +563,217 @@ function ResultComponent(props: Props) {
                             </Box>
                           )}
                         </Box>
-                      )}
-                      {showPostFilter && (
-                        <Box className="col-left__bottom">
-                          <ExpandablePanelComponent
-                            disjunctiveFacets={
-                              props.allSearchResults.disjunctiveFacets
-                            }
-                          />
-                        </Box>
-                      )}
+                      }
                     </Box>
                   )}
-                </>
-              )}
 
-              <Box
-                className={`col-right ${
-                  settings.preview && 'ml-auto mr-auto'
-                } ${isMobile && 'col-right-result-mobile'}`}
-                style={{
-                  paddingTop: isMobile ? '16px' : '40px',
-                }}
-              >
-                {!isMobile && (
-                  <Box className="wrap-box-refinements">
-                    <CurrentRefinements statusSwitchButton={true} />
-                  </Box>
-                )}
-
-                {isMobile && settings.preview && requestImage && (
                   <Box
-                    className="col-left"
                     style={{
-                      backgroundColor: '#AAABB5',
-                      marginBottom: '15px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flexGrow: 1,
+                      backgroundColor: '#FAFAFA',
                     }}
                   >
-                    {
-                      <Box className="box-preview">
-                        <Box
-                          className="preview-item"
-                          style={{ backgroundColor: 'white' }}
-                        >
-                          <Preview
-                            key={requestImage?.id}
-                            onSelectionChange={(r: RectCoords) => {
-                              setImageSelection(r);
-                              debouncedOnImageSelectionChange(r);
-                            }}
-                            image={requestImage?.canvas}
-                            selection={imageSelection || DEFAULT_REGION}
-                            regions={filteredRegions}
-                            maxWidth={240}
-                            maxHeight={240}
-                            dotColor={'#FBD914'}
-                            minCropWidth={60}
-                            minCropHeight={60}
-                          />
-                        </Box>
-                        {(showAdjustInfoBasedOnConfidence ||
-                          showAdjustInfo) && (
+                    <Box className={'box-item-result ml-auto mr-auto'}>
+                      <ProductList
+                        getUrlToCanvasFile={getUrlToCanvasFile}
+                        setLoading={false}
+                        sendFeedBackAction={sendFeedBackAction}
+                        moreInfoText={moreInfoText}
+                        requestImage={requestImage}
+                        searchQuery={search.valueTextSearch.query}
+                      />
+                      <Box
+                        className="pagination-result"
+                        style={{
+                          width: '100%',
+                          margin: !isMobile ? '20px auto' : '',
+                          marginBottom:
+                            isMobile && !requestImage ? '64px' : '20px',
+                          padding: '0 20%',
+                        }}
+                      >
+                        {props.allSearchResults?.hits.length > 0 &&
+                          (requestImage || search.valueTextSearch.query) && (
+                            <Pagination
+                              showFirst={false}
+                              translations={{
+                                previous: (
+                                  <ArrowLeftIcon style={{ color: '#161616' }} />
+                                ),
+                                next: (
+                                  <ArrowRightIcon
+                                    style={{ color: '#161616' }}
+                                  />
+                                ),
+                              }}
+                            />
+                          )}
+                      </Box>
+                      {requestImage &&
+                        !loadingSearchAlgolia &&
+                        !props.isSearchStalled && (
                           <Box
-                            className="box-title_col-left"
-                            alignItems="center"
                             style={{
-                              backgroundColor: '#3E36DC',
-                              display: 'flex',
-                              columnGap: '6px',
-                              padding: '5px',
-                              width: 'fit-content',
+                              padding: '24px 16px 56px 16px',
+                              backgroundColor: '#F6F3F1',
+                              width: '100%',
+                              marginBottom: !isMobile ? '32px' : '0px',
                             }}
+                            className="rfq-box"
+                            ref={rfqRef}
                           >
-                            <IconInfo color="white" />
-                            <Typography
+                            <Box
                               style={{
-                                fontSize: 10,
-                                color: '#fff',
+                                display: 'flex',
+                                columnGap: '16px',
+                                alignItems: 'center',
+                                justifyContent: 'space-around',
                               }}
                             >
-                              {showAdjustInfo
-                                ? t('crop the image for better results')
-                                : 'crop the image for better results'}
-                            </Typography>
+                              <Box>
+                                <Box
+                                  style={{
+                                    paddingBottom: '12px',
+                                  }}
+                                >
+                                  <Box
+                                    style={{
+                                      fontSize: '14px',
+                                      color:
+                                        rfqStatus === 'inactive'
+                                          ? '#4B4B4A'
+                                          : '#CACAD1',
+                                      fontWeight: 'bold',
+                                    }}
+                                  >
+                                    No Matches Found?
+                                  </Box>
+                                  <Box
+                                    style={{
+                                      fontSize: '12px',
+                                      color:
+                                        rfqStatus === 'inactive'
+                                          ? '#4B4B4A'
+                                          : '#CACAD1',
+                                      fontWeight: 'normal',
+                                    }}
+                                  >
+                                    Get personalised help from our team of
+                                    product experts
+                                  </Box>
+                                </Box>
+                                <button
+                                  style={{
+                                    width: '100%',
+                                    background:
+                                      rfqStatus === 'inactive'
+                                        ? '#4B4B4A'
+                                        : '#E9E9EC',
+                                    boxShadow:
+                                      rfqStatus === 'inactive'
+                                        ? '0px 0px 4px 0px rgba(0, 0, 0, 0.25)'
+                                        : '',
+                                    borderRadius: '2px',
+                                    padding: '16px 0px 16px 16px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    color:
+                                      rfqStatus === 'inactive'
+                                        ? '#fff'
+                                        : '#CACAD1',
+                                    fontSize: '14px',
+                                    height: '48px',
+                                    cursor:
+                                      rfqStatus === 'inactive'
+                                        ? 'pointer'
+                                        : 'default',
+                                    border: 'none',
+                                  }}
+                                  disabled={rfqStatus !== 'inactive'}
+                                  onClick={() => {
+                                    setIsRfqModalOpen(true);
+                                  }}
+                                >
+                                  Request a Quote
+                                </button>
+                              </Box>
+                              <div>
+                                <img
+                                  src={getCroppedCanvas(
+                                    requestImage?.canvas,
+                                    selectedRegion,
+                                  )?.toDataURL()}
+                                  alt="request_image"
+                                  style={{
+                                    mixBlendMode:
+                                      rfqStatus !== 'inactive'
+                                        ? 'overlay'
+                                        : 'unset',
+                                    maxHeight: '181px',
+                                    maxWidth: '181px',
+                                  }}
+                                />
+                              </div>
+                            </Box>
                           </Box>
                         )}
-                      </Box>
-                    }
-                  </Box>
-                )}
-
-                <Box className={'box-item-result ml-auto mr-auto'}>
-                  <ProductList
-                    getUrlToCanvasFile={getUrlToCanvasFile}
-                    setLoading={false}
-                    sendFeedBackAction={sendFeedBackAction}
-                    moreInfoText={moreInfoText}
-                    requestImage={requestImage}
-                    searchQuery={search.valueTextSearch.query}
-                  />
-                  <Box
-                    className="pagination-result"
-                    style={{
-                      width: '100%',
-                      margin: '20px auto',
-                      padding: '0 20%',
-                    }}
-                  >
-                    {props.allSearchResults?.hits.length > 0 &&
-                      (requestImage || search.valueTextSearch.query) && (
-                        <Pagination
-                          showFirst={false}
-                          translations={{
-                            previous: (
-                              <ArrowLeftIcon style={{ color: '#161616' }} />
-                            ),
-                            next: (
-                              <ArrowRightIcon style={{ color: '#161616' }} />
-                            ),
-                          }}
-                        />
-                      )}
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
-            </>
-          </Box>
-          {!isMobile && (
-            <Box>
-              <Box className="box-notify">
-                <FooterResult search={search}>
-                  <Box
-                    display={'flex'}
-                    style={{ padding: '0 20px' }}
-                    className="box-change-hit-items"
-                  >
-                    <span style={{ paddingRight: '10px' }}>
-                      {t('Items per page')}:
-                    </span>
-                    <HitsPerPage items={showHits} defaultRefinement={20} />
-                  </Box>
-                </FooterResult>
-              </Box>
+              </>
             </Box>
-          )}
-        </Box>
-      </>
-    </div>
+
+            {!isMobile && (
+              <Box>
+                <Box className="box-notify">
+                  <FooterResult search={search}>
+                    <Box
+                      display={'flex'}
+                      style={{ padding: '0 20px' }}
+                      className="box-change-hit-items"
+                    >
+                      <span style={{ paddingRight: '10px' }}>
+                        {t('Items per page')}:
+                      </span>
+                      <HitsPerPage items={showHits} defaultRefinement={20} />
+                    </Box>
+                  </FooterResult>
+                </Box>
+              </Box>
+            )}
+          </Box>
+        </>
+      </div>
+      {isScrolled === 'scrolled' &&
+        requestImage &&
+        isMobile &&
+        props.allSearchResults.hits.length > 0 && (
+          <div
+            style={{
+              fontSize: '14px',
+              fontWeight: 'bold',
+              letterSpacing: '1.16px',
+              color: 'white',
+              borderRadius: '16px',
+              backgroundColor: '#4B4B4A',
+              boxShadow: '0px 0px 16px 0px rgba(85, 86, 107, 0.70)',
+              padding: '8px 16px',
+              zIndex: 100,
+              position: 'absolute',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '356px',
+              bottom: '86px',
+              cursor: 'pointer',
+            }}
+            onClick={scrollToSection}
+          >
+            Scroll down for personalized support
+          </div>
+        )}
+    </>
   );
 }
 

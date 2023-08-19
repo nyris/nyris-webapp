@@ -36,13 +36,6 @@ function AppMD() {
 
   return (
     <Box className={`box-content-main ${isLoading ? 'loading' : ''}`}>
-      {isMobile && (
-        <Box className="btn-open-support">
-          <Link to={'/support'} style={{ color: '#3E36DC' }}>
-            <img src={IconSupport} alt="" width={16} height={16} />
-          </Link>
-        </Box>
-      )}
       <Box className="box-content_top">
         <Box className="fw-700 text-f32 text-dark2">
           <h1>{settings.headerText}</h1>

@@ -25,16 +25,12 @@ import { createSessionByApi } from 'services/session';
 import { isUndefined } from 'lodash';
 import ImageCaptureHelpModal from './ImageCaptureHelpModal';
 import MobilePostFilter from './MobilePostFilter';
+import AppMobile from './AppMobile';
 
 function Layout({ children }: ReactNode): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
-  const {
-    valueTextSearch,
-    loadingSearchAlgolia,
-    preFilterDropdown,
-    imageCaptureHelpModal,
-  } = search;
+  const { valueTextSearch, loadingSearchAlgolia } = search;
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
@@ -102,7 +98,7 @@ function Layout({ children }: ReactNode): JSX.Element {
   }, [apiKey, appId, indexName]);
 
   return (
-    <Box position={'relative'} className="wrap-mobile">
+    <div style={{ position: 'relative' }}>
       {loadingSearchAlgolia && (
         <Box className="box-wrap-loading" style={{ zIndex: 99999999 }}>
           <Box className="loadingSpinCT" style={{ top: 0, bottom: 0 }}>
@@ -120,93 +116,42 @@ function Layout({ children }: ReactNode): JSX.Element {
           }
         }}
       >
-        <div className={`layout-main-${classNameBoxVersion}`}>
-          <div
-            className={
-              !isMobile
-                ? `box-header-${classNameBoxVersion}-main`
-                : isShowHeaderMobile
-                ? `box-header-${classNameBoxVersion}-main`
-                : ''
-            }
-            style={{
-              ...(classNameBoxVersion === 'newVersion'
-                ? { background: settings.theme?.headerColor }
-                : {}),
-            }}
-          >
-            <HeaderApp
-              onToggleFilterMobile={(show: boolean) => {
-                setOpenFilter(isUndefined(show) ? !isOpenFilter : show);
-              }}
-            />
-          </div>
-
-          <div className={`box-body-${classNameBoxVersion}-wrap-main`}>
-            {children}
-          </div>
-          {isMobile && (
-            <div className="footer-wrap-main">
-              <FooterApp />
-            </div>
-          )}
-        </div>
-        {isMobile && (
-          <Box
-            className={`box-fillter ${isOpenFilter ? 'open' : 'close'} `}
-            position={'absolute'}
-            style={{ top: isOpenFilter ? '0px' : '', height: '100%' }}
-          >
-            <MobilePostFilter
-              onApply={() => {
-                setOpenFilter(!isOpenFilter);
-              }}
-            />
-          </Box>
-        )}
-        {isMobile && preFilterDropdown && (
-          <Box
-            className={`box-fillter open`}
-            position={'absolute'}
-            style={{ top: '0px', height: '100%' }}
-          >
+        {isMobile && <AppMobile>{children}</AppMobile>}
+        {!isMobile && (
+          <div className={`layout-main-${classNameBoxVersion}`}>
             <div
-              style={{ width: !isMobile ? '90%' : '100%' }}
-              className={'wrap-filter-desktop'}
+              className={
+                !isMobile
+                  ? `box-header-${classNameBoxVersion}-main`
+                  : isShowHeaderMobile
+                  ? `box-header-${classNameBoxVersion}-main`
+                  : ''
+              }
+              style={{
+                ...(classNameBoxVersion === 'newVersion'
+                  ? { background: settings.theme?.headerColor }
+                  : {}),
+              }}
             >
-              <div className={'bg-white box-filter-desktop isMobile'}>
-                <PreFilterComponent
-                  handleClose={() =>
-                    dispatch(setPreFilterDropdown(!preFilterDropdown))
-                  }
-                />
-              </div>
+              <HeaderApp
+                onToggleFilterMobile={(show: boolean) => {
+                  setOpenFilter(isUndefined(show) ? !isOpenFilter : show);
+                }}
+              />
             </div>
-          </Box>
-        )}
 
-        {isMobile && imageCaptureHelpModal && (
-          <Box
-            className={`box-fillter open`}
-            position={'absolute'}
-            style={{ top: '0px', height: 'calc(100% - 64px)' }}
-          >
-            <div
-              style={{ width: !isMobile ? '90%' : '100%' }}
-              className={'wrap-filter-desktop'}
-            >
-              <div className={'bg-white box-filter-desktop isMobile'}>
-                <ImageCaptureHelpModal
-                  handleClose={() =>
-                    dispatch(setImageCaptureHelpModal(!imageCaptureHelpModal))
-                  }
-                />
-              </div>
+            <div className={`box-body-${classNameBoxVersion}-wrap-main`}>
+              {children}
             </div>
-          </Box>
+            {isMobile && (
+              <div className="footer-wrap-main">
+                <FooterApp />
+              </div>
+            )}
+          </div>
         )}
       </InstantSearch>
-    </Box>
+    </div>
   );
 }
 

@@ -11,7 +11,6 @@ export function getUrlParam(name: string): string | boolean | undefined {
   );
   if (results && results[2]) {
     // has value
-    console.log('has value', name, results[2]);
     return decodeURIComponent(results[2]);
   }
   return (
