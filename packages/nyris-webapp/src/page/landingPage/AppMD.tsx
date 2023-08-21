@@ -3,12 +3,9 @@ import React, { useState } from 'react';
 import './common.scss';
 import { cadExtensions } from '@nyris/nyris-api';
 import algoliasearch from 'algoliasearch/lite';
-import IconSupport from 'common/assets/icons/support3.svg';
 import DragDropFile from 'components/DragDropFile';
 import CustomSearchBox from 'components/input/inputSearch';
 import { connectInfiniteHits } from 'react-instantsearch-dom';
-import { useMediaQuery } from 'react-responsive';
-import { Link } from 'react-router-dom';
 import { useAppSelector } from 'Store/Store';
 import { AlgoliaSettings } from '../../types';
 
@@ -18,7 +15,6 @@ function AppMD() {
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
   const searchClient = algoliasearch(appId, apiKey);
   searchClient.initIndex(indexName);
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const acceptTypes = ['image/*']
     .concat(settings.cadSearch ? cadExtensions : [])

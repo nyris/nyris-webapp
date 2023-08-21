@@ -9,8 +9,6 @@ import { useHistory } from 'react-router-dom';
 import {
   changeValueTextSearch,
   onResetRequestImage,
-  setImageCaptureHelpModal,
-  setPreFilterDropdown,
   setUpdateSession,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
@@ -20,11 +18,8 @@ import './common.scss';
 import FooterMobile from './FooterMobile';
 import HeaderMobile from './HeaderMobile';
 import Header from './Header';
-import PreFilterComponent from 'components/pre-filter';
 import { createSessionByApi } from 'services/session';
 import { isUndefined } from 'lodash';
-import ImageCaptureHelpModal from './ImageCaptureHelpModal';
-import MobilePostFilter from './MobilePostFilter';
 import AppMobile from './AppMobile';
 
 function Layout({ children }: ReactNode): JSX.Element {

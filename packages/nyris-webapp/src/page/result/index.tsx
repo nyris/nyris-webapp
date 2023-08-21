@@ -13,7 +13,6 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import KeyboardArrowRightOutlinedIcon from '@material-ui/icons/KeyboardArrowRightOutlined';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
-import IconSupport from 'common/assets/icons/support3.svg';
 import { CurrentRefinements } from 'components/current-refinements/current-refinements';
 import FooterResult from 'components/FooterResult';
 import CustomSearchBox from 'components/input/inputSearch';
@@ -422,8 +421,10 @@ function ResultComponent(props: Props) {
                                 >
                                   <div
                                     style={{
-                                      backgroundColor: '#AAABB5',
+                                      backgroundColor: '#F3F3F5',
                                       width: '100%',
+                                      paddingTop: '16px',
+                                      paddingBottom: '16px',
                                     }}
                                   >
                                     <Preview
@@ -437,11 +438,12 @@ function ResultComponent(props: Props) {
                                         imageSelection || DEFAULT_REGION
                                       }
                                       regions={filteredRegions}
-                                      maxWidth={320}
-                                      maxHeight={320}
+                                      maxWidth={288}
+                                      maxHeight={288}
                                       dotColor={'#FBD914'}
                                       minCropWidth={60}
                                       minCropHeight={60}
+                                      rounded={true}
                                     />
                                   </div>
                                 </Box>
@@ -466,8 +468,8 @@ function ResultComponent(props: Props) {
                                     }}
                                   >
                                     {showAdjustInfo
-                                      ? t('crop the image for better results')
-                                      : 'crop the image for better results'}
+                                      ? t('Crop the image for better results')
+                                      : 'Crop the image for better results'}
                                   </Typography>
                                 </Box>
                               )}
@@ -534,6 +536,7 @@ function ResultComponent(props: Props) {
                               dotColor={'#FBD914'}
                               minCropWidth={60}
                               minCropHeight={60}
+                              rounded={false}
                             />
                           </Box>
                           {(showAdjustInfoBasedOnConfidence ||
@@ -557,8 +560,8 @@ function ResultComponent(props: Props) {
                                 }}
                               >
                                 {showAdjustInfo
-                                  ? t('crop the image for better results')
-                                  : 'crop the image for better results'}
+                                  ? t('Crop the image for better results')
+                                  : 'Crop the image for better results'}
                               </Typography>
                             </Box>
                           )}
@@ -575,7 +578,10 @@ function ResultComponent(props: Props) {
                       backgroundColor: '#FAFAFA',
                     }}
                   >
-                    <Box className={'box-item-result ml-auto mr-auto'}>
+                    <Box
+                      className={'box-item-result ml-auto mr-auto'}
+                      style={{ height: '100%' }}
+                    >
                       <ProductList
                         getUrlToCanvasFile={getUrlToCanvasFile}
                         setLoading={false}
@@ -592,6 +598,7 @@ function ResultComponent(props: Props) {
                           marginBottom:
                             isMobile && !requestImage ? '64px' : '20px',
                           padding: '0 20%',
+                          alignSelf: 'end',
                         }}
                       >
                         {props.allSearchResults?.hits.length > 0 &&
@@ -613,19 +620,25 @@ function ResultComponent(props: Props) {
                       </Box>
                       {requestImage &&
                         !loadingSearchAlgolia &&
-                        !props.isSearchStalled && (
+                        !props.isSearchStalled &&
+                        settings.rfq && (
                           <Box
                             style={{
-                              padding: '24px 16px 56px 16px',
+                              padding: '0px 16px 0px 16px',
                               backgroundColor: '#F6F3F1',
                               width: '100%',
                               marginBottom: !isMobile ? '32px' : '0px',
+                              alignSelf: 'end',
+                              height: '248px',
+                              display: 'flex',
+                              alignItems: 'center',
                             }}
                             className="rfq-box"
                             ref={rfqRef}
                           >
                             <Box
                               style={{
+                                width: '100%',
                                 display: 'flex',
                                 columnGap: '16px',
                                 alignItems: 'center',
@@ -653,6 +666,8 @@ function ResultComponent(props: Props) {
                                   <Box
                                     style={{
                                       fontSize: '12px',
+                                      maxWidth: '320x',
+                                      lineHeight: '14.1px',
                                       color:
                                         rfqStatus === 'inactive'
                                           ? '#4B4B4A'
@@ -666,7 +681,7 @@ function ResultComponent(props: Props) {
                                 </Box>
                                 <button
                                   style={{
-                                    width: '100%',
+                                    maxWidth: '200px',
                                     background:
                                       rfqStatus === 'inactive'
                                         ? '#4B4B4A'
@@ -676,7 +691,7 @@ function ResultComponent(props: Props) {
                                         ? '0px 0px 4px 0px rgba(0, 0, 0, 0.25)'
                                         : '',
                                     borderRadius: '2px',
-                                    padding: '16px 0px 16px 16px',
+                                    padding: '16px 16px 16px 16px',
                                     display: 'flex',
                                     alignItems: 'center',
                                     color:
@@ -713,6 +728,7 @@ function ResultComponent(props: Props) {
                                         : 'unset',
                                     maxHeight: '181px',
                                     maxWidth: '181px',
+                                    borderRadius: '2px',
                                   }}
                                 />
                               </div>
@@ -749,7 +765,8 @@ function ResultComponent(props: Props) {
       {isScrolled === 'scrolled' &&
         requestImage &&
         isMobile &&
-        props.allSearchResults.hits.length > 0 && (
+        props.allSearchResults.hits.length > 0 &&
+        settings.rfq && (
           <div
             style={{
               fontSize: '14px',
