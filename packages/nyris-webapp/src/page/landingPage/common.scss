@@ -969,7 +969,7 @@ button {
     }
   }
   .box-result {
-    height: calc(100svh - 199px);
+    height: calc(100svh - 148px);
     @media screen and (max-width: 776px) {
       height: 100%
     }
@@ -1703,7 +1703,6 @@ button {
 
 .wrap-main-col-left {
   max-width: 320px;
-  margin-right: 16px;
   width: 100%;
   box-shadow: 3px -2px 3px -3px #d3d4d8;
   overflow-x: hidden;
@@ -1723,15 +1722,11 @@ button {
     .box-toggle-coloumn {
       transition: all 010s ease-in-out;
       display: block !important;
-      right: 0;
-      left: 0;
       margin: auto;
     }
   }
   .box-toggle-coloumn {
     position: absolute;
-    right: 16px;
-    top: 0;
     z-index: 222;
   }
   .col-left__bottom {

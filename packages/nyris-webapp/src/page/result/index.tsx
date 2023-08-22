@@ -11,6 +11,8 @@ import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import KeyboardArrowRightOutlinedIcon from '@material-ui/icons/KeyboardArrowRightOutlined';
+import KeyboardArrowLeftOutlinedIcon from '@material-ui/icons/KeyboardArrowLeftOutlined';
+
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import { CurrentRefinements } from 'components/current-refinements/current-refinements';
@@ -323,13 +325,6 @@ function ResultComponent(props: Props) {
     return requestImage || (settings.postFilterOption && showPostFilter);
   }, [showPostFilter, settings.postFilterOption, requestImage]);
 
-  const scrollToSection = () => {
-    rfqRef.current?.scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => {
-      setIsScrolled('user-scrolled');
-    }, 2000);
-  };
-
   useEffect(() => {
     const handleScroll = () => {
       setTimeout(() => {
@@ -389,21 +384,25 @@ function ResultComponent(props: Props) {
                           justifyContent: 'space-between',
                         }}
                       >
-                        <Box className="box-toggle-coloumn">
+                        <Box
+                          className="box-toggle-coloumn"
+                          style={{
+                            right: requestImage ? '0px' : '16px',
+                          }}
+                        >
                           <Button
-                            style={{ color: '#55566b' }}
+                            style={{
+                              color: '#55566b',
+                              height: '32px',
+                            }}
                             onClick={() => {
                               setToggleColLeft(!toggleColLeft);
                             }}
                           >
                             {toggleColLeft ? (
-                              <KeyboardArrowRightOutlinedIcon
-                                style={{ fontSize: 30 }}
-                              />
+                              <KeyboardArrowRightOutlinedIcon />
                             ) : (
-                              <ArrowBackIosOutlinedIcon
-                                style={{ fontSize: 20 }}
-                              />
+                              <KeyboardArrowLeftOutlinedIcon />
                             )}
                           </Button>
                         </Box>
@@ -415,7 +414,7 @@ function ResultComponent(props: Props) {
                                   className="preview-item"
                                   style={{
                                     backgroundColor: 'white',
-                                    paddingTop: '40px',
+                                    paddingTop: '32px',
                                     width: '100%',
                                   }}
                                 >
@@ -580,7 +579,7 @@ function ResultComponent(props: Props) {
                   >
                     <Box
                       className={'box-item-result ml-auto mr-auto'}
-                      style={{ height: '100%' }}
+                      style={{ height: '100%', paddingLeft: isMobile ? 0 : 16 }}
                     >
                       <ProductList
                         getUrlToCanvasFile={getUrlToCanvasFile}
@@ -618,6 +617,7 @@ function ResultComponent(props: Props) {
                             />
                           )}
                       </Box>
+
                       {requestImage &&
                         !loadingSearchAlgolia &&
                         !props.isSearchStalled &&
@@ -737,28 +737,30 @@ function ResultComponent(props: Props) {
                         )}
                     </Box>
                   </Box>
+                  {!isMobile && props.allSearchResults?.hits?.length > 0 && (
+                    <Box>
+                      <Box className="box-notify">
+                        <FooterResult search={search}>
+                          <Box
+                            display={'flex'}
+                            style={{ padding: '0 20px' }}
+                            className="box-change-hit-items"
+                          >
+                            <span style={{ paddingRight: '10px' }}>
+                              {t('Items per page')}:
+                            </span>
+                            <HitsPerPage
+                              items={showHits}
+                              defaultRefinement={20}
+                            />
+                          </Box>
+                        </FooterResult>
+                      </Box>
+                    </Box>
+                  )}
                 </Box>
               </>
             </Box>
-
-            {!isMobile && (
-              <Box>
-                <Box className="box-notify">
-                  <FooterResult search={search}>
-                    <Box
-                      display={'flex'}
-                      style={{ padding: '0 20px' }}
-                      className="box-change-hit-items"
-                    >
-                      <span style={{ paddingRight: '10px' }}>
-                        {t('Items per page')}:
-                      </span>
-                      <HitsPerPage items={showHits} defaultRefinement={20} />
-                    </Box>
-                  </FooterResult>
-                </Box>
-              </Box>
-            )}
           </Box>
         </>
       </div>
@@ -783,9 +785,7 @@ function ResultComponent(props: Props) {
               transform: 'translate(-50%, -50%)',
               width: '356px',
               bottom: '86px',
-              cursor: 'pointer',
             }}
-            onClick={scrollToSection}
           >
             Scroll down for personalized support
           </div>

@@ -3,6 +3,7 @@ import ItemResult from 'components/results/ItemResult';
 import { groupBy, uniqueId } from 'lodash';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { connectStateResults } from 'react-instantsearch-dom';
+import { useMediaQuery } from 'react-responsive';
 import { useAppSelector } from 'Store/Store';
 import { AppState } from 'types';
 
@@ -30,6 +31,7 @@ function ProductListComponent({
   const [hitGroups, setHitGroups] = useState<any>({});
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
   const [algoliaRequest, setAlgoliaRequest] = useState(false);
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   useEffect(() => {
     if (isSearchStalled) {
@@ -134,7 +136,7 @@ function ProductListComponent({
     }
     return itemShowDefault.map((hit: any, i: number) => {
       return (
-        <Box key={i} style={{ height: 'fit-content' }}>
+        <Box key={i} style={{ height: !isMobile ? 'fit-content' : '' }}>
           <ItemResult
             dataItem={hit}
             indexItem={i}
@@ -169,6 +171,7 @@ function ProductListComponent({
     isSearchStalled,
     algoliaRequest,
     loadingSearchAlgolia,
+    isMobile,
   ]);
 
   return <>{renderItem}</>;
