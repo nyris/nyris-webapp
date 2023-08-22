@@ -215,14 +215,14 @@ function ResultComponent(props: Props) {
   };
   const nonEmptyFilter: any[] = !requestImage
     ? []
-    : ['sku:DOES_NOT_EXIST<score=1>'];
+    : ['sku:DOES_NOT_EXIST<score=1> '];
   const filterSkus: any = search?.results
     ? search?.results
         .slice()
         .reverse()
         .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}> `)
     : '';
-  const filterSkusString = [...nonEmptyFilter, ...filterSkus].join(' OR ');
+  const filterSkusString = [...nonEmptyFilter, ...filterSkus].join('OR ');
 
   useEffect(() => {
     document.title = 'Search results';
@@ -231,9 +231,9 @@ function ResultComponent(props: Props) {
     const preFilterValues = Object.keys(preFilter) as string[];
     const filter =
       preFilterValues.length > 0
-        ? `${settings.alogoliaFilterField}:${preFilterValues.join(
-            ` OR ${settings.alogoliaFilterField}:`,
-          )}`
+        ? preFilterValues
+            .map(item => `${settings.alogoliaFilterField}:'${item}'`)
+            .join(' OR ')
         : '';
 
     setFilterString(filter);
@@ -266,9 +266,9 @@ function ResultComponent(props: Props) {
     const preFilterValues = Object.keys(preFilter) as string[];
     const preFilterString =
       preFilterValues.length > 0
-        ? `${settings.alogoliaFilterField}:${preFilterValues.join(
-            ` OR ${settings.alogoliaFilterField}:`,
-          )}`
+        ? preFilterValues
+            .map(item => `${settings.alogoliaFilterField}:'${item}'`)
+            .join(' OR ')
         : '';
 
     const filter =

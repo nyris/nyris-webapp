@@ -76,7 +76,6 @@ function PreFilterComponent(props: Props) {
       settings,
     )
       .then(res => {
-        // console.log("res", res);
         if (res.length > 0) {
           setResultFilter({ [res[0][0].toLocaleUpperCase()]: res });
           if (res.length <= 20) setColumns(1);
@@ -267,12 +266,14 @@ function PreFilterComponent(props: Props) {
                           minHeight: '20px',
                           color: '#2B2C46',
                           width: '100%',
+                          maxWidth: 'fit-content',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
                           backgroundColor: keyFilter[item] ? '#E9E9EC' : '',
                           borderRadius: 8,
                           paddingLeft: '8px',
+                          paddingRight: '8px',
                         }}
                         onClick={() => {
                           setKeyFilter({
