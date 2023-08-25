@@ -149,7 +149,7 @@ export const searchSlice = createSlice({
         imageThumbSearchInput: '',
         textSearchInputMobile: '',
         isShowModalDetailItemMobile: false,
-        preFilter: state.preFilter || '',
+        preFilter: state.preFilter || {},
         preFilterDropdown: false,
         imageCaptureHelpModal: false,
       };
