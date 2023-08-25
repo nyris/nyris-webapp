@@ -11,7 +11,7 @@ export const initialState: SearchState = {
   filters: [],
   imageThumbSearchInput: '',
   isShowModalDetailItemMobile: false,
-  keyFilter: '',
+  preFilter: {},
   loadingSearchAlgolia: false,
   preFilterDropdown: false,
   imageCaptureHelpModal: false,
