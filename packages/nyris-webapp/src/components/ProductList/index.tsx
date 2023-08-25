@@ -136,7 +136,7 @@ function ProductListComponent({
     }
     return itemShowDefault.map((hit: any, i: number) => {
       return (
-        <Box key={i} style={{ height: !isMobile ? 'fit-content' : '' }}>
+        <Box key={i} style={{ height: 'fit-content' }}>
           <ItemResult
             dataItem={hit}
             indexItem={i}

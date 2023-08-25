@@ -400,7 +400,8 @@ function ResultComponent(props: Props) {
                         <Box
                           className="box-toggle-coloumn"
                           style={{
-                            right: requestImage ? '0px' : '16px',
+                            right:
+                              requestImage || toggleColLeft ? '0px' : '16px',
                           }}
                         >
                           <Button
