@@ -177,7 +177,6 @@ function PreFilterComponent(props: Props) {
           style={{
             margin: '10px 16px 16px 16px',
             display: 'flex',
-            flexWrap: 'wrap',
             justifyContent: 'space-between',
           }}
         >
@@ -186,6 +185,7 @@ function PreFilterComponent(props: Props) {
               display: 'flex',
               flexWrap: 'wrap',
               rowGap: '12px',
+              width: '95%',
             }}
           >
             {Object.keys(keyFilter).map((key, index) => {
@@ -222,7 +222,11 @@ function PreFilterComponent(props: Props) {
         height={'100%'}
         style={
           isMobile
-            ? { columnCount: 1, marginBottom: keyFilter ? '50px' : '0px' }
+            ? {
+                columnCount: 1,
+                marginBottom: keyFilter ? '50px' : '0px',
+                marginTop: '16px',
+              }
             : columns <= 4
             ? { columnCount: columns, height: '100%', paddingBottom: 20 }
             : { columnCount: 4, paddingBottom: 20 }
