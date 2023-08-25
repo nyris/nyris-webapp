@@ -14,7 +14,8 @@ interface Props {
   isRfqModalOpen?: any;
   setRfqStatus: any;
 }
-const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+// eslint-disable-next-line
+const emailRegex = /.+\@.+\..+$/;
 
 export default function RfqModal({
   requestImage,

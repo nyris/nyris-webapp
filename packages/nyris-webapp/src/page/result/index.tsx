@@ -6,21 +6,16 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-import KeyboardArrowRightOutlinedIcon from '@material-ui/icons/KeyboardArrowRightOutlined';
-import KeyboardArrowLeftOutlinedIcon from '@material-ui/icons/KeyboardArrowLeftOutlined';
 
 import { RectCoords } from '@nyris/nyris-api';
-import { Preview } from '@nyris/nyris-react-components';
 import { CurrentRefinements } from 'components/current-refinements/current-refinements';
 import FooterResult from 'components/FooterResult';
 import CustomSearchBox from 'components/input/inputSearch';
 import ProductList from 'components/ProductList';
-import ExpandablePanelComponent from 'components/PanelResult';
 import { debounce, isEmpty } from 'lodash';
-import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
 import {
   Configure,
   connectStateResults,
@@ -48,7 +43,10 @@ import { showHits } from '../../constants';
 import { DEFAULT_REGION } from '../../constants';
 import { useTranslation } from 'react-i18next';
 import RfqModal from 'components/rfq/RfqModal';
-import { getCroppedCanvas } from 'helpers/getCroppedCanvas';
+import SidePanel from 'components/SidePanel';
+import useFilteredRegions from 'hooks/useFilteredRegions';
+import ImagePreviewMobile from 'components/ImagePreviewMobile';
+import RfqBanner from 'components/RfqBanner';
 
 interface Props {
   allSearchResults: any;
@@ -71,7 +69,6 @@ function ResultComponent(props: Props) {
   } = search;
 
   const moreInfoText = settings?.productCtaText;
-  const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [imageSelection, setImageSelection] = useState<any>(null);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
@@ -300,34 +297,7 @@ function ResultComponent(props: Props) {
     [findItemsInSelection, stateGlobal.search],
   );
 
-  const filteredRegions = useMemo(
-    () =>
-      regions.map(
-        (region: {
-          normalizedRect: { x1: any; x2: any; y1: any; y2: any };
-        }) => {
-          if (
-            region.normalizedRect.x1 === imageSelection.x1 &&
-            region.normalizedRect.x2 === imageSelection.x2 &&
-            region.normalizedRect.y1 === imageSelection.y1 &&
-            region.normalizedRect.y2 === imageSelection.y2
-          ) {
-            return { ...region, show: false };
-          }
-          if (
-            imageSelection.x1 === 0 &&
-            imageSelection.x2 === 1 &&
-            imageSelection.y1 === 0 &&
-            imageSelection.y2 === 1
-          ) {
-            return { ...region, show: false };
-          }
-
-          return { ...region, show: true };
-        },
-      ),
-    [imageSelection, regions],
-  );
+  const filteredRegions = useFilteredRegions(regions, imageSelection);
 
   const showPostFilter = useMemo(() => {
     return settings.postFilterOption && props.allSearchResults?.hits.length > 0;
@@ -363,13 +333,16 @@ function ResultComponent(props: Props) {
         ref={refBoxResult}
       >
         <>
-          <RfqModal
-            requestImage={requestImage}
-            selectedRegion={selectedRegion}
-            setIsRfqModalOpen={setIsRfqModalOpen}
-            isRfqModalOpen={isRfqModalOpen}
-            setRfqStatus={setRfqStatus}
-          />
+          {isRfqModalOpen && (
+            <RfqModal
+              requestImage={requestImage}
+              selectedRegion={selectedRegion}
+              setIsRfqModalOpen={setIsRfqModalOpen}
+              isRfqModalOpen={isRfqModalOpen}
+              setRfqStatus={setRfqStatus}
+            />
+          )}
+
           {filterString && (
             <Configure
               query={search.valueTextSearch.query}
@@ -384,124 +357,22 @@ function ResultComponent(props: Props) {
             )}
             <Box className="box-result">
               <>
-                {!isMobile && (
-                  <>
-                    {showSidePanel && (
-                      <Box
-                        className={`wrap-main-col-left ${
-                          toggleColLeft ? 'toggle' : ''
-                        }`}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Box
-                          className="box-toggle-coloumn"
-                          style={{
-                            right:
-                              requestImage || toggleColLeft ? '0px' : '16px',
-                          }}
-                        >
-                          <Button
-                            style={{
-                              color: '#55566b',
-                              height: '32px',
-                            }}
-                            onClick={() => {
-                              setToggleColLeft(!toggleColLeft);
-                            }}
-                          >
-                            {toggleColLeft ? (
-                              <KeyboardArrowRightOutlinedIcon />
-                            ) : (
-                              <KeyboardArrowLeftOutlinedIcon />
-                            )}
-                          </Button>
-                        </Box>
-                        <Box>
-                          {settings.preview && requestImage && (
-                            <Box className="col-left">
-                              <Box className="box-preview">
-                                <Box
-                                  className="preview-item"
-                                  style={{
-                                    backgroundColor: 'white',
-                                    paddingTop: '32px',
-                                    width: '100%',
-                                  }}
-                                >
-                                  <div
-                                    style={{
-                                      backgroundColor: '#F3F3F5',
-                                      width: '100%',
-                                      paddingTop: '16px',
-                                      paddingBottom: '16px',
-                                    }}
-                                  >
-                                    <Preview
-                                      key={requestImage?.id}
-                                      onSelectionChange={(r: RectCoords) => {
-                                        setImageSelection(r);
-                                        debouncedOnImageSelectionChange(r);
-                                      }}
-                                      image={requestImage?.canvas}
-                                      selection={
-                                        imageSelection || DEFAULT_REGION
-                                      }
-                                      regions={filteredRegions}
-                                      maxWidth={288}
-                                      maxHeight={288}
-                                      dotColor={'#FBD914'}
-                                      minCropWidth={60}
-                                      minCropHeight={60}
-                                      rounded={true}
-                                    />
-                                  </div>
-                                </Box>
-                              </Box>
-                              {(showAdjustInfoBasedOnConfidence ||
-                                showAdjustInfo) && (
-                                <Box
-                                  className="box-title_col-left"
-                                  alignItems="center"
-                                  style={{
-                                    backgroundColor: '#3E36DC',
-                                    display: 'flex',
-                                    columnGap: '6px',
-                                    padding: '5px',
-                                  }}
-                                >
-                                  <IconInfo color="white" />
-                                  <Typography
-                                    style={{
-                                      fontSize: 10,
-                                      color: '#fff',
-                                    }}
-                                  >
-                                    {showAdjustInfo
-                                      ? t('Crop the image for better results')
-                                      : 'Crop the image for better results'}
-                                  </Typography>
-                                </Box>
-                              )}
-                            </Box>
-                          )}
-
-                          {showPostFilter && (
-                            <Box className="col-left__bottom">
-                              <ExpandablePanelComponent
-                                disjunctiveFacets={
-                                  props.allSearchResults.disjunctiveFacets
-                                }
-                              />
-                            </Box>
-                          )}
-                        </Box>
-                      </Box>
-                    )}
-                  </>
+                {!isMobile && showSidePanel && (
+                  <SidePanel
+                    setImageSelection={setImageSelection}
+                    allSearchResults={props.allSearchResults}
+                    debouncedOnImageSelectionChange={
+                      debouncedOnImageSelectionChange
+                    }
+                    filteredRegions={filteredRegions}
+                    imageSelection={imageSelection}
+                    showAdjustInfo={showAdjustInfo}
+                    showAdjustInfoBasedOnConfidence={
+                      showAdjustInfoBasedOnConfidence
+                    }
+                    showPostFilter={showPostFilter}
+                    disjunctiveFacets={props.allSearchResults.disjunctiveFacets}
+                  />
                 )}
 
                 <Box
@@ -522,65 +393,19 @@ function ResultComponent(props: Props) {
                   )}
 
                   {isMobile && settings.preview && requestImage && (
-                    <Box
-                      className="col-left"
-                      style={{
-                        backgroundColor: '#AAABB5',
-                        marginBottom: '15px',
-                      }}
-                    >
-                      {
-                        <Box className="box-preview">
-                          <Box
-                            className="preview-item"
-                            style={{ backgroundColor: 'white' }}
-                          >
-                            <Preview
-                              key={requestImage?.id}
-                              onSelectionChange={(r: RectCoords) => {
-                                setImageSelection(r);
-                                debouncedOnImageSelectionChange(r);
-                              }}
-                              image={requestImage?.canvas}
-                              selection={imageSelection || DEFAULT_REGION}
-                              regions={filteredRegions}
-                              maxWidth={240}
-                              maxHeight={240}
-                              dotColor={'#FBD914'}
-                              minCropWidth={60}
-                              minCropHeight={60}
-                              rounded={false}
-                            />
-                          </Box>
-                          {(showAdjustInfoBasedOnConfidence ||
-                            showAdjustInfo) && (
-                            <Box
-                              className="box-title_col-left"
-                              alignItems="center"
-                              style={{
-                                backgroundColor: '#3E36DC',
-                                display: 'flex',
-                                columnGap: '6px',
-                                padding: '5px',
-                                width: 'fit-content',
-                              }}
-                            >
-                              <IconInfo color="white" />
-                              <Typography
-                                style={{
-                                  fontSize: 10,
-                                  color: '#fff',
-                                }}
-                              >
-                                {showAdjustInfo
-                                  ? t('Crop the image for better results')
-                                  : 'Crop the image for better results'}
-                              </Typography>
-                            </Box>
-                          )}
-                        </Box>
+                    <ImagePreviewMobile
+                      requestImage={requestImage}
+                      imageSelection={imageSelection}
+                      setImageSelection={setImageSelection}
+                      debouncedOnImageSelectionChange={
+                        debouncedOnImageSelectionChange
                       }
-                    </Box>
+                      filteredRegions={filteredRegions}
+                      showAdjustInfoBasedOnConfidence={
+                        showAdjustInfoBasedOnConfidence
+                      }
+                      showAdjustInfo={showAdjustInfo}
+                    />
                   )}
 
                   <Box
@@ -636,118 +461,13 @@ function ResultComponent(props: Props) {
                         !loadingSearchAlgolia &&
                         !props.isSearchStalled &&
                         settings.rfq && (
-                          <Box
-                            style={{
-                              padding: '0px 16px 0px 16px',
-                              backgroundColor: '#F6F3F1',
-                              width: '100%',
-                              marginBottom: !isMobile ? '32px' : '0px',
-                              alignSelf: 'end',
-                              height: '248px',
-                              display: 'flex',
-                              alignItems: 'center',
-                            }}
-                            className="rfq-box"
-                            ref={rfqRef}
-                          >
-                            <Box
-                              style={{
-                                width: '100%',
-                                display: 'flex',
-                                columnGap: '16px',
-                                alignItems: 'center',
-                                justifyContent: 'space-around',
-                              }}
-                            >
-                              <Box>
-                                <Box
-                                  style={{
-                                    paddingBottom: '12px',
-                                  }}
-                                >
-                                  <Box
-                                    style={{
-                                      fontSize: '14px',
-                                      color:
-                                        rfqStatus === 'inactive'
-                                          ? '#4B4B4A'
-                                          : '#CACAD1',
-                                      fontWeight: 'bold',
-                                    }}
-                                  >
-                                    No Matches Found?
-                                  </Box>
-                                  <Box
-                                    style={{
-                                      fontSize: '12px',
-                                      maxWidth: '320x',
-                                      lineHeight: '14.1px',
-                                      color:
-                                        rfqStatus === 'inactive'
-                                          ? '#4B4B4A'
-                                          : '#CACAD1',
-                                      fontWeight: 'normal',
-                                    }}
-                                  >
-                                    Get personalised help from our team of
-                                    product experts
-                                  </Box>
-                                </Box>
-                                <button
-                                  style={{
-                                    maxWidth: '200px',
-                                    background:
-                                      rfqStatus === 'inactive'
-                                        ? '#4B4B4A'
-                                        : '#E9E9EC',
-                                    boxShadow:
-                                      rfqStatus === 'inactive'
-                                        ? '0px 0px 4px 0px rgba(0, 0, 0, 0.25)'
-                                        : '',
-                                    borderRadius: '2px',
-                                    padding: '16px 16px 16px 16px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    color:
-                                      rfqStatus === 'inactive'
-                                        ? '#fff'
-                                        : '#CACAD1',
-                                    fontSize: '14px',
-                                    height: '48px',
-                                    cursor:
-                                      rfqStatus === 'inactive'
-                                        ? 'pointer'
-                                        : 'default',
-                                    border: 'none',
-                                  }}
-                                  disabled={rfqStatus !== 'inactive'}
-                                  onClick={() => {
-                                    setIsRfqModalOpen(true);
-                                  }}
-                                >
-                                  Request a Quote
-                                </button>
-                              </Box>
-                              <div>
-                                <img
-                                  src={getCroppedCanvas(
-                                    requestImage?.canvas,
-                                    selectedRegion,
-                                  )?.toDataURL()}
-                                  alt="request_image"
-                                  style={{
-                                    mixBlendMode:
-                                      rfqStatus !== 'inactive'
-                                        ? 'overlay'
-                                        : 'unset',
-                                    maxHeight: '181px',
-                                    maxWidth: '181px',
-                                    borderRadius: '2px',
-                                  }}
-                                />
-                              </div>
-                            </Box>
-                          </Box>
+                          <RfqBanner
+                            rfqRef={rfqRef}
+                            rfqStatus={rfqStatus}
+                            setIsRfqModalOpen={setIsRfqModalOpen}
+                            requestImage={requestImage}
+                            selectedRegion={selectedRegion}
+                          />
                         )}
                     </Box>
                   </Box>
