@@ -1,5 +1,5 @@
 import { Box, Button, Tooltip, Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import IconSearch from 'common/assets/icons/icon_search.svg';
 import { getFilters, searchFilters } from 'services/filter';
@@ -14,7 +14,7 @@ interface Props {
   handleClose?: any;
   // onChangeKeyFilter?: any;
 }
-
+const maxFilter = 10;
 function PreFilterComponent(props: Props) {
   const { handleClose } = props;
   const dispatch = useAppDispatch();
@@ -31,6 +31,17 @@ function PreFilterComponent(props: Props) {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [columns, setColumns] = useState<number>(0);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+
+  const selectedFilter = useMemo(
+    () =>
+      Object.keys(keyFilter).reduce((count, key) => {
+        if (keyFilter[key] === true) {
+          return count + 1;
+        }
+        return count;
+      }, 0),
+    [keyFilter],
+  );
 
   const getDataFilterDesktop = async () => {
     setLoading(true);
@@ -121,7 +132,7 @@ function PreFilterComponent(props: Props) {
             color: '#000',
             fontSize: '24px',
             fontWeight: 700,
-            paddingLeft: isMobile ? '0px' : '14px',
+            paddingLeft: '14px',
             marginBottom: isMobile ? '0px' : '-8px',
             marginTop: isMobile ? '0px' : '24px',
           }}
@@ -135,7 +146,6 @@ function PreFilterComponent(props: Props) {
       </div>
       <Box
         className="box-top"
-        style={isMobile ? { padding: 0, marginTop: '16px' } : undefined}
         display={'flex'}
         justifyContent={'space-between'}
         alignItems={'center'}
@@ -175,7 +185,7 @@ function PreFilterComponent(props: Props) {
       {!isEmpty(keyFilter) && (
         <Box
           style={{
-            margin: '10px 16px 16px 16px',
+            margin: '10px 16px 10px 16px',
             display: 'flex',
             justifyContent: 'space-between',
           }}
@@ -184,8 +194,11 @@ function PreFilterComponent(props: Props) {
             style={{
               display: 'flex',
               flexWrap: 'wrap',
-              rowGap: '12px',
-              width: '95%',
+              rowGap: '8px',
+              columnGap: '8px',
+              alignItems: 'baseline',
+              fontSize: '12px',
+              marginBottom: '4px',
             }}
           >
             {Object.keys(keyFilter).map((key, index) => {
@@ -206,14 +219,22 @@ function PreFilterComponent(props: Props) {
                 </Box>
               );
             })}
-          </Box>
-          <Box
-            style={{ color: '#E31B5D', fontSize: '12px', cursor: 'pointer' }}
-            onClick={() => {
-              setKeyFilter({});
-            }}
-          >
-            Clear all
+            <p
+              style={{ fontWeight: 'bold', color: '#000' }}
+            >{`${selectedFilter}/${maxFilter}`}</p>
+            <Box
+              style={{
+                color: '#E31B5D',
+                fontSize: '12px',
+                cursor: 'pointer',
+                marginLeft: '12px',
+              }}
+              onClick={() => {
+                setKeyFilter({});
+              }}
+            >
+              Clear all
+            </Box>
           </Box>
         </Box>
       )}
@@ -225,7 +246,6 @@ function PreFilterComponent(props: Props) {
             ? {
                 columnCount: 1,
                 marginBottom: keyFilter ? '50px' : '0px',
-                marginTop: '16px',
               }
             : columns <= 4
             ? { columnCount: columns, height: '100%', paddingBottom: 20 }
@@ -280,10 +300,12 @@ function PreFilterComponent(props: Props) {
                           paddingRight: '8px',
                         }}
                         onClick={() => {
-                          setKeyFilter({
-                            ...keyFilter,
-                            [item]: !keyFilter[item],
-                          });
+                          if (selectedFilter < maxFilter) {
+                            setKeyFilter({
+                              ...keyFilter,
+                              [item]: !keyFilter[item],
+                            });
+                          }
                         }}
                       >
                         {truncateString(item, !isMobile ? 35 : 35)}
@@ -327,10 +349,13 @@ function PreFilterComponent(props: Props) {
             className="button-left"
             style={{
               width: '50%',
+              height: '66px',
               backgroundColor: '#000000',
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
+              textTransform: 'none',
+              paddingLeft: '16px',
             }}
             onClick={() => handleClose()}
           >
@@ -344,6 +369,8 @@ function PreFilterComponent(props: Props) {
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
+              textTransform: 'none',
+              paddingLeft: '16px',
             }}
             onClick={() => onHandlerSubmitData()}
           >
