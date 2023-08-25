@@ -3,7 +3,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './common.scss';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { reset } from 'Store/search/Search';
+import { reset, setPreFilter } from 'Store/search/Search';
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -15,6 +15,7 @@ function Header(): JSX.Element {
         style={{ lineHeight: 0, paddingLeft: '10px' }}
         onClick={() => {
           dispatch(reset(''));
+          dispatch(setPreFilter({}));
         }}
       >
         <img

@@ -35,7 +35,7 @@ const SearchBox = (props: any) => {
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-  const { imageThumbSearchInput, keyFilter } = search;
+  const { imageThumbSearchInput, preFilter } = search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -100,10 +100,10 @@ const SearchBox = (props: any) => {
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
-      const preFilter = [
+      const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: [`${keyFilter}`],
+          values: Object.keys(preFilter) as string[],
         },
       ];
 
@@ -117,7 +117,7 @@ const SearchBox = (props: any) => {
       return findByImage({
         image,
         settings,
-        filters: keyFilter ? preFilter : undefined,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
         region,
       })
         .then((res: any) => {
@@ -157,7 +157,11 @@ const SearchBox = (props: any) => {
         <form noValidate action="" role="search">
           <Box className="box-inp">
             <Tooltip
-              title={keyFilter ? keyFilter : 'Add pre-filter'}
+              title={
+                !isEmpty(preFilter)
+                  ? Object.keys(preFilter).join(', ')
+                  : 'Add pre-filter'
+              }
               placement="top"
               arrow={true}
               disableHoverListener={!settings.preFilterOption}
@@ -177,7 +181,7 @@ const SearchBox = (props: any) => {
                   <div
                     className="icon-hover"
                     style={{
-                      ...(keyFilter
+                      ...(!isEmpty(preFilter)
                         ? {
                             backgroundColor: `${settings.theme?.secondaryColor}26`,
                           }
@@ -190,7 +194,7 @@ const SearchBox = (props: any) => {
                 {!settings.preFilterOption && (
                   <IconSearch width={16} height={16} />
                 )}
-                {keyFilter && (
+                {!isEmpty(preFilter) && (
                   <div
                     style={{
                       position: 'absolute',

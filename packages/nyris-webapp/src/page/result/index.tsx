@@ -65,7 +65,7 @@ function ResultComponent(props: Props) {
     requestImage,
     regions,
     selectedRegion,
-    keyFilter,
+    preFilter,
     loadingSearchAlgolia,
     imageThumbSearchInput,
   } = search;
@@ -126,10 +126,10 @@ function ResultComponent(props: Props) {
 
   const findImageByApiNyris = useCallback(
     async (canvas: any, r?: RectCoords) => {
-      const preFilter = [
+      const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: [`${keyFilter}`],
+          values: Object.keys(preFilter) as string[],
         },
       ];
       dispatch(loadingActionResults());
@@ -137,7 +137,7 @@ function ResultComponent(props: Props) {
         image: canvas,
         settings,
         region: r,
-        filters: keyFilter ? preFilter : undefined,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       })
         .then(res => {
           dispatch(updateStatusLoading(false));
@@ -150,7 +150,7 @@ function ResultComponent(props: Props) {
           console.log('error call api change selection find image', e);
         });
     },
-    [settings, dispatch, keyFilter],
+    [settings, dispatch, preFilter],
   );
 
   // TODO: Search offers for image:
@@ -205,17 +205,17 @@ function ResultComponent(props: Props) {
       dispatch(setRegions(res.regions));
       dispatch(setSelectedRegion(searchRegion));
     }
-    const preFilter = [
+    const preFilterValues = [
       {
         key: settings.visualSearchFilterKey,
-        values: [`${keyFilter}`],
+        values: Object.keys(preFilter) as string[],
       },
     ];
     findByImage({
       image,
       settings,
       region: searchRegion,
-      filters: keyFilter ? preFilter : undefined,
+      filters: !isEmpty(preFilter) ? preFilterValues : undefined,
     }).then(res => {
       dispatch(setSearchResults(res));
       dispatch(showFeedback());
@@ -225,26 +225,30 @@ function ResultComponent(props: Props) {
   };
   const nonEmptyFilter: any[] = !requestImage
     ? []
-    : ['sku:DOES_NOT_EXIST<score=1>'];
+    : ['sku:DOES_NOT_EXIST<score=1> '];
   const filterSkus: any = search?.results
     ? search?.results
         .slice()
         .reverse()
         .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}> `)
     : '';
-  const filterSkusString = [...nonEmptyFilter, ...filterSkus].join(' OR ');
+  const filterSkusString = [...nonEmptyFilter, ...filterSkus].join('OR ');
 
   useEffect(() => {
     document.title = 'Search results';
 
     if (requestImage || isEmpty(search.valueTextSearch.query)) return;
+    const preFilterValues = Object.keys(preFilter) as string[];
+    const filter =
+      preFilterValues.length > 0
+        ? preFilterValues
+            .map(item => `${settings.alogoliaFilterField}:'${item}'`)
+            .join(' OR ')
+        : '';
 
-    const filter = keyFilter
-      ? `${settings.alogoliaFilterField}:'${keyFilter}'`
-      : '';
     setFilterString(filter);
   }, [
-    keyFilter,
+    preFilter,
     requestImage,
     search.valueTextSearch.query,
     settings.alogoliaFilterField,
@@ -264,15 +268,25 @@ function ResultComponent(props: Props) {
 
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [keyFilter]);
+  }, [preFilter]);
 
   useEffect(() => {
     if (!requestImage) return;
-    const filter = keyFilter
-      ? filterSkusString
-        ? `(${filterSkusString}) AND ${settings.alogoliaFilterField}:'${keyFilter}'`
-        : `${settings.alogoliaFilterField}:'${keyFilter}'`
-      : filterSkusString;
+
+    const preFilterValues = Object.keys(preFilter) as string[];
+    const preFilterString =
+      preFilterValues.length > 0
+        ? preFilterValues
+            .map(item => `${settings.alogoliaFilterField}:'${item}'`)
+            .join(' OR ')
+        : '';
+
+    const filter =
+      preFilterValues.length > 0
+        ? filterSkusString
+          ? `(${filterSkusString}) AND ${preFilterString}`
+          : preFilterString
+        : filterSkusString;
     setFilterString(filter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterSkusString, settings.alogoliaFilterField]);

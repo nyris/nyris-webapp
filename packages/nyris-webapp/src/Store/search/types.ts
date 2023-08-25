@@ -18,7 +18,7 @@ export interface SearchState {
   filters: any[];
   imageThumbSearchInput?: any;
   isShowModalDetailItemMobile?: boolean;
-  keyFilter?: string;
+  preFilter: Record<string, boolean>;
   loadingSearchAlgolia: boolean;
   preFilterDropdown?: boolean;
   imageCaptureHelpModal?: boolean;
