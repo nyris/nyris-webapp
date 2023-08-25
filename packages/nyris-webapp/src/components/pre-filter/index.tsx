@@ -182,7 +182,7 @@ function PreFilterComponent(props: Props) {
         </Box>
       </Box>
 
-      {!isEmpty(keyFilter) && (
+      {!isEmpty(keyFilter) && selectedFilter > 0 && (
         <Box
           style={{
             margin: '10px 16px 10px 16px',
