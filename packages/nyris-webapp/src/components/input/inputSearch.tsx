@@ -96,6 +96,7 @@ const SearchBox = (props: any) => {
       let payload: any;
       let filters: any[] = [];
       let region: RectCoords | undefined;
+
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
       dispatch(setRequestImage(image));
