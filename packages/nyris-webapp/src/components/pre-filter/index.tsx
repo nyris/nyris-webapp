@@ -349,7 +349,7 @@ function PreFilterComponent(props: Props) {
             className="button-left"
             style={{
               width: '50%',
-              height: '66px',
+              height: '64px',
               backgroundColor: '#000000',
               color: '#fff',
               borderRadius: 0,
