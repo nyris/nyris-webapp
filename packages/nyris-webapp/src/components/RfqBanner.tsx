@@ -55,7 +55,9 @@ function RfqBanner({
                 fontWeight: 'bold',
               }}
             >
-              No Matches Found?
+              {isMobile
+                ? 'No matches found?'
+                : 'No matches found for your request?'}
             </Box>
             <Box
               style={{
@@ -66,7 +68,7 @@ function RfqBanner({
                 fontWeight: 'normal',
               }}
             >
-              Get personalised help from our team of product experts
+              Get personalised help from our team of product experts.
             </Box>
           </Box>
           <button
