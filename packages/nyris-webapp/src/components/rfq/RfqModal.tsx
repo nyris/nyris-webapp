@@ -18,6 +18,20 @@ interface Props {
 // eslint-disable-next-line
 const emailRegex = /.+\@.+\..+$/;
 
+const getErrorMessage = (error: any) => {
+  switch (error.status) {
+    case 400:
+      return 'Your email could not be sent, please try again or send an email to support@nyris.io';
+    case 421:
+    case 450:
+    case 451:
+    case 452:
+      return "Email delivery failed. Rest assured, we're continuously attempting to send it for you. Alternatively, you can forward the email to support@nyris.io";
+    default:
+      return 'Your email could not be sent, please try again or send an email to support@nyris.io';
+  }
+};
+
 export default function RfqModal({
   requestImage,
   selectedRegion,
@@ -53,6 +67,7 @@ export default function RfqModal({
       ToastHelper.success('Request sent successfully');
     } catch (error) {
       setRfqStatus('inactive');
+
       toast(
         t => {
           return (
@@ -65,12 +80,9 @@ export default function RfqModal({
               }}
             >
               <span style={{ fontWeight: 'bold' }}>Email not sent</span>
-              <span>
-                Your email could not be sent, please try again or send an email
-                to support@nyris.io
-              </span>
+              <span>{getErrorMessage(error)}</span>
               <a
-                href={`mailto:support@nyris.io?subject=Request for quotation&body= Hello, please provide details for the following product.`}
+                href={`mailto:support@nyris.io?subject=Request for quotation&body=${information}`}
                 style={{
                   padding: '8px 16px 8px 16px',
                   border: '1px solid #000',

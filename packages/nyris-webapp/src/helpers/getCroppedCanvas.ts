@@ -20,7 +20,7 @@ export const getCroppedCanvas = (
 
   const originalSize = getElementSize(canvas);
   const aspectRatio = getRectAspectRatio(crop, originalSize);
-  let scaledSize = getThumbSizeArea(500, 500, aspectRatio);
+  let scaledSize = getThumbSizeArea(600, 600, aspectRatio);
   let resizedCroppedCanvas = elementToCanvas(canvas, scaledSize, crop);
   return resizedCroppedCanvas;
 };
