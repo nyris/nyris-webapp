@@ -10,4 +10,14 @@ export class ToastHelper {
       },
     });
   }
+
+  static error(msg: string) {
+    toast.error(msg, {
+      duration: 3000,
+      style: {
+        background: '#1E1F31',
+        color: '#fff',
+      },
+    });
+  }
 }

@@ -9,7 +9,13 @@ interface Props {
 
 function ImageCaptureHelpModal({ handleClose }: Props) {
   return (
-    <Box style={{ paddingLeft: '24px', paddingRight: '24px' }}>
+    <Box
+      style={{
+        paddingLeft: '24px',
+        paddingRight: '24px',
+        paddingBottom: '24px',
+      }}
+    >
       <Box
         display={'flex'}
         justifyContent={'end'}

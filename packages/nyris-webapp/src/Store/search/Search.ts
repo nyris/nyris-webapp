@@ -149,7 +149,7 @@ export const searchSlice = createSlice({
         imageThumbSearchInput: '',
         textSearchInputMobile: '',
         isShowModalDetailItemMobile: false,
-        keyFilter: state.keyFilter || '',
+        preFilter: state.preFilter || {},
         preFilterDropdown: false,
         imageCaptureHelpModal: false,
       };
@@ -229,11 +229,11 @@ export const searchSlice = createSlice({
         isShowModalDetailItemMobile: payload,
       };
     },
-    setUpdateKeyFilterDesktop: (state, data: PayloadAction<string>) => {
+    setPreFilter: (state, data: PayloadAction<Record<string, boolean>>) => {
       const { payload } = data;
       return {
         ...state,
-        keyFilter: payload,
+        preFilter: payload,
       };
     },
     setPreFilterDropdown: (state, data: PayloadAction<boolean>) => {
@@ -277,7 +277,7 @@ export const {
   setRequestImage,
   setSearchResults,
   setSelectedRegion,
-  setUpdateKeyFilterDesktop,
+  setPreFilter,
   setUpdateSession,
   updateResultChangePosition,
   updateResults,

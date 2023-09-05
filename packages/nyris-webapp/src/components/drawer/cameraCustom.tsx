@@ -4,6 +4,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import { RectCoords } from '@nyris/nyris-api';
 import ReverseCamera from 'common/assets/icons/reverse_camera.svg';
+import { isEmpty } from 'lodash';
 import React, { useCallback, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useHistory } from 'react-router-dom';
@@ -38,7 +39,7 @@ function CameraCustom(props: Props) {
   const { search, settings } = stateGlobal;
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { keyFilter } = search;
+  const { preFilter } = search;
 
   const videoConstraints = {
     width: 1080,
@@ -73,10 +74,10 @@ function CameraCustom(props: Props) {
       dispatch(setSelectedRegion(region));
     }
 
-    const preFilter = [
+    const preFilterValues = [
       {
         key: settings.visualSearchFilterKey,
-        values: [`${keyFilter}`],
+        values: Object.keys(preFilter) as string[],
       },
     ];
     let filters: any[] = [];
@@ -84,7 +85,7 @@ function CameraCustom(props: Props) {
     findByImage({
       image: imageConvert,
       settings,
-      filters: keyFilter ? preFilter : undefined,
+      filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       region,
     })
       .then((res: any) => {

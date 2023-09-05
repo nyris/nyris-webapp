@@ -169,7 +169,8 @@
 
         .col-right-result-mobile {
           overflow: initial;
-
+          display: flex;
+          flex-direction: column;
           .col-left {
             max-width: 100%;
           }
@@ -281,40 +282,159 @@
         }
       }
     }
-    .footer-wrap-main {
-      position: fixed;
-      bottom: 0;
-      height: 64px;
-      flex: 1 1 auto;
-      width: 100%;
-      padding: 0;
-      padding-top: 0px;
-      padding-right: 0px;
-      padding-bottom: 0px;
-      padding-left: 0px;
-      background-color: #fff;
-      z-index: 11;
+ 
+  }
+}
 
-      .box-icon-camera-mobile {
-        z-index: 10;
-        box-shadow: 0px 0px 16px rgba(85, 86, 107, 0.2);
-        border-radius: 100%;
+@media screen and (max-width: 776px) {
+
+  .box-header-mobile-main {
+    // min-height: 60px;
+    z-index: 100;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0px !important;
+
+    &.hide {
+      display: none;
+    }
+
+    .wrap-header-mobile {
+
+      background: #FFFFFF;
+      border-bottom: 1px solid #E9E9EC;
+      box-shadow: 0px 0px 16px rgba(170, 171, 181, 0.5);
+      border-radius: 32px;
+
+      width: 100%;
+      position: relative;
+      height: 48px;;
+
+      .box-suggest-search {
         position: absolute;
+        bottom: -30px;
         left: 0;
-        right: 0;
-        width: fit-content;
-        margin: auto;
-        top: -50%;
-        width: 56px;
-        height: 56px;
-        background-color: #FFFFFF;
-        button {
-          border: 0px !important;
-          padding: 17px 14px;
-          width: 56px;
-          height: 56px;
+        width: 100%;
+        background-color: red;
+        padding: 0 50px;
+
+        &.open {
+          z-index: 100;
+          opacity: 1;
+        }
+
+        &.close {
+          z-index: -99;
+          opacity: 0;
         }
       }
+
+      .wrap-input-search {
+        width: 100%;
+
+        .box-input-search {
+          background-color: #fff;
+
+          input {
+            background-color: #fff;
+          }
+
+          .btn-mobile-filter {
+            padding: 12px;
+            width: 40px;
+            height: 40px;
+            background-color: #f7f7f7;
+            border-radius: 100%;
+          }
+        }
+      }
+    }
+
+    .box-image-search-thumb-mobile {
+      // width: 40px;
+      height: 40px;
+      min-width: 76px;
+      margin-left: 10px;
+      position: relative;
+      display: flex;
+      border-radius: 4px;
+      max-width: 80px !important;
+
+      button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        min-width: 36px !important;
+        border: 0px;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 100%;
+      }
+    }
+  }
+  .box-icon-camera-mobile {
+    z-index: 10;
+    box-shadow: 0px 0px 16px rgba(85, 86, 107, 0.2);
+    border-radius: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: fit-content;
+    margin: auto;
+    top: -50%;
+    width: 56px;
+    height: 56px;
+    background-color: #FFFFFF;
+    button {
+      border: 0px !important;
+      padding: 17px 14px;
+      width: 56px;
+      height: 56px;
+    }
+  }
+
+  .box-filter {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 47px);
+    background-color: #fff;
+    overflow: auto;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    ul {
+      li {
+        list-style-type: none;
+
+        input {
+          margin-right: 9px;
+        }
+
+        span {
+          color: #1e1f31;
+          font-size: 14px;
+          font-weight: 400;
+        }
+      }
+    }
+
+    &.open {
+      z-index: 1000;
+    }
+
+    &.close {
+      z-index: -100;
+      opacity: 0;
     }
   }
 }
@@ -323,44 +443,10 @@
 @media screen and (max-width: 776px) {
   .wrap-mobile {
     height: 100svh;
-
-    .box-fillter {
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: calc(100% - 47px);
-      background-color: #fff;
-      overflow: auto;
-      opacity: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-
-      ul {
-        li {
-          list-style-type: none;
-
-          input {
-            margin-right: 9px;
-          }
-
-          span {
-            color: #1e1f31;
-            font-size: 14px;
-            font-weight: 400;
-          }
-        }
-      }
-
-      &.open {
-        z-index: 1000;
-      }
-
-      &.close {
-        z-index: -100;
-        opacity: 0;
-      }
-    }
+    background-color: #F3F3F5;
+    display: flex;
+    flex-direction: column;
+   
   }
   .box-filter-mobile {
     .MuiBackdrop-root {
@@ -388,87 +474,6 @@
     }
 
     
-  }
-  .aa-DetachedContainer {
-    bottom: auto;
-  }
-  .aa-DetachedOverlay {
-    position: absolute;
-    top: 0;
-    background-color: #fff;
-    width: 100%;
-    height: auto;
-    z-index: 999;
-
-    .aa-DetachedFormContainer {
-      display: flex;
-      padding: 0;
-      flex-direction: row-reverse;
-      height: 58px;
-
-      .aa-Form {
-        display: flex;
-        width: 100%;
-
-        .aa-InputWrapper {
-          width: 100%;
-
-          input {
-            width: 100%;
-          }
-        }
-      }
-
-      .aa-DetachedCancelButton {
-        font-weight: 500 !important;
-        font-size: 30px !important;
-        position: relative;
-        color: #55566b;
-        margin-bottom: 2px;
-        padding-left: 5px;
-        padding-right: 9px;
-
-        &::after {
-          content: '';
-        }
-      }
-    }
-  }
-  .aa-Form {
-    border: 0px !important;
-
-    &:focus-within {
-      box-shadow: none !important;
-    }
-
-    .aa-SubmitButton {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 30px;
-      padding: 0px;
-
-      svg {
-        color: #000 !important;
-      }
-    }
-  }
-
-  .aa-Autocomplete {
-    width: 100%;
-
-    .aa-DetachedSearchButton {
-      border: 0px !important;
-      width: 100%;
-      padding: 0px !important;
-    }
-
-    .aa-DetachedSearchButtonIcon,
-    .aa-SubmitButton {
-      svg {
-        color: #000 !important;
-      }
-    }
   }
 
   #box-input-search {

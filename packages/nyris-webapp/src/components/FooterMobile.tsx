@@ -6,7 +6,11 @@ import { ReactComponent as Home } from 'common/assets/icons/home.svg';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
-import { setImageCaptureHelpModal } from 'Store/search/Search';
+import {
+  reset,
+  setImageCaptureHelpModal,
+  setPreFilter,
+} from 'Store/search/Search';
 
 interface Props {
   onLoadingMobile?: any;
@@ -30,7 +34,7 @@ function FooterMobile(props: Props): JSX.Element {
         alignItems={'center'}
         height={'100%'}
         justifyContent={'space-between'}
-        style={{ paddingLeft: '40px', paddingRight: '40px' }}
+        style={{ paddingLeft: '40px', paddingRight: '40px', height: '64px' }}
       >
         <NavLink
           style={{
@@ -49,6 +53,8 @@ function FooterMobile(props: Props): JSX.Element {
           to={'/'}
           className="nav-link p-0 menu-children rounded-0"
           onClick={() => {
+            dispatch(reset(''));
+            dispatch(setPreFilter({}));
             dispatch(setImageCaptureHelpModal(false));
           }}
         >

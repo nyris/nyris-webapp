@@ -944,6 +944,7 @@ button {
 
 // TODO: css result component
 .box-wrap-result-component {
+  height: 100%;
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -968,33 +969,18 @@ button {
     }
   }
   .box-result {
-    height: calc(100svh - 199px);
+    height: calc(100svh - 148px);
+    @media screen and (max-width: 776px) {
+      height: 100%
+    }
     display: flex;
     justify-content: space-between;
     // overflow: auto;
     position: relative;
-    
-    .btn-open-support {
-      background: linear-gradient(45deg, #3e36dc 14.84%, #00ff94 85.16%);
-      width: 50px;
-      height: 50px;
-      position: fixed;
-      border-radius: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      bottom: 80px;
-      right: 30px;
-      a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-    }
+
     .col-left {
       width: 100%;
       height: fit-content;
-      margin-right: 62px;
       min-height: auto;
       position: relative;
       &.toggle {
@@ -1025,7 +1011,7 @@ button {
       display: flex;
       justify-content: center;
       align-items: center;
-      max-width: 320px;
+      // max-width: 320px;
       .box-preview {
         width: 100%;
         // border: 2px dashed #55566b;
@@ -1064,10 +1050,10 @@ button {
     }
     .col-right {
       // width: calc(100% - 462px);
-      overflow: auto;
       width: 100%;
       .box-item-result {
         max-width: calc(192px * 4 + 96px);
+        width: 100%;
         @media screen and (min-width: 2047px) {
           max-width: 1300px;
         }
@@ -1100,6 +1086,32 @@ button {
         }
         .ais-InfiniteHits-loadMore {
           display: none;
+        }
+      }
+      @media screen and (max-width: 776px) {
+
+
+        .box-item-result {
+          height: 100%;
+          // padding: 0 11px;
+          // gap: 8px !important;
+          // justify-content: center;
+          width: calc(180 * 2px + 30px);
+          .wrap-main-item-result {
+            width: 180px;
+            max-width: 180px !important;
+    
+            &:first-child {
+              margin-top: 0px !important;
+            }
+          }
+        }
+      }
+      @media screen and (max-width: 370px) {
+        .box-item-result {
+          padding: 0 0px;
+          display: flex;
+          justify-content: center;
         }
       }
     }
@@ -1472,11 +1484,7 @@ button {
     }
   }
 }
-.ais-Pagination {
-  @media screen and (max-width: 776px) {
-    margin-bottom: 50px;  
-  }
-}
+
 .box-panigation {
 
   .ais-Pagination-list {
@@ -1690,31 +1698,11 @@ button {
   justify-content: space-between;
 }
 
-.btn-open-support {
-  display: none !important;
-  z-index: 11;
-  background: linear-gradient(45deg, #3e36dc 14.84%, #00ff94 85.16%);
-  width: 50px;
-  height: 50px;
-  position: absolute;
-  border-radius: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  bottom: 40px;
-  right: 30px;
-  a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
 
 // TODO: filter panel result
 
 .wrap-main-col-left {
   max-width: 320px;
-  margin-right: 16px;
   width: 100%;
   box-shadow: 3px -2px 3px -3px #d3d4d8;
   overflow-x: hidden;
@@ -1732,17 +1720,13 @@ button {
       display: none !important;
     }
     .box-toggle-coloumn {
-      transition: all 010s ease-in-out;
+      // transition: all 010s ease-in-out;
       display: block !important;
-      right: 0;
-      left: 0;
       margin: auto;
     }
   }
   .box-toggle-coloumn {
     position: absolute;
-    right: 16px;
-    top: 0;
     z-index: 222;
   }
   .col-left__bottom {
@@ -1971,7 +1955,7 @@ button {
       background-color: #fff;
       width: 100%;
       height: 100%;
-      padding: 10px 24px 24px 24px;
+      padding-top: 10px;
       @media only screen and (max-width: 776px) {
         height: fit-content;
         padding-bottom: 56px;
@@ -2003,7 +1987,7 @@ button {
       }
       .box-bottom {
         column-gap: 20px;
-        padding: 0px 20px;
+        padding: 0px 24px;
         flex-wrap: wrap;
         width: 100%;
         max-width: 100%;
@@ -2072,16 +2056,15 @@ button {
   border-radius: 21px;
   background-color: #E0E0E0;
   height: 100%;
-  padding: 0 6px;
-  margin-right: 10px;
-  border: 2px solid #2B2C46;
+  padding: 4px 8px 4px 8px;
 
   .keyFilter {
     margin-right: 5px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 12px;
     color: #2B2C46;
     text-transform: uppercase;
+    margin-bottom: 0px;
   }
 }
 .modal-container {

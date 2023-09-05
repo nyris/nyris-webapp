@@ -37,7 +37,7 @@ function DefaultModal(props: Props): JSX.Element {
     >
       <div
         className={classNameComponentChild}
-        style={{ overflowY: 'hidden', maxHeight: '95vh', borderRadius: 12 }}
+        style={{ overflowY: 'auto', maxHeight: '95vh', borderRadius: 12 }}
       >
         {children}
       </div>

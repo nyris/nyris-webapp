@@ -29,6 +29,8 @@ interface PreviewProps {
   minCropWidth: number;
   /** Minimum height of the cropper to display in pixels. */
   minCropHeight: number;
+  /** handles if the image corner should be rounded */
+  rounded?: boolean;
 }
 
 /** @internal State of the Preview component */
@@ -143,15 +145,16 @@ function scaleToPreviewPixels(
 
 /** The Preview component. */
 const Preview = ({
-  selection,
+  dotColor,
   image,
-  maxWidth,
   maxHeight,
+  maxWidth,
+  minCropHeight,
+  minCropWidth,
   onSelectionChange,
   regions,
-  dotColor,
-  minCropWidth,
-  minCropHeight,
+  rounded,
+  selection,
 }: PreviewProps) => {
   let { w: width, h: height } = getThumbSizeLongestEdge(
     maxWidth,
@@ -308,7 +311,57 @@ const Preview = ({
   let gripSize = 20;
   let gripPadding = gripSize / 2;
   let darkOpacity = 0.3;
-
+  const cornerRadius = [4, 4, 4, 4];
+  const clipFunc = (ctx: any) => {
+    ctx.beginPath();
+    let topLeft = 0;
+    let topRight = 0;
+    let bottomLeft = 0;
+    let bottomRight = 0;
+    if (typeof cornerRadius === "number" && rounded) {
+      topLeft =
+        topRight =
+        bottomLeft =
+        bottomRight =
+          Math.min(cornerRadius, width / 2, height / 2);
+    } else if (rounded) {
+      topLeft = Math.min(cornerRadius[0] || 0, maxWidth / 2, maxHeight / 2);
+      topRight = Math.min(cornerRadius[1] || 0, maxWidth / 2, maxHeight / 2);
+      bottomRight = Math.min(cornerRadius[2] || 0, maxWidth / 2, maxHeight / 2);
+      bottomLeft = Math.min(cornerRadius[3] || 0, maxWidth / 2, maxHeight / 2);
+    }
+    ctx.moveTo(topLeft, 0);
+    ctx.lineTo(maxWidth - topRight, 0);
+    ctx.arc(
+      maxWidth - topRight,
+      topRight,
+      topRight,
+      (Math.PI * 3) / 2,
+      0,
+      false
+    );
+    ctx.lineTo(maxWidth, maxHeight - bottomRight);
+    ctx.arc(
+      maxWidth - bottomRight,
+      maxHeight - bottomRight,
+      bottomRight,
+      0,
+      Math.PI / 2,
+      false
+    );
+    ctx.lineTo(bottomLeft, maxHeight);
+    ctx.arc(
+      bottomLeft,
+      maxHeight - bottomLeft,
+      bottomLeft,
+      Math.PI / 2,
+      Math.PI,
+      false
+    );
+    ctx.lineTo(0, topLeft);
+    ctx.arc(topLeft, topLeft, topLeft, Math.PI, (Math.PI * 3) / 2, false);
+    ctx.closePath();
+  };
   return (
     <Stage
       width={width}
@@ -320,10 +373,10 @@ const Preview = ({
         margin: "auto",
       }}
     >
-      <Layer key="img">
+      <Layer key="img" clipFunc={clipFunc}>
         <Image image={image} width={width} height={height} />
       </Layer>
-      <Layer key="selection">
+      <Layer key="selection" clipFunc={clipFunc}>
         {/* Selection box */}
         <Rect
           stroke="white"
@@ -352,6 +405,7 @@ const Preview = ({
         />
 
         {/* Dark areas */}
+
         <Rect
           fill="black"
           opacity={darkOpacity}

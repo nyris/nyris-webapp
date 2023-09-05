@@ -16,6 +16,7 @@ import {
   reset,
   updateValueTextSearchMobile,
   setPreFilterDropdown,
+  setPreFilter,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppState } from 'types';
@@ -39,7 +40,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const {
     imageThumbSearchInput,
     textSearchInputMobile,
-    keyFilter,
+    preFilter,
     preFilterDropdown,
     valueTextSearch,
   } = search;
@@ -141,6 +142,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             style={{ lineHeight: 0, paddingLeft: '10px' }}
             onClick={() => {
               dispatch(reset(''));
+              dispatch(setPreFilter({}));
             }}
           >
             <img
@@ -194,7 +196,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   <div
                     className="icon-hover"
                     style={{
-                      ...(keyFilter
+                      ...(!isEmpty(preFilter)
                         ? {
                             backgroundColor: `${settings.theme?.primaryColor}`,
                           }
@@ -209,7 +211,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 {!settings.preFilterOption && (
                   <IconSearch width={16} height={16} />
                 )}
-                {keyFilter && (
+                {!isEmpty(preFilter) && (
                   <div
                     style={{
                       position: 'absolute',

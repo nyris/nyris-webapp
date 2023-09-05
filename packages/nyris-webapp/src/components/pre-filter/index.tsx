@@ -1,12 +1,12 @@
 import { Box, Button, Tooltip, Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import IconSearch from 'common/assets/icons/icon_search.svg';
 import { getFilters, searchFilters } from 'services/filter';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { setUpdateKeyFilterDesktop } from 'Store/search/Search';
+import { setPreFilter } from 'Store/search/Search';
 import { useMediaQuery } from 'react-responsive';
-import { isEmpty } from 'lodash';
+import { isEmpty, pickBy } from 'lodash';
 import { Skeleton } from '@material-ui/lab';
 import { truncateString } from 'helpers/truncateString';
 
@@ -14,20 +14,34 @@ interface Props {
   handleClose?: any;
   // onChangeKeyFilter?: any;
 }
-
+const maxFilter = 10;
 function PreFilterComponent(props: Props) {
   const { handleClose } = props;
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector(state => state);
   const {
     settings,
-    search: { keyFilter: keyFilterState },
+    search: { preFilter: keyFilterState },
   } = stateGlobal;
   const [resultFilter, setResultFilter] = useState<any>([]);
-  const [keyFilter, setKeyFilter] = useState<string>(keyFilterState || '');
+  const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
+    keyFilterState || {},
+  );
+
   const [isLoading, setLoading] = useState<boolean>(false);
   const [columns, setColumns] = useState<number>(0);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+
+  const selectedFilter = useMemo(
+    () =>
+      Object.keys(keyFilter).reduce((count, key) => {
+        if (keyFilter[key] === true) {
+          return count + 1;
+        }
+        return count;
+      }, 0),
+    [keyFilter],
+  );
 
   const getDataFilterDesktop = async () => {
     setLoading(true);
@@ -73,7 +87,6 @@ function PreFilterComponent(props: Props) {
       settings,
     )
       .then(res => {
-        // console.log("res", res);
         if (res.length > 0) {
           setResultFilter({ [res[0][0].toLocaleUpperCase()]: res });
           if (res.length <= 20) setColumns(1);
@@ -92,7 +105,7 @@ function PreFilterComponent(props: Props) {
   };
 
   const onHandlerSubmitData = () => {
-    dispatch(setUpdateKeyFilterDesktop(keyFilter));
+    dispatch(setPreFilter(pickBy(keyFilter, value => !!value)));
     handleClose();
   };
 
@@ -119,7 +132,7 @@ function PreFilterComponent(props: Props) {
             color: '#000',
             fontSize: '24px',
             fontWeight: 700,
-            paddingLeft: isMobile ? '0px' : '14px',
+            paddingLeft: '14px',
             marginBottom: isMobile ? '0px' : '-8px',
             marginTop: isMobile ? '0px' : '24px',
           }}
@@ -133,7 +146,6 @@ function PreFilterComponent(props: Props) {
       </div>
       <Box
         className="box-top"
-        style={isMobile ? { padding: 0, marginTop: '16px' } : undefined}
         display={'flex'}
         justifyContent={'space-between'}
         alignItems={'center'}
@@ -144,34 +156,21 @@ function PreFilterComponent(props: Props) {
           justifyItems={'center'}
           style={isMobile ? { width: '100%' } : undefined}
         >
-          {(!keyFilter || isMobile) && (
-            <Box
-              className="icon-search"
-              style={{ marginRight: 11 }}
-              display={'flex'}
-              justifyContent={'center'}
-              alignItems={'center'}
-            >
-              <img
-                style={{ maxWidth: 'fit-content' }}
-                src={IconSearch}
-                alt=""
-                width={18}
-                height={18}
-              />
-            </Box>
-          )}
-
-          {keyFilter && !isMobile && (
-            <Box display={'flex'} className="box-keyFilter">
-              <Typography className="keyFilter max-line-1">
-                {keyFilter}
-              </Typography>
-              <Button style={{ padding: 0 }} onClick={() => setKeyFilter('')}>
-                <CloseIcon style={{ fontSize: 12, color: '#2B2C46' }} />
-              </Button>
-            </Box>
-          )}
+          <Box
+            className="icon-search"
+            style={{ marginRight: 11 }}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+          >
+            <img
+              style={{ maxWidth: 'fit-content' }}
+              src={IconSearch}
+              alt=""
+              width={18}
+              height={18}
+            />
+          </Box>
 
           <input
             className="input-search-filter"
@@ -183,19 +182,59 @@ function PreFilterComponent(props: Props) {
         </Box>
       </Box>
 
-      {keyFilter && isMobile && (
-        <Box style={{ margin: '10px 16px' }}>
+      {!isEmpty(keyFilter) && selectedFilter > 0 && (
+        <Box
+          style={{
+            margin: '10px 16px 10px 16px',
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
           <Box
-            display={'flex'}
-            className="box-keyFilter"
-            style={{ display: 'inline-flex' }}
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              rowGap: '8px',
+              columnGap: '8px',
+              alignItems: 'baseline',
+              fontSize: '12px',
+              marginBottom: '4px',
+            }}
           >
-            <Typography className="keyFilter max-line-1">
-              {keyFilter}
-            </Typography>
-            <Button style={{ padding: 0 }} onClick={() => setKeyFilter('')}>
-              <CloseIcon style={{ fontSize: 12, color: '#2B2C46' }} />
-            </Button>
+            {Object.keys(keyFilter).map((key, index) => {
+              if (!keyFilter[key]) return <></>;
+              return (
+                <Box
+                  key={index}
+                  className="box-keyFilter"
+                  style={{ display: 'flex', height: 'fit-content' }}
+                >
+                  <Typography className="keyFilter">{key}</Typography>
+                  <Button
+                    style={{ padding: 0 }}
+                    onClick={() => setKeyFilter({ ...keyFilter, [key]: false })}
+                  >
+                    <CloseIcon style={{ fontSize: 12, color: '#2B2C46' }} />
+                  </Button>
+                </Box>
+              );
+            })}
+            <p
+              style={{ fontWeight: 'bold', color: '#000' }}
+            >{`${selectedFilter}/${maxFilter}`}</p>
+            <Box
+              style={{
+                color: '#E31B5D',
+                fontSize: '12px',
+                cursor: 'pointer',
+                marginLeft: '12px',
+              }}
+              onClick={() => {
+                setKeyFilter({});
+              }}
+            >
+              Clear all
+            </Box>
           </Box>
         </Box>
       )}
@@ -204,7 +243,10 @@ function PreFilterComponent(props: Props) {
         height={'100%'}
         style={
           isMobile
-            ? { columnCount: 1, marginBottom: keyFilter ? '50px' : '0px' }
+            ? {
+                columnCount: 1,
+                marginBottom: keyFilter ? '50px' : '0px',
+              }
             : columns <= 4
             ? { columnCount: columns, height: '100%', paddingBottom: 20 }
             : { columnCount: 4, paddingBottom: 20 }
@@ -248,12 +290,22 @@ function PreFilterComponent(props: Props) {
                           minHeight: '20px',
                           color: '#2B2C46',
                           width: '100%',
+                          maxWidth: 'fit-content',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap',
+                          backgroundColor: keyFilter[item] ? '#E9E9EC' : '',
+                          borderRadius: 8,
+                          paddingLeft: '8px',
+                          paddingRight: '8px',
                         }}
                         onClick={() => {
-                          setKeyFilter(item);
+                          if (selectedFilter < maxFilter) {
+                            setKeyFilter({
+                              ...keyFilter,
+                              [item]: !keyFilter[item],
+                            });
+                          }
                         }}
                       >
                         {truncateString(item, !isMobile ? 35 : 35)}
@@ -297,10 +349,13 @@ function PreFilterComponent(props: Props) {
             className="button-left"
             style={{
               width: '50%',
+              height: '64px',
               backgroundColor: '#000000',
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
+              textTransform: 'none',
+              paddingLeft: '16px',
             }}
             onClick={() => handleClose()}
           >
@@ -314,6 +369,8 @@ function PreFilterComponent(props: Props) {
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
+              textTransform: 'none',
+              paddingLeft: '16px',
             }}
             onClick={() => onHandlerSubmitData()}
           >
