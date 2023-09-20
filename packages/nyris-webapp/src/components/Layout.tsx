@@ -21,6 +21,28 @@ import Header from './Header';
 import { createSessionByApi } from 'services/session';
 import { isUndefined } from 'lodash';
 import AppMobile from './AppMobile';
+import jQuery from 'jquery';
+
+declare var psol: any;
+
+jQuery(document).ready(function () {
+  psol.core.setApiKey('66c56a38010f4a81a82f6ed51c903399');
+  psol.core.setUserInfo({
+    server_type: 'oem_apps_cadenas_webcomponentsdemo',
+    title: 'Herr',
+    firstname: 'Max',
+    lastname: 'Mustermann',
+    userfirm: 'CADENAS GmbH',
+    street: 'Berliner Allee 28 b+c',
+    zip: '86153',
+    city: 'Augsburg',
+    country: 'de',
+    phone: '+49 (0) 821 2 58 58 0-0',
+    fax: '+49 (0) 821 2 58 58 0-999',
+    email: 'info@cadenas.de',
+  });
+  psol.core.setServiceBaseUrl('https://webapi.partcommunity.com');
+});
 
 function Layout({ children }: ReactNode): JSX.Element {
   const dispatch = useAppDispatch();

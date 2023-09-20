@@ -5,11 +5,12 @@ import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
 import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
 import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
 import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
+import { ReactComponent as Box3dIcon } from 'common/assets/icons/3d.svg';
+
 import React, { memo, useEffect, useState } from 'react';
 import NoImage from 'common/assets/images/unnamed.png';
 import { RootState, useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
-import DetailItem from 'components/DetailItem';
 import {
   onToggleModalItemDetail,
   updateStatusLoading,
@@ -19,6 +20,7 @@ import { truncateString } from 'helpers/truncateString';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'react-responsive';
 import { feedbackClickEpic, feedbackConversionEpic } from 'services/Feedback';
+import CadenasWebViewer from 'components/cadenasWebViewer';
 
 interface Props {
   dataItem: any;
@@ -51,7 +53,11 @@ function ItemResult(props: Props) {
   const [urlImage, setUrlImage] = useState<string>('');
   const state = useAppSelector<RootState>((state: any) => state);
   const { settings } = state;
-  const [isOpenModalImage, setOpenModalImage] = useState<boolean>(false);
+
+  const [openDetailedView, setOpenDetailedView] = useState<
+    '3d' | 'image' | undefined
+  >();
+
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const [feedback, setFeedback] = useState('none');
   const { t } = useTranslation();
@@ -96,7 +102,8 @@ function ItemResult(props: Props) {
 
   const handlerToggleModal = (item: any) => {
     feedbackClickEpic(state, indexItem, item.sku);
-    setOpenModalImage(true);
+    setOpenDetailedView('image');
+
     dispatch(onToggleModalItemDetail(true));
     dispatch(updateStatusLoading(true));
     setTimeout(() => {
@@ -107,17 +114,18 @@ function ItemResult(props: Props) {
   return (
     <Box className="wrap-main-item-result">
       <DefaultModal
-        openModal={isOpenModalImage}
+        openModal={openDetailedView === '3d' || openDetailedView === 'image'}
         handleClose={(e: any) => {
-          setOpenModalImage(false);
+          setOpenDetailedView(undefined);
         }}
       >
-        <DetailItem
-          handlerCloseModal={() => {
-            setOpenModalImage(false);
+        <CadenasWebViewer
+          dataItem={dataItem}
+          handleClose={() => {
+            setOpenDetailedView(undefined);
           }}
           handlerFeedback={handlerFeedback}
-          dataItem={dataItem}
+          show3dView={openDetailedView === '3d'}
           onHandlerModalShare={() => setOpenModalShare(true)}
           onSearchImage={(url: string) => {
             dispatch(updateStatusLoading(true));
@@ -160,6 +168,14 @@ function ItemResult(props: Props) {
             <IconSearchImage width={16} height={16} color={'#AAABB5'} />
           </Box>
         )}
+        <Box
+          className="box-icon-modal-3d"
+          onClick={() => {
+            setOpenDetailedView('3d');
+          }}
+        >
+          <Box3dIcon width={16} height={16} color={'#AAABB5'} />
+        </Box>
         <Box className="box-image">
           <Button
             style={{ width: '100%', height: '100%' }}
