@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "mockserver": "^3.1.1",
-    "react-styleguidist": "^11.0.5",
+    "react-styleguidist": "^11.2.0",
     "redux-devtools-extension": "^2.13.8"
   }
 }
