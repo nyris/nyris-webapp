@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## 0.3.37 - 2023-09-20
+
+### Fixed
+
+- Pass pre-filter on mobile image search
+
 ## 0.3.36 - 2023-09-05
 
 ### Added
