@@ -17,18 +17,9 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import NoImage from '../common/assets/images/unnamed.png';
 import { ReactComponent as Box3dIcon } from 'common/assets/icons/3d.svg';
 import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
-import { ReactComponent as DownloadIcon } from 'common/assets/icons/download.svg';
-
 import { useTranslation } from 'react-i18next';
-
-declare var psol: any;
-
-const favoriteActions3d = [
-  'actMeasureGrid',
-  'actCut',
-  'actAnimate',
-  'actIsometric',
-];
+import ProductAttribute from './ProductAttribute';
+import CadenasWebViewer from './CadenasWebViewer';
 
 interface Props {
   dataItem?: any;
@@ -39,19 +30,18 @@ interface Props {
   onSearchImage?: any;
 }
 
-function CadenasWebViewer(props: Props) {
+function ProductDetailView(props: Props) {
   const {
     dataItem,
     handleClose,
     handlerFeedback,
     onHandlerModalShare,
-    show3dView,
+    show3dView = false,
     onSearchImage,
   } = props;
   const { sku } = dataItem;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = useAppSelector<AppState>((state: any) => state);
-  const { t } = useTranslation();
   const brand = dataItem[settings.field.productTag];
   const ctaLink = dataItem[settings.field?.ctaLinkField];
   const [collapDescription, setCollapDescription] = useState(false);
@@ -59,10 +49,10 @@ function CadenasWebViewer(props: Props) {
   const [is3dView, setIs3dView] = useState(show3dView);
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
   const [urlImage, setUrlImage] = useState<string>('');
-  const [mident, setMident] = useState('');
   const [status3dView, setStatus3dView] = useState<
     'loading' | 'loaded' | 'not-found' | undefined
   >();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (dataItem) {
@@ -75,9 +65,9 @@ function CadenasWebViewer(props: Props) {
 
   const handlerCheckUrlImage = (url: any, timeout?: number) => {
     timeout = timeout || 5000;
-    var timedOut = false,
+    let timedOut = false,
       timer: any;
-    var img = new Image();
+    let img = new Image();
     img.onerror = img.onabort = function () {
       if (!timedOut) {
         clearTimeout(timer);
@@ -99,79 +89,6 @@ function CadenasWebViewer(props: Props) {
 
     setDataImageCarouSel(valueKey);
   };
-
-  useEffect(() => {
-    // prepare 3d viewer settings.
-    var webViewer3DSettings = {
-      $container: $('#cnsWebViewer3d'),
-      viewerBackendType: psol.components.WebViewer3D.ViewerBackends.WebGL,
-      devicePixelRatio: window.devicePixelRatio,
-      radialMenuActions: [],
-      favoriteActions: favoriteActions3d,
-      showProgressDialog: false,
-      webglViewerSettings: {
-        ColorTL: '#FAFAFA',
-        ColorTR: '#FAFAFA',
-        ColorML: '#FAFAFA',
-        ColorMR: '#FAFAFA',
-        ColorBL: '#FAFAFA',
-        ColorBR: '#FAFAFA',
-        showLogo: false,
-        logoTexture: './img/logo.png',
-        logoScaleFactor: 1.0,
-        logoMixFactor: 0.5,
-        material: {
-          preset: 'pcloud',
-          edit: false,
-        },
-        measureGrid: {
-          colors: {
-            dimensions: '#000000',
-            outline: '#0000ff',
-            grid: '#757575',
-            unit: 'mm',
-          },
-        },
-        helperOptions: {
-          gridOn: false,
-          axisOn: false,
-        },
-        shadeMode: psol.components.WebViewer3D.ShadeModes.ShadeAndLines,
-        enableEditableDimensions: true,
-        showPartNameTooltip: false,
-      },
-    };
-
-    // initialize 3d viewer
-    var webviewer3d = new psol.components.WebViewer3D(webViewer3DSettings);
-    setStatus3dView('loading');
-    // run search and display result in 3D viewer.
-    psol.core
-      .ajaxGetOrPost({
-        url: psol.core.getServiceBaseUrl() + '/service/reversemap',
-        data: {
-          catalog: 'ganter',
-          part: sku,
-          exact: '0',
-        },
-      })
-      .then(function (reverseMapResult: { mident: string }) {
-        var mident = reverseMapResult.mident || '';
-        setMident(mident);
-        // load geometry in 3d viewer.
-        webviewer3d.show().then(function () {
-          webviewer3d
-            .loadByVarset(null, null, mident)
-            .then(() => {
-              setStatus3dView('loaded');
-            })
-            .catch((err: any) => {
-              setStatus3dView('not-found');
-              setIs3dView(false);
-            });
-        });
-      });
-  }, [sku]);
 
   return (
     <Box
@@ -201,17 +118,12 @@ function CadenasWebViewer(props: Props) {
       </Box>
 
       <div style={{ position: 'relative' }}>
-        {status3dView !== 'not-found' && (
-          <div
-            id="cnsWebViewer3d"
-            style={{
-              height: !is3dView ? '0px' : isMobile ? '368px' : '456px',
-              width: !is3dView ? '0px' : '100%',
-              opacity: !is3dView ? 0 : 1,
-              transition: is3dView ? 'opacity 3s ease' : '', // You can adjust the duration and easing here
-            }}
-          ></div>
-        )}
+        <CadenasWebViewer
+          is3dView={is3dView}
+          sku={sku}
+          status3dView={status3dView}
+          setStatus3dView={setStatus3dView}
+        />
 
         <Box
           className="box-carosel"
@@ -222,7 +134,7 @@ function CadenasWebViewer(props: Props) {
             width: is3dView ? '0px' : '100%',
             height: is3dView ? '0px' : !isMobile ? '60%' : '368px',
             opacity: is3dView ? 0 : 1,
-            transition: !is3dView ? 'opacity 3s ease' : '', // You can adjust the duration and easing here
+            transition: !is3dView ? 'opacity 3s ease' : '',
           }}
         >
           {dataImageCarousel.length > 0 ? (
@@ -266,38 +178,7 @@ function CadenasWebViewer(props: Props) {
         <div
           style={{
             position: 'absolute',
-            bottom: '36px',
-            right: !isMobile ? '202px' : '85px',
-          }}
-        >
-          {is3dView && status3dView === 'loaded' && (
-            <Box
-              style={{
-                background: '#FFF',
-                width: '32px',
-                height: '32px',
-                borderRadius: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-                boxShadow:
-                  '0 2px 10px 0 rgba(0,0,0,.16), 0 2px 5px 0 rgba(0,0,0,.26)',
-              }}
-              onClick={() => {
-                new psol.components.DownloadDialog({
-                  mident: mident,
-                }).show();
-              }}
-            >
-              <DownloadIcon width={16} height={16} color={'#FFF'} />
-            </Box>
-          )}
-        </div>
-        <div
-          style={{
-            position: 'absolute',
-            bottom: is3dView ? '36px' : '78px',
+            bottom: is3dView ? '20px' : '68px',
             left: '16px',
           }}
         >
@@ -354,72 +235,60 @@ function CadenasWebViewer(props: Props) {
         >
           <Box className="box-top">
             <Grid container justifyContent="space-between">
-              <Grid item xs={12}>
-                <Typography className="text-f13 fw-500 max-line-1">
-                  {settings.itemIdLabel || 'SKU'}: <span> {sku}</span>
-                </Typography>
-                {dataItem[settings.field.manufacturerNumber] && (
-                  <Typography
-                    className="text-f13 fw-500 max-line-1"
-                    style={{ marginTop: '12px' }}
-                  >
-                    {t('Manufacturer Number')}:{' '}
-                    {dataItem[settings.field.manufacturerNumber]}
-                  </Typography>
-                )}
+              <Box
+                display="flex"
+                flexDirection="row"
+                flexWrap="wrap"
+                style={{ gap: 6 }}
+                width={'100%'}
+              >
+                <ProductAttribute
+                  title={settings.itemIdLabel || 'SKU'}
+                  value={sku}
+                  width={
+                    settings.warehouseVariant
+                      ? { xs: '49%', md: 'fit-content' }
+                      : { xs: '100%', md: 'fit-content' }
+                  }
+                />
                 {settings.warehouseVariant && (
-                  <Typography
-                    className="text-f13 max-line-1 fw-500"
-                    style={{
-                      marginTop: 12,
-                      display: 'inline-block',
-                    }}
-                  >
-                    <span style={{ marginRight: 3 }}>
-                      {dataItem[settings.field.warehouseStock]}:
-                    </span>
-                    <span
-                      style={{
-                        color: dataItem[settings.field.warehouseStockValue]
-                          ? '#00C070'
-                          : '#c54545',
-                        fontWeight: 600,
-                      }}
-                    >
-                      {dataItem[settings.field.warehouseStockValue] || 0}
-                    </span>
-                  </Typography>
+                  <ProductAttribute
+                    title={dataItem[settings.field.warehouseStock]}
+                    value={dataItem[settings.field.warehouseStockValue] || 0}
+                    width={{ xs: '49%', md: 'fit-content' }}
+                  />
                 )}
                 {(brand || settings.brandName) && (
-                  <Box
-                    borderRadius={16}
-                    style={{
-                      backgroundColor: `${settings.theme?.secondaryColor}26`,
-                      width: 'fit-content',
-                      padding: '3px 5px',
-                      marginTop: 12,
-                    }}
-                  >
-                    <Typography
-                      style={{
-                        color: settings.theme?.secondaryColor,
-                        fontSize: 12,
-                        fontWeight: 700,
-                      }}
-                    >
-                      {brand || settings.brandName}
-                    </Typography>
-                  </Box>
+                  <ProductAttribute
+                    title={'Brand'}
+                    value={brand || settings.brandName}
+                    width={
+                      dataItem[settings.field.manufacturerNumber]
+                        ? { xs: '49%', md: 'fit-content' }
+                        : { xs: '100%', md: 'fit-content' }
+                    }
+                  />
                 )}
-              </Grid>
+                {dataItem[settings.field.manufacturerNumber] && (
+                  <ProductAttribute
+                    title={t('Manufacturer Number')}
+                    value={dataItem[settings.field.manufacturerNumber]}
+                    width={
+                      brand || settings.brandName
+                        ? { xs: '49%', md: 'fit-content' }
+                        : { xs: '100%', md: 'fit-content' }
+                    }
+                  />
+                )}
+              </Box>
+
               <Grid item xs={12}>
                 <Box
                   style={{
-                    background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
-                    // marginBottom: 25,
+                    background: settings.theme?.primaryColor,
                     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                     borderRadius: 4,
-                    marginTop: 12,
+                    marginTop: 8,
                   }}
                   display={'flex'}
                   justifyContent={'space-between'}
@@ -450,7 +319,7 @@ function CadenasWebViewer(props: Props) {
                       align="left"
                       style={{
                         letterSpacing: '0.55px',
-                        maxWidth: '300px',
+                        maxWidth: '500px',
                         paddingRight: '4px',
                       }}
                     >
@@ -507,43 +376,23 @@ function CadenasWebViewer(props: Props) {
               display="flex"
               justifyContent={'space-between'}
               style={{ color: '#2B2C46', marginTop: 12 }}
-              gridGap={20}
+              gridGap={8}
             >
               {settings.field.warehouseNumber && (
-                <Box
-                  style={{
-                    backgroundColor: `${settings.theme?.secondaryColor}26`,
-                    padding: '5px 10px',
-                    borderRadius: 4,
-                    width: '100%',
-                  }}
-                >
-                  <div style={{ fontSize: 15, fontWeight: 500 }}>
-                    {dataItem[settings.field.warehouseNumber]}
-                  </div>
-                  <div style={{ fontSize: 17, fontWeight: 700 }}>
-                    {dataItem[settings.field.warehouseNumberValue] || 'N/A'}
-                  </div>
-                </Box>
+                <ProductAttribute
+                  title={dataItem[settings.field.warehouseNumber]}
+                  value={dataItem[settings.field.warehouseNumberValue] || 'N/A'}
+                  width={{ xs: '49%', md: 'fit-content' }}
+                />
               )}
-
               {settings.field.warehouseShelfNumber && (
-                <Box
-                  style={{
-                    backgroundColor: `${settings.theme?.secondaryColor}26`,
-                    padding: '5px 10px',
-                    borderRadius: 4,
-                    width: '100%',
-                  }}
-                >
-                  <div style={{ fontSize: 15, fontWeight: 500 }}>
-                    {dataItem[settings.field.warehouseShelfNumber]}
-                  </div>
-                  <div style={{ fontSize: 17, fontWeight: 700 }}>
-                    {dataItem[settings.field.warehouseShelfNumberValue] ||
-                      'N/A'}
-                  </div>
-                </Box>
+                <ProductAttribute
+                  title={dataItem[settings.field.warehouseShelfNumber]}
+                  value={
+                    dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'
+                  }
+                  width={{ xs: '49%', md: 'fit-content' }}
+                />
               )}
             </Box>
           )}
@@ -634,4 +483,4 @@ function CadenasWebViewer(props: Props) {
   );
 }
 
-export default CadenasWebViewer;
+export default ProductDetailView;

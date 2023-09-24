@@ -20,7 +20,8 @@ import { truncateString } from 'helpers/truncateString';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'react-responsive';
 import { feedbackClickEpic, feedbackConversionEpic } from 'services/Feedback';
-import CadenasWebViewer from 'components/cadenasWebViewer';
+import ProductDetailView from 'components/ProductDetailView';
+import ProductAttribute from '../ProductAttribute';
 
 interface Props {
   dataItem: any;
@@ -119,7 +120,7 @@ function ItemResult(props: Props) {
           setOpenDetailedView(undefined);
         }}
       >
-        <CadenasWebViewer
+        <ProductDetailView
           dataItem={dataItem}
           handleClose={() => {
             setOpenDetailedView(undefined);
@@ -209,13 +210,25 @@ function ItemResult(props: Props) {
         display={'flex'}
         style={{
           flexDirection: 'column',
-          backgroundColor: '#F3F3F5',
+          backgroundColor: '#FFFFFF',
           flexGrow: 1,
         }}
       >
-        <Box className="box-top">
-          <Grid container justifyContent="space-between">
-            <Grid item xs={12}>
+        <Box className="box-top" style={{ color: '#FFFFFF' }}>
+          <Box
+            display="flex"
+            justifyContent={'space-between'}
+            flexDirection={'column'}
+            style={{ color: '#2B2C46' }}
+            gridGap={8}
+          >
+            <Box
+              display="flex"
+              justifyContent={'space-between'}
+              flexDirection={'row'}
+              style={{ color: '#2B2C46', marginTop: 12 }}
+              gridGap={8}
+            >
               <Tooltip
                 title={sku}
                 placement="top"
@@ -226,79 +239,61 @@ function ItemResult(props: Props) {
                   className="text-f12 max-line-1 fw-400"
                   style={{
                     color: '#2B2C46',
-                    marginTop: 12,
-                    display: 'inline-block',
                   }}
                 >
-                  <span style={{ marginRight: 3 }}>
-                    {settings.itemIdLabel || 'SKU'}:
-                  </span>
-                  {truncateString(sku, isMobile ? 17 : 20)}
+                  {truncateString(
+                    sku,
+                    !settings.warehouseVariant ? 29 : isMobile ? 17 : 20,
+                  )}
                 </Typography>
               </Tooltip>
 
               {settings.warehouseVariant && (
-                <Box>
-                  <Typography
-                    className="text-f12 max-line-1 fw-400"
+                <Typography
+                  className="text-f12 max-line-1 fw-400"
+                  style={{
+                    color: '#2B2C46',
+                  }}
+                >
+                  <span
                     style={{
-                      color: '#2B2C46',
-                      display: 'inline-block',
+                      color: dataItem[settings.field.warehouseStockValue]
+                        ? '#00C070'
+                        : '#c54545',
+                      fontWeight: 600,
                     }}
                   >
-                    <span style={{ marginRight: 3 }}>
-                      {dataItem[settings.field.warehouseStock]}:
-                    </span>
-                    <span
-                      style={{
-                        color: dataItem[settings.field.warehouseStockValue]
-                          ? '#00C070'
-                          : '#c54545',
-                        fontWeight: 600,
-                      }}
-                    >
-                      {dataItem[settings.field.warehouseStockValue] || 0}
-                    </span>
-                  </Typography>
-                </Box>
+                    {dataItem[settings.field.warehouseStockValue] || 0}
+                  </span>
+                </Typography>
+              )}
+            </Box>
+            <Box
+              display="flex"
+              justifyContent={'space-between'}
+              flexDirection={'row'}
+              style={{ color: '#2B2C46' }}
+              gridGap={8}
+            >
+              {(brand || settings.brandName) && (
+                <ProductAttribute
+                  title={'Brand'}
+                  value={brand || settings.brandName}
+                  padding="4px 8px"
+                  width={{ xs: '49%' }}
+                />
               )}
 
-              {(!!brand || !!settings.brandName) && (
-                <Tooltip
-                  title={brand}
-                  placement="top"
-                  arrow={true}
-                  disableHoverListener={brand?.length < 22 || !brand}
-                >
-                  <Box
-                    style={{
-                      background: `${settings.theme?.secondaryColor}26`,
-                      borderRadius: '6px',
-                      display: 'flex',
-                      width: 'fit-content',
-                      padding: '2px 5px',
-                      marginTop: 3,
-                    }}
-                  >
-                    <Typography
-                      className="fw-700"
-                      style={{
-                        color: settings.theme?.secondaryColor,
-                        fontSize: 10,
-                        letterSpacing: '1px',
-                        maxWidth: '160px',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                      }}
-                    >
-                      {truncateString(brand, 22) || settings.brandName}
-                    </Typography>
-                  </Box>
-                </Tooltip>
+              {dataItem[settings.field.manufacturerNumber] && (
+                <ProductAttribute
+                  title={'Mfr. No.'}
+                  value={dataItem[settings.field.manufacturerNumber]}
+                  padding="4px 8px"
+                  width={{ xs: '49%' }}
+                />
               )}
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Box>
         <div>
           <Tooltip
@@ -370,56 +365,23 @@ function ItemResult(props: Props) {
               gridGap={10}
             >
               {settings.field.warehouseNumber && (
-                <Box
-                  style={{
-                    backgroundColor: `${settings.theme?.secondaryColor}26`,
-                    padding: '5px 10px',
-                    borderRadius: 4,
-                    width: '100%',
-                  }}
-                >
-                  <div style={{ fontSize: 10, fontWeight: 500 }}>
-                    {dataItem[settings.field.warehouseNumber]}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {dataItem[settings.field.warehouseNumberValue] || 'N/A'}
-                  </div>
-                </Box>
+                <ProductAttribute
+                  title={dataItem[settings.field.warehouseNumber]}
+                  value={dataItem[settings.field.warehouseNumberValue] || 'N/A'}
+                  padding="4px 8px"
+                  width={{ xs: '49%' }}
+                />
               )}
 
               {settings.field.warehouseShelfNumber && (
-                <Box
-                  style={{
-                    backgroundColor: `${settings.theme?.secondaryColor}26`,
-                    padding: '5px 10px',
-                    borderRadius: 4,
-                    width: '100%',
-                  }}
-                >
-                  <div style={{ fontSize: 10, fontWeight: 500 }}>
-                    {dataItem[settings.field.warehouseShelfNumber]}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {dataItem[settings.field.warehouseShelfNumberValue] ||
-                      'N/A'}
-                  </div>
-                </Box>
+                <ProductAttribute
+                  title={dataItem[settings.field.warehouseShelfNumber]}
+                  value={
+                    dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'
+                  }
+                  padding="4px 8px"
+                  width={{ xs: '49%' }}
+                />
               )}
             </Box>
           )}

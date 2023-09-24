@@ -4,7 +4,7 @@ export const translations = {
       Search: 'Search',
       'Choose an image': 'Choose an image',
       'or drag it here': 'or drag it here',
-      'Manufacturer Number': 'Manufacturer Number',
+      'Manufacturer Number': 'Manufacturer No.',
       'Close group': 'Close group',
       'Show group': 'Show group',
       'Adjust the search frame around your object for improved results':
