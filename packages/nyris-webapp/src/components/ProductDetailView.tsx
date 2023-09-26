@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import $ from 'jquery';
 import { Box, Button, Collapse, Grid, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';

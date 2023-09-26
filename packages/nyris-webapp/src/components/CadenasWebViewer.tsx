@@ -11,8 +11,21 @@ const favoriteActions3d = [
   'actCut',
   'actAnimate',
   'actIsometric',
-  'actAR ',
+  'actExternalAR',
 ];
+
+function isMobileDevice(): boolean {
+  const userAgent = navigator.userAgent.toLowerCase();
+  const mobileKeywords = [
+    'mobile',
+    'android',
+    'iphone',
+    'ipad',
+    'ipod',
+    'windows phone',
+  ];
+  return mobileKeywords.some(keyword => userAgent.includes(keyword));
+}
 
 function CadenasWebViewer({
   is3dView,
@@ -120,7 +133,7 @@ function CadenasWebViewer({
         style={{
           position: 'absolute',
           bottom: '19px',
-          right: !isMobile ? '186px' : '68px',
+          right: !isMobile ? '186px' : isMobileDevice() ? '50px' : '68px',
         }}
       >
         {is3dView && status3dView === 'loaded' && (
