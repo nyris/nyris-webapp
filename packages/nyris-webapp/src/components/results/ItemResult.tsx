@@ -181,8 +181,8 @@ function ItemResult(props: Props) {
         )}
 
         <Box className="box-image">
-          <Button
-            style={{ width: '100%', height: '100%' }}
+          <Box
+            style={{ width: '100%', height: '100%', cursor: 'pointer' }}
             onClick={(e: any) => {
               e.preventDefault();
               handlerToggleModal(dataItem);
@@ -204,7 +204,7 @@ function ItemResult(props: Props) {
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             )}
-          </Button>
+          </Box>
         </Box>
       </Box>
 

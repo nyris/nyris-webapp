@@ -42,6 +42,21 @@ function RfqBanner({
           justifyContent: 'space-around',
         }}
       >
+        <div>
+          <img
+            src={getCroppedCanvas(
+              requestImage?.canvas,
+              selectedRegion,
+            )?.toDataURL()}
+            alt="request_image"
+            style={{
+              mixBlendMode: rfqStatus !== 'inactive' ? 'overlay' : 'unset',
+              maxHeight: '181px',
+              maxWidth: '181px',
+              borderRadius: '2px',
+            }}
+          />
+        </div>
         <Box>
           <Box
             style={{
@@ -97,21 +112,6 @@ function RfqBanner({
             Request a Quote
           </button>
         </Box>
-        <div>
-          <img
-            src={getCroppedCanvas(
-              requestImage?.canvas,
-              selectedRegion,
-            )?.toDataURL()}
-            alt="request_image"
-            style={{
-              mixBlendMode: rfqStatus !== 'inactive' ? 'overlay' : 'unset',
-              maxHeight: '181px',
-              maxWidth: '181px',
-              borderRadius: '2px',
-            }}
-          />
-        </div>
       </Box>
     </Box>
   );
