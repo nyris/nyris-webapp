@@ -19,7 +19,7 @@ export const ImagePreviewCarousel = (props: Props) => {
 
   const maxWidth = useMemo(() => {
     const contentWidth = 75 + 58 * imgItem.length;
-    const modalWidth = isMobile ? 340 : 400;
+    const modalWidth = isMobile ? 340 : 600;
     return contentWidth < modalWidth ? contentWidth : modalWidth;
   }, [imgItem.length, isMobile]);
 
@@ -31,9 +31,9 @@ export const ImagePreviewCarousel = (props: Props) => {
       gap: '1rem',
       pagination: false,
       arrows: false,
-      width: isMobile ? 340 : 370,
+      // width: isMobile ? 340 : 370,
     }),
-    [isMobile],
+    [],
   );
 
   const thumbsOptions: Options = useMemo(
@@ -57,7 +57,7 @@ export const ImagePreviewCarousel = (props: Props) => {
     return imgItem.map(slide => (
       <SplideSlide key={slide.url} className={thumbs ? '' : 'img-container'}>
         <img
-          style={{ objectFit: 'contain', minHeight: '400px' }}
+          style={{ objectFit: 'contain', height: '100%' }}
           alt="preview"
           src={slide.url}
         />
@@ -73,11 +73,15 @@ export const ImagePreviewCarousel = (props: Props) => {
 
   return (
     <>
-      <Splide options={mainOptions} ref={mainRef}>
+      <Splide
+        options={mainOptions}
+        ref={mainRef}
+        style={{ maxWidth: '100%', height: isMobile ? '80%' : '' }}
+      >
         {renderSlides()}
       </Splide>
 
-      <div className={`thumbs-list ${imgItem.length <= 1 ? 'd-none' : ''}`}>
+      <div className={`thumbs-list`}>
         <Splide options={thumbsOptions} ref={thumbsRef}>
           {renderSlides(true)}
         </Splide>

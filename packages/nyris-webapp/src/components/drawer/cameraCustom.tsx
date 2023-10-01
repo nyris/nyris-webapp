@@ -129,7 +129,19 @@ function CameraCustom(props: Props) {
         region = res.selectedRegion;
         dispatch(setSelectedRegion(region));
       }
-      return findByImage({ image, settings, region })
+
+      const preFilterValues = [
+        {
+          key: settings.visualSearchFilterKey,
+          values: Object.keys(preFilter) as string[],
+        },
+      ];
+      return findByImage({
+        image,
+        settings,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+        region,
+      })
         .then((res: any) => {
           res?.results.map((item: any) => {
             filters.push({
