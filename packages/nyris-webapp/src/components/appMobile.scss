@@ -10,7 +10,9 @@
     display: none !important;
   }
 }
-
+.psol-comp-viewbase-svgcontainer{
+  display: none !important;
+}
 .layout-main-mobile {
   height: 100%;
   @media screen and (max-width: 776px) {
@@ -663,11 +665,6 @@
       height: 80% !important;
     }
 
-    .box-content {
-      //margin: 0 -55px !important;
-      padding: 16px 24px !important;
-    }
-
     .box-top {
       .btn-detail-item {
         margin: 10px 0 !important;
@@ -692,7 +689,7 @@
   }
 
   .box-modal-default {
-    max-width: 340px;
+    max-width: 360px;
     .box-carosel .thumbs-wrapper {
       width: 300px;
     }

@@ -15,7 +15,7 @@
 }
 
 .thumbs-list{
-  margin: 15px 0;
+  margin: 8px 0;
   display: flex;
   justify-content: center;
 }
@@ -26,8 +26,8 @@
 
   img {
     max-height: 400px;
-    @media only screen and (max-width: 776px) {
-        max-height: 335px;
-    }
+    // @media only screen and (max-width: 776px) {
+    //     max-height: 335px;
+    // }
   }
 }

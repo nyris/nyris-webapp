@@ -1,3 +1,48 @@
+// .psol-comp-webviewer3d-copyright-container {
+//   display: none !important;
+// }
+
+.psol-comp-viewbase-iconbutton-44 {
+
+  width: 32px;
+  height: 32px;
+  .psol-comp-viewbase-svgicon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.psol-comp-buttonBar-container {
+  margin-left: -30px
+}
+
+.psol-comp-webviewer3d-copyright-container {
+  a {
+    font-size: 10px !important; 
+    color: #55566B !important;
+  }
+}
+.psol-comp-webviewer3d-copyright-container {
+  margin-bottom: -2px;
+}
+
+.ComponentCustomizeWebViewer3DFavoriteButtonsBarContainer{
+  padding-bottom: 6px;
+}
+
+.LoadingSpinner {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .layout-main-newVersion {
   height: 100svh;
   display: flex;
