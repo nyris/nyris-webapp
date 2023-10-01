@@ -7,6 +7,7 @@ interface Props {
   handleClose: (e: any) => void;
   classNameModal?: string;
   classNameComponentChild?: string;
+  rounded?: boolean;
 }
 
 function DefaultModal(props: Props): JSX.Element {
@@ -16,6 +17,7 @@ function DefaultModal(props: Props): JSX.Element {
     handleClose,
     classNameModal,
     classNameComponentChild,
+    rounded = true,
   } = props;
 
   return (
@@ -37,7 +39,11 @@ function DefaultModal(props: Props): JSX.Element {
     >
       <div
         className={classNameComponentChild}
-        style={{ overflowY: 'auto', maxHeight: '95vh', borderRadius: 12 }}
+        style={{
+          overflowY: 'auto',
+          maxHeight: '95vh',
+          borderRadius: rounded ? 8 : 0,
+        }}
       >
         {children}
       </div>
