@@ -8,6 +8,7 @@ import { isUndefined } from 'lodash';
 import { TextareaAutosize } from '@material-ui/core';
 import toast from 'react-hot-toast';
 import { ReactComponent as ErrorIcon } from 'common/assets/icons/error.svg';
+import { useMediaQuery } from 'react-responsive';
 interface Props {
   requestImage: any;
   selectedRegion: any;
@@ -41,6 +42,7 @@ export default function RfqModal({
 }: Props) {
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState<boolean | undefined>(undefined);
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const [information, setInformation] = useState('');
   const setFormattedContent = React.useCallback(
