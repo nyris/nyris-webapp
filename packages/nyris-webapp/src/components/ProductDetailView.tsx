@@ -117,13 +117,14 @@ function ProductDetailView(props: Props) {
       </Box>
 
       <div style={{ position: 'relative' }}>
-        <CadenasWebViewer
-          is3dView={is3dView}
-          sku={sku}
-          status3dView={status3dView}
-          setStatus3dView={setStatus3dView}
-        />
-
+        {settings.cadenas3dWebView && (
+          <CadenasWebViewer
+            is3dView={is3dView}
+            sku={sku}
+            status3dView={status3dView}
+            setStatus3dView={setStatus3dView}
+          />
+        )}
         <Box
           className="box-carosel"
           style={{
@@ -181,25 +182,27 @@ function ProductDetailView(props: Props) {
             left: '16px',
           }}
         >
-          {!is3dView && status3dView !== 'not-found' && (
-            <Box
-              style={{
-                background: '#E9E9EC',
-                width: '32px',
-                height: '32px',
-                borderRadius: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-              }}
-              onClick={() => {
-                setIs3dView(true);
-              }}
-            >
-              <Box3dIcon width={16} height={16} color={'#AAABB5'} />
-            </Box>
-          )}
+          {!is3dView &&
+            status3dView !== 'not-found' &&
+            settings.cadenas3dWebView && (
+              <Box
+                style={{
+                  background: '#E9E9EC',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  setIs3dView(true);
+                }}
+              >
+                <Box3dIcon width={16} height={16} color={'#AAABB5'} />
+              </Box>
+            )}
           {is3dView && (
             <Box
               style={{

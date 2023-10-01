@@ -169,14 +169,17 @@ function ItemResult(props: Props) {
             <IconSearchImage width={16} height={16} color={'#AAABB5'} />
           </Box>
         )}
-        <Box
-          className="box-icon-modal-3d"
-          onClick={() => {
-            setOpenDetailedView('3d');
-          }}
-        >
-          <Box3dIcon width={16} height={16} color={'#AAABB5'} />
-        </Box>
+        {settings.cadenas3dWebView && (
+          <Box
+            className="box-icon-modal-3d"
+            onClick={() => {
+              setOpenDetailedView('3d');
+            }}
+          >
+            <Box3dIcon width={16} height={16} color={'#AAABB5'} />
+          </Box>
+        )}
+
         <Box className="box-image">
           <Button
             style={{ width: '100%', height: '100%' }}

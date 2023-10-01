@@ -111,7 +111,8 @@ function CadenasWebViewer({
             });
         });
       });
-  }, [sku]);
+  }, [sku, setStatus3dView]);
+
   const showWebViewer = !is3dView || status3dView !== 'loaded';
 
   return (
