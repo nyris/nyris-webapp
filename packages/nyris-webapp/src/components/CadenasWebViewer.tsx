@@ -14,19 +14,6 @@ const favoriteActions3d = [
   'actExternalAR',
 ];
 
-function isMobileDevice(): boolean {
-  const userAgent = navigator.userAgent.toLowerCase();
-  const mobileKeywords = [
-    'mobile',
-    'android',
-    'iphone',
-    'ipad',
-    'ipod',
-    'windows phone',
-  ];
-  return mobileKeywords.some(keyword => userAgent.includes(keyword));
-}
-
 function CadenasWebViewer({
   is3dView,
   sku,
@@ -51,12 +38,12 @@ function CadenasWebViewer({
       favoriteActions: favoriteActions3d,
       showProgressDialog: false,
       webglViewerSettings: {
-        ColorTL: '#FAFAFA',
-        ColorTR: '#FAFAFA',
-        ColorML: '#FAFAFA',
-        ColorMR: '#FAFAFA',
-        ColorBL: '#FAFAFA',
-        ColorBR: '#FAFAFA',
+        ColorTL: '#fff',
+        ColorTR: '#fff',
+        ColorML: '#fff',
+        ColorMR: '#fff',
+        ColorBL: '#fff',
+        ColorBR: '#fff',
         showLogo: false,
         logoTexture: './img/logo.png',
         logoScaleFactor: 1.0,
@@ -134,7 +121,7 @@ function CadenasWebViewer({
         style={{
           position: 'absolute',
           bottom: '19px',
-          right: !isMobile ? '186px' : isMobileDevice() ? '50px' : '68px',
+          right: '26px',
         }}
       >
         {is3dView && status3dView === 'loaded' && (
@@ -170,7 +157,7 @@ function CadenasWebViewer({
             height: isMobile ? '368px' : '456px',
             width: '100%',
             color: '#AAABB5',
-            background: 'linear-gradient(180deg, #FAFAFA 0%, #E9E9EC 100%)',
+            background: 'linear-gradient(180deg, #fff 0%, #E9E9EC 100%)',
             fontSize: '16px',
             display: 'flex',
             justifyContent: 'center',

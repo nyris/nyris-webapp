@@ -185,9 +185,10 @@ function PreFilterComponent(props: Props) {
       {!isEmpty(keyFilter) && selectedFilter > 0 && (
         <Box
           style={{
-            margin: '10px 16px 10px 16px',
+            padding: '10px 16px 10px 16px',
             display: 'flex',
             justifyContent: 'space-between',
+            backgroundColor: '#FAFAFA',
           }}
         >
           <Box
@@ -207,7 +208,7 @@ function PreFilterComponent(props: Props) {
                 <Box
                   key={index}
                   className="box-keyFilter"
-                  style={{ display: 'flex', height: 'fit-content' }}
+                  style={{ display: 'flex', height: 'fit-content', gap: '8px' }}
                 >
                   <Typography className="keyFilter">{key}</Typography>
                   <Button
@@ -248,8 +249,17 @@ function PreFilterComponent(props: Props) {
                 marginBottom: keyFilter ? '50px' : '0px',
               }
             : columns <= 4
-            ? { columnCount: columns, height: '100%', paddingBottom: 20 }
-            : { columnCount: 4, paddingBottom: 20 }
+            ? {
+                columnCount: columns,
+                height: '100%',
+                padding: '24px 24px 40px 24px',
+                backgroundColor: '#FAFAFA',
+              }
+            : {
+                columnCount: 4,
+                padding: '24px 24px 40px 24px',
+                backgroundColor: '#FAFAFA',
+              }
         }
       >
         {Object.entries(resultFilter).map(([key, value]: any, i: any) => {

@@ -95,7 +95,6 @@ function ProductDetailView(props: Props) {
       borderRadius={12}
       style={{
         margin: isMobile ? 0 : '',
-        padding: '16px',
         width: '600px',
         backgroundColor: '#fff',
       }}
@@ -116,7 +115,11 @@ function ProductDetailView(props: Props) {
         </Button>
       </Box>
 
-      <div style={{ position: 'relative' }}>
+      <div
+        style={{
+          position: 'relative',
+        }}
+      >
         {settings.cadenas3dWebView && (
           <CadenasWebViewer
             is3dView={is3dView}
@@ -225,18 +228,32 @@ function ProductDetailView(props: Props) {
         </div>
       </div>
 
-      <Box style={{ overflowY: 'auto', maxHeight: '90svh' }}>
+      <Box
+        style={{
+          overflowY: 'auto',
+          maxHeight: '90svh',
+          paddingLeft: '16px',
+          paddingRight: '16px',
+          paddingBottom: '16px',
+          backgroundColor: '#F3F3F5',
+          marginTop: '6px',
+        }}
+      >
         <Box
           className="box-content"
           display={'flex'}
           style={{
             marginTop: '16px',
             flexDirection: 'column',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: '#F3F3F5',
           }}
         >
           <Box className="box-top">
-            <Grid container justifyContent="space-between">
+            <Grid
+              container
+              justifyContent="space-between"
+              style={{ backgroundColor: '#F3F3F5' }}
+            >
               <Box
                 display="flex"
                 flexDirection="row"
@@ -284,7 +301,13 @@ function ProductDetailView(props: Props) {
                 )}
               </Box>
 
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}
+                style={{
+                  backgroundColor: '#F3F3F5',
+                }}
+              >
                 <Box
                   style={{
                     background: settings.theme?.primaryColor,
@@ -348,6 +371,7 @@ function ProductDetailView(props: Props) {
                         textTransform: 'initial',
                         paddingLeft: 5,
                         marginTop: 12,
+                        backgroundColor: '#F3F3F5',
                       }}
                       onClick={() => setCollapDescription(e => !e)}
                     >

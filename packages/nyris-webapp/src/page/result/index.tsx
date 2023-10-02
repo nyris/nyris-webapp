@@ -478,6 +478,7 @@ function ResultComponent(props: Props) {
                           <InquiryBanner
                             requestImage={requestImage}
                             selectedRegion={selectedRegion}
+                            query={search.valueTextSearch.query}
                           />
                         )}
                     </Box>

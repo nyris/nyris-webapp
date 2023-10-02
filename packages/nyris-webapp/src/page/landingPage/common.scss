@@ -731,6 +731,8 @@ button {
 
 .box-content-main {
   position: relative;
+
+
   &.loading {
     &::before {
       content: '';
@@ -807,10 +809,10 @@ button {
   height: 100%;
   background: #FAFAFA;
   .box-content_top {
+  
     width: 100%;
     // min-height: calc(100% - 341px);
-    margin-top: 136px;
-    margin-bottom: 48px;
+    margin-top: 300px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -853,11 +855,27 @@ button {
         bottom: 0;
       }
     }
-
+    .drag-active{
+      border-radius: 60px;
+      border: 2px dashed #E0E0E0 !important;
+      background:  #FAFAFA !important;
+      color: #2B2C46 !important;
+    }
     .box-content-drop {
       display: flex;
       flex-direction: column;
       align-items: center;
+      cursor: pointer;
+      width: 100%;
+      padding-top: 16px;
+      padding-bottom: 16px;
+      color: #CACAD1;
+      &:hover {
+        border-radius: 60px;
+        border: 2px dashed #E0E0E0;
+        background:  #FAFAFA;
+        color: #2B2C46;
+      }
     }
     .box-image {
       width: 64px;
@@ -892,7 +910,6 @@ button {
       }
     }
     .box-content-main {
-      background: #f3f3f5;
       padding: 16px;
       border-radius: 16px;
       height: 100%;
@@ -905,6 +922,15 @@ button {
       border-radius: 16px;
       border-radius: 16px;
       height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      width: 100%;
+      flex-direction: column;
+    }
+    .box-border-none{
+      height: 80%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -940,8 +966,9 @@ button {
   padding: 5px;
 }
 .text-f14 {
-  font-family: 'Montserrat';
   font-size: 14px;
+  line-height: 16px;
+  font-style: normal;
 }
 .text-f20 {
   font-family: 'Montserrat';
@@ -2073,9 +2100,10 @@ button {
   padding: 4px 8px 4px 8px;
 
   .keyFilter {
-    margin-right: 5px;
-    font-weight: 700;
+    font-weight: 400;
     font-size: 12px;
+    line-height: 16px;
+    font-style: normal;
     color: #2B2C46;
     text-transform: uppercase;
     margin-bottom: 0px;
@@ -2221,7 +2249,7 @@ button {
 }
 
 .icon-hover {
-  padding: 8px;
+  padding: 12px;
   border-radius: 100%;
   display: flex;
   &:hover {

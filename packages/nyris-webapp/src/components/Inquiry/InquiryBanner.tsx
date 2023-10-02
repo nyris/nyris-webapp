@@ -7,9 +7,11 @@ import InquiryModal from './InquiryModal';
 function InquiryBanner({
   requestImage,
   selectedRegion,
+  query,
 }: {
   requestImage: any;
   selectedRegion: any;
+  query: any;
 }) {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
@@ -19,7 +21,7 @@ function InquiryBanner({
 
   useEffect(() => {
     setInquiryStatus('inactive');
-  }, [selectedRegion]);
+  }, [selectedRegion, query]);
 
   return (
     <>

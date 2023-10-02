@@ -213,7 +213,7 @@ function ItemResult(props: Props) {
         display={'flex'}
         style={{
           flexDirection: 'column',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: '#F3F3F5',
           flexGrow: 1,
         }}
       >
@@ -312,7 +312,7 @@ function ItemResult(props: Props) {
                 boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                 // marginBottom: 22,
                 height: 40,
-                background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
+                background: settings.theme?.primaryColor,
                 borderRadius: 4,
                 padding: '0px 8px',
                 marginTop: '12px',

@@ -183,12 +183,13 @@ const SearchBox = (props: any) => {
                     style={{
                       ...(!isEmpty(preFilter)
                         ? {
-                            backgroundColor: `${settings.theme?.secondaryColor}26`,
+                          backgroundColor: `${settings.theme?.primaryColor}`,
                           }
-                        : {}),
+                        : {backgroundColor: `${settings.theme?.secondaryColor}`,}),
                     }}
                   >
-                    <IconFilter color="black" />
+                    <IconFilter color='white'
+                    />
                   </div>
                 )}
                 {!settings.preFilterOption && (
@@ -198,23 +199,25 @@ const SearchBox = (props: any) => {
                   <div
                     style={{
                       position: 'absolute',
-                      top: '6px',
-                      left: '31px',
+                      top: '5px',
+                      left: '35px',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
                       background: 'white',
-                      width: '10px',
-                      height: '10px',
+                      width: '12px',
+                      height: '12px',
                       borderRadius: '100%',
+                      
                     }}
                   >
                     <div
                       style={{
                         width: '8px',
                         height: '8px',
-                        background: settings.theme?.secondaryColor,
+                        background: settings.theme?.primaryColor,
                         borderRadius: '100%',
+                        strokeWidth: '2px',
                       }}
                     ></div>
                   </div>

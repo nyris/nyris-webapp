@@ -23,7 +23,7 @@ function ProductAttribute(props: Props) {
       borderRadius={2}
       width={width}
       style={{
-        backgroundColor: '#E9E9EC',
+        backgroundColor: '#E0E0E0',
         padding: padding,
         flexGrow: 1,
       }}
