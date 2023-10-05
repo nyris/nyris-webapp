@@ -19,6 +19,22 @@ import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useTranslation } from 'react-i18next';
 import ProductAttribute from './ProductAttribute';
 import CadenasWebViewer from './CadenasWebViewer';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  buttonStyle3D: {
+    bottom: is3dView => (is3dView ? '20px' : '68px'), // assuming 8px is one spacing,
+    [theme.breakpoints.up('md')]: {
+      bottom: is3dView => (is3dView ? '20px' : '10px'), // assuming 68px is 8.5 spacing
+    },
+  },
+  buttonStyleImageSearch: {
+    bottom: is3dView => (is3dView ? '20px' : '78px'),
+    [theme.breakpoints.up('md')]: {
+      bottom: is3dView => (is3dView ? '20px' : '4px'), // assuming 68px is 8.5 spacing
+    },
+  },
+}));
 
 interface Props {
   dataItem?: any;
@@ -52,6 +68,7 @@ function ProductDetailView(props: Props) {
     'loading' | 'loaded' | 'not-found' | undefined
   >();
   const { t } = useTranslation();
+  const classes = useStyles(props?.show3dView);
 
   useEffect(() => {
     if (dataItem) {
@@ -152,9 +169,9 @@ function ProductDetailView(props: Props) {
           )}
           {dataImageCarousel.length > 0 && (
             <Button
+              className={classes.buttonStyleImageSearch}
               style={{
                 position: 'absolute',
-                bottom: is3dView ? '16px' : '78px',
                 right: '16px',
                 background: '#E9E9EC',
                 width: '32px',
@@ -179,9 +196,9 @@ function ProductDetailView(props: Props) {
         </Box>
 
         <div
+          className={classes.buttonStyle3D}
           style={{
             position: 'absolute',
-            bottom: is3dView ? '20px' : '68px',
             left: '16px',
           }}
         >
@@ -354,7 +371,7 @@ function ProductDetailView(props: Props) {
                       <img
                         src={IconOpenLink}
                         alt=""
-                        style={{ minWidth: 23, marginLeft: 5 }}
+                        style={{ minWidth: 16, marginLeft: 5 }}
                       />
                     )}
                   </Box>
@@ -362,16 +379,17 @@ function ProductDetailView(props: Props) {
                 {dataItem[settings.field.productDetails] && (
                   <Box className="w-100">
                     <Button
-                      className="w-100"
+                      className="w-100 button-hover"
                       style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        color: settings.theme?.secondaryColor,
-                        fontSize: 14,
-                        textTransform: 'initial',
-                        paddingLeft: 5,
-                        marginTop: 12,
                         backgroundColor: '#F3F3F5',
+                        color: '#2b2c46',
+                        display: 'flex',
+                        fontSize: 14,
+                        justifyContent: 'space-between',
+                        marginTop: 12,
+                        paddingLeft: '15px',
+                        paddingRight: '15px',
+                        textTransform: 'initial',
                       }}
                       onClick={() => setCollapDescription(e => !e)}
                     >
@@ -387,7 +405,15 @@ function ProductDetailView(props: Props) {
                       )}
                     </Button>
                     <Collapse in={collapDescription}>
-                      <Typography style={{ fontSize: 14, paddingTop: 5 }}>
+                      <Typography
+                        style={{
+                          fontSize: 14,
+                          padding: 5,
+                          paddingLeft: 15,
+                          paddingRight: 15,
+                          color: '#2b2c46',
+                        }}
+                      >
                         {dataItem[settings.field.productDetails]}
                       </Typography>
                     </Collapse>
@@ -426,7 +452,14 @@ function ProductDetailView(props: Props) {
           {settings.showFeedbackAndShare && (
             <Box
               className="box-bottom"
-              style={{ marginBottom: 6, marginTop: 28 }}
+              style={{
+                height: '48px',
+                padding: '0px 16px 0px 16px',
+                marginBottom: 10,
+                marginTop: 10,
+              }}
+              display={'flex'}
+              justifyContent={'center'}
             >
               <Grid
                 container
@@ -445,8 +478,8 @@ function ProductDetailView(props: Props) {
                       }}
                     >
                       <IconLike
-                        width={30}
-                        height={30}
+                        width={24}
+                        height={24}
                         color={feedback === 'like' ? '#3E36DC' : '#000000'}
                       />
                     </Button>
@@ -462,8 +495,8 @@ function ProductDetailView(props: Props) {
                       }}
                     >
                       <IconDisLike
-                        width={30}
-                        height={30}
+                        width={24}
+                        height={24}
                         color={feedback === 'dislike' ? '#CC1854' : '#000000'}
                       />
                     </Button>
@@ -476,7 +509,7 @@ function ProductDetailView(props: Props) {
                         className="btn-item"
                         onClick={() => onHandlerModalShare()}
                       >
-                        <IconShare width={30} height={30} color="#000000" />
+                        <IconShare width={24} height={24} color="#000000" />
                       </Button>
                     </Box>
                   </Grid>

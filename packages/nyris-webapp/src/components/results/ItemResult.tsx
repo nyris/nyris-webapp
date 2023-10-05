@@ -193,7 +193,7 @@ function ItemResult(props: Props) {
                 src={main_image_link}
                 key={main_image_link}
                 alt="image_item"
-                className="img-style"
+                className="img-style product-image"
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             ) : (
@@ -215,6 +215,7 @@ function ItemResult(props: Props) {
           flexDirection: 'column',
           backgroundColor: '#F3F3F5',
           flexGrow: 1,
+          zIndex: 100,
         }}
       >
         <Box className="box-top" style={{ color: '#FFFFFF' }}>
@@ -354,7 +355,7 @@ function ItemResult(props: Props) {
                   {truncateString(dataItem[settings.field.productName], 45)}
                 </Typography>
                 {!isMobile && ctaLink && (
-                  <img src={IconOpenLink} alt="more-info" width={20} />
+                  <img src={IconOpenLink} alt="more-info" width={16} />
                 )}
               </Box>
             </Box>
@@ -405,7 +406,6 @@ function ItemResult(props: Props) {
                   <Box display={'flex'} alignItems={'center'}>
                     <Button
                       className="btn-item"
-                      style={{ padding: '6px' }}
                       onClick={() => {
                         handlerFeedback('like');
                         setFeedback('like');
@@ -422,7 +422,6 @@ function ItemResult(props: Props) {
                 <Grid item>
                   <Box display={'flex'} alignItems={'center'}>
                     <Button
-                      style={{ padding: '6px' }}
                       className="btn-item"
                       onClick={() => {
                         handlerFeedback('dislike');
@@ -441,7 +440,6 @@ function ItemResult(props: Props) {
                   <Grid item>
                     <Box display={'flex'} alignItems={'center'}>
                       <Button
-                        style={{ padding: '6px' }}
                         className="btn-item"
                         onClick={() => setOpenModalShare(true)}
                       >

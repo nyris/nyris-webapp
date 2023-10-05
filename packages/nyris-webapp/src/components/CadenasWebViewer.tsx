@@ -127,7 +127,7 @@ function CadenasWebViewer({
         {is3dView && status3dView === 'loaded' && (
           <Box
             style={{
-              background: '#FFF',
+              background: '#E9E9EC',
               width: '32px',
               height: '32px',
               borderRadius: '100%',
@@ -135,8 +135,6 @@ function CadenasWebViewer({
               justifyContent: 'center',
               alignItems: 'center',
               cursor: 'pointer',
-              boxShadow:
-                '0 2px 10px 0 rgba(0,0,0,.16), 0 2px 5px 0 rgba(0,0,0,.26)',
             }}
             onClick={() => {
               new psol.components.DownloadDialog({
@@ -144,7 +142,7 @@ function CadenasWebViewer({
               }).show();
             }}
           >
-            <DownloadIcon width={16} height={16} color={'#FFF'} />
+            <DownloadIcon width={14} height={14} color={'#FFF'} />
           </Box>
         )}
       </div>
