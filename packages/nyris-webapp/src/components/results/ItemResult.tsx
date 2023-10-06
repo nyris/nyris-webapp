@@ -344,7 +344,7 @@ function ItemResult(props: Props) {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     fontWeight: 500,
-                    fontSize: '11px',
+                    fontSize: '12px',
                     letterSpacing: '0.27px',
                     wordBreak: 'break-all',
                     maxWidth: !isMobile && ctaLink ? '136px' : '164x',
