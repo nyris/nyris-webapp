@@ -20,7 +20,6 @@ function FooterMobile(props: Props): JSX.Element {
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const history = useHistory();
   const {
-    settings,
     search: { imageCaptureHelpModal },
   } = useAppSelector(state => state);
   const dispatch = useAppDispatch();
@@ -46,7 +45,7 @@ function FooterMobile(props: Props): JSX.Element {
             borderRadius: '100%',
             backgroundColor:
               history.location.pathname === '/' && !imageCaptureHelpModal
-                ? `${settings.theme?.primaryColor}21`
+                ? `#E0E0E0`
                 : '',
           }}
           activeClassName="active"
@@ -61,8 +60,8 @@ function FooterMobile(props: Props): JSX.Element {
           <Home
             color={
               history.location.pathname === '/' && !imageCaptureHelpModal
-                ? settings.theme?.primaryColor
-                : '#000'
+                ? '#2B2C46'
+                : '#AAABB5'
             }
           />
         </NavLink>
@@ -73,7 +72,7 @@ function FooterMobile(props: Props): JSX.Element {
                 setOpenModalCamera(!isOpenModalCamera);
               }}
             >
-              <IconCameraMobile color="#000" />
+              <IconCameraMobile color="#55566B" />
             </Button>
           </Box>
         )}
@@ -86,9 +85,7 @@ function FooterMobile(props: Props): JSX.Element {
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: '100%',
-              backgroundColor: imageCaptureHelpModal
-                ? `${settings.theme?.primaryColor}21`
-                : '',
+              backgroundColor: imageCaptureHelpModal ? `#E0E0E0` : '',
             }}
             onClick={() => {
               dispatch(setImageCaptureHelpModal(!imageCaptureHelpModal));
@@ -98,9 +95,7 @@ function FooterMobile(props: Props): JSX.Element {
               fontSize={24}
               width={24}
               height={24}
-              color={
-                imageCaptureHelpModal ? settings.theme?.primaryColor : '#000'
-              }
+              color={imageCaptureHelpModal ? '#2B2C46' : '#AAABB5'}
             />
           </div>
         )}

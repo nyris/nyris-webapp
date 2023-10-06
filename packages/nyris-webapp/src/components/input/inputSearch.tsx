@@ -186,7 +186,7 @@ const SearchBox = (props: any) => {
                             backgroundColor: `${settings.theme?.primaryColor}`,
                           }
                         : {
-                            backgroundColor: `${settings.theme?.secondaryColor}`,
+                            backgroundColor: '#2B2C46',
                           }),
                     }}
                   >
