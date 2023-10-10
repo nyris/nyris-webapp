@@ -85,6 +85,7 @@ export default function InquiryModal({
         email_id: email.trim(),
         information_text: information,
         request_image: croppedImage?.toDataURL(),
+        prefilter_values: preFilterValues.join(', '),
       });
       setInquiryStatus('sent');
       ToastHelper.success('Request sent successfully');
