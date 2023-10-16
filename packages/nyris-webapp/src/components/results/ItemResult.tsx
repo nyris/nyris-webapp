@@ -8,7 +8,7 @@ import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_sear
 import { ReactComponent as Box3dIcon } from 'common/assets/icons/3d.svg';
 
 import React, { memo, useEffect, useState } from 'react';
-import NoImage from 'common/assets/images/unnamed.png';
+import NoImage from 'common/assets/images/no-image.svg';
 import { RootState, useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import {
@@ -182,7 +182,14 @@ function ItemResult(props: Props) {
 
         <Box className="box-image">
           <Box
-            style={{ width: '100%', height: '100%', cursor: 'pointer' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
             onClick={(e: any) => {
               e.preventDefault();
               handlerToggleModal(dataItem);
@@ -200,8 +207,7 @@ function ItemResult(props: Props) {
               <img
                 src={NoImage}
                 alt="image_item"
-                className="img-style"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{ width: '70%', height: '50%' }}
               />
             )}
           </Box>
@@ -299,6 +305,34 @@ function ItemResult(props: Props) {
             </Box>
           </Box>
         </Box>
+        {settings.warehouseVariant && (
+          <Box
+            display="flex"
+            justifyContent={'space-between'}
+            style={{ color: '#2B2C46', marginTop: '8px' }}
+            gridGap={10}
+          >
+            {settings.field.warehouseNumber && (
+              <ProductAttribute
+                title={dataItem[settings.field.warehouseNumber]}
+                value={dataItem[settings.field.warehouseNumberValue] || 'N/A'}
+                padding="4px 8px"
+                width={{ xs: '49%' }}
+              />
+            )}
+
+            {settings.field.warehouseShelfNumber && (
+              <ProductAttribute
+                title={dataItem[settings.field.warehouseShelfNumber]}
+                value={
+                  dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'
+                }
+                padding="4px 8px"
+                width={{ xs: '49%' }}
+              />
+            )}
+          </Box>
+        )}
         <div>
           <Tooltip
             title={dataItem[settings.field.productName]}
@@ -316,7 +350,7 @@ function ItemResult(props: Props) {
                 background: settings.theme?.primaryColor,
                 borderRadius: 4,
                 padding: '0px 8px',
-                marginTop: '12px',
+                marginTop: '8px',
               }}
               display={'flex'}
               justifyItems={'center'}
@@ -360,35 +394,6 @@ function ItemResult(props: Props) {
               </Box>
             </Box>
           </Tooltip>
-
-          {settings.warehouseVariant && (
-            <Box
-              display="flex"
-              justifyContent={'space-between'}
-              style={{ color: '#2B2C46', marginTop: '12px' }}
-              gridGap={10}
-            >
-              {settings.field.warehouseNumber && (
-                <ProductAttribute
-                  title={dataItem[settings.field.warehouseNumber]}
-                  value={dataItem[settings.field.warehouseNumberValue] || 'N/A'}
-                  padding="4px 8px"
-                  width={{ xs: '49%' }}
-                />
-              )}
-
-              {settings.field.warehouseShelfNumber && (
-                <ProductAttribute
-                  title={dataItem[settings.field.warehouseShelfNumber]}
-                  value={
-                    dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'
-                  }
-                  padding="4px 8px"
-                  width={{ xs: '49%' }}
-                />
-              )}
-            </Box>
-          )}
 
           {settings.showFeedbackAndShare && (
             <Box

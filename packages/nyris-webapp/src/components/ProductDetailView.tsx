@@ -13,7 +13,7 @@ import { AppState } from 'types';
 import { useAppSelector } from 'Store/Store';
 import { prepareImageList } from '../helpers/CommonHelper';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import NoImage from '../common/assets/images/unnamed.png';
+import NoImage from '../common/assets/images/no-image.svg';
 import { ReactComponent as Box3dIcon } from 'common/assets/icons/3d.svg';
 import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useTranslation } from 'react-i18next';
@@ -155,17 +155,11 @@ function ProductDetailView(props: Props) {
             height: is3dView ? '0px' : !isMobile ? '60%' : '368px',
             opacity: is3dView ? 0 : 1,
             transition: !is3dView ? 'opacity 3s ease' : '',
+            paddingTop: '16px',
           }}
         >
-          {dataImageCarousel.length > 0 ? (
+          {dataImageCarousel.length > 0 && (
             <ImagePreviewCarousel imgItem={dataImageCarousel} />
-          ) : (
-            <img
-              src={NoImage}
-              alt="image_item"
-              className="img-style"
-              style={{ width: '400px', height: '400px', padding: '8px' }}
-            />
           )}
           {dataImageCarousel.length > 0 && (
             <Button
@@ -192,6 +186,24 @@ function ProductDetailView(props: Props) {
             >
               <IconSearchImage color={'#AAABB5'} />
             </Button>
+          )}
+          {dataImageCarousel.length === 0 && (
+            <div
+              style={{
+                width: '400px',
+                height: '400px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <img
+                src={NoImage}
+                alt="image_item"
+                className="img-style"
+                style={{ width: '150px', height: '150px', padding: '8px' }}
+              />
+            </div>
           )}
         </Box>
 
@@ -266,6 +278,50 @@ function ProductDetailView(props: Props) {
           }}
         >
           <Box className="box-top">
+            {settings.warehouseVariant && (
+              <Box
+                display="flex"
+                justifyContent={'space-between'}
+                flexDirection={'row'}
+                style={{
+                  color: '#2B2C46',
+                  marginBottom: 10,
+                  paddingLeft: 16,
+                  paddingRight: 16,
+                }}
+                gridGap={8}
+              >
+                <Typography
+                  className="text-f12 max-line-1 fw-400"
+                  style={{
+                    color: '#2B2C46',
+                  }}
+                >
+                  {sku}
+                </Typography>
+
+                {settings.warehouseVariant && (
+                  <Typography
+                    className="text-f12 max-line-1 fw-400"
+                    style={{
+                      color: '#2B2C46',
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: dataItem[settings.field.warehouseStockValue]
+                          ? '#00C070'
+                          : '#c54545',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {dataItem[settings.field.warehouseStockValue] || 0}
+                    </span>
+                  </Typography>
+                )}
+              </Box>
+            )}
+
             <Grid
               container
               justifyContent="space-between"
@@ -278,20 +334,15 @@ function ProductDetailView(props: Props) {
                 style={{ gap: 6 }}
                 width={'100%'}
               >
-                <ProductAttribute
-                  title={settings.itemIdLabel || 'SKU'}
-                  value={sku}
-                  width={
-                    settings.warehouseVariant
-                      ? { xs: '49%', md: 'fit-content' }
-                      : { xs: '100%', md: 'fit-content' }
-                  }
-                />
-                {settings.warehouseVariant && (
+                {!settings.warehouseVariant && (
                   <ProductAttribute
-                    title={dataItem[settings.field.warehouseStock]}
-                    value={dataItem[settings.field.warehouseStockValue] || 0}
-                    width={{ xs: '49%', md: 'fit-content' }}
+                    title={settings.itemIdLabel || 'SKU'}
+                    value={sku}
+                    width={
+                      settings.warehouseVariant
+                        ? { xs: '49%', md: 'fit-content' }
+                        : { xs: '100%', md: 'fit-content' }
+                    }
                   />
                 )}
                 {(brand || settings.brandName) && (
@@ -315,6 +366,29 @@ function ProductDetailView(props: Props) {
                         : { xs: '100%', md: 'fit-content' }
                     }
                   />
+                )}
+                {settings.warehouseVariant && (
+                  <>
+                    {settings.field.warehouseNumber && (
+                      <ProductAttribute
+                        title={dataItem[settings.field.warehouseNumber]}
+                        value={
+                          dataItem[settings.field.warehouseNumberValue] || 'N/A'
+                        }
+                        width={{ xs: '49%', md: 'fit-content' }}
+                      />
+                    )}
+                    {settings.field.warehouseShelfNumber && (
+                      <ProductAttribute
+                        title={dataItem[settings.field.warehouseShelfNumber]}
+                        value={
+                          dataItem[settings.field.warehouseShelfNumberValue] ||
+                          'N/A'
+                        }
+                        width={{ xs: '49%', md: 'fit-content' }}
+                      />
+                    )}
+                  </>
                 )}
               </Box>
 
@@ -422,32 +496,6 @@ function ProductDetailView(props: Props) {
               </Grid>
             </Grid>
           </Box>
-
-          {settings.warehouseVariant && (
-            <Box
-              display="flex"
-              justifyContent={'space-between'}
-              style={{ color: '#2B2C46', marginTop: 12 }}
-              gridGap={8}
-            >
-              {settings.field.warehouseNumber && (
-                <ProductAttribute
-                  title={dataItem[settings.field.warehouseNumber]}
-                  value={dataItem[settings.field.warehouseNumberValue] || 'N/A'}
-                  width={{ xs: '49%', md: 'fit-content' }}
-                />
-              )}
-              {settings.field.warehouseShelfNumber && (
-                <ProductAttribute
-                  title={dataItem[settings.field.warehouseShelfNumber]}
-                  value={
-                    dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'
-                  }
-                  width={{ xs: '49%', md: 'fit-content' }}
-                />
-              )}
-            </Box>
-          )}
 
           {settings.showFeedbackAndShare && (
             <Box

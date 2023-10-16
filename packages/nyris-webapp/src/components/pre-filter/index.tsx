@@ -360,7 +360,7 @@ function PreFilterComponent(props: Props) {
             style={{
               width: '50%',
               height: '64px',
-              backgroundColor: '#000000',
+              backgroundColor: '#2B2C46',
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',

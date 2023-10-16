@@ -346,7 +346,9 @@ export default function InquiryModal({
               display: 'flex',
               alignItems: 'center',
               width: '50%',
-              backgroundColor: emailValid ? '#3E36DC' : '#E9E9EC',
+              backgroundColor: emailValid
+                ? settings.theme?.primaryColor
+                : '#E9E9EC',
               color: emailValid ? '#fff' : '#AAABB5',
               fontSize: '14px',
               paddingLeft: '16px',
