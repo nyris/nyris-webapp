@@ -14,19 +14,6 @@ const favoriteActions3d = [
   'actExternalAR',
 ];
 
-function isMobileDevice(): boolean {
-  const userAgent = navigator.userAgent.toLowerCase();
-  const mobileKeywords = [
-    'mobile',
-    'android',
-    'iphone',
-    'ipad',
-    'ipod',
-    'windows phone',
-  ];
-  return mobileKeywords.some(keyword => userAgent.includes(keyword));
-}
-
 function CadenasWebViewer({
   is3dView,
   sku,
@@ -51,12 +38,12 @@ function CadenasWebViewer({
       favoriteActions: favoriteActions3d,
       showProgressDialog: false,
       webglViewerSettings: {
-        ColorTL: '#FAFAFA',
-        ColorTR: '#FAFAFA',
-        ColorML: '#FAFAFA',
-        ColorMR: '#FAFAFA',
-        ColorBL: '#FAFAFA',
-        ColorBR: '#FAFAFA',
+        ColorTL: '#fff',
+        ColorTR: '#fff',
+        ColorML: '#fff',
+        ColorMR: '#fff',
+        ColorBL: '#fff',
+        ColorBR: '#fff',
         showLogo: false,
         logoTexture: './img/logo.png',
         logoScaleFactor: 1.0,
@@ -134,13 +121,13 @@ function CadenasWebViewer({
         style={{
           position: 'absolute',
           bottom: '19px',
-          right: !isMobile ? '186px' : isMobileDevice() ? '50px' : '68px',
+          right: '26px',
         }}
       >
         {is3dView && status3dView === 'loaded' && (
           <Box
             style={{
-              background: '#FFF',
+              background: '#E9E9EC',
               width: '32px',
               height: '32px',
               borderRadius: '100%',
@@ -148,8 +135,6 @@ function CadenasWebViewer({
               justifyContent: 'center',
               alignItems: 'center',
               cursor: 'pointer',
-              boxShadow:
-                '0 2px 10px 0 rgba(0,0,0,.16), 0 2px 5px 0 rgba(0,0,0,.26)',
             }}
             onClick={() => {
               new psol.components.DownloadDialog({
@@ -157,7 +142,7 @@ function CadenasWebViewer({
               }).show();
             }}
           >
-            <DownloadIcon width={16} height={16} color={'#FFF'} />
+            <DownloadIcon width={14} height={14} color={'#FFF'} />
           </Box>
         )}
       </div>
@@ -170,7 +155,7 @@ function CadenasWebViewer({
             height: isMobile ? '368px' : '456px',
             width: '100%',
             color: '#AAABB5',
-            background: 'linear-gradient(180deg, #FAFAFA 0%, #E9E9EC 100%)',
+            background: 'linear-gradient(180deg, #fff 0%, #E9E9EC 100%)',
             fontSize: '16px',
             display: 'flex',
             justifyContent: 'center',

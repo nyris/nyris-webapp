@@ -8,7 +8,7 @@ import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_sear
 import { ReactComponent as Box3dIcon } from 'common/assets/icons/3d.svg';
 
 import React, { memo, useEffect, useState } from 'react';
-import NoImage from 'common/assets/images/unnamed.png';
+import NoImage from 'common/assets/images/no-image.svg';
 import { RootState, useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import {
@@ -182,7 +182,14 @@ function ItemResult(props: Props) {
 
         <Box className="box-image">
           <Box
-            style={{ width: '100%', height: '100%', cursor: 'pointer' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
             onClick={(e: any) => {
               e.preventDefault();
               handlerToggleModal(dataItem);
@@ -193,15 +200,14 @@ function ItemResult(props: Props) {
                 src={main_image_link}
                 key={main_image_link}
                 alt="image_item"
-                className="img-style"
+                className="img-style product-image"
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             ) : (
               <img
                 src={NoImage}
                 alt="image_item"
-                className="img-style"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{ width: '70%', height: '50%' }}
               />
             )}
           </Box>
@@ -213,8 +219,9 @@ function ItemResult(props: Props) {
         display={'flex'}
         style={{
           flexDirection: 'column',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: '#F3F3F5',
           flexGrow: 1,
+          zIndex: 100,
         }}
       >
         <Box className="box-top" style={{ color: '#FFFFFF' }}>
@@ -298,6 +305,34 @@ function ItemResult(props: Props) {
             </Box>
           </Box>
         </Box>
+        {settings.warehouseVariant && (
+          <Box
+            display="flex"
+            justifyContent={'space-between'}
+            style={{ color: '#2B2C46', marginTop: '8px' }}
+            gridGap={10}
+          >
+            {settings.field.warehouseNumber && (
+              <ProductAttribute
+                title={dataItem[settings.field.warehouseNumber]}
+                value={dataItem[settings.field.warehouseNumberValue] || 'N/A'}
+                padding="4px 8px"
+                width={{ xs: '49%' }}
+              />
+            )}
+
+            {settings.field.warehouseShelfNumber && (
+              <ProductAttribute
+                title={dataItem[settings.field.warehouseShelfNumber]}
+                value={
+                  dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'
+                }
+                padding="4px 8px"
+                width={{ xs: '49%' }}
+              />
+            )}
+          </Box>
+        )}
         <div>
           <Tooltip
             title={dataItem[settings.field.productName]}
@@ -312,10 +347,10 @@ function ItemResult(props: Props) {
                 boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                 // marginBottom: 22,
                 height: 40,
-                background: `linear-gradient(270deg, ${settings.theme?.primaryColor}bb 0%, ${settings.theme?.primaryColor} 100%)`,
+                background: settings.theme?.primaryColor,
                 borderRadius: 4,
                 padding: '0px 8px',
-                marginTop: '12px',
+                marginTop: '8px',
               }}
               display={'flex'}
               justifyItems={'center'}
@@ -343,7 +378,7 @@ function ItemResult(props: Props) {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     fontWeight: 500,
-                    fontSize: '11px',
+                    fontSize: '12px',
                     letterSpacing: '0.27px',
                     wordBreak: 'break-all',
                     maxWidth: !isMobile && ctaLink ? '136px' : '164x',
@@ -354,40 +389,11 @@ function ItemResult(props: Props) {
                   {truncateString(dataItem[settings.field.productName], 45)}
                 </Typography>
                 {!isMobile && ctaLink && (
-                  <img src={IconOpenLink} alt="more-info" width={20} />
+                  <img src={IconOpenLink} alt="more-info" width={16} />
                 )}
               </Box>
             </Box>
           </Tooltip>
-
-          {settings.warehouseVariant && (
-            <Box
-              display="flex"
-              justifyContent={'space-between'}
-              style={{ color: '#2B2C46', marginTop: '12px' }}
-              gridGap={10}
-            >
-              {settings.field.warehouseNumber && (
-                <ProductAttribute
-                  title={dataItem[settings.field.warehouseNumber]}
-                  value={dataItem[settings.field.warehouseNumberValue] || 'N/A'}
-                  padding="4px 8px"
-                  width={{ xs: '49%' }}
-                />
-              )}
-
-              {settings.field.warehouseShelfNumber && (
-                <ProductAttribute
-                  title={dataItem[settings.field.warehouseShelfNumber]}
-                  value={
-                    dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'
-                  }
-                  padding="4px 8px"
-                  width={{ xs: '49%' }}
-                />
-              )}
-            </Box>
-          )}
 
           {settings.showFeedbackAndShare && (
             <Box
@@ -405,7 +411,6 @@ function ItemResult(props: Props) {
                   <Box display={'flex'} alignItems={'center'}>
                     <Button
                       className="btn-item"
-                      style={{ padding: '6px' }}
                       onClick={() => {
                         handlerFeedback('like');
                         setFeedback('like');
@@ -422,7 +427,6 @@ function ItemResult(props: Props) {
                 <Grid item>
                   <Box display={'flex'} alignItems={'center'}>
                     <Button
-                      style={{ padding: '6px' }}
                       className="btn-item"
                       onClick={() => {
                         handlerFeedback('dislike');
@@ -441,7 +445,6 @@ function ItemResult(props: Props) {
                   <Grid item>
                     <Box display={'flex'} alignItems={'center'}>
                       <Button
-                        style={{ padding: '6px' }}
                         className="btn-item"
                         onClick={() => setOpenModalShare(true)}
                       >

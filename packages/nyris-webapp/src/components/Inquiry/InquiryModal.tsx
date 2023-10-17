@@ -85,6 +85,7 @@ export default function InquiryModal({
         email_id: email.trim(),
         information_text: information,
         request_image: croppedImage?.toDataURL(),
+        prefilter_values: preFilterValues.join(', '),
       });
       setInquiryStatus('sent');
       ToastHelper.success('Request sent successfully');
@@ -238,6 +239,8 @@ export default function InquiryModal({
                 border: 'none',
                 height: '32px',
                 padding: '8px 16px 8px 16px',
+                fontSize: '13px',
+                color: ' #2B2C46',
               }}
             />
             {!emailValid && !isUndefined(emailValid) && (
@@ -280,13 +283,13 @@ export default function InquiryModal({
                   width: '100%',
                   border: 'none',
                   padding: '8px 16px 8px 16px',
-                  fontSize: '12px',
+                  fontSize: '13px',
                   color: '#2B2C46',
                   minHeight: '32px',
                   backgroundColor: '#fff',
                 }}
               >
-                {preFilterValues.join(', ')}
+                {preFilterValues.join(', ') || 'Pre-filter is not selected'}
               </div>
             </div>
           )}
@@ -313,6 +316,8 @@ export default function InquiryModal({
                 maxWidth: '346px',
                 minHeight: '40px',
                 padding: '8px 16px 8px 16px',
+                fontSize: '13px',
+                color: ' #2B2C46',
               }}
             />
           </div>
@@ -341,7 +346,9 @@ export default function InquiryModal({
               display: 'flex',
               alignItems: 'center',
               width: '50%',
-              backgroundColor: emailValid ? '#3E36DC' : '#E9E9EC',
+              backgroundColor: emailValid
+                ? settings.theme?.primaryColor
+                : '#E9E9EC',
               color: emailValid ? '#fff' : '#AAABB5',
               fontSize: '14px',
               paddingLeft: '16px',

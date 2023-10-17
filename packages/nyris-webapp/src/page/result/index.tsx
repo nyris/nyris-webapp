@@ -46,7 +46,7 @@ import RfqModal from 'components/rfq/RfqModal';
 import SidePanel from 'components/SidePanel';
 import useFilteredRegions from 'hooks/useFilteredRegions';
 import ImagePreviewMobile from 'components/ImagePreviewMobile';
-import RfqBanner from 'components/RfqBanner';
+import RfqBanner from 'components/rfq/RfqBanner';
 import InquiryBanner from 'components/Inquiry/InquiryBanner';
 
 interface Props {
@@ -478,6 +478,7 @@ function ResultComponent(props: Props) {
                           <InquiryBanner
                             requestImage={requestImage}
                             selectedRegion={selectedRegion}
+                            query={search.valueTextSearch.query}
                           />
                         )}
                     </Box>

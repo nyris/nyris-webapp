@@ -64,7 +64,7 @@ function ExpandablePanelComponent({
               className="fw-700"
               style={{
                 textTransform: 'none',
-                fontFamily: 'Montserrat !important',
+                fontFamily: 'Source Sans 3 !important',
                 fontSize: 14,
               }}
             >
