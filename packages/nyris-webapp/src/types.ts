@@ -36,7 +36,9 @@ export interface AppSettings extends NyrisAPISettings {
   refinements?: any;
   showGroup?: boolean;
   preFilterOption?: boolean;
+  cadenas3dWebView?: boolean;
   rfq?: boolean;
+  inquiry?: boolean;
   warehouseVariant?: boolean;
   preFilterTitle?: string;
   postFilterOption?: boolean;

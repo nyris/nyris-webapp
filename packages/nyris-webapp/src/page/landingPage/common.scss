@@ -2,7 +2,7 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat' !important;
+  font-family: 'Source Sans 3' !important;
 }
 .w-100 {
   width: 100% !important;
@@ -86,19 +86,19 @@ button {
 }
 
 .text-f10 {
-  font-family: 'Montserrat';
+  font-family: 'Source Sans 3';
   font-size: 10px !important;
   line-height: 10px !important;
 }
 
 .text-f22 {
-  font-family: 'Montserrat';
+  font-family: 'Source Sans 3';
   font-size: 22px !important;
   line-height: 20px !important;
 }
 
 .text-btn-small {
-  font-family: 'Montserrat';
+  font-family: 'Source Sans 3';
   font-weight: 500 !important;
   font-size: 11px !important;
   line-height: 14px !important;
@@ -112,14 +112,14 @@ button {
 }
 
 .text-f8 {
-  font-family: 'Montserrat' !important;
+  font-family: 'Source Sans 3' !important;
   font-weight: 500 !important;
   font-size: 11px !important;
   line-height: 14px !important;
 }
 
 .text-f9 {
-  font-family: 'Montserrat';
+  font-family: 'Source Sans 3';
   font-size: 11px !important;
   line-height: 14px !important;
 }
@@ -179,7 +179,7 @@ button {
   font-size: 11 !important;
   line-height: 14px !important;
   color: #2b2c46 !important;
-  font-family: 'Montserrat' !important;
+  font-family: 'Source Sans 3' !important;
   padding: 0 10px;
   &::before,
   &::after {
@@ -413,9 +413,8 @@ button {
     }
   }
   .box-carosel {
-    height: 60%;
-    padding: 0px 14px;
-    min-height: 330px;
+    // height: 60%;
+    // min-height: 330px;
     position: relative;
     .thumbs-wrapper {
       margin: 10px !important;
@@ -505,7 +504,6 @@ button {
 
   .box-content {
     background-color: #fafafa;
-    padding: 16px 24px;
     min-height: 138px;
     height: 40%;
     .MuiIconButton-label {
@@ -516,18 +514,10 @@ button {
       .btn-item {
         width: fit-content !important;
         min-width: auto !important;
+        border-radius: 16px;
+        padding: 8px !important;
         &:hover {
-          background-color: initial !important;
-        }
-        img {
-          width: 20px;
-        }
-        padding: 0 5px;
-        &:first-child {
-          padding-left: 0;
-        }
-        &:last-child {
-          padding-right: 0;
+          background-color: #E0E0E0 !important;
         }
       }
     }
@@ -613,10 +603,26 @@ button {
       justify-content: center;
       cursor: pointer;
     }
+    .box-icon-modal-3d {
+      bottom: 6px;
+      left: 6px;
+      position: absolute;
+      border-radius: 100%;
+      background-color: #F3F3F5;
+      display: block;
+      overflow: hidden;
+      z-index: 11;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
     .box-image {
       text-align: center;
       background-color: #fff;
-      height: 159px;
+      height: 168px;
       z-index: 10;
       position: relative;
       button {
@@ -631,7 +637,6 @@ button {
         display: block;
       }
       .img-style {
-        // width: 160px !important;
         width: 100% !important;
         height: 100% !important;
       }
@@ -671,31 +676,22 @@ button {
       .btn-item {
         width: fit-content !important;
         min-width: auto !important;
-        padding: 0 5px;
+        border-radius: 16px;
+        padding: 8px !important;
         &:hover {
-          background-color: initial !important;
+          background-color: #E0E0E0 !important;
         }
-        &:first-child {
-          padding-left: 0;
-        }
-        &:last-child {
-          padding-right: 0;
-        }
+        
       }
     }
     .box-bottom {
       .btn-item {
         width: fit-content !important;
         min-width: auto !important;
-        padding: 0 5px;
+        border-radius: 16px;
+        padding: 8px !important;
         &:hover {
-          background-color: initial !important;
-        }
-        &:first-child {
-          padding-left: 0;
-        }
-        &:last-child {
-          padding-right: 0;
+          background-color: #E0E0E0 !important;
         }
       }
     }
@@ -717,6 +713,8 @@ button {
 
 .box-content-main {
   position: relative;
+
+
   &.loading {
     &::before {
       content: '';
@@ -756,7 +754,7 @@ button {
 
       .title-box {
         font-size: 11px;
-        font-family: 'Montserrat' !important;
+        font-family: 'Source Sans 3' !important;
         line-height: 21px;
         color: #fff !important;
         text-align: center;
@@ -777,10 +775,10 @@ button {
     line-height: 21px;
     color: #ffffff;
     font-weight: 300;
-    font-family: 'Montserrat';
+    font-family: 'Source Sans 3';
   }
   .text-drop-file {
-    font-family: 'Montserrat';
+    font-family: 'Source Sans 3';
     font-weight: 700;
     font-size: 32px;
     line-height: 21px;
@@ -793,10 +791,10 @@ button {
   height: 100%;
   background: #FAFAFA;
   .box-content_top {
+  
     width: 100%;
     // min-height: calc(100% - 341px);
-    margin-top: 136px;
-    margin-bottom: 48px;
+    margin-top: 300px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -818,7 +816,7 @@ button {
     .box-bottom {
       margin-top: 26px;
       .text-bottom {
-        font-family: 'Montserrat';
+        font-family: 'Source Sans 3';
         font-weight: 600;
         font-size: 11px;
         line-height: 14px;
@@ -839,11 +837,27 @@ button {
         bottom: 0;
       }
     }
-
+    .drag-active{
+      border-radius: 60px;
+      border: 2px dashed #E0E0E0 !important;
+      background:  #FAFAFA !important;
+      color: #2B2C46 !important;
+    }
     .box-content-drop {
       display: flex;
       flex-direction: column;
       align-items: center;
+      cursor: pointer;
+      width: 100%;
+      padding-top: 16px;
+      padding-bottom: 16px;
+      color: #CACAD1;
+      &:hover {
+        border-radius: 60px;
+        border: 2px dashed #E0E0E0;
+        background:  #FAFAFA;
+        color: #2B2C46;
+      }
     }
     .box-image {
       width: 64px;
@@ -878,7 +892,6 @@ button {
       }
     }
     .box-content-main {
-      background: #f3f3f5;
       padding: 16px;
       border-radius: 16px;
       height: 100%;
@@ -891,6 +904,15 @@ button {
       border-radius: 16px;
       border-radius: 16px;
       height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      width: 100%;
+      flex-direction: column;
+    }
+    .box-border-none{
+      height: 80%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -926,11 +948,12 @@ button {
   padding: 5px;
 }
 .text-f14 {
-  font-family: 'Montserrat';
   font-size: 14px;
+  line-height: 16px;
+  font-style: normal;
 }
 .text-f20 {
-  font-family: 'Montserrat';
+  font-family: 'Source Sans 3';
   font-size: 16px;
   line-height: 21px;
 }
@@ -1132,7 +1155,7 @@ button {
       border-left: 1px solid #e9e9ec;
     }
     .box-change-hit-items {
-      font-family: 'Montserrat';
+      font-family: 'Source Sans 3';
       font-style: normal;
       font-weight: 500;
       font-size: 12px;
@@ -1826,7 +1849,7 @@ button {
       position: relative;
       padding: 0;
       a {
-        font-family: 'Montserrat';
+        font-family: 'Source Sans 3';
         font-style: normal;
         font-weight: 400;
         font-size: 14px;
@@ -1897,7 +1920,7 @@ button {
         align-items: center;
         span {
           font-size: 14px;
-          font-family: 'Montserrat';
+          font-family: 'Source Sans 3';
           font-style: normal;
           em {
             font-style: initial !important;
@@ -1911,7 +1934,7 @@ button {
 .box-switch-apply-fillter {
   span.MuiFormControlLabel-label {
     color: #aaabb5;
-    font-family: 'Montserrat';
+    font-family: 'Source Sans 3';
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
@@ -2059,9 +2082,10 @@ button {
   padding: 4px 8px 4px 8px;
 
   .keyFilter {
-    margin-right: 5px;
-    font-weight: 700;
+    font-weight: 400;
     font-size: 12px;
+    line-height: 16px;
+    font-style: normal;
     color: #2B2C46;
     text-transform: uppercase;
     margin-bottom: 0px;
@@ -2113,7 +2137,7 @@ button {
         }
         .pre-filter-icon {
           display: flex;
-          width: 60px;
+          min-width: 56px;
           height: 100%;
           justify-content: center;
           align-items: center;
@@ -2207,11 +2231,28 @@ button {
 }
 
 .icon-hover {
-  padding: 8px;
+  padding: 12px;
   border-radius: 100%;
   display: flex;
   &:hover {
     background-color: #0000000a;
   }
 
+}
+
+.button-hover {
+  &:hover {
+    background-color: #E0E0E0 !important;
+  }
+}
+
+.product-image {
+  transition: all 0.3s;
+  display: block;
+  transform: scale(1);
+  overflow: hidden;
+}
+
+.product-image:hover{
+  transform: scale(1.1);
 }

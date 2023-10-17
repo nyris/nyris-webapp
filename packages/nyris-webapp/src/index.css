@@ -7,75 +7,40 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Font */
-@font-face {
-  font-family: "Gilroy";
-  src: url("/fonts/Gilroy/SVN-Gilroy Light.otf");
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Gilroy";
-  src: url("/fonts/Gilroy/SVN-Gilroy Regular.otf");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Gilroy";
-  src: url("/fonts/Gilroy/SVN-Gilroy Medium.otf");
-  font-style: medium;
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Gilroy";
-  src: url("/fonts/Gilroy/SVN-Gilroy SemiBold.otf");
-  font-style: medium;
-  font-weight: 600;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Gilroy";
-  src: url("/fonts/Gilroy/SVN-Gilroy Bold.otf");
-  font-style: medium;
-  font-weight: 700;
-  font-display: swap;
-}
+
 
 /* SF Pro fonts  */
 @font-face {
-  font-family: "Montserrat";
-  src: url("./common/assets/fonts/Montserrat_OTF/Montserrat-Light.otf");
+  font-family: "Source Sans 3";
+  src: url("./common/assets/fonts/source-sans-3/SourceSans3-Light.ttf");
   font-style: normal;
   font-weight: 300;
   font-display: swap;
 }
 @font-face {
-  font-family: "Montserrat";
-  src: url("./common/assets/fonts/Montserrat_OTF/Montserrat-Regular.otf");
+  font-family: "Source Sans 3";
+  src: url("./common/assets/fonts/source-sans-3/SourceSans3-Regular.ttf");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
-  font-family: "Montserrat";
-  src: url("./common/assets/fonts/Montserrat_OTF/Montserrat-Medium.otf");
+  font-family: "Source Sans 3";
+  src: url("./common/assets/fonts/source-sans-3/SourceSans3-Medium.ttf");
   font-style: medium;
   font-weight: 500;
   font-display: swap;
 }
 @font-face {
-  font-family: "Montserrat";
-  src: url("./common/assets/fonts/Montserrat_OTF/Montserrat-SemiBold.otf");
+  font-family: "Source Sans 3";
+  src: url("./common/assets/fonts/source-sans-3/SourceSans3-SemiBold.ttf");
   font-style: medium;
   font-weight: 600;
   font-display: swap;
 }
 @font-face {
-  font-family: "Montserrat";
-  src: url("./common/assets/fonts/Montserrat_OTF/Montserrat-Bold.otf");
+  font-family: "Source Sans 3";
+  src: url("./common/assets/fonts/source-sans-3/SourceSans3-Bold.ttf");
   font-style: medium;
   font-weight: 700;
   font-display: swap;
@@ -432,53 +397,6 @@ article {
   background: #031f2b;
 }
 
-@font-face {
-  font-family: Roboto;
-  src: local("Roboto Italic"), local("Roboto-Italic"),
-    url(common/assets/fonts/roboto-italic-webfont.woff2) format("woff2"),
-    url(common/assets/fonts/roboto-italic-webfont.woff) format("woff");
-  font-weight: 400;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: Roboto;
-  src: local("Roboto Bold"), local("Roboto-Bold"),
-    url(common/assets/fonts/roboto-bold-webfont.woff2) format("woff2"),
-    url(common/assets/fonts/roboto-bold-webfont.woff) format("woff");
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: Roboto;
-  src: local("Roboto Regular"), local("Roboto-Regular"),
-    url(common/assets/fonts/roboto-regular-webfont.woff2) format("woff2"),
-    url(common/assets/fonts/roboto-regular-webfont.woff) format("woff");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Roboto Condensed";
-  src: local("Roboto Condensed Bold"), local("RobotoCondensed-Bold"),
-    url(common/assets/fonts/robotocondensed-bold-webfont.woff2) format("woff2"),
-    url(common/assets/fonts/robotocondensed-bold-webfont.woff) format("woff");
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Roboto Condensed";
-  src: local("Roboto Condensed Bold Italic"),
-    local("RobotoCondensed-BoldItalic"),
-    url(common/assets/fonts/robotocondensed-bolditalic-webfont.woff2)
-      format("woff2"),
-    url(common/assets/fonts/robotocondensed-bolditalic-webfont.woff)
-      format("woff");
-  font-weight: 700;
-  font-style: italic;
-}
 
 body,
 button,

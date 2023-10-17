@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.38 - 2023-10-17
+
+### Added
+
+- Inquiry flow
+- Change font
+- New product card UI
+- Add Cadenas 3d web viewer
+
 ## 0.3.37 - 2023-09-20
 
 ### Fixed

@@ -46,7 +46,8 @@ import RfqModal from 'components/rfq/RfqModal';
 import SidePanel from 'components/SidePanel';
 import useFilteredRegions from 'hooks/useFilteredRegions';
 import ImagePreviewMobile from 'components/ImagePreviewMobile';
-import RfqBanner from 'components/RfqBanner';
+import RfqBanner from 'components/rfq/RfqBanner';
+import InquiryBanner from 'components/Inquiry/InquiryBanner';
 
 interface Props {
   allSearchResults: any;
@@ -56,7 +57,7 @@ interface Props {
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
   const refBoxResult: any = useRef(null);
-  const stateGlobal = useAppSelector((state: any) => state);
+  const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
 
   const {
@@ -86,6 +87,7 @@ function ResultComponent(props: Props) {
   const [isScrolled, setIsScrolled] = useState<
     'not-scrolled' | 'scrolled' | 'user-scrolled'
   >('not-scrolled');
+
   useEffect(() => {
     if (
       !loadingSearchAlgolia &&
@@ -467,6 +469,16 @@ function ResultComponent(props: Props) {
                             setIsRfqModalOpen={setIsRfqModalOpen}
                             requestImage={requestImage}
                             selectedRegion={selectedRegion}
+                          />
+                        )}
+                      {!loadingSearchAlgolia &&
+                        !props.isSearchStalled &&
+                        settings.inquiry &&
+                        (search.valueTextSearch.query || requestImage) && (
+                          <InquiryBanner
+                            requestImage={requestImage}
+                            selectedRegion={selectedRegion}
+                            query={search.valueTextSearch.query}
                           />
                         )}
                     </Box>

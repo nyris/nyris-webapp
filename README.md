@@ -1,9 +1,5 @@
 # nyris-webapp
 
-![Demo](.readme/demo.gif)
-
-Try it yourself on [demo.nyris.io](https://demo.nyris.io)
-
 ## Contents
 
 This repository is home to the nyris webapp and the 

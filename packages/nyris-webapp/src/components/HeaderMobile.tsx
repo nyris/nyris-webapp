@@ -201,7 +201,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                             backgroundColor: `${settings.theme?.primaryColor}`,
                           }
                         : {
-                            backgroundColor: `${settings.theme?.secondaryColor}`,
+                            backgroundColor: `#2B2C46`,
                           }),
                     }}
                   >

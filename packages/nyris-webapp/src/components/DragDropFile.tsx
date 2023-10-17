@@ -1,7 +1,6 @@
-import { Box, Typography } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import React, { memo } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { makeFileHandler } from '@nyris/nyris-react-components';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { createImage, findByImage, findRegions } from 'services/image';
 import {
@@ -15,8 +14,8 @@ import {
 } from 'Store/search/Search';
 import { showFeedback } from 'Store/nyris/Nyris';
 import { useHistory } from 'react-router-dom';
-import { useState } from 'react';
-import IconUpload from 'common/assets/images/Icon_Upload.svg';
+import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDownward.svg';
+
 import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
@@ -30,13 +29,12 @@ interface Props {
 function DragDropFile(props: Props) {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { acceptTypes, onChangeLoading, isLoading } = props;
+  const { onChangeLoading, isLoading } = props;
   const searchState = useAppSelector(state => state);
   const {
     settings,
     search: { preFilter },
   } = searchState;
-  const [isLoadingLoadFile, setLoadingLoadFile] = useState<any>(false);
   const { t } = useTranslation();
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[]) => {
@@ -46,7 +44,6 @@ function DragDropFile(props: Props) {
       onChangeLoading(true);
       let payload: any;
       let filters: any[] = [];
-      setLoadingLoadFile(true);
       console.log('fs', fs);
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
@@ -82,7 +79,6 @@ function DragDropFile(props: Props) {
           filters,
         };
         dispatch(setSearchResults(payload));
-        setLoadingLoadFile(false);
         onChangeLoading(false);
         dispatch(updateStatusLoading(false));
         return dispatch(showFeedback());
@@ -91,13 +87,7 @@ function DragDropFile(props: Props) {
   });
 
   return (
-    <Box
-      className={
-        !isDragActive && !isLoadingLoadFile
-          ? `box-content-main`
-          : `box-content-main-drop`
-      }
-    >
+    <Box className={`box-content-main`} style={{ marginTop: 16 }}>
       {isLoading && (
         <Box className="loadingSpinCT">
           <Box className="box-content-spin"></Box>
@@ -105,7 +95,7 @@ function DragDropFile(props: Props) {
       )}
 
       <div
-        className={`box-border`}
+        className={`box-border-none`}
         style={{ position: 'relative' }}
         {...getRootProps({
           onClick: e => {
@@ -113,60 +103,35 @@ function DragDropFile(props: Props) {
           },
         })}
       >
-        {isDragActive ? (
-          <Box>
-            <Typography className="text-drop-file">
-              DRAG <span className="tractor">&</span> DROP
-            </Typography>
+        <>
+          <Box
+            className={`box-content-drop ${isDragActive ? 'drag-active' : ''}`}
+            {...getRootProps({
+              onClick: e => {
+                e.stopPropagation();
+              },
+            })}
+          >
+            <Box style={{ marginBottom: 16 }}>
+              <IconDownload width={48} height={48} />
+            </Box>
+            <label htmlFor="select_file" className="" style={{ fontSize: 14 }}>
+              <span className="fw-700 text-f14" style={{ paddingRight: '4px' }}>
+                {t('Choose an image')}
+              </span>
+              {t('or drag it here')}
+            </label>
             <input
-              {...getInputProps({
-                onClick: e => {
-                  e.stopPropagation();
-                },
-              })}
+              {...getInputProps()}
               type="file"
               name="file"
               id="select_file"
+              className="inputFile"
               placeholder="Choose photo"
-              accept={acceptTypes}
-              onChange={makeFileHandler(e => {})}
+              style={{ display: 'block', cursor: 'pointer' }}
             />
           </Box>
-        ) : (
-          <>
-            <Box
-              className="box-content-drop"
-              {...getRootProps({
-                onClick: e => {
-                  e.stopPropagation();
-                },
-              })}
-            >
-              <Box style={{ marginBottom: 16 }}>
-                <img src={IconUpload} alt="" width={48} height={48} />
-              </Box>
-              <label
-                htmlFor="select_file"
-                className=""
-                style={{ color: '#2B2C46', fontSize: 14 }}
-              >
-                <span className="fw-700" style={{ paddingRight: '4px' }}>
-                  {t('Choose an image')}
-                </span>
-                {t('or drag it here')}
-              </label>
-              <input
-                {...getInputProps()}
-                type="file"
-                name="file"
-                id="select_file"
-                className="inputFile"
-                placeholder="Choose photo"
-                style={{ display: 'block' }}
-              />
-            </Box>
-          </>
-        )}
+        </>
       </div>
     </Box>
   );

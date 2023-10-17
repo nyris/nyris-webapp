@@ -183,12 +183,14 @@ const SearchBox = (props: any) => {
                     style={{
                       ...(!isEmpty(preFilter)
                         ? {
-                            backgroundColor: `${settings.theme?.secondaryColor}26`,
+                            backgroundColor: `${settings.theme?.primaryColor}`,
                           }
-                        : {}),
+                        : {
+                            backgroundColor: '#2B2C46',
+                          }),
                     }}
                   >
-                    <IconFilter color="black" />
+                    <IconFilter color="white" />
                   </div>
                 )}
                 {!settings.preFilterOption && (
@@ -198,14 +200,14 @@ const SearchBox = (props: any) => {
                   <div
                     style={{
                       position: 'absolute',
-                      top: '6px',
-                      left: '31px',
+                      top: '5px',
+                      left: '35px',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
                       background: 'white',
-                      width: '10px',
-                      height: '10px',
+                      width: '12px',
+                      height: '12px',
                       borderRadius: '100%',
                     }}
                   >
@@ -213,8 +215,9 @@ const SearchBox = (props: any) => {
                       style={{
                         width: '8px',
                         height: '8px',
-                        background: settings.theme?.secondaryColor,
+                        background: settings.theme?.primaryColor,
                         borderRadius: '100%',
+                        strokeWidth: '2px',
                       }}
                     ></div>
                   </div>
@@ -230,8 +233,8 @@ const SearchBox = (props: any) => {
               {imageThumbSearchInput && (
                 <Box
                   style={{
-                    border: `2px solid ${settings.theme?.secondaryColor}c7`,
-                    backgroundColor: `${settings.theme?.secondaryColor}26`,
+                    border: `2px solid ${settings.theme?.primaryColor}`,
+                    backgroundColor: '#E4E3FF',
                     marginRight: '5px',
                   }}
                   className="box-image-search-thumb"
@@ -261,7 +264,7 @@ const SearchBox = (props: any) => {
                       <CloseIcon
                         style={{
                           fontSize: 20,
-                          color: settings.theme?.secondaryColor,
+                          color: settings.theme?.primaryColor,
                         }}
                       />
                     </button>

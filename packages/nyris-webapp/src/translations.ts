@@ -2,9 +2,9 @@ export const translations = {
   en: {
     translation: {
       Search: 'Search',
-      'Choose an image': 'Choose an image',
-      'or drag it here': 'or drag it here',
-      'Manufacturer Number': 'Manufacturer Number',
+      'Choose an image': 'Drag and drop ',
+      'or drag it here': 'an image here',
+      'Manufacturer Number': 'Manufacturer No.',
       'Close group': 'Close group',
       'Show group': 'Show group',
       'Adjust the search frame around your object for improved results':

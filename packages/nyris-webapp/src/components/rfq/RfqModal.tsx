@@ -8,6 +8,7 @@ import { isUndefined } from 'lodash';
 import { TextareaAutosize } from '@material-ui/core';
 import toast from 'react-hot-toast';
 import { ReactComponent as ErrorIcon } from 'common/assets/icons/error.svg';
+import { useMediaQuery } from 'react-responsive';
 interface Props {
   requestImage: any;
   selectedRegion: any;
@@ -41,8 +42,15 @@ export default function RfqModal({
 }: Props) {
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState<boolean | undefined>(undefined);
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const [information, setInformation] = useState('');
+  const setFormattedContent = React.useCallback(
+    text => {
+      setInformation(text.slice(0, 150));
+    },
+    [setInformation],
+  );
   useEffect(() => emailjs.init('SMGihPnuEGcYLm0V4'), []);
   useEffect(() => {
     if (email)
@@ -126,7 +134,7 @@ export default function RfqModal({
       <div
         style={{
           display: 'flex',
-          width: '378px',
+          width: !isMobile ? '378px' : '360px',
           flexDirection: 'column',
           backgroundColor: '#fff',
         }}
@@ -184,7 +192,13 @@ export default function RfqModal({
           }}
         >
           <div>
-            <p style={{ fontSize: '12px', color: '#2B2C46' }}>
+            <p
+              style={{
+                fontSize: '12px',
+                color: '#2B2C46',
+                marginBottom: '8px',
+              }}
+            >
               Your email (required)
             </p>
             <input
@@ -204,12 +218,21 @@ export default function RfqModal({
             )}
           </div>
           <div>
-            <p style={{ fontSize: '12px', color: '#2B2C46' }}>
-              Additional information
-            </p>
+            <div
+              style={{
+                marginBottom: '8px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '12px',
+                color: '#2B2C46',
+              }}
+            >
+              <p>Additional information</p>
+              <p>{`${information.length}/150`}</p>
+            </div>
             <TextareaAutosize
               value={information}
-              onChange={e => setInformation(e.currentTarget.value)}
+              onChange={e => setFormattedContent(e.currentTarget.value)}
               style={{
                 width: '100%',
                 border: 'none',

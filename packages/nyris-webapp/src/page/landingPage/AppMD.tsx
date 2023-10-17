@@ -33,9 +33,11 @@ function AppMD() {
   return (
     <Box className={`box-content-main ${isLoading ? 'loading' : ''}`}>
       <Box className="box-content_top">
+        {settings.headerText && (
         <Box className="fw-700 text-f32 text-dark2">
           <h1>{settings.headerText}</h1>
         </Box>
+        )}
         <div className="box-input">
           <div className="wrap-input-search">
             <div style={{ display: 'none' }}>
