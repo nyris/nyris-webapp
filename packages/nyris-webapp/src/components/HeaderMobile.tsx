@@ -215,8 +215,8 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   <div
                     style={{
                       position: 'absolute',
-                      top: '10px',
-                      left: '31px',
+                      top: '7px',
+                      left: '35px',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
