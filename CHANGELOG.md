@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.39 - 2023-10-17
+
+### Fix
+
+- Mobile header pre-filter selected UI
+
 ## 0.3.38 - 2023-10-17
 
 ### Added
