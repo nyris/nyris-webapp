@@ -31,6 +31,8 @@ interface PreviewProps {
   minCropHeight: number;
   /** handles if the image corner should be rounded */
   rounded?: boolean;
+  /** enables image expand animation*/
+  expandAnimation?: boolean;
 }
 
 /** @internal State of the Preview component */
@@ -155,6 +157,7 @@ const Preview = ({
   regions,
   rounded,
   selection,
+  expandAnimation,
 }: PreviewProps) => {
   let { w: width, h: height } = getThumbSizeLongestEdge(
     maxWidth,
@@ -362,6 +365,14 @@ const Preview = ({
     ctx.arc(topLeft, topLeft, topLeft, Math.PI, (Math.PI * 3) / 2, false);
     ctx.closePath();
   };
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoaded(true);
+    }, 300);
+  }, []);
+
   return (
     <Stage
       width={width}
@@ -374,224 +385,239 @@ const Preview = ({
       }}
     >
       <Layer key="img" clipFunc={clipFunc}>
-        <Image image={image} width={width} height={height} />
-      </Layer>
-      <Layer key="selection" clipFunc={clipFunc}>
-        {/* Selection box */}
-        <Rect
-          stroke="white"
-          opacity={0}
-          strokeWidth={0}
-          x={x1}
-          y={y1}
-          width={x2 - x1}
-          height={y2 - y1}
-        />
-        <Rect
-          stroke="black"
-          draggable={true}
-          onDragMove={handleDragMoveRect}
-          dragBoundFunc={handleDragBoundRect}
-          onMouseOver={() => setState({ rectHover: true })}
-          onMouseOut={() => setState({ rectHover: false })}
-          opacity={0}
-          strokeWidth={2}
-          x={x1}
-          y={y1}
-          width={x2 - x1}
-          height={y2 - y1}
-          dash={[0, 0]}
-          ref={selectionRef}
-        />
-
-        {/* Dark areas */}
-
-        <Rect
-          fill="black"
-          opacity={darkOpacity}
-          x={0}
-          y={0}
-          width={width}
-          height={y1}
-        />
-        <Rect
-          fill="black"
-          opacity={darkOpacity}
-          x={0}
-          y={y2}
-          width={width}
-          height={height - y2}
-        />
-        <Rect
-          fill="black"
-          opacity={darkOpacity}
-          x={0}
-          y={y1}
-          width={x1}
-          height={y2 - y1}
-        />
-        <Rect
-          fill="black"
-          opacity={darkOpacity}
-          x={x2}
-          y={y1}
-          width={width - x2}
-          height={y2 - y1}
+        <Image
+          image={image}
+          width={expandAnimation ? 80 : width}
+          height={expandAnimation ? 80 : height}
+          ref={(ref) => {
+            ref?.to({
+              width: width,
+              height: height,
+              duration: 0.3,
+            });
+          }}
         />
       </Layer>
-      {/* grips */}
-      <Layer>
-        {/* top left */}
-        <Path
-          data="M2 18V10C2 5.58172 5.58172 2 10 2H18"
-          stroke={"white"}
-          strokeWidth={5}
-          lineCap="round"
-          opacity={1}
-          x={x1 - 3}
-          y={y1 - 3}
-          shadowColor={"#000000"}
-          shadowBlur={4}
-          shadowOffset={{ x: 0, y: 0 }}
-          shadowOpacity={0.25}
-        />
-        <Rect
-          draggable={true}
-          onDragMove={handleDragMoveTl}
-          dragBoundFunc={handleDragBoundTl}
-          onMouseOver={() => setState({ tlHover: true })}
-          onMouseOut={() => setState({ tlHover: false })}
-          opacity={1}
-          width={gripSize + gripPadding}
-          height={gripSize + gripPadding}
-          x={x1 - gripPadding}
-          y={y1 - gripPadding}
-        />
-        {/* top right */}
-        <Path
-          data="M2 2L10 2C14.4183 2 18 5.58172 18 10L18 18"
-          stroke={"white"}
-          strokeWidth={5}
-          lineCap="round"
-          opacity={1}
-          x={x2 + 3}
-          y={y1 - 3}
-          offsetX={gripSize}
-          shadowColor={"#000000"}
-          shadowBlur={4}
-          shadowOffset={{ x: 0, y: 0 }}
-          shadowOpacity={0.25}
-        />
-        <Rect
-          draggable={true}
-          onDragMove={handleDragMoveTr}
-          dragBoundFunc={handleDragBoundTr}
-          onMouseOver={() => setState({ trHover: true })}
-          onMouseOut={() => setState({ trHover: false })}
-          opacity={1}
-          width={gripSize + gripPadding}
-          height={gripSize + gripPadding}
-          x={x2 - gripPadding}
-          y={y1 - gripPadding}
-          offsetX={gripSize - gripPadding}
-        />
-        {/* bottom left */}
-        <Path
-          data="M18 18L10 18C5.58172 18 2 14.4183 2 10L2 2"
-          stroke={"white"}
-          strokeWidth={5}
-          lineCap="round"
-          opacity={1}
-          x={x1 - 3}
-          y={y2 + 3}
-          offsetY={gripSize}
-          shadowColor={"#000000"}
-          shadowBlur={4}
-          shadowOffset={{ x: 0, y: 0 }}
-          shadowOpacity={0.25}
-        />
-        <Rect
-          draggable={true}
-          onDragMove={handleDragMoveBl}
-          dragBoundFunc={handleDragBoundBl}
-          onMouseOver={() => setState({ blHover: true })}
-          onMouseOut={() => setState({ blHover: false })}
-          opacity={1}
-          width={gripSize + gripPadding}
-          height={gripSize + gripPadding}
-          x={x1 - gripPadding}
-          y={y2 - gripPadding}
-          offsetY={gripSize - gripPadding}
-        />
-        {/* bottom right */}
-        <Path
-          data="M18 2L18 10C18 14.4183 14.4183 18 10 18L2 18"
-          stroke={"white"}
-          strokeWidth={5}
-          lineCap="round"
-          x={x2 + 3}
-          y={y2 + 3}
-          opacity={1}
-          offsetY={gripSize}
-          offsetX={gripSize}
-          shadowColor={"#000000"}
-          shadowBlur={4}
-          shadowOffset={{ x: 0, y: 0 }}
-          shadowOpacity={0.25}
-        />
-        <Rect
-          opacity={1}
-          draggable={true}
-          onDragMove={handleDragMoveBr}
-          dragBoundFunc={handleDragBoundBr}
-          onMouseOver={() => setState({ brHover: true })}
-          onMouseOut={() => setState({ brHover: false })}
-          x={x2 - gripPadding}
-          y={y2 - gripPadding}
-          width={gripSize + gripPadding}
-          height={gripSize + gripPadding}
-          offsetY={gripSize - gripPadding}
-          offsetX={gripSize - gripPadding}
-        />
-      </Layer>
+      {loaded && (
+        <>
+          <Layer key="selection" clipFunc={clipFunc}>
+            {/* Selection box */}
+            <Rect
+              stroke="white"
+              opacity={0}
+              strokeWidth={0}
+              x={x1}
+              y={y1}
+              width={x2 - x1}
+              height={y2 - y1}
+            />
+            <Rect
+              stroke="black"
+              draggable={true}
+              onDragMove={handleDragMoveRect}
+              dragBoundFunc={handleDragBoundRect}
+              onMouseOver={() => setState({ rectHover: true })}
+              onMouseOut={() => setState({ rectHover: false })}
+              opacity={0}
+              strokeWidth={2}
+              x={x1}
+              y={y1}
+              width={x2 - x1}
+              height={y2 - y1}
+              dash={[0, 0]}
+              ref={selectionRef}
+            />
 
-      <NodeGroup
-        data={dots}
-        keyAccessor={(r) => r.key}
-        start={(d, i) => ({ opacity: 0, x: -100, y: d.y })}
-        enter={(d, i) => ({
-          opacity: [1],
-          x: [d.x],
-          y: d.y,
-          timing: { delay: i * 100, duration: 300 },
-        })}
-      >
-        {(ds) => (
-          <Layer key="dots">
-            {ds.map(({ key, data, state: position }) => (
-              <Circle
-                onClick={() => {
-                  notifySelection(data.region.normalizedRect);
-                  setState({ dotHover: false });
-                }}
-                onTap={() => {
-                  notifySelection(data.region.normalizedRect);
-                  setState({ dotHover: false });
-                }}
-                onMouseOver={() => setState({ dotHover: true })}
-                onMouseOut={() => setState({ dotHover: false })}
-                key={key}
-                radius={7}
-                {...position}
-                stroke={dotColor}
-                fill="white"
-                strokeWidth={5}
-                opacity={data.region.show}
-              />
-            ))}
+            {/* Dark areas */}
+
+            <Rect
+              fill="black"
+              opacity={darkOpacity}
+              x={0}
+              y={0}
+              width={width}
+              height={y1}
+            />
+            <Rect
+              fill="black"
+              opacity={darkOpacity}
+              x={0}
+              y={y2}
+              width={width}
+              height={height - y2}
+            />
+            <Rect
+              fill="black"
+              opacity={darkOpacity}
+              x={0}
+              y={y1}
+              width={x1}
+              height={y2 - y1}
+            />
+            <Rect
+              fill="black"
+              opacity={darkOpacity}
+              x={x2}
+              y={y1}
+              width={width - x2}
+              height={y2 - y1}
+            />
           </Layer>
-        )}
-      </NodeGroup>
+          {/* grips */}
+          <Layer>
+            {/* top left */}
+            <Path
+              data="M2 18V10C2 5.58172 5.58172 2 10 2H18"
+              stroke={"white"}
+              strokeWidth={5}
+              lineCap="round"
+              opacity={1}
+              x={x1 - 3}
+              y={y1 - 3}
+              shadowColor={"#000000"}
+              shadowBlur={4}
+              shadowOffset={{ x: 0, y: 0 }}
+              shadowOpacity={0.25}
+            />
+            <Rect
+              draggable={true}
+              onDragMove={handleDragMoveTl}
+              dragBoundFunc={handleDragBoundTl}
+              onMouseOver={() => setState({ tlHover: true })}
+              onMouseOut={() => setState({ tlHover: false })}
+              opacity={1}
+              width={gripSize + gripPadding}
+              height={gripSize + gripPadding}
+              x={x1 - gripPadding}
+              y={y1 - gripPadding}
+            />
+            {/* top right */}
+            <Path
+              data="M2 2L10 2C14.4183 2 18 5.58172 18 10L18 18"
+              stroke={"white"}
+              strokeWidth={5}
+              lineCap="round"
+              opacity={1}
+              x={x2 + 3}
+              y={y1 - 3}
+              offsetX={gripSize}
+              shadowColor={"#000000"}
+              shadowBlur={4}
+              shadowOffset={{ x: 0, y: 0 }}
+              shadowOpacity={0.25}
+            />
+            <Rect
+              draggable={true}
+              onDragMove={handleDragMoveTr}
+              dragBoundFunc={handleDragBoundTr}
+              onMouseOver={() => setState({ trHover: true })}
+              onMouseOut={() => setState({ trHover: false })}
+              opacity={1}
+              width={gripSize + gripPadding}
+              height={gripSize + gripPadding}
+              x={x2 - gripPadding}
+              y={y1 - gripPadding}
+              offsetX={gripSize - gripPadding}
+            />
+            {/* bottom left */}
+            <Path
+              data="M18 18L10 18C5.58172 18 2 14.4183 2 10L2 2"
+              stroke={"white"}
+              strokeWidth={5}
+              lineCap="round"
+              opacity={1}
+              x={x1 - 3}
+              y={y2 + 3}
+              offsetY={gripSize}
+              shadowColor={"#000000"}
+              shadowBlur={4}
+              shadowOffset={{ x: 0, y: 0 }}
+              shadowOpacity={0.25}
+            />
+            <Rect
+              draggable={true}
+              onDragMove={handleDragMoveBl}
+              dragBoundFunc={handleDragBoundBl}
+              onMouseOver={() => setState({ blHover: true })}
+              onMouseOut={() => setState({ blHover: false })}
+              opacity={1}
+              width={gripSize + gripPadding}
+              height={gripSize + gripPadding}
+              x={x1 - gripPadding}
+              y={y2 - gripPadding}
+              offsetY={gripSize - gripPadding}
+            />
+            {/* bottom right */}
+            <Path
+              data="M18 2L18 10C18 14.4183 14.4183 18 10 18L2 18"
+              stroke={"white"}
+              strokeWidth={5}
+              lineCap="round"
+              x={x2 + 3}
+              y={y2 + 3}
+              opacity={1}
+              offsetY={gripSize}
+              offsetX={gripSize}
+              shadowColor={"#000000"}
+              shadowBlur={4}
+              shadowOffset={{ x: 0, y: 0 }}
+              shadowOpacity={0.25}
+            />
+            <Rect
+              opacity={1}
+              draggable={true}
+              onDragMove={handleDragMoveBr}
+              dragBoundFunc={handleDragBoundBr}
+              onMouseOver={() => setState({ brHover: true })}
+              onMouseOut={() => setState({ brHover: false })}
+              x={x2 - gripPadding}
+              y={y2 - gripPadding}
+              width={gripSize + gripPadding}
+              height={gripSize + gripPadding}
+              offsetY={gripSize - gripPadding}
+              offsetX={gripSize - gripPadding}
+            />
+          </Layer>
+
+          <NodeGroup
+            data={dots}
+            keyAccessor={(r) => r.key}
+            start={(d, i) => ({ opacity: 0, x: -100, y: d.y })}
+            enter={(d, i) => ({
+              opacity: [1],
+              x: [d.x],
+              y: d.y,
+              timing: { delay: i * 100, duration: 300 },
+            })}
+          >
+            {(ds) => (
+              <Layer key="dots">
+                {ds.map(({ key, data, state: position }) => (
+                  <Circle
+                    onClick={() => {
+                      notifySelection(data.region.normalizedRect);
+                      setState({ dotHover: false });
+                    }}
+                    onTap={() => {
+                      notifySelection(data.region.normalizedRect);
+                      setState({ dotHover: false });
+                    }}
+                    onMouseOver={() => setState({ dotHover: true })}
+                    onMouseOut={() => setState({ dotHover: false })}
+                    key={key}
+                    radius={7}
+                    {...position}
+                    stroke={dotColor}
+                    fill="white"
+                    strokeWidth={5}
+                    opacity={data.region.show}
+                  />
+                ))}
+              </Layer>
+            )}
+          </NodeGroup>
+        </>
+      )}
     </Stage>
   );
 };

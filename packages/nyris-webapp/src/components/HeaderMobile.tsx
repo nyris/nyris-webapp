@@ -45,6 +45,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     valueTextSearch,
   } = search;
   const query = useQuery();
+  const searchQuery = query.get('query') || '';
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
   const history = useHistory();
@@ -70,7 +71,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   }, [imageThumbSearchInput, dispatch, refine, history]);
 
   useEffect(() => {
-    const searchQuery = query.get('query') || '';
     if (!isEmpty(searchQuery)) {
       dispatch(updateValueTextSearchMobile(searchQuery));
       refine(searchQuery);
@@ -79,7 +79,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         refine(searchQuery);
       }, 100);
     }
-  }, [query, refine, dispatch]);
+  }, [query, refine, dispatch, searchQuery]);
 
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
@@ -159,7 +159,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       )}
       <div
         style={{
-          margin: '16px 8px 0px 8px',
+          margin: '16px 8px',
           display: 'flex',
           columnGap: '8px',
           alignItems: 'center',
@@ -238,7 +238,10 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 )}
               </Box>
 
-              <Input value={textSearchInputMobile} onChange={onChangeText} />
+              <Input
+                value={textSearchInputMobile || searchQuery}
+                onChange={onChangeText}
+              />
 
               {history.location?.pathname !== '/' && textSearchInputMobile && (
                 <Button

@@ -8,7 +8,7 @@ const LoadingSpinner = () => (
     viewBox="0 0 150 150"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className="LoadingSpinner"
+    className="loading-spinner"
   >
     <path
       fillRule="evenodd"

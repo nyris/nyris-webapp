@@ -2,9 +2,10 @@ export const translations = {
   en: {
     translation: {
       Search: 'Search',
-      'Choose an image': 'Drag and drop ',
-      'or drag it here': 'an image here',
+      'Drag and drop': 'Drag and drop',
+      'an image here': 'an image here',
       'Manufacturer Number': 'Manufacturer No.',
+      'Mfr. No.': 'Mfr. No.',
       'Close group': 'Close group',
       'Show group': 'Show group',
       'Adjust the search frame around your object for improved results':
@@ -13,24 +14,53 @@ export const translations = {
       'Items per page': 'Items per page',
       'Search with an image': 'Search with an image',
       'Clear text search': 'Clear text search',
+      'View details': 'View details',
+      'Clear image search': 'Clear image search ',
+      'Add or change pre-filter': 'Add or change pre-filter',
+      'Expand all': 'Expand all',
     },
   },
   de: {
     translation: {
       Search: 'Suche',
-      'Choose an image': 'Bild wählen',
-      'or drag it here': 'oder hierhin ziehen',
-      'Manufacturer Number': 'Herst. Teile-Nr.',
+      'Drag and drop': 'Bild hierher ziehen',
+      'an image here': '',
+      'Mfr. No.': 'Herst. Teile-Nr.',
+      'Manufacturer Number': 'Herstellerteilenummer',
       'Close group': 'Schließe Gruppe',
       'Show group': 'Zeige Gruppe',
       'Adjust the search frame around your object for improved results':
         'Anpassen des Rahmens für bessere Ergebnisse',
       'Crop the image for better results':
         'Bildausschnitt anpassen für bessere Ergebnisse',
-
       'Items per page': 'Artikel pro Seite',
       'Search with an image': 'Bildsuche',
       'Clear text search': 'Suchtext löschen',
+      'View details': 'Details anzeigen',
+      'Clear image search': 'Bildsuche zurück setzen',
+      'Add or change pre-filter': 'Vorfilter hinzufügen oder ändern',
+      'Expand all': 'Alles anzeigen',
+    },
+  },
+  pt: {
+    translation: {
+      Search: 'Busca',
+      'Drag and drop': 'Escolha uma imagem',
+      'an image here': '',
+      'Manufacturer Number': 'Número do fabricante',
+      'Mfr. No.': 'Nr. do Fab',
+      'Close group': 'Fechar grupo',
+      'Show group': 'Mostrar grupo',
+      'Adjust the search frame around your object for improved results':
+        'Ajuste a caixa de busca para melhores resultados',
+      'Crop the image for better results': 'Crop the image for better results',
+      'Items per page': 'Itens por página',
+      'Search with an image': 'Busque com uma imagem',
+      'Clear text search': 'Limpar busca',
+      'View details': 'Ver detalhes',
+      'Clear image search': 'Limpar imagem',
+      'Add or change pre-filter': 'Adicionar ou selecionar pre-filtro',
+      'Expand all': 'Expandir',
     },
   },
 };

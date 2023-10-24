@@ -296,7 +296,7 @@ function ItemResult(props: Props) {
 
               {dataItem[settings.field.manufacturerNumber] && (
                 <ProductAttribute
-                  title={'Mfr. No.'}
+                  title={t('Mfr. No.')}
                   value={dataItem[settings.field.manufacturerNumber]}
                   padding="4px 8px"
                   width={{ xs: '49%' }}

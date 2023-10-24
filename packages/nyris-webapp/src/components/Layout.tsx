@@ -22,6 +22,10 @@ import { createSessionByApi } from 'services/session';
 import { isUndefined } from 'lodash';
 import AppMobile from './AppMobile';
 import jQuery from 'jquery';
+import Loading from './Loading';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import { translations } from 'translations';
 
 declare var psol: any;
 
@@ -44,6 +48,15 @@ jQuery(document).ready(function () {
   psol.core.setServiceBaseUrl('https://webapi.partcommunity.com');
 });
 
+i18n.use(initReactI18next).init({
+  resources: translations,
+  fallbackLng: 'en',
+  interpolation: {
+    escapeValue: false,
+  },
+  returnNull: false,
+});
+
 function Layout({ children }: ReactNode): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
@@ -55,7 +68,9 @@ function Layout({ children }: ReactNode): JSX.Element {
   let isShowHeaderMobile =
     (isMobile && history.location?.pathname === '/result') ||
     history.location?.pathname === '/';
+  const language = useAppSelector(state => state.settings.language);
 
+  i18n.changeLanguage(language);
   useEffect(() => {
     const createSession = async () => {
       let payload = await createSessionByApi(settings);
@@ -118,8 +133,30 @@ function Layout({ children }: ReactNode): JSX.Element {
     <div style={{ position: 'relative' }}>
       {loadingSearchAlgolia && (
         <Box className="box-wrap-loading" style={{ zIndex: 99999999 }}>
-          <Box className="loadingSpinCT" style={{ top: 0, bottom: 0 }}>
-            <Box className="box-content-spin"></Box>
+          <Box
+            className="loadingSpinCT"
+            style={{
+              top: 0,
+              bottom: 0,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <p
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: 16,
+                color: '#fff',
+                fontWeight: 300,
+              }}
+            >
+              loading
+            </p>
+            <Loading />
           </Box>
         </Box>
       )}

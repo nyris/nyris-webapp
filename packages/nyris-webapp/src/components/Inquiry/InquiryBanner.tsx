@@ -128,7 +128,7 @@ function InquiryBanner({
                 setIsInquiryModalOpen(true);
               }}
             >
-              Inquiry
+              Submit an Inquiry
             </button>
           </Box>
         </Box>

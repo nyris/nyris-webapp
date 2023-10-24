@@ -160,7 +160,7 @@ const SearchBox = (props: any) => {
               title={
                 !isEmpty(preFilter)
                   ? Object.keys(preFilter).join(', ')
-                  : 'Add pre-filter'
+                  : t('Add or change pre-filter')
               }
               placement="top"
               arrow={true}
@@ -234,7 +234,7 @@ const SearchBox = (props: any) => {
                 <Box
                   style={{
                     border: `2px solid ${settings.theme?.primaryColor}`,
-                    backgroundColor: '#E4E3FF',
+                    backgroundColor: `${settings.theme?.primaryColor}26`,
                     marginRight: '5px',
                   }}
                   className="box-image-search-thumb"
@@ -246,7 +246,7 @@ const SearchBox = (props: any) => {
                     alt="img_search"
                   />
                   <Tooltip
-                    title="Clear image search"
+                    title={t('Clear image search')}
                     placement="top"
                     arrow={true}
                   >
