@@ -201,7 +201,9 @@ export default function ExpandablePanelComponent({
               <IconLabel
                 icon={refinementsPanelsExpanded ? 'remove' : 'add'}
                 label={`${
-                  refinementsPanelsExpanded ? 'Collapse all' : t('Expand all')
+                  refinementsPanelsExpanded
+                    ? t('Collapse all')
+                    : t('Expand all')
                 } `}
               />
             </Button>

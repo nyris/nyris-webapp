@@ -18,6 +18,8 @@ export const translations = {
       'Clear image search': 'Clear image search ',
       'Add or change pre-filter': 'Add or change pre-filter',
       'Expand all': 'Expand all',
+      'Collapse all': 'Collapse all',
+      Brand: 'Brand',
     },
   },
   de: {
@@ -40,6 +42,8 @@ export const translations = {
       'Clear image search': 'Bildsuche zurück setzen',
       'Add or change pre-filter': 'Vorfilter hinzufügen oder ändern',
       'Expand all': 'Alles anzeigen',
+      'Collapse all': 'Alles einklappen',
+      Brand: 'Marke',
     },
   },
   pt: {
@@ -61,6 +65,8 @@ export const translations = {
       'Clear image search': 'Limpar imagem',
       'Add or change pre-filter': 'Adicionar ou selecionar pre-filtro',
       'Expand all': 'Expandir',
+      'Collapse all': 'esconder tudo',
+      Brand: 'Marca',
     },
   },
 };

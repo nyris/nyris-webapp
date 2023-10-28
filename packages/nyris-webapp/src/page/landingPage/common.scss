@@ -918,7 +918,7 @@ button {
     }
   }
   .box-result {
-    height: calc(100svh - 148px);
+    height: calc(100vh - 148px);
     @media screen and (max-width: 776px) {
       height: 100%
     }
@@ -1482,7 +1482,7 @@ button {
 
 .wrap-main-support-page {
   background-color: #2b2c46;
-  min-height: calc(100svh - 32px);
+  min-height: calc(100vh - 32px);
   // max-width: 1280px;
   padding: 40px;
   margin: auto;

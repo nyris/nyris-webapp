@@ -287,7 +287,7 @@ function ItemResult(props: Props) {
             >
               {(brand || settings.brandName) && (
                 <ProductAttribute
-                  title={'Brand'}
+                  title={t('Brand')}
                   value={brand || settings.brandName}
                   padding="4px 8px"
                   width={{ xs: '49%' }}

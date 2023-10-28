@@ -193,14 +193,14 @@ function CameraCustom(props: Props) {
               justifyContent: 'center',
               alignItems: 'center',
               overflow: 'hidden',
-              height: '100svh',
               width: '100%',
             }}
+            className="full-height"
           >
             <Webcam
               audio={false}
-              height={'100svh'}
               width={'100%'}
+              className="full-height"
               imageSmoothing={true}
               screenshotFormat="image/jpeg"
               forceScreenshotSourceSize={true}

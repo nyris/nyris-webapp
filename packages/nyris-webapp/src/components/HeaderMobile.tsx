@@ -25,6 +25,7 @@ import { ReactComponent as FilterIcon } from 'common/assets/icons/filter.svg';
 
 import { debounce, isEmpty } from 'lodash';
 import { useQuery } from 'hooks/useQuery';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -44,6 +45,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     preFilterDropdown,
     valueTextSearch,
   } = search;
+
   const query = useQuery();
   const searchQuery = query.get('query') || '';
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
@@ -366,6 +368,7 @@ const Input = ({ value, onChange }: any) => {
       element?.removeEventListener('scroll', inputEventFn, false);
     };
   }, []);
+  const { t } = useTranslation();
 
   return (
     <input
@@ -382,7 +385,7 @@ const Input = ({ value, onChange }: any) => {
         borderRadius: '32px',
       }}
       className="input-search"
-      placeholder="Search"
+      placeholder={t('Search')}
       value={value}
       onChange={onChange}
       id={INPUT_ID}
