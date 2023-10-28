@@ -444,39 +444,14 @@
 //TODO: Custom css modal filter
 @media screen and (max-width: 776px) {
   .wrap-mobile {
-    height: 100svh;
+    height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+    height: calc(var(--vh, 1vh) * 100);
     background-color: #F3F3F5;
     display: flex;
     flex-direction: column;
    
   }
-  .box-filter-mobile {
-    .MuiBackdrop-root {
-      background-color: initial !important;
-    }
 
-    .MuiDrawer-paperAnchorLeft {
-      width: 100%;
-      height: calc(100svh - 60px) !important;
-      bottom: 0px !important;
-      top: initial !important;
-      background-color: #fafafa !important;
-      // box-shadow: none !important;
-      border-right: 1px solid #4d4646 !important;
-      // padding: 24px;
-      ul {
-        li {
-          list-style-type: none;
-
-          input {
-            margin-right: 15px;
-          }
-        }
-      }
-    }
-
-    
-  }
 
   #box-input-search {
     position: relative;
@@ -504,7 +479,8 @@
   .modal-togggle-cam {
     .wrap-camera {
       position: relative;
-      height: 100svh;
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
       display: flex;
       justify-content: center;
       align-items: center;

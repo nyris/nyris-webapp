@@ -11,8 +11,6 @@ function ImageCaptureHelpModal({ handleClose }: Props) {
   return (
     <Box
       style={{
-        paddingLeft: '24px',
-        paddingRight: '24px',
         paddingBottom: '24px',
       }}
     >
@@ -23,8 +21,11 @@ function ImageCaptureHelpModal({ handleClose }: Props) {
         top={0}
         style={{ background: 'white', width: '100%' }}
       >
-        <Button onClick={handleClose}>
-          <CloseIcon />
+        <Button
+          onClick={handleClose}
+          style={{ paddingTop: '8px', paddingRight: '8px' }}
+        >
+          <CloseIcon fontSize={'small'} />
         </Button>
       </Box>
       <p
@@ -33,6 +34,8 @@ function ImageCaptureHelpModal({ handleClose }: Props) {
           lineHeight: '40px',
           fontWeight: 700,
           color: '#2B2C46',
+          paddingLeft: '24px',
+          paddingRight: '24px',
         }}
       >
         Six ways to optimize visual search
@@ -43,6 +46,8 @@ function ImageCaptureHelpModal({ handleClose }: Props) {
           flexDirection: 'column',
           rowGap: '16px',
           marginTop: '16px',
+          paddingLeft: '24px',
+          paddingRight: '24px',
         }}
       >
         {visualSearchHelp.map((data, index) => {

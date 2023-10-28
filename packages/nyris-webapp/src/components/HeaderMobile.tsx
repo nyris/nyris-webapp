@@ -25,6 +25,7 @@ import { ReactComponent as FilterIcon } from 'common/assets/icons/filter.svg';
 
 import { debounce, isEmpty } from 'lodash';
 import { useQuery } from 'hooks/useQuery';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -44,7 +45,9 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     preFilterDropdown,
     valueTextSearch,
   } = search;
+
   const query = useQuery();
+  const searchQuery = query.get('query') || '';
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
   const history = useHistory();
@@ -70,7 +73,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   }, [imageThumbSearchInput, dispatch, refine, history]);
 
   useEffect(() => {
-    const searchQuery = query.get('query') || '';
     if (!isEmpty(searchQuery)) {
       dispatch(updateValueTextSearchMobile(searchQuery));
       refine(searchQuery);
@@ -79,7 +81,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         refine(searchQuery);
       }, 100);
     }
-  }, [query, refine, dispatch]);
+  }, [query, refine, dispatch, searchQuery]);
 
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
@@ -159,7 +161,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       )}
       <div
         style={{
-          margin: '16px 8px 0px 8px',
+          margin: '16px 8px',
           display: 'flex',
           columnGap: '8px',
           alignItems: 'center',
@@ -238,7 +240,10 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 )}
               </Box>
 
-              <Input value={textSearchInputMobile} onChange={onChangeText} />
+              <Input
+                value={textSearchInputMobile || searchQuery}
+                onChange={onChangeText}
+              />
 
               {history.location?.pathname !== '/' && textSearchInputMobile && (
                 <Button
@@ -363,6 +368,7 @@ const Input = ({ value, onChange }: any) => {
       element?.removeEventListener('scroll', inputEventFn, false);
     };
   }, []);
+  const { t } = useTranslation();
 
   return (
     <input
@@ -379,7 +385,7 @@ const Input = ({ value, onChange }: any) => {
         borderRadius: '32px',
       }}
       className="input-search"
-      placeholder="Search"
+      placeholder={t('Search')}
       value={value}
       onChange={onChange}
       id={INPUT_ID}
