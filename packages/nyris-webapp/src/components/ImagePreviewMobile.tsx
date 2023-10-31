@@ -220,7 +220,12 @@ function ImagePreviewMobileComponent({
             {requestImage && requestImage?.canvas?.toDataURL && (
               <img
                 src={requestImage?.canvas?.toDataURL()}
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  objectFit: 'contain',
+                  background: 'white',
+                }}
                 alt="preview"
               />
             )}

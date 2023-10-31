@@ -20,6 +20,11 @@ export const translations = {
       'Expand all': 'Expand all',
       'Collapse all': 'Collapse all',
       Brand: 'Brand',
+      loading: 'loading',
+      'No products were found matching your search criteria.':
+        'No products were found matching your search criteria.',
+      'Please upload an image or enter a keyword to search.':
+        'Please upload an image or enter a keyword to search.',
     },
   },
   de: {
@@ -33,8 +38,7 @@ export const translations = {
       'Show group': 'Zeige Gruppe',
       'Adjust the search frame around your object for improved results':
         'Anpassen des Rahmens für bessere Ergebnisse',
-      'Crop the image for better results':
-        'Bildausschnitt anpassen für bessere Ergebnisse',
+      'Crop the image for better results': 'Zuschneiden für bessere Ergebnisse',
       'Items per page': 'Artikel pro Seite',
       'Search with an image': 'Bildsuche',
       'Clear text search': 'Suchtext löschen',
@@ -44,6 +48,11 @@ export const translations = {
       'Expand all': 'Alles anzeigen',
       'Collapse all': 'Alles einklappen',
       Brand: 'Marke',
+      loading: 'Lädt',
+      'No products were found matching your search criteria.':
+        'Keine Produkte entsprechen Ihren Suchkriterien.',
+      'Please upload an image or enter a keyword to search.':
+        'Für die Suche bitte Bild hochladen oder Stichwort eingeben.',
     },
   },
   pt: {
@@ -57,7 +66,8 @@ export const translations = {
       'Show group': 'Mostrar grupo',
       'Adjust the search frame around your object for improved results':
         'Ajuste a caixa de busca para melhores resultados',
-      'Crop the image for better results': 'Crop the image for better results',
+      'Crop the image for better results':
+        'Ajuste o campo de imagem para melhores resultados',
       'Items per page': 'Itens por página',
       'Search with an image': 'Busque com uma imagem',
       'Clear text search': 'Limpar busca',
@@ -67,6 +77,11 @@ export const translations = {
       'Expand all': 'Expandir',
       'Collapse all': 'esconder tudo',
       Brand: 'Marca',
+      loading: 'Carregando',
+      'No products were found matching your search criteria.':
+        'Nenhum produto foi encontrado com estes critérios ',
+      'Please upload an image or enter a keyword to search.':
+        'Faça o upload de uma imagem ou busque via texto',
     },
   },
 };

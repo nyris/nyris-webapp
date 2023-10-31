@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'react-responsive';
 
 const LoadingSpinner = () => (
@@ -34,7 +35,7 @@ const LoadingSpinner = () => (
 
 function CadenasLoading() {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-
+  const { t } = useTranslation();
   return (
     <div
       style={{
@@ -56,7 +57,7 @@ function CadenasLoading() {
           transform: 'translate(-50%, -50%)',
         }}
       >
-        loading
+        {t('loading')}
       </p>
       <LoadingSpinner />
     </div>

@@ -1,6 +1,8 @@
+import { Box } from '@material-ui/core';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-function Loading() {
+const LoadingSvg = () => {
   return (
     <svg
       width={150}
@@ -31,6 +33,37 @@ function Loading() {
       </defs>
     </svg>
   );
-}
+};
+
+const Loading = () => {
+  const { t } = useTranslation();
+  return (
+    <Box
+      className="loadingSpinCT"
+      style={{
+        top: 0,
+        bottom: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <p
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          fontSize: 16,
+          color: '#fff',
+          fontWeight: 300,
+        }}
+      >
+        {t('loading')}
+      </p>
+      <LoadingSvg />
+    </Box>
+  );
+};
 
 export default Loading;

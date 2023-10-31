@@ -71,6 +71,7 @@ function Layout({ children }: ReactNode): JSX.Element {
   const language = useAppSelector(state => state.settings.language);
 
   i18n.changeLanguage(language);
+
   useEffect(() => {
     const createSession = async () => {
       let payload = await createSessionByApi(settings);
@@ -146,35 +147,12 @@ function Layout({ children }: ReactNode): JSX.Element {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
   return (
     <div style={{ position: 'relative' }}>
       {loadingSearchAlgolia && (
         <Box className="box-wrap-loading" style={{ zIndex: 99999999 }}>
-          <Box
-            className="loadingSpinCT"
-            style={{
-              top: 0,
-              bottom: 0,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <p
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                fontSize: 16,
-                color: '#fff',
-                fontWeight: 300,
-              }}
-            >
-              loading
-            </p>
-            <Loading />
-          </Box>
+          <Loading />
         </Box>
       )}
       <InstantSearch

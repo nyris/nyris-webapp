@@ -2,6 +2,7 @@ import { Box } from '@material-ui/core';
 import ItemResult from 'components/results/ItemResult';
 import { groupBy, uniqueId } from 'lodash';
 import React, { memo, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connectStateResults } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useAppSelector } from 'Store/Store';
@@ -32,6 +33,7 @@ function ProductListComponent({
   const [itemShowDefault, setItemShowDefault] = useState<any[]>([]);
   const [algoliaRequest, setAlgoliaRequest] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isSearchStalled) {
@@ -118,7 +120,7 @@ function ProductListComponent({
     if (!requestImage && !search.valueTextSearch.query && !isSearchStalled) {
       return (
         <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
-          Please upload an image or enter a keyword to search.
+          {t('Please upload an image or enter a keyword to search.')}
         </Box>
       );
     }
@@ -130,7 +132,7 @@ function ProductListComponent({
     ) {
       return (
         <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
-          No products were found matching your search criteria.
+          {t('No products were found matching your search criteria.')}
         </Box>
       );
     }

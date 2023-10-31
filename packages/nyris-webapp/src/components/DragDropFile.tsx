@@ -88,34 +88,11 @@ function DragDropFile(props: Props) {
   });
 
   return (
-    <Box className={`box-content-main`} style={{ marginTop: 16 }}>
-      {isLoading && (
-        <Box
-          className="loadingSpinCT"
-          style={{
-            top: 0,
-            bottom: 0,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <p
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontSize: 16,
-              color: '#fff',
-              fontWeight: 300,
-            }}
-          >
-            loading
-          </p>
-          <Loading />
-        </Box>
-      )}
+    <Box
+      className={`box-content-main`}
+      style={{ marginTop: 32, paddingTop: 0 }}
+    >
+      {isLoading && <Loading />}
 
       <div
         className={`box-border-none`}

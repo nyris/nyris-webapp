@@ -396,6 +396,7 @@ const Preview = ({
               duration: 0.3,
             });
           }}
+          fill="white"
         />
       </Layer>
       {loaded && (
