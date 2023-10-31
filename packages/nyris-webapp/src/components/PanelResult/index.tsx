@@ -14,6 +14,7 @@ import { useAppSelector } from 'Store/Store';
 import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
 import CloseIcon from '@material-ui/icons/Close';
+import { useTranslation } from 'react-i18next';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -103,6 +104,7 @@ export default function ExpandablePanelComponent({
   );
   const history = useHistory();
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+  const { t } = useTranslation();
 
   // Set initial panels value
   useEffect(() => {
@@ -199,8 +201,10 @@ export default function ExpandablePanelComponent({
               <IconLabel
                 icon={refinementsPanelsExpanded ? 'remove' : 'add'}
                 label={`${
-                  refinementsPanelsExpanded ? 'Collapse' : 'Expand'
-                } all`}
+                  refinementsPanelsExpanded
+                    ? t('Collapse all')
+                    : t('Expand all')
+                } `}
               />
             </Button>
           </Box>

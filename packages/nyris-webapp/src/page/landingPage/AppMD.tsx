@@ -32,19 +32,20 @@ function AppMD() {
 
   return (
     <Box className={`box-content-main ${isLoading ? 'loading' : ''}`}>
-      <Box className="box-content_top">
+      <Box className="box-content_top" style={{ position: 'relative' }}>
         {settings.headerText && (
-        <Box className="fw-700 text-f32 text-dark2">
-          <h1>{settings.headerText}</h1>
-        </Box>
+          <Box
+            className="fw-700 text-f32 text-dark2"
+            style={{ position: 'absolute', bottom: '49px' }}
+          >
+            <h1>{settings.headerText}</h1>
+          </Box>
         )}
-        <div className="box-input">
-          <div className="wrap-input-search">
-            <div style={{ display: 'none' }}>
-              <CustomInfiniteHits />
-            </div>
-            <CustomSearchBox />
+        <div className="wrap-input-search">
+          <div style={{ display: 'none' }}>
+            <CustomInfiniteHits />
           </div>
+          <CustomSearchBox />
         </div>
       </Box>
       <Box className="box-content_bottom">

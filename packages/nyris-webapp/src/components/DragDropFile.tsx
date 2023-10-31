@@ -19,6 +19,7 @@ import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDo
 import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
+import Loading from './Loading';
 
 interface Props {
   acceptTypes: any;
@@ -87,12 +88,11 @@ function DragDropFile(props: Props) {
   });
 
   return (
-    <Box className={`box-content-main`} style={{ marginTop: 16 }}>
-      {isLoading && (
-        <Box className="loadingSpinCT">
-          <Box className="box-content-spin"></Box>
-        </Box>
-      )}
+    <Box
+      className={`box-content-main`}
+      style={{ marginTop: 32, paddingTop: 0 }}
+    >
+      {isLoading && <Loading />}
 
       <div
         className={`box-border-none`}
@@ -117,9 +117,9 @@ function DragDropFile(props: Props) {
             </Box>
             <label htmlFor="select_file" className="" style={{ fontSize: 14 }}>
               <span className="fw-700 text-f14" style={{ paddingRight: '4px' }}>
-                {t('Choose an image')}
+                {t('Drag and drop')}
               </span>
-              {t('or drag it here')}
+              {t('an image here')}
             </label>
             <input
               {...getInputProps()}

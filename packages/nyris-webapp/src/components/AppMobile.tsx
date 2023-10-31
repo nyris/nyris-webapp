@@ -36,6 +36,7 @@ function AppMobile({ children }: { children: ReactNode }) {
             flexDirection: 'column',
             overflowY: 'auto',
             overflowX: 'hidden',
+            height: '100%',
           }}
         >
           {children}

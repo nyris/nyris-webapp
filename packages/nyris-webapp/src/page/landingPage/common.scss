@@ -217,88 +217,14 @@ button {
   position: absolute;
   width: 104px;
   height: 104px;
-  top: calc(-104px / 2);
+
   // background: #fff;
   border-radius: 100%;
   z-index: 111;
   left: 0;
   right: 0;
   margin: auto;
-  &::after {
-    content: 'loading';
-    position: absolute;
-    top: 0;
-    margin: auto;
-    bottom: 0;
-    width: 87%;
-    height: 87%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 112;
-    font-size: 14px !important;
-    line-height: 38px;
-    font-weight: 500;
-    color: #fff;
-    background: rgba(43, 44, 70, 1);
-    margin: auto;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 100%;
-  }
-  &::before {
-    content: '';
-  }
-  .box-content-spin {
-    width: 104px;
-    height: 104px;
-    position: absolute;
-    border-radius: 100%;
-    animation: spin 2s linear infinite;
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 0;
-      border-radius: 100%;
-      // background: linear-gradient(
-      //   180deg,
-      //   #3e36dc 0%,
-      //   #e31b5d 44.27%,
-      //   rgba(255, 255, 255, 0) 100%
-      // );
-      background: conic-gradient(
-        from 90deg at 50.46% 50.46%,
-        #322bb0 -30.73deg,
-        #3e36dc 111.58deg,
-        #00ff94 212.7deg,
-        #322bb0 329.27deg,
-        #3e36dc 471.58deg
-      );
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.25);
-    }
-    @-webkit-keyframes spin {
-      0% {
-        -webkit-transform: rotate(0deg);
-      }
-      100% {
-        -webkit-transform: rotate(360deg);
-      }
-    }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  }
 }
 
 .box-modal-default {
@@ -786,7 +712,7 @@ button {
   }
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   height: 100%;
   background: #FAFAFA;
@@ -794,7 +720,6 @@ button {
   
     width: 100%;
     // min-height: calc(100% - 341px);
-    margin-top: 300px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -826,10 +751,8 @@ button {
   }
   .box-content_bottom {
     width: 100%;
-    height: 256px;
     max-width: 512px;
     position: relative;
-    margin-bottom: auto;
     @media screen and (min-width: 2047px) {
       position: initial;
       .loadingSpinCT {
@@ -852,6 +775,7 @@ button {
       padding-top: 16px;
       padding-bottom: 16px;
       color: #CACAD1;
+      border: 2px dashed transparent;
       &:hover {
         border-radius: 60px;
         border: 2px dashed #E0E0E0;
@@ -992,7 +916,7 @@ button {
     }
   }
   .box-result {
-    height: calc(100svh - 148px);
+    height: calc(100vh - 148px);
     @media screen and (max-width: 776px) {
       height: 100%
     }
@@ -1556,7 +1480,7 @@ button {
 
 .wrap-main-support-page {
   background-color: #2b2c46;
-  min-height: calc(100svh - 32px);
+  min-height: calc(100vh - 32px);
   // max-width: 1280px;
   padding: 40px;
   margin: auto;

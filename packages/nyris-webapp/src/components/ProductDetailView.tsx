@@ -347,7 +347,7 @@ function ProductDetailView(props: Props) {
                 )}
                 {(brand || settings.brandName) && (
                   <ProductAttribute
-                    title={'Brand'}
+                    title={t('Brand')}
                     value={brand || settings.brandName}
                     width={
                       dataItem[settings.field.manufacturerNumber]
@@ -467,7 +467,7 @@ function ProductDetailView(props: Props) {
                       }}
                       onClick={() => setCollapDescription(e => !e)}
                     >
-                      View details
+                      {t('View details')}
                       {collapDescription ? (
                         <KeyboardArrowUpIcon
                           htmlColor={settings.theme?.secondaryColor}

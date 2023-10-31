@@ -10,7 +10,7 @@ function RfqBanner({
   selectedRegion,
   setIsRfqModalOpen,
 }: {
-  rfqRef: any;
+  rfqRef?: any;
   rfqStatus: any;
   setIsRfqModalOpen: any;
   requestImage: any;
@@ -31,7 +31,7 @@ function RfqBanner({
         alignItems: 'center',
       }}
       className="rfq-box"
-      ref={rfqRef}
+      // ref={rfqRef}
     >
       <Box
         style={{
