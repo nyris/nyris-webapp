@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { ReactComponent as DownloadIcon } from 'common/assets/icons/download.svg';
 import CadenasLoading from './CadenasLoading';
+import { useAppSelector } from '../Store/Store';
 
 declare const psol: any;
 
@@ -27,6 +28,7 @@ function CadenasWebViewer({
 }) {
   const [mident, setMident] = useState('');
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+  const { settings } = useAppSelector(state => state);
 
   useEffect(() => {
     // prepare 3d viewer settings.
@@ -78,7 +80,7 @@ function CadenasWebViewer({
       .ajaxGetOrPost({
         url: psol.core.getServiceBaseUrl() + '/service/reversemap',
         data: {
-          catalog: 'ganter',
+          catalog: settings.catalog,
           part: sku,
           exact: '0',
         },
