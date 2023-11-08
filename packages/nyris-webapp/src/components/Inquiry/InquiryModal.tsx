@@ -77,71 +77,72 @@ export default function InquiryModal({
       ? getCroppedCanvas(canvas, selectedRegion)
       : null;
     const serviceId = 'service_zfsxshi';
-    const templateId = 'template_rxsi7w9';
     setIsInquiryModalOpen(false);
-    try {
-      setInquiryStatus('loading');
-      await emailjs.send(serviceId, templateId, {
-        email_id: email.trim(),
-        information_text: information,
-        request_image: croppedImage?.toDataURL(),
-        prefilter_values: preFilterValues.join(', '),
-      });
-      setInquiryStatus('sent');
-      ToastHelper.success('Request sent successfully');
-    } catch (error) {
-      setInquiryStatus('inactive');
+    if (settings.templateId) {
+      try {
+        setInquiryStatus('loading');
+        await emailjs.send(serviceId, settings.templateId, {
+          email_id: email.trim(),
+          information_text: information,
+          request_image: croppedImage?.toDataURL(),
+          prefilter_values: preFilterValues.join(', '),
+        });
+        setInquiryStatus('sent');
+        ToastHelper.success('Request sent successfully');
+      } catch (error) {
+        setInquiryStatus('inactive');
 
-      toast(
-        t => {
-          return (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                fontSize: '14px',
-                width: '294px',
-              }}
-            >
-              <span style={{ fontWeight: 'bold' }}>Email not sent</span>
-              <span>{getErrorMessage(error)}</span>
-              <a
-                href={`mailto:support@nyris.io?subject=Request for quotation&body=${encodeURIComponent(`Hello,
+        toast(
+          t => {
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  fontSize: '14px',
+                  width: '294px',
+                }}
+              >
+                <span style={{ fontWeight: 'bold' }}>Email not sent</span>
+                <span>{getErrorMessage(error)}</span>
+                <a
+                  href={`mailto:support@nyris.io?subject=Request for quotation&body=${encodeURIComponent(`Hello,
           I filled out the support form on the Search Suite, but it failed. I inquired the following:
           email:
           Pre-filter:
           Additional Text: `)}`}
-                style={{
-                  padding: '8px 16px 8px 16px',
-                  border: '1px solid #000',
-                  marginTop: '16px',
-                  backgroundColor: 'transparent',
-                  color: '#000',
-                  cursor: 'pointer',
-                  width: 'fit-content',
-                }}
-              >
-                support@nyris.io
-              </a>
-            </div>
-          );
-        },
-        {
-          duration: 5000,
-          style: {
-            background: '#FFE5EF',
-            color: '#000000',
-            maxWidth: '400px',
+                  style={{
+                    padding: '8px 16px 8px 16px',
+                    border: '1px solid #000',
+                    marginTop: '16px',
+                    backgroundColor: 'transparent',
+                    color: '#000',
+                    cursor: 'pointer',
+                    width: 'fit-content',
+                  }}
+                >
+                  support@nyris.io
+                </a>
+              </div>
+            );
           },
-          icon: (
-            <div style={{ minWidth: '20px', minHeight: '20px' }}>
-              <ErrorIcon />
-            </div>
-          ),
-        },
-      );
+          {
+            duration: 5000,
+            style: {
+              background: '#FFE5EF',
+              color: '#000000',
+              maxWidth: '400px',
+            },
+            icon: (
+              <div style={{ minWidth: '20px', minHeight: '20px' }}>
+                <ErrorIcon />
+              </div>
+            ),
+          },
+        );
+      }
+      setIsInquiryModalOpen(false);
     }
-    setIsInquiryModalOpen(false);
   };
 
   return (
