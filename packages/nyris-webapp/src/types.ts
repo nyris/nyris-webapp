@@ -41,6 +41,7 @@ export interface AppSettings extends NyrisAPISettings {
   APIKey?: string;
   rfq?: boolean;
   inquiry?: boolean;
+  templateId?: string;
   warehouseVariant?: boolean;
   preFilterTitle?: string;
   postFilterOption?: boolean;

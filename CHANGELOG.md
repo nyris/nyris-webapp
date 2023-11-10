@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.41 - 2023-11-08
+
+### Added
+
+- Add Template ID to settings.js
+
 ## 0.3.40 - 2023-10-31
 
 ### Added
