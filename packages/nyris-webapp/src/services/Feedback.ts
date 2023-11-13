@@ -77,7 +77,7 @@ export const sendFeedbackByApi = async (
     try {
       await api.sendFeedback(sessionId, requestId, payload).then(res => {});
     } catch (error) {
-      console.log('error sendFeedbackByApi321', error);
+      console.log('error sendFeedbackByApi', error);
     }
   }
 };

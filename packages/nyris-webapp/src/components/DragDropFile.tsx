@@ -12,7 +12,6 @@ import {
   setRegions,
   setSelectedRegion,
 } from 'Store/search/Search';
-import { showFeedback } from 'Store/nyris/Nyris';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDownward.svg';
 
@@ -82,7 +81,7 @@ function DragDropFile(props: Props) {
         dispatch(setSearchResults(payload));
         onChangeLoading(false);
         dispatch(updateStatusLoading(false));
-        return dispatch(showFeedback());
+        return;
       });
     },
   });

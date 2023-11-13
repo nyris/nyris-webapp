@@ -25,7 +25,6 @@ import {
 import { useMediaQuery } from 'react-responsive';
 import { feedbackRegionEpic, feedbackSuccessEpic } from 'services/Feedback';
 import { createImage, findByImage, findRegions } from 'services/image';
-import { showFeedback, showResults } from 'Store/nyris/Nyris';
 import {
   loadingActionResults,
   onToggleModalItemDetail,
@@ -172,7 +171,7 @@ function ResultComponent(props: Props) {
           setShowAdjustInfoBasedOnConfidence(false);
         }, 2000);
       });
-      return dispatch(showFeedback());
+      return;
     }, 250),
     [requestImage, findImageByApiNyris],
   );
@@ -190,7 +189,6 @@ function ResultComponent(props: Props) {
       // setOpenModalImage(false);
       dispatch(onToggleModalItemDetail(false));
     }
-    dispatch(showResults());
     dispatch(loadingActionResults());
     dispatch(setImageSearchInput(url));
     let image = await createImage(url);
@@ -217,7 +215,6 @@ function ResultComponent(props: Props) {
       filters: !isEmpty(preFilter) ? preFilterValues : undefined,
     }).then(res => {
       dispatch(setSearchResults(res));
-      dispatch(showFeedback());
       dispatch(updateStatusLoading(false));
       return;
     });
@@ -263,7 +260,6 @@ function ResultComponent(props: Props) {
       // setPreFilter(keyFilter);
       dispatch(updateResultChangePosition(res));
     });
-    dispatch(showFeedback());
 
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
