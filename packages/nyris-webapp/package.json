@@ -7,6 +7,7 @@
     "@algolia/autocomplete-plugin-query-suggestions": "^1.7.1",
     "@algolia/autocomplete-plugin-recent-searches": "^1.7.1",
     "@algolia/autocomplete-theme-classic": "^1.7.1",
+    "@auth0/auth0-react": "^2.2.1",
     "@babel/runtime": "^7.17.2",
     "@material-ui/core": "^4.3.3",
     "@material-ui/data-grid": "^4.0.0-alpha.37",
