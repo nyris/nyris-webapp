@@ -159,7 +159,9 @@ function ProductDetailView(props: Props) {
           }}
         >
           {dataImageCarousel.length > 0 && (
-            <ImagePreviewCarousel imgItem={dataImageCarousel} />
+            <ImagePreviewCarousel imgItem={dataImageCarousel} setSelectedImage={(url) => {
+              setUrlImage(url ? url : urlImage);
+            }} />
           )}
           {dataImageCarousel.length > 0 && (
             <Button
@@ -175,6 +177,7 @@ function ProductDetailView(props: Props) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 cursor: 'pointer',
+                top: '350px',
               }}
               onClick={() => {
                 if (urlImage.length > 1) {

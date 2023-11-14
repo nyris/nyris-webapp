@@ -30,8 +30,6 @@ import { translations } from 'translations';
 declare var psol: any;
 
 jQuery(document).ready(function () {
-  const { settings } = useAppSelector(state => state);
-  psol.core.setApiKey(settings.apiKey);
   psol.core.setUserInfo({
     server_type: 'oem_apps_cadenas_webcomponentsdemo',
     title: 'Herr',

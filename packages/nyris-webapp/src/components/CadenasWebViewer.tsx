@@ -74,6 +74,7 @@ function CadenasWebViewer({
 
     // initialize 3d viewer
     let webviewer3d = new psol.components.WebViewer3D(webViewer3DSettings);
+    psol.core.setApiKey(settings.cadenasAPIKey);
     setStatus3dView('loading');
     // run search and display result in 3D viewer.
     psol.core
@@ -100,7 +101,7 @@ function CadenasWebViewer({
             });
         });
       });
-  }, [sku, setStatus3dView]);
+  }, [sku, setStatus3dView, settings]);
 
   const showWebViewer = !is3dView || status3dView !== 'loaded';
 
