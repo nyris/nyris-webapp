@@ -177,7 +177,6 @@ function ProductDetailView(props: Props) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 cursor: 'pointer',
-                top: '350px',
               }}
               onClick={() => {
                 if (urlImage.length > 1) {
