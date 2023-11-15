@@ -13,7 +13,7 @@ import { store } from 'Store/Store';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { createTheme } from '@material-ui/core/styles';
 import { Toaster } from 'components/Toaster';
-import AuthProvider from 'components/AuthProvider';
+import AuthProvider from 'components/Provider/AuthProvider';
 
 document.title = window.location.host;
 

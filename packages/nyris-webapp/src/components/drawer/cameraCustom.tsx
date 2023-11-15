@@ -9,7 +9,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useHistory } from 'react-router-dom';
 import Webcam from 'react-webcam';
-import { createImage, findByImage, findRegions } from 'services/image';
+import { createImage, find, findRegions } from 'services/image';
 import {
   onToggleModalItemDetail,
   setImageSearchInput,
@@ -82,7 +82,7 @@ function CameraCustom(props: Props) {
     ];
     let filters: any[] = [];
 
-    findByImage({
+    find({
       image: imageConvert,
       settings,
       filters: !isEmpty(preFilter) ? preFilterValues : undefined,
@@ -136,7 +136,7 @@ function CameraCustom(props: Props) {
           values: Object.keys(preFilter) as string[],
         },
       ];
-      return findByImage({
+      return find({
         image,
         settings,
         filters: !isEmpty(preFilter) ? preFilterValues : undefined,

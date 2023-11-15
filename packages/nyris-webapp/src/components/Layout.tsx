@@ -1,18 +1,11 @@
 import { Box } from '@material-ui/core';
-import { MultipleQueriesQuery } from '@algolia/client-search';
-import algoliasearch from 'algoliasearch/lite';
 import { ReactNode } from 'components/common';
-import React, { memo, useEffect, useMemo, useState } from 'react';
-import { InstantSearch } from 'react-instantsearch-dom';
+import React, { memo, useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
-import {
-  changeValueTextSearch,
-  onResetRequestImage,
-  setUpdateSession,
-} from 'Store/search/Search';
+import { onResetRequestImage, setUpdateSession } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { AlgoliaSettings, AppState } from '../types';
+import { AppState } from '../types';
 import './appMobile.scss';
 import './common.scss';
 import FooterMobile from './FooterMobile';
@@ -27,6 +20,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { translations } from 'translations';
 import { useAuth0 } from '@auth0/auth0-react';
+import InstantSearchProvider from './Provider/InstantSearchProvider';
 
 declare var psol: any;
 
@@ -61,8 +55,7 @@ i18n.use(initReactI18next).init({
 function Layout({ children }: ReactNode): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
-  const { valueTextSearch, loadingSearchAlgolia } = search;
-  const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
+  const { loadingSearchAlgolia } = search;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
   const history = useHistory();
@@ -104,35 +97,6 @@ function Layout({ children }: ReactNode): JSX.Element {
     HeaderApp = Header;
   }
 
-  const conditionalQuery = useMemo(() => {
-    const searchClient = algoliasearch(appId, apiKey);
-    searchClient.initIndex(indexName);
-    return {
-      ...searchClient,
-      search(requests: MultipleQueriesQuery[]) {
-        if (
-          requests.every(
-            (request: MultipleQueriesQuery) =>
-              !request.params?.query &&
-              (!request.params?.filters ||
-                request.params?.filters.endsWith('<score=1>')),
-          )
-        ) {
-          // Here we have to do something else
-          return Promise.resolve({
-            results: requests.map(() => ({
-              hits: [],
-              nbHits: 0,
-              nbPages: 0,
-              processingTimeMS: 0,
-            })),
-          });
-        }
-        return searchClient.search(requests);
-      },
-    };
-  }, [apiKey, appId, indexName]);
-
   // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
   let vh = window.innerHeight * 0.01;
   // Then we set the value in the --vh custom property to the root of the document
@@ -158,16 +122,7 @@ function Layout({ children }: ReactNode): JSX.Element {
           <Loading />
         </Box>
       )}
-      <InstantSearch
-        indexName={indexName}
-        searchClient={conditionalQuery}
-        searchState={valueTextSearch}
-        onSearchStateChange={state => {
-          if (state.page && state.query !== undefined) {
-            dispatch(changeValueTextSearch(state));
-          }
-        }}
-      >
+      <InstantSearchProvider>
         {isMobile && showApp && <AppMobile>{children}</AppMobile>}
         {!isMobile && showApp && (
           <div className={`layout-main-${classNameBoxVersion}`}>
@@ -203,7 +158,7 @@ function Layout({ children }: ReactNode): JSX.Element {
           </div>
         )}
         {!showApp && <> {children}</>}
-      </InstantSearch>
+      </InstantSearchProvider>
     </div>
   );
 }

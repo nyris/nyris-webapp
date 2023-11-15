@@ -24,7 +24,7 @@ import {
 } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { feedbackRegionEpic, feedbackSuccessEpic } from 'services/Feedback';
-import { createImage, findByImage, findRegions } from 'services/image';
+import { createImage, find, findRegions } from 'services/image';
 import {
   loadingActionResults,
   onToggleModalItemDetail,
@@ -131,13 +131,13 @@ function ResultComponent(props: Props) {
         },
       ];
       dispatch(loadingActionResults());
-      return findByImage({
+      return find({
         image: canvas,
         settings,
         region: r,
         filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       })
-        .then(res => {
+        .then((res: any) => {
           dispatch(updateStatusLoading(false));
           return {
             ...res,
@@ -208,12 +208,12 @@ function ResultComponent(props: Props) {
         values: Object.keys(preFilter) as string[],
       },
     ];
-    findByImage({
+    find({
       image,
       settings,
       region: searchRegion,
       filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-    }).then(res => {
+    }).then((res: any) => {
       dispatch(setSearchResults(res));
       dispatch(updateStatusLoading(false));
       return;
@@ -298,9 +298,17 @@ function ResultComponent(props: Props) {
   const filteredRegions = useFilteredRegions(regions, imageSelection);
 
   const showPostFilter = useMemo(() => {
-    return settings.postFilterOption && props.allSearchResults?.hits.length > 0;
+    return (
+      settings.postFilterOption &&
+      props.allSearchResults?.hits.length > 0 &&
+      settings.algolia?.enabled
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.postFilterOption, props.allSearchResults?.hits]);
+  }, [
+    settings.postFilterOption,
+    props.allSearchResults?.hits,
+    settings.algolia?.enabled,
+  ]);
 
   const showSidePanel = useMemo(() => {
     return requestImage || (settings.postFilterOption && showPostFilter);
@@ -341,7 +349,7 @@ function ResultComponent(props: Props) {
             />
           )}
 
-          {filterString && (
+          {filterString && settings.algolia?.enabled && (
             <Configure
               query={search.valueTextSearch.query}
               filters={filterString}
@@ -479,27 +487,29 @@ function ResultComponent(props: Props) {
                         )}
                     </Box>
                   </Box>
-                  {!isMobile && props.allSearchResults?.hits?.length > 0 && (
-                    <Box>
-                      <Box className="box-notify">
-                        <FooterResult search={search}>
-                          <Box
-                            display={'flex'}
-                            style={{ padding: '0 20px' }}
-                            className="box-change-hit-items"
-                          >
-                            <span style={{ paddingRight: '10px' }}>
-                              {t('Items per page')}:
-                            </span>
-                            <HitsPerPage
-                              items={showHits}
-                              defaultRefinement={20}
-                            />
-                          </Box>
-                        </FooterResult>
+                  {!isMobile &&
+                    props.allSearchResults?.hits?.length > 0 &&
+                    settings.algolia?.enabled && (
+                      <Box>
+                        <Box className="box-notify">
+                          <FooterResult search={search}>
+                            <Box
+                              display={'flex'}
+                              style={{ padding: '0 20px' }}
+                              className="box-change-hit-items"
+                            >
+                              <span style={{ paddingRight: '10px' }}>
+                                {t('Items per page')}:
+                              </span>
+                              <HitsPerPage
+                                items={showHits}
+                                defaultRefinement={20}
+                              />
+                            </Box>
+                          </FooterResult>
+                        </Box>
                       </Box>
-                    </Box>
-                  )}
+                    )}
                 </Box>
               </>
             </Box>

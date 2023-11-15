@@ -2,7 +2,7 @@ import { Box } from '@material-ui/core';
 import React, { memo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { createImage, findByImage, findRegions } from 'services/image';
+import { createImage, find, findRegions } from 'services/image';
 import {
   setSearchResults,
   setRequestImage,
@@ -62,7 +62,7 @@ function DragDropFile(props: Props) {
         dispatch(setSelectedRegion(region));
       }
 
-      return findByImage({
+      return find({
         image,
         settings,
         region,
