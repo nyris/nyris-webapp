@@ -8,11 +8,17 @@ export interface AlgoliaSettings {
   indexName: string;
 }
 
+export interface Auth0Settings {
+  clientId?: string;
+  domain?: string;
+  enabled?: boolean;
+}
+
 export interface Field {
   ctaLinkField: string;
-  productName: string;
-  productDetails: string;
   manufacturerNumber: string;
+  productDetails: string;
+  productName: string;
   productTag: string;
   warehouseNumber: string;
   warehouseNumberValue: string;
@@ -23,52 +29,53 @@ export interface Field {
 }
 
 export interface AppSettings extends NyrisAPISettings {
-  exampleImages?: string[]; // deprecated
-  preview: boolean;
-  cadSearch?: boolean;
-  noImageUrl?: string;
-  regions: boolean;
-  instantRedirectPatterns: string[];
-  theme: SearchSuiteSettings;
   algolia?: AlgoliaSettings;
-  productCtaText?: string;
-  appTitle?: string;
-  refinements?: any;
-  showGroup?: boolean;
-  preFilterOption?: boolean;
-  cadenas3dWebView?: boolean;
-  rfq?: boolean;
-  inquiry?: boolean;
-  templateId?: string;
-  warehouseVariant?: boolean;
-  preFilterTitle?: string;
-  postFilterOption?: boolean;
-  showFeedbackAndShare?: boolean;
-  showMoreInfo?: boolean; // deprecated
-  visualSearchFilterKey?: string;
   alogoliaFilterField?: string;
-  headerText?: string;
+  appTitle?: string;
+  auth0: Auth0Settings;
   brandName?: string;
-  shareOption?: boolean;
-  language?: string;
-  itemIdLabel?: string;
+  cadenas3dWebView?: boolean;
+  cadSearch?: boolean;
+  exampleImages?: string[]; // deprecated
   field: Field;
+  headerText?: string;
+  inquiry?: boolean;
+  instantRedirectPatterns: string[];
+  itemIdLabel?: string;
+  language?: string;
+  noImageUrl?: string;
+  postFilterOption?: boolean;
+  preFilterOption?: boolean;
+  preFilterTitle?: string;
+  preview: boolean;
+  productCtaText?: string;
+  refinements?: any;
+  regions: boolean;
+  rfq?: boolean;
+  shareOption?: boolean;
+  showFeedbackAndShare?: boolean;
+  showGroup?: boolean;
+  showMoreInfo?: boolean; // deprecated
+  templateId?: string;
+  theme: SearchSuiteSettings;
+  visualSearchFilterKey?: string;
+  warehouseVariant?: boolean;
 }
 
 export interface SearchSuiteSettings {
   appBarLogoUrl?: string;
   headerColor?: string;
-  logoWidth?: string;
   logoHeight?: string;
+  logoWidth?: string;
   mobileFooterImageColor?: string;
   primaryColor?: string;
   secondaryColor?: string;
 }
 
 export type AppState = {
+  nyrisDesign: NyrisAppState;
   search: SearchState;
   settings: AppSettings;
-  nyrisDesign: NyrisAppState;
 };
 
 export interface CanvasWithId {

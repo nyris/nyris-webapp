@@ -31,7 +31,6 @@ function RfqBanner({
         alignItems: 'center',
       }}
       className="rfq-box"
-      // ref={rfqRef}
     >
       <Box
         style={{
