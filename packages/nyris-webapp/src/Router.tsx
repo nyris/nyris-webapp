@@ -1,52 +1,28 @@
 import React, { memo } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Layout from 'components/Layout';
-import { ReactNode } from 'components/common';
 import App from 'App';
 import ResultComponent from 'page/result';
-
-interface PrivateRouteProps {
-  component: ReactNode;
-  authed: boolean;
-  [key: string]: any;
-}
-
-const PrivateRoute = ({
-  component: Component,
-  authed,
-  ...rest
-}: PrivateRouteProps) => {
-  return (
-    <Route
-      {...rest}
-      render={() => (authed ? <Component /> : <Redirect to="/login" />)}
-    />
-  );
-};
+import AuthenticatedRoute from 'components/AuthenticatedRoute';
+import Login from 'page/Login';
+import Logout from 'page/Logout';
 
 function Router(): JSX.Element {
-  const accessToken = true;
-
   return (
     <Switch>
-      <Layout>
-        <Switch>
-          <PrivateRoute
-            authed={!!accessToken}
-            exact
-            strict
-            path="/"
-            component={App}
-          />
-          <PrivateRoute
-            authed={!!accessToken}
+      <Switch>
+        <Route path={'/login'} exact component={Login} />
+        <Route path={'/logout'} exact component={Logout} />
+        <Layout>
+          <AuthenticatedRoute exact strict path="/" component={App} />
+          <AuthenticatedRoute
             exact
             strict
             path="/result"
             component={ResultComponent}
           />
-        </Switch>
-      </Layout>
+        </Layout>
+      </Switch>
     </Switch>
   );
 }

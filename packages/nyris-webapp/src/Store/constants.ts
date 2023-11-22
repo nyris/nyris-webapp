@@ -1,6 +1,7 @@
 import { AppSettings } from '../types';
 
 export const defaultSettings: AppSettings = {
+  auth0: {},
   xOptions: false,
   apiKey: 'UNSET',
   preview: true,

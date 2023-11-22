@@ -7,12 +7,13 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import { MuiThemeProvider } from '@material-ui/core';
 import 'typeface-roboto';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import Router from 'Router';
 import { store } from 'Store/Store';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { createTheme } from '@material-ui/core/styles';
 import { Toaster } from 'components/Toaster';
+import AuthProvider from 'components/AuthProvider';
 
 document.title = window.location.host;
 
@@ -33,11 +34,13 @@ ReactDOM.render(
   <Fragment>
     <Toaster />
     <Provider store={store}>
-      <MuiThemeProvider theme={theme}>
-        <HashRouter>
-          <Router />
-        </HashRouter>
-      </MuiThemeProvider>
+      <AuthProvider>
+        <MuiThemeProvider theme={theme}>
+          <BrowserRouter>
+            <Router />
+          </BrowserRouter>
+        </MuiThemeProvider>
+      </AuthProvider>
     </Provider>
   </Fragment>,
   document.getElementById('root'),

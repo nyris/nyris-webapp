@@ -26,6 +26,7 @@ import Loading from './Loading';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { translations } from 'translations';
+import { useAuth0 } from '@auth0/auth0-react';
 
 declare var psol: any;
 
@@ -68,7 +69,9 @@ function Layout({ children }: ReactNode): JSX.Element {
     (isMobile && history.location?.pathname === '/result') ||
     history.location?.pathname === '/';
   const language = useAppSelector(state => state.settings.language);
-
+  const { isAuthenticated } = useAuth0();
+  const { auth0 } = settings;
+  const showApp = !auth0.enabled || (auth0.enabled && isAuthenticated);
   i18n.changeLanguage(language);
 
   useEffect(() => {
@@ -164,8 +167,8 @@ function Layout({ children }: ReactNode): JSX.Element {
           }
         }}
       >
-        {isMobile && <AppMobile>{children}</AppMobile>}
-        {!isMobile && (
+        {isMobile && showApp && <AppMobile>{children}</AppMobile>}
+        {!isMobile && showApp && (
           <div className={`layout-main-${classNameBoxVersion}`}>
             <div
               className={
@@ -198,6 +201,7 @@ function Layout({ children }: ReactNode): JSX.Element {
             )}
           </div>
         )}
+        {!showApp && <> {children}</>}
       </InstantSearch>
     </div>
   );

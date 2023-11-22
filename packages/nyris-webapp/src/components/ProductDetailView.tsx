@@ -177,6 +177,7 @@ function ProductDetailView(props: Props) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 cursor: 'pointer',
+                bottom: isMobile ? '25px' : '4px',
               }}
               onClick={() => {
                 if (urlImage.length > 1) {
@@ -214,6 +215,7 @@ function ProductDetailView(props: Props) {
           style={{
             position: 'absolute',
             left: '16px',
+            bottom: isMobile ? '25px' : '10px'
           }}
         >
           {!is3dView &&
