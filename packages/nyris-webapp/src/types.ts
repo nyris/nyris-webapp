@@ -42,6 +42,8 @@ export interface AppSettings extends NyrisAPISettings {
   auth0: Auth0Settings;
   brandName?: string;
   cadenas3dWebView?: boolean;
+  catalog?: string;
+  cadenasAPIKey?: string;
   field: Field;
   headerText?: string;
   inquiry?: boolean;
