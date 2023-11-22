@@ -19,7 +19,7 @@ export const ImagePreviewCarousel = (props: Props) => {
 
   const maxWidth = useMemo(() => {
     const contentWidth = 75 + 58 * imgItem.length;
-    const modalWidth = isMobile ? 340 : 460;
+    const modalWidth = isMobile ? 240 : 460;
     return contentWidth < modalWidth ? contentWidth : modalWidth;
   }, [imgItem.length, isMobile]);
 
