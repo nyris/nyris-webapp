@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.42 - 2023-11-28
+
+### Added
+
+- Add Catalog and CadenasAPIKey to settings.js
+
+### Fix
+
+- Carousel width for desktop
+
 ## 0.3.41 - 2023-11-08
 
 ### Added
