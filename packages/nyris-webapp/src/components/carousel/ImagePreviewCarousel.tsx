@@ -9,17 +9,18 @@ interface Props {
   imgItem: any[];
   onSearchImage?: any;
   handlerCloseModal?: any;
+  setSelectedImage: (url: string) => void;
 }
 
 export const ImagePreviewCarousel = (props: Props) => {
-  let { imgItem } = props;
+  let { imgItem, setSelectedImage } = props;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const mainRef: any = useRef(null);
   const thumbsRef: any = useRef(null);
 
   const maxWidth = useMemo(() => {
     const contentWidth = 75 + 58 * imgItem.length;
-    const modalWidth = isMobile ? 340 : 600;
+    const modalWidth = isMobile ? 240 : 460;
     return contentWidth < modalWidth ? contentWidth : modalWidth;
   }, [imgItem.length, isMobile]);
 
@@ -74,6 +75,9 @@ export const ImagePreviewCarousel = (props: Props) => {
   return (
     <>
       <Splide
+        onActive={(e: any) => {
+          setSelectedImage(e?.root?.querySelector('li.is-active')?.querySelector('img')?.src)
+        }}
         options={mainOptions}
         ref={mainRef}
         style={{ maxWidth: '100%', height: isMobile ? '80%' : '' }}
