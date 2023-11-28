@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { ReactComponent as DownloadIcon } from 'common/assets/icons/download.svg';
 import CadenasLoading from './CadenasLoading';
+import { useAppSelector } from '../Store/Store';
 
 declare const psol: any;
 
@@ -27,6 +28,7 @@ function CadenasWebViewer({
 }) {
   const [mident, setMident] = useState('');
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+  const { settings } = useAppSelector(state => state);
 
   useEffect(() => {
     // prepare 3d viewer settings.
@@ -72,13 +74,14 @@ function CadenasWebViewer({
 
     // initialize 3d viewer
     let webviewer3d = new psol.components.WebViewer3D(webViewer3DSettings);
+    psol.core.setApiKey(settings.cadenasAPIKey);
     setStatus3dView('loading');
     // run search and display result in 3D viewer.
     psol.core
       .ajaxGetOrPost({
         url: psol.core.getServiceBaseUrl() + '/service/reversemap',
         data: {
-          catalog: 'ganter',
+          catalog: settings.catalog,
           part: sku,
           exact: '0',
         },
@@ -98,7 +101,7 @@ function CadenasWebViewer({
             });
         });
       });
-  }, [sku, setStatus3dView]);
+  }, [sku, setStatus3dView, settings]);
 
   const showWebViewer = !is3dView || status3dView !== 'loaded';
 

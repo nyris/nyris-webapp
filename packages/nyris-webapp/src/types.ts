@@ -8,6 +8,12 @@ export interface AlgoliaSettings {
   indexName: string;
 }
 
+export interface Auth0Settings {
+  clientId?: string;
+  domain?: string;
+  enabled?: boolean;
+}
+
 export interface Field {
   ctaLinkField: string;
   productName: string;
@@ -31,28 +37,31 @@ export interface AppSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
   theme: SearchSuiteSettings;
   algolia?: AlgoliaSettings;
-  productCtaText?: string;
-  appTitle?: string;
-  refinements?: any;
-  showGroup?: boolean;
-  preFilterOption?: boolean;
-  cadenas3dWebView?: boolean;
-  rfq?: boolean;
-  inquiry?: boolean;
-  templateId?: string;
-  warehouseVariant?: boolean;
-  preFilterTitle?: string;
-  postFilterOption?: boolean;
-  showFeedbackAndShare?: boolean;
-  showMoreInfo?: boolean; // deprecated
-  visualSearchFilterKey?: string;
   alogoliaFilterField?: string;
-  headerText?: string;
+  appTitle?: string;
+  auth0: Auth0Settings;
   brandName?: string;
-  shareOption?: boolean;
-  language?: string;
-  itemIdLabel?: string;
+  cadenas3dWebView?: boolean;
+  catalog?: string;
+  cadenasAPIKey?: string;
   field: Field;
+  headerText?: string;
+  inquiry?: boolean;
+  itemIdLabel?: string;
+  language?: string;
+  postFilterOption?: boolean;
+  preFilterOption?: boolean;
+  preFilterTitle?: string;
+  productCtaText?: string;
+  refinements?: any;
+  rfq?: boolean;
+  shareOption?: boolean;
+  showFeedbackAndShare?: boolean;
+  showGroup?: boolean;
+  showMoreInfo?: boolean; // deprecated
+  templateId?: string;
+  visualSearchFilterKey?: string;
+  warehouseVariant?: boolean;
 }
 
 export interface SearchSuiteSettings {
