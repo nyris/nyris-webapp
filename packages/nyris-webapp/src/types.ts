@@ -62,6 +62,7 @@ export interface AppSettings extends NyrisAPISettings {
   templateId?: string;
   visualSearchFilterKey?: string;
   warehouseVariant?: boolean;
+  CTAButtonText?: string;
 }
 
 export interface SearchSuiteSettings {
