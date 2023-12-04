@@ -16,9 +16,9 @@ export interface Auth0Settings {
 
 export interface Field {
   ctaLinkField: string;
-  manufacturerNumber: string;
-  productDetails: string;
   productName: string;
+  productDetails: string;
+  manufacturerNumber: string;
   productTag: string;
   warehouseNumber: string;
   warehouseNumberValue: string;
@@ -29,35 +29,37 @@ export interface Field {
 }
 
 export interface AppSettings extends NyrisAPISettings {
+  exampleImages?: string[]; // deprecated
+  preview: boolean;
+  cadSearch?: boolean;
+  noImageUrl?: string;
+  regions: boolean;
+  instantRedirectPatterns: string[];
+  theme: SearchSuiteSettings;
   algolia?: AlgoliaSettings;
   alogoliaFilterField?: string;
   appTitle?: string;
   auth0: Auth0Settings;
   brandName?: string;
   cadenas3dWebView?: boolean;
-  cadSearch?: boolean;
-  exampleImages?: string[]; // deprecated
+  catalog?: string;
+  cadenasAPIKey?: string;
   field: Field;
   headerText?: string;
   inquiry?: boolean;
-  instantRedirectPatterns: string[];
   itemIdLabel?: string;
   language?: string;
-  noImageUrl?: string;
   postFilterOption?: boolean;
   preFilterOption?: boolean;
   preFilterTitle?: string;
-  preview: boolean;
   productCtaText?: string;
   refinements?: any;
-  regions: boolean;
   rfq?: boolean;
   shareOption?: boolean;
   showFeedbackAndShare?: boolean;
   showGroup?: boolean;
   showMoreInfo?: boolean; // deprecated
   templateId?: string;
-  theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
   warehouseVariant?: boolean;
 }
@@ -65,8 +67,8 @@ export interface AppSettings extends NyrisAPISettings {
 export interface SearchSuiteSettings {
   appBarLogoUrl?: string;
   headerColor?: string;
-  logoHeight?: string;
   logoWidth?: string;
+  logoHeight?: string;
   mobileFooterImageColor?: string;
   primaryColor?: string;
   secondaryColor?: string;
@@ -75,6 +77,7 @@ export interface SearchSuiteSettings {
 export type AppState = {
   search: SearchState;
   settings: AppSettings;
+  nyrisDesign: NyrisAppState;
 };
 
 export interface CanvasWithId {

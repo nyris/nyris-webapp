@@ -25,7 +25,6 @@ import InstantSearchProvider from './Provider/InstantSearchProvider';
 declare var psol: any;
 
 jQuery(document).ready(function () {
-  psol.core.setApiKey('66c56a38010f4a81a82f6ed51c903399');
   psol.core.setUserInfo({
     server_type: 'oem_apps_cadenas_webcomponentsdemo',
     title: 'Herr',
