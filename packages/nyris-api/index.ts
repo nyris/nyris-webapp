@@ -208,9 +208,11 @@ export default class NyrisAPI {
     let params = {};
     let headers = this.getSearchRequestHeaders("image/jpeg");
     if (canvas && options.text) {
-      requestBody.append(`text`, options.text);
+      requestBody.append("text", options.text);
       const { text, ...rest } = options;
       params = this.getParams(rest);
+    } else if (options.text && filters && filters.length > 0) {
+      requestBody.append("text", options.text);
     } else {
       params = this.getParams(options);
     }

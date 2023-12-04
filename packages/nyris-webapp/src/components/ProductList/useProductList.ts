@@ -24,12 +24,12 @@ export const useProductList = ({ allSearchResults, isSearchStalled }: any) => {
     const groups = groupBy(groupHits, 'group_id');
     setHitGroups(groups);
     newArrayShowGroup = Object.values(groups);
-    if (newArrayShowGroup.length === 0) {
+    if (newArrayShowGroup?.length === 0) {
       return hits;
     }
     newArrayShowGroup.forEach((item: any) => {
       let payload: any;
-      if (item.length >= 2) {
+      if (item?.length >= 2) {
         payload = {
           ...item[0],
           isGroup: true,
@@ -92,7 +92,7 @@ export const useProductList = ({ allSearchResults, isSearchStalled }: any) => {
   }, [isSearchStalled]);
 
   const productList = useMemo(() => {
-    return results.map((item: any) => {
+    return results?.map((item: any) => {
       return {
         ...item,
         main_image_link: item.image || item.images ? item.images[0] : '',
@@ -101,7 +101,7 @@ export const useProductList = ({ allSearchResults, isSearchStalled }: any) => {
   }, [results]);
 
   return {
-    productList: algolia?.enabled ? itemShowDefault : productList,
+    productList: algolia?.enabled ? itemShowDefault : productList || [],
     handlerGroupItem,
     handlerCloseGroup,
     algoliaRequest,

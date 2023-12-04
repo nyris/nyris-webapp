@@ -94,7 +94,7 @@ const SearchBox = (props: any) => {
             values: Object.keys(preFilter) as string[],
           },
         ];
-        if (value) {
+        if (value || requestImage) {
           dispatch(updateStatusLoading(true));
           find({
             image: requestImage?.canvas as HTMLCanvasElement,
@@ -122,8 +122,7 @@ const SearchBox = (props: any) => {
               console.log('error input search', e);
               dispatch(updateStatusLoading(false));
             });
-        }
-        if (!value) {
+        } else {
           dispatch(setSearchResults([]));
         }
       }

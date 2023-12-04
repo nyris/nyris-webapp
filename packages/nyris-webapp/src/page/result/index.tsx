@@ -47,6 +47,7 @@ import useFilteredRegions from 'hooks/useFilteredRegions';
 import ImagePreviewMobile from 'components/ImagePreviewMobile';
 import RfqBanner from 'components/rfq/RfqBanner';
 import InquiryBanner from 'components/Inquiry/InquiryBanner';
+import { useQuery } from 'hooks/useQuery';
 
 interface Props {
   allSearchResults: any;
@@ -86,6 +87,11 @@ function ResultComponent(props: Props) {
   const [isScrolled, setIsScrolled] = useState<
     'not-scrolled' | 'scrolled' | 'user-scrolled'
   >('not-scrolled');
+
+  const query = useQuery();
+  const searchQuery = query.get('query') || '';
+  const isAlgoliaEnabled = settings.algolia?.enabled;
+  const isPostFilterEnabled = settings.postFilterOption;
 
   useEffect(() => {
     if (
@@ -131,6 +137,8 @@ function ResultComponent(props: Props) {
         },
       ];
       dispatch(loadingActionResults());
+      console.log('find');
+
       return find({
         image: canvas,
         settings,
@@ -251,7 +259,7 @@ function ResultComponent(props: Props) {
   ]);
 
   useEffect(() => {
-    if (!requestImage) {
+    if (!requestImage || !isAlgoliaEnabled) {
       return;
     }
     dispatch(updateStatusLoading(true));
@@ -299,20 +307,16 @@ function ResultComponent(props: Props) {
 
   const showPostFilter = useMemo(() => {
     return (
-      settings.postFilterOption &&
+      isPostFilterEnabled &&
       props.allSearchResults?.hits.length > 0 &&
-      settings.algolia?.enabled
+      isAlgoliaEnabled
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    settings.postFilterOption,
-    props.allSearchResults?.hits,
-    settings.algolia?.enabled,
-  ]);
+  }, [isPostFilterEnabled, props.allSearchResults?.hits, isAlgoliaEnabled]);
 
   const showSidePanel = useMemo(() => {
-    return requestImage || (settings.postFilterOption && showPostFilter);
-  }, [showPostFilter, settings.postFilterOption, requestImage]);
+    return requestImage || (isPostFilterEnabled && showPostFilter);
+  }, [showPostFilter, isPostFilterEnabled, requestImage]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -349,7 +353,7 @@ function ResultComponent(props: Props) {
             />
           )}
 
-          {filterString && settings.algolia?.enabled && (
+          {filterString && isAlgoliaEnabled && (
             <Configure
               query={search.valueTextSearch.query}
               filters={filterString}
@@ -432,7 +436,9 @@ function ResultComponent(props: Props) {
                         sendFeedBackAction={sendFeedBackAction}
                         moreInfoText={moreInfoText}
                         requestImage={requestImage}
-                        searchQuery={search.valueTextSearch.query}
+                        searchQuery={
+                          search.valueTextSearch.query || searchQuery
+                        }
                       />
                       <Box
                         className="pagination-result"
@@ -489,7 +495,7 @@ function ResultComponent(props: Props) {
                   </Box>
                   {!isMobile &&
                     props.allSearchResults?.hits?.length > 0 &&
-                    settings.algolia?.enabled && (
+                    isAlgoliaEnabled && (
                       <Box>
                         <Box className="box-notify">
                           <FooterResult search={search}>

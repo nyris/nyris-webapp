@@ -31,25 +31,27 @@ function ProductListComponent({
   const { loadingSearchAlgolia } = search;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { t } = useTranslation();
-
   const { productList, handlerCloseGroup, handlerGroupItem, algoliaRequest } =
     useProductList({
       allSearchResults,
     });
 
   const renderItem = useMemo(() => {
-    if (!requestImage && !search.valueTextSearch.query && !isSearchStalled) {
+    if (
+      !requestImage &&
+      !search.valueTextSearch.query &&
+      !searchQuery &&
+      !isSearchStalled
+    ) {
       return (
         <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
           {t('Please upload an image or enter a keyword to search.')}
         </Box>
       );
-    }
-    if (
+    } else if (
       productList.length === 0 &&
       !loadingSearchAlgolia &&
-      !isSearchStalled &&
-      (algoliaRequest || requestImage)
+      !isSearchStalled
     ) {
       return (
         <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>

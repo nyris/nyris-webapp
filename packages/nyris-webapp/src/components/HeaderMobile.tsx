@@ -83,7 +83,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         setValueInput('');
       }
     }
-  }, [imageThumbSearchInput, dispatch, refine, history]);
+  }, [imageThumbSearchInput, dispatch, refine, history, settings.algolia]);
 
   useEffect(() => {
     const searchQuery = query.get('query') || '';
@@ -99,7 +99,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         dispatch(updateQueryText(searchQuery));
       }
     }
-  }, [query, refine, dispatch, searchQuery]);
+  }, [query, refine, dispatch, searchQuery, settings.algolia]);
 
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
