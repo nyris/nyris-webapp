@@ -89,7 +89,7 @@ function ResultComponent(props: Props) {
   >('not-scrolled');
 
   const query = useQuery();
-  const searchQuery = query.get('query') || '';
+  const searchQuery = query.get('query') || search.valueTextSearch.query;
   const isAlgoliaEnabled = settings.algolia?.enabled;
   const isPostFilterEnabled = settings.postFilterOption;
 
@@ -137,7 +137,6 @@ function ResultComponent(props: Props) {
         },
       ];
       dispatch(loadingActionResults());
-      console.log('find');
 
       return find({
         image: canvas,
@@ -241,7 +240,7 @@ function ResultComponent(props: Props) {
   useEffect(() => {
     document.title = 'Search results';
 
-    if (requestImage || isEmpty(search.valueTextSearch.query)) return;
+    if (requestImage || isEmpty(searchQuery)) return;
     const preFilterValues = Object.keys(preFilter) as string[];
     const filter =
       preFilterValues.length > 0
@@ -251,12 +250,7 @@ function ResultComponent(props: Props) {
         : '';
 
     setFilterString(filter);
-  }, [
-    preFilter,
-    requestImage,
-    search.valueTextSearch.query,
-    settings.alogoliaFilterField,
-  ]);
+  }, [preFilter, requestImage, searchQuery, settings.alogoliaFilterField]);
 
   useEffect(() => {
     if (!requestImage || !isAlgoliaEnabled) {
@@ -354,10 +348,7 @@ function ResultComponent(props: Props) {
           )}
 
           {filterString && isAlgoliaEnabled && (
-            <Configure
-              query={search.valueTextSearch.query}
-              filters={filterString}
-            ></Configure>
+            <Configure query={searchQuery} filters={filterString}></Configure>
           )}
           <Box className="box-wrap-result-component">
             {!isMobile && (
@@ -436,9 +427,7 @@ function ResultComponent(props: Props) {
                         sendFeedBackAction={sendFeedBackAction}
                         moreInfoText={moreInfoText}
                         requestImage={requestImage}
-                        searchQuery={
-                          search.valueTextSearch.query || searchQuery
-                        }
+                        searchQuery={searchQuery}
                       />
                       <Box
                         className="pagination-result"
@@ -452,7 +441,7 @@ function ResultComponent(props: Props) {
                         }}
                       >
                         {props.allSearchResults?.hits.length > 0 &&
-                          (requestImage || search.valueTextSearch.query) && (
+                          (requestImage || searchQuery) && (
                             <Pagination
                               showFirst={false}
                               translations={{
@@ -484,11 +473,11 @@ function ResultComponent(props: Props) {
                       {!loadingSearchAlgolia &&
                         !props.isSearchStalled &&
                         settings.inquiry &&
-                        (search.valueTextSearch.query || requestImage) && (
+                        (searchQuery || requestImage) && (
                           <InquiryBanner
                             requestImage={requestImage}
                             selectedRegion={selectedRegion}
-                            query={search.valueTextSearch.query}
+                            query={searchQuery}
                           />
                         )}
                     </Box>

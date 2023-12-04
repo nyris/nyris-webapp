@@ -77,7 +77,6 @@ export interface SearchSuiteSettings {
 export type AppState = {
   search: SearchState;
   settings: AppSettings;
-  nyrisDesign: NyrisAppState;
 };
 
 export interface CanvasWithId {

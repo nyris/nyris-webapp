@@ -54,12 +54,12 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   } = search;
 
   const query = useQuery();
-  const searchQuery = query.get('query') || '';
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
   const history = useHistory();
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const [valueInput, setValueInput] = useState<string>(queryText || '');
+  const searchQuery = query.get('query') || '';
 
   useEffect(() => {
     if (
@@ -75,8 +75,8 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   useEffect(() => {
     if (imageThumbSearchInput !== '') {
       history.push('/result');
+      dispatch(updateValueTextSearchMobile(''));
       if (settings.algolia?.enabled) {
-        dispatch(updateValueTextSearchMobile(''));
         refine('');
       } else {
         dispatch(updateQueryText(''));
@@ -86,10 +86,9 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   }, [imageThumbSearchInput, dispatch, refine, history, settings.algolia]);
 
   useEffect(() => {
-    const searchQuery = query.get('query') || '';
     if (!isEmpty(searchQuery)) {
+      dispatch(updateValueTextSearchMobile(searchQuery));
       if (settings.algolia?.enabled) {
-        dispatch(updateValueTextSearchMobile(searchQuery));
         refine(searchQuery);
         // not an ideal solution: fixes text search not working from landing page
         setTimeout(() => {
@@ -113,33 +112,37 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             values: Object.keys(preFilter) as string[],
           },
         ];
-        dispatch(updateStatusLoading(true));
 
-        find({
-          image: requestImage?.canvas as HTMLCanvasElement,
-          settings,
-          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-          region: selectedRegion,
-          text: value,
-        })
-          .then((res: any) => {
-            res?.results.map((item: any) => {
-              filters.push({
-                sku: item.sku,
-                score: item.score,
-              });
-            });
-            payload = {
-              ...res,
-              filters,
-            };
-            dispatch(setSearchResults(payload));
-            dispatch(updateStatusLoading(false));
+        if (value || requestImage) {
+          dispatch(updateStatusLoading(true));
+          find({
+            image: requestImage?.canvas as HTMLCanvasElement,
+            settings,
+            filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+            region: selectedRegion,
+            text: value,
           })
-          .catch((e: any) => {
-            console.log('error input search', e);
-            dispatch(updateStatusLoading(false));
-          });
+            .then((res: any) => {
+              res?.results.map((item: any) => {
+                filters.push({
+                  sku: item.sku,
+                  score: item.score,
+                });
+              });
+              payload = {
+                ...res,
+                filters,
+              };
+              dispatch(setSearchResults(payload));
+              dispatch(updateStatusLoading(false));
+            })
+            .catch((e: any) => {
+              console.log('error input search', e);
+              dispatch(updateStatusLoading(false));
+            });
+        } else {
+          dispatch(setSearchResults([]));
+        }
       }
 
       if (value) {
@@ -151,7 +154,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         history.push('/result');
       }
     }, 500),
-    [],
+    [requestImage],
   );
   const isPostFilterApplied = useMemo(() => {
     let isApplied = false;

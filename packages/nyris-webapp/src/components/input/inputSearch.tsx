@@ -83,7 +83,7 @@ const SearchBox = (props: any) => {
   }, [imageThumbSearchInput, isAlgoliaEnabled]);
 
   const searchOrRedirect = useCallback(
-    debounce((value: any) => {
+    debounce((value: any, withImage = true) => {
       if (!isAlgoliaEnabled) {
         dispatch(updateQueryText(value));
         let payload: any;
@@ -97,10 +97,12 @@ const SearchBox = (props: any) => {
         if (value || requestImage) {
           dispatch(updateStatusLoading(true));
           find({
-            image: requestImage?.canvas as HTMLCanvasElement,
+            image: withImage
+              ? (requestImage?.canvas as HTMLCanvasElement)
+              : undefined,
             settings,
             filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-            region: selectedRegion,
+            region: withImage ? selectedRegion : undefined,
             text: value,
           })
             .then((res: any) => {
@@ -316,6 +318,8 @@ const SearchBox = (props: any) => {
                         dispatch(reset(''));
                         if (isAlgoliaEnabled) {
                           refine(valueInput);
+                        } else {
+                          searchOrRedirect(valueInput, false);
                         }
                       }}
                     >

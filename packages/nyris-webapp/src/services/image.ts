@@ -56,7 +56,7 @@ export const find = ({
   filters,
   text,
 }: {
-  image: HTMLCanvasElement;
+  image?: HTMLCanvasElement;
   settings: NyrisAPISettings;
   region?: RectCoords;
   filters?: Filter[];
