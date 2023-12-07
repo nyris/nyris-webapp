@@ -17,6 +17,9 @@ import {
   updateValueTextSearchMobile,
   setPreFilterDropdown,
   setPreFilter,
+  updateQueryText,
+  updateStatusLoading,
+  setSearchResults,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppState } from 'types';
@@ -26,6 +29,7 @@ import { ReactComponent as FilterIcon } from 'common/assets/icons/filter.svg';
 import { debounce, isEmpty } from 'lodash';
 import { useQuery } from 'hooks/useQuery';
 import { useTranslation } from 'react-i18next';
+import { find } from 'services/image';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -44,14 +48,18 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     preFilter,
     preFilterDropdown,
     valueTextSearch,
+    queryText,
+    requestImage,
+    selectedRegion,
   } = search;
 
   const query = useQuery();
-  const searchQuery = query.get('query') || '';
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
   const history = useHistory();
   const { settings } = useAppSelector<AppState>((state: any) => state);
+  const [valueInput, setValueInput] = useState<string>(queryText || '');
+  const searchQuery = query.get('query') || '';
 
   useEffect(() => {
     if (
@@ -68,23 +76,75 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     if (imageThumbSearchInput !== '') {
       history.push('/result');
       dispatch(updateValueTextSearchMobile(''));
-      refine('');
+      if (settings.algolia?.enabled) {
+        refine('');
+      } else {
+        dispatch(updateQueryText(''));
+        setValueInput('');
+      }
     }
-  }, [imageThumbSearchInput, dispatch, refine, history]);
+  }, [imageThumbSearchInput, dispatch, refine, history, settings.algolia]);
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {
       dispatch(updateValueTextSearchMobile(searchQuery));
-      refine(searchQuery);
-      // not an ideal solution: fixes text search not working from landing page
-      setTimeout(() => {
+      if (settings.algolia?.enabled) {
         refine(searchQuery);
-      }, 100);
+        // not an ideal solution: fixes text search not working from landing page
+        setTimeout(() => {
+          refine(searchQuery);
+        }, 100);
+      } else {
+        dispatch(updateQueryText(searchQuery));
+      }
     }
-  }, [query, refine, dispatch, searchQuery]);
+  }, [query, refine, dispatch, searchQuery, settings.algolia]);
 
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
+      if (!settings.algolia?.enabled) {
+        dispatch(updateQueryText(value));
+        let payload: any;
+        let filters: any[] = [];
+        const preFilterValues = [
+          {
+            key: settings.visualSearchFilterKey,
+            values: Object.keys(preFilter) as string[],
+          },
+        ];
+
+        if (value || requestImage) {
+          dispatch(updateStatusLoading(true));
+          find({
+            image: requestImage?.canvas as HTMLCanvasElement,
+            settings,
+            filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+            region: selectedRegion,
+            text: value,
+          })
+            .then((res: any) => {
+              res?.results.map((item: any) => {
+                filters.push({
+                  sku: item.sku,
+                  score: item.score,
+                });
+              });
+              payload = {
+                ...res,
+                filters,
+              };
+              dispatch(setSearchResults(payload));
+              dispatch(updateStatusLoading(false));
+            })
+            .catch((e: any) => {
+              console.log('error input search', e);
+              dispatch(updateStatusLoading(false));
+            });
+        } else {
+          dispatch(setSearchResults([]));
+        }
+      }
+
       if (value) {
         history.push({
           pathname: '/result',
@@ -94,7 +154,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         history.push('/result');
       }
     }, 500),
-    [],
+    [requestImage],
   );
   const isPostFilterApplied = useMemo(() => {
     let isApplied = false;
@@ -241,7 +301,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               </Box>
 
               <Input
-                value={textSearchInputMobile || searchQuery}
+                value={textSearchInputMobile || searchQuery || valueInput}
                 onChange={onChangeText}
               />
 

@@ -2,7 +2,7 @@ import { Box } from '@material-ui/core';
 import React, { memo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { createImage, findByImage, findRegions } from 'services/image';
+import { createImage, find, findRegions } from 'services/image';
 import {
   setSearchResults,
   setRequestImage,
@@ -12,7 +12,6 @@ import {
   setRegions,
   setSelectedRegion,
 } from 'Store/search/Search';
-import { showFeedback } from 'Store/nyris/Nyris';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDownward.svg';
 
@@ -63,7 +62,7 @@ function DragDropFile(props: Props) {
         dispatch(setSelectedRegion(region));
       }
 
-      return findByImage({
+      return find({
         image,
         settings,
         region,
@@ -82,7 +81,7 @@ function DragDropFile(props: Props) {
         dispatch(setSearchResults(payload));
         onChangeLoading(false);
         dispatch(updateStatusLoading(false));
-        return dispatch(showFeedback());
+        return;
       });
     },
   });

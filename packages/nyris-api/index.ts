@@ -3,7 +3,6 @@ import {
   FeedbackEvent,
   FeedbackEventPayload,
   ImageSearchOptions,
-  OfferNyrisResult,
   Region,
   SearchResult,
   RectCoords,
@@ -30,9 +29,6 @@ export * from "./types-external";
 import {
   CategoryPredictionResponse,
   NyrisRegionResult,
-  OfferCompleteResponse,
-  OfferCompleteResult,
-  OfferNyrisResponse,
 } from "./types-internal";
 
 export interface NyrisAPISettings {
@@ -149,14 +145,14 @@ export default class NyrisAPI {
   }
 
   private getParams(options: ImageSearchOptions) {
-    let params = options.geoLocation
+    let params: any = options.geoLocation
       ? {
           lat: options.geoLocation.lat.toString(),
           lon: options.geoLocation.lon.toString(),
           dist: options.geoLocation.dist.toString(),
         }
       : {};
-
+    params = { ...params, text: options.text };
     return params;
   }
 
@@ -169,46 +165,6 @@ export default class NyrisAPI {
         score: score as number,
       }))
       .sort((a, b) => b.score - a.score);
-  }
-
-  private parseSearchResult(
-    res: AxiosResponse<OfferNyrisResponse | OfferCompleteResponse>,
-    durationSeconds: number
-  ) {
-    const categoryPredictions = this.parseCategoryPredictions(
-      res.data.predicted_category
-    );
-    let codes = res.data.barcodes || [];
-
-    let responseData: OfferNyrisResponse | OfferCompleteResponse = this
-      .responseHook
-      ? this.responseHook(res.data)
-      : res.data;
-
-    let results: OfferNyrisResult[] =
-      "offerInfos" in responseData
-        ? responseData.offerInfos.map((r: OfferNyrisResult, i: number) => ({
-            ...r,
-            position: i,
-          }))
-        : responseData.results.map((r: OfferCompleteResult, i: number) => ({
-            position: i,
-            sku: r.sku,
-            title: r.title,
-            img: r.images && r.images[0] ? { url: r.images[0] } : undefined,
-            l: r.links ? r.links.main : undefined,
-            p: r.price
-              ? { vi: parseFloat(r.price) * 100, c: r.price.split(" ")[1] }
-              : undefined,
-            score: r.score,
-          }));
-
-    const requestId = res.headers["x-matching-request"];
-    const duration =
-      "durationSeconds" in res.data
-        ? res.data.durationSeconds
-        : durationSeconds;
-    return { results, requestId, duration, categoryPredictions, codes };
   }
 
   /**
@@ -224,8 +180,8 @@ export default class NyrisAPI {
     let fileType = file.type;
     let headers = this.getSearchRequestHeaders(fileType);
     let params = this.getParams(options);
-    let { res, durationSeconds } = await timePromise(
-      this.httpClient.request<OfferNyrisResponse | OfferCompleteResponse>({
+    let { res }: any = await timePromise(
+      this.httpClient.request<SearchResult>({
         method: "POST",
         url: this.cadMatchingUrl,
         data: file,
@@ -234,7 +190,7 @@ export default class NyrisAPI {
         responseType: "json",
       })
     );
-    return this.parseSearchResult(res, durationSeconds);
+    return res.data;
   }
 
   /**
@@ -243,20 +199,30 @@ export default class NyrisAPI {
    * @param filters key values of filters
    * @param options See [[ImageSearchOptions]].
    */
-  async findByImage(
-    canvas: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement,
+  async find(
     options: ImageSearchOptions,
+    canvas?: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement,
     filters?: Filter[]
   ): Promise<SearchResult> {
-    const imageBytes = await this.prepareImage(canvas, options.cropRect);
-
-    if (this.customSearchRequest)
-      return this.customSearchRequest(imageBytes, this.httpClient);
-
-    let headers = this.getSearchRequestHeaders("image/jpeg");
-    let params = this.getParams(options);
     var requestBody = new FormData();
-    requestBody.append("image", imageBytes);
+    let params = {};
+    let headers = this.getSearchRequestHeaders("image/jpeg");
+    if (canvas && options.text) {
+      requestBody.append("text", options.text);
+      const { text, ...rest } = options;
+      params = this.getParams(rest);
+    } else if (options.text && filters && filters.length > 0) {
+      requestBody.append("text", options.text);
+    } else {
+      params = this.getParams(options);
+    }
+
+    if (canvas) {
+      const imageBytes = await this.prepareImage(canvas, options.cropRect);
+      if (this.customSearchRequest)
+        return this.customSearchRequest(imageBytes, this.httpClient);
+      requestBody.append("image", imageBytes);
+    }
 
     if (filters && filters.length > 0) {
       for (let i = 0; i < filters.length; i++) {
@@ -270,18 +236,20 @@ export default class NyrisAPI {
       }
     }
 
-    let { res, durationSeconds } = await timePromise(
-      this.httpClient.request<OfferNyrisResponse | OfferCompleteResponse>({
+    let { res }: any = await timePromise(
+      this.httpClient.request<SearchResult>({
         method: "POST",
         url: this.imageMatchingUrl,
-        data: requestBody,
         params,
         headers,
         responseType: "json",
+        ...(canvas || (filters && filters.length)
+          ? { data: requestBody }
+          : { data: null }),
       })
     );
 
-    return this.parseSearchResult(res, durationSeconds);
+    return res.data;
   }
 
   /**

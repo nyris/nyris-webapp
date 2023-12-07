@@ -30,6 +30,7 @@ export interface SearchResult {
 export interface ImageSearchOptions {
   geoLocation?: { lat: number; lon: number; dist: number };
   cropRect?: RectCoords;
+  text?: string;
 }
 export interface RegionData {
   rect: {

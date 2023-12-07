@@ -1,10 +1,10 @@
 import { NyrisAPISettings } from '@nyris/nyris-api';
-import { NyrisAppState } from 'Store/nyris/types';
 import { SearchState } from 'Store/search/types';
 
 export interface AlgoliaSettings {
   apiKey: string;
   appId: string;
+  enabled?: boolean;
   indexName: string;
 }
 
@@ -77,7 +77,6 @@ export interface SearchSuiteSettings {
 export type AppState = {
   search: SearchState;
   settings: AppSettings;
-  nyrisDesign: NyrisAppState;
 };
 
 export interface CanvasWithId {

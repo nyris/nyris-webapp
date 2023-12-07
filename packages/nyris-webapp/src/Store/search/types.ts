@@ -29,6 +29,7 @@ export interface SearchState {
   resultSearchText: any[];
   selectedRegion?: RectCoords;
   sessionId?: string;
+  queryText?: string;
   setPreFilterDropdown?: any;
   textSearchInputMobile?: string;
   valueTextSearch: any;
