@@ -48,6 +48,7 @@ import ImagePreviewMobile from 'components/ImagePreviewMobile';
 import RfqBanner from 'components/rfq/RfqBanner';
 import InquiryBanner from 'components/Inquiry/InquiryBanner';
 import { useQuery } from 'hooks/useQuery';
+import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
 
 interface Props {
   allSearchResults: any;
@@ -357,156 +358,170 @@ function ResultComponent(props: Props) {
               </div>
             )}
             <Box className="box-result">
-              <>
-                {!isMobile && showSidePanel && (
-                  <SidePanel
+              {!isMobile && showSidePanel && (
+                <SidePanel
+                  setImageSelection={setImageSelection}
+                  allSearchResults={props.allSearchResults}
+                  debouncedOnImageSelectionChange={
+                    debouncedOnImageSelectionChange
+                  }
+                  filteredRegions={filteredRegions}
+                  imageSelection={imageSelection}
+                  showAdjustInfo={showAdjustInfo}
+                  showAdjustInfoBasedOnConfidence={
+                    showAdjustInfoBasedOnConfidence
+                  }
+                  showPostFilter={showPostFilter}
+                  disjunctiveFacets={props.allSearchResults.disjunctiveFacets}
+                />
+              )}
+
+              <Box
+                className={`col-right ${
+                  settings.preview && 'ml-auto mr-auto'
+                } ${isMobile && 'col-right-result-mobile'}`}
+                style={{
+                  paddingTop: isMobile ? '8px' : '40px',
+                  overflow: !isMobile ? 'auto' : '',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                {!isMobile && (
+                  <Box className="wrap-box-refinements">
+                    <CurrentRefinements statusSwitchButton={true} />
+                  </Box>
+                )}
+
+                {isMobile && settings.preview && requestImage && (
+                  <ImagePreviewMobile
+                    requestImage={requestImage}
+                    imageSelection={imageSelection}
                     setImageSelection={setImageSelection}
-                    allSearchResults={props.allSearchResults}
                     debouncedOnImageSelectionChange={
                       debouncedOnImageSelectionChange
                     }
                     filteredRegions={filteredRegions}
-                    imageSelection={imageSelection}
-                    showAdjustInfo={showAdjustInfo}
                     showAdjustInfoBasedOnConfidence={
                       showAdjustInfoBasedOnConfidence
                     }
-                    showPostFilter={showPostFilter}
-                    disjunctiveFacets={props.allSearchResults.disjunctiveFacets}
+                    showAdjustInfo={showAdjustInfo}
                   />
                 )}
 
                 <Box
-                  className={`col-right ${
-                    settings.preview && 'ml-auto mr-auto'
-                  } ${isMobile && 'col-right-result-mobile'}`}
                   style={{
-                    paddingTop: isMobile ? '8px' : '40px',
-                    overflow: !isMobile ? 'auto' : '',
                     display: 'flex',
                     flexDirection: 'column',
+                    flexGrow: 1,
+                    backgroundColor: '#FAFAFA',
                   }}
                 >
-                  {!isMobile && (
-                    <Box className="wrap-box-refinements">
-                      <CurrentRefinements statusSwitchButton={true} />
+                  <Box
+                    className={'box-item-result ml-auto mr-auto'}
+                    style={{ height: '100%', paddingLeft: isMobile ? 0 : 16 }}
+                  >
+                    <ProductList
+                      getUrlToCanvasFile={getUrlToCanvasFile}
+                      setLoading={false}
+                      sendFeedBackAction={sendFeedBackAction}
+                      moreInfoText={moreInfoText}
+                      requestImage={requestImage}
+                      searchQuery={searchQuery}
+                    />
+                    <Box
+                      className="pagination-result"
+                      style={{
+                        width: '100%',
+                        margin: !isMobile ? '20px auto' : '',
+                        marginBottom:
+                          isMobile && !requestImage ? '64px' : '20px',
+                        padding: '0 20%',
+                        alignSelf: 'end',
+                      }}
+                    >
+                      {props.allSearchResults?.hits.length > 0 &&
+                        (requestImage || searchQuery) && (
+                          <Pagination
+                            showFirst={false}
+                            translations={{
+                              previous: (
+                                <ArrowLeftIcon style={{ color: '#161616' }} />
+                              ),
+                              next: (
+                                <ArrowRightIcon style={{ color: '#161616' }} />
+                              ),
+                            }}
+                          />
+                        )}
+                    </Box>
+
+                    {requestImage &&
+                      !loadingSearchAlgolia &&
+                      !props.isSearchStalled &&
+                      settings.rfq && (
+                        <RfqBanner
+                          rfqRef={rfqRef}
+                          rfqStatus={rfqStatus}
+                          setIsRfqModalOpen={setIsRfqModalOpen}
+                          requestImage={requestImage}
+                          selectedRegion={selectedRegion}
+                        />
+                      )}
+                    {!loadingSearchAlgolia &&
+                      !props.isSearchStalled &&
+                      settings.inquiry &&
+                      (searchQuery || requestImage) && (
+                        <InquiryBanner
+                          requestImage={requestImage}
+                          selectedRegion={selectedRegion}
+                          query={searchQuery}
+                        />
+                      )}
+                  </Box>
+                </Box>
+                {!isMobile &&
+                  props.allSearchResults?.hits?.length > 0 &&
+                  isAlgoliaEnabled && (
+                    <Box>
+                      <Box className="box-notify">
+                        <FooterResult search={search}>
+                          <Box
+                            display={'flex'}
+                            style={{ padding: '0 20px' }}
+                            className="box-change-hit-items"
+                          >
+                            <span style={{ paddingRight: '10px' }}>
+                              {t('Items per page')}:
+                            </span>
+                            <HitsPerPage
+                              items={showHits}
+                              defaultRefinement={20}
+                            />
+                          </Box>
+                        </FooterResult>
+                      </Box>
                     </Box>
                   )}
-
-                  {isMobile && settings.preview && requestImage && (
-                    <ImagePreviewMobile
-                      requestImage={requestImage}
-                      imageSelection={imageSelection}
-                      setImageSelection={setImageSelection}
-                      debouncedOnImageSelectionChange={
-                        debouncedOnImageSelectionChange
-                      }
-                      filteredRegions={filteredRegions}
-                      showAdjustInfoBasedOnConfidence={
-                        showAdjustInfoBasedOnConfidence
-                      }
-                      showAdjustInfo={showAdjustInfo}
-                    />
-                  )}
-
-                  <Box
+                {isMobile && (
+                  <div
                     style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      flexGrow: 1,
                       backgroundColor: '#FAFAFA',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      paddingBottom: '46px',
                     }}
                   >
-                    <Box
-                      className={'box-item-result ml-auto mr-auto'}
-                      style={{ height: '100%', paddingLeft: isMobile ? 0 : 16 }}
-                    >
-                      <ProductList
-                        getUrlToCanvasFile={getUrlToCanvasFile}
-                        setLoading={false}
-                        sendFeedBackAction={sendFeedBackAction}
-                        moreInfoText={moreInfoText}
-                        requestImage={requestImage}
-                        searchQuery={searchQuery}
-                      />
-                      <Box
-                        className="pagination-result"
-                        style={{
-                          width: '100%',
-                          margin: !isMobile ? '20px auto' : '',
-                          marginBottom:
-                            isMobile && !requestImage ? '64px' : '20px',
-                          padding: '0 20%',
-                          alignSelf: 'end',
-                        }}
-                      >
-                        {props.allSearchResults?.hits.length > 0 &&
-                          (requestImage || searchQuery) && (
-                            <Pagination
-                              showFirst={false}
-                              translations={{
-                                previous: (
-                                  <ArrowLeftIcon style={{ color: '#161616' }} />
-                                ),
-                                next: (
-                                  <ArrowRightIcon
-                                    style={{ color: '#161616' }}
-                                  />
-                                ),
-                              }}
-                            />
-                          )}
-                      </Box>
-
-                      {requestImage &&
-                        !loadingSearchAlgolia &&
-                        !props.isSearchStalled &&
-                        settings.rfq && (
-                          <RfqBanner
-                            rfqRef={rfqRef}
-                            rfqStatus={rfqStatus}
-                            setIsRfqModalOpen={setIsRfqModalOpen}
-                            requestImage={requestImage}
-                            selectedRegion={selectedRegion}
-                          />
-                        )}
-                      {!loadingSearchAlgolia &&
-                        !props.isSearchStalled &&
-                        settings.inquiry &&
-                        (searchQuery || requestImage) && (
-                          <InquiryBanner
-                            requestImage={requestImage}
-                            selectedRegion={selectedRegion}
-                            query={searchQuery}
-                          />
-                        )}
-                    </Box>
-                  </Box>
-                  {!isMobile &&
-                    props.allSearchResults?.hits?.length > 0 &&
-                    isAlgoliaEnabled && (
-                      <Box>
-                        <Box className="box-notify">
-                          <FooterResult search={search}>
-                            <Box
-                              display={'flex'}
-                              style={{ padding: '0 20px' }}
-                              className="box-change-hit-items"
-                            >
-                              <span style={{ paddingRight: '10px' }}>
-                                {t('Items per page')}:
-                              </span>
-                              <HitsPerPage
-                                items={showHits}
-                                defaultRefinement={20}
-                              />
-                            </Box>
-                          </FooterResult>
-                        </Box>
-                      </Box>
-                    )}
-                </Box>
-              </>
+                    <PoweredByNyrisImage
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        window.open('https://www.nyris.io', '_blank');
+                      }}
+                      color="#AAABB5"
+                    />
+                  </div>
+                )}
+              </Box>
             </Box>
           </Box>
         </>

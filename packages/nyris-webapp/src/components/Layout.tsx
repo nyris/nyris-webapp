@@ -21,6 +21,7 @@ import { initReactI18next } from 'react-i18next';
 import { translations } from 'translations';
 import { useAuth0 } from '@auth0/auth0-react';
 import InstantSearchProvider from './Provider/InstantSearchProvider';
+import PoweredByNyris from './PoweredByNyris';
 
 declare var psol: any;
 
@@ -154,6 +155,7 @@ function Layout({ children }: ReactNode): JSX.Element {
                 <FooterApp />
               </div>
             )}
+            <PoweredByNyris />
           </div>
         )}
         {!showApp && <> {children}</>}

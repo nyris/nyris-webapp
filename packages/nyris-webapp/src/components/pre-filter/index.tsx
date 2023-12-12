@@ -389,7 +389,7 @@ function PreFilterComponent(props: Props) {
                     {Array(6)
                       .fill('')
                       .map((_, index) => (
-                        <Skeleton animation={'pulse'} height={30} />
+                        <Skeleton key={index} animation={'pulse'} height={30} />
                       ))}
                   </Box>
                 );

@@ -13,6 +13,7 @@ function Router(): JSX.Element {
       <Switch>
         <Route path={'/login'} exact component={Login} />
         <Route path={'/logout'} exact component={Logout} />
+
         <Layout>
           <AuthenticatedRoute exact strict path="/" component={App} />
           <AuthenticatedRoute
