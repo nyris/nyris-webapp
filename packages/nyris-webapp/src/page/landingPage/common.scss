@@ -483,6 +483,10 @@ button {
     }
   }
 }
+.contact-support:hover {
+  cursor: pointer;
+  color: #fff !important;
+}
 
 .wrap-main-item-result {
   // filter: drop-shadow(0px 0px 6px #aaabb5b3);
@@ -916,7 +920,7 @@ button {
     }
   }
   .box-result {
-    height: calc(100vh - 148px);
+    height: calc(100vh - 177px);
     @media screen and (max-width: 776px) {
       height: 100%
     }

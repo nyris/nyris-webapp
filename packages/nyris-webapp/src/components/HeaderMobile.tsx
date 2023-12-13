@@ -30,6 +30,7 @@ import { debounce, isEmpty } from 'lodash';
 import { useQuery } from 'hooks/useQuery';
 import { useTranslation } from 'react-i18next';
 import { find } from 'services/image';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -38,6 +39,9 @@ interface Props {
 }
 
 function HeaderMobileComponent(props: Props): JSX.Element {
+  const { user } = useAuth0();
+  const { auth0 } = useAppSelector(state => state.settings);
+
   const { onToggleFilterMobile, refine } = props;
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector(state => state);
@@ -219,189 +223,193 @@ function HeaderMobileComponent(props: Props): JSX.Element {
           </NavLink>
         </Box>
       )}
-      <div
-        style={{
-          margin: '16px 8px',
-          display: 'flex',
-          columnGap: '8px',
-          alignItems: 'center',
-        }}
-      >
-        <div className="wrap-header-mobile" style={{ height: '56px' }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              height: '100%',
-            }}
-          >
+
+      {((auth0.enabled && user?.email_verified) || !auth0.enabled) && (
+        <div
+          style={{
+            margin: '16px 8px',
+            display: 'flex',
+            columnGap: '8px',
+            alignItems: 'center',
+          }}
+        >
+          <div className="wrap-header-mobile" style={{ height: '56px' }}>
             <div
-              ref={containerRefInputMobile}
-              id="box-input-search"
-              className="d-flex w-100"
               style={{
+                display: 'flex',
                 alignItems: 'center',
                 height: '100%',
               }}
             >
-              <Box
-                className="pre-filter-icon"
-                onClick={() => {
-                  if (settings.preFilterOption) {
-                    onToggleFilterMobile(false);
-                    dispatch(setPreFilterDropdown(!preFilterDropdown));
-                  }
+              <div
+                ref={containerRefInputMobile}
+                id="box-input-search"
+                className="d-flex w-100"
+                style={{
+                  alignItems: 'center',
+                  height: '100%',
                 }}
-                style={{ cursor: settings.preFilterOption ? 'pointer' : '' }}
               >
-                {settings.preFilterOption && (
-                  <div
-                    className="icon-hover"
-                    style={{
-                      ...(!isEmpty(preFilter)
-                        ? {
-                            backgroundColor: `${settings.theme?.primaryColor}`,
-                          }
-                        : {
-                            backgroundColor: `#2B2C46`,
-                          }),
-                    }}
-                  >
-                    <IconFilter color="white" />
-                  </div>
-                )}
-                {!settings.preFilterOption && (
-                  <IconSearch width={16} height={16} />
-                )}
-                {!isEmpty(preFilter) && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '7px',
-                      left: '35px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      background: 'white',
-                      width: '10px',
-                      height: '10px',
-                      borderRadius: '100%',
-                    }}
-                  >
+                <Box
+                  className="pre-filter-icon"
+                  onClick={() => {
+                    if (settings.preFilterOption) {
+                      onToggleFilterMobile(false);
+                      dispatch(setPreFilterDropdown(!preFilterDropdown));
+                    }
+                  }}
+                  style={{ cursor: settings.preFilterOption ? 'pointer' : '' }}
+                >
+                  {settings.preFilterOption && (
+                    <div
+                      className="icon-hover"
+                      style={{
+                        ...(!isEmpty(preFilter)
+                          ? {
+                              backgroundColor: `${settings.theme?.primaryColor}`,
+                            }
+                          : {
+                              backgroundColor: `#2B2C46`,
+                            }),
+                      }}
+                    >
+                      <IconFilter color="white" />
+                    </div>
+                  )}
+                  {!settings.preFilterOption && (
+                    <IconSearch width={16} height={16} />
+                  )}
+                  {!isEmpty(preFilter) && (
                     <div
                       style={{
-                        width: '8px',
-                        height: '8px',
-                        background: settings.theme?.primaryColor,
+                        position: 'absolute',
+                        top: '7px',
+                        left: '35px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        background: 'white',
+                        width: '10px',
+                        height: '10px',
                         borderRadius: '100%',
                       }}
-                    ></div>
-                  </div>
-                )}
-              </Box>
+                    >
+                      <div
+                        style={{
+                          width: '8px',
+                          height: '8px',
+                          background: settings.theme?.primaryColor,
+                          borderRadius: '100%',
+                        }}
+                      ></div>
+                    </div>
+                  )}
+                </Box>
 
-              <Input
-                value={textSearchInputMobile || searchQuery || valueInput}
-                onChange={onChangeText}
-              />
+                <Input
+                  value={textSearchInputMobile || searchQuery || valueInput}
+                  onChange={onChangeText}
+                />
 
-              {history.location?.pathname !== '/' && textSearchInputMobile && (
-                <Button
-                  onClick={() => {
-                    if (imageThumbSearchInput) {
-                      history.push('/result');
-                      dispatch(updateValueTextSearchMobile(''));
-                      refine('');
-                      return;
-                    }
-                    dispatch(updateValueTextSearchMobile(''));
-                    dispatch(reset(''));
-                    refine('');
-                    history.push('/');
-                  }}
-                  style={{
-                    // background: '#fff',
-                    marginRight: '8px',
-                    border: 0,
-                    width: '40px',
-                    height: '40px',
-                  }}
-                >
-                  <CloseIcon
-                    style={{
-                      fontSize: 16,
-                      color: settings.theme?.secondaryColor,
-                    }}
-                  />
-                </Button>
-              )}
+                {history.location?.pathname !== '/' &&
+                  textSearchInputMobile && (
+                    <Button
+                      onClick={() => {
+                        if (imageThumbSearchInput) {
+                          history.push('/result');
+                          dispatch(updateValueTextSearchMobile(''));
+                          refine('');
+                          return;
+                        }
+                        dispatch(updateValueTextSearchMobile(''));
+                        dispatch(reset(''));
+                        refine('');
+                        history.push('/');
+                      }}
+                      style={{
+                        // background: '#fff',
+                        marginRight: '8px',
+                        border: 0,
+                        width: '40px',
+                        height: '40px',
+                      }}
+                    >
+                      <CloseIcon
+                        style={{
+                          fontSize: 16,
+                          color: settings.theme?.secondaryColor,
+                        }}
+                      />
+                    </Button>
+                  )}
+              </div>
             </div>
           </div>
-        </div>
-        {isShowFilter && settings.postFilterOption && (
-          <div
-            style={{
-              position: 'relative',
-              width: '56px',
-              height: '56px',
-              padding: ' 8px',
-              flexShrink: 0,
-              borderRadius: '32px',
-              background: '#FAFAFA',
-              boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
-            }}
-            onClick={() => {
-              if (disablePostFilter) return;
-              onToggleFilterMobile();
-              dispatch(setPreFilterDropdown(false));
-            }}
-          >
+          {isShowFilter && settings.postFilterOption && (
             <div
               style={{
-                display: 'flex',
-                background: `${
-                  disablePostFilter ? '#F3F3F5' : settings.theme?.primaryColor
-                }`,
-                borderRadius: '40px',
-                width: '40px',
-                height: '40px',
-                justifyContent: 'center',
-                alignItems: 'center',
+                position: 'relative',
+                width: '56px',
+                height: '56px',
+                padding: ' 8px',
+                flexShrink: 0,
+                borderRadius: '32px',
+                background: '#FAFAFA',
+                boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
+              }}
+              onClick={() => {
+                if (disablePostFilter) return;
+                onToggleFilterMobile();
+                dispatch(setPreFilterDropdown(false));
               }}
             >
-              <FilterIcon
-                color={`${disablePostFilter ? '#E0E0E0' : 'white'}`}
-              />
-            </div>
-
-            {isPostFilterApplied && !disablePostFilter && (
               <div
                 style={{
-                  position: 'absolute',
-                  top: '8px',
-                  left: '37px',
                   display: 'flex',
+                  background: `${
+                    disablePostFilter ? '#F3F3F5' : settings.theme?.primaryColor
+                  }`,
+                  borderRadius: '40px',
+                  width: '40px',
+                  height: '40px',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  background: 'white',
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '100%',
                 }}
               >
+                <FilterIcon
+                  color={`${disablePostFilter ? '#E0E0E0' : 'white'}`}
+                />
+              </div>
+
+              {isPostFilterApplied && !disablePostFilter && (
                 <div
                   style={{
-                    width: '8px',
-                    height: '8px',
-                    background: settings.theme?.primaryColor,
+                    position: 'absolute',
+                    top: '8px',
+                    left: '37px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    background: 'white',
+                    width: '10px',
+                    height: '10px',
                     borderRadius: '100%',
                   }}
-                ></div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+                >
+                  <div
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      background: settings.theme?.primaryColor,
+                      borderRadius: '100%',
+                    }}
+                  ></div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
