@@ -357,7 +357,14 @@ function ResultComponent(props: Props) {
                 <CustomSearchBox />
               </div>
             )}
-            <Box className="box-result">
+            <Box
+              className="box-result"
+              style={{
+                height: settings.showPoweredByNyris
+                  ? 'calc(100vh - 177px)'
+                  : 'calc(100vh - 148px)',
+              }}
+            >
               {!isMobile && showSidePanel && (
                 <SidePanel
                   setImageSelection={setImageSelection}
@@ -503,7 +510,7 @@ function ResultComponent(props: Props) {
                       </Box>
                     </Box>
                   )}
-                {isMobile && (
+                {isMobile && settings.showPoweredByNyris && (
                   <div
                     style={{
                       backgroundColor: '#FAFAFA',

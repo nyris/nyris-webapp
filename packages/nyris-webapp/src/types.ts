@@ -59,6 +59,7 @@ export interface AppSettings extends NyrisAPISettings {
   showFeedbackAndShare?: boolean;
   showGroup?: boolean;
   showMoreInfo?: boolean; // deprecated
+  showPoweredByNyris?: boolean;
   templateId?: string;
   visualSearchFilterKey?: string;
   warehouseVariant?: boolean;

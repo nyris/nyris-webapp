@@ -64,7 +64,7 @@ function Layout({ children }: ReactNode): JSX.Element {
     history.location?.pathname === '/';
   const language = useAppSelector(state => state.settings.language);
   const { isAuthenticated } = useAuth0();
-  const { auth0 } = settings;
+  const { auth0, showPoweredByNyris } = settings;
   const showApp = !auth0.enabled || (auth0.enabled && isAuthenticated);
   i18n.changeLanguage(language);
 
@@ -155,7 +155,7 @@ function Layout({ children }: ReactNode): JSX.Element {
                 <FooterApp />
               </div>
             )}
-            <PoweredByNyris />
+            {showPoweredByNyris && <PoweredByNyris />}
           </div>
         )}
         {!showApp && <> {children}</>}
