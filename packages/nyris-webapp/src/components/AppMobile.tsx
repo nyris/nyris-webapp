@@ -37,6 +37,7 @@ function AppMobile({ children }: { children: ReactNode }) {
             overflowY: 'auto',
             overflowX: 'hidden',
             height: '100%',
+            backgroundColor: '#fff',
           }}
         >
           {children}

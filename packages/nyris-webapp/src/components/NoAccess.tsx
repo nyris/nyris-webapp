@@ -1,9 +1,11 @@
+import { useAppSelector } from 'Store/Store';
 import React from 'react';
 
 import { useMediaQuery } from 'react-responsive';
 
 function NoAccess() {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+  const { supportEmail } = useAppSelector(state => state.settings.auth0);
 
   return (
     <div
@@ -51,7 +53,9 @@ function NoAccess() {
           fontSize: '14px',
           width: 'fit-content',
         }}
-        href={`mailto:support@nyris.io?subject=Resend Email Verification&body=`}
+        href={`mailto:${
+          supportEmail || 'support@nyris.io'
+        }?subject=Resend Email Verification&body=`}
       >
         Contact Support
       </a>

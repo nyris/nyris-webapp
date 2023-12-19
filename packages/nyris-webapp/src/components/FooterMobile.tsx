@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
 import { ReactComponent as IconLogout } from 'common/assets/icons/logout.svg';
 import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
+import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
 
 import {
   reset,
@@ -104,6 +105,24 @@ function FooterMobile(props: Props): JSX.Element {
           </div>
         </div>
       </DefaultModal>
+      {history.location?.pathname === '/' && settings.showPoweredByNyris && (
+        <div
+          style={{
+            backgroundColor: '#fff',
+            display: 'flex',
+            justifyContent: 'center',
+            padding: '16px 0px 16px 0px',
+          }}
+        >
+          <PoweredByNyrisImage
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              window.open('https://www.nyris.io', '_blank');
+            }}
+            color="#AAABB5"
+          />
+        </div>
+      )}
       <Box
         className="box-footer-mobile"
         display={'flex'}

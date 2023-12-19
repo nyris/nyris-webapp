@@ -15,11 +15,11 @@ function PoweredByNyris() {
 
   return (
     <div
+      className="powered-by-nyris"
       style={{
         display: 'flex',
         padding: '9px 0px',
         justifyContent: 'center',
-        backgroundColor: !isHovered ? '#fff' : '#F0EFFF',
         borderTop: '1px solid #E0E0E0',
       }}
       onMouseOver={handleMouseOver}

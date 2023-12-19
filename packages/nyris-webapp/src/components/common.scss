@@ -128,3 +128,11 @@
   background-color:  hsla(0, 0%, 0%, 0.3);
   z-index: 1;
 }
+
+.powered-by-nyris{
+  background-color: #fff;
+  &:hover {
+    background-color:#F0EFFF,
+
+  }
+}

@@ -191,7 +191,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   }, [settings.postFilterOption, props.allSearchResults?.hits]);
 
   return (
-    <div style={{ width: '100%', background: '#fafafa' }}>
+    <div style={{ width: '100%', background: '#fff' }}>
       {history.location?.pathname !== '/result' && (
         <Box
           className="box-content"
@@ -199,7 +199,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             display: 'flex',
             alignItems: 'center',
             height: '48px',
-            borderBottom: '1px solid #e9e9ec',
             background: settings.theme?.headerColor,
           }}
         >
