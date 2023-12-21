@@ -30,7 +30,7 @@ export interface Field {
 }
 
 export interface AppSettings extends NyrisAPISettings {
-  algolia?: AlgoliaSettings;
+  algolia: AlgoliaSettings;
   alogoliaFilterField?: string;
   appTitle?: string;
   auth0: Auth0Settings;
