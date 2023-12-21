@@ -4,11 +4,17 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconSearch from 'common/assets/icons/icon_search.svg';
 import { getFilters, searchFilters } from 'services/filter';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { setPreFilter } from 'Store/search/Search';
+import {
+  setPreFilter,
+  setSearchResults,
+  updateStatusLoading,
+} from 'Store/search/Search';
 import { useMediaQuery } from 'react-responsive';
 import { isEmpty, pickBy } from 'lodash';
 import { Skeleton } from '@material-ui/lab';
 import { truncateString } from 'helpers/truncateString';
+import { find } from 'services/image';
+import { useQuery } from 'hooks/useQuery';
 
 interface Props {
   handleClose?: any;
@@ -19,11 +25,18 @@ function PreFilterComponent(props: Props) {
   const { handleClose } = props;
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector(state => state);
-  const {
-    settings,
-    search: { preFilter: keyFilterState },
-  } = stateGlobal;
+  const { settings } = stateGlobal;
   const [resultFilter, setResultFilter] = useState<any>([]);
+  const query = useQuery();
+  const searchQuery = query.get('query') || '';
+  const { search } = stateGlobal;
+  const {
+    preFilter: keyFilterState,
+
+    requestImage,
+    selectedRegion,
+  } = search;
+
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
   );
@@ -105,7 +118,45 @@ function PreFilterComponent(props: Props) {
   };
 
   const onHandlerSubmitData = () => {
-    dispatch(setPreFilter(pickBy(keyFilter, value => !!value)));
+    const preFilter = pickBy(keyFilter, value => !!value);
+    dispatch(setPreFilter(preFilter));
+
+    if (!settings.algolia?.enabled && (searchQuery || requestImage)) {
+      let payload: any;
+      let filters: any[] = [];
+      const preFilterValues = [
+        {
+          key: settings.visualSearchFilterKey,
+          values: Object.keys(preFilter) as string[],
+        },
+      ];
+      dispatch(updateStatusLoading(true));
+
+      find({
+        image: requestImage?.canvas as HTMLCanvasElement,
+        settings,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+        region: selectedRegion,
+        text: searchQuery,
+      })
+        .then((res: any) => {
+          res?.results.map((item: any) => {
+            filters.push({
+              sku: item.sku,
+              score: item.score,
+            });
+          });
+          payload = {
+            ...res,
+            filters,
+          };
+          dispatch(setSearchResults(payload));
+          dispatch(updateStatusLoading(false));
+        })
+        .catch((e: any) => {
+          dispatch(updateStatusLoading(false));
+        });
+    }
     handleClose();
   };
 
@@ -338,7 +389,7 @@ function PreFilterComponent(props: Props) {
                     {Array(6)
                       .fill('')
                       .map((_, index) => (
-                        <Skeleton animation={'pulse'} height={30} />
+                        <Skeleton key={index} animation={'pulse'} height={30} />
                       ))}
                   </Box>
                 );

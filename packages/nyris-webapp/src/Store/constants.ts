@@ -2,6 +2,12 @@ import { AppSettings } from '../types';
 
 export const defaultSettings: AppSettings = {
   auth0: {},
+  algolia: {
+    enabled: true,
+    apiKey: '',
+    appId: '',
+    indexName: '',
+  },
   xOptions: false,
   apiKey: 'UNSET',
   preview: true,

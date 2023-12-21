@@ -129,7 +129,13 @@ export const searchSlice = createSlice({
         results: payload,
       };
     },
-
+    updateQueryText: (state, data: PayloadAction<string>) => {
+      const { payload } = data;
+      return {
+        ...state,
+        queryText: payload,
+      };
+    },
     reset: (state, data: PayloadAction<any>) => {
       return {
         results: [],
@@ -270,19 +276,20 @@ export const {
   searchFileImageNonRegion,
   selectionChanged,
   setError,
+  setFilter,
   setImageCaptureHelpModal,
   setImageSearchInput,
+  setPreFilter,
   setPreFilterDropdown,
   setRegions,
   setRequestImage,
   setSearchResults,
   setSelectedRegion,
-  setPreFilter,
   setUpdateSession,
+  updateQueryText,
   updateResultChangePosition,
   updateResults,
   updateStatusLoading,
   updateValueTextSearchMobile,
-  setFilter,
 } = searchSlice.actions;
 export default searchSlice.reducer;

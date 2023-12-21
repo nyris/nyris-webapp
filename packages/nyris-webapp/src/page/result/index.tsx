@@ -24,8 +24,7 @@ import {
 } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { feedbackRegionEpic, feedbackSuccessEpic } from 'services/Feedback';
-import { createImage, findByImage, findRegions } from 'services/image';
-import { showFeedback, showResults } from 'Store/nyris/Nyris';
+import { createImage, find, findRegions } from 'services/image';
 import {
   loadingActionResults,
   onToggleModalItemDetail,
@@ -48,6 +47,8 @@ import useFilteredRegions from 'hooks/useFilteredRegions';
 import ImagePreviewMobile from 'components/ImagePreviewMobile';
 import RfqBanner from 'components/rfq/RfqBanner';
 import InquiryBanner from 'components/Inquiry/InquiryBanner';
+import { useQuery } from 'hooks/useQuery';
+import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
 
 interface Props {
   allSearchResults: any;
@@ -87,6 +88,11 @@ function ResultComponent(props: Props) {
   const [isScrolled, setIsScrolled] = useState<
     'not-scrolled' | 'scrolled' | 'user-scrolled'
   >('not-scrolled');
+
+  const query = useQuery();
+  const searchQuery = query.get('query') || search.valueTextSearch.query;
+  const isAlgoliaEnabled = settings.algolia?.enabled;
+  const isPostFilterEnabled = settings.postFilterOption;
 
   useEffect(() => {
     if (
@@ -132,13 +138,14 @@ function ResultComponent(props: Props) {
         },
       ];
       dispatch(loadingActionResults());
-      return findByImage({
+
+      return find({
         image: canvas,
         settings,
         region: r,
         filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       })
-        .then(res => {
+        .then((res: any) => {
           dispatch(updateStatusLoading(false));
           return {
             ...res,
@@ -172,7 +179,7 @@ function ResultComponent(props: Props) {
           setShowAdjustInfoBasedOnConfidence(false);
         }, 2000);
       });
-      return dispatch(showFeedback());
+      return;
     }, 250),
     [requestImage, findImageByApiNyris],
   );
@@ -190,7 +197,6 @@ function ResultComponent(props: Props) {
       // setOpenModalImage(false);
       dispatch(onToggleModalItemDetail(false));
     }
-    dispatch(showResults());
     dispatch(loadingActionResults());
     dispatch(setImageSearchInput(url));
     let image = await createImage(url);
@@ -210,14 +216,13 @@ function ResultComponent(props: Props) {
         values: Object.keys(preFilter) as string[],
       },
     ];
-    findByImage({
+    find({
       image,
       settings,
       region: searchRegion,
       filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-    }).then(res => {
+    }).then((res: any) => {
       dispatch(setSearchResults(res));
-      dispatch(showFeedback());
       dispatch(updateStatusLoading(false));
       return;
     });
@@ -236,7 +241,7 @@ function ResultComponent(props: Props) {
   useEffect(() => {
     document.title = 'Search results';
 
-    if (requestImage || isEmpty(search.valueTextSearch.query)) return;
+    if (requestImage || isEmpty(searchQuery)) return;
     const preFilterValues = Object.keys(preFilter) as string[];
     const filter =
       preFilterValues.length > 0
@@ -246,15 +251,10 @@ function ResultComponent(props: Props) {
         : '';
 
     setFilterString(filter);
-  }, [
-    preFilter,
-    requestImage,
-    search.valueTextSearch.query,
-    settings.alogoliaFilterField,
-  ]);
+  }, [preFilter, requestImage, searchQuery, settings.alogoliaFilterField]);
 
   useEffect(() => {
-    if (!requestImage) {
+    if (!requestImage || !isAlgoliaEnabled) {
       return;
     }
     dispatch(updateStatusLoading(true));
@@ -263,7 +263,6 @@ function ResultComponent(props: Props) {
       // setPreFilter(keyFilter);
       dispatch(updateResultChangePosition(res));
     });
-    dispatch(showFeedback());
 
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -302,13 +301,17 @@ function ResultComponent(props: Props) {
   const filteredRegions = useFilteredRegions(regions, imageSelection);
 
   const showPostFilter = useMemo(() => {
-    return settings.postFilterOption && props.allSearchResults?.hits.length > 0;
+    return (
+      isPostFilterEnabled &&
+      props.allSearchResults?.hits.length > 0 &&
+      isAlgoliaEnabled
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.postFilterOption, props.allSearchResults?.hits]);
+  }, [isPostFilterEnabled, props.allSearchResults?.hits, isAlgoliaEnabled]);
 
   const showSidePanel = useMemo(() => {
-    return requestImage || (settings.postFilterOption && showPostFilter);
-  }, [showPostFilter, settings.postFilterOption, requestImage]);
+    return requestImage || (isPostFilterEnabled && showPostFilter);
+  }, [showPostFilter, isPostFilterEnabled, requestImage]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -345,11 +348,8 @@ function ResultComponent(props: Props) {
             />
           )}
 
-          {filterString && (
-            <Configure
-              query={search.valueTextSearch.query}
-              filters={filterString}
-            ></Configure>
+          {filterString && isAlgoliaEnabled && (
+            <Configure query={searchQuery} filters={filterString}></Configure>
           )}
           <Box className="box-wrap-result-component">
             {!isMobile && (
@@ -357,133 +357,139 @@ function ResultComponent(props: Props) {
                 <CustomSearchBox />
               </div>
             )}
-            <Box className="box-result">
-              <>
-                {!isMobile && showSidePanel && (
-                  <SidePanel
+            <Box
+              className="box-result"
+              style={{
+                height: settings.showPoweredByNyris
+                  ? 'calc(100vh - 177px)'
+                  : 'calc(100vh - 148px)',
+              }}
+            >
+              {!isMobile && showSidePanel && (
+                <SidePanel
+                  setImageSelection={setImageSelection}
+                  allSearchResults={props.allSearchResults}
+                  debouncedOnImageSelectionChange={
+                    debouncedOnImageSelectionChange
+                  }
+                  filteredRegions={filteredRegions}
+                  imageSelection={imageSelection}
+                  showAdjustInfo={showAdjustInfo}
+                  showAdjustInfoBasedOnConfidence={
+                    showAdjustInfoBasedOnConfidence
+                  }
+                  showPostFilter={showPostFilter}
+                  disjunctiveFacets={props.allSearchResults.disjunctiveFacets}
+                />
+              )}
+
+              <Box
+                className={`col-right ${
+                  settings.preview && 'ml-auto mr-auto'
+                } ${isMobile && 'col-right-result-mobile'}`}
+                style={{
+                  paddingTop: isMobile ? '8px' : '40px',
+                  overflow: !isMobile ? 'auto' : '',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                {!isMobile && (
+                  <Box className="wrap-box-refinements">
+                    <CurrentRefinements statusSwitchButton={true} />
+                  </Box>
+                )}
+
+                {isMobile && settings.preview && requestImage && (
+                  <ImagePreviewMobile
+                    requestImage={requestImage}
+                    imageSelection={imageSelection}
                     setImageSelection={setImageSelection}
-                    allSearchResults={props.allSearchResults}
                     debouncedOnImageSelectionChange={
                       debouncedOnImageSelectionChange
                     }
                     filteredRegions={filteredRegions}
-                    imageSelection={imageSelection}
-                    showAdjustInfo={showAdjustInfo}
                     showAdjustInfoBasedOnConfidence={
                       showAdjustInfoBasedOnConfidence
                     }
-                    showPostFilter={showPostFilter}
-                    disjunctiveFacets={props.allSearchResults.disjunctiveFacets}
+                    showAdjustInfo={showAdjustInfo}
                   />
                 )}
 
                 <Box
-                  className={`col-right ${
-                    settings.preview && 'ml-auto mr-auto'
-                  } ${isMobile && 'col-right-result-mobile'}`}
                   style={{
-                    paddingTop: isMobile ? '8px' : '40px',
-                    overflow: !isMobile ? 'auto' : '',
                     display: 'flex',
                     flexDirection: 'column',
+                    flexGrow: 1,
+                    backgroundColor: '#FAFAFA',
                   }}
                 >
-                  {!isMobile && (
-                    <Box className="wrap-box-refinements">
-                      <CurrentRefinements statusSwitchButton={true} />
-                    </Box>
-                  )}
-
-                  {isMobile && settings.preview && requestImage && (
-                    <ImagePreviewMobile
-                      requestImage={requestImage}
-                      imageSelection={imageSelection}
-                      setImageSelection={setImageSelection}
-                      debouncedOnImageSelectionChange={
-                        debouncedOnImageSelectionChange
-                      }
-                      filteredRegions={filteredRegions}
-                      showAdjustInfoBasedOnConfidence={
-                        showAdjustInfoBasedOnConfidence
-                      }
-                      showAdjustInfo={showAdjustInfo}
-                    />
-                  )}
-
                   <Box
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      flexGrow: 1,
-                      backgroundColor: '#FAFAFA',
-                    }}
+                    className={'box-item-result ml-auto mr-auto'}
+                    style={{ height: '100%', paddingLeft: isMobile ? 0 : 16 }}
                   >
+                    <ProductList
+                      getUrlToCanvasFile={getUrlToCanvasFile}
+                      setLoading={false}
+                      sendFeedBackAction={sendFeedBackAction}
+                      moreInfoText={moreInfoText}
+                      requestImage={requestImage}
+                      searchQuery={searchQuery}
+                    />
                     <Box
-                      className={'box-item-result ml-auto mr-auto'}
-                      style={{ height: '100%', paddingLeft: isMobile ? 0 : 16 }}
+                      className="pagination-result"
+                      style={{
+                        width: '100%',
+                        margin: !isMobile ? '20px auto' : '',
+                        marginBottom:
+                          isMobile && !requestImage ? '64px' : '20px',
+                        padding: '0 20%',
+                        alignSelf: 'end',
+                      }}
                     >
-                      <ProductList
-                        getUrlToCanvasFile={getUrlToCanvasFile}
-                        setLoading={false}
-                        sendFeedBackAction={sendFeedBackAction}
-                        moreInfoText={moreInfoText}
-                        requestImage={requestImage}
-                        searchQuery={search.valueTextSearch.query}
-                      />
-                      <Box
-                        className="pagination-result"
-                        style={{
-                          width: '100%',
-                          margin: !isMobile ? '20px auto' : '',
-                          marginBottom:
-                            isMobile && !requestImage ? '64px' : '20px',
-                          padding: '0 20%',
-                          alignSelf: 'end',
-                        }}
-                      >
-                        {props.allSearchResults?.hits.length > 0 &&
-                          (requestImage || search.valueTextSearch.query) && (
-                            <Pagination
-                              showFirst={false}
-                              translations={{
-                                previous: (
-                                  <ArrowLeftIcon style={{ color: '#161616' }} />
-                                ),
-                                next: (
-                                  <ArrowRightIcon
-                                    style={{ color: '#161616' }}
-                                  />
-                                ),
-                              }}
-                            />
-                          )}
-                      </Box>
-
-                      {requestImage &&
-                        !loadingSearchAlgolia &&
-                        !props.isSearchStalled &&
-                        settings.rfq && (
-                          <RfqBanner
-                            rfqRef={rfqRef}
-                            rfqStatus={rfqStatus}
-                            setIsRfqModalOpen={setIsRfqModalOpen}
-                            requestImage={requestImage}
-                            selectedRegion={selectedRegion}
-                          />
-                        )}
-                      {!loadingSearchAlgolia &&
-                        !props.isSearchStalled &&
-                        settings.inquiry &&
-                        (search.valueTextSearch.query || requestImage) && (
-                          <InquiryBanner
-                            requestImage={requestImage}
-                            selectedRegion={selectedRegion}
-                            query={search.valueTextSearch.query}
+                      {props.allSearchResults?.hits.length > 0 &&
+                        (requestImage || searchQuery) && (
+                          <Pagination
+                            showFirst={false}
+                            translations={{
+                              previous: (
+                                <ArrowLeftIcon style={{ color: '#161616' }} />
+                              ),
+                              next: (
+                                <ArrowRightIcon style={{ color: '#161616' }} />
+                              ),
+                            }}
                           />
                         )}
                     </Box>
+
+                    {requestImage &&
+                      !loadingSearchAlgolia &&
+                      !props.isSearchStalled &&
+                      settings.rfq && (
+                        <RfqBanner
+                          rfqRef={rfqRef}
+                          rfqStatus={rfqStatus}
+                          setIsRfqModalOpen={setIsRfqModalOpen}
+                          requestImage={requestImage}
+                          selectedRegion={selectedRegion}
+                        />
+                      )}
+                    {!loadingSearchAlgolia &&
+                      !props.isSearchStalled &&
+                      settings.inquiry &&
+                      (searchQuery || requestImage) && (
+                        <InquiryBanner
+                          requestImage={requestImage}
+                          selectedRegion={selectedRegion}
+                          query={searchQuery}
+                        />
+                      )}
                   </Box>
-                  {!isMobile && props.allSearchResults?.hits?.length > 0 && (
+                </Box>
+                {!isMobile &&
+                  props.allSearchResults?.hits?.length > 0 &&
+                  isAlgoliaEnabled && (
                     <Box>
                       <Box className="box-notify">
                         <FooterResult search={search}>
@@ -504,8 +510,25 @@ function ResultComponent(props: Props) {
                       </Box>
                     </Box>
                   )}
-                </Box>
-              </>
+                {isMobile && settings.showPoweredByNyris && (
+                  <div
+                    style={{
+                      backgroundColor: '#FAFAFA',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      paddingBottom: '46px',
+                    }}
+                  >
+                    <PoweredByNyrisImage
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        window.open('https://www.nyris.io', '_blank');
+                      }}
+                      color="#AAABB5"
+                    />
+                  </div>
+                )}
+              </Box>
             </Box>
           </Box>
         </>

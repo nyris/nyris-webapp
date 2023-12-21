@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import ProductAttribute from './ProductAttribute';
 import CadenasWebViewer from './CadenasWebViewer';
 import { makeStyles } from '@material-ui/core/styles';
+import { get } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   buttonStyle3D: {
@@ -58,7 +59,7 @@ function ProductDetailView(props: Props) {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const brand = dataItem[settings.field.productTag];
-  const ctaLink = dataItem[settings.field?.ctaLinkField];
+
   const [collapDescription, setCollapDescription] = useState(false);
   const [feedback, setFeedback] = useState('none');
   const [is3dView, setIs3dView] = useState(show3dView);
@@ -69,6 +70,11 @@ function ProductDetailView(props: Props) {
   >();
   const { t } = useTranslation();
   const classes = useStyles(props?.show3dView);
+
+  const ctaLink = get(
+    dataItem,
+    settings.field?.ctaLinkField ? settings.field?.ctaLinkField : 'links.main',
+  );
 
   useEffect(() => {
     if (dataItem) {
@@ -155,13 +161,16 @@ function ProductDetailView(props: Props) {
             height: is3dView ? '0px' : !isMobile ? '60%' : '368px',
             opacity: is3dView ? 0 : 1,
             transition: !is3dView ? 'opacity 3s ease' : '',
-            paddingTop: '16px',
+            paddingTop: !is3dView ? '16px' : '0px',
           }}
         >
           {dataImageCarousel.length > 0 && (
-            <ImagePreviewCarousel imgItem={dataImageCarousel} setSelectedImage={(url) => {
-              setUrlImage(url ? url : urlImage);
-            }} />
+            <ImagePreviewCarousel
+              imgItem={dataImageCarousel}
+              setSelectedImage={url => {
+                setUrlImage(url ? url : urlImage);
+              }}
+            />
           )}
           {dataImageCarousel.length > 0 && (
             <Button
@@ -215,7 +224,7 @@ function ProductDetailView(props: Props) {
           style={{
             position: 'absolute',
             left: '16px',
-            bottom: isMobile ? '25px' : '10px'
+            bottom: isMobile ? '25px' : '10px',
           }}
         >
           {!is3dView &&
@@ -427,10 +436,7 @@ function ProductDetailView(props: Props) {
                     }}
                     onClick={() => {
                       if (ctaLink) {
-                        window.open(
-                          `${dataItem[settings.field.ctaLinkField]}`,
-                          '_blank',
-                        );
+                        window.open(`${ctaLink}`, '_blank');
                       }
                     }}
                   >

@@ -5,14 +5,20 @@ import { Preview } from '@nyris/nyris-react-components';
 import { DEFAULT_REGION } from '../constants';
 import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch } from 'Store/Store';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { ReactComponent as ArrowUp } from 'common/assets/icons/arrow_up.svg';
 import { ReactComponent as ArrowDown } from 'common/assets/icons/arrow_down.svg';
 import { ReactComponent as Trash } from 'common/assets/icons/trash.svg';
 import { useQuery } from 'hooks/useQuery';
-import { reset } from 'Store/search/Search';
+import {
+  reset,
+  setSearchResults,
+  updateStatusLoading,
+} from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
 import { connectSearchBox } from 'react-instantsearch-dom';
+import { find } from 'services/image';
+import { isEmpty } from 'lodash';
 
 function ImagePreviewMobileComponent({
   requestImage,
@@ -36,6 +42,9 @@ function ImagePreviewMobileComponent({
   const { refine }: any = rest;
   const [editActive, setEditActive] = useState(false);
   const [showShrinkAnimation, setShrinkAnimation] = useState(false);
+  const settings = useAppSelector(state => state.settings);
+  const { preFilter } = useAppSelector(state => state.search);
+  const isAlgoliaEnabled = settings.algolia?.enabled;
   const query = useQuery();
   const dispatch = useAppDispatch();
   const history = useHistory();
@@ -45,19 +54,59 @@ function ImagePreviewMobileComponent({
     setShrinkAnimation(true);
   };
 
-  const onImageRemove = () => {
-    const searchQuery = query.get('query') || '';
+  const searchQuery = query.get('query') || '';
 
+  const onImageRemove = () => {
     if (!searchQuery) {
       dispatch(reset(''));
       history.push('/');
     }
     dispatch(reset(''));
+    if (isAlgoliaEnabled) {
+      // not an ideal solution: fixes text search not working after removing image
+      setTimeout(() => {
+        refine(searchQuery);
+      }, 100);
+    }
+    if (!isAlgoliaEnabled) {
+      let payload: any;
+      let filters: any[] = [];
+      const preFilterValues = [
+        {
+          key: settings.visualSearchFilterKey,
+          values: Object.keys(preFilter) as string[],
+        },
+      ];
+      if (searchQuery || requestImage) {
+        dispatch(updateStatusLoading(true));
+        find({
+          settings,
+          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+          text: searchQuery,
+        })
+          .then((res: any) => {
+            res?.results.map((item: any) => {
+              filters.push({
+                sku: item.sku,
+                score: item.score,
+              });
+            });
+            payload = {
+              ...res,
+              filters,
+            };
 
-    // not an ideal solution: fixes text search not working after removing image
-    setTimeout(() => {
-      refine(searchQuery);
-    }, 100);
+            dispatch(setSearchResults(payload));
+            dispatch(updateStatusLoading(false));
+          })
+          .catch((e: any) => {
+            console.log('error input search', e);
+            dispatch(updateStatusLoading(false));
+          });
+      } else {
+        dispatch(setSearchResults([]));
+      }
+    }
   };
 
   return (

@@ -22,6 +22,7 @@ import { useMediaQuery } from 'react-responsive';
 import { feedbackClickEpic, feedbackConversionEpic } from 'services/Feedback';
 import ProductDetailView from 'components/ProductDetailView';
 import ProductAttribute from '../ProductAttribute';
+import { get } from 'lodash';
 
 interface Props {
   dataItem: any;
@@ -111,7 +112,11 @@ function ItemResult(props: Props) {
       dispatch(updateStatusLoading(false));
     }, 400);
   };
-  const ctaLink = dataItem[settings.field?.ctaLinkField];
+  const ctaLink = get(
+    dataItem,
+    settings.field?.ctaLinkField ? settings.field?.ctaLinkField : 'links.main',
+  );
+
   return (
     <Box className="wrap-main-item-result">
       <DefaultModal

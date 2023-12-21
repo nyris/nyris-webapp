@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.43 - 2023-11-28
+
+### Added
+
+- Add auth0 flow
+- Add powered by nyris
+- Settings to Show result from find api if algolia is disabled
+
+### Removed
+- Removed unused redux store
+
 ## 0.3.42 - 2023-11-28
 
 ### Added

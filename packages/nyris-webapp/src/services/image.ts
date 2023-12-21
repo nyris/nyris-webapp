@@ -1,4 +1,5 @@
 import NyrisAPI, {
+  ImageSearchOptions,
   NyrisAPISettings,
   RectCoords,
   Region,
@@ -48,24 +49,26 @@ export const findRegions = async (
   };
 };
 
-export const findByImage = ({
+export const find = ({
   image,
   settings,
   region,
   filters,
+  text,
 }: {
-  image: HTMLCanvasElement;
+  image?: HTMLCanvasElement;
   settings: NyrisAPISettings;
   region?: RectCoords;
   filters?: Filter[];
+  text?: string;
 }) => {
   const nyrisApi = new NyrisAPI(settings);
-  let options = {};
+  let options: ImageSearchOptions = text ? { text } : {};
 
   if (region) {
-    options = { cropRect: region };
+    options = { ...options, cropRect: region };
   }
-  return nyrisApi.findByImage(image, options, filters);
+  return nyrisApi.find(options, image, filters);
 };
 
 export const findByCadFile = (file: File, settings: NyrisAPISettings) => {

@@ -10,7 +10,7 @@ import { useDropzone } from 'react-dropzone';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
-import { createImage, findByImage, findRegions } from 'services/image';
+import { createImage, find, findRegions } from 'services/image';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
 import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
 
@@ -23,6 +23,7 @@ import {
   loadingActionResults,
   setRegions,
   setSelectedRegion,
+  updateQueryText,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -35,7 +36,8 @@ const SearchBox = (props: any) => {
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-  const { imageThumbSearchInput, preFilter } = search;
+  const { imageThumbSearchInput, preFilter, requestImage, selectedRegion } =
+    search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -45,6 +47,8 @@ const SearchBox = (props: any) => {
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] =
     useState<boolean>(false);
   const { t } = useTranslation();
+  const isAlgoliaEnabled = settings.algolia?.enabled;
+
   useEffect(() => {
     if (focusInp?.current) {
       focusInp?.current.focus();
@@ -55,25 +59,76 @@ const SearchBox = (props: any) => {
     const searchQuery = query.get('query') || '';
     if (!isEmpty(searchQuery)) {
       setValueInput(searchQuery);
-      refine(searchQuery);
-      // not an ideal solution: fixes text search not working from landing page
-      setTimeout(() => {
+      dispatch(updateQueryText(searchQuery));
+
+      if (isAlgoliaEnabled) {
         refine(searchQuery);
-      }, 100);
+        // not an ideal solution: fixes text search not working from landing page
+        setTimeout(() => {
+          refine(searchQuery);
+        }, 100);
+      }
     }
-  }, [query, refine]);
+  }, [query, refine, dispatch, isAlgoliaEnabled]);
 
   useEffect(() => {
     if (imageThumbSearchInput) {
       setValueInput('');
-      refine('');
+      if (isAlgoliaEnabled) {
+        refine('');
+      }
       history.push('/result');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageThumbSearchInput]);
+  }, [imageThumbSearchInput, isAlgoliaEnabled]);
 
   const searchOrRedirect = useCallback(
-    debounce((value: any) => {
+    debounce((value: any, withImage = true) => {
+      if (!isAlgoliaEnabled) {
+        dispatch(updateQueryText(value));
+        let payload: any;
+        let filters: any[] = [];
+        const preFilterValues = [
+          {
+            key: settings.visualSearchFilterKey,
+            values: Object.keys(preFilter) as string[],
+          },
+        ];
+        if (value || requestImage) {
+          dispatch(updateStatusLoading(true));
+          find({
+            image: withImage
+              ? (requestImage?.canvas as HTMLCanvasElement)
+              : undefined,
+            settings,
+            filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+            region: withImage ? selectedRegion : undefined,
+            text: value,
+          })
+            .then((res: any) => {
+              res?.results.map((item: any) => {
+                filters.push({
+                  sku: item.sku,
+                  score: item.score,
+                });
+              });
+              payload = {
+                ...res,
+                filters,
+              };
+
+              dispatch(setSearchResults(payload));
+              dispatch(updateStatusLoading(false));
+            })
+            .catch((e: any) => {
+              console.log('error input search', e);
+              dispatch(updateStatusLoading(false));
+            });
+        } else {
+          dispatch(setSearchResults([]));
+        }
+      }
+
       if (value) {
         history.push({
           pathname: '/result',
@@ -83,11 +138,12 @@ const SearchBox = (props: any) => {
         history.push('/result');
       }
     }, 500),
-    [],
+    [requestImage, preFilter, selectedRegion, isAlgoliaEnabled],
   );
 
   const { getInputProps } = useDropzone({
     onDrop: async (fs: File[]) => {
+      if (!fs[0]) return;
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
       if (history.location.pathname !== '/result') {
@@ -114,7 +170,7 @@ const SearchBox = (props: any) => {
         dispatch(setSelectedRegion(region));
       }
 
-      return findByImage({
+      return find({
         image,
         settings,
         filters: !isEmpty(preFilter) ? preFilterValues : undefined,
@@ -143,11 +199,13 @@ const SearchBox = (props: any) => {
 
   const onChangeText = (event: any) => {
     setValueInput(event.currentTarget.value);
-    // debounceSearch(event.currentTarget.value);
+
     searchOrRedirect(event.currentTarget.value);
     if (event.currentTarget.value === '') {
       setValueInput('');
-      refine('');
+      if (isAlgoliaEnabled) {
+        refine('');
+      }
     }
   };
 
@@ -258,7 +316,11 @@ const SearchBox = (props: any) => {
                           history.push('/');
                         }
                         dispatch(reset(''));
-                        refine(valueInput);
+                        if (isAlgoliaEnabled) {
+                          refine(valueInput);
+                        } else {
+                          searchOrRedirect(valueInput, false);
+                        }
                       }}
                     >
                       <CloseIcon
@@ -293,12 +355,19 @@ const SearchBox = (props: any) => {
               className="btn-clear-text"
               onClick={() => {
                 if (imageThumbSearchInput) {
+                  if (!isAlgoliaEnabled) {
+                    searchOrRedirect('');
+                  }
                   setValueInput('');
-                  refine('');
+                  if (isAlgoliaEnabled) {
+                    refine('');
+                  }
                   return;
                 }
                 setValueInput('');
-                refine('');
+                if (isAlgoliaEnabled) {
+                  refine('');
+                }
                 dispatch(reset(''));
                 history.push('/');
               }}
