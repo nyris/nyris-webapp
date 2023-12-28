@@ -613,51 +613,6 @@ function ResultComponent(props: Props) {
             Scroll down for personalized support
           </div>
         )}
-
-      {/* {showFeedbackSuccess && (
-        <div
-          style={{
-            zIndex: 100,
-            position: 'absolute',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            bottom: '94px',
-          }}
-        >
-          <div
-            style={{
-              fontSize: '12px',
-              fontWeight: 600,
-              color: '#fff',
-              backgroundColor: '#2B2C46',
-              width: '262px',
-              paddingTop: '8px',
-              paddingBottom: '8px',
-              textAlign: 'center',
-              borderRadius: '26px',
-            }}
-          >
-            Thanks for your feedback!
-          </div>
-        </div>
-      )} */}
-      {/* {showFeedback === 'scrolled' && !showFeedbackSuccess && (
-        <div
-          style={{
-            zIndex: 100,
-            position: 'fixed',
-            right: '0',
-            bottom: '86px',
-          }}
-        >
-          <Feedback
-            submitFeedback={submitFeedback}
-            onFeedbackClose={() => {
-              setShowFeedback('user-scrolled');
-            }}
-          />
-        </div>
-      )} */}
     </>
   );
 }
