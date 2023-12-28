@@ -49,6 +49,7 @@ import RfqBanner from 'components/rfq/RfqBanner';
 import InquiryBanner from 'components/Inquiry/InquiryBanner';
 import { useQuery } from 'hooks/useQuery';
 import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
+import Feedback from 'components/Feedback';
 
 interface Props {
   allSearchResults: any;
@@ -89,6 +90,11 @@ function ResultComponent(props: Props) {
     'not-scrolled' | 'scrolled' | 'user-scrolled'
   >('not-scrolled');
 
+  const [showFeedback, setShowFeedback] = useState<
+    'not-scrolled' | 'scrolled' | 'user-scrolled'
+  >('not-scrolled');
+
+  const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
   const query = useQuery();
   const searchQuery = query.get('query') || search.valueTextSearch.query;
   const isAlgoliaEnabled = settings.algolia?.enabled;
@@ -118,12 +124,14 @@ function ResultComponent(props: Props) {
       setImageSelection(selectedRegion);
       setRfqStatus('inactive');
       setIsScrolled('not-scrolled');
+      setShowFeedback('not-scrolled');
     }
   }, [selectedRegion]);
 
   useEffect(() => {
     if (requestImage) {
       setIsScrolled('not-scrolled');
+      setShowFeedback('not-scrolled');
       executeScroll();
       setImageSelection(DEFAULT_REGION);
     }
@@ -330,6 +338,35 @@ function ResultComponent(props: Props) {
     };
   }, [requestImage]);
 
+  useEffect(() => {
+    if (!requestImage || !settings.showFeedback) return;
+
+    setTimeout(() => {
+      setShowFeedback(s => (s === 'not-scrolled' ? 'scrolled' : s));
+    }, 5000);
+
+    const handleScroll = () => {
+      setTimeout(() => {
+        setShowFeedback(s => (s === 'not-scrolled' ? 'scrolled' : s));
+      }, 100);
+    };
+
+    window.addEventListener('scroll', handleScroll, { capture: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [requestImage, selectedRegion, settings.showFeedback]);
+
+  const submitFeedback = async (data: boolean) => {
+    setShowFeedbackSuccess(true);
+    setTimeout(() => {
+      setShowFeedbackSuccess(false);
+    }, 3000);
+    setShowFeedback('user-scrolled');
+    feedbackSuccessEpic(stateGlobal, data);
+  };
+
   return (
     <>
       <div
@@ -428,6 +465,23 @@ function ResultComponent(props: Props) {
                     className={'box-item-result ml-auto mr-auto'}
                     style={{ height: '100%', paddingLeft: isMobile ? 0 : 16 }}
                   >
+                    {showFeedbackSuccess && (
+                      <div className={'box-item-result feedback-floating'}>
+                        <div className="feedback-success">
+                          Thanks for your feedback!
+                        </div>
+                      </div>
+                    )}
+                    {showFeedback === 'scrolled' && !showFeedbackSuccess && (
+                      <div className={'box-item-result feedback-floating'}>
+                        <Feedback
+                          submitFeedback={submitFeedback}
+                          onFeedbackClose={() => {
+                            setShowFeedback('user-scrolled');
+                          }}
+                        />
+                      </div>
+                    )}
                     <ProductList
                       getUrlToCanvasFile={getUrlToCanvasFile}
                       setLoading={false}
@@ -559,6 +613,51 @@ function ResultComponent(props: Props) {
             Scroll down for personalized support
           </div>
         )}
+
+      {/* {showFeedbackSuccess && (
+        <div
+          style={{
+            zIndex: 100,
+            position: 'absolute',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            bottom: '94px',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '12px',
+              fontWeight: 600,
+              color: '#fff',
+              backgroundColor: '#2B2C46',
+              width: '262px',
+              paddingTop: '8px',
+              paddingBottom: '8px',
+              textAlign: 'center',
+              borderRadius: '26px',
+            }}
+          >
+            Thanks for your feedback!
+          </div>
+        </div>
+      )} */}
+      {/* {showFeedback === 'scrolled' && !showFeedbackSuccess && (
+        <div
+          style={{
+            zIndex: 100,
+            position: 'fixed',
+            right: '0',
+            bottom: '86px',
+          }}
+        >
+          <Feedback
+            submitFeedback={submitFeedback}
+            onFeedbackClose={() => {
+              setShowFeedback('user-scrolled');
+            }}
+          />
+        </div>
+      )} */}
     </>
   );
 }
