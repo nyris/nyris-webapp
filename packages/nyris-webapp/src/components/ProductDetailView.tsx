@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, Collapse, Grid, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';
@@ -111,7 +111,10 @@ function ProductDetailView(props: Props) {
 
     setDataImageCarouSel(valueKey);
   };
-
+  const productDetails = useMemo(() => {
+    return get(dataItem, settings.field.productDetails)?.join(', ');
+  }, [dataItem, settings.field.productDetails]);
+  const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
   return (
     <Box
       className="box-modal-default"
@@ -363,16 +366,16 @@ function ProductDetailView(props: Props) {
                     title={t('Brand')}
                     value={brand || settings.brandName}
                     width={
-                      dataItem[settings.field.manufacturerNumber]
+                      manufacturerNumber
                         ? { xs: '49%', md: 'fit-content' }
                         : { xs: '100%', md: 'fit-content' }
                     }
                   />
                 )}
-                {dataItem[settings.field.manufacturerNumber] && (
+                {manufacturerNumber && (
                   <ProductAttribute
                     title={t('Manufacturer Number')}
-                    value={dataItem[settings.field.manufacturerNumber]}
+                    value={manufacturerNumber}
                     width={
                       brand || settings.brandName
                         ? { xs: '49%', md: 'fit-content' }
@@ -460,7 +463,7 @@ function ProductDetailView(props: Props) {
                     )}
                   </Box>
                 </Box>
-                {dataItem[settings.field.productDetails] && (
+                {productDetails && (
                   <Box className="w-100">
                     <Button
                       className="w-100 button-hover"
@@ -498,7 +501,7 @@ function ProductDetailView(props: Props) {
                           color: '#2b2c46',
                         }}
                       >
-                        {dataItem[settings.field.productDetails]}
+                        {productDetails}
                       </Typography>
                     </Collapse>
                   </Box>
