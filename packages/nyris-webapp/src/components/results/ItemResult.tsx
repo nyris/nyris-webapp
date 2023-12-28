@@ -116,7 +116,7 @@ function ItemResult(props: Props) {
     dataItem,
     settings.field?.ctaLinkField ? settings.field?.ctaLinkField : 'links.main',
   );
-
+  const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
   return (
     <Box className="wrap-main-item-result">
       <DefaultModal
@@ -299,10 +299,10 @@ function ItemResult(props: Props) {
                 />
               )}
 
-              {dataItem[settings.field.manufacturerNumber] && (
+              {manufacturerNumber && (
                 <ProductAttribute
                   title={t('Mfr. No.')}
-                  value={dataItem[settings.field.manufacturerNumber]}
+                  value={manufacturerNumber}
                   padding="4px 8px"
                   width={{ xs: '49%' }}
                 />
