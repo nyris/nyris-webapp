@@ -57,6 +57,7 @@ export interface AppSettings extends NyrisAPISettings {
   rfq?: boolean;
   shareOption?: boolean;
   showFeedbackAndShare?: boolean;
+  showFeedback?: boolean;
   showGroup?: boolean;
   showMoreInfo?: boolean; // deprecated
   showPoweredByNyris?: boolean;
