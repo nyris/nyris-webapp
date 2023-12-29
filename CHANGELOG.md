@@ -3,7 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.3.43 - 2023-11-28
+## 0.3.44 - 2023-12-29
+
+### Removed
+- Removed Google analytics
+
+## 0.3.43 - 2023-12-21
 
 ### Added
 
