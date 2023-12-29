@@ -22,3 +22,8 @@ related projects:
 ```shell script
 npx lerna version patch --no-push --no-git-tag-version
 ```
+
+## Force update versions
+```shell script
+npx lerna version patch --no-push --no-git-tag-version --force-publish
+```
