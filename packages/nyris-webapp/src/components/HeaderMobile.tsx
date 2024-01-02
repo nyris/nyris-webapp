@@ -55,6 +55,8 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     queryText,
     requestImage,
     selectedRegion,
+    results,
+    postFilter,
   } = search;
 
   const query = useQuery();
@@ -162,16 +164,30 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   );
   const isPostFilterApplied = useMemo(() => {
     let isApplied = false;
-    if (!valueTextSearch?.refinementList) return false;
-    Object.keys(valueTextSearch?.refinementList).forEach(key => {
-      if (typeof valueTextSearch.refinementList[key] === 'object') {
-        isApplied = true;
-        return;
-      }
-    });
+
+    if (settings.algolia.enabled) {
+      if (!valueTextSearch?.refinementList) return false;
+      Object.keys(valueTextSearch?.refinementList).forEach(key => {
+        if (typeof valueTextSearch.refinementList[key] === 'object') {
+          isApplied = true;
+          return;
+        }
+      });
+    } else {
+      Object.keys(postFilter).forEach(key => {
+        const filter = postFilter[key];
+        Object.keys(filter).forEach(value => {
+          if (filter[value]) {
+            isApplied = true;
+            return;
+          }
+        });
+      });
+    }
+
     return isApplied;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valueTextSearch?.refinementList]);
+  }, [valueTextSearch?.refinementList, settings, postFilter]);
 
   const onChangeText = (event: any) => {
     // debounceSearch(event.currentTarget.value);
@@ -184,11 +200,16 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     }
   };
   const disablePostFilter = useMemo(() => {
-    return settings.postFilterOption && props.allSearchResults?.hits.length > 0
-      ? false
-      : true;
+    if (settings.algolia.enabled) {
+      return settings.postFilterOption &&
+        props.allSearchResults?.hits.length > 0
+        ? false
+        : true;
+    } else {
+      return settings.postFilterOption && results?.length > 0 ? false : true;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.postFilterOption, props.allSearchResults?.hits]);
+  }, [settings, results, props.allSearchResults?.hits]);
 
   return (
     <div style={{ width: '100%', background: '#fff' }}>

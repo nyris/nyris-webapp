@@ -2,7 +2,9 @@ import { Box, Button, Typography } from '@material-ui/core';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import React, { useState } from 'react';
-import ExpandablePanelComponent from './PanelResult';
+import PostFilterPanel from './PanelResult/PostFilter';
+import PostFilterPanelAlgolia from './PanelResult/PostFilterAlgolia';
+
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from 'Store/Store';
 import KeyboardArrowRightOutlinedIcon from '@material-ui/icons/KeyboardArrowRightOutlined';
@@ -32,7 +34,7 @@ function SidePanel({
 }) {
   const { t } = useTranslation();
   const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
-  const stateGlobal = useAppSelector((state: any) => state);
+  const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
 
   const { requestImage } = search;
@@ -136,7 +138,10 @@ function SidePanel({
 
         {showPostFilter && (
           <Box className="col-left__bottom">
-            <ExpandablePanelComponent disjunctiveFacets={disjunctiveFacets} />
+            {settings.algolia.enabled && (
+              <PostFilterPanelAlgolia disjunctiveFacets={disjunctiveFacets} />
+            )}
+            {!settings.algolia.enabled && <PostFilterPanel />}
           </Box>
         )}
       </Box>

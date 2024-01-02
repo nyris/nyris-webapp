@@ -3,7 +3,11 @@ import { ReactNode } from 'components/common';
 import React, { memo, useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
-import { onResetRequestImage, setUpdateSession } from 'Store/search/Search';
+import {
+  clearPostFilter,
+  onResetRequestImage,
+  setUpdateSession,
+} from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppState } from '../types';
 import './appMobile.scss';
@@ -22,6 +26,7 @@ import { translations } from 'translations';
 import { useAuth0 } from '@auth0/auth0-react';
 import InstantSearchProvider from './Provider/InstantSearchProvider';
 import PoweredByNyris from './PoweredByNyris';
+import { useQuery } from 'hooks/useQuery';
 
 declare var psol: any;
 
@@ -59,6 +64,9 @@ function Layout({ children }: ReactNode): JSX.Element {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
   const history = useHistory();
+  const query = useQuery();
+  const searchQuery = query.get('query') || '';
+
   let isShowHeaderMobile =
     (isMobile && history.location?.pathname === '/result') ||
     history.location?.pathname === '/';
@@ -114,6 +122,12 @@ function Layout({ children }: ReactNode): JSX.Element {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (!(search.requestImage && searchQuery)) {
+      dispatch(clearPostFilter());
+    }
+  }, [search.requestImage, searchQuery, dispatch]);
 
   return (
     <div style={{ position: 'relative' }}>

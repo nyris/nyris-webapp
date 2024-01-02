@@ -1,7 +1,10 @@
 import React, { memo } from 'react';
-import ExpandablePanelComponent from 'components/PanelResult';
+
+import PostFilterPanel from './PanelResult/PostFilter';
+import PostFilterPanelAlgolia from './PanelResult/PostFilterAlgolia';
 
 import { connectStateResults } from 'react-instantsearch-dom';
+import { useAppSelector } from 'Store/Store';
 
 interface Props {
   allSearchResults: any;
@@ -9,11 +12,17 @@ interface Props {
 }
 
 function MobilePostFilter(props: Props) {
+  const settings = useAppSelector(state => state.settings);
   return (
-    <ExpandablePanelComponent
-      disjunctiveFacets={props?.allSearchResults?.disjunctiveFacets}
-      onApply={props.onApply}
-    />
+    <>
+      {settings.algolia.enabled && (
+        <PostFilterPanelAlgolia
+          disjunctiveFacets={props?.allSearchResults?.disjunctiveFacets}
+          onApply={props.onApply}
+        />
+      )}
+      {!settings.algolia.enabled && <PostFilterPanel />}
+    </>
   );
 }
 

@@ -12,7 +12,7 @@ import type {
 } from 'react-instantsearch-core';
 import { connectCurrentRefinements } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
-import { useHasRefinements } from '.';
+import { useHasRefinements } from './PostFilterAlgolia';
 import { searchResultsAtom } from './virtual-state-results';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
@@ -42,12 +42,14 @@ function ExpandablePanelComponent({
     <Box>
       <div
         className={classNames(
-          'border-neutral-light',
           {
             hidden: !hasRefinements,
           },
           className,
         )}
+        style={{
+          borderTop: '1px solid #d3d4d8',
+        }}
       >
         <Button
           className="w-full flex items-center justify-between group"

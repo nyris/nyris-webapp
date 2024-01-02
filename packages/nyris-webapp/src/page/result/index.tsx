@@ -50,6 +50,7 @@ import InquiryBanner from 'components/Inquiry/InquiryBanner';
 import { useQuery } from 'hooks/useQuery';
 import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
 import Feedback from 'components/Feedback';
+import { SelectedPostFilter } from 'components/SelectedPostFilter';
 
 interface Props {
   allSearchResults: any;
@@ -69,6 +70,7 @@ function ResultComponent(props: Props) {
     preFilter,
     loadingSearchAlgolia,
     imageThumbSearchInput,
+    results,
   } = search;
 
   const moreInfoText = settings?.productCtaText;
@@ -311,11 +313,10 @@ function ResultComponent(props: Props) {
   const showPostFilter = useMemo(() => {
     return (
       isPostFilterEnabled &&
-      props.allSearchResults?.hits.length > 0 &&
-      isAlgoliaEnabled
+      (props.allSearchResults?.hits.length > 0 || results?.length > 0)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPostFilterEnabled, props.allSearchResults?.hits, isAlgoliaEnabled]);
+  }, [isPostFilterEnabled, props.allSearchResults?.hits, results]);
 
   const showSidePanel = useMemo(() => {
     return requestImage || (isPostFilterEnabled && showPostFilter);
@@ -431,7 +432,7 @@ function ResultComponent(props: Props) {
                   flexDirection: 'column',
                 }}
               >
-                {!isMobile && (
+                {!isMobile && settings.algolia.enabled && (
                   <Box className="wrap-box-refinements">
                     <CurrentRefinements statusSwitchButton={true} />
                   </Box>
@@ -459,12 +460,17 @@ function ResultComponent(props: Props) {
                     flexDirection: 'column',
                     flexGrow: 1,
                     backgroundColor: '#FAFAFA',
+                    height: '100%',
+                    justifyContent: 'space-between',
                   }}
                 >
                   <Box
                     className={'box-item-result ml-auto mr-auto'}
-                    style={{ height: '100%', paddingLeft: isMobile ? 0 : 16 }}
+                    style={{ paddingLeft: isMobile ? 0 : 16 }}
                   >
+                    {!isMobile && !settings.algolia.enabled && (
+                      <SelectedPostFilter />
+                    )}
                     {showFeedbackSuccess && (
                       <div className={'box-item-result feedback-floating'}>
                         <div className="feedback-success">
@@ -490,19 +496,20 @@ function ResultComponent(props: Props) {
                       requestImage={requestImage}
                       searchQuery={searchQuery}
                     />
-                    <Box
-                      className="pagination-result"
-                      style={{
-                        width: '100%',
-                        margin: !isMobile ? '20px auto' : '',
-                        marginBottom:
-                          isMobile && !requestImage ? '64px' : '20px',
-                        padding: '0 20%',
-                        alignSelf: 'end',
-                      }}
-                    >
-                      {props.allSearchResults?.hits.length > 0 &&
-                        (requestImage || searchQuery) && (
+
+                    {props.allSearchResults?.hits.length > 0 &&
+                      (requestImage || searchQuery) && (
+                        <Box
+                          className="pagination-result"
+                          style={{
+                            width: '100%',
+                            margin: !isMobile ? '20px auto' : '',
+                            marginBottom:
+                              isMobile && !requestImage ? '64px' : '20px',
+                            padding: '0 20%',
+                            alignSelf: 'end',
+                          }}
+                        >
                           <Pagination
                             showFirst={false}
                             translations={{
@@ -514,32 +521,48 @@ function ResultComponent(props: Props) {
                               ),
                             }}
                           />
-                        )}
-                    </Box>
-
-                    {requestImage &&
-                      !loadingSearchAlgolia &&
-                      !props.isSearchStalled &&
-                      settings.rfq && (
-                        <RfqBanner
-                          rfqRef={rfqRef}
-                          rfqStatus={rfqStatus}
-                          setIsRfqModalOpen={setIsRfqModalOpen}
-                          requestImage={requestImage}
-                          selectedRegion={selectedRegion}
-                        />
-                      )}
-                    {!loadingSearchAlgolia &&
-                      !props.isSearchStalled &&
-                      settings.inquiry &&
-                      (searchQuery || requestImage) && (
-                        <InquiryBanner
-                          requestImage={requestImage}
-                          selectedRegion={selectedRegion}
-                          query={searchQuery}
-                        />
+                        </Box>
                       )}
                   </Box>
+                  <div
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginTop: '24px',
+                    }}
+                  >
+                    <div
+                      className="result-wrapper"
+                      style={{
+                        paddingLeft: '16px',
+                        paddingRight: '7px',
+                      }}
+                    >
+                      {requestImage &&
+                        !loadingSearchAlgolia &&
+                        !props.isSearchStalled &&
+                        settings.rfq && (
+                          <RfqBanner
+                            rfqRef={rfqRef}
+                            rfqStatus={rfqStatus}
+                            setIsRfqModalOpen={setIsRfqModalOpen}
+                            requestImage={requestImage}
+                            selectedRegion={selectedRegion}
+                          />
+                        )}
+                      {!loadingSearchAlgolia &&
+                        !props.isSearchStalled &&
+                        settings.inquiry &&
+                        (searchQuery || requestImage) && (
+                          <InquiryBanner
+                            requestImage={requestImage}
+                            selectedRegion={selectedRegion}
+                            query={searchQuery}
+                          />
+                        )}
+                    </div>
+                  </div>
                 </Box>
                 {!isMobile &&
                   props.allSearchResults?.hits?.length > 0 &&

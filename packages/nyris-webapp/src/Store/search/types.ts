@@ -33,4 +33,5 @@ export interface SearchState {
   setPreFilterDropdown?: any;
   textSearchInputMobile?: string;
   valueTextSearch: any;
+  postFilter: Record<string, Record<string, boolean>>;
 }

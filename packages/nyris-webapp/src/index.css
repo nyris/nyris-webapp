@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #2B2C46
 }
 
 
@@ -403,7 +404,7 @@ button,
 input,
 select,
 textarea {
-  color: rgba(3, 31, 43, 0.54);
+  color: #2B2C46;
   font-family: Roboto, Arial, Helvetica, sans-serif;
   font-size: 17px;
   line-height: 1.5;
@@ -428,6 +429,7 @@ strong {
 
 body {
   background: #e7eaee;
+  color: #2B2C46;
 }
 
 h1,

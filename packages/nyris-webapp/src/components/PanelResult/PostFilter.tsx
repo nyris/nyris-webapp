@@ -1,20 +1,19 @@
-import { Box, Button } from '@material-ui/core';
+import { Box, Button, Checkbox } from '@material-ui/core';
 import { DynamicWidgetsCT } from 'components/dynamic-widgets/dynamic-widgets';
 import IconLabel from 'components/icon-label/icon-label';
 import { atom, useAtom } from 'jotai';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import type {
-  CurrentRefinementsProvided,
-  SearchResults,
-} from 'react-instantsearch-core';
-import { RefinementList } from 'react-instantsearch-dom';
+import type { CurrentRefinementsProvided } from 'react-instantsearch-core';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
-import { useAppSelector } from 'Store/Store';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
 import CloseIcon from '@material-ui/icons/Close';
 import { useTranslation } from 'react-i18next';
+import { setPostFilter } from 'Store/search/Search';
+import { useFilter } from 'hooks/useFilter';
+import { get } from 'lodash';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -28,33 +27,6 @@ export type ExpandablePanelProps = CurrentRefinementsProvided & {
 export type Panels = {
   [key: string]: boolean;
 };
-
-export function useHasRefinements(
-  searchResults: SearchResults,
-  attributes: string[] = [],
-) {
-  const facets = useMemo(() => {
-    const disjunctiveFacets = searchResults?.disjunctiveFacets || [];
-    const hierarchicalFacets = searchResults?.hierarchicalFacets || [];
-    return [...disjunctiveFacets, ...hierarchicalFacets];
-  }, [searchResults]);
-
-  const hasRefinements = useMemo(() => {
-    let found = !attributes.length;
-
-    facets.forEach(facet => {
-      attributes?.forEach(attribute => {
-        if (facet.name === attribute && facet.data) {
-          found = true;
-        }
-      });
-    });
-
-    return found;
-  }, [facets, attributes]);
-
-  return hasRefinements;
-}
 
 function togglePanels(panels: Panels, val: boolean) {
   return Object.keys(panels).reduce(
@@ -90,13 +62,15 @@ function WidgetPanel({ children, onToggle, panelId, ...props }: any) {
   );
 }
 
-export default function ExpandablePanelComponent({
+export default function PostFilterPanel({
   dynamicWidgets = true,
   onApply,
-  disjunctiveFacets,
 }: any) {
   const stateGlobal = useAppSelector(state => state);
-  const { settings } = stateGlobal;
+  const {
+    settings,
+    search: { postFilter, results },
+  } = stateGlobal;
   const { refinements } = settings;
   const [panels, setPanels] = useAtom(refinementsPanelsAtom);
   const [refinementsPanelsExpanded, setRefinementsPanelsExpanded] = useAtom(
@@ -105,6 +79,9 @@ export default function ExpandablePanelComponent({
   const history = useHistory();
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+
+  const filter = useFilter(results);
 
   // Set initial panels value
   useEffect(() => {
@@ -133,24 +110,57 @@ export default function ExpandablePanelComponent({
     [setPanels],
   );
 
-  const widgets = useMemo(
-    () =>
-      refinements.map((refinement: any) => {
-        return (
-          <RefinementList
-            className="box-refinement-list"
-            attribute={refinement.attribute}
-            {...refinement.options}
-            translations={{
-              noResults: 'No results',
-              placeholder: '',
-            }}
-            sortBy={['isRefined:desc', 'name:asc']}
-          />
-        );
-      }),
-    [refinements],
-  );
+  const widgets = useMemo(() => {
+    return refinements.map((refinement: any) => {
+      const filterList = filter?.[refinement.attribute];
+
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            rowGap: '16px',
+            marginBottom: '8px',
+          }}
+        >
+          {filterList?.map((item: any, index: number) => {
+            return (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  columnGap: '4px',
+                }}
+              >
+                <Checkbox
+                  color="primary"
+                  size="small"
+                  style={{ padding: '0px' }}
+                  checked={
+                    !!get(postFilter, `${refinement.attribute}.${item.value}`)
+                  }
+                  onChange={() => {
+                    dispatch(
+                      setPostFilter({
+                        [refinement.attribute]: item.value,
+                      }),
+                    );
+                  }}
+                />
+                <p style={{ fontSize: '14px', paddingTop: '3px' }}>
+                  {item.value}
+                </p>
+                <p style={{ fontSize: '14px', paddingTop: '3px' }}>
+                  ({item.count})
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      );
+    });
+  }, [refinements, filter, postFilter, dispatch]);
 
   const widgetsPanels = useMemo(
     () =>
@@ -238,6 +248,7 @@ export default function ExpandablePanelComponent({
                   paddingLeft: '24px',
                   paddingRight: '24px',
                   overflow: 'auto',
+                  marginBottom: '12px',
                 }
               : {}),
           }}

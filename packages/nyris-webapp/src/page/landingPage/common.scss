@@ -2184,3 +2184,11 @@ button {
 .product-image:hover{
   transform: scale(1.1);
 }
+
+.result-wrapper {
+  max-width: calc(192px * 4 + 96px);
+  width: 100%;
+  @media screen and (min-width: 2047px) {
+    max-width: 1300px;
+  }
+}
