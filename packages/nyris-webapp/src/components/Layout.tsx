@@ -127,7 +127,11 @@ function Layout({ children }: ReactNode): JSX.Element {
     if (!(search.requestImage && searchQuery)) {
       dispatch(clearPostFilter());
     }
-  }, [search.requestImage, searchQuery, dispatch]);
+  }, [search.requestImage, searchQuery, dispatch, search.regions]);
+
+  useEffect(() => {
+    dispatch(clearPostFilter());
+  }, [dispatch, search.selectedRegion]);
 
   return (
     <div style={{ position: 'relative' }}>
