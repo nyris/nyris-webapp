@@ -83,9 +83,9 @@ export default function InquiryModal({
         setInquiryStatus('loading');
         await emailjs.send(serviceId, settings.templateId, {
           email_id: email.trim(),
-          information_text: information,
+          information_text: information ? information : '<not specified>',
           request_image: croppedImage?.toDataURL(),
-          prefilter_values: preFilterValues.join(', '),
+          prefilter_values: preFilterValues?.length ? preFilterValues.join(', ') : '<not specified>',
         });
         setInquiryStatus('sent');
         ToastHelper.success('Request sent successfully');

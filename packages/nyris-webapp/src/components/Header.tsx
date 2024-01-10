@@ -1,6 +1,5 @@
 import { Box, Menu, MenuProps, withStyles } from '@material-ui/core';
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import './common.scss';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { reset, setPreFilter } from 'Store/search/Search';
@@ -62,8 +61,8 @@ function Header(): JSX.Element {
 
   return (
     <Box className="box-content" display={'flex'}>
-      <NavLink
-        to="/"
+      <a
+        href={window.location.origin}
         style={{ lineHeight: 0, paddingLeft: '10px' }}
         onClick={() => {
           dispatch(reset(''));
@@ -79,7 +78,7 @@ function Header(): JSX.Element {
             height: settings.theme?.logoHeight,
           }}
         />
-      </NavLink>
+      </a>
 
       {auth0.enabled && isAuthenticated && (
         <div style={{ position: 'relative' }}>
