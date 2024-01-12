@@ -1,8 +1,17 @@
 .nyris__reselect {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
   &-image {
     max-width: 100%;
     width: auto;
     max-height: 270px;
+  }
+
+  
+  &-image-wrapper {
+    width: 320px;
   }
 
   &-bubble {
@@ -29,5 +38,14 @@
     &-link {
       font-weight: bold;
     }
+  }
+
+  &-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
   }
 }

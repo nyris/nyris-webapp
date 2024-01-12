@@ -1,24 +1,35 @@
-import React from 'react';
-import product_arrow from './images/product_arrow.svg';
+import React from "react";
+import link from "./images/link.svg";
+import similar_search from "./images/similar_search.svg";
 
 export interface ResultProps {
-    title: string
-    price: string
-    link: string
-    imageUrl: string
+  title: string;
+  sku: string;
+  links: Record<string, string>;
+  imageUrl: string;
+  onSimilarSearch?: any;
 }
-export const Result = (r: ResultProps) => (
+export const Result = (r: ResultProps) => {
+  return (
     <div className="nyris__success-multiple-result">
-        <a className="nyris__success-multiple-result-box" href={r.link}>
-            <div className="nyris__success-multiple-product-image" style={{backgroundImage: `url("${r.imageUrl}")`}}/>
-            <div className="nyris__success-multiple-product-panel">
-                <div className="nyris__success-title">{ r.title}</div>
-                <div className="nyris__success-price">{r.price}</div>
-                <div className="nyris__success-multiple-product-arrow">
-                    <img src={product_arrow} width="38px" height="38px"/>
-                </div>
-            </div>
-        </a>
+      <div className="nyris__success-multiple-result-box">
+        <div className="nyris__product-image">
+          <img src={r.imageUrl} width={"192px"} height={"192px"} />
+          <div
+            className="nyris__product-similar-search"
+            onClick={() => r.onSimilarSearch(r.imageUrl)}
+          >
+            <img src={similar_search} width={"16px"} height={"16px"} />
+          </div>
+        </div>
+        <div className="nyris__success-multiple-product-panel">
+          <div className="nyris__product-sku">{r.sku}</div>
+          <a className="nyris__product-cta" href={r.links.main} target="_blank">
+            <div className="nyris__product-title">{r.title}</div>
+            <img src={link} width={"16px"} height={"16px"} />
+          </a>
+        </div>
+      </div>
     </div>
-);
-
+  );
+};

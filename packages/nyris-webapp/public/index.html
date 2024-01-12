@@ -87,12 +87,36 @@
     />
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="theme-color" content="#ffffff" />
-  
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="pragma" content="no-cache">
+    <!-- <title>nyris.io</title> -->
+    
     <script src="js/settings.js?CI_COMMIT_SHA"></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@algolia/autocomplete-theme-classic"
     />
+    <!-- Hitta Analytics -->
+    <script>
+      window.nyrisSettings = {
+          // Required
+          apiKey: 'I94rtHQGbVAtXJ8fFYnccJTsepp2XzfU',
+
+          // Optional
+          initiatorElementId: 'nyris-visual-search-initiator',
+          xOptions: 'default', // See "general request options" https://docs.nyris.io/#general-request-options
+          baseUrl: '', // Use different server URL
+          jpegQuality: 0.9, // Quality of the scaled image sent to the api
+          maxWidth: 500, // Maximal size of the scaled image
+          maxHeight: 500,
+          responseFormat: 'application/offers.complete+json', // See "response type" https://docs.nyris.io/#response-type
+          instantRedirectPatterns: [ 'mysite.com' ] // If exactly one result is returned and it contains `mysite.com`,go directly to the link.
+      }
+    </script>
+    <script src="widget.js"></script>
+
+    <!-- End Hitta Analytics -->
 
 
     <!-- Piwik Analytics -->

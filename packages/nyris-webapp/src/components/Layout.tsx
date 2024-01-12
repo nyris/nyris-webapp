@@ -24,6 +24,7 @@ import InstantSearchProvider from './Provider/InstantSearchProvider';
 import PoweredByNyris from './PoweredByNyris';
 
 declare var psol: any;
+declare var Nyris: any;
 
 jQuery(document).ready(function () {
   psol.core.setUserInfo({
@@ -73,6 +74,11 @@ function Layout({ children }: ReactNode): JSX.Element {
       let payload = await createSessionByApi(settings);
       dispatch(setUpdateSession(payload));
     };
+    // console.log({ Nyris });
+
+    window.addEventListener('load', e => {
+      // console.log({ Nyris });
+    });
 
     createSession().catch(console.log);
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,7 +1,15 @@
 .nyris__wait {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
   &-spinner {
     animation: wait 1s infinite linear;
     padding-top: 3px;
+  }
+
+  &-wrapper {
+    height: 100%;
   }
 }
 
