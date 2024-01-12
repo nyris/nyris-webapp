@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.45 - 2024-01-12
+
+### Added
+- Added CTA button custom text
+
 ## 0.3.44 - 2023-12-29
 
 ### Removed

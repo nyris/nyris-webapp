@@ -55,7 +55,7 @@ function ProductDetailView(props: Props) {
     show3dView = false,
     onSearchImage,
   } = props;
-  const { sku } = dataItem;
+  const { sku, title } = dataItem;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const brand = dataItem[settings.field.productTag];
@@ -347,6 +347,17 @@ function ProductDetailView(props: Props) {
                 style={{ gap: 6 }}
                 width={'100%'}
               >
+                {!settings.warehouseVariant && settings.CTAButtonText  && (
+                  <ProductAttribute
+                    title={'Produktname'}
+                    value={title}
+                    width={
+                      settings.warehouseVariant
+                        ? { xs: '49%', md: 'fit-content' }
+                        : { xs: '100%', md: 'fit-content' }
+                    }
+                  />
+                )}
                 {!settings.warehouseVariant && (
                   <ProductAttribute
                     title={settings.itemIdLabel || 'SKU'}
@@ -449,7 +460,7 @@ function ProductDetailView(props: Props) {
                         paddingRight: '4px',
                       }}
                     >
-                      {dataItem[settings.field.productName]}
+                      {settings.CTAButtonText ? settings.CTAButtonText : dataItem[settings.field.productName]}
                     </Typography>
                     {ctaLink && (
                       <img

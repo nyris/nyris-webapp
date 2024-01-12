@@ -64,6 +64,7 @@ export interface AppSettings extends NyrisAPISettings {
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
   warehouseVariant?: boolean;
+  CTAButtonText?: string;
 }
 
 export interface SearchSuiteSettings {
