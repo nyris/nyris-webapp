@@ -242,12 +242,11 @@
 }
 
 .nyris__footer {
-
+  color: #AAABB5;
   @include flex-center();
 
   font-size: $fs-footer;
   letter-spacing: 0.21px;
-  color: $color-footer-text;
   
   & a {
     text-decoration: none;
@@ -255,10 +254,11 @@
       &:hover {
       color: $color-footer-link-hover;
     }
+    font-weight: 500;
+
   }
 
   &-logo {
-    color: #AAABB5;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.8px;
