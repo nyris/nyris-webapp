@@ -242,3 +242,27 @@
     width: 264px;
   }
 }
+
+.rfq-box{
+  padding: 24px 40px 24px 40px;
+
+  @media screen and (max-width: 776px) {
+    padding: 16px 16px 16px 16px;
+  
+  }
+
+  @media screen and (max-width: 820px) {
+    padding: 16px 16px 16px 16px;
+  
+  }
+
+  .support-button-wrapper {
+    flex-wrap: nowrap;
+
+    @media screen and (max-width: 820px) {
+      flex-wrap: wrap;
+    }
+  }
+
+  
+}

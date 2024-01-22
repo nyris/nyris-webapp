@@ -531,7 +531,8 @@ function ResultComponent(props: Props) {
                       )}
                     {!loadingSearchAlgolia &&
                       !props.isSearchStalled &&
-                      settings.inquiry &&
+                      settings.support &&
+                      settings.support.enabled &&
                       (searchQuery || requestImage) && (
                         <InquiryBanner
                           requestImage={requestImage}
