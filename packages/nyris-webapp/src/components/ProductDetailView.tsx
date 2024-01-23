@@ -113,10 +113,11 @@ function ProductDetailView(props: Props) {
   };
   const productDetails = useMemo(() => {
     const details = get(dataItem, settings.field.productDetails);
-    if (details) {
+    try {
       return details.join(', ');
+    } catch (e) {
+      return details;
     }
-    return '';
   }, [dataItem, settings.field.productDetails]);
   const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
   return (
