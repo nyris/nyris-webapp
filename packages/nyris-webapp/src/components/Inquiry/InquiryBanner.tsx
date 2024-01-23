@@ -5,7 +5,7 @@ import { useMediaQuery } from 'react-responsive';
 import InquiryModal from './InquiryModal';
 import { useAppSelector } from 'Store/Store';
 import { ReactComponent as EmailIcon } from 'common/assets/icons/icon_email.svg';
-import { ReactComponent as CallIcon } from 'common/assets/icons/icon_email.svg';
+import { ReactComponent as CallIcon } from 'common/assets/icons/call.svg';
 
 function InquiryBanner({
   requestImage,
@@ -57,7 +57,7 @@ function InquiryBanner({
           style={{
             width: '100%',
             display: 'flex',
-            columnGap: !isMobile ? '26px' : '8px',
+            columnGap: !isMobile ? '26px' : '16px',
             alignItems: 'center',
           }}
         >
@@ -82,7 +82,7 @@ function InquiryBanner({
           <Box style={{ width: '100%' }}>
             <Box
               style={{
-                paddingBottom: '12px',
+                paddingBottom: '8px',
                 paddingLeft: '16px',
               }}
             >
@@ -99,9 +99,9 @@ function InquiryBanner({
               </Box>
               <Box
                 style={{
-                  fontSize: '12px',
+                  fontSize: '14px',
                   maxWidth: '320x',
-                  lineHeight: '14.1px',
+                  lineHeight: '16px',
                   color: inquiryStatus === 'inactive' ? '#4B4B4A' : '#2B2C46',
                   fontWeight: 'normal',
                 }}
@@ -123,7 +123,7 @@ function InquiryBanner({
                   style={{
                     width: inquiry && supportNumber ? '50%' : '100%',
                     maxWidth: '170px',
-                    minWidth: '105px',
+                    minWidth: '86px',
                     background:
                       inquiryStatus === 'inactive' ? secondaryColor : '#E9E9EC',
                     boxShadow:
@@ -131,12 +131,11 @@ function InquiryBanner({
                         ? '0px 0px 4px 0px rgba(0, 0, 0, 0.25)'
                         : '',
                     borderRadius: '2px',
-                    padding: '16px 16px 16px 16px',
+                    padding: '8px 16px 8px 16px',
                     display: 'flex',
                     alignItems: 'center',
                     color: inquiryStatus === 'inactive' ? '#fff' : '#CACAD1',
-                    fontSize: '14px',
-                    height: '48px',
+                    fontSize: '13px',
                     cursor:
                       inquiryStatus === 'inactive' ? 'pointer' : 'default',
                     border: 'none',
@@ -163,18 +162,18 @@ function InquiryBanner({
                   style={{
                     width: inquiry && supportNumber ? '50%' : '100%',
                     maxWidth: '170px',
-                    minWidth: '105px',
+                    minWidth: '86px',
                     background: secondaryColor,
                     boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.25)',
                     borderRadius: '2px',
-                    padding: '16px 16px 16px 16px',
+                    padding: '8px 16px 8px 16px',
                     display: 'flex',
                     alignItems: 'center',
                     color: '#fff',
-                    fontSize: '14px',
-                    height: '48px',
+                    fontSize: '13px',
                     cursor: 'pointer',
                     border: 'none',
+                    fontWeight: 500,
                   }}
                   href={`tel:${supportNumber}`}
                 >
@@ -187,7 +186,7 @@ function InquiryBanner({
                     }}
                   >
                     <p> Call us</p>
-                    <EmailIcon color="#fff" width={16} height={16} />
+                    <CallIcon color="#fff" width={16} height={16} />
                   </div>
                 </a>
               )}
