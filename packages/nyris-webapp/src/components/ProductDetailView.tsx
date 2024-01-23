@@ -112,7 +112,12 @@ function ProductDetailView(props: Props) {
     setDataImageCarouSel(valueKey);
   };
   const productDetails = useMemo(() => {
-    return get(dataItem, settings.field.productDetails)?.join(', ');
+    const details = get(dataItem, settings.field.productDetails);
+    try {
+      return details.join(', ');
+    } catch (e) {
+      return details;
+    }
   }, [dataItem, settings.field.productDetails]);
   const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
   return (

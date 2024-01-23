@@ -17,7 +17,6 @@ interface Props {
   selectedRegion: any;
   setIsInquiryModalOpen: any;
   isInquiryModalOpen?: any;
-  setInquiryStatus: any;
 }
 // eslint-disable-next-line
 const emailRegex = /.+\@.+\..+$/;
@@ -41,7 +40,6 @@ export default function InquiryModal({
   selectedRegion,
   setIsInquiryModalOpen,
   isInquiryModalOpen,
-  setInquiryStatus,
 }: Props) {
   const stateGlobal = useAppSelector(state => state);
   const {
@@ -80,18 +78,14 @@ export default function InquiryModal({
     setIsInquiryModalOpen(false);
     if (settings.templateId) {
       try {
-        setInquiryStatus('loading');
         await emailjs.send(serviceId, settings.templateId, {
           email_id: email.trim(),
           information_text: information,
           request_image: croppedImage?.toDataURL(),
           prefilter_values: preFilterValues.join(', '),
         });
-        setInquiryStatus('sent');
         ToastHelper.success('Request sent successfully');
       } catch (error) {
-        setInquiryStatus('inactive');
-
         toast(
           t => {
             return (

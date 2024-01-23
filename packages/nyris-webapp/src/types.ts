@@ -15,6 +15,13 @@ export interface Auth0Settings {
   supportEmail?: string;
 }
 
+export interface Support {
+  enabled?: boolean;
+  description?: string;
+  inquiry?: boolean;
+  supportNumber?: string;
+}
+
 export interface Field {
   ctaLinkField: string;
   productName: string;
@@ -56,11 +63,12 @@ export interface AppSettings extends NyrisAPISettings {
   regions: boolean;
   rfq?: boolean;
   shareOption?: boolean;
-  showFeedbackAndShare?: boolean;
   showFeedback?: boolean;
+  showFeedbackAndShare?: boolean;
   showGroup?: boolean;
   showMoreInfo?: boolean; // deprecated
   showPoweredByNyris?: boolean;
+  support?: Support;
   templateId?: string;
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
