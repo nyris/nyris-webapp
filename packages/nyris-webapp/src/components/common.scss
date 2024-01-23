@@ -64,6 +64,10 @@
   .box-body-newVersion-wrap-main {
     height: calc(100% - 50px);
     // overflow: auto;
+    .box-content-main {
+      height: auto;
+      margin-top: calc(50vh - 50px);
+    }
   }
 }
 

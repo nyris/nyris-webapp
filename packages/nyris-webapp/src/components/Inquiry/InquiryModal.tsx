@@ -80,9 +80,9 @@ export default function InquiryModal({
       try {
         await emailjs.send(serviceId, settings.templateId, {
           email_id: email.trim(),
-          information_text: information,
+          information_text: information ? information : '<not specified>',
           request_image: croppedImage?.toDataURL(),
-          prefilter_values: preFilterValues.join(', '),
+          prefilter_values: preFilterValues?.length ? preFilterValues.join(', ') : '<not specified>',
         });
         ToastHelper.success('Request sent successfully');
       } catch (error) {
