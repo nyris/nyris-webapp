@@ -131,7 +131,9 @@ function InquiryBanner({
                         ? '0px 0px 4px 0px rgba(0, 0, 0, 0.25)'
                         : '',
                     borderRadius: '2px',
-                    padding: '8px 16px 8px 16px',
+                    padding: !isMobile
+                      ? '8px 16px 8px 16px'
+                      : '8px 8px 8px 8px',
                     display: 'flex',
                     alignItems: 'center',
                     color: inquiryStatus === 'inactive' ? '#fff' : '#CACAD1',
@@ -166,7 +168,9 @@ function InquiryBanner({
                     background: secondaryColor,
                     boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.25)',
                     borderRadius: '2px',
-                    padding: '8px 16px 8px 16px',
+                    padding: !isMobile
+                      ? '8px 16px 8px 16px'
+                      : '8px 8px 8px 8px',
                     display: 'flex',
                     alignItems: 'center',
                     color: '#fff',
