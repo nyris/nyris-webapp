@@ -47,6 +47,7 @@ export interface AppProps {
   onFileDropped: (f: File) => void;
   onAcceptCrop: (r: RectCoords) => void;
   onSimilarSearch: (url: string) => void;
+  loading: boolean;
 }
 
 const SuccessMultiple = ({
@@ -57,9 +58,13 @@ const SuccessMultiple = ({
   regions,
   selection,
   onRestart,
+  onFile,
+  loading,
 }: AppProps) => {
+  const noResult = results.length === 0;
+
   const [currentSelection, setCurrentSelection] = useState(selection);
-  const [expand, setExpand] = useState(false);
+  const [expand, setExpand] = useState(noResult ? true : false);
 
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
@@ -69,68 +74,101 @@ const SuccessMultiple = ({
   );
 
   return (
-    <div className="nyris__screen nyris__success-multiple">
-      <div className="nyris__main-heading ">Success!</div>
-      <div className="nyris__main-description">
-        {results.length} matches found
-      </div>
-      <div className="nyris__main-content">
-        <div className="nyris__success-multiple-preview">
-          <div className="nyris__success-multiple-preview-wrapper">
-            <Preview
-              image={image}
-              selection={currentSelection}
-              onSelectionChange={(r: any) => {
-                setCurrentSelection(r);
-                debouncedOnImageSelectionChange(r);
-              }}
-              regions={regions}
-              minWidth={100}
-              minHeight={100}
-              dotColor={expand ? "#FBD914" : ""}
-              minCropWidth={expand ? 60 : 10}
-              minCropHeight={expand ? 60 : 10}
-              rounded={false}
-              expandAnimation={expand}
-              shrinkAnimation={!expand}
-              onExpand={() => {
-                setExpand(true);
-              }}
-              showGrip={expand}
-              style={{ width: "75%" }}
+    <>
+      <div className="nyris__screen nyris__success-multiple">
+        <div className="nyris__main-heading ">
+          {noResult ? "No results" : "Success!"}
+        </div>
+        <div className="nyris__main-description">
+          {noResult
+            ? "Sorry, no results were found. Please ensure that your image is properly cropped, clear, and free of background noise. You have the option to upload a new image or readjust the cropping frame:"
+            : `${results.length} matches found`}
+        </div>
+        <div className="nyris__main-content">
+          <div className="nyris__success-multiple-preview">
+            <div className="nyris__success-multiple-preview-wrapper">
+              <Preview
+                image={image}
+                selection={currentSelection}
+                onSelectionChange={(r: any) => {
+                  setCurrentSelection(r);
+                  debouncedOnImageSelectionChange(r);
+                }}
+                regions={regions}
+                minWidth={100}
+                minHeight={100}
+                dotColor={expand ? "#FBD914" : ""}
+                minCropWidth={expand ? 60 : 10}
+                minCropHeight={expand ? 60 : 10}
+                rounded={false}
+                expandAnimation={expand}
+                shrinkAnimation={!expand}
+                onExpand={() => {
+                  setExpand(true);
+                }}
+                showGrip={expand}
+                style={{ width: "75%" }}
+              />
+            </div>
+            <div
+              className={`nyris__success-multiple-preview-delete-${
+                expand ? "expand" : "collapse"
+              }`}
+              onClick={onRestart}
+            >
+              {<img src={trash} width={16} height={16} />}
+            </div>
+            <input
+              type="file"
+              name="take-picture"
+              id="nyris__hello-open-camera"
+              accept="image/jpeg,image/png"
+              onChange={onFile}
+              capture="environment"
+              style={{ display: "none" }}
             />
+            <div
+              className={`nyris__success-multiple-preview-${
+                expand ? "expand" : "collapse"
+              }`}
+              onClick={() => {
+                setExpand((s) => !s);
+              }}
+            >
+              {!expand && <img src={crop} width={16} height={16} />}
+              {expand && <img src={collapse} width={16} height={16} />}
+            </div>
           </div>
-          <div
-            className={`nyris__success-multiple-preview-delete-${
-              expand ? "expand" : "collapse"
-            }`}
-            onClick={() => {
-              onRestart();
-            }}
-          >
-            {<img src={trash} width={16} height={16} />}
-          </div>
-          <div
-            className={`nyris__success-multiple-preview-${
-              expand ? "expand" : "collapse"
-            }`}
-            onClick={() => {
-              setExpand((s) => !s);
-            }}
-          >
-            {!expand && <img src={crop} width={16} height={16} />}
-            {expand && <img src={collapse} width={16} height={16} />}
-          </div>
+
+          {loading && <LoadingSpinner />}
+          {!loading && (
+            <div className="nyris__success-multiple-result-list">
+              {results.map((r, i) => (
+                <Result {...r} key={i} onSimilarSearch={onSimilarSearch} />
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* <div id="preview-parent" style={{ width: "100%" }}>
-        </div> */}
-        <div className="nyris__success-multiple-result-list">
-          {results.map((r, i) => (
-            <Result {...r} key={i} onSimilarSearch={onSimilarSearch} />
-          ))}
-        </div>
+        <label
+          htmlFor="nyris__hello-open-camera"
+          className={`nyris__success-multiple-camera`}
+          style={{ bottom: noResult ? "60px" : "" }}
+        >
+          {<img src={camera} width={24} height={24} />}
+        </label>
       </div>
+    </>
+  );
+};
+
+const LoadingSpinner = () => {
+  return (
+    <div className="nyris__main-content nyris__wait-wrapper">
+      <div className="nyris__wait-spinner">
+        <img src={spinner} width={66} height={66} />
+      </div>
+      <div>Analyzing image...</div>
     </div>
   );
 };
@@ -141,46 +179,9 @@ const Wait = () => (
     <div className="nyris__main-description">
       We are working hard on finding the product
     </div>
-    <div className="nyris__main-content nyris__wait-wrapper">
-      <div className="nyris__wait-spinner">
-        <img src={spinner} width={66} height={66} />
-      </div>
-      <div className="nyris--purple">Analyzing image...</div>
-    </div>
+    <LoadingSpinner />
   </div>
 );
-
-const Reselect = ({ onAcceptCrop, image, regions, selection }: AppProps) => {
-  const [currentSelection, setCurrentSelection] = useState(selection);
-
-  const acceptCrop = () => onAcceptCrop(currentSelection);
-  return (
-    <div className="nyris__screen nyris__reselect">
-      <div className="nyris__main-heading">Reselect focus area</div>
-      <div className="nyris__main-description">
-        Select one of our focus points or crop the image area
-      </div>
-      <div className="nyris__reselect-content">
-        <div className="nyris__reselect-image-wrapper">
-          <Preview
-            image={image}
-            selection={currentSelection}
-            onSelectionChange={setCurrentSelection}
-            regions={regions}
-            maxWidth={340}
-            maxHeight={340}
-            dotColor="#FF0000"
-            minCropWidth={100}
-            minCropHeight={100}
-          />
-        </div>
-        <div className="nyris__button-accept" onClick={acceptCrop}>
-          Accept & proceed
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const Fail = ({
   errorMessage,
@@ -296,7 +297,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
           type="file"
           name="upload"
           id="nyris__hello-upload-input"
-          accept="image/*"
+          accept="image/jpeg,image/png"
           onChange={onFile}
           {...getInputProps()}
         />
@@ -304,7 +305,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
           type="file"
           name="take-picture"
           id="nyris__hello-open-camera"
-          accept="image/*"
+          accept="image/jpeg,image/png"
           onChange={onFile}
           capture="environment"
         />
@@ -340,19 +341,9 @@ export const App = (props: AppProps) => {
       content = <Fail {...props} errorMessage="Something went wrong" />;
       break;
     case Screen.Result:
-      switch (results.length) {
-        case 0:
-          content = <Fail {...props} errorMessage="No results" />;
-          break;
-        default:
-          content = <SuccessMultiple {...props} />;
-          wide = true;
-          resultsMultiple = true;
-          break;
-      }
-      break;
-    case Screen.Refine:
-      content = <Reselect {...props} />;
+      content = <SuccessMultiple {...props} />;
+      wide = true;
+      resultsMultiple = true;
       break;
   }
 
@@ -376,7 +367,15 @@ export const App = (props: AppProps) => {
                 </div>
               </div>
               {content}
-              <div className="nyris__footer">
+              <div
+                className="nyris__footer"
+                style={{
+                  paddingBottom:
+                    showScreen == Screen.Result && results?.length > 0
+                      ? "80px"
+                      : "",
+                }}
+              >
                 <a href="https://nyris.io/">
                   Powered by <span className="nyris__footer-logo">nyris®</span>
                 </a>

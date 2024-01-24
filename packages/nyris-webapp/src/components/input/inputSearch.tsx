@@ -382,11 +382,8 @@ const SearchBox = (props: any) => {
             </Button>
           )}
           {!isMobile ? (
-            <div
-              id="nyris-visual-search-initiator"
-              className="wrap-box-input-mobile d-flex"
-            >
-              {/* <input
+            <div className="wrap-box-input-mobile d-flex">
+              <input
                 accept="image/*"
                 id="icon-button-file"
                 type="file"
@@ -396,7 +393,7 @@ const SearchBox = (props: any) => {
                     e.stopPropagation();
                   },
                 })}
-              /> */}
+              />
               <Tooltip
                 title={t('Search with an image')}
                 placement="top"

@@ -26,7 +26,7 @@ export const Result = (r: ResultProps) => {
           <div className="nyris__product-sku">{r.sku}</div>
           <a className="nyris__product-cta" href={r.links.main} target="_blank">
             <div className="nyris__product-title">{r.title}</div>
-            <img src={link} width={"16px"} height={"16px"} />
+            <img src={link} width={"14px"} height={"14px"} />
           </a>
         </div>
       </div>

@@ -2,10 +2,14 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  
   &-spinner {
-    animation: wait 1s infinite linear;
-    padding-top: 3px;
+    padding: 8px 8px 4px 8px;
+    background-color: #E0E0E0;
+    border-radius: 100%;
+    margin-bottom: 10px;
+    & > img {
+      animation: wait 2s linear infinite;
+    }
   }
 
   &-wrapper {
@@ -15,9 +19,12 @@
 
 @keyframes wait {
   0% {
-    transform: rotate(0);
+    transform: translateX(0) rotate(0deg);
+  }
+  50% {
+      transform: translateX(0) rotate(150deg);
   }
   100% {
-    transform: rotate(360deg);
+      transform: translateX(0) rotate(0deg);
   }
 }

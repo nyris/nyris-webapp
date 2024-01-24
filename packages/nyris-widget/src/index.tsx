@@ -38,6 +38,7 @@ class Nyris {
   private regions: Region[] = [];
   private selection: RectCoords = { x1: 0, x2: 1, y1: 0, y2: 1 };
   private readonly instantRedirectPatterns: string[];
+  private loading: boolean = false;
 
   constructor(settings: NyrisSettings) {
     this.nyrisApi = new NyrisAPI(settings);
@@ -86,6 +87,7 @@ class Nyris {
         ? false
         : true,
       onSimilarSearch: (f) => this.handleFile(f),
+      loading: this.loading,
     };
     ReactDOM.render(
       <React.StrictMode>
@@ -188,7 +190,9 @@ class Nyris {
   }
 
   async startProcessing() {
-    this.showScreen(Screen.Wait);
+    // this.showScreen(Screen.Wait);
+    this.loading = true;
+    this.render();
     try {
       await this.updateThumbnail();
 
@@ -205,8 +209,10 @@ class Nyris {
         window.location.href = searchResult.results[0].l;
         return;
       }
+      this.loading = false;
       this.renderResults(searchResult.results);
     } catch (e: any) {
+      this.loading = false;
       this.err = e.toString();
       return this.showScreen(Screen.Fail);
     }

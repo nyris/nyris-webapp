@@ -131,9 +131,9 @@
     background-color: #fff;
     position: absolute;
     bottom: 8px;
-    right: 15px;
+    right: 16px;
     border-radius: 100%;
-
+    cursor: pointer;
     @media #{$mobile-sm-query} {
       right: 6px;
     }
@@ -151,41 +151,71 @@
     background-color: #fff;
     position: absolute;
     bottom: 34px;
-    right: 15px;
+    right: 16px;
     border-radius: 100%;
+    cursor: pointer;
     @media #{$mobile-sm-query} {
       right: 6px;
     }
   }
 
   &-preview-delete-expand {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
+    border-radius: 2px;
     top: 8px;
-    left: 15px;
-    border-radius: 100%;
+    left: 16px;
     @media #{$mobile-sm-query} {
       left: 6px;
+    }
+    border-radius: 16px;
+    cursor: pointer;
+    &:hover {
+      background-color: #E31B5D;
+    
     }
   }
 
   &-preview-delete-collapse {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 37px;
-    left: 15px;
-    border-radius: 100%;
+    border-radius: 2px;
+    top: 34px;
+    left: 16px;
     @media #{$mobile-sm-query} {
       left: 6px;
     }
+    border-radius: 16px;
+    cursor: pointer;
+    &:hover {
+      background-color: #E31B5D;
+    
+    }
+  }
+
+  &-camera {
+    cursor: pointer;
+    width: fit-content;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 16px;
+    display: flex;
+    padding: 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 32px;
+    background: #2B2C46;
+    box-shadow: 0px 0px 8px 0px rgba(85, 86, 107, 0.60);
   }
 
 }
@@ -212,15 +242,10 @@
 
   &-title{
     overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2; /* Number of lines to show */
-    /* Firefox fallback */
-    display: -moz-box;
-    -moz-box-orient: vertical;
-    -moz-box-lines: 2; /* Number of lines to show */
-    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: #fff;
+    font-size: 14px;
   }
 
 
