@@ -134,7 +134,7 @@
     right: 16px;
     border-radius: 100%;
     cursor: pointer;
-    @media #{$mobile-sm-query} {
+    @media #{$mobile-query} {
       right: 6px;
     }
   }
@@ -154,7 +154,7 @@
     right: 16px;
     border-radius: 100%;
     cursor: pointer;
-    @media #{$mobile-sm-query} {
+    @media #{$mobile-query} {
       right: 6px;
     }
   }
@@ -169,7 +169,7 @@
     border-radius: 2px;
     top: 8px;
     left: 16px;
-    @media #{$mobile-sm-query} {
+    @media #{$mobile-query} {
       left: 6px;
     }
     border-radius: 16px;
@@ -190,7 +190,7 @@
     border-radius: 2px;
     top: 34px;
     left: 16px;
-    @media #{$mobile-sm-query} {
+    @media #{$mobile-query} {
       left: 6px;
     }
     border-radius: 16px;

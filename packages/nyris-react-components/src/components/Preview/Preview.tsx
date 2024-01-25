@@ -45,6 +45,8 @@ interface PreviewProps {
   onExpand?: () => void;
   /** wrapper styles */
   style?: React.CSSProperties | undefined;
+  /** enable resize on window resize */
+  resize?: boolean;
 }
 
 /** @internal State of the Preview component */
@@ -176,10 +178,16 @@ const Preview = ({
   onExpand,
   showGrip = true,
   style,
+  resize,
 }: PreviewProps) => {
   const divRef = useRef<any>(null);
   const stageRef = useRef<any>(null);
   const shrinkAnimationRef = useRef<any>(shrinkAnimation);
+
+  const maxSizeRef = useRef<any>({
+    width: 0,
+    height: 0,
+  });
 
   const [dimensions, setDimensions] = useState({
     width: 0,
@@ -210,9 +218,25 @@ const Preview = ({
         height: divRef.current.offsetWidth,
       });
     }
+
+    if (divRef.current?.offsetWidth) {
+      maxSizeRef.current = {
+        maxHeight: divRef.current.offsetWidth,
+        maxWidth: divRef.current.offsetWidth,
+      };
+    }
   };
+
   const maxHeight = initialMaxHeight || dimensions.height;
   const maxWidth = initialMaxWidth || dimensions.width;
+
+  // useEffect(() => {
+  //   maxSizeRef.current = {
+  //     maxHeight: initialMaxHeight || dimensions.height,
+  //     maxWidth: initialMaxWidth || dimensions.width,
+  //   };
+  //   console.log({ maxSizeRef: maxSizeRef.current });
+  // }, [initialMaxWidth, initialMaxWidth, dimensions]);
 
   useEffect(() => {
     if (divRef.current?.offsetWidth) {
@@ -230,7 +254,9 @@ const Preview = ({
       }
     }
 
-    window.addEventListener("resize", handleResize);
+    if (resize) {
+      window.addEventListener("resize", handleResize);
+    }
 
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -449,10 +475,20 @@ const Preview = ({
   const [loaded, setLoaded] = useState(true);
 
   useEffect(() => {
+    if (!maxSizeRef.current.maxWidth) {
+      const maxHeight = initialMaxHeight || divRef.current.offsetWidth;
+      const maxWidth = initialMaxWidth || divRef.current.offsetWidth;
+      maxSizeRef.current = {
+        maxHeight,
+        maxWidth,
+      };
+    }
+
+    const newWidth = maxSizeRef.current.maxWidth;
+    const newHeight = maxSizeRef.current.maxHeight;
+
     const animExpand = new Konva.Animation((frame: any) => {
       const easing = frame.time / 330;
-      const newWidth = maxWidth;
-      const newHeight = maxHeight;
 
       const currentWidth = minWidth;
       const currentHeight = minHeight;
@@ -468,7 +504,10 @@ const Preview = ({
       if (frame.time >= 300) {
         animExpand.stop();
         setLoaded(true);
-        handleResize();
+
+        if (resize) {
+          // handleResize();
+        }
       }
     });
 
@@ -483,13 +522,13 @@ const Preview = ({
   }, [expandAnimation]);
 
   useEffect(() => {
+    const currentWidth = maxSizeRef.current.maxWidth;
+    const currentHeight = maxSizeRef.current.maxHeight;
+
     const animShrink = new Konva.Animation((frame: any) => {
       const easing = frame.time / 300;
       const newWidth = minWidth;
       const newHeight = minHeight;
-
-      const currentWidth = maxWidth;
-      const currentHeight = maxHeight;
 
       const widthDiff = newWidth - currentWidth;
       const heightDiff = newHeight - currentHeight;

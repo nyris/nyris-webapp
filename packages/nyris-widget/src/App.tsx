@@ -107,6 +107,7 @@ const SuccessMultiple = ({
                   setExpand(true);
                 }}
                 showGrip={expand}
+                resize={true}
                 style={{ width: "75%" }}
               />
             </div>
@@ -122,9 +123,8 @@ const SuccessMultiple = ({
               type="file"
               name="take-picture"
               id="nyris__hello-open-camera"
-              accept="image/jpeg,image/png"
+              accept="image/jpeg,image/png,image/webp"
               onChange={onFile}
-              capture="environment"
               style={{ display: "none" }}
             />
             <div
@@ -297,9 +297,8 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
           type="file"
           name="upload"
           id="nyris__hello-upload-input"
-          accept="image/jpeg,image/png"
           onChange={onFile}
-          {...getInputProps()}
+          accept="image/jpeg,image/png,image/webp"
         />
         <input
           type="file"

@@ -41,7 +41,6 @@ function ImagePreviewMobileComponent({
   const { t } = useTranslation();
   const { refine }: any = rest;
   const [editActive, setEditActive] = useState(false);
-  const [showShrinkAnimation, setShrinkAnimation] = useState(false);
   const settings = useAppSelector(state => state.settings);
   const { preFilter } = useAppSelector(state => state.search);
   const isAlgoliaEnabled = settings.algolia?.enabled;
@@ -51,7 +50,6 @@ function ImagePreviewMobileComponent({
 
   const handleArrowClick = () => {
     setEditActive(s => !s);
-    setShrinkAnimation(true);
   };
 
   const searchQuery = query.get('query') || '';
