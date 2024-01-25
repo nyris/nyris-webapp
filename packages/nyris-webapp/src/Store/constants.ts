@@ -24,7 +24,6 @@ export const defaultSettings: AppSettings = {
     '^https?://(www.)?dai.ly/',
   ],
   theme: {},
-  templateId: '',
   field: {
     ctaLinkField: '',
     productName: '',

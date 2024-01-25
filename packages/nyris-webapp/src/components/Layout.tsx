@@ -41,6 +41,11 @@ jQuery(document).ready(function () {
     email: 'info@cadenas.de',
   });
   psol.core.setServiceBaseUrl('https://webapi.partcommunity.com');
+  window.onpageshow = function(event: any) {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  };
 });
 
 i18n.use(initReactI18next).init({

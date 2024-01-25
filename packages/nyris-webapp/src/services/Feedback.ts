@@ -4,8 +4,6 @@ import NyrisAPI, {
   RectCoords,
 } from '@nyris/nyris-api';
 import { RootState } from '../Store/Store';
-import { ToastHelper } from '../helpers/ToastHelper';
-import { toast } from 'react-hot-toast';
 
 export const feedbackSuccessEpic = async (
   state: RootState,
@@ -15,17 +13,10 @@ export const feedbackSuccessEpic = async (
   const sessionId = search.sessionId;
   const requestId = search.requestId || search.sessionId;
 
-  try {
-    const res = await sendFeedbackByApi(settings, sessionId, requestId, {
-      event: 'feedback',
-      data: { success },
-    });
-    toast.dismiss();
-    ToastHelper.success('Thank you for your feedback.');
-    return res;
-  } catch (err: any) {
-    console.log(err);
-  }
+  return await sendFeedbackByApi(settings, sessionId, requestId, {
+    event: 'feedback',
+    data: { success },
+  });
 };
 
 export const feedbackClickEpic = async (

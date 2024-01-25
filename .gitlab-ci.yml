@@ -47,4 +47,3 @@ publish to npm:
 #    - export GIT_SSH_COMMAND='ssh -i $SSH_KEY'
 #    - git remote add github git@github.com:nyris/nyris-webapp.git
 #    - git push --follow-tags github HEAD:$CI_COMMIT_REF_NAME
-

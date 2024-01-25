@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, Collapse, Grid, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';
@@ -111,7 +111,15 @@ function ProductDetailView(props: Props) {
 
     setDataImageCarouSel(valueKey);
   };
-
+  const productDetails = useMemo(() => {
+    const details = get(dataItem, settings.field.productDetails);
+    try {
+      return details.join(', ');
+    } catch (e) {
+      return details;
+    }
+  }, [dataItem, settings.field.productDetails]);
+  const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
   return (
     <Box
       className="box-modal-default"
@@ -143,7 +151,7 @@ function ProductDetailView(props: Props) {
           position: 'relative',
         }}
       >
-        {settings.cadenas3dWebView && (
+        {settings.cadenas?.cadenas3dWebView && (
           <CadenasWebViewer
             is3dView={is3dView}
             sku={sku}
@@ -229,7 +237,7 @@ function ProductDetailView(props: Props) {
         >
           {!is3dView &&
             status3dView !== 'not-found' &&
-            settings.cadenas3dWebView && (
+            settings.cadenas?.cadenas3dWebView && (
               <Box
                 style={{
                   background: '#E9E9EC',
@@ -347,7 +355,7 @@ function ProductDetailView(props: Props) {
                 style={{ gap: 6 }}
                 width={'100%'}
               >
-                {!settings.warehouseVariant && settings.CTAButtonText  && (
+                {!settings.warehouseVariant && settings.CTAButtonText && (
                   <ProductAttribute
                     title={'Produktname'}
                     value={title}
@@ -374,16 +382,16 @@ function ProductDetailView(props: Props) {
                     title={t('Brand')}
                     value={brand || settings.brandName}
                     width={
-                      dataItem[settings.field.manufacturerNumber]
+                      manufacturerNumber
                         ? { xs: '49%', md: 'fit-content' }
                         : { xs: '100%', md: 'fit-content' }
                     }
                   />
                 )}
-                {dataItem[settings.field.manufacturerNumber] && (
+                {manufacturerNumber && (
                   <ProductAttribute
                     title={t('Manufacturer Number')}
-                    value={dataItem[settings.field.manufacturerNumber]}
+                    value={manufacturerNumber}
                     width={
                       brand || settings.brandName
                         ? { xs: '49%', md: 'fit-content' }
@@ -460,7 +468,9 @@ function ProductDetailView(props: Props) {
                         paddingRight: '4px',
                       }}
                     >
-                      {settings.CTAButtonText ? settings.CTAButtonText : dataItem[settings.field.productName]}
+                      {settings.CTAButtonText
+                        ? settings.CTAButtonText
+                        : dataItem[settings.field.productName]}
                     </Typography>
                     {ctaLink && (
                       <img
@@ -471,7 +481,7 @@ function ProductDetailView(props: Props) {
                     )}
                   </Box>
                 </Box>
-                {dataItem[settings.field.productDetails] && (
+                {productDetails && (
                   <Box className="w-100">
                     <Button
                       className="w-100 button-hover"
@@ -509,7 +519,7 @@ function ProductDetailView(props: Props) {
                           color: '#2b2c46',
                         }}
                       >
-                        {dataItem[settings.field.productDetails]}
+                        {productDetails}
                       </Typography>
                     </Collapse>
                   </Box>

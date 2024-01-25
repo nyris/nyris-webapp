@@ -3,6 +3,9 @@ import { getCroppedCanvas } from 'helpers/getCroppedCanvas';
 import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import InquiryModal from './InquiryModal';
+import { useAppSelector } from 'Store/Store';
+import { ReactComponent as EmailIcon } from 'common/assets/icons/icon_email.svg';
+import { ReactComponent as CallIcon } from 'common/assets/icons/call.svg';
 
 function InquiryBanner({
   requestImage,
@@ -23,6 +26,11 @@ function InquiryBanner({
     setInquiryStatus('inactive');
   }, [selectedRegion, query]);
 
+  const { description, emailInquiry, supportNumber } =
+    useAppSelector(state => state.settings.support) || {};
+  const { secondaryColor } =
+    useAppSelector(state => state.settings.theme) || {};
+
   return (
     <>
       {isInquiryModalOpen && (
@@ -31,18 +39,17 @@ function InquiryBanner({
           selectedRegion={selectedRegion}
           setIsInquiryModalOpen={setIsInquiryModalOpen}
           isInquiryModalOpen={isInquiryModalOpen}
-          setInquiryStatus={setInquiryStatus}
         />
       )}
       <Box
         style={{
-          padding: !isMobile ? '24px 40px 24px 40px' : '16px 16px 16px 16px',
           backgroundColor: '#F3F3F5',
           width: '100%',
           marginBottom: '32px',
           alignSelf: 'end',
           display: 'flex',
           alignItems: 'center',
+          marginRight: '12px',
         }}
         className="rfq-box"
       >
@@ -50,9 +57,8 @@ function InquiryBanner({
           style={{
             width: '100%',
             display: 'flex',
-            columnGap: !isMobile ? '26px' : '8px',
+            columnGap: !isMobile ? '26px' : '16px',
             alignItems: 'center',
-            justifyContent: 'space-between',
           }}
         >
           {requestImage && (
@@ -64,8 +70,7 @@ function InquiryBanner({
                 )?.toDataURL()}
                 alt="request_image"
                 style={{
-                  mixBlendMode:
-                    inquiryStatus !== 'inactive' ? 'overlay' : 'unset',
+                  mixBlendMode: 'unset',
                   maxHeight: !isMobile ? '181px' : '120px',
                   maxWidth: !isMobile ? '181px' : '120px',
                   borderRadius: '2px',
@@ -74,10 +79,10 @@ function InquiryBanner({
             </div>
           )}
 
-          <Box>
+          <Box style={{ width: '100%' }}>
             <Box
               style={{
-                paddingBottom: '12px',
+                paddingBottom: '8px',
                 paddingLeft: '16px',
               }}
             >
@@ -94,42 +99,102 @@ function InquiryBanner({
               </Box>
               <Box
                 style={{
-                  fontSize: '12px',
+                  fontSize: '14px',
                   maxWidth: '320x',
-                  lineHeight: '14.1px',
+                  lineHeight: '16px',
                   color: inquiryStatus === 'inactive' ? '#4B4B4A' : '#2B2C46',
                   fontWeight: 'normal',
                 }}
               >
-                Get personalised help from our team of product experts.
+                {description}
               </Box>
             </Box>
-            <button
+            <div
               style={{
-                width: '200px',
-                background:
-                  inquiryStatus === 'inactive' ? '#2B2C46' : '#E9E9EC',
-                boxShadow:
-                  inquiryStatus === 'inactive'
-                    ? '0px 0px 4px 0px rgba(0, 0, 0, 0.25)'
-                    : '',
-                borderRadius: '2px',
-                padding: '16px 16px 16px 16px',
                 display: 'flex',
-                alignItems: 'center',
-                color: inquiryStatus === 'inactive' ? '#fff' : '#CACAD1',
-                fontSize: '14px',
-                height: '48px',
-                cursor: inquiryStatus === 'inactive' ? 'pointer' : 'default',
-                border: 'none',
+                gap: isMobile ? '8px' : '16px',
+                width: isMobile ? '100%' : '100%',
+                maxWidth: '400px',
               }}
-              disabled={inquiryStatus !== 'inactive'}
-              onClick={() => {
-                setIsInquiryModalOpen(true);
-              }}
+              className="support-button-wrapper"
             >
-              Submit an Inquiry
-            </button>
+              {emailInquiry && (
+                <div
+                  style={{
+                    width: emailInquiry && supportNumber ? '50%' : '100%',
+                    maxWidth: '170px',
+                    minWidth: '86px',
+                    background:
+                      inquiryStatus === 'inactive' ? secondaryColor : '#E9E9EC',
+                    boxShadow:
+                      inquiryStatus === 'inactive'
+                        ? '0px 0px 4px 0px rgba(0, 0, 0, 0.25)'
+                        : '',
+                    borderRadius: '2px',
+                    padding: !isMobile
+                      ? '8px 16px 8px 16px'
+                      : '8px 8px 8px 8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: inquiryStatus === 'inactive' ? '#fff' : '#CACAD1',
+                    fontSize: '13px',
+                    cursor:
+                      inquiryStatus === 'inactive' ? 'pointer' : 'default',
+                    border: 'none',
+                  }}
+                  onClick={() => {
+                    setIsInquiryModalOpen(true);
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <p>Inquiry</p>
+                    <EmailIcon color="#fff" width={16} height={16} />
+                  </div>
+                </div>
+              )}
+              {supportNumber && (
+                <a
+                  style={{
+                    width: emailInquiry && supportNumber ? '50%' : '100%',
+                    maxWidth: '170px',
+                    minWidth: '86px',
+                    background: secondaryColor,
+                    boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.25)',
+                    borderRadius: '2px',
+                    padding: !isMobile
+                      ? '8px 16px 8px 16px'
+                      : '8px 8px 8px 8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: '#fff',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    border: 'none',
+                    fontWeight: 500,
+                  }}
+                  href={`tel:${supportNumber}`}
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <p> Call us</p>
+                    <CallIcon color="#fff" width={16} height={16} />
+                  </div>
+                </a>
+              )}
+            </div>
           </Box>
         </Box>
       </Box>

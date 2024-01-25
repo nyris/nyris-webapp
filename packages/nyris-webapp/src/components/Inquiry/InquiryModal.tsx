@@ -17,7 +17,6 @@ interface Props {
   selectedRegion: any;
   setIsInquiryModalOpen: any;
   isInquiryModalOpen?: any;
-  setInquiryStatus: any;
 }
 // eslint-disable-next-line
 const emailRegex = /.+\@.+\..+$/;
@@ -41,7 +40,6 @@ export default function InquiryModal({
   selectedRegion,
   setIsInquiryModalOpen,
   isInquiryModalOpen,
-  setInquiryStatus,
 }: Props) {
   const stateGlobal = useAppSelector(state => state);
   const {
@@ -78,20 +76,19 @@ export default function InquiryModal({
       : null;
     const serviceId = 'service_zfsxshi';
     setIsInquiryModalOpen(false);
-    if (settings.templateId) {
+    const templateId = settings.support?.emailTemplateId;
+    if (templateId) {
       try {
-        setInquiryStatus('loading');
-        await emailjs.send(serviceId, settings.templateId, {
+        await emailjs.send(serviceId, templateId, {
           email_id: email.trim(),
-          information_text: information,
+          information_text: information ? information : '<not specified>',
           request_image: croppedImage?.toDataURL(),
-          prefilter_values: preFilterValues.join(', '),
+          prefilter_values: preFilterValues?.length
+            ? preFilterValues.join(', ')
+            : '<not specified>',
         });
-        setInquiryStatus('sent');
         ToastHelper.success('Request sent successfully');
       } catch (error) {
-        setInquiryStatus('inactive');
-
         toast(
           t => {
             return (
