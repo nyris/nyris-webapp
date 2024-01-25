@@ -230,14 +230,6 @@ const Preview = ({
   const maxHeight = initialMaxHeight || dimensions.height;
   const maxWidth = initialMaxWidth || dimensions.width;
 
-  // useEffect(() => {
-  //   maxSizeRef.current = {
-  //     maxHeight: initialMaxHeight || dimensions.height,
-  //     maxWidth: initialMaxWidth || dimensions.width,
-  //   };
-  //   console.log({ maxSizeRef: maxSizeRef.current });
-  // }, [initialMaxWidth, initialMaxWidth, dimensions]);
-
   useEffect(() => {
     if (divRef.current?.offsetWidth) {
       setInitialWidth(divRef.current?.offsetWidth);
