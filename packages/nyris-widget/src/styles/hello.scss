@@ -1,21 +1,69 @@
 
 .nyris__hello {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  &-wrapper{
+    width: 100%;
+    padding: 0px 24px 0px 24px;
+  }
+
   &-drop-zone {
     @include flex-column-center();
-    @include flex-filler();
-    background-color: $color-hello-dropzone-background;
-    border-radius: 7px;
-    border: 1px solid $color-box-border;
-    font-weight: bold;
-    color: $color-hello-dropzone-text;
 
-    & > svg {
-      margin: 7px;
+    padding: 24px 16px;
+    gap: 24px;
+    align-self: stretch;
+    border-radius: 2px;
+    border: 1px dashed #CACAD1;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-hello-dropzone-background;
+
     }
+
+  }
+  
+  
+  &-drop-zone-bold-text {
+     color: #55566B;
+     font-weight: 600;
   }
 
   &-upload {
     cursor: pointer;
+    display: flex;
+    padding: 12px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    align-self: stretch;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #3E36DC 0%, #655EE3 100%);
+    color: white;
+
+    font-size: 14px;
+    margin-bottom: 16px;
+
+  }
+
+  &-browse {
+    cursor: pointer;
+    display: flex;
+    padding: 12px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    align-self: stretch;
+    border-radius: 2px;
+    background: #E4E3FF;
+    color: #3E36DC;
+
+    font-size: 14px;
+    margin-bottom: 16px;
+
   }
 
   // hidden file input

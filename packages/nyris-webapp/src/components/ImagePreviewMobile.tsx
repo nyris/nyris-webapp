@@ -41,7 +41,6 @@ function ImagePreviewMobileComponent({
   const { t } = useTranslation();
   const { refine }: any = rest;
   const [editActive, setEditActive] = useState(false);
-  const [showShrinkAnimation, setShrinkAnimation] = useState(false);
   const settings = useAppSelector(state => state.settings);
   const { preFilter } = useAppSelector(state => state.search);
   const isAlgoliaEnabled = settings.algolia?.enabled;
@@ -51,7 +50,6 @@ function ImagePreviewMobileComponent({
 
   const handleArrowClick = () => {
     setEditActive(s => !s);
-    setShrinkAnimation(true);
   };
 
   const searchQuery = query.get('query') || '';
@@ -117,12 +115,14 @@ function ImagePreviewMobileComponent({
         marginBottom: '15px',
       }}
     >
-      {editActive && (
-        <div>
-          <Box className="box-preview">
-            <Box
-              className="preview-item expand-animation"
-              style={{ backgroundColor: 'transparent' }}
+      <div>
+        <Box className="box-preview">
+          <Box>
+            <div
+              className="preview-item"
+              style={{
+                backgroundColor: 'transparent',
+              }}
             >
               <Preview
                 key={requestImage?.id}
@@ -133,41 +133,51 @@ function ImagePreviewMobileComponent({
                 image={requestImage?.canvas}
                 selection={imageSelection || DEFAULT_REGION}
                 regions={filteredRegions}
-                maxWidth={240}
-                maxHeight={240}
-                dotColor={'#FBD914'}
-                minCropWidth={60}
-                minCropHeight={60}
+                minWidth={80}
+                minHeight={80}
+                maxWidth={255}
+                maxHeight={255}
+                dotColor={editActive ? '#FBD914' : ''}
+                minCropWidth={editActive ? 60 : 5}
+                minCropHeight={editActive ? 60 : 5}
                 rounded={false}
-                expandAnimation={true}
+                expandAnimation={editActive}
+                shrinkAnimation={!editActive}
+                onExpand={() => {
+                  setEditActive(true);
+                }}
+                showGrip={editActive}
               />
-            </Box>
-            {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
-              <Box
-                className="box-title_col-left"
-                alignItems="center"
+            </div>
+          </Box>
+          {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
+            <Box
+              className="box-title_col-left"
+              alignItems="center"
+              style={{
+                backgroundColor: '#3E36DC',
+                display: 'flex',
+                columnGap: '6px',
+                padding: '5px',
+                width: 'fit-content',
+                minWidth: '180px',
+              }}
+            >
+              <IconInfo color="white" />
+              <Typography
                 style={{
-                  backgroundColor: '#3E36DC',
-                  display: 'flex',
-                  columnGap: '6px',
-                  padding: '5px',
-                  width: 'fit-content',
+                  fontSize: 10,
+                  color: '#fff',
                 }}
               >
-                <IconInfo color="white" />
-                <Typography
-                  style={{
-                    fontSize: 10,
-                    color: '#fff',
-                  }}
-                >
-                  {showAdjustInfo
-                    ? t('Crop the image for better results')
-                    : 'Crop the image for better results'}
-                </Typography>
-              </Box>
-            )}
-          </Box>
+                {showAdjustInfo
+                  ? t('Crop the image for better results')
+                  : 'Crop the image for better results'}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+        <>
           <Hidden>
             <Box
               sx={{
@@ -214,106 +224,13 @@ function ImagePreviewMobileComponent({
                   borderRadius: '100%',
                 }}
               >
-                <ArrowUp color="black" />
+                {editActive && <ArrowUp color="black" />}
+                {!editActive && <ArrowDown color="black" fill="black" />}
               </Box>
             </Box>
           </Hidden>
-        </div>
-      )}
-      {!editActive && (
-        <Box
-          className={showShrinkAnimation ? 'shrink-animation' : ''}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: 80,
-            width: '100%',
-          }}
-        >
-          <Hidden>
-            <Box
-              sx={{
-                position: 'absolute',
-                left: '15px',
-                top: '25px',
-                padding: '4px',
-              }}
-              onClick={onImageRemove}
-            >
-              <Box
-                // className={showShrinkAnimation ? 'slideUp' : ''}
-                sx={{
-                  width: '24px',
-                  height: '24px',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  display: 'flex',
-                  borderRadius: '100%',
-                }}
-              >
-                <Trash color="white" fill="white" />
-              </Box>
-            </Box>
-          </Hidden>
-          <Box
-            sx={{
-              display: 'flex',
-              height: '100%',
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            onClick={handleArrowClick}
-          >
-            {requestImage && requestImage?.canvas?.toDataURL && (
-              <img
-                src={requestImage?.canvas?.toDataURL()}
-                style={{
-                  width: '80px',
-                  height: '80px',
-                  objectFit: 'contain',
-                  background: 'white',
-                }}
-                alt="preview"
-              />
-            )}
-
-            <div
-              className={
-                showShrinkAnimation
-                  ? 'shrink-animation circle-layer'
-                  : 'circle-layer'
-              }
-            ></div>
-          </Box>
-          <Hidden mdUp>
-            <Box
-              sx={{
-                position: 'absolute',
-                right: '25px',
-                padding: '4px',
-              }}
-              onClick={handleArrowClick}
-            >
-              <Box
-                bgcolor={'white'}
-                className={showShrinkAnimation ? 'slideUp' : ''}
-                sx={{
-                  width: '24px',
-                  height: '24px',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  display: 'flex',
-                  borderRadius: '100%',
-                }}
-              >
-                <ArrowDown color="black" fill="black" />
-              </Box>
-            </Box>
-          </Hidden>
-        </Box>
-      )}
+        </>
+      </div>
     </Box>
   );
 }

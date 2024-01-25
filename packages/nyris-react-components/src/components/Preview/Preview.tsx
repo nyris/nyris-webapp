@@ -20,9 +20,13 @@ interface PreviewProps {
   /** Handler for changed selection. */
   onSelectionChange?: (r: RectCoords) => void;
   /** Maximal width of the image to display in pixels. */
-  maxWidth: number;
+  maxWidth?: number;
   /** Maximal height of the image to display in pixels. */
-  maxHeight: number;
+  maxHeight?: number;
+  /** minimal width of the image to display in pixels. */
+  minWidth?: number;
+  /** minimal height of the image to display in pixels. */
+  minHeight?: number;
   /** Color of the dot, which is rendered center of not selected regions. */
   dotColor: string;
   /** Minimum width of the cropper to display in pixels. */
@@ -33,6 +37,16 @@ interface PreviewProps {
   rounded?: boolean;
   /** enables image expand animation*/
   expandAnimation?: boolean;
+  /** enables image shrink animation*/
+  shrinkAnimation?: boolean;
+  /** enables/disables corner grips*/
+  showGrip?: boolean;
+  /** on expand. */
+  onExpand?: () => void;
+  /** wrapper styles */
+  style?: React.CSSProperties | undefined;
+  /** enable resize on window resize */
+  resize?: boolean;
 }
 
 /** @internal State of the Preview component */
@@ -149,8 +163,10 @@ function scaleToPreviewPixels(
 const Preview = ({
   dotColor,
   image,
-  maxHeight,
-  maxWidth,
+  maxHeight: initialMaxHeightProps,
+  maxWidth: initialMaxWidthProps,
+  minHeight = 80,
+  minWidth = 80,
   minCropHeight,
   minCropWidth,
   onSelectionChange,
@@ -158,13 +174,96 @@ const Preview = ({
   rounded,
   selection,
   expandAnimation,
+  shrinkAnimation,
+  onExpand,
+  showGrip = true,
+  style,
+  resize,
 }: PreviewProps) => {
-  let { w: width, h: height } = getThumbSizeLongestEdge(
-    maxWidth,
-    maxHeight,
+  const divRef = useRef<any>(null);
+  const stageRef = useRef<any>(null);
+  const shrinkAnimationRef = useRef<any>(shrinkAnimation);
+
+  const maxSizeRef = useRef<any>({
+    width: 0,
+    height: 0,
+  });
+
+  const [dimensions, setDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  const [initialWidth, setInitialWidth] = useState(0);
+
+  const [initialMaxWidth, setInitialMaxWidth] = useState(initialMaxWidthProps);
+  const [initialMaxHeight, setInitialMaxHeight] = useState(
+    initialMaxHeightProps
+  );
+
+  useEffect(() => {
+    shrinkAnimationRef.current = shrinkAnimation;
+  }, [shrinkAnimation]);
+
+  const handleResize = () => {
+    if (divRef.current?.offsetWidth && !shrinkAnimationRef.current) {
+      setInitialWidth(divRef.current?.offsetWidth);
+      if (!initialMaxHeight) {
+        setInitialMaxHeight(divRef.current?.offsetWidth);
+        setInitialMaxWidth(divRef.current?.offsetWidth);
+      }
+
+      setDimensions({
+        width: divRef.current.offsetWidth,
+        height: divRef.current.offsetWidth,
+      });
+    }
+
+    if (divRef.current?.offsetWidth) {
+      maxSizeRef.current = {
+        maxHeight: divRef.current.offsetWidth,
+        maxWidth: divRef.current.offsetWidth,
+      };
+    }
+  };
+
+  const maxHeight = initialMaxHeight || dimensions.height;
+  const maxWidth = initialMaxWidth || dimensions.width;
+
+  useEffect(() => {
+    if (divRef.current?.offsetWidth) {
+      setInitialWidth(divRef.current?.offsetWidth);
+      if (!initialMaxHeight) {
+        setInitialMaxHeight(divRef.current?.offsetWidth);
+        setInitialMaxWidth(divRef.current?.offsetWidth);
+      }
+
+      if (!shrinkAnimation) {
+        setDimensions({
+          width: divRef.current.offsetWidth,
+          height: divRef.current.offsetWidth,
+        });
+      }
+    }
+
+    if (resize) {
+      window.addEventListener("resize", handleResize);
+    }
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  let { w, h } = getThumbSizeLongestEdge(
+    dimensions.width,
+    dimensions.height,
     image.width,
     image.height
   );
+  const width = Math.max(minWidth, w);
+  const height = Math.max(minHeight, h);
+
   const { x1, y1, x2, y2 } = scaleToPreviewPixels(
     width,
     height,
@@ -365,261 +464,336 @@ const Preview = ({
     ctx.arc(topLeft, topLeft, topLeft, Math.PI, (Math.PI * 3) / 2, false);
     ctx.closePath();
   };
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoaded(true);
-    }, 300);
-  }, []);
+    if (!maxSizeRef.current.maxWidth) {
+      const maxHeight = initialMaxHeight || divRef.current.offsetWidth;
+      const maxWidth = initialMaxWidth || divRef.current.offsetWidth;
+      maxSizeRef.current = {
+        maxHeight,
+        maxWidth,
+      };
+    }
+
+    const newWidth = maxSizeRef.current.maxWidth;
+    const newHeight = maxSizeRef.current.maxHeight;
+
+    const animExpand = new Konva.Animation((frame: any) => {
+      const easing = frame.time / 330;
+
+      const currentWidth = minWidth;
+      const currentHeight = minHeight;
+
+      const widthDiff = newWidth - currentWidth;
+      const heightDiff = newHeight - currentHeight;
+
+      setDimensions({
+        width: currentWidth + easing * widthDiff,
+        height: currentHeight + easing * heightDiff,
+      });
+
+      if (frame.time >= 300) {
+        animExpand.stop();
+        setLoaded(true);
+      }
+    });
+
+    if (expandAnimation) {
+      setLoaded(false);
+      animExpand.start();
+    }
+
+    return () => {
+      animExpand.stop();
+    };
+  }, [expandAnimation]);
+
+  useEffect(() => {
+    const currentWidth = maxSizeRef.current.maxWidth;
+    const currentHeight = maxSizeRef.current.maxHeight;
+
+    const animShrink = new Konva.Animation((frame: any) => {
+      const easing = frame.time / 300;
+      const newWidth = minWidth;
+      const newHeight = minHeight;
+
+      const widthDiff = newWidth - currentWidth;
+      const heightDiff = newHeight - currentHeight;
+
+      setDimensions({
+        width: currentWidth + easing * widthDiff,
+        height: currentHeight + easing * heightDiff,
+      });
+
+      if (easing >= 1 || stageRef.current?.attrs?.width < minWidth) {
+        animShrink.stop();
+      }
+    });
+
+    if (shrinkAnimation && stageRef.current?.attrs?.width > minWidth) {
+      animShrink.start();
+    } else if (stageRef.current?.attrs?.width === 0) {
+      setDimensions({
+        width: minWidth || initialWidth,
+        height: minHeight || initialWidth,
+      });
+    }
+
+    return () => {
+      animShrink.stop();
+    };
+  }, [shrinkAnimation]);
 
   return (
-    <Stage
-      width={width}
-      height={height}
-      style={{
-        cursor: getCursor(state),
-        width: width,
-        height: height,
-        margin: "auto",
-      }}
-    >
-      <Layer key="img" clipFunc={clipFunc}>
-        <Image
-          image={image}
-          width={expandAnimation ? 80 : width}
-          height={expandAnimation ? 80 : height}
-          ref={(ref) => {
-            ref?.to({
-              width: width,
-              height: height,
-              duration: 0.3,
-            });
-          }}
-          fill="white"
-        />
-      </Layer>
-      {loaded && (
-        <>
-          <Layer key="selection" clipFunc={clipFunc}>
-            {/* Selection box */}
-            <Rect
-              stroke="white"
-              opacity={0}
-              strokeWidth={0}
-              x={x1}
-              y={y1}
-              width={x2 - x1}
-              height={y2 - y1}
-            />
-            <Rect
-              stroke="black"
-              draggable={true}
-              onDragMove={handleDragMoveRect}
-              dragBoundFunc={handleDragBoundRect}
-              onMouseOver={() => setState({ rectHover: true })}
-              onMouseOut={() => setState({ rectHover: false })}
-              opacity={0}
-              strokeWidth={2}
-              x={x1}
-              y={y1}
-              width={x2 - x1}
-              height={y2 - y1}
-              dash={[0, 0]}
-              ref={selectionRef}
-            />
+    <div ref={divRef} style={{ width: "100%", ...style }}>
+      <Stage
+        width={width}
+        height={height}
+        style={{
+          cursor: getCursor(state),
+          width: width,
+          height: height,
+          margin: "auto",
+        }}
+        ref={(ref) => {
+          stageRef.current = ref;
+        }}
+        onClick={() => {
+          if (onExpand) onExpand();
+        }}
+        onTap={() => {
+          if (onExpand) onExpand();
+        }}
+      >
+        <Layer key="img" clipFunc={clipFunc}>
+          <Image image={image} width={width} height={height} fill="white" />
+        </Layer>
+        {loaded && (
+          <>
+            <Layer key="selection" clipFunc={clipFunc}>
+              {/* Selection box */}
+              <Rect
+                stroke="white"
+                opacity={0}
+                strokeWidth={0}
+                x={x1}
+                y={y1}
+                width={x2 - x1}
+                height={y2 - y1}
+              />
+              <Rect
+                stroke="black"
+                draggable={true}
+                onDragMove={handleDragMoveRect}
+                dragBoundFunc={handleDragBoundRect}
+                onMouseOver={() => setState({ rectHover: true })}
+                onMouseOut={() => setState({ rectHover: false })}
+                opacity={0}
+                strokeWidth={2}
+                x={x1}
+                y={y1}
+                width={x2 - x1}
+                height={y2 - y1}
+                dash={[0, 0]}
+                ref={selectionRef}
+              />
 
-            {/* Dark areas */}
+              {/* Dark areas */}
 
-            <Rect
-              fill="black"
-              opacity={darkOpacity}
-              x={0}
-              y={0}
-              width={width}
-              height={y1}
-            />
-            <Rect
-              fill="black"
-              opacity={darkOpacity}
-              x={0}
-              y={y2}
-              width={width}
-              height={height - y2}
-            />
-            <Rect
-              fill="black"
-              opacity={darkOpacity}
-              x={0}
-              y={y1}
-              width={x1}
-              height={y2 - y1}
-            />
-            <Rect
-              fill="black"
-              opacity={darkOpacity}
-              x={x2}
-              y={y1}
-              width={width - x2}
-              height={y2 - y1}
-            />
-          </Layer>
-          {/* grips */}
-          <Layer>
-            {/* top left */}
-            <Path
-              data="M2 18V10C2 5.58172 5.58172 2 10 2H18"
-              stroke={"white"}
-              strokeWidth={5}
-              lineCap="round"
-              opacity={1}
-              x={x1 - 3}
-              y={y1 - 3}
-              shadowColor={"#000000"}
-              shadowBlur={4}
-              shadowOffset={{ x: 0, y: 0 }}
-              shadowOpacity={0.25}
-            />
-            <Rect
-              draggable={true}
-              onDragMove={handleDragMoveTl}
-              dragBoundFunc={handleDragBoundTl}
-              onMouseOver={() => setState({ tlHover: true })}
-              onMouseOut={() => setState({ tlHover: false })}
-              opacity={1}
-              width={gripSize + gripPadding}
-              height={gripSize + gripPadding}
-              x={x1 - gripPadding}
-              y={y1 - gripPadding}
-            />
-            {/* top right */}
-            <Path
-              data="M2 2L10 2C14.4183 2 18 5.58172 18 10L18 18"
-              stroke={"white"}
-              strokeWidth={5}
-              lineCap="round"
-              opacity={1}
-              x={x2 + 3}
-              y={y1 - 3}
-              offsetX={gripSize}
-              shadowColor={"#000000"}
-              shadowBlur={4}
-              shadowOffset={{ x: 0, y: 0 }}
-              shadowOpacity={0.25}
-            />
-            <Rect
-              draggable={true}
-              onDragMove={handleDragMoveTr}
-              dragBoundFunc={handleDragBoundTr}
-              onMouseOver={() => setState({ trHover: true })}
-              onMouseOut={() => setState({ trHover: false })}
-              opacity={1}
-              width={gripSize + gripPadding}
-              height={gripSize + gripPadding}
-              x={x2 - gripPadding}
-              y={y1 - gripPadding}
-              offsetX={gripSize - gripPadding}
-            />
-            {/* bottom left */}
-            <Path
-              data="M18 18L10 18C5.58172 18 2 14.4183 2 10L2 2"
-              stroke={"white"}
-              strokeWidth={5}
-              lineCap="round"
-              opacity={1}
-              x={x1 - 3}
-              y={y2 + 3}
-              offsetY={gripSize}
-              shadowColor={"#000000"}
-              shadowBlur={4}
-              shadowOffset={{ x: 0, y: 0 }}
-              shadowOpacity={0.25}
-            />
-            <Rect
-              draggable={true}
-              onDragMove={handleDragMoveBl}
-              dragBoundFunc={handleDragBoundBl}
-              onMouseOver={() => setState({ blHover: true })}
-              onMouseOut={() => setState({ blHover: false })}
-              opacity={1}
-              width={gripSize + gripPadding}
-              height={gripSize + gripPadding}
-              x={x1 - gripPadding}
-              y={y2 - gripPadding}
-              offsetY={gripSize - gripPadding}
-            />
-            {/* bottom right */}
-            <Path
-              data="M18 2L18 10C18 14.4183 14.4183 18 10 18L2 18"
-              stroke={"white"}
-              strokeWidth={5}
-              lineCap="round"
-              x={x2 + 3}
-              y={y2 + 3}
-              opacity={1}
-              offsetY={gripSize}
-              offsetX={gripSize}
-              shadowColor={"#000000"}
-              shadowBlur={4}
-              shadowOffset={{ x: 0, y: 0 }}
-              shadowOpacity={0.25}
-            />
-            <Rect
-              opacity={1}
-              draggable={true}
-              onDragMove={handleDragMoveBr}
-              dragBoundFunc={handleDragBoundBr}
-              onMouseOver={() => setState({ brHover: true })}
-              onMouseOut={() => setState({ brHover: false })}
-              x={x2 - gripPadding}
-              y={y2 - gripPadding}
-              width={gripSize + gripPadding}
-              height={gripSize + gripPadding}
-              offsetY={gripSize - gripPadding}
-              offsetX={gripSize - gripPadding}
-            />
-          </Layer>
+              <Rect
+                fill="black"
+                opacity={darkOpacity}
+                x={0}
+                y={0}
+                width={width}
+                height={y1}
+              />
+              <Rect
+                fill="black"
+                opacity={darkOpacity}
+                x={0}
+                y={y2}
+                width={width}
+                height={height - y2}
+              />
+              <Rect
+                fill="black"
+                opacity={darkOpacity}
+                x={0}
+                y={y1}
+                width={x1}
+                height={y2 - y1}
+              />
+              <Rect
+                fill="black"
+                opacity={darkOpacity}
+                x={x2}
+                y={y1}
+                width={width - x2}
+                height={y2 - y1}
+              />
+            </Layer>
 
-          <NodeGroup
-            data={dots}
-            keyAccessor={(r) => r.key}
-            start={(d, i) => ({ opacity: 0, x: -100, y: d.y })}
-            enter={(d, i) => ({
-              opacity: [1],
-              x: [d.x],
-              y: d.y,
-              timing: { delay: i * 100, duration: 300 },
-            })}
-          >
-            {(ds) => (
-              <Layer key="dots">
-                {ds.map(({ key, data, state: position }) => (
-                  <Circle
-                    onClick={() => {
-                      notifySelection(data.region.normalizedRect);
-                      setState({ dotHover: false });
-                    }}
-                    onTap={() => {
-                      notifySelection(data.region.normalizedRect);
-                      setState({ dotHover: false });
-                    }}
-                    onMouseOver={() => setState({ dotHover: true })}
-                    onMouseOut={() => setState({ dotHover: false })}
-                    key={key}
-                    radius={7}
-                    {...position}
-                    stroke={dotColor}
-                    fill="white"
-                    strokeWidth={5}
-                    opacity={data.region.show}
-                  />
-                ))}
+            {/* grips */}
+            {showGrip && (
+              <Layer>
+                {/* top left */}
+                <Path
+                  data="M2 18V10C2 5.58172 5.58172 2 10 2H18"
+                  stroke={"white"}
+                  strokeWidth={5}
+                  lineCap="round"
+                  opacity={1}
+                  x={x1 - 3}
+                  y={y1 - 3}
+                  shadowColor={"#000000"}
+                  shadowBlur={4}
+                  shadowOffset={{ x: 0, y: 0 }}
+                  shadowOpacity={0.25}
+                />
+                <Rect
+                  draggable={true}
+                  onDragMove={handleDragMoveTl}
+                  dragBoundFunc={handleDragBoundTl}
+                  onMouseOver={() => setState({ tlHover: true })}
+                  onMouseOut={() => setState({ tlHover: false })}
+                  opacity={1}
+                  width={gripSize + gripPadding}
+                  height={gripSize + gripPadding}
+                  x={x1 - gripPadding}
+                  y={y1 - gripPadding}
+                />
+                {/* top right */}
+                <Path
+                  data="M2 2L10 2C14.4183 2 18 5.58172 18 10L18 18"
+                  stroke={"white"}
+                  strokeWidth={5}
+                  lineCap="round"
+                  opacity={1}
+                  x={x2 + 3}
+                  y={y1 - 3}
+                  offsetX={gripSize}
+                  shadowColor={"#000000"}
+                  shadowBlur={4}
+                  shadowOffset={{ x: 0, y: 0 }}
+                  shadowOpacity={0.25}
+                />
+                <Rect
+                  draggable={true}
+                  onDragMove={handleDragMoveTr}
+                  dragBoundFunc={handleDragBoundTr}
+                  onMouseOver={() => setState({ trHover: true })}
+                  onMouseOut={() => setState({ trHover: false })}
+                  opacity={1}
+                  width={gripSize + gripPadding}
+                  height={gripSize + gripPadding}
+                  x={x2 - gripPadding}
+                  y={y1 - gripPadding}
+                  offsetX={gripSize - gripPadding}
+                />
+                {/* bottom left */}
+                <Path
+                  data="M18 18L10 18C5.58172 18 2 14.4183 2 10L2 2"
+                  stroke={"white"}
+                  strokeWidth={5}
+                  lineCap="round"
+                  opacity={1}
+                  x={x1 - 3}
+                  y={y2 + 3}
+                  offsetY={gripSize}
+                  shadowColor={"#000000"}
+                  shadowBlur={4}
+                  shadowOffset={{ x: 0, y: 0 }}
+                  shadowOpacity={0.25}
+                />
+                <Rect
+                  draggable={true}
+                  onDragMove={handleDragMoveBl}
+                  dragBoundFunc={handleDragBoundBl}
+                  onMouseOver={() => setState({ blHover: true })}
+                  onMouseOut={() => setState({ blHover: false })}
+                  opacity={1}
+                  width={gripSize + gripPadding}
+                  height={gripSize + gripPadding}
+                  x={x1 - gripPadding}
+                  y={y2 - gripPadding}
+                  offsetY={gripSize - gripPadding}
+                />
+                {/* bottom right */}
+                <Path
+                  data="M18 2L18 10C18 14.4183 14.4183 18 10 18L2 18"
+                  stroke={"white"}
+                  strokeWidth={5}
+                  lineCap="round"
+                  x={x2 + 3}
+                  y={y2 + 3}
+                  opacity={1}
+                  offsetY={gripSize}
+                  offsetX={gripSize}
+                  shadowColor={"#000000"}
+                  shadowBlur={4}
+                  shadowOffset={{ x: 0, y: 0 }}
+                  shadowOpacity={0.25}
+                />
+                <Rect
+                  opacity={1}
+                  draggable={true}
+                  onDragMove={handleDragMoveBr}
+                  dragBoundFunc={handleDragBoundBr}
+                  onMouseOver={() => setState({ brHover: true })}
+                  onMouseOut={() => setState({ brHover: false })}
+                  x={x2 - gripPadding}
+                  y={y2 - gripPadding}
+                  width={gripSize + gripPadding}
+                  height={gripSize + gripPadding}
+                  offsetY={gripSize - gripPadding}
+                  offsetX={gripSize - gripPadding}
+                />
               </Layer>
             )}
-          </NodeGroup>
-        </>
-      )}
-    </Stage>
+
+            <NodeGroup
+              data={dots}
+              keyAccessor={(r) => r.key}
+              start={(d, i) => ({ opacity: 0, x: -100, y: d.y })}
+              enter={(d, i) => ({
+                opacity: [1],
+                x: [d.x],
+                y: d.y,
+                timing: { delay: i * 100, duration: 300 },
+              })}
+            >
+              {(ds) => (
+                <Layer key="dots">
+                  {ds.map(({ key, data, state: position }) => (
+                    <Circle
+                      onClick={() => {
+                        notifySelection(data.region.normalizedRect);
+                        setState({ dotHover: false });
+                      }}
+                      onTap={() => {
+                        notifySelection(data.region.normalizedRect);
+                        setState({ dotHover: false });
+                      }}
+                      onMouseOver={() => setState({ dotHover: true })}
+                      onMouseOut={() => setState({ dotHover: false })}
+                      key={key}
+                      radius={7}
+                      {...position}
+                      stroke={dotColor}
+                      fill="white"
+                      strokeWidth={5}
+                      opacity={dotColor ? data.region.show : 0}
+                    />
+                  ))}
+                </Layer>
+              )}
+            </NodeGroup>
+          </>
+        )}
+      </Stage>
+    </div>
   );
 };
 
