@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.46 - 2024-01-25
+
+### Added
+- Support/Inquiry Functionality Enhancement
+- New feedback UI 
+
+### Fix
+- Fix for search bar position and missing property values on email inquiry
+
 ## 0.3.45 - 2024-01-12
 
 ### Added
