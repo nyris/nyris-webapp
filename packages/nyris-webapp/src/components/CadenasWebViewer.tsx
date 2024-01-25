@@ -74,14 +74,14 @@ function CadenasWebViewer({
 
     // initialize 3d viewer
     let webviewer3d = new psol.components.WebViewer3D(webViewer3DSettings);
-    psol.core.setApiKey(settings.cadenasAPIKey);
+    psol.core.setApiKey(settings.cadenas?.cadenasAPIKey);
     setStatus3dView('loading');
     // run search and display result in 3D viewer.
     psol.core
       .ajaxGetOrPost({
         url: psol.core.getServiceBaseUrl() + '/service/reversemap',
         data: {
-          catalog: settings.catalog,
+          catalog: settings.cadenas?.catalog,
           part: sku,
           exact: '0',
         },

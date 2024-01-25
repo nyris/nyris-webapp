@@ -76,13 +76,16 @@ export default function InquiryModal({
       : null;
     const serviceId = 'service_zfsxshi';
     setIsInquiryModalOpen(false);
-    if (settings.templateId) {
+    const templateId = settings.support?.emailTemplateId;
+    if (templateId) {
       try {
-        await emailjs.send(serviceId, settings.templateId, {
+        await emailjs.send(serviceId, templateId, {
           email_id: email.trim(),
           information_text: information ? information : '<not specified>',
           request_image: croppedImage?.toDataURL(),
-          prefilter_values: preFilterValues?.length ? preFilterValues.join(', ') : '<not specified>',
+          prefilter_values: preFilterValues?.length
+            ? preFilterValues.join(', ')
+            : '<not specified>',
         });
         ToastHelper.success('Request sent successfully');
       } catch (error) {
