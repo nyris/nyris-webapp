@@ -65,10 +65,12 @@ export default function RfqModal({
     const croppedImage = getCroppedCanvas(canvas, selectedRegion);
     const serviceId = 'service_zfsxshi';
     setIsRfqModalOpen(false);
-    if (settings.templateId) {
+    const templateId = settings.rfq?.emailTemplateId;
+
+    if (templateId) {
       try {
         setRfqStatus('loading');
-        await emailjs.send(serviceId, settings.templateId, {
+        await emailjs.send(serviceId, templateId, {
           email_id: email.trim(),
           information_text: information,
           request_image: croppedImage?.toDataURL(),
@@ -89,7 +91,7 @@ export default function RfqModal({
                   width: '294px',
                 }}
               >
-                <span style={{fontWeight: 'bold'}}>Email not sent</span>
+                <span style={{ fontWeight: 'bold' }}>Email not sent</span>
                 <span>{getErrorMessage(error)}</span>
                 <a
                   href={`mailto:support@nyris.io?subject=Request for quotation&body=${information}`}
@@ -116,8 +118,8 @@ export default function RfqModal({
               maxWidth: '400px',
             },
             icon: (
-              <div style={{minWidth: '20px', minHeight: '20px'}}>
-                <ErrorIcon/>
+              <div style={{ minWidth: '20px', minHeight: '20px' }}>
+                <ErrorIcon />
               </div>
             ),
           },

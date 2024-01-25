@@ -520,7 +520,8 @@ function ResultComponent(props: Props) {
                     {requestImage &&
                       !loadingSearchAlgolia &&
                       !props.isSearchStalled &&
-                      settings.rfq && (
+                      settings.rfq &&
+                      settings.rfq.enabled && (
                         <RfqBanner
                           rfqRef={rfqRef}
                           rfqStatus={rfqStatus}
@@ -592,7 +593,8 @@ function ResultComponent(props: Props) {
         requestImage &&
         isMobile &&
         props.allSearchResults.hits.length > 0 &&
-        settings.rfq && (
+        settings.rfq &&
+        settings.rfq.enabled && (
           <div
             style={{
               fontSize: '14px',

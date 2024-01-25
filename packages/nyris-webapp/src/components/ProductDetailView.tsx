@@ -151,7 +151,7 @@ function ProductDetailView(props: Props) {
           position: 'relative',
         }}
       >
-        {settings.cadenas3dWebView && (
+        {settings.cadenas?.cadenas3dWebView && (
           <CadenasWebViewer
             is3dView={is3dView}
             sku={sku}
@@ -237,7 +237,7 @@ function ProductDetailView(props: Props) {
         >
           {!is3dView &&
             status3dView !== 'not-found' &&
-            settings.cadenas3dWebView && (
+            settings.cadenas?.cadenas3dWebView && (
               <Box
                 style={{
                   background: '#E9E9EC',
@@ -355,7 +355,7 @@ function ProductDetailView(props: Props) {
                 style={{ gap: 6 }}
                 width={'100%'}
               >
-                {!settings.warehouseVariant && settings.CTAButtonText  && (
+                {!settings.warehouseVariant && settings.CTAButtonText && (
                   <ProductAttribute
                     title={'Produktname'}
                     value={title}
@@ -468,7 +468,9 @@ function ProductDetailView(props: Props) {
                         paddingRight: '4px',
                       }}
                     >
-                      {settings.CTAButtonText ? settings.CTAButtonText : dataItem[settings.field.productName]}
+                      {settings.CTAButtonText
+                        ? settings.CTAButtonText
+                        : dataItem[settings.field.productName]}
                     </Typography>
                     {ctaLink && (
                       <img

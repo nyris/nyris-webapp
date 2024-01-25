@@ -26,7 +26,7 @@ function InquiryBanner({
     setInquiryStatus('inactive');
   }, [selectedRegion, query]);
 
-  const { description, inquiry, supportNumber } =
+  const { description, emailInquiry, supportNumber } =
     useAppSelector(state => state.settings.support) || {};
   const { secondaryColor } =
     useAppSelector(state => state.settings.theme) || {};
@@ -118,10 +118,10 @@ function InquiryBanner({
               }}
               className="support-button-wrapper"
             >
-              {inquiry && (
+              {emailInquiry && (
                 <div
                   style={{
-                    width: inquiry && supportNumber ? '50%' : '100%',
+                    width: emailInquiry && supportNumber ? '50%' : '100%',
                     maxWidth: '170px',
                     minWidth: '86px',
                     background:
@@ -162,7 +162,7 @@ function InquiryBanner({
               {supportNumber && (
                 <a
                   style={{
-                    width: inquiry && supportNumber ? '50%' : '100%',
+                    width: emailInquiry && supportNumber ? '50%' : '100%',
                     maxWidth: '170px',
                     minWidth: '86px',
                     background: secondaryColor,
