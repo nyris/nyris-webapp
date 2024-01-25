@@ -496,10 +496,6 @@ const Preview = ({
       if (frame.time >= 300) {
         animExpand.stop();
         setLoaded(true);
-
-        if (resize) {
-          // handleResize();
-        }
       }
     });
 
