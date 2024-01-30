@@ -8,7 +8,7 @@ import { defaultSettings } from './constants';
 
 declare var settings: AppSettings;
 
-settings.algolia.enabled = false;
+settings.algolia.enabled = true;
 
 let normalizedSettings: AppSettings = {
   ...defaultSettings,
