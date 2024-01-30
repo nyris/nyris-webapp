@@ -42,6 +42,7 @@ function CameraCustom(props: Props) {
 
   const videoConstraints = {
     width: 1080,
+    aspectRatio: 1.11111,
   };
 
   const handleClick = useCallback(() => {
