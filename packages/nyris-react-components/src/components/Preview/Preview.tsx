@@ -480,7 +480,7 @@ const Preview = ({
     const newHeight = maxSizeRef.current.maxHeight;
 
     const animExpand = new Konva.Animation((frame: any) => {
-      const easing = frame.time / 330;
+      const easing = frame.time / 200;
 
       const currentWidth = minWidth;
       const currentHeight = minHeight;
@@ -493,7 +493,7 @@ const Preview = ({
         height: currentHeight + easing * heightDiff,
       });
 
-      if (frame.time >= 300) {
+      if (frame.time >= 170) {
         animExpand.stop();
         setLoaded(true);
       }
@@ -514,7 +514,7 @@ const Preview = ({
     const currentHeight = maxSizeRef.current.maxHeight;
 
     const animShrink = new Konva.Animation((frame: any) => {
-      const easing = frame.time / 300;
+      const easing = frame.time / 200;
       const newWidth = minWidth;
       const newHeight = minHeight;
 
