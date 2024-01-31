@@ -1,6 +1,6 @@
 {
   "name": "@nyris/nyris-widget",
-  "version": "0.3.46",
+  "version": "0.3.47",
   "homepage": "https://github.com/nyris/nyris-webapp",
   "devDependencies": {
     "@babel/core": "^7.11.4",
@@ -10,14 +10,15 @@
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@nyris/nyris-api": "^0.3.46",
-    "@nyris/nyris-react-components": "^0.3.46",
+    "@nyris/nyris-api": "^0.3.47",
+    "@nyris/nyris-react-components": "^0.3.47",
     "@svgr/webpack": "^5.3.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/classnames": "^2.2.10",
     "@types/jest": "^24.9.1",
+    "@types/lodash": "^4.14.202",
     "@types/node": "^12.12.35",
     "@types/react": "^16.9.33",
     "@types/react-dom": "^16.9.6",
@@ -73,5 +74,8 @@
       "@babel/proposal-object-rest-spread",
       "@babel/plugin-transform-runtime"
     ]
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }

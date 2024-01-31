@@ -6,6 +6,7 @@ import InquiryModal from './InquiryModal';
 import { useAppSelector } from 'Store/Store';
 import { ReactComponent as EmailIcon } from 'common/assets/icons/icon_email.svg';
 import { ReactComponent as CallIcon } from 'common/assets/icons/call.svg';
+import { useTranslation } from 'react-i18next';
 
 function InquiryBanner({
   requestImage,
@@ -30,6 +31,8 @@ function InquiryBanner({
     useAppSelector(state => state.settings.support) || {};
   const { secondaryColor } =
     useAppSelector(state => state.settings.theme) || {};
+
+  const { t } = useTranslation();
 
   return (
     <>
@@ -94,8 +97,8 @@ function InquiryBanner({
                 }}
               >
                 {isMobile
-                  ? 'No matches found?'
-                  : 'No matches found for your request?'}
+                  ? `${t('No matches found')}?`
+                  : `${t('No matches found for your request')}?`}
               </Box>
               <Box
                 style={{
