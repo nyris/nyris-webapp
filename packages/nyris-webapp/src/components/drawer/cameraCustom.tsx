@@ -6,7 +6,6 @@ import { RectCoords } from '@nyris/nyris-api';
 import ReverseCamera from 'common/assets/icons/reverse_camera.svg';
 import { isEmpty } from 'lodash';
 import React, { useCallback, useRef, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
 import { useHistory } from 'react-router-dom';
 import Webcam from 'react-webcam';
 import { createImage, find, findRegions } from 'services/image';
@@ -43,9 +42,9 @@ function CameraCustom(props: Props) {
 
   const videoConstraints = {
     width: 1080,
-    height: 1080,
-    aspectRatio: 1.33333333333,
+    aspectRatio: 1.11111,
   };
+
   const handleClick = useCallback(() => {
     setFacingMode(prevState =>
       prevState === FACING_MODE_USER
@@ -63,7 +62,6 @@ function CameraCustom(props: Props) {
     let region: RectCoords | undefined;
     let imageConvert = await createImage(image);
     dispatch(setRequestImage(imageConvert));
-    dispatch(setImageSearchInput(image));
     dispatch(onToggleModalItemDetail(false));
     handlerCloseModal();
 
@@ -113,60 +111,6 @@ function CameraCustom(props: Props) {
     setScaleCamera(1);
     onToggleModal();
   };
-
-  const { getInputProps } = useDropzone({
-    onDrop: async (fs: File[]) => {
-      let payload: any;
-      let filters: any[] = [];
-      let region: RectCoords | undefined;
-      dispatch(updateStatusLoading(true));
-      dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
-      let image = await createImage(fs[0]);
-      dispatch(setRequestImage(image));
-      if (settings.regions) {
-        let res = await findRegions(image, settings);
-        dispatch(setRegions(res.regions));
-        region = res.selectedRegion;
-        dispatch(setSelectedRegion(region));
-      }
-
-      const preFilterValues = [
-        {
-          key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter) as string[],
-        },
-      ];
-      return find({
-        image,
-        settings,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-        region,
-      })
-        .then((res: any) => {
-          res?.results.map((item: any) => {
-            filters.push({
-              sku: item.sku,
-              score: item.score,
-            });
-          });
-          payload = {
-            ...res,
-            filters,
-          };
-          dispatch(setSearchResults(payload));
-          setTimeout(() => {
-            dispatch(updateStatusLoading(false));
-            handlerCloseModal();
-            history.push('/result');
-          }, 500);
-        })
-        .catch((e: any) => {
-          console.log('err camera_custom', e);
-          dispatch(updateStatusLoading(false));
-          handlerCloseModal();
-        });
-    },
-  });
 
   return (
     <Box className="box-camera-custom">
@@ -222,6 +166,7 @@ function CameraCustom(props: Props) {
                   onClick={() => {
                     const imageSrc = getScreenshot();
                     handlerFindImage(imageSrc);
+                    dispatch(setImageSearchInput(imageSrc));
                   }}
                   className="btn-capture-camera"
                 >
@@ -285,12 +230,17 @@ function CameraCustom(props: Props) {
               id="icon-button-file"
               type="file"
               style={{ display: 'none' }}
-              {...getInputProps({
-                accept: 'image/png,image/jpeg',
-                onClick: e => {
-                  e.stopPropagation();
-                },
-              })}
+              onChange={(fs: any) => {
+                const file = fs.target?.files[0];
+                if (!file) return;
+                dispatch(setImageSearchInput(URL.createObjectURL(file)));
+                handlerFindImage(file);
+              }}
+              accept="image/jpeg,image/png,image/webp"
+              onClick={event => {
+                // @ts-ignore
+                event.target.value = '';
+              }}
             />
             <label htmlFor="icon-button-file">
               <IconButton

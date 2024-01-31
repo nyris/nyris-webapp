@@ -514,6 +514,12 @@
 
       video {
         overflow: hidden;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        min-width: 100%;
+        min-height: 100%;
+
       }
     }
 
@@ -706,6 +712,7 @@
     border-radius: 100%;
     padding: 30px;  
     .outer {
+      display: block;
       border-radius: 100%;
       padding: 3px;
       background: linear-gradient(180deg, #AAABB5 0%, #FFFFFF 100%);

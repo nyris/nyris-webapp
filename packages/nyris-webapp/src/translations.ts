@@ -25,6 +25,8 @@ export const translations = {
         'No products were found matching your search criteria.',
       'Please upload an image or enter a keyword to search.':
         'Please upload an image or enter a keyword to search.',
+      'No matches found': 'No matches found',
+      'No matches found for your request': 'No matches found for your request',
     },
   },
   de: {
@@ -53,6 +55,9 @@ export const translations = {
         'Keine Produkte entsprechen Ihren Suchkriterien.',
       'Please upload an image or enter a keyword to search.':
         'Für die Suche bitte Bild hochladen oder Stichwort eingeben.',
+      'No matches found': 'Keine Treffer für Ihre Anfrage gefunden',
+      'No matches found for your request':
+        'Keine Treffer für Ihre Anfrage gefunden',
     },
   },
   pt: {
@@ -82,6 +87,8 @@ export const translations = {
         'Nenhum produto foi encontrado com estes critérios ',
       'Please upload an image or enter a keyword to search.':
         'Faça o upload de uma imagem ou busque via texto',
+      'No matches found': 'No matches found',
+      'No matches found for your request': 'No matches found for your request',
     },
   },
 };
