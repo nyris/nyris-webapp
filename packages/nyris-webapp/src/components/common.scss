@@ -242,3 +242,8 @@
     width: 264px;
   }
 }
+
+.MuiButton-root:hover {
+  text-decoration: none ;
+  background-color: initial !important;
+}

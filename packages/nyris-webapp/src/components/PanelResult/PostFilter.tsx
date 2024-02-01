@@ -202,11 +202,15 @@ export default function PostFilterPanel({
     <>
       {!isMobile && (
         <div className="wrap-main-header-panel">
-          <Box style={{ borderBottom: '1px solid #E0E0E0' }}>
-            <Button
-              className="text-neutral-darkest"
+          <Box
+            style={{
+              cursor: 'pointer',
+              paddingBottom: '8px',
+            }}
+          >
+            <div
               onClick={onTogglePanelsClick}
-              style={{ justifyContent: 'flex-end' }}
+              style={{ display: 'flex', justifyContent: 'flex-end' }}
             >
               <IconLabel
                 icon={refinementsPanelsExpanded ? 'remove' : 'add'}
@@ -216,7 +220,7 @@ export default function PostFilterPanel({
                     : t('Expand all')
                 } `}
               />
-            </Button>
+            </div>
           </Box>
         </div>
       )}

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import RemoveIcon from "@material-ui/icons/Remove";
-import AddIcon from "@material-ui/icons/Add";
-import { Typography } from "@material-ui/core";
+import React, { useEffect, useState } from 'react';
+import { ReactComponent as RemoveIcon } from 'common/assets/icons/minus.svg';
+import { ReactComponent as AddIcon } from 'common/assets/icons/add.svg';
+import { Typography } from '@material-ui/core';
 
-export type LabelPosition = "bottom" | "left" | "right" | "top";
+export type LabelPosition = 'bottom' | 'left' | 'right' | 'top';
 
 export type IconLabelProps = {
   icon?: any;
@@ -16,11 +16,11 @@ export type IconLabelProps = {
 export default function IconLabel({
   icon,
   label,
-  labelPosition = "bottom",
-  className = "gap-1",
-  classNameLabel = "",
+  labelPosition = 'bottom',
+  className = 'gap-1',
+  classNameLabel = '',
 }: IconLabelProps) {
-  const [tagIcon, setTagIcon] = useState<string>("");
+  const [tagIcon, setTagIcon] = useState<string>('');
   // let classNamePosition: string;
   // switch (labelPosition) {
   //   case "top":
@@ -42,25 +42,31 @@ export default function IconLabel({
   }, [icon]);
 
   return (
-    <div style={{ display: "flex", alignItems: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        paddingRight: '2px',
+      }}
+    >
       {label && (
         <div className={classNameLabel}>
-          <Typography
+          <p
             style={{
-              textTransform: "none",
               fontSize: 12,
-              color: "#55566B",
-              fontWeight: 600,
+              color: '#2B2C46',
+              fontWeight: 500,
             }}
           >
             {label}
-          </Typography>
+          </p>
         </div>
       )}
-      {tagIcon === "remove" ? (
-        <RemoveIcon style={{ color: "#55566B" }} />
+      {tagIcon === 'remove' ? (
+        <RemoveIcon width={16} height={16} />
       ) : (
-        <AddIcon style={{ color: "#55566B" }} />
+        <AddIcon width={16} height={16} />
       )}
     </div>
   );

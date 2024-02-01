@@ -7,8 +7,9 @@ import PostFilterPanelAlgolia from './PanelResult/PostFilterAlgolia';
 
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from 'Store/Store';
-import KeyboardArrowRightOutlinedIcon from '@material-ui/icons/KeyboardArrowRightOutlined';
-import KeyboardArrowLeftOutlinedIcon from '@material-ui/icons/KeyboardArrowLeftOutlined';
+import { ReactComponent as KeyboardArrowRightOutlinedIcon } from 'common/assets/icons/arrow_right.svg';
+import { ReactComponent as KeyboardArrowLeftOutlinedIcon } from 'common/assets/icons/arrow_left.svg';
+
 import { DEFAULT_REGION } from '../constants';
 import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
 
@@ -51,7 +52,7 @@ function SidePanel({
       <Box
         className="box-toggle-coloumn"
         style={{
-          right: requestImage || toggleColLeft ? '0px' : '16px',
+          right: '0px',
         }}
       >
         <Button

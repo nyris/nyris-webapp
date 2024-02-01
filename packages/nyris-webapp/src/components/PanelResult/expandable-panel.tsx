@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import { ReactComponent as RemoveIcon } from 'common/assets/icons/minus.svg';
+import { ReactComponent as AddIcon } from 'common/assets/icons/add.svg';
 import classNames from 'classnames';
 import { Collapse } from 'components/collapse/collapse';
 import { useAtomValue } from 'jotai/utils';
@@ -54,7 +54,15 @@ function ExpandablePanelComponent({
         <Button
           className="w-full flex items-center justify-between group"
           aria-expanded={isOpened}
-          style={{ paddingLeft: 0 }}
+          style={{
+            paddingLeft: '2px',
+            paddingRight: '2px',
+            paddingTop: '8px',
+            paddingBottom: '8px',
+
+            marginTop: '16px',
+            marginBottom: '16px',
+          }}
           onClick={e => {
             if (typeof onToggle === 'function') {
               onToggle(e);
@@ -62,22 +70,19 @@ function ExpandablePanelComponent({
           }}
         >
           <div className="flex items-center w-full subhead">
-            <Typography
-              className="fw-700"
+            <p
               style={{
                 textTransform: 'none',
                 fontFamily: 'Source Sans 3 !important',
                 fontSize: 14,
+                fontWeight: 'bold',
+                lineHeight: '16px',
               }}
             >
               {header || attributes[0]}
-            </Typography>
+            </p>
           </div>
-          {!isMobile && (
-            <div className="text-neutral-dark can-hover:transition-colors can-hover:group-hover:text-neutral-light">
-              {isOpened ? <RemoveIcon /> : <AddIcon />}
-            </div>
-          )}
+          {!isMobile && <>{isOpened ? <RemoveIcon /> : <AddIcon />}</>}
         </Button>
 
         <Collapse isCollapsed={!isOpened}>
