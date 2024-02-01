@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, Button } from '@material-ui/core';
 import { ReactComponent as RemoveIcon } from 'common/assets/icons/minus.svg';
 import { ReactComponent as AddIcon } from 'common/assets/icons/add.svg';
 import classNames from 'classnames';
