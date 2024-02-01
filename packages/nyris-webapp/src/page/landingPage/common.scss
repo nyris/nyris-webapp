@@ -21,9 +21,7 @@
 }
 a {
   text-decoration: none !important;
-  &:hover {
-    color: #3e36dc !important;
-  }
+  
 }
 .text-gray2 {
   color: #55566b !important;
@@ -599,7 +597,7 @@ button {
     background-color: #e9e9ec;
     padding-left: 8px;
     padding-right: 8px;
-    padding-bottom: 8px;
+    padding-bottom: 12px;
     min-height: 82px;
     justify-content: space-between;
     .box-top {

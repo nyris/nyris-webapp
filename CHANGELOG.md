@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.47 - 2024-01-31
+
+### Added
+- Decrease preview animation time
+- Add de translation for No matches found
+ 
+### Fix
+- Camera cut issue on iOS >= 17.2
+
+## 0.3.46 - 2024-01-25
+
+### Added
+- Support/Inquiry Functionality Enhancement
+- New feedback UI 
+
+### Fix
+- Fix for search bar position and missing property values on email inquiry
+
+## 0.3.45 - 2024-01-12
+
+### Added
+- Added CTA button custom text
+
 ## 0.3.44 - 2023-12-29
 
 ### Removed

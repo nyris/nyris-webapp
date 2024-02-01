@@ -174,7 +174,7 @@ function ItemResult(props: Props) {
             <IconSearchImage width={16} height={16} color={'#AAABB5'} />
           </Box>
         )}
-        {settings.cadenas3dWebView && (
+        {settings.cadenas?.cadenas3dWebView && (
           <Box
             className="box-icon-modal-3d"
             onClick={() => {
@@ -237,11 +237,22 @@ function ItemResult(props: Props) {
             style={{ color: '#2B2C46' }}
             gridGap={8}
           >
+            {settings.CTAButtonText && (
+              <Typography
+                className="text-f12 max-line-1 fw-700"
+                style={{
+                  color: '#2B2C46',
+                  marginTop: 8,
+                }}
+              >
+                {truncateString(dataItem[settings.field.productName], 45)}
+              </Typography>
+            )}
             <Box
               display="flex"
               justifyContent={'space-between'}
               flexDirection={'row'}
-              style={{ color: '#2B2C46', marginTop: 12 }}
+              style={{ color: '#2B2C46', marginTop: 8 }}
               gridGap={8}
             >
               <Tooltip
@@ -339,14 +350,68 @@ function ItemResult(props: Props) {
           </Box>
         )}
         <div>
-          <Tooltip
-            title={dataItem[settings.field.productName]}
-            placement="top"
-            arrow={true}
-            disableHoverListener={
-              dataItem[settings.field.productName]?.length < 45
-            }
-          >
+          {!settings.CTAButtonText ? (
+            <Tooltip
+              title={dataItem[settings.field.productName]}
+              placement="top"
+              arrow={true}
+              disableHoverListener={
+                dataItem[settings.field.productName]?.length < 45
+              }
+            >
+              <Box
+                style={{
+                  boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                  // marginBottom: 22,
+                  height: 40,
+                  background: settings.theme?.primaryColor,
+                  borderRadius: 4,
+                  padding: '0px 8px',
+                  marginTop: '8px',
+                }}
+                display={'flex'}
+                justifyItems={'center'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
+              >
+                <Box
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    padding: 0,
+                    cursor: ctaLink ? 'pointer' : 'normal',
+                  }}
+                  onClick={() => {
+                    if (ctaLink) {
+                      feedbackConversionEpic(state, indexItem, dataItem.sku);
+                      window.open(`${ctaLink}`, '_blank');
+                    }
+                  }}
+                >
+                  <Typography
+                    className="text-white max-line-2"
+                    style={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      fontWeight: 500,
+                      fontSize: '12px',
+                      letterSpacing: '0.27px',
+                      wordBreak: 'break-all',
+                      maxWidth: !isMobile && ctaLink ? '136px' : '164x',
+                      paddingRight: '8px',
+                    }}
+                    align="left"
+                  >
+                    {truncateString(dataItem[settings.field.productName], 45)}
+                  </Typography>
+                  {!isMobile && ctaLink && (
+                    <img src={IconOpenLink} alt="more-info" width={16} />
+                  )}
+                </Box>
+              </Box>
+            </Tooltip>
+          ) : (
             <Box
               style={{
                 boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
@@ -391,14 +456,14 @@ function ItemResult(props: Props) {
                   }}
                   align="left"
                 >
-                  {truncateString(dataItem[settings.field.productName], 45)}
+                  {settings.CTAButtonText}
                 </Typography>
                 {!isMobile && ctaLink && (
                   <img src={IconOpenLink} alt="more-info" width={16} />
                 )}
               </Box>
             </Box>
-          </Tooltip>
+          )}
 
           {settings.showFeedbackAndShare && (
             <Box

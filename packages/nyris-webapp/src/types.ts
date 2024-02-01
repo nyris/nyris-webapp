@@ -15,6 +15,23 @@ export interface Auth0Settings {
   supportEmail?: string;
 }
 
+export interface Support {
+  enabled?: boolean;
+  description?: string;
+  emailInquiry?: boolean;
+  supportNumber?: string;
+  emailTemplateId?: string;
+}
+
+export interface Rfq {
+  enabled?: boolean;
+  emailTemplateId?: string;
+}
+export interface Cadenas {
+  cadenas3dWebView?: boolean;
+  cadenasAPIKey?: string;
+  catalog?: string;
+}
 export interface Field {
   ctaLinkField: string;
   productName: string;
@@ -35,14 +52,11 @@ export interface AppSettings extends NyrisAPISettings {
   appTitle?: string;
   auth0: Auth0Settings;
   brandName?: string;
-  cadenas3dWebView?: boolean;
-  cadenasAPIKey?: string;
+  cadenas?: Cadenas;
   cadSearch?: boolean;
-  catalog?: string;
   exampleImages?: string[]; // deprecated
   field: Field;
   headerText?: string;
-  inquiry?: boolean;
   instantRedirectPatterns: string[];
   itemIdLabel?: string;
   language?: string;
@@ -54,17 +68,18 @@ export interface AppSettings extends NyrisAPISettings {
   productCtaText?: string;
   refinements?: any;
   regions: boolean;
-  rfq?: boolean;
+  rfq?: Rfq;
   shareOption?: boolean;
-  showFeedbackAndShare?: boolean;
   showFeedback?: boolean;
+  showFeedbackAndShare?: boolean;
   showGroup?: boolean;
   showMoreInfo?: boolean; // deprecated
   showPoweredByNyris?: boolean;
-  templateId?: string;
+  support?: Support;
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
   warehouseVariant?: boolean;
+  CTAButtonText?: string;
 }
 
 export interface SearchSuiteSettings {

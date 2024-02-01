@@ -85,28 +85,35 @@ function SidePanel({
               >
                 <div
                   style={{
+                    display: 'flex',
+                    justifyContent: 'center',
                     backgroundColor: '#F3F3F5',
                     width: '100%',
                     paddingTop: '16px',
                     paddingBottom: '16px',
                   }}
                 >
-                  <Preview
-                    key={requestImage?.id}
-                    onSelectionChange={(r: RectCoords) => {
-                      setImageSelection(r);
-                      debouncedOnImageSelectionChange(r);
+                  <div
+                    style={{
+                      width: '288px',
+                      height: 'fit-content',
                     }}
-                    image={requestImage?.canvas}
-                    selection={imageSelection || DEFAULT_REGION}
-                    regions={filteredRegions}
-                    maxWidth={288}
-                    maxHeight={288}
-                    dotColor={'#FBD914'}
-                    minCropWidth={60}
-                    minCropHeight={60}
-                    rounded={true}
-                  />
+                  >
+                    <Preview
+                      key={requestImage?.id}
+                      onSelectionChange={(r: RectCoords) => {
+                        setImageSelection(r);
+                        debouncedOnImageSelectionChange(r);
+                      }}
+                      image={requestImage?.canvas}
+                      selection={imageSelection || DEFAULT_REGION}
+                      regions={filteredRegions}
+                      dotColor={'#FBD914'}
+                      minCropWidth={60}
+                      minCropHeight={60}
+                      rounded={true}
+                    />
+                  </div>
                 </div>
               </Box>
             </Box>

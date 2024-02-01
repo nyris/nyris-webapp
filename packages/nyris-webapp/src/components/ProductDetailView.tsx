@@ -55,7 +55,7 @@ function ProductDetailView(props: Props) {
     show3dView = false,
     onSearchImage,
   } = props;
-  const { sku } = dataItem;
+  const { sku, title } = dataItem;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const brand = dataItem[settings.field.productTag];
@@ -112,7 +112,12 @@ function ProductDetailView(props: Props) {
     setDataImageCarouSel(valueKey);
   };
   const productDetails = useMemo(() => {
-    return get(dataItem, settings.field.productDetails)?.join(', ');
+    const details = get(dataItem, settings.field.productDetails);
+    try {
+      return details.join(', ');
+    } catch (e) {
+      return details;
+    }
   }, [dataItem, settings.field.productDetails]);
   const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
   return (
@@ -146,7 +151,7 @@ function ProductDetailView(props: Props) {
           position: 'relative',
         }}
       >
-        {settings.cadenas3dWebView && (
+        {settings.cadenas?.cadenas3dWebView && (
           <CadenasWebViewer
             is3dView={is3dView}
             sku={sku}
@@ -232,7 +237,7 @@ function ProductDetailView(props: Props) {
         >
           {!is3dView &&
             status3dView !== 'not-found' &&
-            settings.cadenas3dWebView && (
+            settings.cadenas?.cadenas3dWebView && (
               <Box
                 style={{
                   background: '#E9E9EC',
@@ -350,6 +355,17 @@ function ProductDetailView(props: Props) {
                 style={{ gap: 6 }}
                 width={'100%'}
               >
+                {!settings.warehouseVariant && settings.CTAButtonText && (
+                  <ProductAttribute
+                    title={'Produktname'}
+                    value={title}
+                    width={
+                      settings.warehouseVariant
+                        ? { xs: '49%', md: 'fit-content' }
+                        : { xs: '100%', md: 'fit-content' }
+                    }
+                  />
+                )}
                 {!settings.warehouseVariant && (
                   <ProductAttribute
                     title={settings.itemIdLabel || 'SKU'}
@@ -452,7 +468,9 @@ function ProductDetailView(props: Props) {
                         paddingRight: '4px',
                       }}
                     >
-                      {dataItem[settings.field.productName]}
+                      {settings.CTAButtonText
+                        ? settings.CTAButtonText
+                        : dataItem[settings.field.productName]}
                     </Typography>
                     {ctaLink && (
                       <img

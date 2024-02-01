@@ -466,7 +466,7 @@ function ResultComponent(props: Props) {
                 >
                   <Box
                     className={'box-item-result ml-auto mr-auto'}
-                    style={{ paddingLeft: isMobile ? 0 : 16 }}
+                    style={{ paddingLeft: isMobile ? 0 : 16, height: '100%' }}
                   >
                     {!isMobile && !settings.algolia.enabled && (
                       <SelectedPostFilter />
@@ -523,46 +523,32 @@ function ResultComponent(props: Props) {
                           />
                         </Box>
                       )}
+
+                    {requestImage &&
+                      !loadingSearchAlgolia &&
+                      !props.isSearchStalled &&
+                      settings.rfq &&
+                      settings.rfq.enabled && (
+                        <RfqBanner
+                          rfqRef={rfqRef}
+                          rfqStatus={rfqStatus}
+                          setIsRfqModalOpen={setIsRfqModalOpen}
+                          requestImage={requestImage}
+                          selectedRegion={selectedRegion}
+                        />
+                      )}
+                    {!loadingSearchAlgolia &&
+                      !props.isSearchStalled &&
+                      settings.support &&
+                      settings.support.enabled &&
+                      (searchQuery || requestImage) && (
+                        <InquiryBanner
+                          requestImage={requestImage}
+                          selectedRegion={selectedRegion}
+                          query={searchQuery}
+                        />
+                      )}
                   </Box>
-                  <div
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      marginTop: '24px',
-                    }}
-                  >
-                    <div
-                      className="result-wrapper"
-                      style={{
-                        paddingLeft: '16px',
-                        paddingRight: '7px',
-                      }}
-                    >
-                      {requestImage &&
-                        !loadingSearchAlgolia &&
-                        !props.isSearchStalled &&
-                        settings.rfq && (
-                          <RfqBanner
-                            rfqRef={rfqRef}
-                            rfqStatus={rfqStatus}
-                            setIsRfqModalOpen={setIsRfqModalOpen}
-                            requestImage={requestImage}
-                            selectedRegion={selectedRegion}
-                          />
-                        )}
-                      {!loadingSearchAlgolia &&
-                        !props.isSearchStalled &&
-                        settings.inquiry &&
-                        (searchQuery || requestImage) && (
-                          <InquiryBanner
-                            requestImage={requestImage}
-                            selectedRegion={selectedRegion}
-                            query={searchQuery}
-                          />
-                        )}
-                    </div>
-                  </div>
                 </Box>
                 {!isMobile &&
                   props.allSearchResults?.hits?.length > 0 &&
@@ -614,7 +600,8 @@ function ResultComponent(props: Props) {
         requestImage &&
         isMobile &&
         props.allSearchResults.hits.length > 0 &&
-        settings.rfq && (
+        settings.rfq &&
+        settings.rfq.enabled && (
           <div
             style={{
               fontSize: '14px',
