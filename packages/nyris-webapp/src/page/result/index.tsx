@@ -71,7 +71,6 @@ function ResultComponent(props: Props) {
     imageThumbSearchInput,
   } = search;
 
-  const moreInfoText = settings?.productCtaText;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [imageSelection, setImageSelection] = useState<any>(null);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
@@ -486,7 +485,6 @@ function ResultComponent(props: Props) {
                       getUrlToCanvasFile={getUrlToCanvasFile}
                       setLoading={false}
                       sendFeedBackAction={sendFeedBackAction}
-                      moreInfoText={moreInfoText}
                       requestImage={requestImage}
                       searchQuery={searchQuery}
                     />
