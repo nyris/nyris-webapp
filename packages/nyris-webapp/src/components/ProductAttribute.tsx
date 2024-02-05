@@ -17,40 +17,44 @@ function ProductAttribute(props: Props) {
   } = props;
 
   return (
-    <Box
-      display="flex"
-      flexDirection={'column'}
-      borderRadius={2}
-      width={width}
-      style={{
-        backgroundColor: '#E0E0E0',
-        padding: padding,
-        flexGrow: 1,
-      }}
-    >
-      <Typography
-        style={{
-          color: '#2B2C46',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-        }}
-        className="text-f12 fw-700"
-      >
-        {title}
-      </Typography>
-      <Typography
-        style={{
-          color: '#2B2C46',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-        }}
-        className="text-f12 fw-400"
-      >
-        {value}
-      </Typography>
-    </Box>
+    <>
+      {title && (
+        <Box
+          display="flex"
+          flexDirection={'column'}
+          borderRadius={2}
+          width={width}
+          style={{
+            backgroundColor: '#E0E0E0',
+            padding: padding,
+            flexGrow: 1,
+          }}
+        >
+          <Typography
+            style={{
+              color: '#2B2C46',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+            className="text-f12 fw-700"
+          >
+            {title}
+          </Typography>
+          <Typography
+            style={{
+              color: '#2B2C46',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+            className="text-f12 fw-400"
+          >
+            {value}
+          </Typography>
+        </Box>
+      )}
+    </>
   );
 }
 
