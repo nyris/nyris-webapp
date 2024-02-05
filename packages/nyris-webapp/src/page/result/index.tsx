@@ -312,10 +312,16 @@ function ResultComponent(props: Props) {
   const showPostFilter = useMemo(() => {
     return (
       isPostFilterEnabled &&
-      (props.allSearchResults?.hits.length > 0 || results?.length > 0)
+      ((props.allSearchResults?.hits.length > 0 && isAlgoliaEnabled) ||
+        results?.length > 0)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPostFilterEnabled, props.allSearchResults?.hits, results]);
+  }, [
+    isPostFilterEnabled,
+    props.allSearchResults?.hits,
+    isAlgoliaEnabled,
+    results,
+  ]);
 
   const showSidePanel = useMemo(() => {
     return requestImage || (isPostFilterEnabled && showPostFilter);
@@ -459,17 +465,12 @@ function ResultComponent(props: Props) {
                     flexDirection: 'column',
                     flexGrow: 1,
                     backgroundColor: '#FAFAFA',
-                    height: '100%',
-                    justifyContent: 'space-between',
                   }}
                 >
                   <Box
                     className={'box-item-result ml-auto mr-auto'}
-                    style={{ paddingLeft: isMobile ? 0 : 16, height: '100%' }}
+                    style={{ height: '100%', paddingLeft: isMobile ? 0 : 16 }}
                   >
-                    {!isMobile && !settings.algolia.enabled && (
-                      <SelectedPostFilter />
-                    )}
                     {showFeedbackSuccess && (
                       <div className={'box-item-result feedback-floating'}>
                         <div className="feedback-success">
@@ -487,13 +488,21 @@ function ResultComponent(props: Props) {
                         />
                       </div>
                     )}
-                    <ProductList
-                      getUrlToCanvasFile={getUrlToCanvasFile}
-                      setLoading={false}
-                      sendFeedBackAction={sendFeedBackAction}
-                      requestImage={requestImage}
-                      searchQuery={searchQuery}
-                    />
+                    <div
+                      className="box-item-result ml-auto mr-auto"
+                      style={{ height: 'fit-content' }}
+                    >
+                      {!isMobile && !settings.algolia.enabled && (
+                        <SelectedPostFilter />
+                      )}
+                      <ProductList
+                        getUrlToCanvasFile={getUrlToCanvasFile}
+                        setLoading={false}
+                        sendFeedBackAction={sendFeedBackAction}
+                        requestImage={requestImage}
+                        searchQuery={searchQuery}
+                      />
+                    </div>
 
                     {props.allSearchResults?.hits.length > 0 &&
                       (requestImage || searchQuery) && (
