@@ -62,7 +62,7 @@ function ResultComponent(props: Props) {
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-
+  const { allSearchResults } = props;
   const {
     requestImage,
     regions,
@@ -312,16 +312,10 @@ function ResultComponent(props: Props) {
   const showPostFilter = useMemo(() => {
     return (
       isPostFilterEnabled &&
-      ((props.allSearchResults?.hits.length > 0 && isAlgoliaEnabled) ||
+      ((allSearchResults?.hits.length > 0 && isAlgoliaEnabled) ||
         results?.length > 0)
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    isPostFilterEnabled,
-    props.allSearchResults?.hits,
-    isAlgoliaEnabled,
-    results,
-  ]);
+  }, [isPostFilterEnabled, allSearchResults, isAlgoliaEnabled, results]);
 
   const showSidePanel = useMemo(() => {
     return requestImage || (isPostFilterEnabled && showPostFilter);
