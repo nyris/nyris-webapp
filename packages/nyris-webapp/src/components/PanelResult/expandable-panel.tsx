@@ -48,7 +48,7 @@ function ExpandablePanelComponent({
           className,
         )}
         style={{
-          borderTop: '1px solid #d3d4d8',
+          borderTop: !isMobile ? '1px solid #d3d4d8' : '',
         }}
       >
         <Button
@@ -57,9 +57,8 @@ function ExpandablePanelComponent({
           style={{
             paddingLeft: '2px',
             paddingRight: '2px',
-            paddingTop: '8px',
+            paddingTop: !isMobile ? '8px' : '0px',
             paddingBottom: '8px',
-
             marginTop: '16px',
             marginBottom: '16px',
           }}

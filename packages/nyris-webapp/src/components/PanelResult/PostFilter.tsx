@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
-import CloseIcon from '@material-ui/icons/Close';
+import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useTranslation } from 'react-i18next';
 import { setPostFilter } from 'Store/search/Search';
 import { useFilter } from 'hooks/useFilter';
@@ -235,12 +235,16 @@ export default function PostFilterPanel({
               zIndex: 100,
               background: 'white',
               alignItems: 'center',
-              paddingTop: '10px',
-              paddingRight: '10px',
             }}
           >
-            <Button onClick={onApply}>
-              <CloseIcon />
+            <Button
+              onClick={onApply}
+              style={{
+                width: '32px',
+                height: '32px',
+              }}
+            >
+              <CloseIcon color="#2B2C46" />
             </Button>
           </div>
         )}
@@ -268,21 +272,41 @@ export default function PostFilterPanel({
             position: 'sticky',
             bottom: 0,
             width: '100%',
+            display: 'flex',
           }}
         >
-          <Button
+          <div
+            className="text-white"
+            style={{
+              width: '100%',
+              backgroundColor: settings.theme?.secondaryColor,
+              fontWeight: 500,
+              fontSize: 14,
+              borderRadius: 0,
+              height: '66px',
+              textTransform: 'none',
+              padding: '16px',
+            }}
+            onClick={handlerApplyfillter}
+          >
+            Cancel
+          </div>
+          <div
             className="text-white"
             style={{
               width: '100%',
               backgroundColor: settings.theme?.primaryColor,
-              fontWeight: 700,
+              fontWeight: 500,
               fontSize: 14,
               borderRadius: 0,
+              height: '66px',
+              textTransform: 'none',
+              padding: '16px',
             }}
             onClick={handlerApplyfillter}
           >
-            APPLY
-          </Button>
+            Apply filters
+          </div>
         </Box>
       )}
     </>

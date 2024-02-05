@@ -21,7 +21,7 @@ function MobilePostFilter(props: Props) {
           onApply={props.onApply}
         />
       )}
-      {!settings.algolia.enabled && <PostFilterPanel />}
+      {!settings.algolia.enabled && <PostFilterPanel onApply={props.onApply} />}
     </>
   );
 }
