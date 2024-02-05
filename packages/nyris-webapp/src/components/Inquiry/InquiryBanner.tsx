@@ -52,7 +52,7 @@ function InquiryBanner({
           alignSelf: 'end',
           display: 'flex',
           alignItems: 'center',
-          marginRight: '12px',
+          // marginRight: '12px',
         }}
         className="rfq-box"
       >
