@@ -53,8 +53,7 @@ export interface AppSettings extends NyrisAPISettings {
   auth0: Auth0Settings;
   brandName?: string;
   cadenas?: Cadenas;
-  cadSearch?: boolean;
-  exampleImages?: string[]; // deprecated
+  CTAButtonText?: string;
   field: Field;
   headerText?: string;
   instantRedirectPatterns: string[];
@@ -65,7 +64,6 @@ export interface AppSettings extends NyrisAPISettings {
   preFilterOption?: boolean;
   preFilterTitle?: string;
   preview: boolean;
-  productCtaText?: string;
   refinements?: any;
   regions: boolean;
   rfq?: Rfq;
@@ -73,13 +71,11 @@ export interface AppSettings extends NyrisAPISettings {
   showFeedback?: boolean;
   showFeedbackAndShare?: boolean;
   showGroup?: boolean;
-  showMoreInfo?: boolean; // deprecated
   showPoweredByNyris?: boolean;
   support?: Support;
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
   warehouseVariant?: boolean;
-  CTAButtonText?: string;
 }
 
 export interface SearchSuiteSettings {

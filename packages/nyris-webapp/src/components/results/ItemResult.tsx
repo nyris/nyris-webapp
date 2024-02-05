@@ -34,7 +34,6 @@ interface Props {
   handlerFeedback?: any;
   handlerGroupItem?: any;
   isGroupItem?: boolean;
-  moreInfoText?: string;
   handlerCloseGroup?: any;
   main_image_link?: any;
 }
