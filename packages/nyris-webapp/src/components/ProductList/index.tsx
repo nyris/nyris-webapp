@@ -13,7 +13,6 @@ interface Props {
   getUrlToCanvasFile: any;
   setLoading?: any;
   sendFeedBackAction: any;
-  moreInfoText: any;
   requestImage?: any;
   searchQuery?: string;
 }
@@ -22,7 +21,6 @@ function ProductListComponent({
   allSearchResults,
   getUrlToCanvasFile,
   sendFeedBackAction,
-  moreInfoText,
   searchQuery,
   requestImage,
   isSearchStalled,
@@ -79,7 +77,6 @@ function ProductListComponent({
               handlerCloseGroup(hitItem, index)
             }
             isGroupItem={settings.showGroup ? hit?.isGroup : false}
-            moreInfoText={moreInfoText}
             main_image_link={
               hit['image(main_similarity)'] || hit['main_image_link']
             }
