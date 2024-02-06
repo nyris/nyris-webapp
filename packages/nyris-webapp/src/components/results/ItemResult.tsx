@@ -282,13 +282,13 @@ function ItemResult(props: Props) {
                 >
                   <span
                     style={{
-                      color: dataItem[settings.field.warehouseStockValue]
+                      color: get(dataItem, settings.field.warehouseStockValue)
                         ? '#00C070'
                         : '#c54545',
                       fontWeight: 600,
                     }}
                   >
-                    {dataItem[settings.field.warehouseStockValue] || 0}
+                    {get(dataItem, settings.field.warehouseStockValue) || 0}
                   </span>
                 </Typography>
               )}
@@ -329,8 +329,13 @@ function ItemResult(props: Props) {
           >
             {settings.field.warehouseNumber && (
               <ProductAttribute
-                title={dataItem[settings.field.warehouseNumber]}
-                value={dataItem[settings.field.warehouseNumberValue] || 'N/A'}
+                title={
+                  get(dataItem, settings.field.warehouseNumber) ||
+                  settings.field.warehouseNumber
+                }
+                value={
+                  get(dataItem, settings.field.warehouseNumberValue) || 'N/A'
+                }
                 padding="4px 8px"
                 width={{ xs: '49%' }}
               />
@@ -338,9 +343,13 @@ function ItemResult(props: Props) {
 
             {settings.field.warehouseShelfNumber && (
               <ProductAttribute
-                title={dataItem[settings.field.warehouseShelfNumber]}
+                title={
+                  get(dataItem, settings.field.warehouseShelfNumber) ||
+                  settings.field.warehouseShelfNumber
+                }
                 value={
-                  dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'
+                  get(dataItem, settings.field.warehouseShelfNumberValue) ||
+                  'N/A'
                 }
                 padding="4px 8px"
                 width={{ xs: '49%' }}
