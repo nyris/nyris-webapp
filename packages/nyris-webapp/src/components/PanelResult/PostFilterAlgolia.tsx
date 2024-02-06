@@ -257,21 +257,41 @@ export default function PostFilterPanelAlgolia({
             position: 'sticky',
             bottom: 0,
             width: '100%',
+            display: 'flex',
           }}
         >
-          <Button
+          <div
+            className="text-white"
+            style={{
+              width: '100%',
+              backgroundColor: settings.theme?.secondaryColor,
+              fontWeight: 500,
+              fontSize: 14,
+              borderRadius: 0,
+              height: '66px',
+              textTransform: 'none',
+              padding: '16px',
+            }}
+            onClick={handlerApplyfillter}
+          >
+            Cancel
+          </div>
+          <div
             className="text-white"
             style={{
               width: '100%',
               backgroundColor: settings.theme?.primaryColor,
-              fontWeight: 700,
+              fontWeight: 500,
               fontSize: 14,
               borderRadius: 0,
+              height: '66px',
+              textTransform: 'none',
+              padding: '16px',
             }}
             onClick={handlerApplyfillter}
           >
-            APPLY
-          </Button>
+            Apply filters
+          </div>
         </Box>
       )}
     </>
