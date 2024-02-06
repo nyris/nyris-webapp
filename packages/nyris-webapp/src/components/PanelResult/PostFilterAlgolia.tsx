@@ -13,7 +13,7 @@ import { useHistory } from 'react-router-dom';
 import { useAppSelector } from 'Store/Store';
 import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
-import CloseIcon from '@material-ui/icons/Close';
+import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useTranslation } from 'react-i18next';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
@@ -225,12 +225,16 @@ export default function PostFilterPanelAlgolia({
               zIndex: 100,
               background: 'white',
               alignItems: 'center',
-              paddingTop: '10px',
-              paddingRight: '10px',
             }}
           >
-            <Button onClick={onApply}>
-              <CloseIcon />
+            <Button
+              onClick={onApply}
+              style={{
+                width: '32px',
+                height: '32px',
+              }}
+            >
+              <CloseIcon color="#2B2C46" />
             </Button>
           </div>
         )}
@@ -242,6 +246,7 @@ export default function PostFilterPanelAlgolia({
                   paddingLeft: '24px',
                   paddingRight: '24px',
                   overflow: 'auto',
+                  marginBottom: '12px',
                 }
               : {}),
           }}
