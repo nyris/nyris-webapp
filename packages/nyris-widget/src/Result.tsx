@@ -24,10 +24,18 @@ export const Result = (r: ResultProps) => {
         </div>
         <div className="nyris__success-multiple-product-panel">
           <div className="nyris__product-sku">{r.sku}</div>
-          <a className="nyris__product-cta" href={r.links.main} target="_blank">
-            <div className="nyris__product-title">{r.title}</div>
-            <img src={link} width={"14px"} height={"14px"} />
-          </a>
+          {r.title && (
+            <a
+              className="nyris__product-cta"
+              href={r.links?.main}
+              target="_blank"
+            >
+              <div className="nyris__product-title">{r.title}</div>
+              {r.links?.main && (
+                <img src={link} width={"14px"} height={"14px"} />
+              )}
+            </a>
+          )}
         </div>
       </div>
     </div>
