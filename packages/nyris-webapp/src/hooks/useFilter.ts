@@ -18,7 +18,7 @@ const getNextFilters = (data: any[], postFilters: any): any => {
   const nextFilters: any = {};
 
   data?.forEach(element => {
-    const filters = element.filters;
+    const filters = element.filters || {};
     const keys = Object.keys(filters);
 
     for (let i = 0; i < keys.length; i++) {

@@ -14,7 +14,7 @@ export const Result = (r: ResultProps) => {
     <div className="nyris__success-multiple-result">
       <div className="nyris__success-multiple-result-box">
         <div className="nyris__product-image">
-          <img src={r.imageUrl} width={"192px"} height={"192px"} />
+          <img src={r.imageUrl} style={{}} />
           <div
             className="nyris__product-similar-search"
             onClick={() => r.onSimilarSearch(r.imageUrl)}
@@ -24,10 +24,18 @@ export const Result = (r: ResultProps) => {
         </div>
         <div className="nyris__success-multiple-product-panel">
           <div className="nyris__product-sku">{r.sku}</div>
-          <a className="nyris__product-cta" href={r.links.main} target="_blank">
-            <div className="nyris__product-title">{r.title}</div>
-            <img src={link} width={"14px"} height={"14px"} />
-          </a>
+          {r.title && (
+            <a
+              className="nyris__product-cta"
+              href={r.links?.main}
+              target="_blank"
+            >
+              <div className="nyris__product-title">{r.title}</div>
+              {r.links?.main && (
+                <img src={link} width={"14px"} height={"14px"} />
+              )}
+            </a>
+          )}
         </div>
       </div>
     </div>
