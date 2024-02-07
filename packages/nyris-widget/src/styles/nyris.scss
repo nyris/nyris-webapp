@@ -116,7 +116,7 @@
       font-size: 14px;
       letter-spacing: 0.28px;
       color: $color-text;
-      font-weight: 600;
+      font-weight: 400;
     }
 
     &-content {
@@ -124,7 +124,7 @@
       @include flex-filler();
       width: 100%;
       margin: 10px 0 0;
-      font-weight: 600;
+      font-weight: 400;
 
       @media #{$mobile-query} {
         &--desktop {
