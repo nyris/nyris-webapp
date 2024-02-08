@@ -95,7 +95,7 @@ const SuccessMultiple = ({
                   debouncedOnImageSelectionChange(r);
                 }}
                 regions={regions}
-                minWidth={100}
+                minWidth={100 * (image.width / image.height)}
                 minHeight={100}
                 dotColor={expand ? "#FBD914" : ""}
                 minCropWidth={expand ? 60 : 10}
