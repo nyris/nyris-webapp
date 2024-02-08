@@ -190,6 +190,7 @@ const Fail = ({
   image,
   regions,
   selection,
+  onFile,
 }: AppProps) => {
   const [currentSelection, setCurrentSelection] = useState(selection);
 
@@ -204,44 +205,29 @@ const Fail = ({
         <p>
           <br />
           <br />
-          Unfortunately we could not find any relevant matches for your search.
-          Perhaps your photo is tilted, blurry or cropped?
+          Oops! We encountered an issue during the search. Please ensure your
+          image meets the guidelines and try again.
         </p>
-        {showPreview && (
-          <p>
-            <br />
-            <br />
-            <strong>Please reselect focus area:</strong>
-          </p>
-        )}
       </div>
       <div className="nyris__fail-content">
-        {showPreview && (
-          <>
-            <div className="nyris__reselect-image-wrapper">
-              <Preview
-                image={image}
-                selection={currentSelection}
-                onSelectionChange={setCurrentSelection}
-                regions={regions}
-                maxWidth={350}
-                maxHeight={350}
-                dotColor="#FF0000"
-                minCropWidth={100}
-                minCropHeight={100}
-              />
-            </div>
-            <div className="nyris__button-accept" onClick={acceptCrop}>
-              Accept & proceed
-            </div>
-          </>
-        )}
-
-        <div className="nyris__button-new-search" onClick={onRestart}>
-          {showPreview && <span>Or start new search</span>}
-          {!showPreview && <span>Start new search</span>}
-          <img src={similar_search} width={16} height={16} />
-        </div>
+        <label
+          className="nyris__button-accept"
+          htmlFor="nyris__hello-open-camera"
+        >
+          <span>Click a picture</span>
+          <img src={camera} width={16} height={16} />
+        </label>
+        <input
+          type="file"
+          name="take-picture"
+          id="nyris__hello-open-camera"
+          accept="image/jpeg,image/png"
+          onChange={onFile}
+          capture="environment"
+          style={{
+            display: "none",
+          }}
+        />
       </div>
     </div>
   );

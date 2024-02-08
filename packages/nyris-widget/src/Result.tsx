@@ -14,7 +14,7 @@ export const Result = (r: ResultProps) => {
     <div className="nyris__success-multiple-result">
       <div className="nyris__success-multiple-result-box">
         <div className="nyris__product-image">
-          <img src={r.imageUrl} width={"192px"} height={"192px"} />
+          <img src={r.imageUrl} style={{}} />
           <div
             className="nyris__product-similar-search"
             onClick={() => r.onSimilarSearch(r.imageUrl)}
