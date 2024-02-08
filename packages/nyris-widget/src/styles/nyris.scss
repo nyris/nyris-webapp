@@ -78,7 +78,7 @@
     overflow-y: auto;
 
     @media #{$desktop-query} {
-      max-width: 480px;
+      max-width: 450px;
       margin-top: auto;
       margin-left: auto;
       box-shadow: $shadow;

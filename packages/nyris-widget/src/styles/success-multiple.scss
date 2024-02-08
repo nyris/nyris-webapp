@@ -56,7 +56,6 @@
     align-self: stretch;
     flex-grow: 1;
     overflow-y: auto;
-    padding: 5% 15px 0 15px;
     justify-content: space-between;
     @media #{$desktop-query} {
       padding-top: 0;
@@ -72,7 +71,7 @@
 
   &-result {
     position: relative;
-    width: 48%;
+    width: 192px;
     &-box {
       border-radius: 2px;
       border: 1px solid #E0E0E0;
@@ -88,7 +87,7 @@
     padding: 4px 8px 12px 8px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
     align-self: stretch;
     background: #F3F3F5;
   }
@@ -110,7 +109,7 @@
     width: 100%;
     border-radius: 2px;
     background: #717380;
-    margin: 14px 0 24px 0;
+    margin: 14px 0 32px 0;
 
     &-wrapper {
      display: flex;
@@ -217,12 +216,24 @@
 
 }
 
-.nyris__product{
-  &-sku{
+.nyris__product {
+  &-title {
+    font-weight: 700;
+    font-size: 12px;
+    color: #2B2C46;
+    padding-left: 8px;
+    max-height: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 165px;
+  }
+
+  &-sku {
     color: black;
     font-size: 10px;
     font-weight: 400;
-    letter-spacing: 0.229px;
+    padding-left: 8px;
   }
 
   &-cta {
@@ -235,9 +246,10 @@
     background: #3E36DC;
     box-shadow: 0 0 6px 0 rgba(170, 171, 181, 0.80);
     cursor: pointer;
+    justify-content: space-between;
   }
 
-  &-title{
+  &-button {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

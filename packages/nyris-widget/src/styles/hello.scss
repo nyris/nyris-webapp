@@ -23,7 +23,8 @@
     border: 1px dashed #CACAD1;
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &.active-drop {
       background-color: $color-hello-dropzone-background;
 
     }
