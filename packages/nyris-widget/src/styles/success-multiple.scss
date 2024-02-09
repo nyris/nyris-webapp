@@ -71,7 +71,8 @@
 
   &-result {
     position: relative;
-    width: 192px;
+    max-width: 192px;
+    width: 48%;
     &-box {
       border-radius: 2px;
       border: 1px solid #E0E0E0;
@@ -87,7 +88,7 @@
     padding: 4px 8px 12px 8px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    height: 77px;
     align-self: stretch;
     background: #F3F3F5;
   }
@@ -153,7 +154,7 @@
     border-radius: 100%;
     cursor: pointer;
     @media #{$mobile-query} {
-      right: 6px;
+      right: 10px;
     }
   }
 
@@ -184,7 +185,7 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 34px;
+    top: 36px;
     left: 16px;
     @media #{$mobile-query} {
       left: 6px;
@@ -222,11 +223,11 @@
     font-size: 12px;
     color: #2B2C46;
     padding-left: 8px;
-    max-height: 15px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 165px;
+    max-width: 150px;
+    cursor: pointer;
   }
 
   &-sku {
@@ -297,4 +298,54 @@
     cursor: pointer;
   }
 
+}
+
+.custom-tooltip {
+  position: absolute;
+  z-index: 9999;
+  background-color: #393939;
+  width: max-content;
+  min-width: 1.5rem;
+  max-width: 13rem;
+  height: auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 0.125rem;
+  color: #ffffff;
+  font-family: 'Source Sans 3';
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.16px;
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #393939 transparent;
+  }
+  &.arrow-down {
+    &.align-left {
+      &::after {
+        left: 88%;
+      }
+    }
+    &::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #393939 transparent transparent transparent;
+    }
+  }
+  &.long {
+    max-width: unset;
+  }
 }

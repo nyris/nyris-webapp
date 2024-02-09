@@ -1,6 +1,7 @@
-import React from "react";
-import link from "./images/link.svg";
-import similar_search from "./images/similar_search.svg";
+import React, { useState } from 'react';
+import link from './images/link.svg';
+import similar_search from './images/similar_search.svg';
+import { createPortal } from 'react-dom';
 
 export interface ResultProps {
   title: string;
@@ -10,6 +11,9 @@ export interface ResultProps {
   onSimilarSearch?: any;
 }
 export const Result = (r: ResultProps) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [bounding, setBounding] = useState<any>(null);
+  const mountPoint = document.querySelector('#nyris-mount-point');
   return (
     <div className="nyris__success-multiple-result">
       <div className="nyris__success-multiple-result-box">
@@ -23,7 +27,45 @@ export const Result = (r: ResultProps) => {
           </div>
         </div>
         <div className="nyris__success-multiple-product-panel">
-          <div className="nyris__product-title">{r.title}</div>
+          <div
+              className="nyris__product-title"
+              onMouseOver={(e) => {
+                setBounding({
+                  right:
+                      document.body.clientWidth -
+                      (e.target as HTMLElement).getBoundingClientRect().right -
+                      (e.target as HTMLElement).getBoundingClientRect().width / 2,
+                  bottom:
+                      (mountPoint?.getBoundingClientRect()?.bottom || 0) -
+                      (e.target as HTMLElement).getBoundingClientRect().bottom + 20,
+                });
+                setTimeout(() => {
+                  setShowTooltip(true);
+                }, 300);
+              }}
+              onMouseLeave={(e) => {
+                setBounding(null);
+                setShowTooltip(false);
+              }}
+          >
+            {r.title}
+          </div>
+          {showTooltip &&
+            bounding &&
+              mountPoint &&
+                createPortal(
+                  <div
+                    className="custom-tooltip long arrow-down"
+                      style={{
+                        bottom: bounding.bottom,
+                        right: bounding.right,
+                      }}
+                    >
+                      {r.title}
+                    </div>,
+                    mountPoint
+                )
+          }
           <div className="nyris__product-sku">{r.sku}</div>
             <a
               className="nyris__product-cta"
