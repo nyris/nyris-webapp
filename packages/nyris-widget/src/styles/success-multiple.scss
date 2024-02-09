@@ -73,11 +73,10 @@
     position: relative;
     max-width: 192px;
     width: 48%;
+    margin: 2px;
     &-box {
       border-radius: 2px;
-      border: 1px solid #E0E0E0;
       box-shadow: 0 0 6px 0 #E0E0E0;
-
     }
 
   }
@@ -111,7 +110,7 @@
     width: 100%;
     border-radius: 2px;
     background: #717380;
-    margin: 14px 0 32px 0;
+    margin: 14px 2px 32px 2px;
 
     &-wrapper {
      display: flex;
@@ -266,6 +265,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    img {
+      &:hover {
+        transform: scale(1.1);
+        transition: all .3s;
+      }
+    }
 
 
     & > img {
@@ -275,6 +281,7 @@
       height: 192px;
       display: block; /* Remove default image spacing */
       margin: 0 auto; /* Center the image horizontally */
+      cursor: pointer;
 
       @media #{$mobile-query} {
         max-height: 173px;
