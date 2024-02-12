@@ -193,6 +193,7 @@ const Fail = ({
   onFile,
 }: AppProps) => {
   const [currentSelection, setCurrentSelection] = useState(selection);
+  const isMobile = document.body.clientWidth < 512;
 
   const acceptCrop = () => onAcceptCrop(currentSelection);
   // @ts-ignore
@@ -214,7 +215,7 @@ const Fail = ({
           className="nyris__button-accept"
           htmlFor="nyris__hello-open-camera"
         >
-          <span>Upload a picture</span>
+          <span>{isMobile ? 'Click' : 'Upload'} a picture</span>
           <img src={camera} width={16} height={16} />
         </label>
         <input
@@ -315,7 +316,8 @@ export const App = (props: AppProps) => {
   let wide = false;
   let resultsSingle = false;
   let resultsMultiple = false;
-  switch (showScreen) {
+  const showScreen1: string = Screen.Fail;
+  switch (showScreen1) {
     case Screen.Hello:
       content = <Hello {...props} />;
       break;
