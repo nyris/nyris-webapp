@@ -214,7 +214,7 @@ const Fail = ({
           className="nyris__button-accept"
           htmlFor="nyris__hello-open-camera"
         >
-          <span>Click a picture</span>
+          <span>Upload a picture</span>
           <img src={camera} width={16} height={16} />
         </label>
         <input
