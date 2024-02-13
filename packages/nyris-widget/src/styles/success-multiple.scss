@@ -225,7 +225,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 100%;
+    max-width: calc(100% - 8px);
     cursor: pointer;
   }
 
@@ -248,6 +248,7 @@
     box-shadow: 0 0 6px 0 rgba(170, 171, 181, 0.80);
     cursor: pointer;
     justify-content: space-between;
+    text-decoration: none;
   }
 
   &-button {
