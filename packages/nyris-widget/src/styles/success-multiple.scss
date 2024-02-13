@@ -87,7 +87,6 @@
     padding: 4px 8px 12px 8px;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: space-between;
     height: 77px;
     align-self: stretch;
     background: #F3F3F5;
@@ -235,6 +234,7 @@
     font-size: 10px;
     font-weight: 400;
     padding-left: 8px;
+    margin: 6px 0 8px 0;
   }
 
   &-cta {
