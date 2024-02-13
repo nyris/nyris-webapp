@@ -316,8 +316,8 @@ export const App = (props: AppProps) => {
   let wide = false;
   let resultsSingle = false;
   let resultsMultiple = false;
-  const showScreen1: string = Screen.Fail;
-  switch (showScreen1) {
+
+  switch (showScreen) {
     case Screen.Hello:
       content = <Hello {...props} />;
       break;
