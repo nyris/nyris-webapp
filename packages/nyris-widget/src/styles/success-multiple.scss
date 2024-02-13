@@ -225,7 +225,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 150px;
+    max-width: 100%;
     cursor: pointer;
   }
 
@@ -326,34 +326,4 @@
   font-weight: 400;
   line-height: 20px;
   letter-spacing: 0.16px;
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #393939 transparent;
-  }
-  &.arrow-down {
-    &.align-left {
-      &::after {
-        left: 88%;
-      }
-    }
-    &::after {
-      content: "";
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      margin-left: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: #393939 transparent transparent transparent;
-    }
-  }
-  &.long {
-    max-width: unset;
-  }
 }

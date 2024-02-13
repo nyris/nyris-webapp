@@ -363,7 +363,7 @@ export const App = (props: AppProps) => {
                       : "",
                 }}
               >
-                <a href="https://nyris.io/">
+                <a target="_blank" href="https://nyris.io/">
                   Powered by <span className="nyris__footer-logo">nyris®</span>
                 </a>
               </div>

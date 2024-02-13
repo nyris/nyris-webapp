@@ -30,11 +30,13 @@ export const Result = (r: ResultProps) => {
           <div
               className="nyris__product-title"
               onMouseOver={(e) => {
+                let right = document.body.clientWidth -
+                        (e.target as HTMLElement).getBoundingClientRect().right -
+                        (e.target as HTMLElement).getBoundingClientRect().width / 2;
+                right = right > 0 ? right : 16;
+                
                 setBounding({
-                  right:
-                      document.body.clientWidth -
-                      (e.target as HTMLElement).getBoundingClientRect().right -
-                      (e.target as HTMLElement).getBoundingClientRect().width / 2,
+                  right,
                   bottom:
                       (mountPoint?.getBoundingClientRect()?.bottom || 0) -
                       (e.target as HTMLElement).getBoundingClientRect().bottom + 20,
@@ -55,7 +57,7 @@ export const Result = (r: ResultProps) => {
               mountPoint &&
                 createPortal(
                   <div
-                    className="custom-tooltip long arrow-down"
+                    className="custom-tooltip arrow-down"
                       style={{
                         bottom: bounding.bottom,
                         right: bounding.right,
