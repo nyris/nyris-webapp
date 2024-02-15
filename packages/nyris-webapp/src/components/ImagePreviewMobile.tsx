@@ -147,6 +147,7 @@ function ImagePreviewMobileComponent({
                   setEditActive(true);
                 }}
                 showGrip={editActive}
+                draggable={editActive ? true : false}
               />
             </div>
           </Box>

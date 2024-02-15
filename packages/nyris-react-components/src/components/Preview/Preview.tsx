@@ -47,6 +47,8 @@ interface PreviewProps {
   style?: React.CSSProperties | undefined;
   /** enable resize on window resize */
   resize?: boolean;
+  /** enables draggable of cropping frame */
+  draggable?: boolean;
 }
 
 /** @internal State of the Preview component */
@@ -179,6 +181,7 @@ const Preview = ({
   showGrip = true,
   style,
   resize,
+  draggable = true,
 }: PreviewProps) => {
   const divRef = useRef<any>(null);
   const stageRef = useRef<any>(null);
@@ -412,7 +415,7 @@ const Preview = ({
 
   let gripSize = 20;
   let gripPadding = gripSize / 2;
-  let darkOpacity = 0.3;
+  let darkOpacity = shrinkAnimation ? 0.5 : 0.3;
   const cornerRadius = [4, 4, 4, 4];
   const clipFunc = (ctx: any) => {
     ctx.beginPath();
@@ -584,10 +587,12 @@ const Preview = ({
               />
               <Rect
                 stroke="black"
-                draggable={true}
+                draggable={draggable ? true : false}
                 onDragMove={handleDragMoveRect}
                 dragBoundFunc={handleDragBoundRect}
-                onMouseOver={() => setState({ rectHover: true })}
+                onMouseOver={() => {
+                  if (draggable) setState({ rectHover: true });
+                }}
                 onMouseOut={() => setState({ rectHover: false })}
                 opacity={0}
                 strokeWidth={2}
@@ -600,15 +605,16 @@ const Preview = ({
               />
 
               {/* Dark areas */}
-
+              {/* top */}
               <Rect
                 fill="black"
                 opacity={darkOpacity}
                 x={0}
                 y={0}
                 width={width}
-                height={y1}
+                height={y1 + 0.08}
               />
+              {/* bottom */}
               <Rect
                 fill="black"
                 opacity={darkOpacity}
@@ -617,21 +623,23 @@ const Preview = ({
                 width={width}
                 height={height - y2}
               />
+              {/* left */}
               <Rect
                 fill="black"
                 opacity={darkOpacity}
                 x={0}
                 y={y1}
                 width={x1}
-                height={y2 - y1}
+                height={y2 - y1 + 0.08}
               />
+              {/* right */}
               <Rect
                 fill="black"
                 opacity={darkOpacity}
                 x={x2}
                 y={y1}
                 width={width - x2}
-                height={y2 - y1}
+                height={y2 - y1 + 0.08}
               />
             </Layer>
 
