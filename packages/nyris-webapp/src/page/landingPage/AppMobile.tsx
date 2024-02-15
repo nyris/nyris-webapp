@@ -9,10 +9,6 @@ function AppMobile(): JSX.Element {
   const dispatch = useAppDispatch();
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
 
-  useEffect(() => {
-    dispatch(reset(''));
-  }, [dispatch]);
-
   return (
     <div
       style={{
