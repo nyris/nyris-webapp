@@ -98,7 +98,7 @@ export const useProductList = ({ allSearchResults, isSearchStalled }: any) => {
     return filteredResult?.map((item: any) => {
       return {
         ...item,
-        main_image_link: item.image || item.images ? item.images[0] : '',
+        main_image_link: item.image || (item.images ? item.images[0] : ''),
       };
     });
   }, [filteredResult]);

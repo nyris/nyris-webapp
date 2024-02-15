@@ -145,7 +145,12 @@ function SidePanel({
         )}
 
         {showPostFilter && (
-          <Box className="col-left__bottom">
+          <Box
+            className="col-left__bottom"
+            style={{
+              marginTop: requestImage ? '16px' : '48px',
+            }}
+          >
             {settings.algolia.enabled && (
               <PostFilterPanelAlgolia disjunctiveFacets={disjunctiveFacets} />
             )}
