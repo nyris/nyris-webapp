@@ -1,12 +1,9 @@
 import { Box } from '@material-ui/core';
 import CameraCustom from 'components/drawer/cameraCustom';
-import React, { useEffect, useState } from 'react';
-import { reset } from 'Store/search/Search';
-import { useAppDispatch } from 'Store/Store';
+import React, { useState } from 'react';
 import { ReactComponent as CameraIcon } from 'common/assets/icons/take_photo.svg';
 
 function AppMobile(): JSX.Element {
-  const dispatch = useAppDispatch();
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
 
   return (
