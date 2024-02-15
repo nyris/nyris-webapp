@@ -415,7 +415,7 @@ const Preview = ({
 
   let gripSize = 20;
   let gripPadding = gripSize / 2;
-  let darkOpacity = shrinkAnimation ? 0.5 : 0.3;
+  let darkOpacity = shrinkAnimation ? 0.4 : 0.3;
   const cornerRadius = [4, 4, 4, 4];
   const clipFunc = (ctx: any) => {
     ctx.beginPath();
