@@ -21,6 +21,8 @@ import { Preview } from "@nyris/nyris-react-components";
 import classNames from "classnames";
 import { useDropzone } from "react-dropzone";
 
+declare var settings: any;
+
 export enum Screen {
   Hidden = "hidden",
   Hello = "hello",
@@ -62,6 +64,7 @@ const SuccessMultiple = ({
   loading,
 }: AppProps) => {
   const noResult = results.length === 0;
+  console.log(settings);
 
   const [currentSelection, setCurrentSelection] = useState(selection);
   const [expand, setExpand] = useState(noResult ? true : false);
