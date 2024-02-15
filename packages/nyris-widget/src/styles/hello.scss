@@ -10,7 +10,6 @@
   font-family: 'Source Sans 3';
   &-wrapper {
     width: 100%;
-    padding: 0 24px 0 24px;
   }
 
   &-drop-zone {
@@ -23,7 +22,8 @@
     border: 1px dashed #CACAD1;
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &.active-drop {
       background-color: $color-hello-dropzone-background;
 
     }

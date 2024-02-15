@@ -77,11 +77,11 @@ const SuccessMultiple = ({
     <>
       <div className="nyris__screen nyris__success-multiple">
         <div className="nyris__main-heading ">
-          {noResult ? "No results" : "Success!"}
+          {noResult ? "Let’s try that again" : "Success!"}
         </div>
         <div className="nyris__main-description">
           {noResult
-            ? "Sorry, no results were found. Please ensure that your image is properly cropped, clear, and free of background noise. You have the option to upload a new image or readjust the cropping frame:"
+            ? "We couldn’t find matches this time. For the best results, please use a sharp, well-lit, and centered photo with a clean background, and give it another go!"
             : `${results.length} matches found`}
         </div>
         <div className="nyris__main-content">
@@ -193,6 +193,7 @@ const Fail = ({
   onFile,
 }: AppProps) => {
   const [currentSelection, setCurrentSelection] = useState(selection);
+  const isMobile = document.body.clientWidth < 512;
 
   const acceptCrop = () => onAcceptCrop(currentSelection);
   // @ts-ignore
@@ -214,7 +215,7 @@ const Fail = ({
           className="nyris__button-accept"
           htmlFor="nyris__hello-open-camera"
         >
-          <span>Click a picture</span>
+          <span>{isMobile ? 'Click' : 'Upload'} a picture</span>
           <img src={camera} width={16} height={16} />
         </label>
         <input
@@ -240,7 +241,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
-        <img src={logo} width={185} height={180} />
+        <img src={logo} width={318} height={134} />
       </div>
       <div className="nyris__hello-wrapper">
         <div className="nyris__main-content nyris__main-content--mobile">
@@ -268,7 +269,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
             <img src={camera} width={16} height={16} />
           </label>
 
-          <div className="nyris__hello-drop-zone" {...getRootProps()}>
+          <div className={`nyris__hello-drop-zone ${isDragActive ? 'active-drop' : '' }`} {...getRootProps()}>
             <img src={drop_zone} width={48} height={48} />
             <div>
               <span className="nyris__hello-drop-zone-bold-text">
@@ -315,6 +316,7 @@ export const App = (props: AppProps) => {
   let wide = false;
   let resultsSingle = false;
   let resultsMultiple = false;
+
   switch (showScreen) {
     case Screen.Hello:
       content = <Hello {...props} />;
@@ -361,7 +363,7 @@ export const App = (props: AppProps) => {
                       : "",
                 }}
               >
-                <a href="https://nyris.io/">
+                <a target="_blank" href="https://nyris.io/">
                   Powered by <span className="nyris__footer-logo">nyris®</span>
                 </a>
               </div>
