@@ -109,6 +109,7 @@ const SuccessMultiple = ({
                 showGrip={expand}
                 resize={true}
                 style={{ width: "75%" }}
+                draggable={expand ? true : false}
               />
             </div>
             <div

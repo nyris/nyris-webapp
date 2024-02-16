@@ -83,9 +83,9 @@ export default class NyrisAPI {
 
     this.responseFormat =
       settings.responseFormat || "application/offers.complete+json";
-    this.maxHeight = settings.maxHeight || 500;
-    this.maxWidth = settings.maxWidth || 500;
-    this.jpegQuality = settings.jpegQuality || 0.92;
+    this.maxHeight = settings.maxHeight || 1024;
+    this.maxWidth = settings.maxWidth || 1024;
+    this.jpegQuality = settings.jpegQuality || 0.9;
     this.customSearchRequest = settings.customSearchRequest;
     this.responseHook = settings.responseHook;
     this.xOptions = settings.xOptions;
