@@ -22,7 +22,7 @@ import { useMediaQuery } from 'react-responsive';
 import { feedbackClickEpic, feedbackConversionEpic } from 'services/Feedback';
 import ProductDetailView from 'components/ProductDetailView';
 import ProductAttribute from '../ProductAttribute';
-import { get } from 'lodash';
+import { get, isUndefined } from 'lodash';
 
 interface Props {
   dataItem: any;
@@ -273,25 +273,28 @@ function ItemResult(props: Props) {
                 </Typography>
               </Tooltip>
 
-              {settings.warehouseVariant && (
-                <Typography
-                  className="text-f12 max-line-1 fw-400"
-                  style={{
-                    color: '#2B2C46',
-                  }}
-                >
-                  <span
+              {settings.warehouseVariant &&
+                !isUndefined(
+                  get(dataItem, settings.field.warehouseStockValue),
+                ) && (
+                  <Typography
+                    className="text-f12 max-line-1 fw-400"
                     style={{
-                      color: get(dataItem, settings.field.warehouseStockValue)
-                        ? '#00C070'
-                        : '#c54545',
-                      fontWeight: 600,
+                      color: '#2B2C46',
                     }}
                   >
-                    {get(dataItem, settings.field.warehouseStockValue) || 0}
-                  </span>
-                </Typography>
-              )}
+                    <span
+                      style={{
+                        color: get(dataItem, settings.field.warehouseStockValue)
+                          ? '#00C070'
+                          : '#c54545',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {get(dataItem, settings.field.warehouseStockValue) || 0}
+                    </span>
+                  </Typography>
+                )}
             </Box>
             <Box
               display="flex"
