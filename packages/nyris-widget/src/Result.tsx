@@ -58,7 +58,7 @@ export const Result = (r: ResultProps) => {
                 createPortal(
                   <div
                     className="custom-tooltip arrow-down"
-                      style={{
+                    style={{
                         bottom: bounding.bottom,
                         right: bounding.right,
                       }}
@@ -73,8 +73,9 @@ export const Result = (r: ResultProps) => {
               className="nyris__product-cta"
               href={r.links?.main}
               target="_blank"
+              style={{ backgroundColor: window.nyrisSettings.primaryColor }}
             >
-              <div className="nyris__product-button">View more</div>
+              <div className="nyris__product-button">{window.nyrisSettings.ctaButtonText}</div>
               {r.links?.main && (
                 <img src={link} width={"14px"} height={"14px"} />
               )}
