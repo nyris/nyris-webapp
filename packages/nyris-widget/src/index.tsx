@@ -185,7 +185,7 @@ class Nyris {
   }
 
   preselectDefaultRegion(regions: Region[]) {
-    const defaultRect = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
+    const defaultRect = this.selection;
     return selectFirstCenteredRegion(regions, 0.3, defaultRect);
   }
 
