@@ -242,7 +242,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
-        <img src={logo} width={318} height={134} />
+        <img src={window.nyrisSettings.customerLogo} width={318} height={134} />
       </div>
       <div className="nyris__hello-wrapper">
         <div className="nyris__main-content nyris__main-content--mobile">
