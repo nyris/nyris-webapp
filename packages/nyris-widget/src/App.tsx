@@ -10,7 +10,7 @@ import collapse from "./images/collapse.svg";
 import trash from "./images/trash.svg";
 import { debounce } from "lodash";
 
-import logo from "./images/logo.svg";
+import { ReactComponent as Logo } from "./images/logo.svg";
 
 import "./styles/nyris.scss";
 
@@ -243,7 +243,11 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
-        <img src={logo} width={318} height={134} />
+        {
+          window.nyrisSettings.customerLogo
+            ? <img src={window.nyrisSettings.customerLogo} width={318} height={134} />
+            : <Logo fill={window.nyrisSettings.primaryColor} width={318} height={134} />
+        }
       </div>
       <div className="nyris__hello-wrapper">
         <div className="nyris__main-content nyris__main-content--mobile">
