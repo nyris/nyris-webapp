@@ -1,5 +1,8 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const webpack = require("webpack");
+
+const IS_ENTERPRISE = process.env.IS_ENTERPRISE;
 
 module.exports = {
   mode: "production",
@@ -16,7 +19,12 @@ module.exports = {
     },
   },
 
-  plugins: [new CopyPlugin([{ from: "public", to: "" }])],
+  plugins: [
+    new CopyPlugin([{ from: "public", to: "" }]),
+    new webpack.DefinePlugin({
+      "process.env.IS_ENTERPRISE": IS_ENTERPRISE ? true : null,
+    }),
+  ],
 
   entry: "./src/index.tsx",
 
@@ -43,7 +51,7 @@ module.exports = {
     ],
   },
   output: {
-    filename: "widget.js",
+    filename: IS_ENTERPRISE ? "widget.js" : "widget-demo.js",
     path: path.resolve(__dirname, "dist"),
     libraryTarget: "var",
     library: "NyrisWidget",

@@ -239,7 +239,6 @@ declare global {
 }
 
 window.addEventListener("load", (e) => {
-  console.log("loading widget");
   let div = document.createElement("div");
   div.id = "nyris-mount-point";
   document.body.appendChild(div);

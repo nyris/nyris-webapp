@@ -26,6 +26,7 @@
     "classnames": "^2.2.6",
     "copy-webpack-plugin": "^5.1.1",
     "core-js": "^3.6.5",
+    "cross-env": "^7.0.3",
     "css-loader": "^3.5.3",
     "konva": "4.0.7",
     "node-sass": "^4.14.1",
@@ -46,8 +47,8 @@
     "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --mode development",
-    "build": "webpack"
+    "start": "cross-env IS_ENTERPRISE=true webpack-dev-server --mode development",
+    "build": "webpack && cross-env IS_ENTERPRISE=true webpack"
   },
   "browserslist": {
     "production": [

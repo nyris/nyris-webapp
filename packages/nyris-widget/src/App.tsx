@@ -111,6 +111,7 @@ const SuccessMultiple = ({
                 showGrip={expand}
                 resize={true}
                 style={{ width: "75%" }}
+                draggable={expand ? true : false}
               />
             </div>
             <div
@@ -242,7 +243,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
-        <img src={window.nyrisSettings.customerLogo} width={318} height={134} />
+        <img src={logo} width={318} height={134} />
       </div>
       <div className="nyris__hello-wrapper">
         <div className="nyris__main-content nyris__main-content--mobile">
@@ -273,7 +274,12 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
             <img src={camera} width={16} height={16} />
           </label>
 
-          <div className={`nyris__hello-drop-zone ${isDragActive ? 'active-drop' : '' }`} {...getRootProps()}>
+          <div
+            className={`nyris__hello-drop-zone ${
+              isDragActive ? "active-drop" : ""
+            }`}
+            {...getRootProps()}
+          >
             <img src={drop_zone} width={48} height={48} />
             <div>
               <span className="nyris__hello-drop-zone-bold-text">
@@ -343,7 +349,7 @@ export const App = (props: AppProps) => {
     nyrisMultipleProducts: resultsMultiple,
     nyrisSingleProduct: resultsSingle,
   });
-
+  const showPoweredByNyris = !process.env.IS_ENTERPRISE;
   return (
     <React.Fragment>
       {showScreen != Screen.Hidden && (
@@ -362,13 +368,18 @@ export const App = (props: AppProps) => {
                 style={{
                   paddingBottom:
                     showScreen == Screen.Result && results?.length > 0
-                      ? "80px"
+                      ? showPoweredByNyris
+                        ? "80px"
+                        : "50px"
                       : "",
                 }}
               >
-                <a target="_blank" href="https://nyris.io/">
-                  Powered by <span className="nyris__footer-logo">nyris®</span>
-                </a>
+                {showPoweredByNyris && (
+                  <a target="_blank" href="https://nyris.io/">
+                    Powered by{" "}
+                    <span className="nyris__footer-logo">nyris®</span>
+                  </a>
+                )}
               </div>
             </div>
           </div>

@@ -410,13 +410,14 @@ function PreFilterComponent(props: Props) {
             className="button-left"
             style={{
               width: '50%',
-              height: '64px',
-              backgroundColor: '#2B2C46',
+              backgroundColor: settings.theme.secondaryColor,
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
               textTransform: 'none',
               paddingLeft: '16px',
+              paddingTop: '16px',
+              paddingBottom: '32px',
             }}
             onClick={() => handleClose()}
           >
@@ -432,6 +433,8 @@ function PreFilterComponent(props: Props) {
               justifyContent: 'flex-start',
               textTransform: 'none',
               paddingLeft: '16px',
+              paddingTop: '16px',
+              paddingBottom: '32px',
             }}
             onClick={() => onHandlerSubmitData()}
           >
@@ -456,10 +459,11 @@ function PreFilterComponent(props: Props) {
             className="button-left"
             style={{
               width: '50%',
-              backgroundColor: '#000000',
+              backgroundColor: settings.theme.secondaryColor,
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
+              textTransform: 'none',
             }}
             onClick={() => handleClose()}
           >
@@ -473,6 +477,7 @@ function PreFilterComponent(props: Props) {
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
+              textTransform: 'none',
             }}
             onClick={() => onHandlerSubmitData()}
           >
