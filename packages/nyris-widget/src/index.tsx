@@ -25,7 +25,7 @@ interface NyrisSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
   initiatorElementId: string;
 }
-
+const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
 class Nyris {
   private nyrisApi: NyrisAPI;
   private screen: Screen = Screen.Hidden;
@@ -125,7 +125,7 @@ class Nyris {
   async showRefineSearch(regions: Region[]) {
     if (regions.length === 0) {
       this.regions.push({
-        normalizedRect: { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 },
+        normalizedRect: DEFAULT_RECT,
       });
     }
     await this.selectRegion(this.regions[0]);
@@ -185,7 +185,7 @@ class Nyris {
   }
 
   preselectDefaultRegion(regions: Region[]) {
-    const defaultRect = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
+    const defaultRect = DEFAULT_RECT;
     return selectFirstCenteredRegion(regions, 0.3, defaultRect);
   }
 
