@@ -79,7 +79,7 @@ export const Result = (r: ResultProps) => {
               className="nyris__product-cta"
               href={r.links?.main}
               target="_blank"
-              style={{ backgroundColor: window.nyrisSettings.primaryColor }}
+              style={{ backgroundColor: window.nyrisSettings.primaryColor || '#3E36DC' }}
             >
               <div className="nyris__product-button">{window.nyrisSettings.ctaButtonText}</div>
               {r.links?.main && (

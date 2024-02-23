@@ -245,7 +245,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
       <div className="nyris__logo">
         {
           window.nyrisSettings.customerLogo
-            ? <img src={window.nyrisSettings.customerLogo} width={318} height={134} />
+            ? <img src={window.nyrisSettings.customerLogo} width={window.nyrisSettings.logoWidth || 318} />
             : <Logo fill={window.nyrisSettings.primaryColor} width={318} height={134} />
         }
       </div>

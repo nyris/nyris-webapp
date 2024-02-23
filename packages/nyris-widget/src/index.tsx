@@ -28,6 +28,7 @@ interface NyrisSettings extends NyrisAPISettings {
   cameraIconColour: string;
   browseGalleryButtonColor: string;
   customerLogo: string;
+  logoWidth: string;
   ctaButtonText:  string;
   language: string;
 }
