@@ -20,7 +20,7 @@ export const Result = (r: ResultProps) => {
         <div style={{ position: "relative" }}>
           <a
             href={r.links?.main}
-            target="_blank"
+            target={window.nyrisSettings.navigatePreference}
             className="nyris__product-image"
           >
             <img src={r.imageUrl} style={{}} />
@@ -78,7 +78,7 @@ export const Result = (r: ResultProps) => {
             <a
               className="nyris__product-cta"
               href={r.links?.main}
-              target="_blank"
+              target={window.nyrisSettings.navigatePreference}
               style={{ backgroundColor: window.nyrisSettings.primaryColor || '#3E36DC' }}
             >
               <div className="nyris__product-button">{window.nyrisSettings.ctaButtonText}</div>

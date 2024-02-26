@@ -31,6 +31,7 @@ interface NyrisSettings extends NyrisAPISettings {
   logoWidth: string;
   ctaButtonText:  string;
   language: string;
+  navigatePreference: string;
 }
 const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
 class Nyris {
