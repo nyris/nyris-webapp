@@ -11,6 +11,7 @@ import trash from "./images/trash.svg";
 import { debounce } from "lodash";
 
 import { ReactComponent as Logo } from "./images/logo.svg";
+import { ReactComponent as  DeutscheLogo } from "./images/deutsche_logo.svg";
 
 import "./styles/nyris.scss";
 
@@ -240,13 +241,18 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => onFileDropped(fs[0]),
   });
+  
+  const logo = window.nyrisSettings.language === 'en'
+                ? <Logo fill={window.nyrisSettings.primaryColor} width={318} height={134} />
+                : <DeutscheLogo fill={window.nyrisSettings.primaryColor} width={329} height={134} />
+  
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
         {
           window.nyrisSettings.customerLogo
             ? <img src={window.nyrisSettings.customerLogo} width={window.nyrisSettings.logoWidth || 318} />
-            : <Logo fill={window.nyrisSettings.primaryColor} width={318} height={134} />
+            : logo
         }
       </div>
       <div className="nyris__hello-wrapper">
