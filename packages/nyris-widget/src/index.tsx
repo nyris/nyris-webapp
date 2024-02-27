@@ -156,6 +156,8 @@ class Nyris {
       console.warn("Could not get regions", e);
     }
 
+    const foundRegions = await this.nyrisApi.findRegions(this.image);
+    this.selection = this.getRegionByMaxConfidence(foundRegions);
     await this.startProcessing();
   }
 
@@ -199,8 +201,6 @@ class Nyris {
     this.render();
     try {
       await this.updateThumbnail();
-      const foundRegions = await this.nyrisApi.findRegions(this.image);
-      this.selection = this.getRegionByMaxConfidence(foundRegions);
 
       let options: ImageSearchOptions = {
         cropRect: this.selection,
