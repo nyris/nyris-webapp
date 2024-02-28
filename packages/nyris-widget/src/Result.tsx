@@ -45,7 +45,7 @@ export const Result = (r: ResultProps) => {
                   right,
                   bottom:
                       (mountPoint?.getBoundingClientRect()?.bottom || 0) -
-                      (e.target as HTMLElement).getBoundingClientRect().bottom + 20,
+                      (e.target as HTMLElement).getBoundingClientRect().bottom + 40,
                 });
                 setTimeout(() => {
                   setShowTooltip(true);
