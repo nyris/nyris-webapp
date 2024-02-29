@@ -77,6 +77,7 @@
     &-box {
       border-radius: 2px;
       box-shadow: 0 0 6px 0 #E0E0E0;
+      border: 1px solid #E0E0E0;
     }
 
   }
@@ -87,7 +88,7 @@
     padding: 8px;
     flex-direction: column;
     align-items: flex-start;
-    height: 103px;
+    height: 90px;
     align-self: stretch;
     background: #F3F3F5;
   }
