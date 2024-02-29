@@ -27,6 +27,9 @@ export const translations = {
         'Please upload an image or enter a keyword to search.',
       'No matches found': 'No matches found',
       'No matches found for your request': 'No matches found for your request',
+      'Clear all': 'Clear all',
+      Cancel: 'Cancel',
+      Apply: 'Apply',
     },
   },
   de: {
@@ -58,6 +61,9 @@ export const translations = {
       'No matches found': 'Keine Treffer für Ihre Anfrage gefunden',
       'No matches found for your request':
         'Keine Treffer für Ihre Anfrage gefunden',
+      'Clear all': 'Alles löschen',
+      Cancel: 'Abbrechen',
+      Apply: 'Anwenden',
     },
   },
   pt: {
@@ -89,6 +95,9 @@ export const translations = {
         'Faça o upload de uma imagem ou busque via texto',
       'No matches found': 'No matches found',
       'No matches found for your request': 'No matches found for your request',
+      'Clear all': 'Clear all',
+      Cancel: 'Cancel',
+      Apply: 'Apply',
     },
   },
 };

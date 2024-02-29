@@ -15,6 +15,7 @@ import { Skeleton } from '@material-ui/lab';
 import { truncateString } from 'helpers/truncateString';
 import { find } from 'services/image';
 import { useQuery } from 'hooks/useQuery';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   handleClose?: any;
@@ -159,6 +160,7 @@ function PreFilterComponent(props: Props) {
     }
     handleClose();
   };
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -225,7 +227,7 @@ function PreFilterComponent(props: Props) {
 
           <input
             className="input-search-filter"
-            placeholder="Search"
+            placeholder={t('Search')}
             onChange={(e: any) => {
               filterSearchHandler(e.target.value);
             }}
@@ -285,7 +287,7 @@ function PreFilterComponent(props: Props) {
                 setKeyFilter({});
               }}
             >
-              Clear all
+              {t('Clear all')}
             </Box>
           </Box>
         </Box>
@@ -421,7 +423,7 @@ function PreFilterComponent(props: Props) {
             }}
             onClick={() => handleClose()}
           >
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button
             className="button-right"
@@ -438,7 +440,7 @@ function PreFilterComponent(props: Props) {
             }}
             onClick={() => onHandlerSubmitData()}
           >
-            Apply
+            {t('Apply')}
           </Button>
         </Box>
       )}
@@ -467,7 +469,7 @@ function PreFilterComponent(props: Props) {
             }}
             onClick={() => handleClose()}
           >
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button
             className="button-right"
@@ -481,12 +483,11 @@ function PreFilterComponent(props: Props) {
             }}
             onClick={() => onHandlerSubmitData()}
           >
-            Apply
+            {t('Apply')}
           </Button>
         </Box>
       )}
     </Box>
   );
 }
-
 export default PreFilterComponent;
