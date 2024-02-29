@@ -15,7 +15,6 @@ import NyrisAPI, {
   RectCoords,
   Region,
   SearchResult,
-  selectFirstCenteredRegion,
   urlOrBlobToCanvas,
 } from "@nyris/nyris-api";
 import { ResultProps } from "./Result";
@@ -157,8 +156,8 @@ class Nyris {
       console.warn("Could not get regions", e);
     }
 
-    this.selection = this.preselectDefaultRegion(this.regions);
-
+    const foundRegions = await this.nyrisApi.findRegions(this.image);
+    this.selection = this.getRegionByMaxConfidence(foundRegions);
     await this.startProcessing();
   }
 
@@ -184,10 +183,17 @@ class Nyris {
     this.showScreen(Screen.Result);
   }
 
-  preselectDefaultRegion(regions: Region[]) {
-    const defaultRect = DEFAULT_RECT;
-    return selectFirstCenteredRegion(regions, 0.3, defaultRect);
-  }
+  getRegionByMaxConfidence = (regions: Region[]) => {
+    if (regions.length === 0) {
+      return DEFAULT_RECT;
+    }
+    const regionWithMaxConfidence = regions.reduce((prev, current) => {
+      prev.confidence = prev.confidence || 0;
+      current.confidence = current.confidence || 0;
+      return prev.confidence >= current.confidence ? prev : current;
+    });
+    return regionWithMaxConfidence.normalizedRect;
+  };
 
   async startProcessing() {
     // this.showScreen(Screen.Wait);
@@ -199,7 +205,6 @@ class Nyris {
       let options: ImageSearchOptions = {
         cropRect: this.selection,
       };
-
       const searchResult = await this.nyrisApi.find(options, this.image);
       if (
         searchResult.results.length === 1 &&
