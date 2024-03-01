@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.48 - 2024-03-01
+
+- Widget release
+
 ## 0.3.47 - 2024-01-31
 
 ### Added
