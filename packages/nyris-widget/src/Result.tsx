@@ -33,59 +33,60 @@ export const Result = (r: ResultProps) => {
           </div>
         </div>
         <div className="nyris__success-multiple-product-panel">
-          <div
-              className="nyris__product-title"
+          <div className="nyris__product-info">
+            <div
+              className="nyris__product-info-title"
               onMouseOver={(e) => {
                 let right = document.body.clientWidth -
-                        (e.target as HTMLElement).getBoundingClientRect().right -
-                        (e.target as HTMLElement).getBoundingClientRect().width / 2;
+                  (e.target as HTMLElement).getBoundingClientRect().right -
+                  (e.target as HTMLElement).getBoundingClientRect().width / 2;
                 right = right > 0 ? right : 16;
-                
                 setBounding({
                   right,
                   bottom:
-                      (mountPoint?.getBoundingClientRect()?.bottom || 0) -
-                      (e.target as HTMLElement).getBoundingClientRect().bottom + 40,
+                    (mountPoint?.getBoundingClientRect()?.bottom || 0) -
+                    (e.target as HTMLElement).getBoundingClientRect().bottom + 40,
                 });
                 setTimeout(() => {
                   setShowTooltip(true);
-                }, 300);
+                  }, 300);
               }}
               onMouseLeave={(e) => {
                 setBounding(null);
                 setShowTooltip(false);
               }}
-          >
-            {r.title}
-          </div>
-          {showTooltip &&
-            bounding &&
-              mountPoint &&
-                createPortal(
-                  <div
-                    className="custom-tooltip arrow-down"
-                    style={{
-                        bottom: bounding.bottom,
-                        right: bounding.right,
-                      }}
-                    >
-                      {r.title}
-                    </div>,
-                    mountPoint
-                )
-          }
-          <div className="nyris__product-sku">{r.sku}</div>
-            <a
-              className="nyris__product-cta"
-              href={r.links?.main}
-              target={window.nyrisSettings.navigatePreference}
-              style={{ backgroundColor: window.nyrisSettings.primaryColor || '#3E36DC' }}
             >
-              <div className="nyris__product-button">{window.nyrisSettings.ctaButtonText}</div>
-              {r.links?.main && (
-                <img src={link} width={"14px"} height={"14px"} />
-              )}
-            </a>
+              {r.title}
+            </div>
+            {showTooltip &&
+              bounding &&
+              mountPoint &&
+              createPortal(
+                <div
+                  className="custom-tooltip arrow-down"
+                  style={{
+                    bottom: bounding.bottom,
+                    right: bounding.right,
+                  }}
+                >
+                  {r.title}
+                </div>,
+                mountPoint
+              )
+            }
+            <div className="nyris__product-info-sku">{r.sku}</div>
+          </div>
+          <a 
+            className="nyris__product-cta"
+            href={r.links?.main}
+            target={window.nyrisSettings.navigatePreference}
+            style={{ backgroundColor: window.nyrisSettings.primaryColor || '#3E36DC' }}
+          >
+            <div className="nyris__product-button">{window.nyrisSettings.ctaButtonText}</div>
+            {r.links?.main && (
+              <img src={link} width={"14px"} height={"14px"} />
+            )}
+          </a>
         </div>
       </div>
     </div>
