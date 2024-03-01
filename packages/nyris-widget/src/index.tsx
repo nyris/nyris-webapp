@@ -23,6 +23,14 @@ import { makeFileHandler } from "@nyris/nyris-react-components";
 interface NyrisSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
   initiatorElementId: string;
+  primaryColor: string;
+  cameraIconColour: string;
+  browseGalleryButtonColor: string;
+  customerLogo: string;
+  logoWidth: string;
+  ctaButtonText:  string;
+  language: string;
+  navigatePreference: string;
 }
 const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
 class Nyris {
@@ -39,9 +47,9 @@ class Nyris {
   private readonly instantRedirectPatterns: string[];
   private loading: boolean = false;
 
-  constructor(settings: NyrisSettings) {
-    this.nyrisApi = new NyrisAPI(settings);
-    this.instantRedirectPatterns = settings.instantRedirectPatterns || [];
+  constructor(nyrisSettings: NyrisSettings) {
+    this.nyrisApi = new NyrisAPI({...nyrisSettings });
+    this.instantRedirectPatterns = nyrisSettings.instantRedirectPatterns || [];
 
     let mountPoint = document.getElementById("nyris-mount-point");
     if (!mountPoint) {
@@ -52,11 +60,11 @@ class Nyris {
 
     this.showScreen(Screen.Hidden);
 
-    if (settings.initiatorElementId) {
+    if (nyrisSettings.initiatorElementId) {
       document.body.addEventListener("click", (event) => {
         // @ts-ignore
         const isVisualSearchElement = event?.target?.closest(
-          `#${settings.initiatorElementId}`
+          `#${nyrisSettings.initiatorElementId}`
         );
 
         if (isVisualSearchElement) {
@@ -82,9 +90,7 @@ class Nyris {
       regions: this.regions,
       selection: this.selection,
       thumbnailUrl: this.thumbImageUrl,
-      showVisualSearchIcon: window.nyrisSettings.initiatorElementId
-        ? false
-        : true,
+      showVisualSearchIcon: !window.nyrisSettings.initiatorElementId,
       onSimilarSearch: (f) => this.handleFile(f),
       loading: this.loading,
     };

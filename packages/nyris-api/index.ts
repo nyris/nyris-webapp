@@ -81,8 +81,7 @@ export default class NyrisAPI {
     this.regionProposalUrl = `${baseUrl}/find/v2/regions/`;
     this.findFilters = `${baseUrl}/find/v1/filters`;
 
-    this.responseFormat =
-      settings.responseFormat || "application/offers.complete+json";
+    this.responseFormat = "application/offers.complete+json";
     this.maxHeight = settings.maxHeight || 1024;
     this.maxWidth = settings.maxWidth || 1024;
     this.jpegQuality = settings.jpegQuality || 0.9;
