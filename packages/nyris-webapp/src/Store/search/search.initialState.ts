@@ -26,4 +26,5 @@ export const initialState: SearchState = {
     page: 1,
     refinementList: '',
   },
+  postFilter: {},
 };

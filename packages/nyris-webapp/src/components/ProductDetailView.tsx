@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import ProductAttribute from './ProductAttribute';
 import CadenasWebViewer from './CadenasWebViewer';
 import { makeStyles } from '@material-ui/core/styles';
-import { get } from 'lodash';
+import { get, isUndefined } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   buttonStyle3D: {
@@ -321,25 +321,31 @@ function ProductDetailView(props: Props) {
                   {sku}
                 </Typography>
 
-                {settings.warehouseVariant && (
-                  <Typography
-                    className="text-f12 max-line-1 fw-400"
-                    style={{
-                      color: '#2B2C46',
-                    }}
-                  >
-                    <span
+                {settings.warehouseVariant &&
+                  !isUndefined(
+                    get(dataItem, settings.field.warehouseStockValue),
+                  ) && (
+                    <Typography
+                      className="text-f12 max-line-1 fw-400"
                       style={{
-                        color: dataItem[settings.field.warehouseStockValue]
-                          ? '#00C070'
-                          : '#c54545',
-                        fontWeight: 600,
+                        color: '#2B2C46',
                       }}
                     >
-                      {dataItem[settings.field.warehouseStockValue] || 0}
-                    </span>
-                  </Typography>
-                )}
+                      <span
+                        style={{
+                          color: get(
+                            dataItem,
+                            settings.field.warehouseStockValue,
+                          )
+                            ? '#00C070'
+                            : '#c54545',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {get(dataItem, settings.field.warehouseStockValue) || 0}
+                      </span>
+                    </Typography>
+                  )}
               </Box>
             )}
 
@@ -403,19 +409,28 @@ function ProductDetailView(props: Props) {
                   <>
                     {settings.field.warehouseNumber && (
                       <ProductAttribute
-                        title={dataItem[settings.field.warehouseNumber]}
+                        title={
+                          get(dataItem, settings.field.warehouseNumber) ||
+                          settings.field.warehouseNumber
+                        }
                         value={
-                          dataItem[settings.field.warehouseNumberValue] || 'N/A'
+                          get(dataItem, settings.field.warehouseNumberValue) ||
+                          'N/A'
                         }
                         width={{ xs: '49%', md: 'fit-content' }}
                       />
                     )}
                     {settings.field.warehouseShelfNumber && (
                       <ProductAttribute
-                        title={dataItem[settings.field.warehouseShelfNumber]}
+                        title={
+                          get(dataItem, settings.field.warehouseShelfNumber) ||
+                          settings.field.warehouseShelfNumber
+                        }
                         value={
-                          dataItem[settings.field.warehouseShelfNumberValue] ||
-                          'N/A'
+                          get(
+                            dataItem,
+                            settings.field.warehouseShelfNumberValue,
+                          ) || 'N/A'
                         }
                         width={{ xs: '49%', md: 'fit-content' }}
                       />

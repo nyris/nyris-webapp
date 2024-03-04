@@ -70,8 +70,3 @@ export const find = ({
   }
   return nyrisApi.find(options, image, filters);
 };
-
-export const findByCadFile = (file: File, settings: NyrisAPISettings) => {
-  const nyrisApi = new NyrisAPI(settings);
-  return nyrisApi.findByCad(file, {});
-};

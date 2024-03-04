@@ -1,12 +1,15 @@
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('https://assets.i.nyris.io/auth0_login_page/SourceSans3/SourceSans3-VariableFont_wght.ttf');
+}
 
 .nyris__hello {
-  height: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
-  &-wrapper{
+  font-family: 'Source Sans 3';
+  &-wrapper {
     width: 100%;
-    padding: 0px 24px 0px 24px;
   }
 
   &-drop-zone {
@@ -19,17 +22,16 @@
     border: 1px dashed #CACAD1;
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &.active-drop {
       background-color: $color-hello-dropzone-background;
 
     }
+    &-bold-text {
+      color: #55566B;
+      font-weight: 700;
+    }
 
-  }
-  
-  
-  &-drop-zone-bold-text {
-     color: #55566B;
-     font-weight: 600;
   }
 
   &-upload {
@@ -41,9 +43,8 @@
     gap: 16px;
     align-self: stretch;
     border-radius: 2px;
-    background: linear-gradient(90deg, #3E36DC 0%, #655EE3 100%);
     color: white;
-
+    font-weight: 600;
     font-size: 14px;
     margin-bottom: 16px;
 
@@ -58,8 +59,6 @@
     gap: 16px;
     align-self: stretch;
     border-radius: 2px;
-    background: #E4E3FF;
-    color: #3E36DC;
 
     font-size: 14px;
     margin-bottom: 16px;

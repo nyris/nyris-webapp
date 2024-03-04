@@ -1,4 +1,5 @@
 import { useAppSelector } from 'Store/Store';
+import { useFilteredResult } from 'hooks/useFilteredResult';
 import { groupBy, uniqueId } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -91,14 +92,16 @@ export const useProductList = ({ allSearchResults, isSearchStalled }: any) => {
     }
   }, [isSearchStalled]);
 
+  const filteredResult = useFilteredResult(results);
+
   const productList = useMemo(() => {
-    return results?.map((item: any) => {
+    return filteredResult?.map((item: any) => {
       return {
         ...item,
-        main_image_link: item.image || item.images ? item.images[0] : '',
+        main_image_link: item.image || (item.images ? item.images[0] : ''),
       };
     });
-  }, [results]);
+  }, [filteredResult]);
 
   return {
     productList: algolia?.enabled ? itemShowDefault : productList || [],

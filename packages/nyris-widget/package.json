@@ -1,6 +1,6 @@
 {
   "name": "@nyris/nyris-widget",
-  "version": "0.3.47",
+  "version": "0.3.48",
   "homepage": "https://github.com/nyris/nyris-webapp",
   "devDependencies": {
     "@babel/core": "^7.11.4",
@@ -10,8 +10,8 @@
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
-    "@nyris/nyris-api": "^0.3.47",
-    "@nyris/nyris-react-components": "^0.3.47",
+    "@nyris/nyris-api": "^0.3.48",
+    "@nyris/nyris-react-components": "^0.3.48",
     "@svgr/webpack": "^5.3.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -26,6 +26,7 @@
     "classnames": "^2.2.6",
     "copy-webpack-plugin": "^5.1.1",
     "core-js": "^3.6.5",
+    "cross-env": "^7.0.3",
     "css-loader": "^3.5.3",
     "konva": "4.0.7",
     "node-sass": "^4.14.1",
@@ -46,8 +47,8 @@
     "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --mode development",
-    "build": "webpack"
+    "start": "cross-env IS_ENTERPRISE=true webpack-dev-server --mode development",
+    "build": "webpack && cross-env IS_ENTERPRISE=true webpack"
   },
   "browserslist": {
     "production": [

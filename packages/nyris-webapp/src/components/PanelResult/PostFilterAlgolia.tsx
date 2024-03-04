@@ -13,7 +13,7 @@ import { useHistory } from 'react-router-dom';
 import { useAppSelector } from 'Store/Store';
 import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
-import CloseIcon from '@material-ui/icons/Close';
+import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useTranslation } from 'react-i18next';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
@@ -90,7 +90,7 @@ function WidgetPanel({ children, onToggle, panelId, ...props }: any) {
   );
 }
 
-export default function ExpandablePanelComponent({
+export default function PostFilterPanelAlgolia({
   dynamicWidgets = true,
   onApply,
   disjunctiveFacets,
@@ -192,11 +192,15 @@ export default function ExpandablePanelComponent({
     <>
       {!isMobile && (
         <div className="wrap-main-header-panel">
-          <Box style={{ borderBottom: '1px solid #E0E0E0' }}>
-            <Button
-              className="text-neutral-darkest"
+          <Box
+            style={{
+              cursor: 'pointer',
+              paddingBottom: '8px',
+            }}
+          >
+            <div
               onClick={onTogglePanelsClick}
-              style={{ justifyContent: 'flex-end' }}
+              style={{ display: 'flex', justifyContent: 'flex-end' }}
             >
               <IconLabel
                 icon={refinementsPanelsExpanded ? 'remove' : 'add'}
@@ -206,7 +210,7 @@ export default function ExpandablePanelComponent({
                     : t('Expand all')
                 } `}
               />
-            </Button>
+            </div>
           </Box>
         </div>
       )}
@@ -221,12 +225,16 @@ export default function ExpandablePanelComponent({
               zIndex: 100,
               background: 'white',
               alignItems: 'center',
-              paddingTop: '10px',
-              paddingRight: '10px',
             }}
           >
-            <Button onClick={onApply}>
-              <CloseIcon />
+            <Button
+              onClick={onApply}
+              style={{
+                width: '32px',
+                height: '32px',
+              }}
+            >
+              <CloseIcon color="#2B2C46" />
             </Button>
           </div>
         )}
@@ -238,6 +246,7 @@ export default function ExpandablePanelComponent({
                   paddingLeft: '24px',
                   paddingRight: '24px',
                   overflow: 'auto',
+                  marginBottom: '12px',
                 }
               : {}),
           }}
@@ -253,21 +262,41 @@ export default function ExpandablePanelComponent({
             position: 'sticky',
             bottom: 0,
             width: '100%',
+            display: 'flex',
           }}
         >
-          <Button
+          <div
+            className="text-white"
+            style={{
+              width: '100%',
+              backgroundColor: settings.theme?.secondaryColor,
+              fontWeight: 500,
+              fontSize: 14,
+              borderRadius: 0,
+              height: '66px',
+              textTransform: 'none',
+              padding: '16px',
+            }}
+            onClick={handlerApplyfillter}
+          >
+            Cancel
+          </div>
+          <div
             className="text-white"
             style={{
               width: '100%',
               backgroundColor: settings.theme?.primaryColor,
-              fontWeight: 700,
+              fontWeight: 500,
               fontSize: 14,
               borderRadius: 0,
+              height: '66px',
+              textTransform: 'none',
+              padding: '16px',
             }}
             onClick={handlerApplyfillter}
           >
-            APPLY
-          </Button>
+            Apply filters
+          </div>
         </Box>
       )}
     </>

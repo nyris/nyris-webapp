@@ -50,6 +50,7 @@ import InquiryBanner from 'components/Inquiry/InquiryBanner';
 import { useQuery } from 'hooks/useQuery';
 import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
 import Feedback from 'components/Feedback';
+import { SelectedPostFilter } from 'components/SelectedPostFilter';
 
 interface Props {
   allSearchResults: any;
@@ -61,7 +62,7 @@ function ResultComponent(props: Props) {
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-
+  const { allSearchResults } = props;
   const {
     requestImage,
     regions,
@@ -69,9 +70,9 @@ function ResultComponent(props: Props) {
     preFilter,
     loadingSearchAlgolia,
     imageThumbSearchInput,
+    results,
   } = search;
 
-  const moreInfoText = settings?.productCtaText;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const [imageSelection, setImageSelection] = useState<any>(null);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
@@ -311,11 +312,10 @@ function ResultComponent(props: Props) {
   const showPostFilter = useMemo(() => {
     return (
       isPostFilterEnabled &&
-      props.allSearchResults?.hits.length > 0 &&
-      isAlgoliaEnabled
+      ((allSearchResults?.hits.length > 0 && isAlgoliaEnabled) ||
+        results?.length > 0)
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPostFilterEnabled, props.allSearchResults?.hits, isAlgoliaEnabled]);
+  }, [isPostFilterEnabled, allSearchResults, isAlgoliaEnabled, results]);
 
   const showSidePanel = useMemo(() => {
     return requestImage || (isPostFilterEnabled && showPostFilter);
@@ -431,7 +431,7 @@ function ResultComponent(props: Props) {
                   flexDirection: 'column',
                 }}
               >
-                {!isMobile && (
+                {!isMobile && settings.algolia.enabled && (
                   <Box className="wrap-box-refinements">
                     <CurrentRefinements statusSwitchButton={true} />
                   </Box>
@@ -482,27 +482,35 @@ function ResultComponent(props: Props) {
                         />
                       </div>
                     )}
-                    <ProductList
-                      getUrlToCanvasFile={getUrlToCanvasFile}
-                      setLoading={false}
-                      sendFeedBackAction={sendFeedBackAction}
-                      moreInfoText={moreInfoText}
-                      requestImage={requestImage}
-                      searchQuery={searchQuery}
-                    />
-                    <Box
-                      className="pagination-result"
-                      style={{
-                        width: '100%',
-                        margin: !isMobile ? '20px auto' : '',
-                        marginBottom:
-                          isMobile && !requestImage ? '64px' : '20px',
-                        padding: '0 20%',
-                        alignSelf: 'end',
-                      }}
+                    <div
+                      className="box-item-result ml-auto mr-auto"
+                      style={{ height: 'fit-content' }}
                     >
-                      {props.allSearchResults?.hits.length > 0 &&
-                        (requestImage || searchQuery) && (
+                      {!isMobile && !settings.algolia.enabled && (
+                        <SelectedPostFilter />
+                      )}
+                      <ProductList
+                        getUrlToCanvasFile={getUrlToCanvasFile}
+                        setLoading={false}
+                        sendFeedBackAction={sendFeedBackAction}
+                        requestImage={requestImage}
+                        searchQuery={searchQuery}
+                      />
+                    </div>
+
+                    {props.allSearchResults?.hits.length > 0 &&
+                      (requestImage || searchQuery) && (
+                        <Box
+                          className="pagination-result"
+                          style={{
+                            width: '100%',
+                            margin: !isMobile ? '20px auto' : '',
+                            marginBottom:
+                              isMobile && !requestImage ? '64px' : '20px',
+                            padding: '0 20%',
+                            alignSelf: 'end',
+                          }}
+                        >
                           <Pagination
                             showFirst={false}
                             translations={{
@@ -514,8 +522,8 @@ function ResultComponent(props: Props) {
                               ),
                             }}
                           />
-                        )}
-                    </Box>
+                        </Box>
+                      )}
 
                     {requestImage &&
                       !loadingSearchAlgolia &&

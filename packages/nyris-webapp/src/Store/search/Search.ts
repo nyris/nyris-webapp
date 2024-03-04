@@ -2,6 +2,7 @@ import { RectCoords, Region } from '@nyris/nyris-api';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { DEFAULT_REGION } from '../../constants';
 import { initialState } from './search.initialState';
+import { isUndefined } from 'lodash';
 
 export const searchSlice = createSlice({
   name: 'search',
@@ -156,6 +157,7 @@ export const searchSlice = createSlice({
         textSearchInputMobile: '',
         isShowModalDetailItemMobile: false,
         preFilter: state.preFilter || {},
+        postFilter: {},
         preFilterDropdown: false,
         imageCaptureHelpModal: false,
       };
@@ -260,11 +262,44 @@ export const searchSlice = createSlice({
         filter: data.payload,
       };
     },
+    setPostFilter: (state, data: PayloadAction<Record<string, string>>) => {
+      const { payload } = data;
+
+      let filter = { ...state.postFilter } || {};
+      const key = Object.keys(payload)[0];
+
+      if (
+        !isUndefined(filter[key]) &&
+        !isUndefined(filter[key][payload[key]])
+      ) {
+        filter[key] = {
+          ...filter[key],
+          [payload[key]]: !filter[key][payload[key]],
+        };
+      } else if (!filter[key]) {
+        filter = { ...filter, [key]: { [payload[key]]: true } };
+      } else {
+        filter[key] = { ...filter[key], [payload[key]]: true };
+      }
+
+      return {
+        ...state,
+        postFilter: { ...filter },
+      };
+    },
+
+    clearPostFilter: state => {
+      return {
+        ...state,
+        postFilter: {},
+      };
+    },
   },
 });
 
 export const {
   changeValueTextSearch,
+  clearPostFilter,
   configureFilter,
   loadFileSelectRegion,
   loadingActionRegions,
@@ -279,6 +314,7 @@ export const {
   setFilter,
   setImageCaptureHelpModal,
   setImageSearchInput,
+  setPostFilter,
   setPreFilter,
   setPreFilterDropdown,
   setRegions,

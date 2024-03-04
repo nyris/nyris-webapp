@@ -1664,7 +1664,7 @@ button {
   &.toggle {
     // transition: all 0.1s ease-in-out;
     // transition: all 0.5s ease-in;
-    max-width: 40px;
+    max-width: 32px;
     > * {
       display: none !important;
     }
@@ -1679,7 +1679,6 @@ button {
     z-index: 222;
   }
   .col-left__bottom {
-    margin-top: 32px;
     width: 100%;
     padding: 0 24px;
     button {
@@ -2052,7 +2051,7 @@ button {
     height: 48px;
     overflow: hidden;
     padding-right: 12px !important;
-    form {
+    .input-wrapper {
       width: 100%;
       display: flex;
       justify-content: center;
@@ -2181,4 +2180,12 @@ button {
 
 .product-image:hover{
   transform: scale(1.1);
+}
+
+.result-wrapper {
+  max-width: calc(192px * 4 + 96px);
+  width: 100%;
+  @media screen and (min-width: 2047px) {
+    max-width: 1300px;
+  }
 }

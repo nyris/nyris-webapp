@@ -9,6 +9,7 @@ import { defaultSettings } from './constants';
 declare var settings: AppSettings;
 
 settings.algolia.enabled = true;
+settings.preview = true;
 
 let normalizedSettings: AppSettings = {
   ...defaultSettings,

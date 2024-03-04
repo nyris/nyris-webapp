@@ -15,6 +15,7 @@ import { Skeleton } from '@material-ui/lab';
 import { truncateString } from 'helpers/truncateString';
 import { find } from 'services/image';
 import { useQuery } from 'hooks/useQuery';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   handleClose?: any;
@@ -159,6 +160,7 @@ function PreFilterComponent(props: Props) {
     }
     handleClose();
   };
+  const { t } = useTranslation();
 
   return (
     <Box
@@ -225,7 +227,7 @@ function PreFilterComponent(props: Props) {
 
           <input
             className="input-search-filter"
-            placeholder="Search"
+            placeholder={t('Search')}
             onChange={(e: any) => {
               filterSearchHandler(e.target.value);
             }}
@@ -285,7 +287,7 @@ function PreFilterComponent(props: Props) {
                 setKeyFilter({});
               }}
             >
-              Clear all
+              {t('Clear all')}
             </Box>
           </Box>
         </Box>
@@ -410,17 +412,18 @@ function PreFilterComponent(props: Props) {
             className="button-left"
             style={{
               width: '50%',
-              height: '64px',
-              backgroundColor: '#2B2C46',
+              backgroundColor: settings.theme.secondaryColor,
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
               textTransform: 'none',
               paddingLeft: '16px',
+              paddingTop: '16px',
+              paddingBottom: '32px',
             }}
             onClick={() => handleClose()}
           >
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button
             className="button-right"
@@ -432,10 +435,12 @@ function PreFilterComponent(props: Props) {
               justifyContent: 'flex-start',
               textTransform: 'none',
               paddingLeft: '16px',
+              paddingTop: '16px',
+              paddingBottom: '32px',
             }}
             onClick={() => onHandlerSubmitData()}
           >
-            Apply
+            {t('Apply')}
           </Button>
         </Box>
       )}
@@ -456,14 +461,15 @@ function PreFilterComponent(props: Props) {
             className="button-left"
             style={{
               width: '50%',
-              backgroundColor: '#000000',
+              backgroundColor: settings.theme.secondaryColor,
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
+              textTransform: 'none',
             }}
             onClick={() => handleClose()}
           >
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button
             className="button-right"
@@ -473,15 +479,15 @@ function PreFilterComponent(props: Props) {
               color: '#fff',
               borderRadius: 0,
               justifyContent: 'flex-start',
+              textTransform: 'none',
             }}
             onClick={() => onHandlerSubmitData()}
           >
-            Apply
+            {t('Apply')}
           </Button>
         </Box>
       )}
     </Box>
   );
 }
-
 export default PreFilterComponent;

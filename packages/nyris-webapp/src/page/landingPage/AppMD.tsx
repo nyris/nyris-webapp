@@ -1,7 +1,6 @@
 import { Box } from '@material-ui/core';
 import React, { useState } from 'react';
 import './common.scss';
-import { cadExtensions } from '@nyris/nyris-api';
 import algoliasearch from 'algoliasearch/lite';
 import DragDropFile from 'components/DragDropFile';
 import CustomSearchBox from 'components/input/inputSearch';
@@ -16,10 +15,7 @@ function AppMD() {
   const searchClient = algoliasearch(appId, apiKey);
   searchClient.initIndex(indexName);
 
-  const acceptTypes = ['image/*']
-    .concat(settings.cadSearch ? cadExtensions : [])
-    .join(',');
-
+  const acceptTypes = ['image/*'];
   const InfiniteHits = ({ hits }: any) => {
     return <div></div>;
   };

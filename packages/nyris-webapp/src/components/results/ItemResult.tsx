@@ -22,7 +22,7 @@ import { useMediaQuery } from 'react-responsive';
 import { feedbackClickEpic, feedbackConversionEpic } from 'services/Feedback';
 import ProductDetailView from 'components/ProductDetailView';
 import ProductAttribute from '../ProductAttribute';
-import { get } from 'lodash';
+import { get, isUndefined } from 'lodash';
 
 interface Props {
   dataItem: any;
@@ -34,7 +34,6 @@ interface Props {
   handlerFeedback?: any;
   handlerGroupItem?: any;
   isGroupItem?: boolean;
-  moreInfoText?: string;
   handlerCloseGroup?: any;
   main_image_link?: any;
 }
@@ -274,25 +273,28 @@ function ItemResult(props: Props) {
                 </Typography>
               </Tooltip>
 
-              {settings.warehouseVariant && (
-                <Typography
-                  className="text-f12 max-line-1 fw-400"
-                  style={{
-                    color: '#2B2C46',
-                  }}
-                >
-                  <span
+              {settings.warehouseVariant &&
+                !isUndefined(
+                  get(dataItem, settings.field.warehouseStockValue),
+                ) && (
+                  <Typography
+                    className="text-f12 max-line-1 fw-400"
                     style={{
-                      color: dataItem[settings.field.warehouseStockValue]
-                        ? '#00C070'
-                        : '#c54545',
-                      fontWeight: 600,
+                      color: '#2B2C46',
                     }}
                   >
-                    {dataItem[settings.field.warehouseStockValue] || 0}
-                  </span>
-                </Typography>
-              )}
+                    <span
+                      style={{
+                        color: get(dataItem, settings.field.warehouseStockValue)
+                          ? '#00C070'
+                          : '#c54545',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {get(dataItem, settings.field.warehouseStockValue) || 0}
+                    </span>
+                  </Typography>
+                )}
             </Box>
             <Box
               display="flex"
@@ -330,8 +332,13 @@ function ItemResult(props: Props) {
           >
             {settings.field.warehouseNumber && (
               <ProductAttribute
-                title={dataItem[settings.field.warehouseNumber]}
-                value={dataItem[settings.field.warehouseNumberValue] || 'N/A'}
+                title={
+                  get(dataItem, settings.field.warehouseNumber) ||
+                  settings.field.warehouseNumber
+                }
+                value={
+                  get(dataItem, settings.field.warehouseNumberValue) || 'N/A'
+                }
                 padding="4px 8px"
                 width={{ xs: '49%' }}
               />
@@ -339,9 +346,13 @@ function ItemResult(props: Props) {
 
             {settings.field.warehouseShelfNumber && (
               <ProductAttribute
-                title={dataItem[settings.field.warehouseShelfNumber]}
+                title={
+                  get(dataItem, settings.field.warehouseShelfNumber) ||
+                  settings.field.warehouseShelfNumber
+                }
                 value={
-                  dataItem[settings.field.warehouseShelfNumberValue] || 'N/A'
+                  get(dataItem, settings.field.warehouseShelfNumberValue) ||
+                  'N/A'
                 }
                 padding="4px 8px"
                 width={{ xs: '49%' }}

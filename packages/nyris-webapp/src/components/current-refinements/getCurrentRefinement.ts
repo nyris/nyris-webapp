@@ -1,4 +1,4 @@
-import type { CurrentRefinement } from "./current-refinements";
+import type { CurrentRefinement } from './current-refinements';
 
 function getRefinementConfig(r: any, refinement: any) {
   const refinementOptions = r.attribute;
@@ -10,7 +10,7 @@ function getRefinementConfig(r: any, refinement: any) {
 
 export function getCurrentRefinement(
   refinement: any,
-  config: any
+  config: any,
 ): CurrentRefinement[] {
   let refinementConfig: any;
   config.forEach((r: any) => {
@@ -18,20 +18,12 @@ export function getCurrentRefinement(
       refinementConfig = r;
     }
   });
-  
-  switch (refinementConfig?.type) {
-    case "size":
-    case "list": {
-      return (
-        refinement?.items?.map((item: any) => ({
-          category: refinementConfig?.header,
-          label: item.label,
-          value: item.value,
-        })) || []
-      );
-    }
-    default: {
-      return [];
-    }
-  }
+
+  return (
+    refinement?.items?.map((item: any) => ({
+      category: refinementConfig?.header,
+      label: item.label,
+      value: item.value,
+    })) || []
+  );
 }

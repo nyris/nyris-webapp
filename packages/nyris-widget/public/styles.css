@@ -1,4 +1,4 @@
-.search-bar{
+.search-bar {
     position: relative;
     color: rgba(3,31,43,.54);
     text-rendering: optimizeLegibility;
@@ -20,13 +20,14 @@
     outline: none !important;
 }
 
-.camera{
+.camera {
     position: absolute;
     top: 10px;
     right: 22px;
+    cursor: pointer;
 }
 
-.search{
+.search {
     display: flex;
     width: 56px;
     height: 47px;
