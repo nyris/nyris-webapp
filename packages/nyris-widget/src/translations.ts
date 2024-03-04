@@ -6,7 +6,7 @@ const translations = (language: string) => {
             'Hold on': 'Bitte warten.',
             'We are working hard on finding the product': 'Wir arbeiten daran, das Produkt zu finden.',
             'Success!': 'Erfolg!',
-            'matches found': 'Es wurden Übereinstimmungen gefunden.',
+            'matches found': 'Übereinstimmungen wurden gefunden.',
             'View more': 'Mehr anzeigen',
             'Something went wrong': 'Etwas ist schief gelaufen',
             'Oops!': 'Hoppla! Bei der Suche ist ein Problem aufgetreten. Bitte stellen Sie sicher, dass Ihr Bild den Richtlinien entspricht und versuchen Sie es erneut.',
