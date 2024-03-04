@@ -212,7 +212,7 @@ const SearchBox = (props: any) => {
   return (
     <div className="wrap-input-search-field">
       <div className="box-input-search d-flex">
-        <form noValidate action="" role="search">
+        <div className="input-wrapper">
           <Box className="box-inp">
             <Tooltip
               title={
@@ -426,7 +426,7 @@ const SearchBox = (props: any) => {
               </Button>
             </Box>
           )}
-        </form>
+        </div>
       </div>
       {settings.preFilterOption && (
         <DefaultModal
