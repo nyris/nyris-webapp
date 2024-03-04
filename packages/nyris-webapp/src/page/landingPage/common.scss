@@ -1767,6 +1767,7 @@ button {
 }
 
 .pagination-result {
+  height: fit-content;
   .ais-Pagination-list {
     flex-wrap: nowrap !important;
     text-align: center;

@@ -48,7 +48,7 @@ function InquiryBanner({
         style={{
           backgroundColor: '#F3F3F5',
           width: '100%',
-          marginBottom: '32px',
+          marginBottom: '24px',
           alignSelf: 'end',
           display: 'flex',
           alignItems: 'center',

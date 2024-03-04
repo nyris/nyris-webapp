@@ -463,7 +463,7 @@ function ResultComponent(props: Props) {
                 >
                   <Box
                     className={'box-item-result ml-auto mr-auto'}
-                    style={{ height: '100%', paddingLeft: isMobile ? 0 : 16 }}
+                    style={{ paddingLeft: isMobile ? 0 : 16 }}
                   >
                     {showFeedbackSuccess && (
                       <div className={'box-item-result feedback-floating'}>
@@ -497,18 +497,24 @@ function ResultComponent(props: Props) {
                         searchQuery={searchQuery}
                       />
                     </div>
-
+                  </Box>
+                  <div
+                    className={'box-item-result ml-auto mr-auto'}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flexGrow: 1,
+                      paddingLeft: isMobile ? 0 : 16,
+                    }}
+                  >
                     {props.allSearchResults?.hits.length > 0 &&
                       (requestImage || searchQuery) && (
                         <Box
                           className="pagination-result"
                           style={{
                             width: '100%',
-                            margin: !isMobile ? '20px auto' : '',
-                            marginBottom:
-                              isMobile && !requestImage ? '64px' : '20px',
+                            marginTop: '24px',
                             padding: '0 20%',
-                            alignSelf: 'end',
                           }}
                         >
                           <Pagination
@@ -524,32 +530,38 @@ function ResultComponent(props: Props) {
                           />
                         </Box>
                       )}
-
-                    {requestImage &&
-                      !loadingSearchAlgolia &&
-                      !props.isSearchStalled &&
-                      settings.rfq &&
-                      settings.rfq.enabled && (
-                        <RfqBanner
-                          rfqRef={rfqRef}
-                          rfqStatus={rfqStatus}
-                          setIsRfqModalOpen={setIsRfqModalOpen}
-                          requestImage={requestImage}
-                          selectedRegion={selectedRegion}
-                        />
-                      )}
-                    {!loadingSearchAlgolia &&
-                      !props.isSearchStalled &&
-                      settings.support &&
-                      settings.support.enabled &&
-                      (searchQuery || requestImage) && (
-                        <InquiryBanner
-                          requestImage={requestImage}
-                          selectedRegion={selectedRegion}
-                          query={searchQuery}
-                        />
-                      )}
-                  </Box>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexGrow: 1,
+                      }}
+                    >
+                      {requestImage &&
+                        !loadingSearchAlgolia &&
+                        !props.isSearchStalled &&
+                        settings.rfq &&
+                        settings.rfq.enabled && (
+                          <RfqBanner
+                            rfqRef={rfqRef}
+                            rfqStatus={rfqStatus}
+                            setIsRfqModalOpen={setIsRfqModalOpen}
+                            requestImage={requestImage}
+                            selectedRegion={selectedRegion}
+                          />
+                        )}
+                      {!loadingSearchAlgolia &&
+                        !props.isSearchStalled &&
+                        settings.support &&
+                        settings.support.enabled &&
+                        (searchQuery || requestImage) && (
+                          <InquiryBanner
+                            requestImage={requestImage}
+                            selectedRegion={selectedRegion}
+                            query={searchQuery}
+                          />
+                        )}
+                    </div>
+                  </div>
                 </Box>
                 {!isMobile &&
                   props.allSearchResults?.hits?.length > 0 &&
@@ -581,6 +593,7 @@ function ResultComponent(props: Props) {
                       display: 'flex',
                       justifyContent: 'center',
                       paddingBottom: '46px',
+                      paddingTop: '8px',
                     }}
                   >
                     <PoweredByNyrisImage
