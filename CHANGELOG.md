@@ -11,6 +11,9 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Updated example settings file
 - Added post filter for Elastic version of search suite
 
+### Fix
+- On enter button the page refreshes
+
 ## 0.3.47 - 2024-01-31
 
 ### Added
