@@ -1040,10 +1040,7 @@ button {
 
 
         .box-item-result {
-          height: 100%;
-          // padding: 0 11px;
-          // gap: 8px !important;
-          // justify-content: center;
+
           width: calc(180 * 2px + 30px);
           .wrap-main-item-result {
             width: 180px;
@@ -1767,6 +1764,7 @@ button {
 }
 
 .pagination-result {
+  height: fit-content;
   .ais-Pagination-list {
     flex-wrap: nowrap !important;
     text-align: center;

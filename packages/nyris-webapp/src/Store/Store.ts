@@ -10,6 +10,10 @@ declare var settings: AppSettings;
 
 settings.algolia.enabled = true;
 settings.preview = true;
+settings.showFeedback = false;
+if (settings.rfq?.enabled && settings.support?.enabled) {
+  settings.support.enabled = false;
+}
 
 let normalizedSettings: AppSettings = {
   ...defaultSettings,

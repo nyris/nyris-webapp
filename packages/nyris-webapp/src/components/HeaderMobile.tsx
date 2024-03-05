@@ -48,7 +48,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const { search } = stateGlobal;
   const {
     imageThumbSearchInput,
-    textSearchInputMobile,
     preFilter,
     preFilterDropdown,
     valueTextSearch,
@@ -70,13 +69,13 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   useEffect(() => {
     if (
       history.location?.pathname === '/result' &&
-      (imageThumbSearchInput || textSearchInputMobile)
+      (imageThumbSearchInput || valueInput)
     ) {
       setShowFilter(true);
     } else {
       setShowFilter(false);
     }
-  }, [imageThumbSearchInput, history.location, textSearchInputMobile]);
+  }, [imageThumbSearchInput, history.location, valueInput]);
 
   useEffect(() => {
     if (imageThumbSearchInput !== '') {
@@ -93,6 +92,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {
+      setValueInput(searchQuery);
       dispatch(updateValueTextSearchMobile(searchQuery));
       if (settings.algolia?.enabled) {
         refine(searchQuery);
@@ -190,6 +190,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   }, [valueTextSearch?.refinementList, settings, postFilter]);
 
   const onChangeText = (event: any) => {
+    setValueInput(event.currentTarget.value);
     // debounceSearch(event.currentTarget.value);
     searchOrRedirect(event.currentTarget.value);
     if (event.currentTarget.value === '') {
@@ -199,6 +200,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       dispatch(updateValueTextSearchMobile(event.currentTarget.value));
     }
   };
+
   const disablePostFilter = useMemo(() => {
     if (settings.algolia.enabled) {
       return settings.postFilterOption &&
@@ -326,42 +328,38 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   )}
                 </Box>
 
-                <Input
-                  value={textSearchInputMobile || searchQuery || valueInput}
-                  onChange={onChangeText}
-                />
+                <Input value={valueInput} onChange={onChangeText} />
 
-                {history.location?.pathname !== '/' &&
-                  textSearchInputMobile && (
-                    <Button
-                      onClick={() => {
-                        if (imageThumbSearchInput) {
-                          history.push('/result');
-                          dispatch(updateValueTextSearchMobile(''));
-                          refine('');
-                          return;
-                        }
+                {history.location?.pathname !== '/' && valueInput && (
+                  <Button
+                    onClick={() => {
+                      if (imageThumbSearchInput) {
+                        history.push('/result');
                         dispatch(updateValueTextSearchMobile(''));
-                        dispatch(reset(''));
                         refine('');
-                        history.push('/');
-                      }}
+                        return;
+                      }
+                      dispatch(updateValueTextSearchMobile(''));
+                      dispatch(reset(''));
+                      refine('');
+                      history.push('/');
+                    }}
+                    style={{
+                      // background: '#fff',
+                      marginRight: '8px',
+                      border: 0,
+                      width: '40px',
+                      height: '40px',
+                    }}
+                  >
+                    <CloseIcon
                       style={{
-                        // background: '#fff',
-                        marginRight: '8px',
-                        border: 0,
-                        width: '40px',
-                        height: '40px',
+                        fontSize: 16,
+                        color: settings.theme?.secondaryColor,
                       }}
-                    >
-                      <CloseIcon
-                        style={{
-                          fontSize: 16,
-                          color: settings.theme?.secondaryColor,
-                        }}
-                      />
-                    </Button>
-                  )}
+                    />
+                  </Button>
+                )}
               </div>
             </div>
           </div>
