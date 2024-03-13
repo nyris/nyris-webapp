@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox } from '@material-ui/core';
+import { Button, Checkbox } from '@material-ui/core';
 import { DynamicWidgetsCT } from 'components/dynamic-widgets/dynamic-widgets';
 import IconLabel from 'components/icon-label/icon-label';
 import { atom, useAtom } from 'jotai';
@@ -202,7 +202,7 @@ export default function PostFilterPanel({
     <>
       {!isMobile && (
         <div className="wrap-main-header-panel">
-          <Box
+          <div
             style={{
               cursor: 'pointer',
               paddingBottom: '8px',
@@ -221,10 +221,10 @@ export default function PostFilterPanel({
                 } `}
               />
             </div>
-          </Box>
+          </div>
         </div>
       )}
-      <Box>
+      <div>
         {isMobile && (
           <div
             style={{
@@ -248,7 +248,7 @@ export default function PostFilterPanel({
             </Button>
           </div>
         )}
-        <Box
+        <div
           className="box-center-filter"
           style={{
             ...(isMobile
@@ -264,10 +264,10 @@ export default function PostFilterPanel({
           <DynamicWidgetsCT enabled={dynamicWidgets}>
             {widgetsPanels}
           </DynamicWidgetsCT>
-        </Box>
-      </Box>
+        </div>
+      </div>
       {isMobile && (
-        <Box
+        <div
           style={{
             position: 'sticky',
             bottom: 0,
@@ -307,7 +307,7 @@ export default function PostFilterPanel({
           >
             Apply filters
           </div>
-        </Box>
+        </div>
       )}
     </>
   );

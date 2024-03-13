@@ -1,4 +1,4 @@
-import { Box, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { DynamicWidgetsCT } from 'components/dynamic-widgets/dynamic-widgets';
 import IconLabel from 'components/icon-label/icon-label';
 import { atom, useAtom } from 'jotai';
@@ -192,7 +192,7 @@ export default function PostFilterPanelAlgolia({
     <>
       {!isMobile && (
         <div className="wrap-main-header-panel">
-          <Box
+          <div
             style={{
               cursor: 'pointer',
               paddingBottom: '8px',
@@ -211,10 +211,10 @@ export default function PostFilterPanelAlgolia({
                 } `}
               />
             </div>
-          </Box>
+          </div>
         </div>
       )}
-      <Box>
+      <div>
         {isMobile && (
           <div
             style={{
@@ -238,7 +238,7 @@ export default function PostFilterPanelAlgolia({
             </Button>
           </div>
         )}
-        <Box
+        <div
           className="box-center-filter"
           style={{
             ...(isMobile
@@ -254,10 +254,10 @@ export default function PostFilterPanelAlgolia({
           <DynamicWidgetsCT enabled={dynamicWidgets}>
             {widgetsPanels}
           </DynamicWidgetsCT>
-        </Box>
-      </Box>
+        </div>
+      </div>
       {isMobile && (
-        <Box
+        <div
           style={{
             position: 'sticky',
             bottom: 0,
@@ -297,7 +297,7 @@ export default function PostFilterPanelAlgolia({
           >
             Apply filters
           </div>
-        </Box>
+        </div>
       )}
     </>
   );

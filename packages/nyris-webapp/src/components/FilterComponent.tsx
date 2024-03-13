@@ -1,14 +1,12 @@
-import { Box, Button, Grid } from "@material-ui/core";
-import DefaultSelect from "components/default-select";
 import React from "react";
+import { Button, Grid } from "@material-ui/core";
+import DefaultSelect from "components/default-select";
 
 interface Props {}
 
 function FilterComponent(props: Props) {
-  const {} = props;
-
   return (
-    <Box className="box-main-filter">
+    <div className="box-main-filter">
       <Grid container>
         <Grid item className="item">
           <DefaultSelect attribute="brand" />
@@ -26,7 +24,7 @@ function FilterComponent(props: Props) {
           </Button>
         </Grid>
       </Grid>
-    </Box>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Tooltip, Typography } from '@material-ui/core';
+import { Button, Grid, Tooltip, Typography } from '@material-ui/core';
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
 import IconOpenLink from 'common/assets/icons/Union.svg';
 import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
@@ -117,7 +117,7 @@ function ItemResult(props: Props) {
   );
   const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
   return (
-    <Box className="wrap-main-item-result">
+    <div className="wrap-main-item-result">
       <DefaultModal
         openModal={openDetailedView === '3d' || openDetailedView === 'image'}
         handleClose={(e: any) => {
@@ -144,25 +144,25 @@ function ItemResult(props: Props) {
         dataItem={dataItem}
         isOpen={isOpenModalShare}
       />
-      <Box className="box-top">
+      <div className="box-top">
         {isGroupItem && collap && (
-          <Box className="btn-show-result">
+          <div className="btn-show-result">
             <Button onClick={handlerShowGroup}>
               {t('Show group')}
               <ChevronRightOutlinedIcon style={{ fontSize: '10px' }} />
             </Button>
-          </Box>
+          </div>
         )}
         {isGroupItem && !collap && (
-          <Box className="btn-show-result">
+          <div className="btn-show-result">
             <Button onClick={handlerHideGroup}>
               {t('Close group')}
               <ChevronRightOutlinedIcon style={{ fontSize: '10px' }} />
             </Button>
-          </Box>
+          </div>
         )}
         {!isHover && main_image_link && (
-          <Box
+          <div
             className="box-icon-modal"
             onClick={() => {
               if (urlImage.length > 1) {
@@ -171,21 +171,21 @@ function ItemResult(props: Props) {
             }}
           >
             <IconSearchImage width={16} height={16} color={'#AAABB5'} />
-          </Box>
+          </div>
         )}
         {settings.cadenas?.cadenas3dWebView && (
-          <Box
+          <div
             className="box-icon-modal-3d"
             onClick={() => {
               setOpenDetailedView('3d');
             }}
           >
             <Box3dIcon width={16} height={16} color={'#AAABB5'} />
-          </Box>
+          </div>
         )}
 
-        <Box className="box-image">
-          <Box
+        <div className="box-image">
+          <div
             style={{
               width: '100%',
               height: '100%',
@@ -214,27 +214,29 @@ function ItemResult(props: Props) {
                 style={{ width: '70%', height: '50%' }}
               />
             )}
-          </Box>
-        </Box>
-      </Box>
+          </div>
+        </div>
+      </div>
 
-      <Box
+      <div
         className="box-content"
-        display={'flex'}
         style={{
           flexDirection: 'column',
           backgroundColor: '#F3F3F5',
           flexGrow: 1,
           zIndex: 100,
+          display: 'flex',
         }}
       >
-        <Box className="box-top" style={{ color: '#FFFFFF' }}>
-          <Box
-            display="flex"
-            justifyContent={'space-between'}
-            flexDirection={'column'}
-            style={{ color: '#2B2C46' }}
-            gridGap={8}
+        <div className="box-top" style={{ color: '#FFFFFF' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              flexDirection: 'column',
+              gridGap: 8,
+              color: '#2B2C46',
+            }}
           >
             {settings.CTAButtonText && (
               <Typography
@@ -247,12 +249,15 @@ function ItemResult(props: Props) {
                 {truncateString(dataItem[settings.field.productName], 45)}
               </Typography>
             )}
-            <Box
-              display="flex"
-              justifyContent={'space-between'}
-              flexDirection={'row'}
-              style={{ color: '#2B2C46', marginTop: 8 }}
-              gridGap={8}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                gridGap: 8,
+                color: '#2B2C46',
+                marginTop: 8,
+              }}
             >
               <Tooltip
                 title={sku}
@@ -295,13 +300,15 @@ function ItemResult(props: Props) {
                     </span>
                   </Typography>
                 )}
-            </Box>
-            <Box
-              display="flex"
-              justifyContent={'space-between'}
-              flexDirection={'row'}
-              style={{ color: '#2B2C46' }}
-              gridGap={8}
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                gridGap: 8,
+                color: '#2B2C46',
+              }}
             >
               {(brand || settings.brandName) && (
                 <ProductAttribute
@@ -320,15 +327,18 @@ function ItemResult(props: Props) {
                   width={{ xs: '49%' }}
                 />
               )}
-            </Box>
-          </Box>
-        </Box>
+            </div>
+          </div>
+        </div>
         {settings.warehouseVariant && (
-          <Box
-            display="flex"
-            justifyContent={'space-between'}
-            style={{ color: '#2B2C46', marginTop: '8px' }}
-            gridGap={10}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              gridGap: 10,
+              color: '#2B2C46',
+              marginTop: 8,
+            }}
           >
             {settings.field.warehouseNumber && (
               <ProductAttribute
@@ -358,7 +368,7 @@ function ItemResult(props: Props) {
                 width={{ xs: '49%' }}
               />
             )}
-          </Box>
+          </div>
         )}
         <div>
           {!settings.CTAButtonText ? (
@@ -370,7 +380,7 @@ function ItemResult(props: Props) {
                 dataItem[settings.field.productName]?.length < 45
               }
             >
-              <Box
+              <div
                 style={{
                   boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                   // marginBottom: 22,
@@ -379,13 +389,13 @@ function ItemResult(props: Props) {
                   borderRadius: 4,
                   padding: '0px 8px',
                   marginTop: '8px',
+                  display: 'flex',
+                  justifyItems: 'center',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                 }}
-                display={'flex'}
-                justifyItems={'center'}
-                alignItems={'center'}
-                justifyContent={'space-between'}
               >
-                <Box
+                <div
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -419,11 +429,11 @@ function ItemResult(props: Props) {
                   {!isMobile && ctaLink && (
                     <img src={IconOpenLink} alt="more-info" width={16} />
                   )}
-                </Box>
-              </Box>
+                </div>
+              </div>
             </Tooltip>
           ) : (
-            <Box
+            <div
               style={{
                 boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                 // marginBottom: 22,
@@ -432,13 +442,13 @@ function ItemResult(props: Props) {
                 borderRadius: 4,
                 padding: '0px 8px',
                 marginTop: '8px',
+                display: 'flex',
+                justifyItems: 'center',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}
-              display={'flex'}
-              justifyItems={'center'}
-              alignItems={'center'}
-              justifyContent={'space-between'}
             >
-              <Box
+              <div
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -472,12 +482,12 @@ function ItemResult(props: Props) {
                 {!isMobile && ctaLink && (
                   <img src={IconOpenLink} alt="more-info" width={16} />
                 )}
-              </Box>
-            </Box>
+              </div>
+            </div>
           )}
 
           {settings.showFeedbackAndShare && (
-            <Box
+            <div
               className="box-bottom"
               style={{ marginBottom: 6, marginTop: 12 }}
             >
@@ -489,7 +499,12 @@ function ItemResult(props: Props) {
                 alignItems="center"
               >
                 <Grid item>
-                  <Box display={'flex'} alignItems={'center'}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
                     <Button
                       className="btn-item"
                       onClick={() => {
@@ -503,10 +518,15 @@ function ItemResult(props: Props) {
                         color={feedback === 'like' ? '#3E36DC' : '#000000'}
                       />
                     </Button>
-                  </Box>
+                  </div>
                 </Grid>
                 <Grid item>
-                  <Box display={'flex'} alignItems={'center'}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
                     <Button
                       className="btn-item"
                       onClick={() => {
@@ -520,26 +540,31 @@ function ItemResult(props: Props) {
                         color={feedback === 'dislike' ? '#CC1854' : '#000000'}
                       />
                     </Button>
-                  </Box>
+                  </div>
                 </Grid>
                 {settings.shareOption && (
                   <Grid item>
-                    <Box display={'flex'} alignItems={'center'}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
                       <Button
                         className="btn-item"
                         onClick={() => setOpenModalShare(true)}
                       >
                         <IconShare width={16} height={16} color="#000000" />
                       </Button>
-                    </Box>
+                    </div>
                   </Grid>
                 )}
               </Grid>
-            </Box>
+            </div>
           )}
         </div>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
 

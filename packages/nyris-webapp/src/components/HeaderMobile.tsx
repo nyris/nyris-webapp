@@ -1,4 +1,4 @@
-import { Box, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
 
@@ -106,6 +106,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     }
   }, [query, refine, dispatch, searchQuery, settings.algolia]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
       if (!settings.algolia?.enabled) {
@@ -129,7 +130,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             text: value,
           })
             .then((res: any) => {
-              res?.results.map((item: any) => {
+              res?.results.forEach((item: any) => {
                 filters.push({
                   sku: item.sku,
                   score: item.score,
@@ -216,7 +217,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   return (
     <div style={{ width: '100%', background: '#fff' }}>
       {history.location?.pathname !== '/result' && (
-        <Box
+        <div
           className="box-content"
           style={{
             display: 'flex',
@@ -243,7 +244,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               }}
             />
           </NavLink>
-        </Box>
+        </div>
       )}
 
       {((auth0.enabled && user?.email_verified) || !auth0.enabled) && (
@@ -272,7 +273,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   height: '100%',
                 }}
               >
-                <Box
+                <div
                   className="pre-filter-icon"
                   onClick={() => {
                     if (settings.preFilterOption) {
@@ -326,7 +327,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                       ></div>
                     </div>
                   )}
-                </Box>
+                </div>
 
                 <Input value={valueInput} onChange={onChangeText} />
 

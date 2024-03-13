@@ -1,4 +1,3 @@
-import { Box } from '@material-ui/core';
 import React, { memo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
@@ -68,7 +67,7 @@ function DragDropFile(props: Props) {
         region,
         filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       }).then((res: any) => {
-        res?.results.map((item: any) => {
+        res?.results.forEach((item: any) => {
           filters.push({
             sku: item.sku,
             score: item.score,
@@ -87,7 +86,7 @@ function DragDropFile(props: Props) {
   });
 
   return (
-    <Box
+    <div
       className={`box-content-main`}
       style={{ marginTop: 32, paddingTop: 0 }}
     >
@@ -103,7 +102,7 @@ function DragDropFile(props: Props) {
         })}
       >
         <>
-          <Box
+          <div
             className={`box-content-drop ${isDragActive ? 'drag-active' : ''}`}
             {...getRootProps({
               onClick: e => {
@@ -111,9 +110,9 @@ function DragDropFile(props: Props) {
               },
             })}
           >
-            <Box style={{ marginBottom: 16 }}>
+            <div style={{ marginBottom: 16 }}>
               <IconDownload width={48} height={48} />
-            </Box>
+            </div>
             <label htmlFor="select_file" className="" style={{ fontSize: 14 }}>
               <span className="fw-700 text-f14" style={{ paddingRight: '4px' }}>
                 {t('Drag and drop')}
@@ -129,10 +128,10 @@ function DragDropFile(props: Props) {
               placeholder="Choose photo"
               style={{ display: 'block', cursor: 'pointer' }}
             />
-          </Box>
+          </div>
         </>
       </div>
-    </Box>
+    </div>
   );
 }
 

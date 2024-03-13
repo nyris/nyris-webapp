@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { useFilter } from 'hooks/useFilter';
 import { get } from 'lodash';
 import { clearPostFilter, setPostFilter } from 'Store/search/Search';
-import { Box } from '@material-ui/core';
 
 export type CurrentRefinementsProps = {
   className?: string;
@@ -46,7 +45,7 @@ export function SelectedPostFilter({ className }: CurrentRefinementsProps) {
   }
 
   return (
-    <Box className="wrap-box-refinements">
+    <div className="wrap-box-refinements">
       <div style={{ display: 'flex', flexFlow: 'wrap', columnGap: '8px' }}>
         {selectedFilters.map(filter => {
           return (
@@ -98,6 +97,6 @@ export function SelectedPostFilter({ className }: CurrentRefinementsProps) {
           </div>
         </div>
       </div>
-    </Box>
+    </div>
   );
 }

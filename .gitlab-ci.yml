@@ -5,7 +5,7 @@ stages:
 build:
   stage: build
   tags: [ builder, integration ]
-  image: node:12
+  image: node:20.11
   artifacts:
     paths:
       - npm-packages
@@ -13,7 +13,6 @@ build:
   script:
     - mkdir npm-packages
     - npm ci
-    - npx lerna bootstrap
     - npx lerna run build
     - (cd packages/nyris-react-components && npm pack && mv nyris-nyris-react-components-*.tgz ../../npm-packages/)
     - (cd packages/nyris-api && npm pack && mv nyris-nyris-api-*.tgz ../../npm-packages/)
@@ -24,7 +23,7 @@ build:
 publish to npm:
   stage: publish
   when: manual
-  image: node:12
+  image: node:20.11
   tags: [ builder, integration ]
   script:
     - mkdir -p ~/

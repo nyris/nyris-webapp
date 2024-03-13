@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import HeaderMobile from './HeaderMobile';
-import { Box } from '@material-ui/core';
+
 import {
   setPreFilterDropdown,
   setImageCaptureHelpModal,
@@ -51,13 +51,13 @@ function AppMobile({ children }: { children: ReactNode }) {
           <FooterMobile />
         </div>
       </div>
-      <Box
+      <div
         className={`box-filter ${isOpenFilter ? 'open' : 'close'} `}
-        position={'absolute'}
         style={{
           top: '0px',
           height: '100%',
           width: '100%',
+          position: 'absolute',
         }}
       >
         <MobilePostFilter
@@ -65,13 +65,18 @@ function AppMobile({ children }: { children: ReactNode }) {
             setOpenFilter(!isOpenFilter);
           }}
         />
-      </Box>
+      </div>
 
       {preFilterDropdown && (
-        <Box
+        <div
           className={`box-filter open`}
-          position={'absolute'}
-          style={{ top: '0px', height: '100%', width: '100%', zIndex: 999 }}
+          style={{
+            top: '0px',
+            height: '100%',
+            width: '100%',
+            zIndex: 999,
+            position: 'absolute',
+          }}
         >
           <div style={{ width: '100%' }} className={'wrap-filter-desktop'}>
             <div className={'bg-white box-filter-desktop isMobile'}>
@@ -82,17 +87,17 @@ function AppMobile({ children }: { children: ReactNode }) {
               />
             </div>
           </div>
-        </Box>
+        </div>
       )}
 
       {imageCaptureHelpModal && (
-        <Box
+        <div
           className={`box-filter open`}
-          position={'absolute'}
           style={{
             top: '0px',
             width: '100%',
             zIndex: 100,
+            position: 'absolute',
           }}
         >
           <div style={{ width: '100%' }} className={'wrap-filter-desktop'}>
@@ -104,7 +109,7 @@ function AppMobile({ children }: { children: ReactNode }) {
               />
             </div>
           </div>
-        </Box>
+        </div>
       )}
     </>
   );

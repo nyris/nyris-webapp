@@ -1,6 +1,5 @@
-import { Box } from '@material-ui/core';
-import { getCroppedCanvas } from 'helpers/getCroppedCanvas';
 import React from 'react';
+import { getCroppedCanvas } from 'helpers/getCroppedCanvas';
 import { useMediaQuery } from 'react-responsive';
 
 function RfqBanner({
@@ -19,7 +18,7 @@ function RfqBanner({
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   return (
-    <Box
+    <div
       style={{
         padding: '0px 16px 0px 16px',
         backgroundColor: '#F6F3F1',
@@ -32,7 +31,7 @@ function RfqBanner({
       }}
       className="rfq-box"
     >
-      <Box
+      <div
         style={{
           width: '100%',
           display: 'flex',
@@ -56,13 +55,13 @@ function RfqBanner({
             }}
           />
         </div>
-        <Box>
-          <Box
+        <div>
+          <div
             style={{
               paddingBottom: '12px',
             }}
           >
-            <Box
+            <div
               style={{
                 fontSize: '14px',
                 color: rfqStatus === 'inactive' ? '#4B4B4A' : '#CACAD1',
@@ -72,8 +71,8 @@ function RfqBanner({
               {isMobile
                 ? 'No matches found?'
                 : 'No matches found for your request?'}
-            </Box>
-            <Box
+            </div>
+            <div
               style={{
                 fontSize: '12px',
                 maxWidth: '320x',
@@ -83,8 +82,8 @@ function RfqBanner({
               }}
             >
               Get personalised help from our team of product experts.
-            </Box>
-          </Box>
+            </div>
+          </div>
           <button
             style={{
               maxWidth: '200px',
@@ -110,9 +109,9 @@ function RfqBanner({
           >
             Request a Quote
           </button>
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 }
 

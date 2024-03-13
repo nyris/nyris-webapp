@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Paper, Typography } from '@material-ui/core';
+import { Button, IconButton, Paper, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import IconEmail from '../common/assets/icons/email_share.svg';
@@ -17,19 +17,19 @@ export const ShareModal = (props: PropsType) => {
     dataItem['image(main_similarity)'] || dataItem['main_image_link'];
   return (
     <DefaultModal openModal={isOpen} handleClose={() => setModalState(false)}>
-      <Box
+      <div
         className="box-modal-default box-modal-share"
         style={{ padding: '4px' }}
       >
-        <Box
+        <div
           className="ml-auto"
           style={{ width: 'fit-content', marginRight: 5 }}
         >
           <Button style={{ padding: 0 }} onClick={() => setModalState(false)}>
             <CloseOutlinedIcon style={{ fontSize: 16, color: '#55566B' }} />
           </Button>
-        </Box>
-        <Box className="box-content-box-share">
+        </div>
+        <div className="box-content-box-share">
           <Typography
             className="text-f12 text-gray text-bold"
             style={{ marginBottom: '5px' }}
@@ -38,7 +38,7 @@ export const ShareModal = (props: PropsType) => {
           </Typography>
           {main_image_link && (
             <Paper component="form" className="box-input">
-              <Box
+              <div
                 className="text-f9 text-gray"
                 style={{
                   width: '100%',
@@ -49,7 +49,7 @@ export const ShareModal = (props: PropsType) => {
                 }}
               >
                 {main_image_link}
-              </Box>
+              </div>
               <IconButton
                 color="secondary"
                 aria-label="directions"
@@ -68,7 +68,7 @@ export const ShareModal = (props: PropsType) => {
             className="box-input"
             style={{ marginTop: '12px', marginBottom: '8px' }}
           >
-            <Box
+            <div
               className="text-f9 text-gray"
               style={{
                 width: '100%',
@@ -84,7 +84,7 @@ export const ShareModal = (props: PropsType) => {
                 SKU:
               </span>{' '}
               {dataItem.sku}
-            </Box>
+            </div>
             <IconButton
               color="secondary"
               aria-label="directions"
@@ -96,10 +96,9 @@ export const ShareModal = (props: PropsType) => {
               <FileCopyOutlinedIcon style={{ fontSize: 14 }} />
             </IconButton>
           </Paper>
-          <Box
+          <div
             className="box-media-share"
-            display={'flex'}
-            style={{ marginTop: '18px' }}
+            style={{ marginTop: '18px', display: 'flex' }}
           >
             <a
               style={{ padding: 0 }}
@@ -110,33 +109,33 @@ export const ShareModal = (props: PropsType) => {
                   (main_image_link ? `Image Link: ${main_image_link}` : ''),
               )} `}
             >
-              <Box display={'flex'} alignItems={'center'}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img width={40} height={40} src={IconEmail} alt="icon_email" />
-              </Box>
+              </div>
             </a>
             {/* <Button style={{ padding: 0, margin: '0 20px' }}>
-                <Box display={'flex'} alignItems={'center'}>
+                <div display={'flex'} alignItems={'center'}>
                   <img
                     src={IconWeChat}
                     width={40}
                     height={40}
                     alt="icon_email"
                   />
-                </Box>
+                </div>
               </Button>
               <Button style={{ padding: 0 }}>
-                <Box display={'flex'} alignItems={'center'}>
+                <div display={'flex'} alignItems={'center'}>
                   <img
                     src={IconWhatsApp}
                     width={40}
                     height={40}
                     alt="icon_email"
                   />
-                </Box>
+                </div>
               </Button> */}
-          </Box>
-        </Box>
-      </Box>
+          </div>
+        </div>
+      </div>
     </DefaultModal>
   );
 };

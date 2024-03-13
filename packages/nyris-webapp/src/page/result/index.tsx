@@ -6,7 +6,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Box } from '@material-ui/core';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
@@ -169,6 +168,7 @@ function ResultComponent(props: Props) {
   );
 
   // TODO: Search offers for image:
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const findItemsInSelection = useCallback(
     debounce(async (r: RectCoords) => {
       if (!requestImage) {
@@ -298,6 +298,7 @@ function ResultComponent(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterSkusString, settings.alogoliaFilterField]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
       feedbackRegionEpic(stateGlobal, r);
@@ -388,13 +389,13 @@ function ResultComponent(props: Props) {
           {filterString && isAlgoliaEnabled && (
             <Configure query={searchQuery} filters={filterString}></Configure>
           )}
-          <Box className="box-wrap-result-component">
+          <div className="box-wrap-result-component">
             {!isMobile && (
               <div className="box-search">
                 <CustomSearchBox />
               </div>
             )}
-            <Box
+            <div
               className="box-result"
               style={{
                 height: settings.showPoweredByNyris
@@ -420,7 +421,7 @@ function ResultComponent(props: Props) {
                 />
               )}
 
-              <Box
+              <div
                 className={`col-right ${
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
@@ -432,9 +433,9 @@ function ResultComponent(props: Props) {
                 }}
               >
                 {!isMobile && settings.algolia.enabled && (
-                  <Box className="wrap-box-refinements">
+                  <div className="wrap-box-refinements">
                     <CurrentRefinements statusSwitchButton={true} />
-                  </Box>
+                  </div>
                 )}
 
                 {isMobile && settings.preview && requestImage && (
@@ -453,7 +454,7 @@ function ResultComponent(props: Props) {
                   />
                 )}
 
-                <Box
+                <div
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -461,7 +462,7 @@ function ResultComponent(props: Props) {
                     backgroundColor: '#FAFAFA',
                   }}
                 >
-                  <Box
+                  <div
                     className={'box-item-result ml-auto mr-auto'}
                     style={{ paddingLeft: isMobile ? 0 : 16 }}
                   >
@@ -497,7 +498,7 @@ function ResultComponent(props: Props) {
                         searchQuery={searchQuery}
                       />
                     </div>
-                  </Box>
+                  </div>
                   <div
                     className={'box-item-result ml-auto mr-auto'}
                     style={{
@@ -509,7 +510,7 @@ function ResultComponent(props: Props) {
                   >
                     {props.allSearchResults?.hits.length > 0 &&
                       (requestImage || searchQuery) && (
-                        <Box
+                        <div
                           className="pagination-result"
                           style={{
                             width: '100%',
@@ -528,7 +529,7 @@ function ResultComponent(props: Props) {
                               ),
                             }}
                           />
-                        </Box>
+                        </div>
                       )}
                     <div
                       style={{
@@ -562,16 +563,15 @@ function ResultComponent(props: Props) {
                         )}
                     </div>
                   </div>
-                </Box>
+                </div>
                 {!isMobile &&
                   props.allSearchResults?.hits?.length > 0 &&
                   isAlgoliaEnabled && (
-                    <Box>
-                      <Box className="box-notify">
+                    <div>
+                      <div className="box-notify">
                         <FooterResult search={search}>
-                          <Box
-                            display={'flex'}
-                            style={{ padding: '0 20px' }}
+                          <div
+                            style={{ padding: '0 20px', display: 'flex' }}
                             className="box-change-hit-items"
                           >
                             <span style={{ paddingRight: '10px' }}>
@@ -581,10 +581,10 @@ function ResultComponent(props: Props) {
                               items={showHits}
                               defaultRefinement={20}
                             />
-                          </Box>
+                          </div>
                         </FooterResult>
-                      </Box>
-                    </Box>
+                      </div>
+                    </div>
                   )}
                 {isMobile && settings.showPoweredByNyris && (
                   <div
@@ -605,9 +605,9 @@ function ResultComponent(props: Props) {
                     />
                   </div>
                 )}
-              </Box>
-            </Box>
-          </Box>
+              </div>
+            </div>
+          </div>
         </>
       </div>
       {isScrolled === 'scrolled' &&

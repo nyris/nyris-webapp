@@ -1,4 +1,4 @@
-import { Box, Button, Tooltip, Typography } from '@material-ui/core';
+import { Button, Tooltip, Typography } from '@material-ui/core';
 import React, { useEffect, useMemo, useState } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import IconSearch from 'common/assets/icons/icon_search.svg';
@@ -141,7 +141,7 @@ function PreFilterComponent(props: Props) {
         text: searchQuery,
       })
         .then((res: any) => {
-          res?.results.map((item: any) => {
+          res?.results.forEach((item: any) => {
             filters.push({
               sku: item.sku,
               score: item.score,
@@ -163,11 +163,9 @@ function PreFilterComponent(props: Props) {
   const { t } = useTranslation();
 
   return (
-    <Box
+    <div
       className="box-child-component-filter-desktop"
-      display={'flex'}
-      flexDirection={'column'}
-      style={{ position: 'relative' }}
+      style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}
     >
       <div
         style={{
@@ -197,24 +195,30 @@ function PreFilterComponent(props: Props) {
           <CloseIcon />
         </Button>
       </div>
-      <Box
+      <div
         className="box-top"
-        display={'flex'}
-        justifyContent={'space-between'}
-        alignItems={'center'}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
       >
-        <Box
+        <div
           className="box-input-search-filter"
-          display={'flex'}
-          justifyItems={'center'}
-          style={isMobile ? { width: '100%' } : undefined}
+          style={{
+            width: isMobile ? '100%' : '',
+            display: 'flex',
+            justifyItems: 'center',
+          }}
         >
-          <Box
+          <div
             className="icon-search"
-            style={{ marginRight: 11 }}
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
+            style={{
+              marginRight: 11,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           >
             <img
               style={{ maxWidth: 'fit-content' }}
@@ -223,7 +227,7 @@ function PreFilterComponent(props: Props) {
               width={18}
               height={18}
             />
-          </Box>
+          </div>
 
           <input
             className="input-search-filter"
@@ -232,11 +236,11 @@ function PreFilterComponent(props: Props) {
               filterSearchHandler(e.target.value);
             }}
           />
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       {!isEmpty(keyFilter) && selectedFilter > 0 && (
-        <Box
+        <div
           style={{
             padding: '10px 16px 10px 16px',
             display: 'flex',
@@ -244,7 +248,7 @@ function PreFilterComponent(props: Props) {
             backgroundColor: '#FAFAFA',
           }}
         >
-          <Box
+          <div
             style={{
               display: 'flex',
               flexWrap: 'wrap',
@@ -258,7 +262,7 @@ function PreFilterComponent(props: Props) {
             {Object.keys(keyFilter).map((key, index) => {
               if (!keyFilter[key]) return <></>;
               return (
-                <Box
+                <div
                   key={index}
                   className="box-keyFilter"
                   style={{ display: 'flex', height: 'fit-content', gap: '8px' }}
@@ -270,13 +274,13 @@ function PreFilterComponent(props: Props) {
                   >
                     <CloseIcon style={{ fontSize: 12, color: '#2B2C46' }} />
                   </Button>
-                </Box>
+                </div>
               );
             })}
             <p
               style={{ fontWeight: 'bold', color: '#000' }}
             >{`${selectedFilter}/${maxFilter}`}</p>
-            <Box
+            <div
               style={{
                 color: '#E31B5D',
                 fontSize: '12px',
@@ -288,17 +292,17 @@ function PreFilterComponent(props: Props) {
               }}
             >
               {t('Clear all')}
-            </Box>
-          </Box>
-        </Box>
+            </div>
+          </div>
+        </div>
       )}
-      <Box
+      <div
         className="box-bottom"
-        height={'100%'}
         style={
           isMobile
             ? {
                 columnCount: 1,
+                height: '100%',
                 marginBottom: keyFilter ? '50px' : '0px',
               }
             : columns <= 4
@@ -311,14 +315,16 @@ function PreFilterComponent(props: Props) {
             : {
                 columnCount: 4,
                 padding: '24px 24px 40px 24px',
+                height: '100%',
+
                 backgroundColor: '#FAFAFA',
               }
         }
       >
         {Object.entries(resultFilter).map(([key, value]: any, i: any) => {
           return (
-            <Box className="box-group-items" key={key}>
-              <Box
+            <div className="box-group-items" key={key}>
+              <div
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -345,7 +351,7 @@ function PreFilterComponent(props: Props) {
                       arrow={true}
                       disableHoverListener={item.length < 35}
                     >
-                      <Box
+                      <div
                         aria-label={item}
                         style={{
                           cursor: 'pointer',
@@ -372,41 +378,40 @@ function PreFilterComponent(props: Props) {
                         }}
                       >
                         {truncateString(item, !isMobile ? 35 : 35)}
-                      </Box>
+                      </div>
                     </Tooltip>
                   );
                 })}
-              </Box>
-            </Box>
+              </div>
+            </div>
           );
         })}
         {isLoading && (
-          <Box style={{ columnCount: isMobile ? 1 : 4 }}>
+          <div style={{ columnCount: isMobile ? 1 : 4 }}>
             {Array(12)
               .fill('')
               .map((_, index) => {
                 return (
-                  <Box key={index} mb={5}>
+                  <div key={index} style={{ marginBottom: 5 }}>
                     <Skeleton animation={'pulse'} height={30} width={60} />
                     {Array(6)
                       .fill('')
                       .map((_, index) => (
                         <Skeleton key={index} animation={'pulse'} height={30} />
                       ))}
-                  </Box>
+                  </div>
                 );
               })}
-          </Box>
+          </div>
         )}
         {isEmpty(resultFilter) && !isLoading && (
           <Typography>No result found</Typography>
         )}
-      </Box>
+      </div>
       {!isMobile && (
-        <Box
+        <div
           className="footer"
-          style={{ height: 64, marginTop: 'auto' }}
-          display={'flex'}
+          style={{ height: 64, marginTop: 'auto', display: 'flex' }}
         >
           <Button
             className="button-left"
@@ -442,10 +447,10 @@ function PreFilterComponent(props: Props) {
           >
             {t('Apply')}
           </Button>
-        </Box>
+        </div>
       )}
       {isMobile && (
-        <Box
+        <div
           className="footer"
           style={{
             height: 64,
@@ -454,8 +459,8 @@ function PreFilterComponent(props: Props) {
             bottom: '0px',
             left: '0px',
             width: '100vw',
+            display: 'flex',
           }}
-          display={'flex'}
         >
           <Button
             className="button-left"
@@ -485,9 +490,9 @@ function PreFilterComponent(props: Props) {
           >
             {t('Apply')}
           </Button>
-        </Box>
+        </div>
       )}
-    </Box>
+    </div>
   );
 }
 export default PreFilterComponent;

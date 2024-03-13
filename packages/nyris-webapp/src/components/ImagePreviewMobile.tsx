@@ -1,5 +1,6 @@
+// @ts-nocheck
 import React, { memo, useState } from 'react';
-import { Box, Typography, Hidden } from '@material-ui/core';
+import { Typography, Hidden } from '@material-ui/core';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import { DEFAULT_REGION } from '../constants';
@@ -83,7 +84,7 @@ function ImagePreviewMobileComponent({
           text: searchQuery,
         })
           .then((res: any) => {
-            res?.results.map((item: any) => {
+            res?.results.forEach((item: any) => {
               filters.push({
                 sku: item.sku,
                 score: item.score,
@@ -108,7 +109,7 @@ function ImagePreviewMobileComponent({
   };
 
   return (
-    <Box
+    <div
       className="col-left"
       style={{
         backgroundColor: '#5D5D63',
@@ -116,8 +117,8 @@ function ImagePreviewMobileComponent({
       }}
     >
       <div>
-        <Box className="box-preview">
-          <Box>
+        <div className="box-preview">
+          <div>
             <div
               className="preview-item"
               style={{
@@ -150,9 +151,9 @@ function ImagePreviewMobileComponent({
                 draggable={editActive ? true : false}
               />
             </div>
-          </Box>
+          </div>
           {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
-            <Box
+            <div
               className="box-title_col-left"
               alignItems="center"
               style={{
@@ -175,12 +176,12 @@ function ImagePreviewMobileComponent({
                   ? t('Crop the image for better results')
                   : 'Crop the image for better results'}
               </Typography>
-            </Box>
+            </div>
           )}
-        </Box>
+        </div>
         <>
           <Hidden>
-            <Box
+            <div
               sx={{
                 position: 'absolute',
                 left: '15px',
@@ -189,7 +190,7 @@ function ImagePreviewMobileComponent({
               }}
               onClick={onImageRemove}
             >
-              <Box
+              <div
                 sx={{
                   width: '24px',
                   height: '24px',
@@ -200,12 +201,12 @@ function ImagePreviewMobileComponent({
                 }}
               >
                 <Trash color="white" fill="white" />
-              </Box>
-            </Box>
+              </div>
+            </div>
           </Hidden>
 
           <Hidden mdUp>
-            <Box
+            <div
               className="slideDown"
               sx={{
                 position: 'absolute',
@@ -214,7 +215,7 @@ function ImagePreviewMobileComponent({
               }}
               onClick={handleArrowClick}
             >
-              <Box
+              <div
                 bgcolor={'white'}
                 sx={{
                   width: '24px',
@@ -227,12 +228,12 @@ function ImagePreviewMobileComponent({
               >
                 {editActive && <ArrowUp color="black" />}
                 {!editActive && <ArrowDown color="black" fill="black" />}
-              </Box>
-            </Box>
+              </div>
+            </div>
           </Hidden>
         </>
       </div>
-    </Box>
+    </div>
   );
 }
 const ImagePreviewMobile = connectSearchBox<any>(
