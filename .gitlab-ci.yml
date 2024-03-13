@@ -1,3 +1,7 @@
+before_script:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
 stages:
   - build
   - publish
@@ -12,7 +16,7 @@ build:
     expire_in: 30 days
   script:
     - mkdir npm-packages
-    - npm ci
+    - yarn
     - npx lerna run build
     - (cd packages/nyris-react-components && npm pack && mv nyris-nyris-react-components-*.tgz ../../npm-packages/)
     - (cd packages/nyris-api && npm pack && mv nyris-nyris-api-*.tgz ../../npm-packages/)
