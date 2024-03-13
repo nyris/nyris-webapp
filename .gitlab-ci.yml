@@ -16,7 +16,7 @@ build:
     expire_in: 30 days
   script:
     - mkdir npm-packages
-    - yarn
+    - yarn install --frozen-lockfile
     - npx lerna run build
     - (cd packages/nyris-react-components && npm pack && mv nyris-nyris-react-components-*.tgz ../../npm-packages/)
     - (cd packages/nyris-api && npm pack && mv nyris-nyris-api-*.tgz ../../npm-packages/)
