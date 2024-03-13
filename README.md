@@ -13,7 +13,7 @@ related projects:
 
 ## Setting up the repository for development
 
-1. Set up dependencies by running `npm ci`
+1. Set up dependencies by running `yarn`
 2. Build packages `npx lerna run build`
 
 
