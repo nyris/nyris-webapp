@@ -492,8 +492,14 @@ const Preview = ({
       const heightDiff = newHeight - currentHeight;
 
       setDimensions({
-        width: currentWidth + easing * widthDiff,
-        height: currentHeight + easing * heightDiff,
+        width: Math.min(
+          currentWidth + easing * widthDiff,
+          maxSizeRef.current.maxWidth
+        ),
+        height: Math.min(
+          currentHeight + easing * heightDiff,
+          maxSizeRef.current.maxHeight
+        ),
       });
 
       if (frame.time >= 170) {
