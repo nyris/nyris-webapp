@@ -235,7 +235,5 @@ function ImagePreviewMobileComponent({
     </Box>
   );
 }
-const ImagePreviewMobile = connectSearchBox<any>(
-  memo(ImagePreviewMobileComponent),
-);
+const ImagePreviewMobile = memo(ImagePreviewMobileComponent);
 export default ImagePreviewMobile;
