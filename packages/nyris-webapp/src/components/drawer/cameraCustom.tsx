@@ -1,4 +1,5 @@
-import { Box, Drawer } from '@material-ui/core';
+// @ts-nocheck
+import { Drawer } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
@@ -87,7 +88,7 @@ function CameraCustom(props: Props) {
       region,
     })
       .then((res: any) => {
-        res?.results.map((item: any) => {
+        res?.results.forEach((item: any) => {
           filters.push({
             sku: item.sku,
             score: item.score,
@@ -113,14 +114,14 @@ function CameraCustom(props: Props) {
   };
 
   return (
-    <Box className="box-camera-custom">
+    <div className="box-camera-custom">
       <Drawer
         anchor={'bottom'}
         open={isToggle}
         onClose={handlerCloseModal}
         className="modal-togggle-cam"
       >
-        <Box className="wrap-camera">
+        <div className="wrap-camera">
           <button
             className="btn-close-modal right"
             style={{
@@ -259,9 +260,9 @@ function CameraCustom(props: Props) {
               </IconButton>
             </label>
           </div>
-        </Box>
+        </div>
       </Drawer>
-    </Box>
+    </div>
   );
 }
 

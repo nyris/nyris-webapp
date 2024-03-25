@@ -11,7 +11,7 @@ import trash from "./images/trash.svg";
 import { debounce } from "lodash";
 
 import { ReactComponent as Logo } from "./images/logo.svg";
-import { ReactComponent as  DeutscheLogo } from "./images/deutsche_logo.svg";
+import { ReactComponent as DeutscheLogo } from "./images/deutsche_logo.svg";
 
 import "./styles/nyris.scss";
 
@@ -80,12 +80,12 @@ const SuccessMultiple = ({
     <>
       <div className="nyris__screen nyris__success-multiple">
         <div className="nyris__main-heading ">
-          {noResult ? labeles['Let’s try that again'] : labeles['Success!']}
+          {noResult ? labeles["Let’s try that again"] : labeles["Success!"]}
         </div>
         <div className="nyris__main-description">
           {noResult
-            ? labeles['We couldn’t find matches']
-            : `${results.length} ${labeles['matches found']}`}
+            ? labeles["We couldn’t find matches"]
+            : `${results.length} ${labeles["matches found"]}`}
         </div>
         <div className="nyris__main-content">
           <div className="nyris__success-multiple-preview">
@@ -157,7 +157,10 @@ const SuccessMultiple = ({
         <label
           htmlFor="nyris__hello-open-camera"
           className={`nyris__success-multiple-camera`}
-          style={{ bottom: noResult ? "60px" : "", backgroundColor: window.nyrisSettings.cameraIconColour }}
+          style={{
+            bottom: noResult ? "60px" : "",
+            backgroundColor: window.nyrisSettings.cameraIconColour,
+          }}
         >
           {<img src={camera} width={24} height={24} />}
         </label>
@@ -172,16 +175,16 @@ const LoadingSpinner = () => {
       <div className="nyris__wait-spinner">
         <img src={spinner} width={66} height={66} />
       </div>
-      <div>{labeles['Analyzing image...']}</div>
+      <div>{labeles["Analyzing image..."]}</div>
     </div>
   );
 };
 
 const Wait = () => (
   <div className="nyris__screen nyris__wait">
-    <div className="nyris__main-heading">{labeles['Hold on']}</div>
+    <div className="nyris__main-heading">{labeles["Hold on"]}</div>
     <div className="nyris__main-description">
-      {labeles['We are working hard on finding the product']}
+      {labeles["We are working hard on finding the product"]}
     </div>
     <LoadingSpinner />
   </div>
@@ -210,7 +213,7 @@ const Fail = ({
         <p>
           <br />
           <br />
-          {labeles['Oops!']}
+          {labeles["Oops!"]}
         </p>
       </div>
       <div className="nyris__fail-content">
@@ -218,7 +221,11 @@ const Fail = ({
           className="nyris__button-accept"
           htmlFor="nyris__hello-open-camera"
         >
-          <span>{isMobile ? labeles['Click a picture'] : labeles['Upload a picture']}</span>
+          <span>
+            {isMobile
+              ? labeles["Click a picture"]
+              : labeles["Upload a picture"]}
+          </span>
           <img src={camera} width={16} height={16} />
         </label>
         <input
@@ -241,35 +248,48 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => onFileDropped(fs[0]),
   });
-  
-  const logo = window.nyrisSettings.language === 'en'
-                ? <Logo fill={window.nyrisSettings.primaryColor} width={318} height={134} />
-                : <DeutscheLogo fill={window.nyrisSettings.primaryColor} width={329} height={134} />
-  
+
+  const logo =
+    window.nyrisSettings.language === "en" ? (
+      <Logo fill={window.nyrisSettings.primaryColor} width={318} height={134} />
+    ) : (
+      <DeutscheLogo
+        fill={window.nyrisSettings.primaryColor}
+        width={329}
+        height={134}
+      />
+    );
+
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
-        {
-          window.nyrisSettings.customerLogo
-            ? <img src={window.nyrisSettings.customerLogo} width={window.nyrisSettings.logoWidth || 318} />
-            : logo
-        }
+        {window.nyrisSettings.customerLogo ? (
+          <img
+            src={window.nyrisSettings.customerLogo}
+            width={window.nyrisSettings.logoWidth || 318}
+          />
+        ) : (
+          logo
+        )}
       </div>
       <div className="nyris__hello-wrapper">
         <div className="nyris__main-content nyris__main-content--mobile">
           <label
             className="nyris__hello-browse"
             htmlFor="nyris__hello-upload-input"
-            style={{ color: window.nyrisSettings.primaryColor, backgroundColor: window.nyrisSettings.browseGalleryButtonColor }}
+            style={{
+              color: window.nyrisSettings.primaryColor,
+              backgroundColor: window.nyrisSettings.browseGalleryButtonColor,
+            }}
           >
-            {labeles['Browse gallery']}
+            {labeles["Browse gallery"]}
           </label>
           <label
             className="nyris__hello-upload"
             style={{ backgroundColor: window.nyrisSettings.primaryColor }}
             htmlFor="nyris__hello-open-camera"
           >
-            {labeles['Take a photo']}
+            {labeles["Take a photo"]}
             <img src={camera} width={16} height={16} />
           </label>
         </div>
@@ -280,7 +300,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
             style={{ backgroundColor: window.nyrisSettings.primaryColor }}
             htmlFor="nyris__hello-upload-input"
           >
-            {labeles['Upload a picture']}
+            {labeles["Upload a picture"]}
             <img src={camera} width={16} height={16} />
           </label>
 
@@ -293,7 +313,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
             <img src={drop_zone} width={48} height={48} />
             <div>
               <span className="nyris__hello-drop-zone-bold-text">
-                {labeles['Drag and drop an image here']}
+                {labeles["Drag and drop an image here"]}
               </span>
             </div>
           </div>
@@ -344,7 +364,9 @@ export const App = (props: AppProps) => {
       content = <Wait />;
       break;
     case Screen.Fail:
-      content = <Fail {...props} errorMessage={labeles['Something went wrong']} />;
+      content = (
+        <Fail {...props} errorMessage={labeles["Something went wrong"]} />
+      );
       break;
     case Screen.Result:
       content = <SuccessMultiple {...props} />;

@@ -1,4 +1,4 @@
-import { Box, Button, Tooltip } from '@material-ui/core';
+import { Button, Tooltip } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import CloseIcon from '@material-ui/icons/Close';
@@ -82,6 +82,7 @@ const SearchBox = (props: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageThumbSearchInput, isAlgoliaEnabled]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchOrRedirect = useCallback(
     debounce((value: any, withImage = true) => {
       if (!isAlgoliaEnabled) {
@@ -106,7 +107,7 @@ const SearchBox = (props: any) => {
             text: value,
           })
             .then((res: any) => {
-              res?.results.map((item: any) => {
+              res?.results.forEach((item: any) => {
                 filters.push({
                   sku: item.sku,
                   score: item.score,
@@ -177,7 +178,7 @@ const SearchBox = (props: any) => {
         region,
       })
         .then((res: any) => {
-          res?.results.map((item: any) => {
+          res?.results.forEach((item: any) => {
             filters.push({
               sku: item.sku,
               score: item.score,
@@ -213,7 +214,7 @@ const SearchBox = (props: any) => {
     <div className="wrap-input-search-field">
       <div className="box-input-search d-flex">
         <div className="input-wrapper">
-          <Box className="box-inp">
+          <div className="box-inp">
             <Tooltip
               title={
                 !isEmpty(preFilter)
@@ -224,7 +225,7 @@ const SearchBox = (props: any) => {
               arrow={true}
               disableHoverListener={!settings.preFilterOption}
             >
-              <Box
+              <div
                 className="pre-filter-icon"
                 style={{
                   cursor: settings.preFilterOption ? 'pointer' : 'default',
@@ -280,23 +281,23 @@ const SearchBox = (props: any) => {
                     ></div>
                   </div>
                 )}
-              </Box>
+              </div>
             </Tooltip>
-            <Box
+            <div
               style={{
                 height: '75%',
                 order: 1,
               }}
             >
               {imageThumbSearchInput && (
-                <Box
+                <div
                   style={{
                     border: `2px solid ${settings.theme?.primaryColor}`,
                     backgroundColor: `${settings.theme?.primaryColor}26`,
                     marginRight: '5px',
+                    display: 'flex',
                   }}
                   className="box-image-search-thumb"
-                  display={'flex'}
                 >
                   <img
                     src={imageThumbSearchInput}
@@ -331,9 +332,9 @@ const SearchBox = (props: any) => {
                       />
                     </button>
                   </Tooltip>
-                </Box>
+                </div>
               )}
-            </Box>
+            </div>
 
             <input
               style={{
@@ -348,7 +349,7 @@ const SearchBox = (props: any) => {
               onChange={onChangeText}
               ref={focusInp}
             />
-          </Box>
+          </div>
 
           {history.location.pathname === '/result' && valueInput && (
             <Button
@@ -417,14 +418,14 @@ const SearchBox = (props: any) => {
               </Tooltip>
             </div>
           ) : (
-            <Box>
+            <div>
               <Button
                 className="btn-mobile-filter"
                 onClick={onToggleFilterMobile}
               >
                 <IconFilter width={18} height={18} />
               </Button>
-            </Box>
+            </div>
           )}
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { Box, Menu, MenuProps, withStyles } from '@material-ui/core';
+import { Menu, MenuProps, withStyles } from '@material-ui/core';
 import React from 'react';
 import './common.scss';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
@@ -60,7 +60,7 @@ function Header(): JSX.Element {
   }))(MenuItem);
 
   return (
-    <Box className="box-content" display={'flex'}>
+    <div className="box-content" style={{ display: 'flex' }}>
       <a
         href={window.location.origin}
         style={{ lineHeight: 0, paddingLeft: '10px' }}
@@ -146,7 +146,7 @@ function Header(): JSX.Element {
           </StyledMenu>
         </div>
       )}
-    </Box>
+    </div>
   );
 }
 

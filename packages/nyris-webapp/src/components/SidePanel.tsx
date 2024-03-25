@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import React, { useState } from 'react';
@@ -41,7 +41,7 @@ function SidePanel({
   const { requestImage } = search;
 
   return (
-    <Box
+    <div
       className={`wrap-main-col-left ${toggleColLeft ? 'toggle' : ''}`}
       style={{
         display: 'flex',
@@ -49,7 +49,7 @@ function SidePanel({
         justifyContent: 'space-between',
       }}
     >
-      <Box
+      <div
         className="box-toggle-coloumn"
         style={{
           right: '0px',
@@ -70,12 +70,12 @@ function SidePanel({
             <KeyboardArrowLeftOutlinedIcon />
           )}
         </Button>
-      </Box>
-      <Box>
+      </div>
+      <div>
         {settings.preview && requestImage && (
-          <Box className="col-left">
-            <Box className="box-preview">
-              <Box
+          <div className="col-left">
+            <div className="box-preview">
+              <div
                 className="preview-item"
                 style={{
                   backgroundColor: 'white',
@@ -115,13 +115,13 @@ function SidePanel({
                     />
                   </div>
                 </div>
-              </Box>
-            </Box>
+              </div>
+            </div>
             {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
-              <Box
+              <div
                 className="box-title_col-left"
-                alignItems="center"
                 style={{
+                  alignItems: 'center',
                   backgroundColor: '#3E36DC',
                   display: 'flex',
                   columnGap: '6px',
@@ -139,13 +139,13 @@ function SidePanel({
                     ? t('Crop the image for better results')
                     : 'Crop the image for better results'}
                 </Typography>
-              </Box>
+              </div>
             )}
-          </Box>
+          </div>
         )}
 
         {showPostFilter && (
-          <Box
+          <div
             className="col-left__bottom"
             style={{
               marginTop: requestImage ? '16px' : '48px',
@@ -155,10 +155,10 @@ function SidePanel({
               <PostFilterPanelAlgolia disjunctiveFacets={disjunctiveFacets} />
             )}
             {!settings.algolia.enabled && <PostFilterPanel />}
-          </Box>
+          </div>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
 

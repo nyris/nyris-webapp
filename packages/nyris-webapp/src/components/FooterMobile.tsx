@@ -1,4 +1,4 @@
-import { Box, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
 import { ReactComponent as IconCameraMobile } from 'common/assets/icons/icon_camera_mobile.svg';
 import CameraCustom from './drawer/cameraCustom';
@@ -123,14 +123,17 @@ function FooterMobile(props: Props): JSX.Element {
           />
         </div>
       )}
-      <Box
+      <div
         className="box-footer-mobile"
-        display={'flex'}
-        position={'relative'}
-        alignItems={'center'}
-        height={'100%'}
-        justifyContent={'space-between'}
-        style={{ paddingLeft: '16px', paddingRight: '16px', height: '64px' }}
+        style={{
+          paddingLeft: '16px',
+          paddingRight: '16px',
+          height: '64px',
+          display: 'flex',
+          position: 'relative',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
       >
         <NavLink
           style={{
@@ -163,7 +166,7 @@ function FooterMobile(props: Props): JSX.Element {
           />
         </NavLink>
         {history.location?.pathname !== '/' && !imageCaptureHelpModal && (
-          <Box className="box-icon-camera-mobile">
+          <div className="box-icon-camera-mobile">
             <Button
               onClick={() => {
                 setOpenModalCamera(!isOpenModalCamera);
@@ -171,7 +174,7 @@ function FooterMobile(props: Props): JSX.Element {
             >
               <IconCameraMobile color="#55566B" />
             </Button>
-          </Box>
+          </div>
         )}
         <div style={{ display: 'flex', gap: '24px' }}>
           {history.location?.pathname !== '/' && (
@@ -212,15 +215,15 @@ function FooterMobile(props: Props): JSX.Element {
             </div>
           )}
         </div>
-      </Box>
-      <Box className="box-screenshot-camera">
+      </div>
+      <div className="box-screenshot-camera">
         <CameraCustom
           isToggle={isOpenModalCamera}
           onToggleModal={() => {
             setOpenModalCamera(!isOpenModalCamera);
           }}
         />
-      </Box>
+      </div>
     </>
   );
 }

@@ -2,10 +2,12 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "lerna": "^3.20.2"
+    "lerna": "^8.1.2"
   },
   "dependencies": {
-    "@emailjs/browser": "^3.11.0",
-    "lerna": "^3.20.2"
-  }
+    "lerna": "^8.1.2"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

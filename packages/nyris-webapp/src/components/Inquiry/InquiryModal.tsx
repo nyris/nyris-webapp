@@ -56,7 +56,7 @@ export default function InquiryModal({
   const [information, setInformation] = useState('');
 
   const setFormattedContent = React.useCallback(
-    text => {
+    (text: string) => {
       setInformation(text.slice(0, 150));
     },
     [setInformation],
