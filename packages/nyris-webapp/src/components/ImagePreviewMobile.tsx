@@ -16,7 +16,6 @@ import {
   updateStatusLoading,
 } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
-import { connectSearchBox } from 'react-instantsearch-dom';
 import { find } from 'services/image';
 import { isEmpty } from 'lodash';
 
@@ -39,7 +38,6 @@ function ImagePreviewMobileComponent({
   showAdjustInfo: any;
 }) {
   const { t } = useTranslation();
-  const { refine }: any = rest;
   const [editActive, setEditActive] = useState(false);
   const settings = useAppSelector(state => state.settings);
   const { preFilter } = useAppSelector(state => state.search);
@@ -60,12 +58,7 @@ function ImagePreviewMobileComponent({
       history.push('/');
     }
     dispatch(reset(''));
-    if (isAlgoliaEnabled) {
-      // not an ideal solution: fixes text search not working after removing image
-      setTimeout(() => {
-        refine(searchQuery);
-      }, 100);
-    }
+
     if (!isAlgoliaEnabled) {
       let payload: any;
       let filters: any[] = [];
