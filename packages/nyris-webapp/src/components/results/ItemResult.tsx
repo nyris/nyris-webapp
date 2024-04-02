@@ -6,6 +6,7 @@ import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.
 import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
 import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
 import { ReactComponent as Box3dIcon } from 'common/assets/icons/3d.svg';
+import { ReactComponent as IconSettings } from 'common/assets/icons/settings.svg';
 
 import React, { memo, useEffect, useState } from 'react';
 import NoImage from 'common/assets/images/no-image.svg';
@@ -115,6 +116,13 @@ function ItemResult(props: Props) {
     dataItem,
     settings.field?.ctaLinkField ? settings.field?.ctaLinkField : 'links.main',
   );
+  const secondaryCTALink = get(
+    dataItem,
+    settings.field?.secondaryCTALinkField
+      ? settings.field?.secondaryCTALinkField
+      : '',
+  );
+
   const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
   return (
     <Box className="wrap-main-item-result">
@@ -234,7 +242,7 @@ function ItemResult(props: Props) {
             justifyContent={'space-between'}
             flexDirection={'column'}
             style={{ color: '#2B2C46' }}
-            gridGap={8}
+            gridGap={6}
           >
             {settings.CTAButtonText && (
               <Typography
@@ -251,7 +259,10 @@ function ItemResult(props: Props) {
               display="flex"
               justifyContent={'space-between'}
               flexDirection={'row'}
-              style={{ color: '#2B2C46', marginTop: 8 }}
+              style={{
+                color: '#2B2C46',
+                marginTop: !settings.CTAButtonText ? 8 : -6,
+              }}
               gridGap={8}
             >
               <Tooltip
@@ -361,6 +372,59 @@ function ItemResult(props: Props) {
           </Box>
         )}
         <div>
+          {settings.secondaryCTAButtonText && (
+            <Box
+              style={{
+                boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                // marginBottom: 22,
+                height: 40,
+                background: '#2B2C46',
+                borderRadius: 4,
+                padding: '0px 8px',
+                marginTop: '8px',
+              }}
+              display={'flex'}
+              justifyItems={'center'}
+              alignItems={'center'}
+              justifyContent={'space-between'}
+            >
+              <Box
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  padding: 0,
+                  cursor: secondaryCTALink ? 'pointer' : 'normal',
+                }}
+                onClick={() => {
+                  if (secondaryCTALink) {
+                    feedbackConversionEpic(state, indexItem, dataItem.sku);
+                    window.open(`${secondaryCTALink}`, '_blank');
+                  }
+                }}
+              >
+                <Typography
+                  className="text-white max-line-2"
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    fontWeight: 500,
+                    fontSize: '12px',
+                    letterSpacing: '0.27px',
+                    wordBreak: 'break-all',
+                    maxWidth: !isMobile && secondaryCTALink ? '136px' : '164x',
+                    paddingRight: '8px',
+                  }}
+                  align="left"
+                >
+                  {settings.secondaryCTAButtonText}
+                </Typography>
+                {!isMobile && secondaryCTALink && (
+                  <IconSettings color="white" />
+                )}
+              </Box>
+            </Box>
+          )}
           {!settings.CTAButtonText ? (
             <Tooltip
               title={dataItem[settings.field.productName]}

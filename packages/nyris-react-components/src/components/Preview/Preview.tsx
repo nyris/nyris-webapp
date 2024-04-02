@@ -83,6 +83,8 @@ const getCursor = (state: PreviewState) => {
   return "default";
 };
 
+const gripStrokeWidth = 5;
+
 const calcNewRect = (
   { x1, x2, y1, y2 }: RectCoords,
   elem: PreviewElem,
@@ -138,10 +140,10 @@ function scaleToPreviewPixels(
   minHeight?: number
 ) {
   const cover = {
-    x1: Math.max(x1 * width, 5),
-    x2: Math.min(x2 * width, width - 5),
-    y1: Math.max(y1 * height, 5),
-    y2: Math.min(y2 * height, height - 5),
+    x1: Math.max(x1 * width, gripStrokeWidth),
+    x2: Math.min(x2 * width, width - gripStrokeWidth),
+    y1: Math.max(y1 * height, gripStrokeWidth),
+    y2: Math.min(y2 * height, height - gripStrokeWidth),
   };
 
   if (
@@ -151,10 +153,10 @@ function scaleToPreviewPixels(
     cover.y2 - cover.y1 < minHeight
   ) {
     return {
-      x1: Math.max(x1 * width - minWidth / 2, 5),
-      x2: Math.min(x2 * width + minWidth / 2, width - 5),
-      y1: Math.max(y1 * height - minHeight / 2, 5),
-      y2: Math.min(y2 * height + minHeight / 2, height - 5),
+      x1: Math.max(x1 * width - minWidth / 2, gripStrokeWidth),
+      x2: Math.min(x2 * width + minWidth / 2, width - gripStrokeWidth),
+      y1: Math.max(y1 * height - minHeight / 2, gripStrokeWidth),
+      y2: Math.min(y2 * height + minHeight / 2, height - gripStrokeWidth),
     };
   }
 
@@ -197,12 +199,18 @@ const Preview = ({
     height: 0,
   });
 
+  const [imageSelection, setImageSelection] = useState(selection);
+
   const [initialWidth, setInitialWidth] = useState(0);
 
   const [initialMaxWidth, setInitialMaxWidth] = useState(initialMaxWidthProps);
   const [initialMaxHeight, setInitialMaxHeight] = useState(
     initialMaxHeightProps
   );
+  let gripSize = 20;
+  let gripPadding = gripSize;
+  const bound = -1 * gripPadding;
+  let gripOffset = 5;
 
   useEffect(() => {
     shrinkAnimationRef.current = shrinkAnimation;
@@ -270,7 +278,7 @@ const Preview = ({
   const { x1, y1, x2, y2 } = scaleToPreviewPixels(
     width,
     height,
-    selection,
+    imageSelection,
     minCropWidth,
     minCropHeight
   );
@@ -278,38 +286,50 @@ const Preview = ({
 
   const handleDragBoundTl = ({ x, y }: { x: number; y: number }) => {
     return {
-      x: Math.max(Math.min(x, x2 - minX), 0),
-      y: Math.max(Math.min(y, y2 - minY), 0),
+      x: Math.max(Math.min(x, x2 - minX), bound + gripStrokeWidth + gripOffset),
+      y: Math.max(Math.min(y, y2 - minY), bound + gripStrokeWidth + gripOffset),
     };
   };
 
   const handleDragBoundTr = ({ x, y }: { x: number; y: number }) => {
     return {
-      x: Math.min(Math.max(x, x1 + minX), width),
-      y: Math.max(Math.min(y, y2 - minY), 0),
+      x: Math.min(
+        Math.max(x, x1 + minX),
+        width + bound - (gripStrokeWidth + gripOffset)
+      ),
+      y: Math.max(Math.min(y, y2 - minY), bound + gripStrokeWidth + gripOffset),
     };
   };
 
   const handleDragBoundBl = ({ x, y }: { x: number; y: number }) => {
     return {
-      x: Math.max(Math.min(x, x2 - minX), 0),
-      y: Math.min(Math.max(y, y1 + minY), height),
+      x: Math.max(Math.min(x, x2 - minX), bound + gripStrokeWidth + gripOffset),
+      y: Math.min(
+        Math.max(y, y1 + minY),
+        height + bound - (gripStrokeWidth + gripOffset)
+      ),
     };
   };
 
   const handleDragBoundBr = ({ x, y }: { x: number; y: number }) => {
     return {
-      x: Math.min(Math.max(x, x1 + minX), width),
-      y: Math.min(Math.max(y, y1 + minY), height),
+      x: Math.min(
+        Math.max(x, x1 + minX),
+        width + bound - (gripStrokeWidth + gripOffset)
+      ),
+      y: Math.min(
+        Math.max(y, y1 + minY),
+        height + bound - (gripStrokeWidth + gripOffset)
+      ),
     };
   };
 
   const handleDragBoundRect = ({ x, y }: { x: number; y: number }) => {
-    let elemWidth = x2 - x1 + 5;
-    let elemHeight = y2 - y1 + 5;
+    let elemWidth = x2 - x1 + gripStrokeWidth;
+    let elemHeight = y2 - y1 + gripStrokeWidth;
     return {
-      x: Math.max(Math.min(x, width - elemWidth), 5),
-      y: Math.max(Math.min(y, height - elemHeight), 5),
+      x: Math.max(Math.min(x, width - elemWidth), gripStrokeWidth),
+      y: Math.max(Math.min(y, height - elemHeight), gripStrokeWidth),
     };
   };
 
@@ -336,11 +356,31 @@ const Preview = ({
     if (evt.target instanceof Konva.Stage) {
       return;
     }
-
     let { x: newX, y: newY } = evt.target.getAbsolutePosition();
     let { width: elemWidth, height: elemHeight } = evt.target.getSize();
-    const modifiedX = newX + (elem !== "rect" ? gripPadding : 0);
-    const modifiedY = newY + (elem !== "rect" ? gripPadding : 0);
+
+    let gripOffsetX = gripOffset;
+    let gripOffsetY = gripOffset;
+
+    if (elem === "tl") {
+      gripOffsetX = gripOffsetX * -1;
+      gripOffsetY = gripOffsetY * -1;
+    }
+    if (elem === "tr") {
+      gripOffsetX = gripOffsetX * 1;
+      gripOffsetY = gripOffsetY * -1;
+    }
+    if (elem === "bl") {
+      gripOffsetX = gripOffsetX * -1;
+      gripOffsetY = gripOffsetY * 1;
+    }
+    if (elem === "br") {
+      gripOffsetX = gripOffsetX * 1;
+      gripOffsetY = gripOffsetY * 1;
+    }
+
+    const modifiedX = newX + (elem !== "rect" ? gripPadding + gripOffsetX : 0);
+    const modifiedY = newY + (elem !== "rect" ? gripPadding + gripOffsetY : 0);
 
     const newRect = calcNewRect(
       { x1, x2, y1, y2 },
@@ -391,7 +431,7 @@ const Preview = ({
 
   const notifySelection = (r: RectCoords) => {
     if (onSelectionChange) {
-      onSelectionChange(r);
+      setImageSelection(r);
     }
   };
 
@@ -413,8 +453,6 @@ const Preview = ({
     };
   });
 
-  let gripSize = 20;
-  let gripPadding = gripSize / 2;
   let darkOpacity = shrinkAnimation ? 0.4 : 0.3;
   const cornerRadius = [4, 4, 4, 4];
   const clipFunc = (ctx: any) => {
@@ -596,10 +634,17 @@ const Preview = ({
                 draggable={draggable ? true : false}
                 onDragMove={handleDragMoveRect}
                 dragBoundFunc={handleDragBoundRect}
+                onDragEnd={() => {
+                  if (onSelectionChange) {
+                    onSelectionChange(imageSelection);
+                  }
+                }}
                 onMouseOver={() => {
                   if (draggable) setState({ rectHover: true });
                 }}
-                onMouseOut={() => setState({ rectHover: false })}
+                onMouseOut={() => {
+                  setState({ rectHover: false });
+                }}
                 opacity={0}
                 strokeWidth={2}
                 x={x1}
@@ -656,7 +701,7 @@ const Preview = ({
                 <Path
                   data="M2 18V10C2 5.58172 5.58172 2 10 2H18"
                   stroke={"white"}
-                  strokeWidth={5}
+                  strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   opacity={1}
                   x={x1 - 3}
@@ -672,17 +717,22 @@ const Preview = ({
                   dragBoundFunc={handleDragBoundTl}
                   onMouseOver={() => setState({ tlHover: true })}
                   onMouseOut={() => setState({ tlHover: false })}
+                  onDragEnd={() => {
+                    if (onSelectionChange) {
+                      onSelectionChange(imageSelection);
+                    }
+                  }}
                   opacity={1}
                   width={gripSize + gripPadding}
                   height={gripSize + gripPadding}
-                  x={x1 - gripPadding}
-                  y={y1 - gripPadding}
+                  x={x1 - gripPadding + gripOffset}
+                  y={y1 - gripPadding + gripOffset}
                 />
                 {/* top right */}
                 <Path
                   data="M2 2L10 2C14.4183 2 18 5.58172 18 10L18 18"
                   stroke={"white"}
-                  strokeWidth={5}
+                  strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   opacity={1}
                   x={x2 + 3}
@@ -699,18 +749,23 @@ const Preview = ({
                   dragBoundFunc={handleDragBoundTr}
                   onMouseOver={() => setState({ trHover: true })}
                   onMouseOut={() => setState({ trHover: false })}
+                  onDragEnd={() => {
+                    if (onSelectionChange) {
+                      onSelectionChange(imageSelection);
+                    }
+                  }}
                   opacity={1}
                   width={gripSize + gripPadding}
                   height={gripSize + gripPadding}
-                  x={x2 - gripPadding}
-                  y={y1 - gripPadding}
+                  x={x2 - gripPadding - gripOffset}
+                  y={y1 - gripPadding + gripOffset}
                   offsetX={gripSize - gripPadding}
                 />
                 {/* bottom left */}
                 <Path
                   data="M18 18L10 18C5.58172 18 2 14.4183 2 10L2 2"
                   stroke={"white"}
-                  strokeWidth={5}
+                  strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   opacity={1}
                   x={x1 - 3}
@@ -727,18 +782,23 @@ const Preview = ({
                   dragBoundFunc={handleDragBoundBl}
                   onMouseOver={() => setState({ blHover: true })}
                   onMouseOut={() => setState({ blHover: false })}
+                  onDragEnd={() => {
+                    if (onSelectionChange) {
+                      onSelectionChange(imageSelection);
+                    }
+                  }}
                   opacity={1}
                   width={gripSize + gripPadding}
                   height={gripSize + gripPadding}
-                  x={x1 - gripPadding}
-                  y={y2 - gripPadding}
+                  x={x1 - gripPadding + gripOffset}
+                  y={y2 - gripPadding - gripOffset}
                   offsetY={gripSize - gripPadding}
                 />
                 {/* bottom right */}
                 <Path
                   data="M18 2L18 10C18 14.4183 14.4183 18 10 18L2 18"
                   stroke={"white"}
-                  strokeWidth={5}
+                  strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   x={x2 + 3}
                   y={y2 + 3}
@@ -755,10 +815,22 @@ const Preview = ({
                   draggable={true}
                   onDragMove={handleDragMoveBr}
                   dragBoundFunc={handleDragBoundBr}
-                  onMouseOver={() => setState({ brHover: true })}
-                  onMouseOut={() => setState({ brHover: false })}
-                  x={x2 - gripPadding}
-                  y={y2 - gripPadding}
+                  onMouseOver={() => {
+                    setState({ brHover: true });
+                  }}
+                  onMouseOut={() => {
+                    setState({ brHover: false });
+                  }}
+                  onDragEnd={() => {
+                    if (onSelectionChange) {
+                      onSelectionChange(imageSelection);
+                    }
+                  }}
+                  pointerout={() => {
+                    console.log("pointerout");
+                  }}
+                  x={x2 - gripPadding - gripOffset}
+                  y={y2 - gripPadding - gripOffset}
                   width={gripSize + gripPadding}
                   height={gripSize + gripPadding}
                   offsetY={gripSize - gripPadding}

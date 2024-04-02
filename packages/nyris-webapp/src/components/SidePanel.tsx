@@ -102,7 +102,6 @@ function SidePanel({
                     <Preview
                       key={requestImage?.id}
                       onSelectionChange={(r: RectCoords) => {
-                        setImageSelection(r);
                         debouncedOnImageSelectionChange(r);
                       }}
                       image={requestImage?.canvas}

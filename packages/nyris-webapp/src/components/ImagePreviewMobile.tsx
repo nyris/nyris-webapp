@@ -22,7 +22,6 @@ import { isEmpty } from 'lodash';
 function ImagePreviewMobileComponent({
   requestImage,
   imageSelection,
-  setImageSelection,
   debouncedOnImageSelectionChange,
   filteredRegions,
   showAdjustInfo,
@@ -31,7 +30,7 @@ function ImagePreviewMobileComponent({
 }: {
   requestImage: any;
   imageSelection: any;
-  setImageSelection: any;
+
   debouncedOnImageSelectionChange: any;
   filteredRegions: any;
   showAdjustInfoBasedOnConfidence: any;
@@ -120,7 +119,6 @@ function ImagePreviewMobileComponent({
               <Preview
                 key={requestImage?.id}
                 onSelectionChange={(r: RectCoords) => {
-                  setImageSelection(r);
                   debouncedOnImageSelectionChange(r);
                 }}
                 image={requestImage?.canvas}
