@@ -8,6 +8,7 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fix
 - Fix mobile preview not expanding correctly if system resources are low
 - Update DE translations of widget
+- Add secondary CTA Button
 
 ## 0.3.48 - 2024-03-01
 

@@ -455,48 +455,51 @@ function ProductDetailView(props: Props) {
                   backgroundColor: '#F3F3F5',
                 }}
               >
-                <Box
-                  style={{
-                    background: '#2B2C46',
-                    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                    borderRadius: 4,
-                    marginTop: 8,
-                  }}
-                  display={'flex'}
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
-                  className="btn-detail-item"
-                >
+                {settings.secondaryCTAButtonText && (
                   <Box
                     style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      width: '100%',
-                      padding: '0px 12px',
-                      minHeight: 64,
-                      cursor: secondaryCTALink ? 'pointer' : 'normal',
+                      background: '#2B2C46',
+                      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                      borderRadius: 4,
+                      marginTop: 8,
                     }}
-                    onClick={() => {
-                      if (secondaryCTALink) {
-                        window.open(`${secondaryCTALink}`, '_blank');
-                      }
-                    }}
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                    className="btn-detail-item"
                   >
-                    <Typography
-                      className="text-f18 fw-700 text-white max-line-2"
-                      align="left"
+                    <Box
                       style={{
-                        letterSpacing: '0.55px',
-                        maxWidth: '500px',
-                        paddingRight: '4px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        width: '100%',
+                        padding: '0px 12px',
+                        minHeight: 64,
+                        cursor: secondaryCTALink ? 'pointer' : 'normal',
+                      }}
+                      onClick={() => {
+                        if (secondaryCTALink) {
+                          window.open(`${secondaryCTALink}`, '_blank');
+                        }
                       }}
                     >
-                      {settings.secondaryCTAButtonText}
-                    </Typography>
-                    {secondaryCTALink && <IconSettings color="white" />}
+                      <Typography
+                        className="text-f18 fw-700 text-white max-line-2"
+                        align="left"
+                        style={{
+                          letterSpacing: '0.55px',
+                          maxWidth: '500px',
+                          paddingRight: '4px',
+                        }}
+                      >
+                        {settings.secondaryCTAButtonText}
+                      </Typography>
+                      {secondaryCTALink && <IconSettings color="white" />}
+                    </Box>
                   </Box>
-                </Box>
+                )}
+
                 <Box
                   style={{
                     background: settings.theme?.primaryColor,
