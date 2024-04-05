@@ -16,14 +16,12 @@ import {
   updateStatusLoading,
 } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
-import { connectSearchBox } from 'react-instantsearch-dom';
 import { find } from 'services/image';
 import { isEmpty } from 'lodash';
 
 function ImagePreviewMobileComponent({
   requestImage,
   imageSelection,
-  setImageSelection,
   debouncedOnImageSelectionChange,
   filteredRegions,
   showAdjustInfo,
@@ -32,14 +30,13 @@ function ImagePreviewMobileComponent({
 }: {
   requestImage: any;
   imageSelection: any;
-  setImageSelection: any;
+
   debouncedOnImageSelectionChange: any;
   filteredRegions: any;
   showAdjustInfoBasedOnConfidence: any;
   showAdjustInfo: any;
 }) {
   const { t } = useTranslation();
-  const { refine }: any = rest;
   const [editActive, setEditActive] = useState(false);
   const settings = useAppSelector(state => state.settings);
   const { preFilter } = useAppSelector(state => state.search);
@@ -60,12 +57,7 @@ function ImagePreviewMobileComponent({
       history.push('/');
     }
     dispatch(reset(''));
-    if (isAlgoliaEnabled) {
-      // not an ideal solution: fixes text search not working after removing image
-      setTimeout(() => {
-        refine(searchQuery);
-      }, 100);
-    }
+
     if (!isAlgoliaEnabled) {
       let payload: any;
       let filters: any[] = [];
@@ -127,7 +119,6 @@ function ImagePreviewMobileComponent({
               <Preview
                 key={requestImage?.id}
                 onSelectionChange={(r: RectCoords) => {
-                  setImageSelection(r);
                   debouncedOnImageSelectionChange(r);
                 }}
                 image={requestImage?.canvas}
@@ -235,7 +226,5 @@ function ImagePreviewMobileComponent({
     </Box>
   );
 }
-const ImagePreviewMobile = connectSearchBox<any>(
-  memo(ImagePreviewMobileComponent),
-);
+const ImagePreviewMobile = memo(ImagePreviewMobileComponent);
 export default ImagePreviewMobile;

@@ -9,6 +9,8 @@ import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_sear
 import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
 import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
 import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
+import { ReactComponent as IconSettings } from 'common/assets/icons/settings.svg';
+
 import { AppState } from 'types';
 import { useAppSelector } from 'Store/Store';
 import { prepareImageList } from '../helpers/CommonHelper';
@@ -74,6 +76,13 @@ function ProductDetailView(props: Props) {
   const ctaLink = get(
     dataItem,
     settings.field?.ctaLinkField ? settings.field?.ctaLinkField : 'links.main',
+  );
+
+  const secondaryCTALink = get(
+    dataItem,
+    settings.field?.secondaryCTALinkField
+      ? settings.field?.secondaryCTALinkField
+      : '',
   );
 
   useEffect(() => {
@@ -446,6 +455,51 @@ function ProductDetailView(props: Props) {
                   backgroundColor: '#F3F3F5',
                 }}
               >
+                {settings.secondaryCTAButtonText && (
+                  <Box
+                    style={{
+                      background: '#2B2C46',
+                      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                      borderRadius: 4,
+                      marginTop: 8,
+                    }}
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                    className="btn-detail-item"
+                  >
+                    <Box
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        width: '100%',
+                        padding: '0px 12px',
+                        minHeight: 64,
+                        cursor: secondaryCTALink ? 'pointer' : 'normal',
+                      }}
+                      onClick={() => {
+                        if (secondaryCTALink) {
+                          window.open(`${secondaryCTALink}`, '_blank');
+                        }
+                      }}
+                    >
+                      <Typography
+                        className="text-f18 fw-700 text-white max-line-2"
+                        align="left"
+                        style={{
+                          letterSpacing: '0.55px',
+                          maxWidth: '500px',
+                          paddingRight: '4px',
+                        }}
+                      >
+                        {settings.secondaryCTAButtonText}
+                      </Typography>
+                      {secondaryCTALink && <IconSettings color="white" />}
+                    </Box>
+                  </Box>
+                )}
+
                 <Box
                   style={{
                     background: settings.theme?.primaryColor,
@@ -496,6 +550,7 @@ function ProductDetailView(props: Props) {
                     )}
                   </Box>
                 </Box>
+
                 {productDetails && (
                   <Box className="w-100">
                     <Button

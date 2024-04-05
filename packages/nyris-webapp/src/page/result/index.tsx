@@ -300,10 +300,11 @@ function ResultComponent(props: Props) {
 
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
+      setImageSelection(r);
       feedbackRegionEpic(stateGlobal, r);
       dispatch(selectionChanged(r));
       findItemsInSelection(r);
-    }, 500),
+    }, 50),
     [findItemsInSelection, stateGlobal.search],
   );
 
@@ -441,7 +442,6 @@ function ResultComponent(props: Props) {
                   <ImagePreviewMobile
                     requestImage={requestImage}
                     imageSelection={imageSelection}
-                    setImageSelection={setImageSelection}
                     debouncedOnImageSelectionChange={
                       debouncedOnImageSelectionChange
                     }

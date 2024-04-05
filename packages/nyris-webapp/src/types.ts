@@ -34,6 +34,7 @@ export interface Cadenas {
 }
 export interface Field {
   ctaLinkField: string;
+  secondaryCTALinkField?: string;
   productName: string;
   productDetails: string;
   manufacturerNumber: string;
@@ -54,6 +55,7 @@ export interface AppSettings extends NyrisAPISettings {
   brandName?: string;
   cadenas?: Cadenas;
   CTAButtonText?: string;
+  secondaryCTAButtonText?: string;
   field: Field;
   headerText?: string;
   instantRedirectPatterns: string[];
