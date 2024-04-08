@@ -242,6 +242,10 @@ const Preview = ({
   const maxWidth = initialMaxWidth || dimensions.width;
 
   useEffect(() => {
+    setImageSelection(selection);
+  }, [selection]);
+
+  useEffect(() => {
     if (divRef.current?.offsetWidth) {
       setInitialWidth(divRef.current?.offsetWidth);
       if (!initialMaxHeight) {
@@ -430,9 +434,7 @@ const Preview = ({
   const handleDragMoveBr = handleDragMove.bind(null, "br");
 
   const notifySelection = (r: RectCoords) => {
-    if (onSelectionChange) {
-      setImageSelection(r);
-    }
+    setImageSelection(r);
   };
 
   if (!image) {
@@ -857,10 +859,16 @@ const Preview = ({
                       onClick={() => {
                         notifySelection(data.region.normalizedRect);
                         setState({ dotHover: false });
+                        if (onSelectionChange) {
+                          onSelectionChange(data.region.normalizedRect);
+                        }
                       }}
                       onTap={() => {
                         notifySelection(data.region.normalizedRect);
                         setState({ dotHover: false });
+                        if (onSelectionChange) {
+                          onSelectionChange(data.region.normalizedRect);
+                        }
                       }}
                       onMouseOver={() => setState({ dotHover: true })}
                       onMouseOut={() => setState({ dotHover: false })}
