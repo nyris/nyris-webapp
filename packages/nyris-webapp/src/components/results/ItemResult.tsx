@@ -23,6 +23,7 @@ import { feedbackClickEpic, feedbackConversionEpic } from 'services/Feedback';
 import ProductDetailView from 'components/ProductDetailView';
 import ProductAttribute from '../ProductAttribute';
 import { get, isUndefined } from 'lodash';
+import { ReactComponent as IconSettings } from 'common/assets/icons/settings.svg';
 
 interface Props {
   dataItem: any;
@@ -116,6 +117,14 @@ function ItemResult(props: Props) {
     settings.field?.ctaLinkField ? settings.field?.ctaLinkField : 'links.main',
   );
   const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
+
+  const secondaryCTALink = get(
+    dataItem,
+    settings.field?.secondaryCTALinkField
+      ? settings.field?.secondaryCTALinkField
+      : '',
+  );
+
   return (
     <div className="wrap-main-item-result">
       <DefaultModal
@@ -371,6 +380,59 @@ function ItemResult(props: Props) {
           </div>
         )}
         <div>
+          {settings.secondaryCTAButtonText && (
+            <div
+              style={{
+                boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                // marginBottom: 22,
+                height: 40,
+                background: '#2B2C46',
+                borderRadius: 4,
+                padding: '0px 8px',
+                marginTop: '8px',
+                display: 'flex',
+                justifyItems: 'center',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  padding: 0,
+                  cursor: secondaryCTALink ? 'pointer' : 'normal',
+                }}
+                onClick={() => {
+                  if (secondaryCTALink) {
+                    feedbackConversionEpic(state, indexItem, dataItem.sku);
+                    window.open(`${secondaryCTALink}`, '_blank');
+                  }
+                }}
+              >
+                <Typography
+                  className="text-white max-line-2"
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    fontWeight: 500,
+                    fontSize: '12px',
+                    letterSpacing: '0.27px',
+                    wordBreak: 'break-all',
+                    maxWidth: !isMobile && secondaryCTALink ? '136px' : '164x',
+                    paddingRight: '8px',
+                  }}
+                  align="left"
+                >
+                  {settings.secondaryCTAButtonText}
+                </Typography>
+                {!isMobile && secondaryCTALink && (
+                  <IconSettings color="white" />
+                )}
+              </div>
+            </div>
+          )}
           {!settings.CTAButtonText ? (
             <Tooltip
               title={dataItem[settings.field.productName]}

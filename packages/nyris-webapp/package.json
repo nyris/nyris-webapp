@@ -1,6 +1,6 @@
 {
   "name": "@nyris/nyris-webapp",
-  "version": "0.3.48",
+  "version": "0.3.50",
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",

@@ -87,7 +87,15 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         dispatch(updateQueryText(''));
         setValueInput('');
       }
+    } else {
+      if (settings.algolia?.enabled) {
+        // not an ideal solution: fixes text search not working after removing image
+        setTimeout(() => {
+          refine(searchQuery);
+        }, 100);
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageThumbSearchInput, dispatch, refine, history, settings.algolia]);
 
   useEffect(() => {
