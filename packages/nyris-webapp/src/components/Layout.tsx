@@ -102,7 +102,7 @@ function Layout({ children }: ReactNode): JSX.Element {
     if (settings.shouldUseUserMetadata && user) {
       dispatch(setPreFilter({[user['/user_metadata'].value]: true}));
     }
-  }, [user]);
+  }, [user, dispatch, settings.shouldUseUserMetadata]);
 
   let HeaderApp: any;
   let FooterApp: any;
