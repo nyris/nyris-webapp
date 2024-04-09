@@ -88,7 +88,6 @@ const SearchBox = (props: any) => {
   const searchOrRedirect = useCallback(
     debounce((value: any, withImage = true) => {
       if (!isAlgoliaEnabled) {
-        console.log('here');
         dispatch(updateQueryText(value));
         let payload: any;
         let filters: any[] = [];
@@ -137,7 +136,6 @@ const SearchBox = (props: any) => {
       }
 
       if (value) {
-        console.log(value);
         history.push({
           pathname: '/result',
           search: `?query=${value}`,
