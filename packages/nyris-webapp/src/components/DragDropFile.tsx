@@ -55,9 +55,6 @@ function DragDropFile(props: Props) {
           values: Object.keys(preFilter) as string[],
         },
       ];
-      if (settings.shouldUseUserMetadata && user) {
-        preFilterValues[0].values.push(user['/user_metadata'].value);
-      }
       let region: RectCoords | undefined;
       if (settings.regions) {
         let res = await findRegions(image, settings);
@@ -69,7 +66,7 @@ function DragDropFile(props: Props) {
         image,
         settings,
         region,
-        filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       }).then((res: any) => {
         res?.results.forEach((item: any) => {
           filters.push({

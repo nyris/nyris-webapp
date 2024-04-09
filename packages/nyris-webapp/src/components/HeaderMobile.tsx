@@ -119,15 +119,12 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             values: Object.keys(preFilter) as string[],
           },
         ];
-        if (settings.shouldUseUserMetadata && user) {
-          preFilterValues[0].values.push(user['/user_metadata'].value);
-        }
         if (value || requestImage) {
           dispatch(updateStatusLoading(true));
           find({
             image: requestImage?.canvas as HTMLCanvasElement,
             settings,
-            filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
+            filters: !isEmpty(preFilter) ? preFilterValues : undefined,
             region: selectedRegion,
             text: value,
           })
@@ -304,7 +301,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   {!settings.preFilterOption && (
                     <IconSearch width={16} height={16} />
                   )}
-                  {!isEmpty(preFilter) && (
+                  {settings.preFilterOption && !isEmpty(preFilter) && (
                     <div
                       style={{
                         position: 'absolute',

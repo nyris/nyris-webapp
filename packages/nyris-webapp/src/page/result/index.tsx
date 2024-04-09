@@ -50,7 +50,6 @@ import { useQuery } from 'hooks/useQuery';
 import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
 import Feedback from 'components/Feedback';
 import { SelectedPostFilter } from 'components/SelectedPostFilter';
-import { useAuth0 } from '@auth0/auth0-react';
 
 interface Props {
   allSearchResults: any;
@@ -59,7 +58,6 @@ interface Props {
 
 function ResultComponent(props: Props) {
   const dispatch = useAppDispatch();
-  const { user } = useAuth0();
   const refBoxResult: any = useRef(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
@@ -147,16 +145,13 @@ function ResultComponent(props: Props) {
           values: Object.keys(preFilter) as string[],
         },
       ];
-      if (settings.shouldUseUserMetadata && user) {
-        preFilterValues[0].values.push(user['/user_metadata'].value);
-      }
       dispatch(loadingActionResults());
 
       return find({
         image: canvas,
         settings,
         region: r,
-        filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       })
         .then((res: any) => {
           dispatch(updateStatusLoading(false));
@@ -230,15 +225,11 @@ function ResultComponent(props: Props) {
         values: Object.keys(preFilter) as string[],
       },
     ];
-    if (settings.shouldUseUserMetadata && user) {
-      preFilterValues[0].values.push(user['/user_metadata'].value);
-    }
-    console.log(preFilterValues);
     find({
       image,
       settings,
       region: searchRegion,
-      filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
+      filters: !isEmpty(preFilter) ? preFilterValues : undefined,
     }).then((res: any) => {
       dispatch(setSearchResults(res));
       dispatch(updateStatusLoading(false));

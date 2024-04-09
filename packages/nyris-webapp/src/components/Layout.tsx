@@ -4,7 +4,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import {
   clearPostFilter,
-  onResetRequestImage,
+  onResetRequestImage, setPreFilter,
   setUpdateSession,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
@@ -75,7 +75,7 @@ function Layout({ children }: ReactNode): JSX.Element {
     (isMobile && history.location?.pathname === '/result') ||
     history.location?.pathname === '/';
   const language = useAppSelector(state => state.settings.language);
-  const { isAuthenticated } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
   const { auth0, showPoweredByNyris } = settings;
   const showApp = !auth0.enabled || (auth0.enabled && isAuthenticated);
   i18n.changeLanguage(language);
@@ -97,6 +97,12 @@ function Layout({ children }: ReactNode): JSX.Element {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history.location]);
+
+  useEffect(() => {
+    if (settings.shouldUseUserMetadata && user) {
+      dispatch(setPreFilter({[user['/user_metadata'].value]: true}));
+    }
+  }, [user]);
 
   let HeaderApp: any;
   let FooterApp: any;
