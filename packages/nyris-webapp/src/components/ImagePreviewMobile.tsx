@@ -20,6 +20,7 @@ import { useHistory } from 'react-router-dom';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { find } from 'services/image';
 import { isEmpty } from 'lodash';
+import { useAuth0 } from '@auth0/auth0-react';
 
 function ImagePreviewMobileComponent({
   requestImage,
@@ -48,6 +49,7 @@ function ImagePreviewMobileComponent({
   const query = useQuery();
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const { user } = useAuth0();
 
   const handleArrowClick = () => {
     setEditActive(s => !s);
@@ -76,11 +78,14 @@ function ImagePreviewMobileComponent({
           values: Object.keys(preFilter) as string[],
         },
       ];
+      if (settings.shouldUseUserMetadata && user) {
+        preFilterValues[0].values.push(user['/user_metadata'].value);
+      }
       if (searchQuery || requestImage) {
         dispatch(updateStatusLoading(true));
         find({
           settings,
-          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+          filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
           text: searchQuery,
         })
           .then((res: any) => {

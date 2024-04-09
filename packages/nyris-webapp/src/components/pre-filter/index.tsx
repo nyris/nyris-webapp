@@ -16,6 +16,7 @@ import { truncateString } from 'helpers/truncateString';
 import { find } from 'services/image';
 import { useQuery } from 'hooks/useQuery';
 import { useTranslation } from 'react-i18next';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface Props {
   handleClose?: any;
@@ -25,6 +26,7 @@ const maxFilter = 10;
 function PreFilterComponent(props: Props) {
   const { handleClose } = props;
   const dispatch = useAppDispatch();
+  const { user } = useAuth0();
   const stateGlobal = useAppSelector(state => state);
   const { settings } = stateGlobal;
   const [resultFilter, setResultFilter] = useState<any>([]);
@@ -131,12 +133,14 @@ function PreFilterComponent(props: Props) {
           values: Object.keys(preFilter) as string[],
         },
       ];
+      if (settings.shouldUseUserMetadata && user) {
+        preFilterValues[0].values.push(user['/user_metadata'].value);
+      }
       dispatch(updateStatusLoading(true));
-
       find({
         image: requestImage?.canvas as HTMLCanvasElement,
         settings,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+        filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
         region: selectedRegion,
         text: searchQuery,
       })

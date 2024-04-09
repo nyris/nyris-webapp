@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { createImage, find, findRegions } from 'services/image';
 import {
@@ -34,6 +35,7 @@ function DragDropFile(props: Props) {
     settings,
     search: { preFilter },
   } = searchState;
+  const { user } = useAuth0();
   const { t } = useTranslation();
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[]) => {
@@ -53,6 +55,9 @@ function DragDropFile(props: Props) {
           values: Object.keys(preFilter) as string[],
         },
       ];
+      if (settings.shouldUseUserMetadata && user) {
+        preFilterValues[0].values.push(user['/user_metadata'].value);
+      }
       let region: RectCoords | undefined;
       if (settings.regions) {
         let res = await findRegions(image, settings);
@@ -60,12 +65,11 @@ function DragDropFile(props: Props) {
         region = res.selectedRegion;
         dispatch(setSelectedRegion(region));
       }
-
       return find({
         image,
         settings,
         region,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+        filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
       }).then((res: any) => {
         res?.results.forEach((item: any) => {
           filters.push({

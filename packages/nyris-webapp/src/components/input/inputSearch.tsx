@@ -30,6 +30,7 @@ import DefaultModal from 'components/modal/DefaultModal';
 import PreFilterComponent from 'components/pre-filter';
 import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
@@ -38,6 +39,7 @@ const SearchBox = (props: any) => {
   const { search, settings } = stateGlobal;
   const { imageThumbSearchInput, preFilter, requestImage, selectedRegion } =
     search;
+  const { user } = useAuth0();
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -86,6 +88,7 @@ const SearchBox = (props: any) => {
   const searchOrRedirect = useCallback(
     debounce((value: any, withImage = true) => {
       if (!isAlgoliaEnabled) {
+        console.log('here');
         dispatch(updateQueryText(value));
         let payload: any;
         let filters: any[] = [];
@@ -95,6 +98,9 @@ const SearchBox = (props: any) => {
             values: Object.keys(preFilter) as string[],
           },
         ];
+        if (settings.shouldUseUserMetadata && user) {
+          preFilterValues[0].values.push(user['/user_metadata'].value);
+        }
         if (value || requestImage) {
           dispatch(updateStatusLoading(true));
           find({
@@ -102,7 +108,7 @@ const SearchBox = (props: any) => {
               ? (requestImage?.canvas as HTMLCanvasElement)
               : undefined,
             settings,
-            filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+            filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
             region: withImage ? selectedRegion : undefined,
             text: value,
           })
@@ -131,6 +137,7 @@ const SearchBox = (props: any) => {
       }
 
       if (value) {
+        console.log(value);
         history.push({
           pathname: '/result',
           search: `?query=${value}`,
@@ -163,7 +170,9 @@ const SearchBox = (props: any) => {
           values: Object.keys(preFilter) as string[],
         },
       ];
-
+      if (settings.shouldUseUserMetadata && user) {
+        preFilterValues[0].values.push(user['/user_metadata'].value);
+      }
       if (settings.regions) {
         let res = await findRegions(image, settings);
         dispatch(setRegions(res.regions));
@@ -174,7 +183,7 @@ const SearchBox = (props: any) => {
       return find({
         image,
         settings,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+        filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
         region,
       })
         .then((res: any) => {

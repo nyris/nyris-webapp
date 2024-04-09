@@ -119,13 +119,15 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             values: Object.keys(preFilter) as string[],
           },
         ];
-
+        if (settings.shouldUseUserMetadata && user) {
+          preFilterValues[0].values.push(user['/user_metadata'].value);
+        }
         if (value || requestImage) {
           dispatch(updateStatusLoading(true));
           find({
             image: requestImage?.canvas as HTMLCanvasElement,
             settings,
-            filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+            filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
             region: selectedRegion,
             text: value,
           })

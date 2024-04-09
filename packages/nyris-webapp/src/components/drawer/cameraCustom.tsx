@@ -21,6 +21,7 @@ import {
   setSelectedRegion,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface Props {
   isToggle: boolean;
@@ -33,6 +34,7 @@ const FACING_MODE_ENVIRONMENT = 'user';
 function CameraCustom(props: Props) {
   const { isToggle, onToggleModal } = props;
   const webcamRef: any = useRef(null);
+  const { user } = useAuth0();
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
   const [scaleCamera, setScaleCamera] = useState<number>(1);
   const stateGlobal = useAppSelector(state => state);
@@ -79,12 +81,14 @@ function CameraCustom(props: Props) {
         values: Object.keys(preFilter) as string[],
       },
     ];
+    if (settings.shouldUseUserMetadata && user) {
+      preFilterValues[0].values.push(user['/user_metadata'].value);
+    }
     let filters: any[] = [];
-
     find({
       image: imageConvert,
       settings,
-      filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+      filters: !isEmpty(preFilterValues[0].values) ? preFilterValues : undefined,
       region,
     })
       .then((res: any) => {
