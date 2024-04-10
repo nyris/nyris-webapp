@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Collapse, Grid, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import IconOpenLink from 'common/assets/icons/Union.svg';
+import { ReactComponent as IconOpenLink }  from 'common/assets/icons/Union.svg';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useMediaQuery } from 'react-responsive';
 import { ImagePreviewCarousel } from './carousel/ImagePreviewCarousel';
@@ -459,7 +459,7 @@ function ProductDetailView(props: Props) {
                 {settings.secondaryCTAButtonText && (
                   <div
                     style={{
-                      background: '#2B2C46',
+                      background: settings.theme.secondaryCTAButtonColor || '#2B2C46',
                       boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                       borderRadius: 4,
                       marginTop: 8,
@@ -503,7 +503,7 @@ function ProductDetailView(props: Props) {
 
                 <div
                   style={{
-                    background: settings.theme?.primaryColor,
+                    background: settings.theme?.CTAButtonColor || settings.theme?.primaryColor,
                     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                     borderRadius: 4,
                     marginTop: 8,
@@ -530,9 +530,10 @@ function ProductDetailView(props: Props) {
                     }}
                   >
                     <Typography
-                      className="text-f18 fw-700 text-white max-line-2"
+                      className="text-f18 fw-700 max-line-2"
                       align="left"
                       style={{
+                        color: settings.theme?.CTAButtonTextColor || '#FFFFFF',
                         letterSpacing: '0.55px',
                         maxWidth: '500px',
                         paddingRight: '4px',
@@ -543,11 +544,7 @@ function ProductDetailView(props: Props) {
                         : dataItem[settings.field.productName]}
                     </Typography>
                     {ctaLink && (
-                      <img
-                        src={IconOpenLink}
-                        alt=""
-                        style={{ minWidth: 16, marginLeft: 5 }}
-                      />
+                      <IconOpenLink fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'} width={16} />
                     )}
                   </div>
                 </div>

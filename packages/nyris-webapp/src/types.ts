@@ -88,6 +88,9 @@ export interface SearchSuiteSettings {
   mobileFooterImageColor?: string;
   primaryColor?: string;
   secondaryColor?: string;
+  secondaryCTAButtonColor?: string;
+  CTAButtonColor?: string;
+  CTAButtonTextColor?: string;
 }
 
 export type AppState = {

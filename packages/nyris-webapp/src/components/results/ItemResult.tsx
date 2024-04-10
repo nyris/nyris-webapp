@@ -1,6 +1,6 @@
 import { Button, Grid, Tooltip, Typography } from '@material-ui/core';
 import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
-import IconOpenLink from 'common/assets/icons/Union.svg';
+import { ReactComponent as IconOpenLink } from 'common/assets/icons/Union.svg';
 import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
 import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
 import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
@@ -386,7 +386,7 @@ function ItemResult(props: Props) {
                 boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                 // marginBottom: 22,
                 height: 40,
-                background: '#2B2C46',
+                background: settings.theme.secondaryCTAButtonColor || '#2B2C46',
                 borderRadius: 4,
                 padding: '0px 8px',
                 marginTop: '8px',
@@ -447,7 +447,7 @@ function ItemResult(props: Props) {
                   boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                   // marginBottom: 22,
                   height: 40,
-                  background: settings.theme?.primaryColor,
+                  background: settings.theme?.CTAButtonColor || settings.theme?.primaryColor,
                   borderRadius: 4,
                   padding: '0px 8px',
                   marginTop: '8px',
@@ -473,11 +473,12 @@ function ItemResult(props: Props) {
                   }}
                 >
                   <Typography
-                    className="text-white max-line-2"
+                    className="max-line-2"
                     style={{
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       fontWeight: 500,
+                      color: settings.theme?.CTAButtonTextColor || '#FFFFFF',
                       fontSize: '12px',
                       letterSpacing: '0.27px',
                       wordBreak: 'break-all',
@@ -489,7 +490,7 @@ function ItemResult(props: Props) {
                     {truncateString(dataItem[settings.field.productName], 45)}
                   </Typography>
                   {!isMobile && ctaLink && (
-                    <img src={IconOpenLink} alt="more-info" width={16} />
+                    <IconOpenLink fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'} width={16} />
                   )}
                 </div>
               </div>
@@ -500,7 +501,7 @@ function ItemResult(props: Props) {
                 boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                 // marginBottom: 22,
                 height: 40,
-                background: settings.theme?.primaryColor,
+                background: settings.theme?.CTAButtonColor || settings.theme?.primaryColor,
                 borderRadius: 4,
                 padding: '0px 8px',
                 marginTop: '8px',
@@ -526,11 +527,12 @@ function ItemResult(props: Props) {
                 }}
               >
                 <Typography
-                  className="text-white max-line-2"
+                  className="max-line-2"
                   style={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     fontWeight: 500,
+                    color: settings.theme?.CTAButtonTextColor || '#FFFFFF',
                     fontSize: '12px',
                     letterSpacing: '0.27px',
                     wordBreak: 'break-all',
@@ -542,7 +544,7 @@ function ItemResult(props: Props) {
                   {settings.CTAButtonText}
                 </Typography>
                 {!isMobile && ctaLink && (
-                  <img src={IconOpenLink} alt="more-info" width={16} />
+                  <IconOpenLink fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'} width={16} />
                 )}
               </div>
             </div>
