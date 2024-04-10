@@ -91,6 +91,7 @@ export interface SearchSuiteSettings {
   secondaryCTAButtonColor?: string;
   CTAButtonColor?: string;
   CTAButtonTextColor?: string;
+  mainTextColor?: string;
 }
 
 export type AppState = {

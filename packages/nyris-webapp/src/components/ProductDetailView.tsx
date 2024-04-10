@@ -313,7 +313,7 @@ function ProductDetailView(props: Props) {
                   display: 'flex',
                   justifyContent: 'space-between',
                   flexDirection: 'row',
-                  color: '#2B2C46',
+                  color: settings.theme.mainTextColor ||'#2B2C46',
                   marginBottom: 10,
                   paddingLeft: 16,
                   paddingRight: 16,
@@ -323,7 +323,7 @@ function ProductDetailView(props: Props) {
                 <Typography
                   className="text-f12 max-line-1 fw-400"
                   style={{
-                    color: '#2B2C46',
+                    color: settings.theme.mainTextColor || '#2B2C46',
                   }}
                 >
                   {sku}
@@ -336,7 +336,7 @@ function ProductDetailView(props: Props) {
                     <Typography
                       className="text-f12 max-line-1 fw-400"
                       style={{
-                        color: '#2B2C46',
+                        color: settings.theme.mainTextColor || '#2B2C46',
                       }}
                     >
                       <span
@@ -554,7 +554,7 @@ function ProductDetailView(props: Props) {
                       className="w-100 button-hover"
                       style={{
                         backgroundColor: '#F3F3F5',
-                        color: '#2b2c46',
+                        color: settings.theme.mainTextColor || '#2b2c46',
                         display: 'flex',
                         fontSize: 14,
                         justifyContent: 'space-between',
@@ -583,7 +583,7 @@ function ProductDetailView(props: Props) {
                           padding: 5,
                           paddingLeft: 15,
                           paddingRight: 15,
-                          color: '#2b2c46',
+                          color: settings.theme.mainTextColor || '#2b2c46',
                         }}
                       >
                         {productDetails}

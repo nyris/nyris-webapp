@@ -244,14 +244,14 @@ function ItemResult(props: Props) {
               justifyContent: 'space-between',
               flexDirection: 'column',
               gridGap: 8,
-              color: '#2B2C46',
+              color: settings.theme.mainTextColor || '#2B2C46',
             }}
           >
             {settings.CTAButtonText && (
               <Typography
                 className="text-f12 max-line-1 fw-700"
                 style={{
-                  color: '#2B2C46',
+                  color: settings.theme.mainTextColor || '#2B2C46',
                   marginTop: 8,
                 }}
               >
@@ -264,7 +264,7 @@ function ItemResult(props: Props) {
                 justifyContent: 'space-between',
                 flexDirection: 'row',
                 gridGap: 8,
-                color: '#2B2C46',
+                color: settings.theme.mainTextColor || '#2B2C46',
                 marginTop: 8,
               }}
             >
@@ -277,7 +277,7 @@ function ItemResult(props: Props) {
                 <Typography
                   className="text-f12 max-line-1 fw-400"
                   style={{
-                    color: '#2B2C46',
+                    color: settings.theme.mainTextColor || '#2B2C46',
                   }}
                 >
                   {truncateString(
@@ -294,7 +294,7 @@ function ItemResult(props: Props) {
                   <Typography
                     className="text-f12 max-line-1 fw-400"
                     style={{
-                      color: '#2B2C46',
+                      color: settings.theme?.mainTextColor || '#2B2C46',
                     }}
                   >
                     <span
@@ -316,7 +316,7 @@ function ItemResult(props: Props) {
                 justifyContent: 'space-between',
                 flexDirection: 'row',
                 gridGap: 8,
-                color: '#2B2C46',
+                color: settings.theme.mainTextColor || '#2B2C46',
               }}
             >
               {(brand || settings.brandName) && (
@@ -345,7 +345,7 @@ function ItemResult(props: Props) {
               display: 'flex',
               justifyContent: 'space-between',
               gridGap: 10,
-              color: '#2B2C46',
+              color: settings.theme.mainTextColor || '#2B2C46',
               marginTop: 8,
             }}
           >
