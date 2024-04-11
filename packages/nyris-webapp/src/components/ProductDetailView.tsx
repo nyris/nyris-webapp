@@ -373,8 +373,9 @@ function ProductDetailView(props: Props) {
               >
                 {!settings.warehouseVariant && settings.CTAButtonText && (
                   <ProductAttribute
-                    title={'Produktname'}
+                    title={t('Product name')}
                     value={title}
+                    backgroundColor={settings.theme.brandFieldBackground}
                     width={
                       settings.warehouseVariant
                         ? { xs: '49%', md: 'fit-content' }
@@ -386,6 +387,7 @@ function ProductDetailView(props: Props) {
                   <ProductAttribute
                     title={settings.itemIdLabel || 'SKU'}
                     value={sku}
+                    backgroundColor={''}
                     width={
                       settings.warehouseVariant
                         ? { xs: '49%', md: 'fit-content' }
@@ -397,6 +399,7 @@ function ProductDetailView(props: Props) {
                   <ProductAttribute
                     title={t('Brand')}
                     value={brand || settings.brandName}
+                    backgroundColor={settings.theme.brandFieldBackground}
                     width={
                       manufacturerNumber
                         ? { xs: '49%', md: 'fit-content' }

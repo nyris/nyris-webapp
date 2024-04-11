@@ -53,6 +53,7 @@ export interface AppSettings extends NyrisAPISettings {
   appTitle?: string;
   auth0: Auth0Settings;
   brandName?: string;
+  isBrandNameTitleVisible?: boolean;
   cadenas?: Cadenas;
   CTAButtonText?: string;
   secondaryCTAButtonText?: string;
@@ -92,6 +93,8 @@ export interface SearchSuiteSettings {
   CTAButtonColor?: string;
   CTAButtonTextColor?: string;
   mainTextColor?: string;
+  brandFieldBackground?: string;
+  brandFieldPadding?: string;
 }
 
 export type AppState = {

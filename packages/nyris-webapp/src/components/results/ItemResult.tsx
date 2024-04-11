@@ -265,7 +265,7 @@ function ItemResult(props: Props) {
                 flexDirection: 'row',
                 gridGap: 8,
                 color: settings.theme.mainTextColor || '#2B2C46',
-                marginTop: 8,
+                marginTop: settings.CTAButtonText ? 0 : 8,
               }}
             >
               <Tooltip
@@ -323,8 +323,10 @@ function ItemResult(props: Props) {
                 <ProductAttribute
                   title={t('Brand')}
                   value={brand || settings.brandName}
-                  padding="4px 8px"
+                  padding={settings.theme.brandFieldPadding || '4px 8px'}
                   width={{ xs: '49%' }}
+                  backgroundColor={settings.theme.brandFieldBackground}
+                  isTitleVisible={settings.isBrandNameTitleVisible}
                 />
               )}
 
