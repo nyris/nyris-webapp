@@ -3,6 +3,7 @@ import './common.scss';
 import algoliasearch from 'algoliasearch/lite';
 import DragDropFile from 'components/DragDropFile';
 import CustomSearchBox from 'components/input/inputSearch';
+import ExperienceVisualSearch from 'components/Experience-visual-search/ExperienceVisualSearch';
 import { connectInfiniteHits } from 'react-instantsearch-dom';
 import { useAppSelector } from 'Store/Store';
 import { AlgoliaSettings } from '../../types';
@@ -49,6 +50,7 @@ function AppMD() {
           isLoading={isLoading}
           onChangeLoading={onChangeLoading}
         />
+        <ExperienceVisualSearch />
       </div>
     </div>
   );

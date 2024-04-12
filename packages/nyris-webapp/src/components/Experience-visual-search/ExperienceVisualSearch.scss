@@ -1,0 +1,65 @@
+body.overflow-hidden {
+  overflow: hidden;
+}
+
+.experience-visual-button {
+  background-color: #3E36DC;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: auto;
+  &:hover {
+    width: 250px;
+    border-radius: 25px;
+    span {
+      display: inline;
+      margin-right: 8px;
+      &:before {
+        color: #fff;
+        content: 'Experience Visual Search'
+      }
+    }
+  }
+}
+
+.custom-modal {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background-color: rgba(22, 22, 22, 0.5);
+  z-index: 9999;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  &-body {
+    position: relative;
+    width: 900px;
+    max-width: 900px;
+    height: 580px;
+    background-color: #F3F3F5;
+    padding: 24px;
+    .close-icon {
+      top: 0;
+      right: 8px;
+      position: absolute;
+    }
+    &-title {
+      font-family: 'Source Sans 3';
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 24px;
+      text-align: left;
+
+    }
+  }
+}
