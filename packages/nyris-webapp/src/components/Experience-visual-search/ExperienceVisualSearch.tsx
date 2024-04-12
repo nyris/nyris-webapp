@@ -2,8 +2,10 @@ import React, { useState, memo } from 'react';
 import { createPortal } from 'react-dom';
 import './ExperienceVisualSearch.scss';
 import { ReactComponent as ExperienceIcon } from '../../common/experience-visual-icon.svg';
+import { useAppSelector } from '../../Store/Store';
 
 function ExperienceVisualSearch() {
+  const { settings } = useAppSelector(state => state);
   const [showModal, setShowModal] = useState(false);
 
   const modalToggle = (isOpen: boolean) => {
@@ -49,9 +51,20 @@ function ExperienceVisualSearch() {
                 x
               </div>
               <div className="custom-modal-body-title">Experience Visual Search</div>
-              <div className="custom-modal-body-subtitle">Choose from the array of images below to commence a visual search and explore further:</div>
-              <div className="custom-modal-body-content">
-                the modal body
+              <div className="custom-modal-body-subtitle">
+                Choose from the array of images below to commence a visual search and explore further:
+              </div>
+              <div className="custom-modal-body-content experience-visual-search-image">
+                {settings?.experienceVisualSearchImages?.map((itemImage) => (
+                  <div
+                    className="experience-visual-search-image"
+                  >
+                    <img
+                      src={itemImage}
+                      alt="experience visual search image"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>,

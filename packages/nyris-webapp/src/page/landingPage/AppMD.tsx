@@ -50,7 +50,11 @@ function AppMD() {
           isLoading={isLoading}
           onChangeLoading={onChangeLoading}
         />
-        <ExperienceVisualSearch />
+        {settings.experienceVisualSearch ? (
+          <ExperienceVisualSearch />
+        ) : (
+         '' 
+        )}
       </div>
     </div>
   );
