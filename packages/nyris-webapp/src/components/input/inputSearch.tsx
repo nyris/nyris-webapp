@@ -356,6 +356,7 @@ const SearchBox = (props: any) => {
               className="btn-clear-text"
               onClick={() => {
                 if (imageThumbSearchInput) {
+                  history.push('/result');
                   if (!isAlgoliaEnabled) {
                     searchOrRedirect('');
                   }
@@ -363,6 +364,7 @@ const SearchBox = (props: any) => {
                   if (isAlgoliaEnabled) {
                     refine('');
                   }
+
                   return;
                 }
                 setValueInput('');

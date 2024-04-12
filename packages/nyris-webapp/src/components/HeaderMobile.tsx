@@ -81,11 +81,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     if (imageThumbSearchInput !== '') {
       history.push('/result');
       dispatch(updateValueTextSearchMobile(''));
+      setValueInput('');
       if (settings.algolia?.enabled) {
         refine('');
       } else {
         dispatch(updateQueryText(''));
-        setValueInput('');
       }
     } else {
       if (settings.algolia?.enabled) {
@@ -342,6 +342,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 {history.location?.pathname !== '/' && valueInput && (
                   <Button
                     onClick={() => {
+                      setValueInput('');
                       if (imageThumbSearchInput) {
                         history.push('/result');
                         dispatch(updateValueTextSearchMobile(''));

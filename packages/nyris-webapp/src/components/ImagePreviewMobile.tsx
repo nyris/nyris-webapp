@@ -173,7 +173,7 @@ function ImagePreviewMobileComponent({
         <>
           <Hidden>
             <div
-              sx={{
+              style={{
                 position: 'absolute',
                 left: '15px',
                 top: '25px',
@@ -182,7 +182,7 @@ function ImagePreviewMobileComponent({
               onClick={onImageRemove}
             >
               <div
-                sx={{
+                style={{
                   width: '24px',
                   height: '24px',
                   justifyContent: 'center',
@@ -199,7 +199,7 @@ function ImagePreviewMobileComponent({
           <Hidden mdUp>
             <div
               className="slideDown"
-              sx={{
+              style={{
                 position: 'absolute',
                 bottom: '25px',
                 right: '20px',
@@ -207,14 +207,14 @@ function ImagePreviewMobileComponent({
               onClick={handleArrowClick}
             >
               <div
-                bgcolor={'white'}
-                sx={{
+                style={{
                   width: '24px',
                   height: '24px',
                   justifyContent: 'center',
                   alignItems: 'center',
                   display: 'flex',
                   borderRadius: '100%',
+                  backgroundColor: 'white',
                 }}
               >
                 {editActive && <ArrowUp color="black" />}
