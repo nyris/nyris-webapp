@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '../../Store/Store';
 import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
 import {
   loadingActionResults,
-  onToggleModalItemDetail,
   setImageSearchInput,
   setRegions,
   setRequestImage,
