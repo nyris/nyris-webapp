@@ -48,6 +48,7 @@ body.overflow-hidden {
     height: 580px;
     background-color: #F3F3F5;
     padding: 24px;
+    overflow: scroll;
     .close-icon {
       top: 0;
       right: 8px;
@@ -62,8 +63,46 @@ body.overflow-hidden {
 
     }
     &-content {
-      &.experience-visual-search-image {
-        
+      &.experience-visual-search-images {
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 16px;
+        .experience-visual-search-image-container {
+          width: 192px;
+          height: 192px;
+          overflow: hidden;
+          border-radius: 4px;
+          position: relative;
+          .experience-visual-search-image {
+            width: 192px;
+            height: 192px;
+            background-size: cover;
+            background-position: center;
+            transform: scale(1);
+            &:hover {
+              transition: all 0.3s;
+              transform: scale(1.1);
+            }
+          }
+          .box-icon-modal {
+            bottom: 6px;
+            right: 6px;
+            position: absolute;
+            border-radius: 100%;
+            background-color: #F3F3F5;
+            display: block;
+            overflow: hidden;
+            z-index: 11;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+          }
+        }
       }
     }
   }
