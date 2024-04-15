@@ -10,18 +10,23 @@ body.overflow-hidden {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  border-radius: 50%;
+  border-radius: 25px;
   cursor: pointer;
-  margin: auto;
-  &:hover {
+  margin: 32px auto 0;
+  &:hover,
+  &.hover {
     width: 250px;
     border-radius: 25px;
+    transition: .5s;
     span {
+      width: 176px;
       display: inline;
       margin-right: 8px;
+      overflow: hidden;
+      white-space: nowrap;
       &:before {
         color: #fff;
-        content: 'Experience Visual Search'
+        content: 'Experience Visual Search';
       }
     }
   }
@@ -43,14 +48,13 @@ body.overflow-hidden {
   justify-content: center;
   &-body {
     position: relative;
-    width: 900px;
-    max-width: 900px;
-    height: 580px;
+    width: 100%;
+    height: 100%;
     background-color: #F3F3F5;
-    padding: 24px;
+    padding: 32px;
     overflow: scroll;
     .close-icon {
-      top: 0;
+      top: 8px;
       right: 8px;
       position: absolute;
     }
@@ -64,17 +68,20 @@ body.overflow-hidden {
     }
     &-content {
       &.experience-visual-search-images {
+        margin: 32px auto;
         height: auto;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         gap: 16px;
+        width: 400px;
         .experience-visual-search-image-container {
           width: 192px;
           height: 192px;
           overflow: hidden;
           border-radius: 4px;
           position: relative;
+          cursor: pointer;
           .experience-visual-search-image {
             width: 192px;
             height: 192px;
@@ -102,6 +109,48 @@ body.overflow-hidden {
             justify-content: center;
             cursor: pointer;
           }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 900px) {
+  .custom-modal {
+    &-body {
+      width: 900px;
+      max-width: 900px;
+      height: 580px;
+      &-content {
+        &.experience-visual-search-images {
+          width: auto;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 776px) and (max-width: 899px) {
+  .custom-modal {
+    &-body {
+      width: 900px;
+      max-width: 900px;
+      height: 580px;
+      &-content {
+        &.experience-visual-search-images {
+          width: 650px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 440px) {
+  .custom-modal {
+    &-body {
+      &-content {
+        &.experience-visual-search-images {
+          width: 200px;
         }
       }
     }

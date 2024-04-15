@@ -1,5 +1,6 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useEffect, useRef} from 'react';
 import { createPortal } from 'react-dom';
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import './ExperienceVisualSearch.scss';
 import { ReactComponent as ExperienceIcon } from 'common/experience-visual-icon.svg';
 import { useAppDispatch, useAppSelector } from '../../Store/Store';
@@ -21,6 +22,15 @@ function ExperienceVisualSearch() {
   const dispatch = useAppDispatch();
   const { search, settings } = useAppSelector(state => state);
   const [showModal, setShowModal] = useState(false);
+  const button = useRef(null);
+
+  useEffect(() => {
+    setInterval(() => {
+      if (button?.current) {
+        // (button.current as HTMLElement).classList.toggle('hover');
+      }
+    }, 3000);
+  }, [button, setInterval]);
 
   const modalToggle = (isOpen: boolean) => {
     setShowModal(isOpen);
@@ -66,6 +76,7 @@ function ExperienceVisualSearch() {
   return (
     <>
       <div
+        ref={button}
         className="experience-visual-button"
         onClick={() => modalToggle(true)}
       >
@@ -87,15 +98,14 @@ function ExperienceVisualSearch() {
                 e.stopPropagation();
               }}
             >
-              <div
+              <CloseOutlinedIcon
+                style={{ fontSize: 24, color: '#55566B' }}
                 className="close-icon"
                 onClick={(e) => {
                   e.stopPropagation();
                   modalToggle(false);
                 }}
-              >
-                x
-              </div>
+              />
               <div className="custom-modal-body-title">Experience Visual Search</div>
               <div className="custom-modal-body-subtitle">
                 Choose from the array of images below to commence a visual search and explore further:
@@ -104,6 +114,10 @@ function ExperienceVisualSearch() {
                 {settings?.experienceVisualSearchImages?.map((itemImage) => (
                   <div
                     className="experience-visual-search-image-container"
+                    onClick={() => {
+                      modalToggle(false);
+                      getUrlToCanvasFile(itemImage);
+                    }}
                   >
                     <div
                       className="experience-visual-search-image"
@@ -111,10 +125,6 @@ function ExperienceVisualSearch() {
                     />
                     <div
                       className="box-icon-modal"
-                      onClick={() => {
-                        modalToggle(false);
-                        getUrlToCanvasFile(itemImage);
-                      }}
                     >
                       <IconSearchImage width={16} height={16} color={'#AAABB5'} />
                     </div>
