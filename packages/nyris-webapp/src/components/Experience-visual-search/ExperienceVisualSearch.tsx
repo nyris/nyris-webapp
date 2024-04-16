@@ -1,4 +1,4 @@
-import React, { useState, memo, useEffect, useRef} from 'react';
+import React, { useState, memo, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import './ExperienceVisualSearch.scss';
@@ -22,19 +22,28 @@ function ExperienceVisualSearch() {
   const dispatch = useAppDispatch();
   const { search, settings } = useAppSelector(state => state);
   const [showModal, setShowModal] = useState(false);
+  const [images, setImages] = useState<string[]>([])
   const button = useRef(null);
 
   useEffect(() => {
     setInterval(() => {
       if (button?.current) {
-        // (button.current as HTMLElement).classList.toggle('hover');
+        (button.current as HTMLElement).classList.toggle('hover');
       }
     }, 3000);
-  }, [button, setInterval]);
+  }, []);
 
   const modalToggle = (isOpen: boolean) => {
     setShowModal(isOpen);
     if (isOpen) {
+      const randomImages = settings?.experienceVisualSearchImages
+        // creation copy of original array
+        ?.slice()
+        ?.sort(() => Math.random() - 0.5)
+        ?.slice(0, Math.min(settings?.experienceVisualSearchImages?.length, 8));
+      
+      console.log(randomImages);
+      setImages(randomImages || []);
       document.body.classList.add('overflow-hidden');
     } else {
       document.body.classList.remove('overflow-hidden');
@@ -111,24 +120,25 @@ function ExperienceVisualSearch() {
                 Choose from the array of images below to commence a visual search and explore further:
               </div>
               <div className="custom-modal-body-content experience-visual-search-images">
-                {settings?.experienceVisualSearchImages?.map((itemImage) => (
-                  <div
-                    className="experience-visual-search-image-container"
-                    onClick={() => {
-                      modalToggle(false);
-                      getUrlToCanvasFile(itemImage);
-                    }}
-                  >
+                {images.map((itemImage) => (
                     <div
-                      className="experience-visual-search-image"
-                      style={{ backgroundImage: `url(${itemImage})` }}
-                    />
-                    <div
-                      className="box-icon-modal"
+                      className="experience-visual-search-image-container"
+                      onClick={() => {
+                        console.log(itemImage);
+                        modalToggle(false);
+                        getUrlToCanvasFile(itemImage);
+                      }}
                     >
-                      <IconSearchImage width={16} height={16} color={'#AAABB5'} />
+                      <div
+                        className="experience-visual-search-image"
+                        style={{ backgroundImage: `url(${itemImage})` }}
+                      />
+                      <div
+                        className="box-icon-modal"
+                      >
+                        <IconSearchImage width={16} height={16} color={'#AAABB5'} />
+                      </div>
                     </div>
-                  </div>
                 ))}
               </div>
             </div>
