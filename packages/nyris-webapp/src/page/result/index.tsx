@@ -213,28 +213,32 @@ function ResultComponent(props: Props) {
 
     let searchRegion: RectCoords | undefined = undefined;
 
-    if (settings.regions) {
-      let res = await findRegions(image, settings);
-      searchRegion = res.selectedRegion;
-      dispatch(setRegions(res.regions));
-      dispatch(setSelectedRegion(searchRegion));
+    try {
+      if (settings.regions) {
+        let res = await findRegions(image, settings);
+        searchRegion = res.selectedRegion;
+        dispatch(setRegions(res.regions));
+        dispatch(setSelectedRegion(searchRegion));
+      }
+    } catch (error) {
+    } finally {
+      const preFilterValues = [
+        {
+          key: settings.visualSearchFilterKey,
+          values: Object.keys(preFilter) as string[],
+        },
+      ];
+      find({
+        image,
+        settings,
+        region: searchRegion,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+      }).then((res: any) => {
+        dispatch(setSearchResults(res));
+        dispatch(updateStatusLoading(false));
+        return;
+      });
     }
-    const preFilterValues = [
-      {
-        key: settings.visualSearchFilterKey,
-        values: Object.keys(preFilter) as string[],
-      },
-    ];
-    find({
-      image,
-      settings,
-      region: searchRegion,
-      filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-    }).then((res: any) => {
-      dispatch(setSearchResults(res));
-      dispatch(updateStatusLoading(false));
-      return;
-    });
   };
   const nonEmptyFilter: any[] = !requestImage
     ? []
