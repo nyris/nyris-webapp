@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.51 - 2024-04-17
+
+### Fix
+- Object detection pointer is not initiating find API
 
 ## 0.3.50 - 2024-04-08
 
