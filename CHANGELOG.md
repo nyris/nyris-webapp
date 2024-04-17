@@ -5,8 +5,17 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## 0.3.51 - 2024-04-17
 
-### Fix
-- Object detection pointer is not initiating find API
+### Added
+- Updated react to 18
+- Updated lerna to 8
+- bypass region api call if it fails
+- disable feedback
+- function to add widget in runtime
+- Updated package manager to yarn
+- Updated pipeline
+
+### Removed
+- Removed <Box> usage of material ui
 
 ## 0.3.50 - 2024-04-08
 
