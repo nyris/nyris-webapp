@@ -28,7 +28,7 @@ interface NyrisSettings extends NyrisAPISettings {
   browseGalleryButtonColor: string;
   customerLogo: string;
   logoWidth: string;
-  ctaButtonText:  string;
+  ctaButtonText: string;
   language: string;
   navigatePreference: string;
 }
@@ -48,7 +48,7 @@ class Nyris {
   private loading: boolean = false;
 
   constructor(nyrisSettings: NyrisSettings) {
-    this.nyrisApi = new NyrisAPI({...nyrisSettings });
+    this.nyrisApi = new NyrisAPI({ ...nyrisSettings });
     this.instantRedirectPatterns = nyrisSettings.instantRedirectPatterns || [];
 
     let mountPoint = document.getElementById("nyris-mount-point");
@@ -244,6 +244,13 @@ declare global {
     nyrisSettings: NyrisSettings;
   }
 }
+
+(window as any).loadWidget = () => {
+  let div = document.createElement("div");
+  div.id = "nyris-mount-point";
+  document.body.appendChild(div);
+  const nyris = new Nyris(window.nyrisSettings);
+};
 
 window.addEventListener("load", (e) => {
   let div = document.createElement("div");
