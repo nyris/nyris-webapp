@@ -20,6 +20,7 @@ export const translations = {
       'Expand all': 'Expand all',
       'Collapse all': 'Collapse all',
       Brand: 'Brand',
+      'Product name': 'Product name',
       loading: 'loading',
       'No products were found matching your search criteria.':
         'No products were found matching your search criteria.',
@@ -53,6 +54,7 @@ export const translations = {
       'Expand all': 'Alles anzeigen',
       'Collapse all': 'Alles einklappen',
       Brand: 'Marke',
+      'Product name': 'Produktname',
       loading: 'Lädt',
       'No products were found matching your search criteria.':
         'Keine Produkte entsprechen Ihren Suchkriterien.',

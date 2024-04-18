@@ -6,6 +6,8 @@ interface Props {
   value: any;
   padding?: string;
   width?: any;
+  backgroundColor?: string;
+  isTitleVisible?: boolean;
 }
 
 function ProductAttribute(props: Props) {
@@ -14,6 +16,7 @@ function ProductAttribute(props: Props) {
     value,
     padding = props.padding || '4px 16px',
     width = props.width || 'fit-content',
+    isTitleVisible = typeof props.isTitleVisible === 'boolean' ? props.isTitleVisible : true,
   } = props;
 
   return (
@@ -25,22 +28,26 @@ function ProductAttribute(props: Props) {
             flexDirection: 'column',
             borderRadius: 2,
             width: width,
-            backgroundColor: '#E0E0E0',
+            backgroundColor: props.backgroundColor || '#E0E0E0',
             padding: padding,
             flexGrow: 1,
           }}
         >
-          <Typography
-            style={{
-              color: '#2B2C46',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-            className="text-f12 fw-700"
-          >
-            {title}
-          </Typography>
+          {isTitleVisible ? (
+            <Typography
+              style={{
+                color: '#2B2C46',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+              className="text-f12 fw-700"
+            >
+              {title}
+            </Typography>
+          ) : (
+           '' 
+          )}
           <Typography
             style={{
               color: '#2B2C46',
