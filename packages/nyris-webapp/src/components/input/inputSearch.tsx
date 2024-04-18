@@ -368,7 +368,6 @@ const SearchBox = (props: any) => {
                   if (isAlgoliaEnabled) {
                     refine('');
                   }
-
                   return;
                 }
                 setValueInput('');

@@ -30,6 +30,7 @@ var settings = {
   regions: true,
   responseFormat: 'application/offers.complete+json',
   visualSearchFilterKey: '',
+  shouldUseUserMetadata: '',
   // UI - theme
   theme: {
     appBarLogoUrl: '',
@@ -38,6 +39,12 @@ var settings = {
     logoWidth: '',
     primaryColor: '',
     secondaryColor: '',
+    CTAButtonColor: '',
+    CTAButtonTextColor: '',
+    secondaryCTAButtonColor: '',
+    mainTextColor: '',
+    brandFieldBackground: '',
+    brandFieldPadding: '',
   },
   language: 'en',
   // features

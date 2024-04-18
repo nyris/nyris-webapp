@@ -127,7 +127,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             values: Object.keys(preFilter) as string[],
           },
         ];
-
         if (value || requestImage) {
           dispatch(updateStatusLoading(true));
           find({
@@ -310,7 +309,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   {!settings.preFilterOption && (
                     <IconSearch width={16} height={16} />
                   )}
-                  {!isEmpty(preFilter) && (
+                  {settings.preFilterOption && !isEmpty(preFilter) && (
                     <div
                       style={{
                         position: 'absolute',

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Collapse, Grid, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import IconOpenLink from 'common/assets/icons/Union.svg';
+import { ReactComponent as IconOpenLink }  from 'common/assets/icons/Union.svg';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useMediaQuery } from 'react-responsive';
 import { ImagePreviewCarousel } from './carousel/ImagePreviewCarousel';
@@ -313,7 +313,7 @@ function ProductDetailView(props: Props) {
                   display: 'flex',
                   justifyContent: 'space-between',
                   flexDirection: 'row',
-                  color: '#2B2C46',
+                  color: settings.theme.mainTextColor ||'#2B2C46',
                   marginBottom: 10,
                   paddingLeft: 16,
                   paddingRight: 16,
@@ -323,7 +323,7 @@ function ProductDetailView(props: Props) {
                 <Typography
                   className="text-f12 max-line-1 fw-400"
                   style={{
-                    color: '#2B2C46',
+                    color: settings.theme.mainTextColor || '#2B2C46',
                   }}
                 >
                   {sku}
@@ -336,7 +336,7 @@ function ProductDetailView(props: Props) {
                     <Typography
                       className="text-f12 max-line-1 fw-400"
                       style={{
-                        color: '#2B2C46',
+                        color: settings.theme.mainTextColor || '#2B2C46',
                       }}
                     >
                       <span
@@ -373,8 +373,9 @@ function ProductDetailView(props: Props) {
               >
                 {!settings.warehouseVariant && settings.CTAButtonText && (
                   <ProductAttribute
-                    title={'Produktname'}
+                    title={t('Product name')}
                     value={title}
+                    backgroundColor={settings.theme.brandFieldBackground}
                     width={
                       settings.warehouseVariant
                         ? { xs: '49%', md: 'fit-content' }
@@ -386,6 +387,7 @@ function ProductDetailView(props: Props) {
                   <ProductAttribute
                     title={settings.itemIdLabel || 'SKU'}
                     value={sku}
+                    backgroundColor={''}
                     width={
                       settings.warehouseVariant
                         ? { xs: '49%', md: 'fit-content' }
@@ -397,6 +399,7 @@ function ProductDetailView(props: Props) {
                   <ProductAttribute
                     title={t('Brand')}
                     value={brand || settings.brandName}
+                    backgroundColor={settings.theme.brandFieldBackground}
                     width={
                       manufacturerNumber
                         ? { xs: '49%', md: 'fit-content' }
@@ -459,7 +462,7 @@ function ProductDetailView(props: Props) {
                 {settings.secondaryCTAButtonText && (
                   <div
                     style={{
-                      background: '#2B2C46',
+                      background: settings.theme.secondaryCTAButtonColor || '#2B2C46',
                       boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                       borderRadius: 4,
                       marginTop: 8,
@@ -503,7 +506,7 @@ function ProductDetailView(props: Props) {
 
                 <div
                   style={{
-                    background: settings.theme?.primaryColor,
+                    background: settings.theme?.CTAButtonColor || settings.theme?.primaryColor,
                     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                     borderRadius: 4,
                     marginTop: 8,
@@ -530,9 +533,10 @@ function ProductDetailView(props: Props) {
                     }}
                   >
                     <Typography
-                      className="text-f18 fw-700 text-white max-line-2"
+                      className="text-f18 fw-700 max-line-2"
                       align="left"
                       style={{
+                        color: settings.theme?.CTAButtonTextColor || '#FFFFFF',
                         letterSpacing: '0.55px',
                         maxWidth: '500px',
                         paddingRight: '4px',
@@ -543,11 +547,7 @@ function ProductDetailView(props: Props) {
                         : dataItem[settings.field.productName]}
                     </Typography>
                     {ctaLink && (
-                      <img
-                        src={IconOpenLink}
-                        alt=""
-                        style={{ minWidth: 16, marginLeft: 5 }}
-                      />
+                      <IconOpenLink fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'} width={16} />
                     )}
                   </div>
                 </div>
@@ -557,7 +557,7 @@ function ProductDetailView(props: Props) {
                       className="w-100 button-hover"
                       style={{
                         backgroundColor: '#F3F3F5',
-                        color: '#2b2c46',
+                        color: settings.theme.mainTextColor || '#2b2c46',
                         display: 'flex',
                         fontSize: 14,
                         justifyContent: 'space-between',
@@ -586,7 +586,7 @@ function ProductDetailView(props: Props) {
                           padding: 5,
                           paddingLeft: 15,
                           paddingRight: 15,
-                          color: '#2b2c46',
+                          color: settings.theme.mainTextColor || '#2b2c46',
                         }}
                       >
                         {productDetails}
