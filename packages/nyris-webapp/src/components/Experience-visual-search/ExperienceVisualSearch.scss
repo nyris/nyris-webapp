@@ -120,7 +120,7 @@ body.overflow-hidden {
     &-body {
       width: 900px;
       max-width: 900px;
-      height: 580px;
+      height: 380px;
       border-radius: 4px;
       &-title,
       &-subtitle {
@@ -138,16 +138,11 @@ body.overflow-hidden {
 @media only screen and (min-width: 776px) and (max-width: 899px) {
   .custom-modal {
     &-body {
-      width: 900px;
-      max-width: 900px;
-      height: 580px;
+      width: 600px;
+      max-width: 600px;
+      height: 600px;
       padding: 32px;
       border-radius: 4px;
-      &-content {
-        &.experience-visual-search-images {
-          width: 650px;
-        }
-      }
     }
   }
 }

@@ -40,7 +40,7 @@ function ExperienceVisualSearch() {
         // creation copy of original array
         ?.slice()
         ?.sort(() => Math.random() - 0.5)
-        ?.slice(0, Math.min(settings?.experienceVisualSearchImages?.length, 8));
+        ?.slice(0, Math.min(settings?.experienceVisualSearchImages?.length, 4));
       
       console.log(randomImages);
       setImages(randomImages || []);
