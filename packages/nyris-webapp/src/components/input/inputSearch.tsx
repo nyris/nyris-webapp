@@ -360,6 +360,7 @@ const SearchBox = (props: any) => {
               className="btn-clear-text"
               onClick={() => {
                 if (imageThumbSearchInput) {
+                  history.push('/result');
                   if (!isAlgoliaEnabled) {
                     searchOrRedirect('');
                   }
