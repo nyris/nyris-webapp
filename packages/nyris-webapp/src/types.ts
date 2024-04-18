@@ -79,6 +79,7 @@ export interface AppSettings extends NyrisAPISettings {
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
   warehouseVariant?: boolean;
+  shouldUseUserMetadata?: boolean;
 }
 
 export interface SearchSuiteSettings {
