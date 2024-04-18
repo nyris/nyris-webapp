@@ -16,7 +16,6 @@ function ProductAttribute(props: Props) {
     value,
     padding = props.padding || '4px 16px',
     width = props.width || 'fit-content',
-    backgroundColor = props.backgroundColor || '#E0E0E0',
     isTitleVisible = typeof props.isTitleVisible === 'boolean' ? props.isTitleVisible : true,
   } = props;
 
@@ -29,7 +28,7 @@ function ProductAttribute(props: Props) {
             flexDirection: 'column',
             borderRadius: 2,
             width: width,
-            backgroundColor,
+            backgroundColor: props.backgroundColor || '#E0E0E0',
             padding: padding,
             flexGrow: 1,
           }}
