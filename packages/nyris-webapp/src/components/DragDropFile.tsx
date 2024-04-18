@@ -54,33 +54,38 @@ function DragDropFile(props: Props) {
         },
       ];
       let region: RectCoords | undefined;
-      if (settings.regions) {
-        let res = await findRegions(image, settings);
-        dispatch(setRegions(res.regions));
-        region = res.selectedRegion;
-        dispatch(setSelectedRegion(region));
-      }
-      return find({
-        image,
-        settings,
-        region,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-      }).then((res: any) => {
-        res?.results.forEach((item: any) => {
-          filters.push({
-            sku: item.sku,
-            score: item.score,
+
+      try {
+        if (settings.regions) {
+          let res = await findRegions(image, settings);
+          dispatch(setRegions(res.regions));
+          region = res.selectedRegion;
+          dispatch(setSelectedRegion(region));
+        }
+      } catch (error) {
+      } finally {
+        return find({
+          image,
+          settings,
+          region,
+          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+        }).then((res: any) => {
+          res?.results.forEach((item: any) => {
+            filters.push({
+              sku: item.sku,
+              score: item.score,
+            });
           });
+          payload = {
+            ...res,
+            filters,
+          };
+          dispatch(setSearchResults(payload));
+          onChangeLoading(false);
+          dispatch(updateStatusLoading(false));
+          return;
         });
-        payload = {
-          ...res,
-          filters,
-        };
-        dispatch(setSearchResults(payload));
-        onChangeLoading(false);
-        dispatch(updateStatusLoading(false));
-        return;
-      });
+      }
     },
   });
 

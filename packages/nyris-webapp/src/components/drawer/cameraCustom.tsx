@@ -66,44 +66,48 @@ function CameraCustom(props: Props) {
     dispatch(onToggleModalItemDetail(false));
     handlerCloseModal();
 
-    if (settings.regions) {
-      let res = await findRegions(imageConvert, settings);
-      dispatch(setRegions(res.regions));
-      region = res.selectedRegion;
-      dispatch(setSelectedRegion(region));
-    }
+    try {
+      if (settings.regions) {
+        let res = await findRegions(imageConvert, settings);
+        dispatch(setRegions(res.regions));
+        region = res.selectedRegion;
+        dispatch(setSelectedRegion(region));
+      }
+    } catch (error) {
+    } finally {
+      const preFilterValues = [
+        {
+          key: settings.visualSearchFilterKey,
+          values: Object.keys(preFilter) as string[],
+        },
+      ];
+      let filters: any[] = [];
 
-    const preFilterValues = [
-      {
-        key: settings.visualSearchFilterKey,
-        values: Object.keys(preFilter) as string[],
-      },
-    ];
-    let filters: any[] = [];
-    find({
-      image: imageConvert,
-      settings,
-      filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-      region,
-    })
-      .then((res: any) => {
-        res?.results.forEach((item: any) => {
-          filters.push({
-            sku: item.sku,
-            score: item.score,
-          });
-        });
-        const payload = {
-          ...res,
-          filters,
-        };
-        dispatch(setSearchResults(payload));
-        dispatch(updateStatusLoading(false));
+      find({
+        image: imageConvert,
+        settings,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+        region,
       })
-      .catch((e: any) => {
-        console.log('error input search', e);
-        dispatch(updateStatusLoading(false));
-      });
+        .then((res: any) => {
+          res?.results.forEach((item: any) => {
+            filters.push({
+              sku: item.sku,
+              score: item.score,
+            });
+          });
+          const payload = {
+            ...res,
+            filters,
+          };
+          dispatch(setSearchResults(payload));
+          dispatch(updateStatusLoading(false));
+        })
+        .catch((e: any) => {
+          console.log('error input search', e);
+          dispatch(updateStatusLoading(false));
+        });
+    }
   };
 
   const handlerCloseModal = () => {

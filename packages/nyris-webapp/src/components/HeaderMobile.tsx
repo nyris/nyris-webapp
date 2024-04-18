@@ -81,13 +81,21 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     if (imageThumbSearchInput !== '') {
       history.push('/result');
       dispatch(updateValueTextSearchMobile(''));
+      setValueInput('');
       if (settings.algolia?.enabled) {
         refine('');
       } else {
         dispatch(updateQueryText(''));
-        setValueInput('');
+      }
+    } else {
+      if (settings.algolia?.enabled) {
+        // not an ideal solution: fixes text search not working after removing image
+        setTimeout(() => {
+          refine(searchQuery);
+        }, 100);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageThumbSearchInput, dispatch, refine, history, settings.algolia]);
 
   useEffect(() => {
@@ -333,6 +341,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 {history.location?.pathname !== '/' && valueInput && (
                   <Button
                     onClick={() => {
+                      setValueInput('');
                       if (imageThumbSearchInput) {
                         history.push('/result');
                         dispatch(updateValueTextSearchMobile(''));

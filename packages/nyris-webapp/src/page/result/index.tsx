@@ -213,28 +213,32 @@ function ResultComponent(props: Props) {
 
     let searchRegion: RectCoords | undefined = undefined;
 
-    if (settings.regions) {
-      let res = await findRegions(image, settings);
-      searchRegion = res.selectedRegion;
-      dispatch(setRegions(res.regions));
-      dispatch(setSelectedRegion(searchRegion));
+    try {
+      if (settings.regions) {
+        let res = await findRegions(image, settings);
+        searchRegion = res.selectedRegion;
+        dispatch(setRegions(res.regions));
+        dispatch(setSelectedRegion(searchRegion));
+      }
+    } catch (error) {
+    } finally {
+      const preFilterValues = [
+        {
+          key: settings.visualSearchFilterKey,
+          values: Object.keys(preFilter) as string[],
+        },
+      ];
+      find({
+        image,
+        settings,
+        region: searchRegion,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+      }).then((res: any) => {
+        dispatch(setSearchResults(res));
+        dispatch(updateStatusLoading(false));
+        return;
+      });
     }
-    const preFilterValues = [
-      {
-        key: settings.visualSearchFilterKey,
-        values: Object.keys(preFilter) as string[],
-      },
-    ];
-    find({
-      image,
-      settings,
-      region: searchRegion,
-      filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-    }).then((res: any) => {
-      dispatch(setSearchResults(res));
-      dispatch(updateStatusLoading(false));
-      return;
-    });
   };
   const nonEmptyFilter: any[] = !requestImage
     ? []
@@ -301,10 +305,11 @@ function ResultComponent(props: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
+      setImageSelection(r);
       feedbackRegionEpic(stateGlobal, r);
       dispatch(selectionChanged(r));
       findItemsInSelection(r);
-    }, 500),
+    }, 50),
     [findItemsInSelection, stateGlobal.search],
   );
 
@@ -442,7 +447,6 @@ function ResultComponent(props: Props) {
                   <ImagePreviewMobile
                     requestImage={requestImage}
                     imageSelection={imageSelection}
-                    setImageSelection={setImageSelection}
                     debouncedOnImageSelectionChange={
                       debouncedOnImageSelectionChange
                     }

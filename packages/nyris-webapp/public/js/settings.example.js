@@ -69,10 +69,13 @@ var settings = {
   headerText: '',
   itemIdLabel: 'SKU',
   preFilterTitle: '',
-  CTAButtonText: '',
+  CTAButtonText: 'View More',
+  secondaryCTAButtonText: 'Configure Now',
+
   //field mappins
   field: {
     ctaLinkField: 'main_offer_link',
+    secondaryCTALinkField: 'main_offer_link',
     productName: 'title',
     productDetails: 'keyword_1',
     manufacturerNumber: 'keyword_0',
