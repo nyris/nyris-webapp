@@ -1,4 +1,3 @@
-import { Box } from '@material-ui/core';
 import { ReactNode } from 'components/common';
 import React, { memo, useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
@@ -46,7 +45,7 @@ jQuery(document).ready(function () {
     email: 'info@cadenas.de',
   });
   psol.core.setServiceBaseUrl('https://webapi.partcommunity.com');
-  window.onpageshow = function(event: any) {
+  window.onpageshow = function (event: any) {
     if (event.persisted) {
       window.location.reload();
     }
@@ -141,9 +140,9 @@ function Layout({ children }: ReactNode): JSX.Element {
   return (
     <div style={{ position: 'relative' }}>
       {loadingSearchAlgolia && (
-        <Box className="box-wrap-loading" style={{ zIndex: 99999999 }}>
+        <div className="box-wrap-loading" style={{ zIndex: 99999999 }}>
           <Loading />
-        </Box>
+        </div>
       )}
       <InstantSearchProvider>
         {isMobile && showApp && <AppMobile>{children}</AppMobile>}

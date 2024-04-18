@@ -1,4 +1,4 @@
-import { Box, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
 
@@ -48,7 +48,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const { search } = stateGlobal;
   const {
     imageThumbSearchInput,
-    textSearchInputMobile,
     preFilter,
     preFilterDropdown,
     valueTextSearch,
@@ -70,23 +69,23 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   useEffect(() => {
     if (
       history.location?.pathname === '/result' &&
-      (imageThumbSearchInput || textSearchInputMobile)
+      (imageThumbSearchInput || valueInput)
     ) {
       setShowFilter(true);
     } else {
       setShowFilter(false);
     }
-  }, [imageThumbSearchInput, history.location, textSearchInputMobile]);
+  }, [imageThumbSearchInput, history.location, valueInput]);
 
   useEffect(() => {
     if (imageThumbSearchInput !== '') {
       history.push('/result');
       dispatch(updateValueTextSearchMobile(''));
+      setValueInput('');
       if (settings.algolia?.enabled) {
         refine('');
       } else {
         dispatch(updateQueryText(''));
-        setValueInput('');
       }
     } else {
       if (settings.algolia?.enabled) {
@@ -101,6 +100,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {
+      setValueInput(searchQuery);
       dispatch(updateValueTextSearchMobile(searchQuery));
       if (settings.algolia?.enabled) {
         refine(searchQuery);
@@ -114,6 +114,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     }
   }, [query, refine, dispatch, searchQuery, settings.algolia]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
       if (!settings.algolia?.enabled) {
@@ -137,7 +138,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             text: value,
           })
             .then((res: any) => {
-              res?.results.map((item: any) => {
+              res?.results.forEach((item: any) => {
                 filters.push({
                   sku: item.sku,
                   score: item.score,
@@ -198,6 +199,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   }, [valueTextSearch?.refinementList, settings, postFilter]);
 
   const onChangeText = (event: any) => {
+    setValueInput(event.currentTarget.value);
     // debounceSearch(event.currentTarget.value);
     searchOrRedirect(event.currentTarget.value);
     if (event.currentTarget.value === '') {
@@ -207,6 +209,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       dispatch(updateValueTextSearchMobile(event.currentTarget.value));
     }
   };
+
   const disablePostFilter = useMemo(() => {
     if (settings.algolia.enabled) {
       return settings.postFilterOption &&
@@ -222,7 +225,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   return (
     <div style={{ width: '100%', background: '#fff' }}>
       {history.location?.pathname !== '/result' && (
-        <Box
+        <div
           className="box-content"
           style={{
             display: 'flex',
@@ -249,7 +252,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               }}
             />
           </NavLink>
-        </Box>
+        </div>
       )}
 
       {((auth0.enabled && user?.email_verified) || !auth0.enabled) && (
@@ -278,7 +281,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   height: '100%',
                 }}
               >
-                <Box
+                <div
                   className="pre-filter-icon"
                   onClick={() => {
                     if (settings.preFilterOption) {
@@ -332,44 +335,41 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                       ></div>
                     </div>
                   )}
-                </Box>
+                </div>
 
-                <Input
-                  value={textSearchInputMobile || searchQuery || valueInput}
-                  onChange={onChangeText}
-                />
+                <Input value={valueInput} onChange={onChangeText} />
 
-                {history.location?.pathname !== '/' &&
-                  textSearchInputMobile && (
-                    <Button
-                      onClick={() => {
-                        if (imageThumbSearchInput) {
-                          history.push('/result');
-                          dispatch(updateValueTextSearchMobile(''));
-                          refine('');
-                          return;
-                        }
+                {history.location?.pathname !== '/' && valueInput && (
+                  <Button
+                    onClick={() => {
+                      setValueInput('');
+                      if (imageThumbSearchInput) {
+                        history.push('/result');
                         dispatch(updateValueTextSearchMobile(''));
-                        dispatch(reset(''));
                         refine('');
-                        history.push('/');
-                      }}
+                        return;
+                      }
+                      dispatch(updateValueTextSearchMobile(''));
+                      dispatch(reset(''));
+                      refine('');
+                      history.push('/');
+                    }}
+                    style={{
+                      // background: '#fff',
+                      marginRight: '8px',
+                      border: 0,
+                      width: '40px',
+                      height: '40px',
+                    }}
+                  >
+                    <CloseIcon
                       style={{
-                        // background: '#fff',
-                        marginRight: '8px',
-                        border: 0,
-                        width: '40px',
-                        height: '40px',
+                        fontSize: 16,
+                        color: settings.theme?.secondaryColor,
                       }}
-                    >
-                      <CloseIcon
-                        style={{
-                          fontSize: 16,
-                          color: settings.theme?.secondaryColor,
-                        }}
-                      />
-                    </Button>
-                  )}
+                    />
+                  </Button>
+                )}
               </div>
             </div>
           </div>

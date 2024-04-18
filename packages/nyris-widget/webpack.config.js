@@ -6,7 +6,7 @@ const IS_ENTERPRISE = process.env.IS_ENTERPRISE;
 
 module.exports = {
   mode: "production",
-  target: "node",
+  target: "web",
 
   // Enable sourcemaps for debugging webpack's output.
   devtool: "eval-source-map",
@@ -15,14 +15,14 @@ module.exports = {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: [".ts", ".tsx", ".js", ".jsx"],
     alias: {
-      react: path.resolve("./node_modules/react"),
+      react: path.resolve("../../node_modules/react"),
     },
   },
 
   plugins: [
     new CopyPlugin([{ from: "public", to: "" }]),
     new webpack.DefinePlugin({
-      "process.env.IS_ENTERPRISE": IS_ENTERPRISE ? true : null,
+      "process.env.IS_ENTERPRISE": JSON.stringify(IS_ENTERPRISE ? true : ""),
     }),
   ],
 
@@ -33,7 +33,12 @@ module.exports = {
       {
         test: /\.(js|jsx|ts|tsx)$/,
         exclude: /node_modules/,
-        loader: "babel-loader",
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"],
+          },
+        },
       },
       {
         enforce: "pre",
@@ -58,8 +63,12 @@ module.exports = {
   },
 
   devServer: {
-    contentBase: path.resolve(__dirname, "public"),
+    static: {
+      directory: path.resolve(__dirname, "public"),
+    },
+    client: {
+      overlay: true,
+    },
     port: 3000,
-    overlay: true,
   },
 };

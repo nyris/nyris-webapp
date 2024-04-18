@@ -1,4 +1,3 @@
-import { Box } from '@material-ui/core';
 import ItemResult from 'components/results/ItemResult';
 import React, { memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,9 +41,9 @@ function ProductListComponent({
       !isSearchStalled
     ) {
       return (
-        <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
+        <div style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
           {t('Please upload an image or enter a keyword to search.')}
-        </Box>
+        </div>
       );
     } else if (
       productList.length === 0 &&
@@ -52,14 +51,14 @@ function ProductListComponent({
       !isSearchStalled
     ) {
       return (
-        <Box style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
+        <div style={{ marginTop: '50px', width: '100%', textAlign: 'center' }}>
           {t('No products were found matching your search criteria.')}
-        </Box>
+        </div>
       );
     }
     return productList.map((hit: any, i: number) => {
       return (
-        <Box key={i} style={{ height: 'fit-content' }}>
+        <div key={i} style={{ height: 'fit-content' }}>
           <ItemResult
             dataItem={hit}
             indexItem={i}
@@ -81,7 +80,7 @@ function ProductListComponent({
               hit['image(main_similarity)'] || hit['main_image_link']
             }
           />
-        </Box>
+        </div>
       );
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

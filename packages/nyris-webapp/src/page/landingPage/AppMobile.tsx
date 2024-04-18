@@ -1,4 +1,3 @@
-import { Box } from '@material-ui/core';
 import CameraCustom from 'components/drawer/cameraCustom';
 import React, { useEffect, useState } from 'react';
 import { reset } from 'Store/search/Search';
@@ -43,14 +42,14 @@ function AppMobile(): JSX.Element {
           </div>
         </div>
       </div>
-      <Box className="box-screenshot-camera">
+      <div className="box-screenshot-camera">
         <CameraCustom
           isToggle={isOpenModalCamera}
           onToggleModal={() => {
             setOpenModalCamera(!isOpenModalCamera);
           }}
         />
-      </Box>
+      </div>
     </div>
   );
 }

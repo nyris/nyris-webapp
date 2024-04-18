@@ -1,4 +1,4 @@
-import { Box, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import React from 'react';
 
 interface Props {
@@ -19,12 +19,12 @@ function ProductAttribute(props: Props) {
   return (
     <>
       {title && (
-        <Box
-          display="flex"
-          flexDirection={'column'}
-          borderRadius={2}
-          width={width}
+        <div
           style={{
+            display: 'flex',
+            flexDirection: 'column',
+            borderRadius: 2,
+            width: width,
             backgroundColor: '#E0E0E0',
             padding: padding,
             flexGrow: 1,
@@ -52,7 +52,7 @@ function ProductAttribute(props: Props) {
           >
             {value}
           </Typography>
-        </Box>
+        </div>
       )}
     </>
   );

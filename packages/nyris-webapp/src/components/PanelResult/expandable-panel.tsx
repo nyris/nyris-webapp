@@ -1,4 +1,4 @@
-import { Box, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { ReactComponent as RemoveIcon } from 'common/assets/icons/minus.svg';
 import { ReactComponent as AddIcon } from 'common/assets/icons/add.svg';
 import classNames from 'classnames';
@@ -39,7 +39,7 @@ function ExpandablePanelComponent({
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   return (
-    <Box>
+    <div>
       <div
         className={classNames(
           {
@@ -88,7 +88,7 @@ function ExpandablePanelComponent({
           <div className="mt-4">{children}</div>
         </Collapse>
       </div>
-    </Box>
+    </div>
   );
 }
 

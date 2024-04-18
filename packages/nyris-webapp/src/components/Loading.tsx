@@ -1,4 +1,3 @@
-import { Box } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -38,7 +37,7 @@ const LoadingSvg = () => {
 const Loading = () => {
   const { t } = useTranslation();
   return (
-    <Box
+    <div
       className="loadingSpinCT"
       style={{
         top: 0,
@@ -62,7 +61,7 @@ const Loading = () => {
         {t('loading')}
       </p>
       <LoadingSvg />
-    </Box>
+    </div>
   );
 };
 
