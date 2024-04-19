@@ -26,20 +26,19 @@ function ExperienceVisualSearch() {
   const button = useRef(null);
 
   useEffect(() => {
-    setInterval(() => {
-      if (button?.current) {
-        (button.current as HTMLElement).classList.toggle('hover');
-      }
-    }, 3000);
+    if (document.body.getBoundingClientRect().width >= 776) {
+      setInterval(() => {
+        if (button?.current) {
+          (button.current as HTMLElement).classList.toggle('hover');
+        }
+      }, 3000);
+    }
   }, []);
 
   const modalToggle = (isOpen: boolean) => {
     setShowModal(isOpen);
     if (isOpen) {
       const randomImages = settings?.experienceVisualSearchImages
-        // creation copy of original array
-        ?.slice()
-        ?.sort(() => Math.random() - 0.5)
         ?.slice(0, Math.min(settings?.experienceVisualSearchImages?.length, 4));
       
       console.log(randomImages);
@@ -117,21 +116,20 @@ function ExperienceVisualSearch() {
               />
               <div className="custom-modal-body-title">Experience Visual Search</div>
               <div className="custom-modal-body-subtitle">
-                Choose from the array of images below to commence a visual search and explore further:
+                Choose from images below to commence a visual search and explore further
               </div>
               <div className="custom-modal-body-content experience-visual-search-images">
                 {images.map((itemImage) => (
                     <div
                       className="experience-visual-search-image-container"
                       onClick={() => {
-                        console.log(itemImage);
                         modalToggle(false);
                         getUrlToCanvasFile(itemImage);
                       }}
                     >
                       <div
                         className="experience-visual-search-image"
-                        style={{ backgroundImage: `url(${itemImage})` }}
+                        style={{ backgroundImage: `url(${itemImage}?width=192&height=192)` }}
                       />
                       <div
                         className="box-icon-modal"

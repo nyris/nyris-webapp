@@ -15,15 +15,20 @@ body.overflow-hidden {
   margin: 32px auto 0;
   &:hover,
   &.hover {
-    width: 250px;
+    width: 197px;
     border-radius: 25px;
     transition: .5s;
     span {
-      width: 176px;
+      width: 149px;
       display: inline;
       margin-right: 8px;
       overflow: hidden;
       white-space: nowrap;
+      font-family: 'Source Sans 3';
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 16px;
+      text-align: center;
       &:before {
         color: #fff;
         content: 'Experience Visual Search';
@@ -74,17 +79,17 @@ body.overflow-hidden {
         flex-direction: row;
         flex-wrap: wrap;
         gap: 16px;
-        width: 400px;
+        width: 376px;
         .experience-visual-search-image-container {
-          width: 192px;
-          height: 192px;
+          width: 180px;
+          height: 180px;
           overflow: hidden;
           border-radius: 4px;
           position: relative;
           cursor: pointer;
           .experience-visual-search-image {
-            width: 192px;
-            height: 192px;
+            width: 180px;
+            height: 180px;
             background-size: cover;
             background-position: center;
             transform: scale(1);
@@ -128,7 +133,7 @@ body.overflow-hidden {
       }
       &-content {
         &.experience-visual-search-images {
-          width: 820px;
+          width: 786px;
         }
       }
     }
@@ -147,14 +152,37 @@ body.overflow-hidden {
   }
 }
 
-@media only screen and (max-width: 440px) {
+@media only screen and (max-width: 776px) {
+  .experience-visual-button {
+    width: 197px;
+    span {
+      width: 149px;
+      display: inline;
+      margin-right: 8px;
+      overflow: hidden;
+      white-space: nowrap;
+      font-family: 'Source Sans 3';
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 16px;
+      text-align: center;
+      &:before {
+        color: #fff;
+        content: 'Experience Visual Search';
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 408px) {
   .custom-modal {
     &-body {
       &-content {
         &.experience-visual-search-images {
-          width: 200px;
+          width: 180px;
         }
       }
     }
   }
 }
+
