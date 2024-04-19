@@ -132,7 +132,6 @@ function PreFilterComponent(props: Props) {
         },
       ];
       dispatch(updateStatusLoading(true));
-
       find({
         image: requestImage?.canvas as HTMLCanvasElement,
         settings,
