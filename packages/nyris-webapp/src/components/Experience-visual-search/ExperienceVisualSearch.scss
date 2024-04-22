@@ -133,7 +133,7 @@ body.overflow-hidden {
       }
       &-content {
         &.experience-visual-search-images {
-          width: 786px;
+          width: 770px;
         }
       }
     }
@@ -177,9 +177,19 @@ body.overflow-hidden {
 @media only screen and (max-width: 408px) {
   .custom-modal {
     &-body {
+      padding: 32px 8px;
       &-content {
         &.experience-visual-search-images {
-          width: 180px;
+          width: 300px;
+          gap: 8px;
+          .experience-visual-search-image-container {
+            width: 145px;
+            height: 145px;
+            .experience-visual-search-image {
+              width: 145px;
+              height: 145px;
+            }
+          }
         }
       }
     }
