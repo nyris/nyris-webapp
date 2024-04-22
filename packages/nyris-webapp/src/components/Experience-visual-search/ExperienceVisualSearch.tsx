@@ -32,11 +32,15 @@ function ExperienceVisualSearch() {
         interval.current = setInterval(() => {
           if (button?.current) {
             (button.current as HTMLElement).classList.toggle('hover');
+            console.log('here');
           }
         }, 3000);
       } else {
         if (interval?.current) {
           clearInterval(interval?.current);
+          if (button?.current) {
+            (button.current as HTMLElement).classList.toggle('hover');
+          }
         }
       }
       return () => {
