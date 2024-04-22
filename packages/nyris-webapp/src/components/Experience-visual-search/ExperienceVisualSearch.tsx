@@ -24,24 +24,34 @@ function ExperienceVisualSearch() {
   const [showModal, setShowModal] = useState(false);
   const [images, setImages] = useState<string[]>([])
   const button = useRef(null);
+  let interval: NodeJS.Timeout | null = null;
 
   useEffect(() => {
     if (document.body.getBoundingClientRect().width >= 776) {
-      setInterval(() => {
-        if (button?.current) {
-          (button.current as HTMLElement).classList.toggle('hover');
+      if (!showModal) {
+        interval = setInterval(() => {
+          if (button?.current) {
+            (button.current as HTMLElement).classList.toggle('hover');
+          }
+        }, 3000);
+      } else {
+        if (interval) {
+          clearInterval(interval);
         }
-      }, 3000);
+      }
+      return () => {
+        if (interval) {
+          clearInterval(interval);
+        }
+      }
     }
-  }, []);
+  }, [showModal]);
 
   const modalToggle = (isOpen: boolean) => {
     setShowModal(isOpen);
     if (isOpen) {
       const randomImages = settings?.experienceVisualSearchImages
         ?.slice(0, Math.min(settings?.experienceVisualSearchImages?.length, 4));
-      
-      console.log(randomImages);
       setImages(randomImages || []);
       document.body.classList.add('overflow-hidden');
     } else {
@@ -116,7 +126,7 @@ function ExperienceVisualSearch() {
               />
               <div className="custom-modal-body-title">Experience Visual Search</div>
               <div className="custom-modal-body-subtitle">
-                Choose from images below to commence a visual search and explore further
+                Start your visual search by selecting an image below.
               </div>
               <div className="custom-modal-body-content experience-visual-search-images">
                 {images.map((itemImage) => (
