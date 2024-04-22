@@ -55,7 +55,6 @@
     flex-wrap: wrap;
     align-self: stretch;
     flex-grow: 1;
-    overflow-y: auto;
     justify-content: space-between;
     @media #{$desktop-query} {
       padding-top: 0;
@@ -88,7 +87,6 @@
     padding: 8px;
     flex-direction: column;
     align-items: flex-start;
-    height: 90px;
     align-self: stretch;
     background: #F3F3F5;
   }

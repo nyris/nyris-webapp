@@ -163,38 +163,42 @@ const SearchBox = (props: any) => {
           values: Object.keys(preFilter) as string[],
         },
       ];
+      try {
+        if (settings.regions) {
+          let res = await findRegions(image, settings);
+          console.log(res);
 
-      if (settings.regions) {
-        let res = await findRegions(image, settings);
-        dispatch(setRegions(res.regions));
-        region = res.selectedRegion;
-        dispatch(setSelectedRegion(region));
-      }
-
-      return find({
-        image,
-        settings,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-        region,
-      })
-        .then((res: any) => {
-          res?.results.forEach((item: any) => {
-            filters.push({
-              sku: item.sku,
-              score: item.score,
-            });
-          });
-          payload = {
-            ...res,
-            filters,
-          };
-          dispatch(setSearchResults(payload));
-          dispatch(updateStatusLoading(false));
+          dispatch(setRegions(res.regions));
+          region = res.selectedRegion;
+          dispatch(setSelectedRegion(region));
+        }
+      } catch (error) {
+      } finally {
+        return find({
+          image,
+          settings,
+          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+          region,
         })
-        .catch((e: any) => {
-          console.log('error input search', e);
-          dispatch(updateStatusLoading(false));
-        });
+          .then((res: any) => {
+            res?.results.forEach((item: any) => {
+              filters.push({
+                sku: item.sku,
+                score: item.score,
+              });
+            });
+            payload = {
+              ...res,
+              filters,
+            };
+            dispatch(setSearchResults(payload));
+            dispatch(updateStatusLoading(false));
+          })
+          .catch((e: any) => {
+            console.log('error input search', e);
+            dispatch(updateStatusLoading(false));
+          });
+      }
     },
   });
 
@@ -364,7 +368,6 @@ const SearchBox = (props: any) => {
                   if (isAlgoliaEnabled) {
                     refine('');
                   }
-
                   return;
                 }
                 setValueInput('');
