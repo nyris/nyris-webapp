@@ -24,24 +24,24 @@ function ExperienceVisualSearch() {
   const [showModal, setShowModal] = useState(false);
   const [images, setImages] = useState<string[]>([])
   const button = useRef(null);
-  let interval: NodeJS.Timeout | null = null;
+  let interval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (document.body.getBoundingClientRect().width >= 776) {
       if (!showModal) {
-        interval = setInterval(() => {
+        interval.current = setInterval(() => {
           if (button?.current) {
             (button.current as HTMLElement).classList.toggle('hover');
           }
         }, 3000);
       } else {
-        if (interval) {
-          clearInterval(interval);
+        if (interval?.current) {
+          clearInterval(interval?.current);
         }
       }
       return () => {
-        if (interval) {
-          clearInterval(interval);
+        if (interval?.current) {
+          clearInterval(interval?.current);
         }
       }
     }
