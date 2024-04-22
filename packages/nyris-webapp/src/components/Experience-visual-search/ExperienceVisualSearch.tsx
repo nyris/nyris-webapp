@@ -32,7 +32,6 @@ function ExperienceVisualSearch() {
         interval.current = setInterval(() => {
           if (button?.current) {
             (button.current as HTMLElement).classList.toggle('hover');
-            console.log('here');
           }
         }, 3000);
       } else {
