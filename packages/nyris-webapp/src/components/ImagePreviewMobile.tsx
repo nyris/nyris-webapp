@@ -130,8 +130,8 @@ function ImagePreviewMobileComponent({
                 maxWidth={255}
                 maxHeight={255}
                 dotColor={editActive ? '#FBD914' : ''}
-                minCropWidth={editActive ? 60 : 5}
-                minCropHeight={editActive ? 60 : 5}
+                minCropWidth={editActive ? 30 : 5}
+                minCropHeight={editActive ? 30 : 5}
                 rounded={false}
                 expandAnimation={editActive}
                 shrinkAnimation={!editActive}

@@ -108,8 +108,8 @@ function SidePanel({
                       selection={imageSelection || DEFAULT_REGION}
                       regions={filteredRegions}
                       dotColor={'#FBD914'}
-                      minCropWidth={60}
-                      minCropHeight={60}
+                      minCropWidth={30}
+                      minCropHeight={30}
                       rounded={true}
                     />
                   </div>
