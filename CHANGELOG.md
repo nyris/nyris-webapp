@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.53 - 2024-04-18
+
+### Updated
+- Decreased cropping minimum width & height
+
 ## 0.3.52 - 2024-04-18
 
 ### Fix
