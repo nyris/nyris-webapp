@@ -143,10 +143,9 @@ function ImagePreviewMobileComponent({
               />
             </div>
           </div>
+
           {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
             <div
-              className="box-title_col-left"
-              alignItems="center"
               style={{
                 backgroundColor: '#3E36DC',
                 display: 'flex',
@@ -154,6 +153,10 @@ function ImagePreviewMobileComponent({
                 padding: '5px',
                 width: 'fit-content',
                 minWidth: '180px',
+                marginTop: 'auto',
+                position: 'absolute',
+                bottom: 0,
+                borderRadius: '16px',
               }}
             >
               <IconInfo color="white" />

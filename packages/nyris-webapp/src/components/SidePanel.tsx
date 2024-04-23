@@ -118,13 +118,16 @@ function SidePanel({
             </div>
             {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
               <div
-                className="box-title_col-left"
                 style={{
                   alignItems: 'center',
                   backgroundColor: '#3E36DC',
                   display: 'flex',
                   columnGap: '6px',
                   padding: '5px',
+                  marginTop: 'auto',
+                  position: 'absolute',
+                  bottom: 0,
+                  borderRadius: '16px',
                 }}
               >
                 <IconInfo color="white" />
