@@ -54,6 +54,8 @@ var settings = {
   warehouseVariant: false,
   postFilterOption: '',
   preFilterOption: '',
+  experienceVisualSearch: false,
+  experienceVisualSearchImages: [],
   rfq: {
     enabled: '',
     emailTemplateId: '',
