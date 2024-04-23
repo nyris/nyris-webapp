@@ -61,6 +61,7 @@ function ExperienceVisualSearch() {
       document.body.classList.remove('overflow-hidden');
     }
   };
+
   const getUrlToCanvasFile = async (url: string) => {
     dispatch(updateStatusLoading(true));
     dispatch(loadingActionResults());
