@@ -449,7 +449,9 @@ function ItemResult(props: Props) {
                   boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                   // marginBottom: 22,
                   height: 40,
-                  background: settings.theme?.CTAButtonColor || settings.theme?.primaryColor,
+                  background:
+                    settings.theme?.CTAButtonColor ||
+                    settings.theme?.primaryColor,
                   borderRadius: 4,
                   padding: '0px 8px',
                   marginTop: '8px',
@@ -463,6 +465,8 @@ function ItemResult(props: Props) {
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
+                    alignItems: 'center',
+
                     width: '100%',
                     padding: 0,
                     cursor: ctaLink ? 'pointer' : 'normal',
@@ -492,7 +496,10 @@ function ItemResult(props: Props) {
                     {truncateString(dataItem[settings.field.productName], 45)}
                   </Typography>
                   {!isMobile && ctaLink && (
-                    <IconOpenLink fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'} width={16} />
+                    <IconOpenLink
+                      fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'}
+                      width={16}
+                    />
                   )}
                 </div>
               </div>
@@ -503,7 +510,9 @@ function ItemResult(props: Props) {
                 boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                 // marginBottom: 22,
                 height: 40,
-                background: settings.theme?.CTAButtonColor || settings.theme?.primaryColor,
+                background:
+                  settings.theme?.CTAButtonColor ||
+                  settings.theme?.primaryColor,
                 borderRadius: 4,
                 padding: '0px 8px',
                 marginTop: '8px',
@@ -517,6 +526,7 @@ function ItemResult(props: Props) {
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
+                  alignItems: 'center',
                   width: '100%',
                   padding: 0,
                   cursor: ctaLink ? 'pointer' : 'normal',
@@ -546,7 +556,10 @@ function ItemResult(props: Props) {
                   {settings.CTAButtonText}
                 </Typography>
                 {!isMobile && ctaLink && (
-                  <IconOpenLink fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'} width={16} />
+                  <IconOpenLink
+                    fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'}
+                    width={16}
+                  />
                 )}
               </div>
             </div>

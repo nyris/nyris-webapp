@@ -48,8 +48,6 @@ var settings = {
   },
   language: 'en',
   // features
-  shareOption: '',
-  showFeedbackAndShare: '',
   showPoweredByNyris: '',
   warehouseVariant: false,
   postFilterOption: '',
