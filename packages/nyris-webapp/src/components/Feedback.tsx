@@ -1,55 +1,36 @@
 import React from 'react';
-import {NyrisFeedbackState} from "../actions/nyrisAppActions";
-import {Animate} from "react-move";
+import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
+import { ReactComponent as IconDislike } from 'common/assets/icons/icon_dislike.svg';
+import { ReactComponent as IconClose } from 'common/assets/icons/close.svg';
 
-interface FeedbackProps {
-    feedbackState: NyrisFeedbackState,
-    onPositiveFeedback?: () => void,
-    onNegativeFeedback?: () => void,
-    onClose?: () => void
+function Feedback({
+  submitFeedback,
+  onFeedbackClose,
+}: {
+  submitFeedback: any;
+  onFeedbackClose: any;
+}) {
+  return (
+    <div className="feedback-wrapper">
+      <p>Are these results useful?</p>
+      <div
+        className="feedback-icon-wrapper"
+        onClick={() => submitFeedback(false)}
+      >
+        <IconDislike />
+      </div>
+      <div
+        className="feedback-icon-wrapper"
+        onClick={() => submitFeedback(true)}
+      >
+        <IconLike />
+      </div>
+
+      <div className="feedback-icon-wrapper" onClick={() => onFeedbackClose()}>
+        <IconClose />
+      </div>
+    </div>
+  );
 }
-
-const Feedback: React.FC<FeedbackProps> = ({feedbackState, onPositiveFeedback, onNegativeFeedback, onClose}) => {
-    let inner : any = null;
-    switch (feedbackState) {
-        case 'question':
-            inner =
-                <div className="feedbackForm">
-                    <p>Did you find what you were looking for?</p>
-                    <div className="btn primary positiveFeedback" onClick={onPositiveFeedback}>Yes</div>
-                    <div className="btn secondary negativeFeedback" onClick={onNegativeFeedback}>No</div>
-                </div>;
-            break;
-        case 'positive':
-            inner = <div className="feedbackMessage positive">Great, thank you for your feedback!</div>
-            break;
-        case 'negative':
-            inner =
-                <div className="feedbackMessage negative">We saved your request so we can track down the
-                    issue and improve the search experience. Your Feedback helps us to make our service
-                    better for everyone,
-                    thank you!<br/>
-                    <div className="btn dismiss" onClick={onClose}>Dismiss</div>
-                </div>;
-            break;
-        default:
-            inner = null;
-            break;
-    }
-    return (
-        <Animate show={feedbackState !== 'hidden'} start={{y: 100, opacity: 0}} enter={{y: [0], opacity: [1]}} leave={{y: [100], opacity: [0] }}>
-            {({y, opacity}) =>
-                <section className="feedback" style={{transform: `translateY(${y}%)`, opacity }}>
-                    <div className="wrapper">
-                        {inner}
-                    </div>
-                    <div className="closeFeedbackContainer">
-                        <div className="closeFeedback" onClick={onClose}/>
-                    </div>
-                </section>
-            }
-        </Animate>
-    );
-};
 
 export default Feedback;

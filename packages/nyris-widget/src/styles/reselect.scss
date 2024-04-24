@@ -1,33 +1,18 @@
 .nyris__reselect {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
   &-image {
     max-width: 100%;
     width: auto;
     max-height: 270px;
   }
 
-  &-bubble {
-    @include circle(30px);
-    margin: -15px;
-    position: absolute;
-    z-index: 1000;
-    background-color: rgba(#fff, 0.1);
-    cursor: pointer;
-    &-inside {
-      @include circle(20px);
-      margin: 5px;
-      background-image: $base-gradient;
-    }
+  
+  &-image-wrapper {
+    width: 320px;
   }
 
-  &-accept {
-    align-self: center;
-  }
 
-  &-back {
-    align-self: center;
-
-    &-link {
-      font-weight: bold;
-    }
-  }
 }

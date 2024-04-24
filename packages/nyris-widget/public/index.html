@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!-- sample page to test the plugin -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Nyris widget</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body style="padding: 18px;display: flex;justify-content: center;">
+ 
+
+  <div style="position: relative;width: 100%;max-width: 1024px;">
+    <input class="search-bar" placeholder="Search"/>
+    <img class="camera" id="nyris-visual-search-initiator" src="./camera.svg" width="24px" height="24px"/>
+    <div class="search" >
+    <img  src="./search.svg" width="24px" height="24px"/>
+
+    </div>
+  </div>
+
+  <script>
+      var gNyrisApiKey=location.search.split("=")[1];
+      window.nyrisSettings = {
+        apiKey: gNyrisApiKey ? gNyrisApiKey : "",
+        initiatorElementId: 'nyris-visual-search-initiator',
+        primaryColor: '#3E36DC',
+        cameraIconColour: '#2B2C46',
+        browseGalleryButtonColor: '#E4E3FF',
+        customerLogo: '',
+        logoWidth: 256,
+        ctaButtonText: 'View more',
+        language: 'en',
+        navigatePreference: '_blank'
+      };
+
+      var s = document.createElement("script");
+      s.src = "widget.js";
+      document.getElementsByTagName('head')[0].appendChild(s);
+     
+      
+  </script>
+  
+</body>
+</html>

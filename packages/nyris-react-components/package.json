@@ -1,18 +1,18 @@
 {
   "name": "@nyris/nyris-react-components",
-  "version": "0.2.6",
+  "version": "0.3.52",
   "homepage": "https://github.com/nyris/nyris-webapp",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "peerDependencies": {
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "@nyris/nyris-api": "^0.2.6",
-    "konva": "^5.0.0",
-    "react-konva": "^16.13.0-0",
+    "@nyris/nyris-api": "^0.3.52",
+    "konva": "^9.3.6",
+    "react-konva": "^18.2.10",
     "react-move": "^6.1.0"
   },
   "scripts": {
@@ -21,20 +21,35 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^5.4.0",
-    "@types/react": "^16.9.34",
+    "@types/react": "^18.2.65",
+    "@types/react-dom": "^18.2.21",
     "css-loader": "^3.5.2",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.7.0",
-    "react-styleguidist": "^13.1.1",
+    "react-styleguidist": "^13.1.2",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.1.4",
     "svg-inline-loader": "^0.8.2",
-    "ts-loader": "^7.0.1",
-    "typescript": "^3.8.3",
+    "ts-loader": "^9.5.1",
+    "typescript": "^4.9.5",
     "url-loader": "^4.1.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^1.7.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all",
+      "ie 11"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version",
+      "ie 11"
+    ]
   }
 }

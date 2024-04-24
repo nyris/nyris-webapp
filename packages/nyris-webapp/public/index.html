@@ -1,54 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=auto, user-scalable=no"
+    />
     <meta name="theme-color" content="#000000" />
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"/>
-    <link rel="apple-touch-icon" sizes="57x57" href="images/fav/apple-icon-57x57.png"/>
-    <link rel="apple-touch-icon" sizes="60x60" href="images/fav/apple-icon-60x60.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="images/fav/apple-icon-72x72.png"/>
-    <link rel="apple-touch-icon" sizes="76x76" href="images/fav/apple-icon-76x76.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="images/fav/apple-icon-114x114.png"/>
-    <link rel="apple-touch-icon" sizes="120x120" href="images/fav/apple-icon-120x120.png"/>
-    <link rel="apple-touch-icon" sizes="144x144" href="images/fav/apple-icon-144x144.png"/>
-    <link rel="apple-touch-icon" sizes="152x152" href="images/fav/apple-icon-152x152.png"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="images/fav/apple-icon-180x180.png"/>
-    <link rel="icon" type="image/png" sizes="192x192"  href="images/fav/android-icon-192x192.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="images/fav/favicon-32x32.png"/>
-    <link rel="icon" type="image/png" sizes="96x96" href="images/fav/favicon-96x96.png"/>
-    <link rel="icon" type="image/png" sizes="16x16" href="images/fav/favicon-16x16.png"/>
-    <link rel="manifest" href="images/fav/manifest.json" crossorigin="use-credentials"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet"/>
-    <meta name="msapplication-TileColor" content="#ffffff"/>
-    <meta name="theme-color" content="#ffffff"/>
-    <title>nyris.io</title>
+    <link
+            rel="apple-touch-icon"
+            sizes="57x57"
+            href="images/fav/apple-icon-57x57.png"
+    />
+    <link
+            rel="apple-touch-icon"
+            sizes="60x60"
+            href="images/fav/apple-icon-60x60.png"
+    />
+    <link
+            rel="apple-touch-icon"
+            sizes="72x72"
+            href="images/fav/apple-icon-72x72.png"
+    />
+    <link
+            rel="apple-touch-icon"
+            sizes="76x76"
+            href="images/fav/apple-icon-76x76.png"
+    />
+    <link
+            rel="apple-touch-icon"
+            sizes="114x114"
+            href="images/fav/apple-icon-114x114.png"
+    />
+    <link
+            rel="apple-touch-icon"
+            sizes="120x120"
+            href="images/fav/apple-icon-120x120.png"
+    />
+    <link
+            rel="apple-touch-icon"
+            sizes="144x144"
+            href="images/fav/apple-icon-144x144.png"
+    />
+    <link
+            rel="apple-touch-icon"
+            sizes="152x152"
+            href="images/fav/apple-icon-152x152.png"
+    />
+    <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="images/fav/apple-icon-180x180.png"
+    />
+    <link
+            rel="icon"
+            type="image/png"
+            sizes="192x192"
+            href="images/fav/android-icon-192x192.png"
+    />
+    <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="images/fav/favicon-32x32.png"
+    />
+    <link
+            rel="icon"
+            type="image/png"
+            sizes="96x96"
+            href="images/fav/favicon-96x96.png"
+    />
+    <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="images/fav/favicon-16x16.png"
+    />
+    <link
+            rel="manifest"
+            href="images/fav/manifest.json"
+            crossorigin="use-credentials"
+    />
+    <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+    />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="theme-color" content="#ffffff" />
+
     <script src="js/settings.js?CI_COMMIT_SHA"></script>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@algolia/autocomplete-theme-classic"
+    />
 
-    <!-- Google Analytics -->
-    <script>
-      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-      ga('create', 'UA-86973312-1', 'auto');
-      ga('send', 'pageview');
+
+    <!-- Piwik Analytics -->
+    <script type="text/javascript">
+        (function(window, document, dataLayerName, id) {
+            window[dataLayerName]=window[dataLayerName]||[],window[dataLayerName].push({start:(new Date).getTime(),event:"stg.start"});var scripts=document.getElementsByTagName('script')[0],tags=document.createElement('script');
+            function stgCreateCookie(a,b,c){var d="";if(c){var e=new Date;e.setTime(e.getTime()+24*c*60*60*1e3),d="; expires="+e.toUTCString();f="; SameSite=Strict"}document.cookie=a+"="+b+d+f+"; path=/"}
+            var isStgDebug=(window.location.href.match("stg_debug")||document.cookie.match("stg_debug"))&&!window.location.href.match("stg_disable_debug");stgCreateCookie("stg_debug",isStgDebug?1:"",isStgDebug?14:-1);
+            var qP=[];dataLayerName!=="dataLayer"&&qP.push("data_layer_name="+dataLayerName),isStgDebug&&qP.push("stg_debug");var qPString=qP.length>0?("?"+qP.join("&")):"";
+            tags.async=!0,tags.src="https://nyris.containers.piwik.pro/"+id+".js"+qPString,scripts.parentNode.insertBefore(tags,scripts);
+            !function(a,n,i){a[n]=a[n]||{};for(var c=0;c<i.length;c++)!function(i){a[n][i]=a[n][i]||{},a[n][i].api=a[n][i].api||function(){var a=[].slice.call(arguments,0);"string"==typeof a[0]&&window[dataLayerName].push({event:n+"."+i+":"+a[0],parameters:[].slice.call(arguments,1)})}}(i[c])}(window,"ppms",["tm","cm"]);
+        })(window, document, 'dataLayer', 'ace6a922-26e4-44b2-becf-ac94e9e5ecb4');
     </script>
-    <script async src='https://www.google-analytics.com/analytics.js'></script>
-    <!-- End Google Analytics -->
+    <!-- End Piwik Analytics -->
 
-    <script src="https://863a167094994e54bc22149eafac1699.js.ubembed.com" async></script>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <script
+            src="https://863a167094994e54bc22149eafac1699.js.ubembed.com"
+            async
+    ></script>
+    <script>
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+    </script>
+    <!-- Cadenas web viewer -->
+    <!-- <link rel="stylesheet" href="./cadenas/8.1.0/api/css/thirdparty.min.css?v=1693816692897"> -->
+    <link rel="stylesheet" href="./cadenas/8.1.0/api/css/psol.components.min.css?v=1693816692897">
+    <script  type="text/javascript"  src="./cadenas/8.1.0/api/js/fabric.min.js?v=1693816692897"></script>
+    <script  type="text/javascript" src="./cadenas/8.1.0/api/js/quill.min.js?v=169381669289"></script>
+    <script  type="text/javascript" src="./cadenas/8.1.0/api/js/thirdparty.min.js?v=1693816692897"></script>
+    <script  type="text/javascript" src="./cadenas/8.1.0/api/js/psol.components.min.js?v=1693816692897"></script>
+    <!-- End Cadenas web viewer -->
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+</head>
+<body>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div id="root"></div>
+<!--
+  This HTML file is a template.
+  If you open it directly in the browser, you will see an empty page.
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+  You can add webfonts, meta tags, or analytics to this file.
+  The build step will place the bundled scripts into the <body> tag.
+
+  To begin the development, run `npm start` or `yarn start`.
+  To create a production bundle, use `npm run build` or `yarn build`.
+-->
+</body>
 </html>

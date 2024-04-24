@@ -1,46 +1,6 @@
 import loadImage from 'blueimp-load-image';
-import {RectCoords, Region, WH} from "./types-external";
+import { RectCoords, WH } from "./types-external";
 
-
-/**
- * Calculates the center of a [[RectCoords]].
- * @param rect The [[RectCoords]] to calculate the center coordinate from.
- */
-function rectCenter({x1, x2, y1, y2}: RectCoords) : [number, number] {
-    return [ // get middle of box and map to pixels
-         ((x2-x1)/2 + x1),
-         ((y2-y1)/2+ y1)
-    ];
-}
-
-/**
- * Calculate distance between two points
- * @param x1 The x coordinate of the first point.
- * @param y1 The y coordinate of the first point.
- * @param x2 The x coordinate of the second point.
- * @param y2 The y coordinate of the second point.
- */
-const dist2d = ([x1, y1]: [number, number], [x2, y2]: [number, number] ) : number =>
-    Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
-
-
-/**
- * Return first `Rect` from list `regions` with center-point which has a maximal distance of `maxDistance` from
- * the center. Otherwise return `defaultRect`
- * @param regions
- * @param maxDistance
- * @param defaultRect
- */
-export function selectFirstCenteredRegion(regions: Region[], maxDistance: number, defaultRect: RectCoords) : RectCoords {
-    let centeredRegion = regions.filter(r => {
-        let dist = dist2d([0.5, 0.5], rectCenter(r.normalizedRect));
-        return dist < maxDistance;
-    });
-    if (centeredRegion.length === 0) {
-        return defaultRect;
-    }
-    return centeredRegion[0].normalizedRect;
-}
 
 /**
  * Gets url parameter values by name.

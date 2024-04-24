@@ -1,0 +1,276 @@
+.psol-comp-viewbase-iconbutton-44 {
+
+  width: 32px;
+  height: 32px;
+  .psol-comp-viewbase-svgicon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.psol-comp-webviewer3d-copyright-container {
+  a {
+    font-size: 10px !important; 
+    color: #55566B !important;
+  }
+}
+.psol-comp-webviewer3d-copyright-container {
+  margin-bottom: -2px;
+}
+
+.ComponentCustomizeWebViewer3DFavoriteButtonsBarContainer{
+  padding-bottom: 6px;
+}
+
+.loading-spinner {
+  animation: spin 3s linear infinite;
+}
+
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.full-height {
+  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100);
+}
+
+.layout-main-newVersion {
+  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  .box-header-newVersion-main {
+    height: 50px;
+    min-height: 50px;
+    border-bottom: 1px solid #E0E0E0;
+
+    .box-content {
+      margin: auto;
+      height: 100%;
+      justify-content: space-between;
+      align-items: center;
+    
+    }
+  }
+  .box-body-newVersion-wrap-main {
+    height: calc(100% - 50px);
+    // overflow: auto;
+    .box-content-main {
+      height: auto;
+      margin-top: calc(50vh - 75px);
+    }
+  }
+}
+
+.d-none {
+  display: none;
+}
+
+@keyframes slidedown {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes slideup {
+  0% { transform: translateY(40px); }
+  100% { transform: translateY(0); }
+}
+
+.slideDown {
+  animation: slidedown 1s ease-in-out;
+}
+
+.slideUp {
+  animation: slideup 0.5s ease-in-out;
+}
+
+@keyframes reduceSize {
+  from {
+    height: 240px;
+    width: 240px;
+  }
+  to {
+    height: 80px;
+    width: 81px;
+  }
+}
+
+.shrink-animation{
+  animation: reduceSize 0.3s;
+}
+
+@keyframes extendSize {
+  from {
+    height: 80px;
+    width: 81px;
+  }
+  to {
+    height: 240px;
+    width: 240px;
+  }
+}
+
+.expand-animation{
+  animation: extendSize 0.25s;
+  animation-timing-function: linear;
+}
+
+.circle-layer{
+  position: absolute;
+  width: 81px;
+  height: 80px;
+  clip-path: polygon(100% 50%, 100% 100%, 0px 100%, 0px 0px, 100% 0px, 100% 50%, 80% 50%, 79.85092326096205% 47.0129646021255%, 79.40517463545632% 44.055615704018074%, 78.66718417358422% 41.157344767672875%, 77.64428635611223% 38.346956111759155%, 76.34664720110686% 35.65238064136045%, 74.78716322947984% 33.100398258091346%, 72.98133329356934% 30.716371709403823%, 70.94710454258218% 28.52399452220845%, 68.704694055762% 26.545055525959107%, 66.27638791597278% 24.799222305476857%, 63.686319720594895% 23.303845735655944%, 60.96023073099185% 22.073787540673877%, 58.12521404429015% 21.12127259149964%, 55.20944533000791% 20.455767409633758%, 52.24190280759273% 20.083886084564597%, 49.25207924785782% 20.009324539975513%, 46.26968886057545% 20.232823801994837%, 43.32437198131057% 20.752162634545293%, 40.44540049244947% 21.562179614986047%, 37.66138690608166% 22.654824430649803%, 35.00000000000001% 24.01923788646684%, 32.487689832956306% 25.6418598285243%, 30.149424872094226% 27.506563910967966%, 28.008443845105216% 29.59481786687241%, 26.086024783312336% 31.885867690235667%, 24.40127355103533% 34.35694389861506%, 22.97093396292743% 36.98348782647325%, 21.80922137642275% 39.739395700229935%, 20.927681413127665% 42.597278069291185%, 20.335075213246146% 45.528732014714755%, 20.03729236343233% 48.50462343017907%, 20.03729236343233% 51.495376569820905%, 20.335075213246146% 54.47126798528524%, 20.927681413127658% 57.40272193070879%, 21.809221376422748% 60.26060429977006%, 22.970933962927425% 63.01651217352674%, 24.401273551035327% 65.64305610138494%, 26.08602478331232% 68.11413230976432%, 28.008443845105212% 70.40518213312758%, 30.149424872094208% 72.49343608903202%, 32.487689832956306% 74.3581401714757%, 34.999999999999986% 75.98076211353316%, 37.66138690608165% 77.34517556935019%, 40.44540049244945% 78.43782038501395%, 43.32437198131056% 79.2478373654547%, 46.26968886057543% 79.76717619800516%, 49.25207924785781% 79.99067546002449%, 52.2419028075927% 79.9161139154354%, 55.209445330007895% 79.54423259036625%, 58.12521404429013% 78.87872740850037%, 60.96023073099184% 77.92621245932614%, 63.68631972059489% 76.69615426434406%, 66.27638791597279% 75.20077769452314%, 68.704694055762% 73.4549444740409%, 70.9471045425822% 71.47600547779155%, 72.98133329356934% 69.28362829059618%, 74.78716322947984% 66.89960174190865%, 76.34664720110685% 64.34761935863956%, 77.64428635611223% 61.653043888240845%, 78.66718417358422% 58.84265523232714%, 79.40517463545632% 55.94438429598193%, 79.85092326096203% 52.98703539787452%, 80% 50.00000000000001%);
+  background-color:  hsla(0, 0%, 0%, 0.3);
+  z-index: 1;
+}
+
+.powered-by-nyris{
+  background-color: #fff;
+  &:hover {
+    background-color:#F0EFFF,
+
+  }
+}
+
+.feedback-floating {
+  margin-left: -24px;
+  height: fit-content;
+  bottom: 35px;
+  position: fixed;
+  z-index: 201;
+  display: flex;
+  justify-content: flex-end;
+
+  @media screen and (max-width: 776px) {
+    margin-left: 0px;
+    height: fit-content !important;
+    bottom: 105px;
+    justify-content: center !important;
+  }
+}
+
+.feedback-wrapper {
+  background-color: #e4e3fff7;
+  mix-blend-mode: multiply;
+  border-radius: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  width: fit-content;
+  height: fit-content;
+
+  column-gap: 22px;
+
+  flex-shrink: 0;
+  color: #2B2C46;
+
+  &:hover{
+    background-color: rgb(211, 209, 255, 0.97);
+
+  }
+
+  @media screen and (max-width: 776px) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  p{
+    font-size: 14px;
+    font-weight: 600;
+    @media screen and (max-width: 776px) {
+      font-size: 12px;
+    }
+  }
+
+  .feedback-icon-wrapper {
+    width: 34px;
+    height: 34px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: #FFF;
+      box-shadow: 0px 0px 7.04px 0px rgba(0, 0, 0, 0.10);
+      cursor: pointer;
+
+    }
+
+    svg{
+      width: 16px;
+      height: 16px;
+
+      @media screen and (max-width: 776px) {
+        width: 14px;
+        height: 14px;
+      }
+
+    }
+
+    @media screen and (max-width: 776px) {
+      width: 25px;
+      height: 25px;
+    }
+  }
+}
+
+.feedback-success {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #2B2C46;
+  width: 282px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  text-align: center;
+  border-radius: 26px;
+
+  @media screen and (max-width: 776px) {
+    font-size: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    width: 264px;
+  }
+}
+
+.rfq-box{
+  padding: 24px 40px 24px 40px;
+
+  @media screen and (max-width: 776px) {
+    padding: 16px 16px 16px 16px;
+  
+  }
+
+  @media screen and (max-width: 820px) {
+    padding: 16px 16px 16px 16px;
+  
+  }
+
+  .support-button-wrapper {
+    flex-wrap: nowrap;
+
+    @media screen and (max-width: 820px) {
+      gap: 8px;
+    }
+  }
+
+  
+}
+
+.MuiButton-root:hover {
+  text-decoration: none ;
+}

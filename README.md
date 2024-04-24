@@ -1,9 +1,5 @@
 # nyris-webapp
 
-![Demo](.readme/demo.gif)
-
-Try it yourself on [demo.nyris.io](https://demo.nyris.io)
-
 ## Contents
 
 This repository is home to the nyris webapp and the 
@@ -17,7 +13,7 @@ related projects:
 
 ## Setting up the repository for development
 
-1. Set up dependencies by running `npm ci` followed by `npx lerna bootstrap`
+1. Set up dependencies by running `yarn`
 2. Build packages `npx lerna run build`
 
 
@@ -25,4 +21,9 @@ related projects:
 
 ```shell script
 npx lerna version patch --no-push --no-git-tag-version
+```
+
+## Force update versions
+```shell script
+npx lerna version patch --no-push --no-git-tag-version --force-publish
 ```

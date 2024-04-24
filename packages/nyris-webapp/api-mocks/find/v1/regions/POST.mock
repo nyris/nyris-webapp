@@ -1,6 +1,0 @@
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: X-Matching-Request,X-Session
-
-[{"confidence":0.8195009,"region":{"top":241,"left":23,"bottom":486,"right":232},"className":"Chair"},{"confidence":0.7255934,"region":{"top":241,"left":23,"bottom":486,"right":232},"className":"Furniture"},{"confidence":0.71869576,"region":{"top":1,"left":123,"bottom":101,"right":221},"className":"Lighting"}]
