@@ -466,7 +466,6 @@ function ItemResult(props: Props) {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-
                     width: '100%',
                     padding: 0,
                     cursor: ctaLink ? 'pointer' : 'normal',
