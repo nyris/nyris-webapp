@@ -1,21 +1,68 @@
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('https://assets.i.nyris.io/auth0_login_page/SourceSans3/SourceSans3-VariableFont_wght.ttf');
+}
 
 .nyris__hello {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  font-family: 'Source Sans 3';
+  &-wrapper {
+    width: 100%;
+  }
+
   &-drop-zone {
     @include flex-column-center();
-    @include flex-filler();
-    background-color: $color-hello-dropzone-background;
-    border-radius: 7px;
-    border: 1px solid $color-box-border;
-    font-weight: bold;
-    color: $color-hello-dropzone-text;
 
-    & > svg {
-      margin: 7px;
+    padding: 24px 16px;
+    gap: 24px;
+    align-self: stretch;
+    border-radius: 2px;
+    border: 1px dashed #CACAD1;
+    cursor: pointer;
+
+    &:hover,
+    &.active-drop {
+      background-color: $color-hello-dropzone-background;
+
     }
+    &-bold-text {
+      color: #55566B;
+      font-weight: 700;
+    }
+
   }
 
   &-upload {
     cursor: pointer;
+    display: flex;
+    padding: 12px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    align-self: stretch;
+    border-radius: 2px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 16px;
+
+  }
+
+  &-browse {
+    cursor: pointer;
+    display: flex;
+    padding: 12px 24px;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    align-self: stretch;
+    border-radius: 2px;
+
+    font-size: 14px;
+    margin-bottom: 16px;
+
   }
 
   // hidden file input

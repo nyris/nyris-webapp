@@ -1,14 +1,16 @@
-$desktop-query: (min-width: 481px);
-$mobile-query: (max-width: 480px);
+$desktop-query: "(min-width: 512px)";
+$mobile-query: "(max-width: 511px)";
+$mobile-sm-query: "(max-width: 360px)";
+
 
 $fs-base: 14px;
 $fs-footer: 12px;
 
-$color-primary: #3023ae;
+$color-primary: #3E36DC;
 $color-background: #fff;
 $color-icon-border: #e3e7ef;
-$color-heading: #2e394d;
-$color-text: $color-primary;
+$color-heading: #000;
+$color-text: #2B2C46;
 $color-button-dark: #000;
 $color-button-text: #fff;
 $color-box-border: rgba(#000, 0.06);
@@ -18,7 +20,7 @@ $color-footer-link-hover: rgba(0, 0, 0, 0.26);
 $color-hello-dropzone-background: rgba(#12171f, 0.06);
 $color-hello-dropzone-text: rgba(#000, 0.26);
 
-$base-gradient: (linear-gradient(153deg, $color-primary 5%, #c86dd7 100%));
-$hover-gradient: (linear-gradient(153deg, $color-primary 5%, #c86dd7 85%));
+$base-gradient: linear-gradient(90deg, #3E36DC 0%, #655EE3 100%);
+$hover-gradient: linear-gradient(90deg, #3E36DC 0%, #655EE3 100%);
 
 $shadow: (0 2px 5px 0 rgba(#4d5f80, 0.06));

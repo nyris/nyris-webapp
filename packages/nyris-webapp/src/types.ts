@@ -1,47 +1,109 @@
-import {SearchAction, SearchState} from "./actions/searchActions";
-import {NyrisAction, NyrisAppState} from "./actions/nyrisAppActions";
-import {NyrisAPISettings} from "@nyris/nyris-api";
+import { NyrisAPISettings } from '@nyris/nyris-api';
+import { SearchState } from 'Store/search/types';
 
-export interface MDSettings {
-    customFontFamily?: string,
+export interface AlgoliaSettings {
+  apiKey: string;
+  appId: string;
+  enabled?: boolean;
+  indexName: string;
+}
 
-    appBarLogoUrl: string,
-    appBarTitle: string,
-    appBarCustomBackgroundColor?: string,
-    appBarCustomTextColor?: string,
+export interface Auth0Settings {
+  clientId?: string;
+  domain?: string;
+  enabled?: boolean;
+  supportEmail?: string;
+}
 
-    primaryColor: string,
-    secondaryColor: string,
-    resultFirstRowProperty: string,
-    resultSecondRowProperty: string,
+export interface Support {
+  enabled?: boolean;
+  description?: string;
+  emailInquiry?: boolean;
+  supportNumber?: string;
+  emailTemplateId?: string;
+}
 
-    resultLinkText?: string,
-    resultLinkIcon?: string,
+export interface Rfq {
+  enabled?: boolean;
+  emailTemplateId?: string;
+}
+export interface Cadenas {
+  cadenas3dWebView?: boolean;
+  cadenasAPIKey?: string;
+  catalog?: string;
+}
+export interface Field {
+  ctaLinkField: string;
+  secondaryCTALinkField?: string;
+  productName: string;
+  productDetails: string;
+  manufacturerNumber: string;
+  productTag: string;
+  warehouseNumber: string;
+  warehouseNumberValue: string;
+  warehouseShelfNumber: string;
+  warehouseShelfNumberValue: string;
+  warehouseStock: string;
+  warehouseStockValue: string;
 }
 
 export interface AppSettings extends NyrisAPISettings {
-    exampleImages: string[],
-    preview: boolean,
-    cadSearch?: boolean,
-    noImageUrl?: string,
-    resultTemplate?: string,
-    regions: boolean,
-    materialDesign?: MDSettings,
-    instantRedirectPatterns: string[]
+  algolia: AlgoliaSettings;
+  alogoliaFilterField?: string;
+  appTitle?: string;
+  auth0: Auth0Settings;
+  brandName?: string;
+  isBrandNameTitleVisible?: boolean;
+  cadenas?: Cadenas;
+  CTAButtonText?: string;
+  secondaryCTAButtonText?: string;
+  field: Field;
+  headerText?: string;
+  instantRedirectPatterns: string[];
+  itemIdLabel?: string;
+  language?: string;
+  noImageUrl?: string;
+  postFilterOption?: boolean;
+  preFilterOption?: boolean;
+  preFilterTitle?: string;
+  preview: boolean;
+  refinements?: any;
+  regions: boolean;
+  rfq?: Rfq;
+  shareOption?: boolean;
+  showFeedback?: boolean;
+  showFeedbackAndShare?: boolean;
+  showGroup?: boolean;
+  showPoweredByNyris?: boolean;
+  support?: Support;
+  theme: SearchSuiteSettings;
+  visualSearchFilterKey?: string;
+  warehouseVariant?: boolean;
+  shouldUseUserMetadata?: boolean;
+}
+
+export interface SearchSuiteSettings {
+  appBarLogoUrl?: string;
+  headerColor?: string;
+  logoHeight?: string;
+  logoWidth?: string;
+  mobileFooterImageColor?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  secondaryCTAButtonColor?: string;
+  CTAButtonColor?: string;
+  CTAButtonTextColor?: string;
+  mainTextColor?: string;
+  brandFieldBackground?: string;
+  brandFieldPadding?: string;
 }
 
 export type AppState = {
-    search: SearchState,
-    settings: AppSettings,
-    nyrisDesign: NyrisAppState
+  search: SearchState;
+  settings: AppSettings;
 };
 
-export type AppAction =
-    | SearchAction
-    | NyrisAction
-
 export interface CanvasWithId {
-    canvas: HTMLCanvasElement
-    id: string
+  canvas: HTMLCanvasElement;
+  id: string;
 }
-
