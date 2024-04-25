@@ -1,8 +1,6 @@
 {
   "short_name": "Search Suite",
   "name": "Search Suite",
-  "start_url": ".",
-  "web_accessible_resources": ["background.js"],
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
