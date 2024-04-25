@@ -80,6 +80,8 @@ export interface AppSettings extends NyrisAPISettings {
   visualSearchFilterKey?: string;
   warehouseVariant?: boolean;
   shouldUseUserMetadata?: boolean;
+  experienceVisualSearch?: boolean;
+  experienceVisualSearchImages?: string[];
 }
 
 export interface SearchSuiteSettings {

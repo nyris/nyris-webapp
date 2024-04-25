@@ -125,7 +125,7 @@ function ImagePreviewMobileComponent({
                 image={requestImage?.canvas}
                 selection={imageSelection || DEFAULT_REGION}
                 regions={filteredRegions}
-                minWidth={80}
+                minWidth={100 * (requestImage?.canvas?.width / requestImage?.canvas?.height)}
                 minHeight={80}
                 maxWidth={255}
                 maxHeight={255}

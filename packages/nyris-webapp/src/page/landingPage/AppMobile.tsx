@@ -1,11 +1,13 @@
 import CameraCustom from 'components/drawer/cameraCustom';
 import React, { useEffect, useState } from 'react';
 import { reset } from 'Store/search/Search';
-import { useAppDispatch } from 'Store/Store';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { ReactComponent as CameraIcon } from 'common/assets/icons/take_photo.svg';
+import ExperienceVisualSearch from "../../components/Experience-visual-search/ExperienceVisualSearch";
 
 function AppMobile(): JSX.Element {
   const dispatch = useAppDispatch();
+  const { settings } = useAppSelector(state => state);
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
 
   useEffect(() => {
@@ -50,6 +52,11 @@ function AppMobile(): JSX.Element {
           }}
         />
       </div>
+      {settings.experienceVisualSearch ? (
+        <ExperienceVisualSearch />
+      ) : (
+        ''
+      )}
     </div>
   );
 }
