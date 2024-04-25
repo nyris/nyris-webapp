@@ -4,6 +4,13 @@ import { DEFAULT_REGION } from '../../constants';
 import { initialState } from './search.initialState';
 import { isUndefined } from 'lodash';
 
+const getId = () => {
+  const crypto = window.crypto;
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  return array[0];
+}
+
 export const searchSlice = createSlice({
   name: 'search',
   initialState,
@@ -48,7 +55,7 @@ export const searchSlice = createSlice({
       ...state,
       requestImage: {
         canvas: data.payload,
-        id: Math.random().toString(),
+        id: getId().toString(),
       },
       regions: [],
     }),

@@ -409,7 +409,7 @@ function ItemResult(props: Props) {
                 onClick={() => {
                   if (secondaryCTALink) {
                     feedbackConversionEpic(state, indexItem, dataItem.sku);
-                    window.open(`${secondaryCTALink}`, '_blank');
+                    window.open(`${secondaryCTALink}`, '_blank', 'noopener');
                   }
                 }}
               >
@@ -470,7 +470,7 @@ function ItemResult(props: Props) {
                   onClick={() => {
                     if (ctaLink) {
                       feedbackConversionEpic(state, indexItem, dataItem.sku);
-                      window.open(`${ctaLink}`, '_blank');
+                      window.open(`${ctaLink}`, '_blank', 'noopener');
                     }
                   }}
                 >
@@ -524,7 +524,7 @@ function ItemResult(props: Props) {
                 onClick={() => {
                   if (ctaLink) {
                     feedbackConversionEpic(state, indexItem, dataItem.sku);
-                    window.open(`${ctaLink}`, '_blank');
+                    window.open(`${ctaLink}`, '_blank', 'noopener');
                   }
                 }}
               >

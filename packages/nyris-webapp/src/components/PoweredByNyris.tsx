@@ -29,7 +29,7 @@ function PoweredByNyris() {
         <PoweredByNyrisImageColored
           style={{ cursor: 'pointer' }}
           onClick={() => {
-            window.open('https://www.nyris.io', '_blank');
+            window.open('https://www.nyris.io', '_blank', 'noopener');
           }}
         />
       )}
@@ -37,7 +37,7 @@ function PoweredByNyris() {
         <PoweredByNyrisImage
           style={{ cursor: 'pointer' }}
           onClick={() => {
-            window.open('https://www.nyris.io', '_blank');
+            window.open('https://www.nyris.io', '_blank', 'noopener');
           }}
           color="#2B2C46"
         />
