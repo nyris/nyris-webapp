@@ -484,7 +484,7 @@ function ProductDetailView(props: Props) {
                       }}
                       onClick={() => {
                         if (secondaryCTALink) {
-                          window.open(`${secondaryCTALink}`, '_blank');
+                          window.open(`${secondaryCTALink}`, '_blank', 'noopener');
                         }
                       }}
                     >
@@ -528,7 +528,7 @@ function ProductDetailView(props: Props) {
                     }}
                     onClick={() => {
                       if (ctaLink) {
-                        window.open(`${ctaLink}`, '_blank');
+                        window.open(`${ctaLink}`, '_blank', 'noopener');
                       }
                     }}
                   >

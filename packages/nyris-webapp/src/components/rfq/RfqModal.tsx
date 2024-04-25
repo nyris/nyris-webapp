@@ -18,7 +18,7 @@ interface Props {
   setRfqStatus: any;
 }
 // eslint-disable-next-line
-const emailRegex = /.+\@.+\..+$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const getErrorMessage = (error: any) => {
   switch (error.status) {

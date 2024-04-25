@@ -2,22 +2,22 @@
 <!-- sample page to test the plugin -->
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Nyris widget</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Nyris widget</title>
 </head>
 <body style="padding: 18px;">
-  <h1>Test Visual search widget</h1>
-  Enter your api key and submit
-  <form method="get" action="settings.html">
+<h1>Test Visual search widget</h1>
+Enter your api key and submit
+<form method="get" action="settings.html">
     <br/>
 
     API key: <input type="text" name="apikey" placeholder="YOUR API KEY HERE">
     <input type="submit">
-  </form>
-  <br/>
-  <div id="nyris-visual-search-initiator">
+</form>
+<br/>
+<div id="nyris-visual-search-initiator">
     <div style="
         cursor: pointer; display: flex;
         padding: 12px 24px;
@@ -29,12 +29,12 @@
         background:  #E4E3FF;
         width: 254px;
     ">Open visual search</div>
-  </div>
+</div>
 
-  <script>
-      var gNyrisApiKey=location.search.split("=")[1];
-      if (gNyrisApiKey) {
-          window.nyrisSettings = {
+<script>
+    var gNyrisApiKey=location.search.split("=")[1];
+    if (gNyrisApiKey) {
+        window.nyrisSettings = {
             apiKey: gNyrisApiKey,
             responseFormat: 'application/offers.complete+json', // See "response type" https://docs.nyris.io/#response-type
             initiatorElementId: 'nyris-visual-search-initiator',
@@ -44,13 +44,13 @@
             customerLogo: '',
             ctaButtonText: 'View more',
             language: 'en',
-          };
+        };
 
-          var s = document.createElement("script");
-          s.src = "widget.js";
-          document.getElementsByTagName('head')[0].appendChild(s);
-      }
-  </script>
-  
+        var s = document.createElement("script");
+        s.src = "widget.js";
+        document.getElementsByTagName('head')[0].appendChild(s);
+    }
+</script>
+
 </body>
 </html>
