@@ -8,9 +8,9 @@ import { defaultSettings } from './constants';
 
 declare var settings: AppSettings;
 
-settings.algolia.enabled = false;
+settings.algolia.enabled = true;
 settings.preview = true;
-settings.showFeedback = true;
+settings.showFeedback = false;
 settings.showFeedbackAndShare = false;
 
 if (settings.rfq?.enabled && settings.support?.enabled) {
