@@ -7,7 +7,7 @@ import type {
   CurrentRefinementsProvided,
   SearchResults,
 } from 'react-instantsearch-core';
-import { RefinementList } from 'react-instantsearch-dom';
+import { RefinementList, connectRefinementList } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import { useAppSelector } from 'Store/Store';
@@ -133,6 +133,22 @@ export default function PostFilterPanelAlgolia({
     [setPanels],
   );
 
+  const TheList = connectRefinementList(
+    (props) => {
+      console.log(props);
+      return (
+        <ul>
+          {props.items.map((item) => (
+            <li>
+              <input type="checkbox" checked={item.isRefined} onChange={() => props.refine(item.value)}/>
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  );
+
   const widgets = useMemo(
     () =>
       refinements.map((refinement: any) => {
@@ -140,12 +156,6 @@ export default function PostFilterPanelAlgolia({
           <RefinementList
             className="box-refinement-list"
             attribute={refinement.attribute}
-            {...refinement.options}
-            translations={{
-              noResults: 'No results',
-              placeholder: '',
-            }}
-            sortBy={['isRefined:desc', 'name:asc']}
           />
         );
       }),

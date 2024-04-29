@@ -1912,7 +1912,7 @@ button {
           background-color: #f3f3f5;
           border-radius: 21px;
           height: 40px;
-          .icon-search{
+          .icon-search {
             margin-left: 11px;
           }
           .input-search-filter {
@@ -1928,6 +1928,11 @@ button {
             @media only screen and (min-width: 980px) {
               width: 512px;
             }
+          }
+          .btn-clear-text {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
           }
         }
       }
