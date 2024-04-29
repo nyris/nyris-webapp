@@ -8,13 +8,17 @@ import { defaultSettings } from './constants';
 
 declare var settings: AppSettings;
 
-settings.algolia.enabled = true;
+settings.algolia.enabled = false;
 settings.preview = true;
-settings.showFeedback = false;
+settings.showFeedback = true;
 settings.showFeedbackAndShare = false;
 
 if (settings.rfq?.enabled && settings.support?.enabled) {
   settings.support.enabled = false;
+}
+
+if (settings.algolia.enabled) {
+  settings.showFeedback = false;
 }
 
 let normalizedSettings: AppSettings = {
