@@ -296,7 +296,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                       style={{
                         ...(!isEmpty(preFilter)
                           ? {
-                              backgroundColor: `${settings.theme?.primaryColor}`,
+                              backgroundColor: settings.theme?.primaryColor,
                             }
                           : {
                               backgroundColor: `#2B2C46`,
@@ -394,7 +394,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 style={{
                   display: 'flex',
                   background: `${
-                    disablePostFilter ? '#F3F3F5' : settings.theme?.primaryColor
+                    disablePostFilter
+                      ? '#F3F3F5'
+                      : isPostFilterApplied
+                      ? settings.theme?.primaryColor
+                      : '#2B2C46'
                   }`,
                   borderRadius: '40px',
                   width: '40px',
@@ -408,7 +412,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 />
               </div>
 
-              {isPostFilterApplied && !disablePostFilter && (
+              {isPostFilterApplied && (
                 <div
                   style={{
                     position: 'absolute',
@@ -427,7 +431,9 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     style={{
                       width: '8px',
                       height: '8px',
-                      background: settings.theme?.primaryColor,
+                      background: disablePostFilter
+                        ? '#E0E0E0'
+                        : settings.theme?.primaryColor,
                       borderRadius: '100%',
                     }}
                   ></div>
