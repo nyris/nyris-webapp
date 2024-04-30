@@ -107,10 +107,6 @@ function ItemResult(props: Props) {
     setOpenDetailedView('image');
 
     dispatch(onToggleModalItemDetail(true));
-    dispatch(updateStatusLoading(true));
-    setTimeout(() => {
-      dispatch(updateStatusLoading(false));
-    }, 400);
   };
   const ctaLink = get(
     dataItem,

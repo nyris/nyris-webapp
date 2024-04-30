@@ -17,6 +17,10 @@ if (settings.rfq?.enabled && settings.support?.enabled) {
   settings.support.enabled = false;
 }
 
+if (settings.algolia.enabled) {
+  settings.showFeedback = false;
+}
+
 let normalizedSettings: AppSettings = {
   ...defaultSettings,
   ...settings,
