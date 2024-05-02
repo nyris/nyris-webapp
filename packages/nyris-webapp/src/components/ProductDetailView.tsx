@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Button, Collapse, Grid, Typography } from '@material-ui/core';
+import { Button, Collapse, Grid, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import IconOpenLink from 'common/assets/icons/Union.svg';
+import { ReactComponent as IconOpenLink }  from 'common/assets/icons/Union.svg';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useMediaQuery } from 'react-responsive';
 import { ImagePreviewCarousel } from './carousel/ImagePreviewCarousel';
@@ -20,7 +20,8 @@ import { useTranslation } from 'react-i18next';
 import ProductAttribute from './ProductAttribute';
 import CadenasWebViewer from './CadenasWebViewer';
 import { makeStyles } from '@material-ui/core/styles';
-import { get } from 'lodash';
+import { get, isUndefined } from 'lodash';
+import { ReactComponent as IconSettings } from 'common/assets/icons/settings.svg';
 
 const useStyles = makeStyles(theme => ({
   buttonStyle3D: {
@@ -76,6 +77,13 @@ function ProductDetailView(props: Props) {
     settings.field?.ctaLinkField ? settings.field?.ctaLinkField : 'links.main',
   );
 
+  const secondaryCTALink = get(
+    dataItem,
+    settings.field?.secondaryCTALinkField
+      ? settings.field?.secondaryCTALinkField
+      : '',
+  );
+
   useEffect(() => {
     if (dataItem) {
       checkDataItemResult(dataItem);
@@ -121,16 +129,16 @@ function ProductDetailView(props: Props) {
   }, [dataItem, settings.field.productDetails]);
   const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
   return (
-    <Box
+    <div
       className="box-modal-default"
-      borderRadius={12}
       style={{
         margin: isMobile ? 0 : '',
         width: '600px',
         backgroundColor: '#fff',
+        borderRadius: 12,
       }}
     >
-      <Box
+      <div
         className="ml-auto"
         style={{
           width: 'fit-content',
@@ -144,7 +152,7 @@ function ProductDetailView(props: Props) {
         <Button style={{ padding: 0 }} onClick={() => handleClose?.()}>
           <CloseOutlinedIcon style={{ fontSize: 24, color: '#55566B' }} />
         </Button>
-      </Box>
+      </div>
 
       <div
         style={{
@@ -159,7 +167,7 @@ function ProductDetailView(props: Props) {
             setStatus3dView={setStatus3dView}
           />
         )}
-        <Box
+        <div
           className="box-carosel"
           style={{
             ...(dataImageCarousel.length === 0
@@ -225,7 +233,7 @@ function ProductDetailView(props: Props) {
               />
             </div>
           )}
-        </Box>
+        </div>
 
         <div
           className={classes.buttonStyle3D}
@@ -238,7 +246,7 @@ function ProductDetailView(props: Props) {
           {!is3dView &&
             status3dView !== 'not-found' &&
             settings.cadenas?.cadenas3dWebView && (
-              <Box
+              <div
                 style={{
                   background: '#E9E9EC',
                   width: '32px',
@@ -254,10 +262,10 @@ function ProductDetailView(props: Props) {
                 }}
               >
                 <Box3dIcon width={16} height={16} color={'#AAABB5'} />
-              </Box>
+              </div>
             )}
           {is3dView && (
-            <Box
+            <div
               style={{
                 background: '#2B2C46',
                 width: '32px',
@@ -273,12 +281,12 @@ function ProductDetailView(props: Props) {
               }}
             >
               <CloseIcon width={16} height={16} color={'#FFF'} />
-            </Box>
+            </div>
           )}
         </div>
       </div>
 
-      <Box
+      <div
         style={{
           overflowY: 'auto',
           maxHeight: '90svh',
@@ -289,58 +297,64 @@ function ProductDetailView(props: Props) {
           marginTop: '6px',
         }}
       >
-        <Box
+        <div
           className="box-content"
-          display={'flex'}
           style={{
+            display: 'flex',
             marginTop: '16px',
             flexDirection: 'column',
             backgroundColor: '#F3F3F5',
           }}
         >
-          <Box className="box-top">
+          <div className="box-top">
             {settings.warehouseVariant && (
-              <Box
-                display="flex"
-                justifyContent={'space-between'}
-                flexDirection={'row'}
+              <div
                 style={{
-                  color: '#2B2C46',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  flexDirection: 'row',
+                  color: settings.theme.mainTextColor ||'#2B2C46',
                   marginBottom: 10,
                   paddingLeft: 16,
                   paddingRight: 16,
+                  gridGap: 8,
                 }}
-                gridGap={8}
               >
                 <Typography
                   className="text-f12 max-line-1 fw-400"
                   style={{
-                    color: '#2B2C46',
+                    color: settings.theme.mainTextColor || '#2B2C46',
                   }}
                 >
                   {sku}
                 </Typography>
 
-                {settings.warehouseVariant && (
-                  <Typography
-                    className="text-f12 max-line-1 fw-400"
-                    style={{
-                      color: '#2B2C46',
-                    }}
-                  >
-                    <span
+                {settings.warehouseVariant &&
+                  !isUndefined(
+                    get(dataItem, settings.field.warehouseStockValue),
+                  ) && (
+                    <Typography
+                      className="text-f12 max-line-1 fw-400"
                       style={{
-                        color: dataItem[settings.field.warehouseStockValue]
-                          ? '#00C070'
-                          : '#c54545',
-                        fontWeight: 600,
+                        color: settings.theme.mainTextColor || '#2B2C46',
                       }}
                     >
-                      {dataItem[settings.field.warehouseStockValue] || 0}
-                    </span>
-                  </Typography>
-                )}
-              </Box>
+                      <span
+                        style={{
+                          color: get(
+                            dataItem,
+                            settings.field.warehouseStockValue,
+                          )
+                            ? '#00C070'
+                            : '#c54545',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {get(dataItem, settings.field.warehouseStockValue) || 0}
+                      </span>
+                    </Typography>
+                  )}
+              </div>
             )}
 
             <Grid
@@ -348,17 +362,20 @@ function ProductDetailView(props: Props) {
               justifyContent="space-between"
               style={{ backgroundColor: '#F3F3F5' }}
             >
-              <Box
-                display="flex"
-                flexDirection="row"
-                flexWrap="wrap"
-                style={{ gap: 6 }}
-                width={'100%'}
+              <div
+                style={{
+                  gap: 6,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  width: '100%',
+                }}
               >
                 {!settings.warehouseVariant && settings.CTAButtonText && (
                   <ProductAttribute
-                    title={'Produktname'}
+                    title={t('Product name')}
                     value={title}
+                    backgroundColor={settings.theme.brandFieldBackground}
                     width={
                       settings.warehouseVariant
                         ? { xs: '49%', md: 'fit-content' }
@@ -370,6 +387,7 @@ function ProductDetailView(props: Props) {
                   <ProductAttribute
                     title={settings.itemIdLabel || 'SKU'}
                     value={sku}
+                    backgroundColor={''}
                     width={
                       settings.warehouseVariant
                         ? { xs: '49%', md: 'fit-content' }
@@ -381,6 +399,7 @@ function ProductDetailView(props: Props) {
                   <ProductAttribute
                     title={t('Brand')}
                     value={brand || settings.brandName}
+                    backgroundColor={settings.theme.brandFieldBackground}
                     width={
                       manufacturerNumber
                         ? { xs: '49%', md: 'fit-content' }
@@ -403,26 +422,35 @@ function ProductDetailView(props: Props) {
                   <>
                     {settings.field.warehouseNumber && (
                       <ProductAttribute
-                        title={dataItem[settings.field.warehouseNumber]}
+                        title={
+                          get(dataItem, settings.field.warehouseNumber) ||
+                          settings.field.warehouseNumber
+                        }
                         value={
-                          dataItem[settings.field.warehouseNumberValue] || 'N/A'
+                          get(dataItem, settings.field.warehouseNumberValue) ||
+                          'N/A'
                         }
                         width={{ xs: '49%', md: 'fit-content' }}
                       />
                     )}
                     {settings.field.warehouseShelfNumber && (
                       <ProductAttribute
-                        title={dataItem[settings.field.warehouseShelfNumber]}
+                        title={
+                          get(dataItem, settings.field.warehouseShelfNumber) ||
+                          settings.field.warehouseShelfNumber
+                        }
                         value={
-                          dataItem[settings.field.warehouseShelfNumberValue] ||
-                          'N/A'
+                          get(
+                            dataItem,
+                            settings.field.warehouseShelfNumberValue,
+                          ) || 'N/A'
                         }
                         width={{ xs: '49%', md: 'fit-content' }}
                       />
                     )}
                   </>
                 )}
-              </Box>
+              </div>
 
               <Grid
                 item
@@ -431,19 +459,64 @@ function ProductDetailView(props: Props) {
                   backgroundColor: '#F3F3F5',
                 }}
               >
-                <Box
+                {settings.secondaryCTAButtonText && (
+                  <div
+                    style={{
+                      background: settings.theme.secondaryCTAButtonColor || '#2B2C46',
+                      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                      borderRadius: 4,
+                      marginTop: 8,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                    className="btn-detail-item"
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        width: '100%',
+                        padding: '0px 12px',
+                        minHeight: 64,
+                        cursor: secondaryCTALink ? 'pointer' : 'normal',
+                      }}
+                      onClick={() => {
+                        if (secondaryCTALink) {
+                          window.open(`${secondaryCTALink}`, '_blank');
+                        }
+                      }}
+                    >
+                      <Typography
+                        className="text-f18 fw-700 text-white max-line-2"
+                        align="left"
+                        style={{
+                          letterSpacing: '0.55px',
+                          maxWidth: '500px',
+                          paddingRight: '4px',
+                        }}
+                      >
+                        {settings.secondaryCTAButtonText}
+                      </Typography>
+                      {secondaryCTALink && <IconSettings color="white" />}
+                    </div>
+                  </div>
+                )}
+
+                <div
                   style={{
-                    background: settings.theme?.primaryColor,
+                    background: settings.theme?.CTAButtonColor || settings.theme?.primaryColor,
                     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                     borderRadius: 4,
                     marginTop: 8,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                   }}
-                  display={'flex'}
-                  justifyContent={'space-between'}
-                  alignItems={'center'}
                   className="btn-detail-item"
                 >
-                  <Box
+                  <div
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
@@ -460,9 +533,10 @@ function ProductDetailView(props: Props) {
                     }}
                   >
                     <Typography
-                      className="text-f18 fw-700 text-white max-line-2"
+                      className="text-f18 fw-700 max-line-2"
                       align="left"
                       style={{
+                        color: settings.theme?.CTAButtonTextColor || '#FFFFFF',
                         letterSpacing: '0.55px',
                         maxWidth: '500px',
                         paddingRight: '4px',
@@ -473,21 +547,17 @@ function ProductDetailView(props: Props) {
                         : dataItem[settings.field.productName]}
                     </Typography>
                     {ctaLink && (
-                      <img
-                        src={IconOpenLink}
-                        alt=""
-                        style={{ minWidth: 16, marginLeft: 5 }}
-                      />
+                      <IconOpenLink fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'} width={16} />
                     )}
-                  </Box>
-                </Box>
+                  </div>
+                </div>
                 {productDetails && (
-                  <Box className="w-100">
+                  <div className="w-100">
                     <Button
                       className="w-100 button-hover"
                       style={{
                         backgroundColor: '#F3F3F5',
-                        color: '#2b2c46',
+                        color: settings.theme.mainTextColor || '#2b2c46',
                         display: 'flex',
                         fontSize: 14,
                         justifyContent: 'space-between',
@@ -516,29 +586,29 @@ function ProductDetailView(props: Props) {
                           padding: 5,
                           paddingLeft: 15,
                           paddingRight: 15,
-                          color: '#2b2c46',
+                          color: settings.theme.mainTextColor || '#2b2c46',
                         }}
                       >
                         {productDetails}
                       </Typography>
                     </Collapse>
-                  </Box>
+                  </div>
                 )}
               </Grid>
             </Grid>
-          </Box>
+          </div>
 
           {settings.showFeedbackAndShare && (
-            <Box
+            <div
               className="box-bottom"
               style={{
                 height: '48px',
                 padding: '0px 16px 0px 16px',
                 marginBottom: 10,
                 marginTop: 10,
+                display: 'flex',
+                justifyContent: 'center',
               }}
-              display={'flex'}
-              justifyContent={'center'}
             >
               <Grid
                 container
@@ -548,7 +618,7 @@ function ProductDetailView(props: Props) {
                 alignItems="center"
               >
                 <Grid item>
-                  <Box display={'flex'} alignItems={'center'}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Button
                       className="btn-item"
                       onClick={() => {
@@ -562,10 +632,10 @@ function ProductDetailView(props: Props) {
                         color={feedback === 'like' ? '#3E36DC' : '#000000'}
                       />
                     </Button>
-                  </Box>
+                  </div>
                 </Grid>
                 <Grid item>
-                  <Box display={'flex'} alignItems={'center'}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Button
                       className="btn-item"
                       onClick={() => {
@@ -579,24 +649,24 @@ function ProductDetailView(props: Props) {
                         color={feedback === 'dislike' ? '#CC1854' : '#000000'}
                       />
                     </Button>
-                  </Box>
+                  </div>
                 </Grid>
                 {settings.shareOption && (
                   <Grid item>
-                    <Box display={'flex'} alignItems={'center'}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Button
                         className="btn-item"
                         onClick={() => onHandlerModalShare()}
                       >
                         <IconShare width={24} height={24} color="#000000" />
                       </Button>
-                    </Box>
+                    </div>
                   </Grid>
                 )}
                 {/* <Grid item>
-              <Box display={'flex'} alignItems={'center'}>
+              <div display={'flex'} alignItems={'center'}>
                 <Button className="btn-item">
-                  <Box
+                  <div
                     className=""
                     display={'flex'}
                     justifyContent={'center'}
@@ -608,16 +678,16 @@ function ProductDetailView(props: Props) {
                       className="icon_support"
                       style={{ width: '30px' }}
                     />
-                  </Box>
+                  </div>
                 </Button>
-              </Box>
+              </div>
             </Grid> */}
               </Grid>
-            </Box>
+            </div>
           )}
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 }
 

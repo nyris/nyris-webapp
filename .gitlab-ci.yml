@@ -5,15 +5,16 @@ stages:
 build:
   stage: build
   tags: [ builder, integration ]
-  image: node:12
+  image: node:20.11
   artifacts:
     paths:
       - npm-packages
     expire_in: 30 days
   script:
+    - curl -o- -L https://yarnpkg.com/install.sh | bash
+    - export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
     - mkdir npm-packages
-    - npm ci
-    - npx lerna bootstrap
+    - yarn install --frozen-lockfile
     - npx lerna run build
     - (cd packages/nyris-react-components && npm pack && mv nyris-nyris-react-components-*.tgz ../../npm-packages/)
     - (cd packages/nyris-api && npm pack && mv nyris-nyris-api-*.tgz ../../npm-packages/)
@@ -24,7 +25,7 @@ build:
 publish to npm:
   stage: publish
   when: manual
-  image: node:12
+  image: node:20.11
   tags: [ builder, integration ]
   script:
     - mkdir -p ~/
@@ -35,15 +36,15 @@ publish to npm:
     - npm publish ./npm-packages/nyris-nyris-webapp-*.tgz --access public
 
 
-#publish to github:
-#  stage: publish
-#  when: manual
-#  image: alpine/git
-#  tags: [ builder, integration ]
-#  script:
-#    - mkdir -p ~/.ssh
-#    - ssh-keyscan github.com >> ~/.ssh/known_hosts
-#    - chmod 600 $SSH_KEY
-#    - export GIT_SSH_COMMAND='ssh -i $SSH_KEY'
-#    - git remote add github git@github.com:nyris/nyris-webapp.git
-#    - git push --follow-tags github HEAD:$CI_COMMIT_REF_NAME
+publish to github:
+  stage: publish
+  when: manual
+  image: alpine/git
+  tags: [ builder, integration ]
+  script:
+    - mkdir -p ~/.ssh
+    - ssh-keyscan github.com >> ~/.ssh/known_hosts
+    - chmod 600 $SSH_KEY
+    - export GIT_SSH_COMMAND='ssh -i $SSH_KEY'
+    - git remote add github git@github.com:nyris/nyris-webapp.git
+    - git push --follow-tags github HEAD:refs/heads/$CI_COMMIT_REF_NAME

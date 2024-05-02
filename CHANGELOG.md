@@ -3,6 +3,65 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.54 - 2024-04-24
+
+### Fix
+- CTA button icon position
+
+## 0.3.53 - 2024-04-18
+
+### Updated
+- Decreased cropping minimum width & height
+
+### Added
+- Experience Visual Search feature
+
+## 0.3.52 - 2024-04-18
+
+### Fix
+- react webapp not publish build
+
+### Added
+- use user metadata from auth0
+- changing secondary CTA button style
+
+## 0.3.51 - 2024-04-17
+
+### Added
+- Updated react to 18
+- Updated lerna to 8
+- bypass region api call if it fails
+- disable feedback
+- function to add widget in runtime
+- Updated package manager to yarn
+- Updated pipeline
+
+### Removed
+- Removed <Box> usage of material ui
+
+## 0.3.50 - 2024-04-08
+
+### Fix
+- Object detection pointer is not initiating find API
+
+## 0.3.49 - 2024-03-25
+
+### Fix
+- Fix mobile preview not expanding correctly if system resources are low
+- Update DE translations of widget
+- Add secondary CTA Button
+
+## 0.3.48 - 2024-03-01
+
+### Added
+- Widget release
+- DE translations for pre-filter
+- Updated example settings file
+- Added post filter for Elastic version of search suite
+
+### Fix
+- On enter button the page refreshes
+
 ## 0.3.47 - 2024-01-31
 
 ### Added

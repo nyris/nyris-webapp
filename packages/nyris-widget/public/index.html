@@ -7,7 +7,6 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Nyris widget</title>
   <link rel="stylesheet" href="./styles.css">
-
 </head>
 <body style="padding: 18px;display: flex;justify-content: center;">
  
@@ -16,7 +15,7 @@
     <input class="search-bar" placeholder="Search"/>
     <img class="camera" id="nyris-visual-search-initiator" src="./camera.svg" width="24px" height="24px"/>
     <div class="search" >
-      <img  src="./search.svg" width="24px" height="24px"/>
+    <img  src="./search.svg" width="24px" height="24px"/>
 
     </div>
   </div>
@@ -24,9 +23,16 @@
   <script>
       var gNyrisApiKey=location.search.split("=")[1];
       window.nyrisSettings = {
-        apiKey: gNyrisApiKey ? gNyrisApiKey : "I94rtHQGbVAtXJ8fFYnccJTsepp2XzfU",
-        responseFormat: 'application/offers.complete+json', // See "response type" https://docs.nyris.io/#response-type
-        initiatorElementId: 'nyris-visual-search-initiator'
+        apiKey: gNyrisApiKey ? gNyrisApiKey : "",
+        initiatorElementId: 'nyris-visual-search-initiator',
+        primaryColor: '#3E36DC',
+        cameraIconColour: '#2B2C46',
+        browseGalleryButtonColor: '#E4E3FF',
+        customerLogo: '',
+        logoWidth: 256,
+        ctaButtonText: 'View more',
+        language: 'en',
+        navigatePreference: '_blank'
       };
 
       var s = document.createElement("script");

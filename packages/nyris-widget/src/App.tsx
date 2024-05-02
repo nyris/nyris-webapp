@@ -5,21 +5,24 @@ import close from "./images/close.svg";
 import drop_zone from "./images/dropzone.svg";
 import camera from "./images/camera.svg";
 import spinner from "./images/spinner.svg";
-import similar_search from "./images/similar_search-white.svg";
 import crop from "./images/crop.svg";
 import collapse from "./images/collapse.svg";
 import trash from "./images/trash.svg";
 import { debounce } from "lodash";
 
-import logo from "./images/logo.svg";
+import { ReactComponent as Logo } from "./images/logo.svg";
+import { ReactComponent as DeutscheLogo } from "./images/deutsche_logo.svg";
 
 import "./styles/nyris.scss";
 
-import { Result, ResultProps } from "./Result";
+import { Result } from "./Result";
 import { RectCoords, Region } from "@nyris/nyris-api";
 import { Preview } from "@nyris/nyris-react-components";
 import classNames from "classnames";
 import { useDropzone } from "react-dropzone";
+import translations from "./translations";
+
+const labeles = translations(window.nyrisSettings.language);
 
 export enum Screen {
   Hidden = "hidden",
@@ -77,12 +80,12 @@ const SuccessMultiple = ({
     <>
       <div className="nyris__screen nyris__success-multiple">
         <div className="nyris__main-heading ">
-          {noResult ? "No results" : "Success!"}
+          {noResult ? labeles["Let’s try that again"] : labeles["Success!"]}
         </div>
         <div className="nyris__main-description">
           {noResult
-            ? "Sorry, no results were found. Please ensure that your image is properly cropped, clear, and free of background noise. You have the option to upload a new image or readjust the cropping frame:"
-            : `${results.length} matches found`}
+            ? labeles["We couldn’t find matches"]
+            : `${results.length} ${labeles["matches found"]}`}
         </div>
         <div className="nyris__main-content">
           <div className="nyris__success-multiple-preview">
@@ -95,7 +98,7 @@ const SuccessMultiple = ({
                   debouncedOnImageSelectionChange(r);
                 }}
                 regions={regions}
-                minWidth={100}
+                minWidth={100 * (image.width / image.height)}
                 minHeight={100}
                 dotColor={expand ? "#FBD914" : ""}
                 minCropWidth={expand ? 60 : 10}
@@ -109,6 +112,7 @@ const SuccessMultiple = ({
                 showGrip={expand}
                 resize={true}
                 style={{ width: "75%" }}
+                draggable={expand ? true : false}
               />
             </div>
             <div
@@ -153,7 +157,10 @@ const SuccessMultiple = ({
         <label
           htmlFor="nyris__hello-open-camera"
           className={`nyris__success-multiple-camera`}
-          style={{ bottom: noResult ? "60px" : "" }}
+          style={{
+            bottom: noResult ? "60px" : "",
+            backgroundColor: window.nyrisSettings.cameraIconColour,
+          }}
         >
           {<img src={camera} width={24} height={24} />}
         </label>
@@ -168,16 +175,16 @@ const LoadingSpinner = () => {
       <div className="nyris__wait-spinner">
         <img src={spinner} width={66} height={66} />
       </div>
-      <div>Analyzing image...</div>
+      <div>{labeles["Analyzing image..."]}</div>
     </div>
   );
 };
 
 const Wait = () => (
   <div className="nyris__screen nyris__wait">
-    <div className="nyris__main-heading">Hold on</div>
+    <div className="nyris__main-heading">{labeles["Hold on"]}</div>
     <div className="nyris__main-description">
-      We are working hard on finding the product
+      {labeles["We are working hard on finding the product"]}
     </div>
     <LoadingSpinner />
   </div>
@@ -190,8 +197,10 @@ const Fail = ({
   image,
   regions,
   selection,
+  onFile,
 }: AppProps) => {
   const [currentSelection, setCurrentSelection] = useState(selection);
+  const isMobile = document.body.clientWidth < 512;
 
   const acceptCrop = () => onAcceptCrop(currentSelection);
   // @ts-ignore
@@ -204,44 +213,32 @@ const Fail = ({
         <p>
           <br />
           <br />
-          Unfortunately we could not find any relevant matches for your search.
-          Perhaps your photo is tilted, blurry or cropped?
+          {labeles["Oops!"]}
         </p>
-        {showPreview && (
-          <p>
-            <br />
-            <br />
-            <strong>Please reselect focus area:</strong>
-          </p>
-        )}
       </div>
       <div className="nyris__fail-content">
-        {showPreview && (
-          <>
-            <div className="nyris__reselect-image-wrapper">
-              <Preview
-                image={image}
-                selection={currentSelection}
-                onSelectionChange={setCurrentSelection}
-                regions={regions}
-                maxWidth={350}
-                maxHeight={350}
-                dotColor="#FF0000"
-                minCropWidth={100}
-                minCropHeight={100}
-              />
-            </div>
-            <div className="nyris__button-accept" onClick={acceptCrop}>
-              Accept & proceed
-            </div>
-          </>
-        )}
-
-        <div className="nyris__button-new-search" onClick={onRestart}>
-          {showPreview && <span>Or start new search</span>}
-          {!showPreview && <span>Start new search</span>}
-          <img src={similar_search} width={16} height={16} />
-        </div>
+        <label
+          className="nyris__button-accept"
+          htmlFor="nyris__hello-open-camera"
+        >
+          <span>
+            {isMobile
+              ? labeles["Click a picture"]
+              : labeles["Upload a picture"]}
+          </span>
+          <img src={camera} width={16} height={16} />
+        </label>
+        <input
+          type="file"
+          name="take-picture"
+          id="nyris__hello-open-camera"
+          accept="image/jpeg,image/png"
+          onChange={onFile}
+          capture="environment"
+          style={{
+            display: "none",
+          }}
+        />
       </div>
     </div>
   );
@@ -251,24 +248,48 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => onFileDropped(fs[0]),
   });
+
+  const logo =
+    window.nyrisSettings.language === "en" ? (
+      <Logo fill={window.nyrisSettings.primaryColor} width={318} height={134} />
+    ) : (
+      <DeutscheLogo
+        fill={window.nyrisSettings.primaryColor}
+        width={329}
+        height={134}
+      />
+    );
+
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
-        <img src={logo} width={185} height={180} />
+        {window.nyrisSettings.customerLogo ? (
+          <img
+            src={window.nyrisSettings.customerLogo}
+            width={window.nyrisSettings.logoWidth || 318}
+          />
+        ) : (
+          logo
+        )}
       </div>
       <div className="nyris__hello-wrapper">
         <div className="nyris__main-content nyris__main-content--mobile">
           <label
             className="nyris__hello-browse"
             htmlFor="nyris__hello-upload-input"
+            style={{
+              color: window.nyrisSettings.primaryColor,
+              backgroundColor: window.nyrisSettings.browseGalleryButtonColor,
+            }}
           >
-            Browse gallery
+            {labeles["Browse gallery"]}
           </label>
           <label
             className="nyris__hello-upload"
+            style={{ backgroundColor: window.nyrisSettings.primaryColor }}
             htmlFor="nyris__hello-open-camera"
           >
-            Take a photo
+            {labeles["Take a photo"]}
             <img src={camera} width={16} height={16} />
           </label>
         </div>
@@ -276,19 +297,24 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
         <div className="nyris__main-content nyris__main-content--desktop">
           <label
             className="nyris__hello-upload"
+            style={{ backgroundColor: window.nyrisSettings.primaryColor }}
             htmlFor="nyris__hello-upload-input"
           >
-            Upload a picture
+            {labeles["Upload a picture"]}
             <img src={camera} width={16} height={16} />
           </label>
 
-          <div className="nyris__hello-drop-zone" {...getRootProps()}>
+          <div
+            className={`nyris__hello-drop-zone ${
+              isDragActive ? "active-drop" : ""
+            }`}
+            {...getRootProps()}
+          >
             <img src={drop_zone} width={48} height={48} />
             <div>
               <span className="nyris__hello-drop-zone-bold-text">
-                Drag and drop{" "}
+                {labeles["Drag and drop an image here"]}
               </span>
-              an image here
             </div>
           </div>
         </div>
@@ -329,6 +355,7 @@ export const App = (props: AppProps) => {
   let wide = false;
   let resultsSingle = false;
   let resultsMultiple = false;
+
   switch (showScreen) {
     case Screen.Hello:
       content = <Hello {...props} />;
@@ -337,7 +364,9 @@ export const App = (props: AppProps) => {
       content = <Wait />;
       break;
     case Screen.Fail:
-      content = <Fail {...props} errorMessage="Something went wrong" />;
+      content = (
+        <Fail {...props} errorMessage={labeles["Something went wrong"]} />
+      );
       break;
     case Screen.Result:
       content = <SuccessMultiple {...props} />;
@@ -352,7 +381,7 @@ export const App = (props: AppProps) => {
     nyrisMultipleProducts: resultsMultiple,
     nyrisSingleProduct: resultsSingle,
   });
-
+  const showPoweredByNyris = !process.env.IS_ENTERPRISE;
   return (
     <React.Fragment>
       {showScreen != Screen.Hidden && (
@@ -371,13 +400,18 @@ export const App = (props: AppProps) => {
                 style={{
                   paddingBottom:
                     showScreen == Screen.Result && results?.length > 0
-                      ? "80px"
+                      ? showPoweredByNyris
+                        ? "80px"
+                        : "50px"
                       : "",
                 }}
               >
-                <a href="https://nyris.io/">
-                  Powered by <span className="nyris__footer-logo">nyris®</span>
-                </a>
+                {showPoweredByNyris && (
+                  <a target="_blank" href="https://nyris.io/">
+                    Powered by{" "}
+                    <span className="nyris__footer-logo">nyris®</span>
+                  </a>
+                )}
               </div>
             </div>
           </div>

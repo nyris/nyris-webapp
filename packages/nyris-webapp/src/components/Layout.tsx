@@ -1,4 +1,3 @@
-import { Box } from '@material-ui/core';
 import { ReactNode } from 'components/common';
 import React, { memo, useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
@@ -6,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import {
   clearPostFilter,
   onResetRequestImage,
-  setUpdateSession,
+  setPreFilter,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppState } from '../types';
@@ -15,7 +14,6 @@ import './common.scss';
 import FooterMobile from './FooterMobile';
 import HeaderMobile from './HeaderMobile';
 import Header from './Header';
-import { createSessionByApi } from 'services/session';
 import { isUndefined } from 'lodash';
 import AppMobile from './AppMobile';
 import jQuery from 'jquery';
@@ -46,7 +44,7 @@ jQuery(document).ready(function () {
     email: 'info@cadenas.de',
   });
   psol.core.setServiceBaseUrl('https://webapi.partcommunity.com');
-  window.onpageshow = function(event: any) {
+  window.onpageshow = function (event: any) {
     if (event.persisted) {
       window.location.reload();
     }
@@ -76,20 +74,10 @@ function Layout({ children }: ReactNode): JSX.Element {
     (isMobile && history.location?.pathname === '/result') ||
     history.location?.pathname === '/';
   const language = useAppSelector(state => state.settings.language);
-  const { isAuthenticated } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
   const { auth0, showPoweredByNyris } = settings;
   const showApp = !auth0.enabled || (auth0.enabled && isAuthenticated);
   i18n.changeLanguage(language);
-
-  useEffect(() => {
-    const createSession = async () => {
-      let payload = await createSessionByApi(settings);
-      dispatch(setUpdateSession(payload));
-    };
-
-    createSession().catch(console.log);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (history.location?.pathname === '/') {
@@ -98,6 +86,12 @@ function Layout({ children }: ReactNode): JSX.Element {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history.location]);
+
+  useEffect(() => {
+    if (settings.shouldUseUserMetadata && user) {
+      dispatch(setPreFilter({ [user['/user_metadata'].value]: true }));
+    }
+  }, [user, dispatch, settings.shouldUseUserMetadata]);
 
   let HeaderApp: any;
   let FooterApp: any;
@@ -141,9 +135,9 @@ function Layout({ children }: ReactNode): JSX.Element {
   return (
     <div style={{ position: 'relative' }}>
       {loadingSearchAlgolia && (
-        <Box className="box-wrap-loading" style={{ zIndex: 99999999 }}>
+        <div className="box-wrap-loading" style={{ zIndex: 99999999 }}>
           <Loading />
-        </Box>
+        </div>
       )}
       <InstantSearchProvider>
         {isMobile && showApp && <AppMobile>{children}</AppMobile>}

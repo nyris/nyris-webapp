@@ -47,6 +47,8 @@ interface PreviewProps {
   style?: React.CSSProperties | undefined;
   /** enable resize on window resize */
   resize?: boolean;
+  /** enables draggable of cropping frame */
+  draggable?: boolean;
 }
 
 /** @internal State of the Preview component */
@@ -60,9 +62,6 @@ interface PreviewState {
 }
 
 const getCursor = (state: PreviewState) => {
-  if (state.dotHover) {
-    return "pointer";
-  }
   if (state.tlHover) {
     return "nw-resize";
   }
@@ -78,8 +77,13 @@ const getCursor = (state: PreviewState) => {
   if (state.rectHover) {
     return "move";
   }
+  if (state.dotHover) {
+    return "pointer";
+  }
   return "default";
 };
+
+const gripStrokeWidth = 3.5;
 
 const calcNewRect = (
   { x1, x2, y1, y2 }: RectCoords,
@@ -136,10 +140,10 @@ function scaleToPreviewPixels(
   minHeight?: number
 ) {
   const cover = {
-    x1: Math.max(x1 * width, 5),
-    x2: Math.min(x2 * width, width - 5),
-    y1: Math.max(y1 * height, 5),
-    y2: Math.min(y2 * height, height - 5),
+    x1: Math.max(x1 * width, gripStrokeWidth),
+    x2: Math.min(x2 * width, width - gripStrokeWidth),
+    y1: Math.max(y1 * height, gripStrokeWidth),
+    y2: Math.min(y2 * height, height - gripStrokeWidth),
   };
 
   if (
@@ -149,10 +153,10 @@ function scaleToPreviewPixels(
     cover.y2 - cover.y1 < minHeight
   ) {
     return {
-      x1: Math.max(x1 * width - minWidth / 2, 5),
-      x2: Math.min(x2 * width + minWidth / 2, width - 5),
-      y1: Math.max(y1 * height - minHeight / 2, 5),
-      y2: Math.min(y2 * height + minHeight / 2, height - 5),
+      x1: Math.max(x1 * width - minWidth / 2, gripStrokeWidth),
+      x2: Math.min(x2 * width + minWidth / 2, width - gripStrokeWidth),
+      y1: Math.max(y1 * height - minHeight / 2, gripStrokeWidth),
+      y2: Math.min(y2 * height + minHeight / 2, height - gripStrokeWidth),
     };
   }
 
@@ -179,6 +183,7 @@ const Preview = ({
   showGrip = true,
   style,
   resize,
+  draggable = true,
 }: PreviewProps) => {
   const divRef = useRef<any>(null);
   const stageRef = useRef<any>(null);
@@ -194,12 +199,18 @@ const Preview = ({
     height: 0,
   });
 
+  const [imageSelection, setImageSelection] = useState(selection);
+
   const [initialWidth, setInitialWidth] = useState(0);
 
   const [initialMaxWidth, setInitialMaxWidth] = useState(initialMaxWidthProps);
   const [initialMaxHeight, setInitialMaxHeight] = useState(
     initialMaxHeightProps
   );
+  let gripSize = 20;
+  let gripPadding = gripSize;
+  const bound = -1 * gripPadding;
+  let gripOffset = 5;
 
   useEffect(() => {
     shrinkAnimationRef.current = shrinkAnimation;
@@ -229,6 +240,37 @@ const Preview = ({
 
   const maxHeight = initialMaxHeight || dimensions.height;
   const maxWidth = initialMaxWidth || dimensions.width;
+
+  useEffect(() => {
+    let newState = {
+      x1: selection.x1 * width,
+      x2: selection.x2 * width,
+      y1: selection.y1 * height,
+      y2: selection.y2 * height,
+    };
+
+    const xGap =
+      minX + gripSize - (newState.x2 - newState.x1) + gripStrokeWidth;
+    const yGap =
+      minY + gripSize - (newState.y2 - newState.y1) + gripStrokeWidth;
+
+    if (newState.x2 - newState.x1 < minX + gripSize) {
+      newState.x1 = newState.x1 - xGap / 2;
+      newState.x2 = newState.x2 + xGap / 2;
+    }
+
+    if (newState.y2 - newState.y1 < minY + gripSize) {
+      newState.y1 = newState.y1 - yGap / 2;
+      newState.y2 = newState.y2 + yGap / 2;
+    }
+
+    setImageSelection({
+      x1: newState.x1 / width,
+      x2: newState.x2 / width,
+      y1: newState.y1 / height,
+      y2: newState.y2 / height,
+    });
+  }, [selection]);
 
   useEffect(() => {
     if (divRef.current?.offsetWidth) {
@@ -267,46 +309,76 @@ const Preview = ({
   const { x1, y1, x2, y2 } = scaleToPreviewPixels(
     width,
     height,
-    selection,
+    imageSelection,
     minCropWidth,
     minCropHeight
   );
-  let [minX, minY] = [100, 100];
+  let [minX, minY] = [minCropWidth, minCropHeight];
 
   const handleDragBoundTl = ({ x, y }: { x: number; y: number }) => {
+    let xNew = x;
+    let yNew = y;
+
+    const minWidth = minX + gripPadding + gripSize;
+    const minHeight = minY + gripPadding + gripSize;
+
+    if (x2 - xNew < minWidth) xNew = xNew - (minWidth - (x2 - xNew));
+    if (y2 - yNew < minHeight) yNew = yNew - (minHeight - (y2 - yNew));
+
     return {
-      x: Math.max(Math.min(x, x2 - minX), 0),
-      y: Math.max(Math.min(y, y2 - minY), 0),
+      x: Math.max(xNew, bound + gripStrokeWidth + gripOffset),
+      y: Math.max(yNew, bound + gripStrokeWidth + gripOffset),
     };
   };
 
   const handleDragBoundTr = ({ x, y }: { x: number; y: number }) => {
+    let yNew = y;
+    const minHeight = minY + gripPadding + gripSize;
+
+    if (y2 - yNew < minHeight) yNew = yNew - (minHeight - (y2 - yNew));
+
     return {
-      x: Math.min(Math.max(x, x1 + minX), width),
-      y: Math.max(Math.min(y, y2 - minY), 0),
+      x: Math.min(
+        Math.max(x, x1 + minX),
+        width + bound - (gripStrokeWidth + gripOffset)
+      ),
+      y: Math.max(yNew, bound + gripStrokeWidth + gripOffset),
     };
   };
 
   const handleDragBoundBl = ({ x, y }: { x: number; y: number }) => {
+    let xNew = x;
+    const minWidth = minX + gripPadding + gripSize;
+    if (x2 - xNew < minWidth) xNew = xNew - (minWidth - (x2 - xNew));
+
     return {
-      x: Math.max(Math.min(x, x2 - minX), 0),
-      y: Math.min(Math.max(y, y1 + minY), height),
+      x: Math.max(xNew, bound + gripStrokeWidth + gripOffset),
+      y: Math.min(
+        Math.max(y, y1 + minY),
+        height + bound - (gripStrokeWidth + gripOffset)
+      ),
     };
   };
 
   const handleDragBoundBr = ({ x, y }: { x: number; y: number }) => {
     return {
-      x: Math.min(Math.max(x, x1 + minX), width),
-      y: Math.min(Math.max(y, y1 + minY), height),
+      x: Math.min(
+        Math.max(x, x1 + minX),
+        width + bound - (gripStrokeWidth + gripOffset)
+      ),
+      y: Math.min(
+        Math.max(y, y1 + minY),
+        height + bound - (gripStrokeWidth + gripOffset)
+      ),
     };
   };
 
   const handleDragBoundRect = ({ x, y }: { x: number; y: number }) => {
-    let elemWidth = x2 - x1 + 5;
-    let elemHeight = y2 - y1 + 5;
+    let elemWidth = x2 - x1 + gripStrokeWidth;
+    let elemHeight = y2 - y1 + gripStrokeWidth;
     return {
-      x: Math.max(Math.min(x, width - elemWidth), 5),
-      y: Math.max(Math.min(y, height - elemHeight), 5),
+      x: Math.max(Math.min(x, width - elemWidth), gripStrokeWidth),
+      y: Math.max(Math.min(y, height - elemHeight), gripStrokeWidth),
     };
   };
 
@@ -321,9 +393,17 @@ const Preview = ({
   });
 
   const setState = (s: any) => {
-    let o = {};
-    Object.assign(o, state, s);
-    replaceState(o as PreviewState);
+    const newState: PreviewState = {
+      tlHover: false,
+      trHover: false,
+      blHover: false,
+      brHover: false,
+      dotHover: false,
+      rectHover: false,
+      ...s,
+    };
+
+    replaceState(newState);
   };
 
   const handleDragMove = (
@@ -333,11 +413,31 @@ const Preview = ({
     if (evt.target instanceof Konva.Stage) {
       return;
     }
-
     let { x: newX, y: newY } = evt.target.getAbsolutePosition();
     let { width: elemWidth, height: elemHeight } = evt.target.getSize();
-    const modifiedX = newX + (elem !== "rect" ? gripPadding : 0);
-    const modifiedY = newY + (elem !== "rect" ? gripPadding : 0);
+
+    let gripOffsetX = gripOffset;
+    let gripOffsetY = gripOffset;
+
+    if (elem === "tl") {
+      gripOffsetX = gripOffsetX * -1;
+      gripOffsetY = gripOffsetY * -1;
+    }
+    if (elem === "tr") {
+      gripOffsetX = gripOffsetX * 1;
+      gripOffsetY = gripOffsetY * -1;
+    }
+    if (elem === "bl") {
+      gripOffsetX = gripOffsetX * -1;
+      gripOffsetY = gripOffsetY * 1;
+    }
+    if (elem === "br") {
+      gripOffsetX = gripOffsetX * 1;
+      gripOffsetY = gripOffsetY * 1;
+    }
+
+    const modifiedX = newX + (elem !== "rect" ? gripPadding + gripOffsetX : 0);
+    const modifiedY = newY + (elem !== "rect" ? gripPadding + gripOffsetY : 0);
 
     const newRect = calcNewRect(
       { x1, x2, y1, y2 },
@@ -387,9 +487,38 @@ const Preview = ({
   const handleDragMoveBr = handleDragMove.bind(null, "br");
 
   const notifySelection = (r: RectCoords) => {
-    if (onSelectionChange) {
-      onSelectionChange(r);
+    setImageSelection(r);
+  };
+
+  const objectSelection = (r: RectCoords) => {
+    let newState = {
+      x1: r.x1 * width,
+      x2: r.x2 * width,
+      y1: r.y1 * height,
+      y2: r.y2 * height,
+    };
+
+    const xGap =
+      minX + gripSize - (newState.x2 - newState.x1) + gripStrokeWidth;
+    const yGap =
+      minY + gripSize - (newState.y2 - newState.y1) + gripStrokeWidth;
+
+    if (newState.x2 - newState.x1 < minX + gripSize) {
+      newState.x1 = newState.x1 - xGap / 2;
+      newState.x2 = newState.x2 + xGap / 2;
     }
+
+    if (newState.y2 - newState.y1 < minY + gripSize) {
+      newState.y1 = newState.y1 - yGap / 2;
+      newState.y2 = newState.y2 + yGap / 2;
+    }
+
+    setImageSelection({
+      x1: newState.x1 / width,
+      x2: newState.x2 / width,
+      y1: newState.y1 / height,
+      y2: newState.y2 / height,
+    });
   };
 
   if (!image) {
@@ -410,9 +539,7 @@ const Preview = ({
     };
   });
 
-  let gripSize = 20;
-  let gripPadding = gripSize / 2;
-  let darkOpacity = 0.3;
+  let darkOpacity = shrinkAnimation ? 0.4 : 0.3;
   const cornerRadius = [4, 4, 4, 4];
   const clipFunc = (ctx: any) => {
     ctx.beginPath();
@@ -489,8 +616,14 @@ const Preview = ({
       const heightDiff = newHeight - currentHeight;
 
       setDimensions({
-        width: currentWidth + easing * widthDiff,
-        height: currentHeight + easing * heightDiff,
+        width: Math.min(
+          currentWidth + easing * widthDiff,
+          maxSizeRef.current.maxWidth
+        ),
+        height: Math.min(
+          currentHeight + easing * heightDiff,
+          maxSizeRef.current.maxHeight
+        ),
       });
 
       if (frame.time >= 170) {
@@ -584,11 +717,21 @@ const Preview = ({
               />
               <Rect
                 stroke="black"
-                draggable={true}
+                draggable={draggable ? true : false}
                 onDragMove={handleDragMoveRect}
                 dragBoundFunc={handleDragBoundRect}
-                onMouseOver={() => setState({ rectHover: true })}
-                onMouseOut={() => setState({ rectHover: false })}
+                onDragEnd={() => {
+                  if (draggable) setState({ rectHover: true });
+                  if (onSelectionChange) {
+                    onSelectionChange(imageSelection);
+                  }
+                }}
+                onMouseOver={() => {
+                  if (draggable) setState({ rectHover: true });
+                }}
+                onMouseOut={() => {
+                  setState({ rectHover: false });
+                }}
                 opacity={0}
                 strokeWidth={2}
                 x={x1}
@@ -600,15 +743,16 @@ const Preview = ({
               />
 
               {/* Dark areas */}
-
+              {/* top */}
               <Rect
                 fill="black"
                 opacity={darkOpacity}
                 x={0}
                 y={0}
                 width={width}
-                height={y1}
+                height={y1 + 0.08}
               />
+              {/* bottom */}
               <Rect
                 fill="black"
                 opacity={darkOpacity}
@@ -617,21 +761,23 @@ const Preview = ({
                 width={width}
                 height={height - y2}
               />
+              {/* left */}
               <Rect
                 fill="black"
                 opacity={darkOpacity}
                 x={0}
                 y={y1}
                 width={x1}
-                height={y2 - y1}
+                height={y2 - y1 + 0.08}
               />
+              {/* right */}
               <Rect
                 fill="black"
                 opacity={darkOpacity}
                 x={x2}
                 y={y1}
                 width={width - x2}
-                height={y2 - y1}
+                height={y2 - y1 + 0.08}
               />
             </Layer>
 
@@ -642,7 +788,7 @@ const Preview = ({
                 <Path
                   data="M2 18V10C2 5.58172 5.58172 2 10 2H18"
                   stroke={"white"}
-                  strokeWidth={5}
+                  strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   opacity={1}
                   x={x1 - 3}
@@ -653,22 +799,29 @@ const Preview = ({
                   shadowOpacity={0.25}
                 />
                 <Rect
+                  // fill="black"
                   draggable={true}
                   onDragMove={handleDragMoveTl}
                   dragBoundFunc={handleDragBoundTl}
                   onMouseOver={() => setState({ tlHover: true })}
                   onMouseOut={() => setState({ tlHover: false })}
+                  onDragEnd={() => {
+                    setState({ tlHover: false });
+                    if (onSelectionChange) {
+                      onSelectionChange(imageSelection);
+                    }
+                  }}
                   opacity={1}
                   width={gripSize + gripPadding}
                   height={gripSize + gripPadding}
-                  x={x1 - gripPadding}
-                  y={y1 - gripPadding}
+                  x={x1 - gripPadding + gripOffset}
+                  y={y1 - gripPadding + gripOffset}
                 />
                 {/* top right */}
                 <Path
                   data="M2 2L10 2C14.4183 2 18 5.58172 18 10L18 18"
                   stroke={"white"}
-                  strokeWidth={5}
+                  strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   opacity={1}
                   x={x2 + 3}
@@ -680,23 +833,30 @@ const Preview = ({
                   shadowOpacity={0.25}
                 />
                 <Rect
+                  // fill="black"
                   draggable={true}
                   onDragMove={handleDragMoveTr}
                   dragBoundFunc={handleDragBoundTr}
                   onMouseOver={() => setState({ trHover: true })}
                   onMouseOut={() => setState({ trHover: false })}
+                  onDragEnd={() => {
+                    setState({ trHover: false });
+                    if (onSelectionChange) {
+                      onSelectionChange(imageSelection);
+                    }
+                  }}
                   opacity={1}
                   width={gripSize + gripPadding}
                   height={gripSize + gripPadding}
-                  x={x2 - gripPadding}
-                  y={y1 - gripPadding}
+                  x={x2 - gripPadding - gripOffset}
+                  y={y1 - gripPadding + gripOffset}
                   offsetX={gripSize - gripPadding}
                 />
                 {/* bottom left */}
                 <Path
                   data="M18 18L10 18C5.58172 18 2 14.4183 2 10L2 2"
                   stroke={"white"}
-                  strokeWidth={5}
+                  strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   opacity={1}
                   x={x1 - 3}
@@ -708,23 +868,30 @@ const Preview = ({
                   shadowOpacity={0.25}
                 />
                 <Rect
+                  // fill="black"
                   draggable={true}
                   onDragMove={handleDragMoveBl}
                   dragBoundFunc={handleDragBoundBl}
                   onMouseOver={() => setState({ blHover: true })}
                   onMouseOut={() => setState({ blHover: false })}
+                  onDragEnd={() => {
+                    setState({ blHover: false });
+                    if (onSelectionChange) {
+                      onSelectionChange(imageSelection);
+                    }
+                  }}
                   opacity={1}
                   width={gripSize + gripPadding}
                   height={gripSize + gripPadding}
-                  x={x1 - gripPadding}
-                  y={y2 - gripPadding}
+                  x={x1 - gripPadding + gripOffset}
+                  y={y2 - gripPadding - gripOffset}
                   offsetY={gripSize - gripPadding}
                 />
                 {/* bottom right */}
                 <Path
                   data="M18 2L18 10C18 14.4183 14.4183 18 10 18L2 18"
                   stroke={"white"}
-                  strokeWidth={5}
+                  strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   x={x2 + 3}
                   y={y2 + 3}
@@ -737,14 +904,25 @@ const Preview = ({
                   shadowOpacity={0.25}
                 />
                 <Rect
+                  // fill="black"
                   opacity={1}
                   draggable={true}
                   onDragMove={handleDragMoveBr}
                   dragBoundFunc={handleDragBoundBr}
-                  onMouseOver={() => setState({ brHover: true })}
-                  onMouseOut={() => setState({ brHover: false })}
-                  x={x2 - gripPadding}
-                  y={y2 - gripPadding}
+                  onMouseOver={() => {
+                    setState({ brHover: true });
+                  }}
+                  onMouseOut={() => {
+                    setState({ brHover: false });
+                  }}
+                  onDragEnd={() => {
+                    setState({ brHover: false });
+                    if (onSelectionChange) {
+                      onSelectionChange(imageSelection);
+                    }
+                  }}
+                  x={x2 - gripPadding - gripOffset}
+                  y={y2 - gripPadding - gripOffset}
                   width={gripSize + gripPadding}
                   height={gripSize + gripPadding}
                   offsetY={gripSize - gripPadding}
@@ -769,12 +947,18 @@ const Preview = ({
                   {ds.map(({ key, data, state: position }) => (
                     <Circle
                       onClick={() => {
-                        notifySelection(data.region.normalizedRect);
+                        objectSelection(data.region.normalizedRect);
                         setState({ dotHover: false });
+                        if (onSelectionChange) {
+                          onSelectionChange(data.region.normalizedRect);
+                        }
                       }}
                       onTap={() => {
-                        notifySelection(data.region.normalizedRect);
+                        objectSelection(data.region.normalizedRect);
                         setState({ dotHover: false });
+                        if (onSelectionChange) {
+                          onSelectionChange(data.region.normalizedRect);
+                        }
                       }}
                       onMouseOver={() => setState({ dotHover: true })}
                       onMouseOut={() => setState({ dotHover: false })}

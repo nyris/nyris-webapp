@@ -1,14 +1,12 @@
-import { Box } from "@material-ui/core";
-import React from "react";
-import { connectMenu } from "react-instantsearch-dom";
+import React from 'react';
+import { connectMenu } from 'react-instantsearch-dom';
 
 function DefaultSelectCustom({ items, currentRefinement, refine }: any) {
-
   return (
-    <Box className="w-100">
+    <div className="w-100">
       <select
         className="w-100 btn-ct"
-        value={currentRefinement || ""}
+        value={currentRefinement || ''}
         onChange={(event: any) => {
           refine(event?.currentTarget.value);
         }}
@@ -23,7 +21,7 @@ function DefaultSelectCustom({ items, currentRefinement, refine }: any) {
           </option>
         ))}
       </select>
-    </Box>
+    </div>
   );
 }
 const DefaultSelect = connectMenu(DefaultSelectCustom);

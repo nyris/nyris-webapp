@@ -1,4 +1,4 @@
-import { Box, Button, Tooltip } from '@material-ui/core';
+import { Button, Tooltip } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import CloseIcon from '@material-ui/icons/Close';
@@ -24,6 +24,7 @@ import {
   setRegions,
   setSelectedRegion,
   updateQueryText,
+  setShowFeedback,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -82,6 +83,7 @@ const SearchBox = (props: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageThumbSearchInput, isAlgoliaEnabled]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchOrRedirect = useCallback(
     debounce((value: any, withImage = true) => {
       if (!isAlgoliaEnabled) {
@@ -106,7 +108,7 @@ const SearchBox = (props: any) => {
             text: value,
           })
             .then((res: any) => {
-              res?.results.map((item: any) => {
+              res?.results.forEach((item: any) => {
                 filters.push({
                   sku: item.sku,
                   score: item.score,
@@ -119,6 +121,7 @@ const SearchBox = (props: any) => {
 
               dispatch(setSearchResults(payload));
               dispatch(updateStatusLoading(false));
+              dispatch(setShowFeedback(true));
             })
             .catch((e: any) => {
               console.log('error input search', e);
@@ -162,38 +165,42 @@ const SearchBox = (props: any) => {
           values: Object.keys(preFilter) as string[],
         },
       ];
+      try {
+        if (settings.regions) {
+          let res = await findRegions(image, settings);
 
-      if (settings.regions) {
-        let res = await findRegions(image, settings);
-        dispatch(setRegions(res.regions));
-        region = res.selectedRegion;
-        dispatch(setSelectedRegion(region));
-      }
-
-      return find({
-        image,
-        settings,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-        region,
-      })
-        .then((res: any) => {
-          res?.results.map((item: any) => {
-            filters.push({
-              sku: item.sku,
-              score: item.score,
-            });
-          });
-          payload = {
-            ...res,
-            filters,
-          };
-          dispatch(setSearchResults(payload));
-          dispatch(updateStatusLoading(false));
+          dispatch(setRegions(res.regions));
+          region = res.selectedRegion;
+          dispatch(setSelectedRegion(region));
+        }
+      } catch (error) {
+      } finally {
+        return find({
+          image,
+          settings,
+          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+          region,
         })
-        .catch((e: any) => {
-          console.log('error input search', e);
-          dispatch(updateStatusLoading(false));
-        });
+          .then((res: any) => {
+            res?.results.forEach((item: any) => {
+              filters.push({
+                sku: item.sku,
+                score: item.score,
+              });
+            });
+            payload = {
+              ...res,
+              filters,
+            };
+            dispatch(setSearchResults(payload));
+            dispatch(updateStatusLoading(false));
+            dispatch(setShowFeedback(true));
+          })
+          .catch((e: any) => {
+            console.log('error input search', e);
+            dispatch(updateStatusLoading(false));
+          });
+      }
     },
   });
 
@@ -212,8 +219,8 @@ const SearchBox = (props: any) => {
   return (
     <div className="wrap-input-search-field">
       <div className="box-input-search d-flex">
-        <form noValidate action="" role="search">
-          <Box className="box-inp">
+        <div className="input-wrapper">
+          <div className="box-inp">
             <Tooltip
               title={
                 !isEmpty(preFilter)
@@ -224,7 +231,7 @@ const SearchBox = (props: any) => {
               arrow={true}
               disableHoverListener={!settings.preFilterOption}
             >
-              <Box
+              <div
                 className="pre-filter-icon"
                 style={{
                   cursor: settings.preFilterOption ? 'pointer' : 'default',
@@ -280,23 +287,23 @@ const SearchBox = (props: any) => {
                     ></div>
                   </div>
                 )}
-              </Box>
+              </div>
             </Tooltip>
-            <Box
+            <div
               style={{
                 height: '75%',
                 order: 1,
               }}
             >
               {imageThumbSearchInput && (
-                <Box
+                <div
                   style={{
                     border: `2px solid ${settings.theme?.primaryColor}`,
                     backgroundColor: `${settings.theme?.primaryColor}26`,
                     marginRight: '5px',
+                    display: 'flex',
                   }}
                   className="box-image-search-thumb"
-                  display={'flex'}
                 >
                   <img
                     src={imageThumbSearchInput}
@@ -331,9 +338,9 @@ const SearchBox = (props: any) => {
                       />
                     </button>
                   </Tooltip>
-                </Box>
+                </div>
               )}
-            </Box>
+            </div>
 
             <input
               style={{
@@ -348,13 +355,14 @@ const SearchBox = (props: any) => {
               onChange={onChangeText}
               ref={focusInp}
             />
-          </Box>
+          </div>
 
           {history.location.pathname === '/result' && valueInput && (
             <Button
               className="btn-clear-text"
               onClick={() => {
                 if (imageThumbSearchInput) {
+                  history.push('/result');
                   if (!isAlgoliaEnabled) {
                     searchOrRedirect('');
                   }
@@ -417,16 +425,16 @@ const SearchBox = (props: any) => {
               </Tooltip>
             </div>
           ) : (
-            <Box>
+            <div>
               <Button
                 className="btn-mobile-filter"
                 onClick={onToggleFilterMobile}
               >
                 <IconFilter width={18} height={18} />
               </Button>
-            </Box>
+            </div>
           )}
-        </form>
+        </div>
       </div>
       {settings.preFilterOption && (
         <DefaultModal

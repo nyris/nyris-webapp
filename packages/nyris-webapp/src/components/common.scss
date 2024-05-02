@@ -142,21 +142,32 @@
 }
 
 .feedback-floating {
-  margin-left: -24px;
   height: fit-content;
-  bottom: 35px;
-  position: fixed;
+  right: 18px;
+  position: absolute;
   z-index: 201;
   display: flex;
   justify-content: flex-end;
 
+  .feedback-section {
+    position: fixed;
+    bottom: 40px;
+    @media screen and (max-width: 776px) {
+      margin-left: 0px;
+      // height: fit-content !important;
+      bottom: 125px;
+     
+    }
+  }
+
   @media screen and (max-width: 776px) {
     margin-left: 0px;
     height: fit-content !important;
-    bottom: 105px;
-    justify-content: center !important;
+    right: 40px;
+   
   }
 }
+
 
 .feedback-wrapper {
   background-color: #e4e3fff7;
@@ -273,5 +284,4 @@
 
 .MuiButton-root:hover {
   text-decoration: none ;
-  background-color: initial !important;
 }

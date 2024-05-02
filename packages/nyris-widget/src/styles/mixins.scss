@@ -33,7 +33,7 @@
 }
 
 @mixin circle($diameter) {
-  @include rounded-rect($diameter, $diameter, $diameter / 2)
+  @include rounded-rect($diameter, $diameter, calc($diameter / 2))
 }
 
 @mixin transparent-dark($opacity) {

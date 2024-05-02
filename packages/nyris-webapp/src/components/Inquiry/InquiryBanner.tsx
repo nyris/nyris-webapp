@@ -1,4 +1,3 @@
-import { Box } from '@material-ui/core';
 import { getCroppedCanvas } from 'helpers/getCroppedCanvas';
 import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
@@ -44,11 +43,11 @@ function InquiryBanner({
           isInquiryModalOpen={isInquiryModalOpen}
         />
       )}
-      <Box
+      <div
         style={{
           backgroundColor: '#F3F3F5',
           width: '100%',
-          marginBottom: '32px',
+          marginBottom: '24px',
           alignSelf: 'end',
           display: 'flex',
           alignItems: 'center',
@@ -56,7 +55,7 @@ function InquiryBanner({
         }}
         className="rfq-box"
       >
-        <Box
+        <div
           style={{
             width: '100%',
             display: 'flex',
@@ -82,14 +81,14 @@ function InquiryBanner({
             </div>
           )}
 
-          <Box style={{ width: '100%' }}>
-            <Box
+          <div style={{ width: '100%' }}>
+            <div
               style={{
                 paddingBottom: '8px',
                 paddingLeft: '16px',
               }}
             >
-              <Box
+              <div
                 style={{
                   fontSize: '14px',
                   color: inquiryStatus === 'inactive' ? '#4B4B4A' : '#2B2C46',
@@ -99,8 +98,8 @@ function InquiryBanner({
                 {isMobile
                   ? `${t('No matches found')}?`
                   : `${t('No matches found for your request')}?`}
-              </Box>
-              <Box
+              </div>
+              <div
                 style={{
                   fontSize: '14px',
                   maxWidth: '320x',
@@ -110,8 +109,8 @@ function InquiryBanner({
                 }}
               >
                 {description}
-              </Box>
-            </Box>
+              </div>
+            </div>
             <div
               style={{
                 display: 'flex',
@@ -198,9 +197,9 @@ function InquiryBanner({
                 </a>
               )}
             </div>
-          </Box>
-        </Box>
-      </Box>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

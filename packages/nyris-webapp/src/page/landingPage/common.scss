@@ -1040,10 +1040,7 @@ button {
 
 
         .box-item-result {
-          height: 100%;
-          // padding: 0 11px;
-          // gap: 8px !important;
-          // justify-content: center;
+
           width: calc(180 * 2px + 30px);
           .wrap-main-item-result {
             width: 180px;
@@ -1679,7 +1676,6 @@ button {
     z-index: 222;
   }
   .col-left__bottom {
-    margin-top: 32px;
     width: 100%;
     padding: 0 24px;
     button {
@@ -1768,6 +1764,7 @@ button {
 }
 
 .pagination-result {
+  height: fit-content;
   .ais-Pagination-list {
     flex-wrap: nowrap !important;
     text-align: center;
@@ -2052,7 +2049,7 @@ button {
     height: 48px;
     overflow: hidden;
     padding-right: 12px !important;
-    form {
+    .input-wrapper {
       width: 100%;
       display: flex;
       justify-content: center;

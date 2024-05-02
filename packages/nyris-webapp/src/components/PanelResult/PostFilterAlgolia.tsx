@@ -1,4 +1,4 @@
-import { Box, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { DynamicWidgetsCT } from 'components/dynamic-widgets/dynamic-widgets';
 import IconLabel from 'components/icon-label/icon-label';
 import { atom, useAtom } from 'jotai';
@@ -13,7 +13,7 @@ import { useHistory } from 'react-router-dom';
 import { useAppSelector } from 'Store/Store';
 import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
-import CloseIcon from '@material-ui/icons/Close';
+import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useTranslation } from 'react-i18next';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
@@ -192,7 +192,7 @@ export default function PostFilterPanelAlgolia({
     <>
       {!isMobile && (
         <div className="wrap-main-header-panel">
-          <Box
+          <div
             style={{
               cursor: 'pointer',
               paddingBottom: '8px',
@@ -211,10 +211,10 @@ export default function PostFilterPanelAlgolia({
                 } `}
               />
             </div>
-          </Box>
+          </div>
         </div>
       )}
-      <Box>
+      <div>
         {isMobile && (
           <div
             style={{
@@ -225,16 +225,20 @@ export default function PostFilterPanelAlgolia({
               zIndex: 100,
               background: 'white',
               alignItems: 'center',
-              paddingTop: '10px',
-              paddingRight: '10px',
             }}
           >
-            <Button onClick={onApply}>
-              <CloseIcon />
+            <Button
+              onClick={onApply}
+              style={{
+                width: '32px',
+                height: '32px',
+              }}
+            >
+              <CloseIcon color="#2B2C46" />
             </Button>
           </div>
         )}
-        <Box
+        <div
           className="box-center-filter"
           style={{
             ...(isMobile
@@ -242,6 +246,7 @@ export default function PostFilterPanelAlgolia({
                   paddingLeft: '24px',
                   paddingRight: '24px',
                   overflow: 'auto',
+                  marginBottom: '12px',
                 }
               : {}),
           }}
@@ -249,30 +254,50 @@ export default function PostFilterPanelAlgolia({
           <DynamicWidgetsCT enabled={dynamicWidgets}>
             {widgetsPanels}
           </DynamicWidgetsCT>
-        </Box>
-      </Box>
+        </div>
+      </div>
       {isMobile && (
-        <Box
+        <div
           style={{
             position: 'sticky',
             bottom: 0,
             width: '100%',
+            display: 'flex',
           }}
         >
-          <Button
+          <div
+            className="text-white"
+            style={{
+              width: '100%',
+              backgroundColor: settings.theme?.secondaryColor,
+              fontWeight: 500,
+              fontSize: 14,
+              borderRadius: 0,
+              height: '66px',
+              textTransform: 'none',
+              padding: '16px',
+            }}
+            onClick={handlerApplyfillter}
+          >
+            Cancel
+          </div>
+          <div
             className="text-white"
             style={{
               width: '100%',
               backgroundColor: settings.theme?.primaryColor,
-              fontWeight: 700,
+              fontWeight: 500,
               fontSize: 14,
               borderRadius: 0,
+              height: '66px',
+              textTransform: 'none',
+              padding: '16px',
             }}
             onClick={handlerApplyfillter}
           >
-            APPLY
-          </Button>
-        </Box>
+            Apply filters
+          </div>
+        </div>
       )}
     </>
   );

@@ -1,7 +1,9 @@
 import { Options, Splide, SplideSlide } from '@splidejs/react-splide';
 import React, { useMemo, useRef } from 'react';
-import '@splidejs/react-splide/dist/css/splide-core.min.css';
-import '@splidejs/react-splide/dist/css/splide.min.css';
+
+import '@splidejs/react-splide/css';
+import '@splidejs/react-splide/css/core';
+
 import './ImagePreviewCarousel.scss';
 import { useMediaQuery } from 'react-responsive';
 
@@ -76,7 +78,9 @@ export const ImagePreviewCarousel = (props: Props) => {
     <>
       <Splide
         onActive={(e: any) => {
-          setSelectedImage(e?.root?.querySelector('li.is-active')?.querySelector('img')?.src)
+          setSelectedImage(
+            e?.root?.querySelector('li.is-active')?.querySelector('img')?.src,
+          );
         }}
         options={mainOptions}
         ref={mainRef}

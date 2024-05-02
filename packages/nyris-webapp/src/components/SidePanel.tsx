@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import React, { useState } from 'react';
@@ -41,7 +41,7 @@ function SidePanel({
   const { requestImage } = search;
 
   return (
-    <Box
+    <div
       className={`wrap-main-col-left ${toggleColLeft ? 'toggle' : ''}`}
       style={{
         display: 'flex',
@@ -49,7 +49,7 @@ function SidePanel({
         justifyContent: 'space-between',
       }}
     >
-      <Box
+      <div
         className="box-toggle-coloumn"
         style={{
           right: '0px',
@@ -70,12 +70,12 @@ function SidePanel({
             <KeyboardArrowLeftOutlinedIcon />
           )}
         </Button>
-      </Box>
-      <Box>
+      </div>
+      <div>
         {settings.preview && requestImage && (
-          <Box className="col-left">
-            <Box className="box-preview">
-              <Box
+          <div className="col-left">
+            <div className="box-preview">
+              <div
                 className="preview-item"
                 style={{
                   backgroundColor: 'white',
@@ -102,30 +102,32 @@ function SidePanel({
                     <Preview
                       key={requestImage?.id}
                       onSelectionChange={(r: RectCoords) => {
-                        setImageSelection(r);
                         debouncedOnImageSelectionChange(r);
                       }}
                       image={requestImage?.canvas}
                       selection={imageSelection || DEFAULT_REGION}
                       regions={filteredRegions}
                       dotColor={'#FBD914'}
-                      minCropWidth={60}
-                      minCropHeight={60}
+                      minCropWidth={30}
+                      minCropHeight={30}
                       rounded={true}
                     />
                   </div>
                 </div>
-              </Box>
-            </Box>
+              </div>
+            </div>
             {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
-              <Box
-                className="box-title_col-left"
-                alignItems="center"
+              <div
                 style={{
+                  alignItems: 'center',
                   backgroundColor: '#3E36DC',
                   display: 'flex',
                   columnGap: '6px',
                   padding: '5px',
+                  marginTop: 'auto',
+                  position: 'absolute',
+                  bottom: 0,
+                  borderRadius: '16px',
                 }}
               >
                 <IconInfo color="white" />
@@ -139,21 +141,26 @@ function SidePanel({
                     ? t('Crop the image for better results')
                     : 'Crop the image for better results'}
                 </Typography>
-              </Box>
+              </div>
             )}
-          </Box>
+          </div>
         )}
 
         {showPostFilter && (
-          <Box className="col-left__bottom">
+          <div
+            className="col-left__bottom"
+            style={{
+              marginTop: requestImage ? '16px' : '48px',
+            }}
+          >
             {settings.algolia.enabled && (
               <PostFilterPanelAlgolia disjunctiveFacets={disjunctiveFacets} />
             )}
             {!settings.algolia.enabled && <PostFilterPanel />}
-          </Box>
+          </div>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
 

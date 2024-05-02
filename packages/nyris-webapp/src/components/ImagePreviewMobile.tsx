@@ -1,5 +1,6 @@
+// @ts-nocheck
 import React, { memo, useState } from 'react';
-import { Box, Typography, Hidden } from '@material-ui/core';
+import { Typography, Hidden } from '@material-ui/core';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import { DEFAULT_REGION } from '../constants';
@@ -16,14 +17,12 @@ import {
   updateStatusLoading,
 } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
-import { connectSearchBox } from 'react-instantsearch-dom';
 import { find } from 'services/image';
 import { isEmpty } from 'lodash';
 
 function ImagePreviewMobileComponent({
   requestImage,
   imageSelection,
-  setImageSelection,
   debouncedOnImageSelectionChange,
   filteredRegions,
   showAdjustInfo,
@@ -32,14 +31,13 @@ function ImagePreviewMobileComponent({
 }: {
   requestImage: any;
   imageSelection: any;
-  setImageSelection: any;
+
   debouncedOnImageSelectionChange: any;
   filteredRegions: any;
   showAdjustInfoBasedOnConfidence: any;
   showAdjustInfo: any;
 }) {
   const { t } = useTranslation();
-  const { refine }: any = rest;
   const [editActive, setEditActive] = useState(false);
   const settings = useAppSelector(state => state.settings);
   const { preFilter } = useAppSelector(state => state.search);
@@ -60,12 +58,7 @@ function ImagePreviewMobileComponent({
       history.push('/');
     }
     dispatch(reset(''));
-    if (isAlgoliaEnabled) {
-      // not an ideal solution: fixes text search not working after removing image
-      setTimeout(() => {
-        refine(searchQuery);
-      }, 100);
-    }
+
     if (!isAlgoliaEnabled) {
       let payload: any;
       let filters: any[] = [];
@@ -83,7 +76,7 @@ function ImagePreviewMobileComponent({
           text: searchQuery,
         })
           .then((res: any) => {
-            res?.results.map((item: any) => {
+            res?.results.forEach((item: any) => {
               filters.push({
                 sku: item.sku,
                 score: item.score,
@@ -108,7 +101,7 @@ function ImagePreviewMobileComponent({
   };
 
   return (
-    <Box
+    <div
       className="col-left"
       style={{
         backgroundColor: '#5D5D63',
@@ -116,8 +109,8 @@ function ImagePreviewMobileComponent({
       }}
     >
       <div>
-        <Box className="box-preview">
-          <Box>
+        <div className="box-preview">
+          <div>
             <div
               className="preview-item"
               style={{
@@ -127,19 +120,21 @@ function ImagePreviewMobileComponent({
               <Preview
                 key={requestImage?.id}
                 onSelectionChange={(r: RectCoords) => {
-                  setImageSelection(r);
                   debouncedOnImageSelectionChange(r);
                 }}
                 image={requestImage?.canvas}
                 selection={imageSelection || DEFAULT_REGION}
                 regions={filteredRegions}
-                minWidth={80}
+                minWidth={
+                  100 *
+                  (requestImage?.canvas?.width / requestImage?.canvas?.height)
+                }
                 minHeight={80}
                 maxWidth={255}
                 maxHeight={255}
                 dotColor={editActive ? '#FBD914' : ''}
-                minCropWidth={editActive ? 60 : 5}
-                minCropHeight={editActive ? 60 : 5}
+                minCropWidth={editActive ? 30 : 5}
+                minCropHeight={editActive ? 30 : 5}
                 rounded={false}
                 expandAnimation={editActive}
                 shrinkAnimation={!editActive}
@@ -147,13 +142,13 @@ function ImagePreviewMobileComponent({
                   setEditActive(true);
                 }}
                 showGrip={editActive}
+                draggable={editActive ? true : false}
               />
             </div>
-          </Box>
+          </div>
+
           {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
-            <Box
-              className="box-title_col-left"
-              alignItems="center"
+            <div
               style={{
                 backgroundColor: '#3E36DC',
                 display: 'flex',
@@ -161,6 +156,11 @@ function ImagePreviewMobileComponent({
                 padding: '5px',
                 width: 'fit-content',
                 minWidth: '180px',
+                marginTop: 'auto',
+                position: 'absolute',
+                bottom: -25,
+                borderRadius: '16px',
+                zIndex: 1000,
               }}
             >
               <IconInfo color="white" />
@@ -174,13 +174,13 @@ function ImagePreviewMobileComponent({
                   ? t('Crop the image for better results')
                   : 'Crop the image for better results'}
               </Typography>
-            </Box>
+            </div>
           )}
-        </Box>
+        </div>
         <>
           <Hidden>
-            <Box
-              sx={{
+            <div
+              style={{
                 position: 'absolute',
                 left: '15px',
                 top: '25px',
@@ -188,8 +188,8 @@ function ImagePreviewMobileComponent({
               }}
               onClick={onImageRemove}
             >
-              <Box
-                sx={{
+              <div
+                style={{
                   width: '24px',
                   height: '24px',
                   justifyContent: 'center',
@@ -199,42 +199,40 @@ function ImagePreviewMobileComponent({
                 }}
               >
                 <Trash color="white" fill="white" />
-              </Box>
-            </Box>
+              </div>
+            </div>
           </Hidden>
 
           <Hidden mdUp>
-            <Box
+            <div
               className="slideDown"
-              sx={{
+              style={{
                 position: 'absolute',
                 bottom: '25px',
                 right: '20px',
               }}
               onClick={handleArrowClick}
             >
-              <Box
-                bgcolor={'white'}
-                sx={{
+              <div
+                style={{
                   width: '24px',
                   height: '24px',
                   justifyContent: 'center',
                   alignItems: 'center',
                   display: 'flex',
                   borderRadius: '100%',
+                  backgroundColor: 'white',
                 }}
               >
                 {editActive && <ArrowUp color="black" />}
                 {!editActive && <ArrowDown color="black" fill="black" />}
-              </Box>
-            </Box>
+              </div>
+            </div>
           </Hidden>
         </>
       </div>
-    </Box>
+    </div>
   );
 }
-const ImagePreviewMobile = connectSearchBox<any>(
-  memo(ImagePreviewMobileComponent),
-);
+const ImagePreviewMobile = memo(ImagePreviewMobileComponent);
 export default ImagePreviewMobile;

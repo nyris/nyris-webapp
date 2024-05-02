@@ -1,4 +1,3 @@
-import { Box } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { ReactComponent as DownloadIcon } from 'common/assets/icons/download.svg';
@@ -128,7 +127,7 @@ function CadenasWebViewer({
         }}
       >
         {is3dView && status3dView === 'loaded' && (
-          <Box
+          <div
             style={{
               background: '#E9E9EC',
               width: '32px',
@@ -146,7 +145,7 @@ function CadenasWebViewer({
             }}
           >
             <DownloadIcon width={14} height={14} color={'#FFF'} />
-          </Box>
+          </div>
         )}
       </div>
 

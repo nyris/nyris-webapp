@@ -6,7 +6,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Box } from '@material-ui/core';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
@@ -34,6 +33,7 @@ import {
   setRequestImage,
   setSearchResults,
   setSelectedRegion,
+  setShowFeedback,
   updateResultChangePosition,
   updateStatusLoading,
 } from 'Store/search/Search';
@@ -71,6 +71,7 @@ function ResultComponent(props: Props) {
     loadingSearchAlgolia,
     imageThumbSearchInput,
     results,
+    showFeedback,
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -87,14 +88,10 @@ function ResultComponent(props: Props) {
   const [isRfqModalOpen, setIsRfqModalOpen] = useState(false);
   const imageUploadRef = useRef(null);
   const rfqRef = useRef<any>(null);
-  const [isScrolled, setIsScrolled] = useState<
-    'not-scrolled' | 'scrolled' | 'user-scrolled'
-  >('not-scrolled');
 
-  const [showFeedback, setShowFeedback] = useState<
-    'not-scrolled' | 'scrolled' | 'user-scrolled'
-  >('not-scrolled');
-
+  const [feedbackStatus, setFeedbackStatus] = useState<
+    'hidden' | 'submitted' | 'visible'
+  >();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
   const query = useQuery();
   const searchQuery = query.get('query') || search.valueTextSearch.query;
@@ -121,18 +118,23 @@ function ResultComponent(props: Props) {
   }, [imageThumbSearchInput, loadingSearchAlgolia]);
 
   useEffect(() => {
+    if (loadingSearchAlgolia) {
+      setFeedbackStatus('hidden');
+      setShowFeedbackSuccess(false);
+    }
+  }, [loadingSearchAlgolia]);
+
+  useEffect(() => {
     if (selectedRegion) {
       setImageSelection(selectedRegion);
       setRfqStatus('inactive');
-      setIsScrolled('not-scrolled');
-      setShowFeedback('not-scrolled');
+      setFeedbackStatus('hidden');
     }
   }, [selectedRegion]);
 
   useEffect(() => {
     if (requestImage) {
-      setIsScrolled('not-scrolled');
-      setShowFeedback('not-scrolled');
+      setFeedbackStatus('hidden');
       executeScroll();
       setImageSelection(DEFAULT_REGION);
     }
@@ -169,6 +171,7 @@ function ResultComponent(props: Props) {
   );
 
   // TODO: Search offers for image:
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const findItemsInSelection = useCallback(
     debounce(async (r: RectCoords) => {
       if (!requestImage) {
@@ -213,28 +216,32 @@ function ResultComponent(props: Props) {
 
     let searchRegion: RectCoords | undefined = undefined;
 
-    if (settings.regions) {
-      let res = await findRegions(image, settings);
-      searchRegion = res.selectedRegion;
-      dispatch(setRegions(res.regions));
-      dispatch(setSelectedRegion(searchRegion));
+    try {
+      if (settings.regions) {
+        let res = await findRegions(image, settings);
+        searchRegion = res.selectedRegion;
+        dispatch(setRegions(res.regions));
+        dispatch(setSelectedRegion(searchRegion));
+      }
+    } catch (error) {
+    } finally {
+      const preFilterValues = [
+        {
+          key: settings.visualSearchFilterKey,
+          values: Object.keys(preFilter) as string[],
+        },
+      ];
+      find({
+        image,
+        settings,
+        region: searchRegion,
+        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+      }).then((res: any) => {
+        dispatch(setSearchResults(res));
+        dispatch(updateStatusLoading(false));
+        return;
+      });
     }
-    const preFilterValues = [
-      {
-        key: settings.visualSearchFilterKey,
-        values: Object.keys(preFilter) as string[],
-      },
-    ];
-    find({
-      image,
-      settings,
-      region: searchRegion,
-      filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-    }).then((res: any) => {
-      dispatch(setSearchResults(res));
-      dispatch(updateStatusLoading(false));
-      return;
-    });
   };
   const nonEmptyFilter: any[] = !requestImage
     ? []
@@ -249,6 +256,7 @@ function ResultComponent(props: Props) {
 
   useEffect(() => {
     document.title = 'Search results';
+    setFeedbackStatus('hidden');
 
     if (requestImage || isEmpty(searchQuery)) return;
     const preFilterValues = Object.keys(preFilter) as string[];
@@ -298,12 +306,14 @@ function ResultComponent(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterSkusString, settings.alogoliaFilterField]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
+      setImageSelection(r);
       feedbackRegionEpic(stateGlobal, r);
       dispatch(selectionChanged(r));
       findItemsInSelection(r);
-    }, 500),
+    }, 50),
     [findItemsInSelection, stateGlobal.search],
   );
 
@@ -322,48 +332,41 @@ function ResultComponent(props: Props) {
   }, [showPostFilter, isPostFilterEnabled, requestImage]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setTimeout(() => {
-        setIsScrolled(s => (s === 'not-scrolled' ? 'scrolled' : s));
-        setTimeout(() => {
-          setIsScrolled(s => (s === 'scrolled' ? 'user-scrolled' : s));
-        }, 5000);
-      }, 1000);
-    };
-    if (requestImage)
-      window.addEventListener('scroll', handleScroll, { capture: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [requestImage]);
-
-  useEffect(() => {
-    if (!requestImage || !settings.showFeedback) return;
-
-    setTimeout(() => {
-      setShowFeedback(s => (s === 'not-scrolled' ? 'scrolled' : s));
-    }, 5000);
+    if (!settings.showFeedback || results?.length === 0 || !showFeedback)
+      return;
 
     const handleScroll = () => {
       setTimeout(() => {
-        setShowFeedback(s => (s === 'not-scrolled' ? 'scrolled' : s));
+        setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
+        dispatch(setShowFeedback(false));
       }, 100);
     };
 
-    window.addEventListener('scroll', handleScroll, { capture: true });
+    setTimeout(() => {
+      window.removeEventListener('scroll', handleScroll, { capture: true });
+      setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
+      dispatch(setShowFeedback(false));
+    }, 4000);
+
+    window.addEventListener('scroll', handleScroll, {
+      capture: true,
+      once: true,
+    });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [requestImage, selectedRegion, settings.showFeedback]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showFeedback, settings.showFeedback]);
 
   const submitFeedback = async (data: boolean) => {
     setShowFeedbackSuccess(true);
     setTimeout(() => {
       setShowFeedbackSuccess(false);
     }, 3000);
-    setShowFeedback('user-scrolled');
+
+    setFeedbackStatus('submitted');
+    dispatch(setShowFeedback(false));
     feedbackSuccessEpic(stateGlobal, data);
   };
 
@@ -388,13 +391,13 @@ function ResultComponent(props: Props) {
           {filterString && isAlgoliaEnabled && (
             <Configure query={searchQuery} filters={filterString}></Configure>
           )}
-          <Box className="box-wrap-result-component">
+          <div className="box-wrap-result-component">
             {!isMobile && (
               <div className="box-search">
                 <CustomSearchBox />
               </div>
             )}
-            <Box
+            <div
               className="box-result"
               style={{
                 height: settings.showPoweredByNyris
@@ -420,7 +423,7 @@ function ResultComponent(props: Props) {
                 />
               )}
 
-              <Box
+              <div
                 className={`col-right ${
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
@@ -432,16 +435,15 @@ function ResultComponent(props: Props) {
                 }}
               >
                 {!isMobile && settings.algolia.enabled && (
-                  <Box className="wrap-box-refinements">
+                  <div className="wrap-box-refinements">
                     <CurrentRefinements statusSwitchButton={true} />
-                  </Box>
+                  </div>
                 )}
 
                 {isMobile && settings.preview && requestImage && (
                   <ImagePreviewMobile
                     requestImage={requestImage}
                     imageSelection={imageSelection}
-                    setImageSelection={setImageSelection}
                     debouncedOnImageSelectionChange={
                       debouncedOnImageSelectionChange
                     }
@@ -453,7 +455,7 @@ function ResultComponent(props: Props) {
                   />
                 )}
 
-                <Box
+                <div
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -461,27 +463,14 @@ function ResultComponent(props: Props) {
                     backgroundColor: '#FAFAFA',
                   }}
                 >
-                  <Box
+                  <div
                     className={'box-item-result ml-auto mr-auto'}
-                    style={{ height: '100%', paddingLeft: isMobile ? 0 : 16 }}
+                    style={{
+                      paddingLeft: isMobile ? 0 : 16,
+                      height: '100%',
+                      position: 'relative',
+                    }}
                   >
-                    {showFeedbackSuccess && (
-                      <div className={'box-item-result feedback-floating'}>
-                        <div className="feedback-success">
-                          Thanks for your feedback!
-                        </div>
-                      </div>
-                    )}
-                    {showFeedback === 'scrolled' && !showFeedbackSuccess && (
-                      <div className={'box-item-result feedback-floating'}>
-                        <Feedback
-                          submitFeedback={submitFeedback}
-                          onFeedbackClose={() => {
-                            setShowFeedback('user-scrolled');
-                          }}
-                        />
-                      </div>
-                    )}
                     <div
                       className="box-item-result ml-auto mr-auto"
                       style={{ height: 'fit-content' }}
@@ -496,19 +485,53 @@ function ResultComponent(props: Props) {
                         requestImage={requestImage}
                         searchQuery={searchQuery}
                       />
+                      <div
+                        className="box-item-result ml-auto mr-auto"
+                        style={{ position: 'absolute' }}
+                      >
+                        {showFeedbackSuccess && (
+                          <div className={'feedback-floating'}>
+                            <div className="feedback-section">
+                              <div className="feedback-success">
+                                Thanks for your feedback!
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {feedbackStatus === 'visible' &&
+                          !showFeedbackSuccess && (
+                            <div className={'feedback-floating'}>
+                              <div className="feedback-section">
+                                <Feedback
+                                  submitFeedback={submitFeedback}
+                                  onFeedbackClose={() => {
+                                    setFeedbackStatus('submitted');
+                                    dispatch(setShowFeedback(false));
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+                      </div>
                     </div>
-
+                  </div>
+                  <div
+                    className={'box-item-result ml-auto mr-auto'}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flexGrow: 1,
+                      paddingLeft: isMobile ? 0 : 16,
+                    }}
+                  >
                     {props.allSearchResults?.hits.length > 0 &&
                       (requestImage || searchQuery) && (
-                        <Box
+                        <div
                           className="pagination-result"
                           style={{
                             width: '100%',
-                            margin: !isMobile ? '20px auto' : '',
-                            marginBottom:
-                              isMobile && !requestImage ? '64px' : '20px',
+                            marginTop: '24px',
                             padding: '0 20%',
-                            alignSelf: 'end',
                           }}
                         >
                           <Pagination
@@ -522,44 +545,50 @@ function ResultComponent(props: Props) {
                               ),
                             }}
                           />
-                        </Box>
+                        </div>
                       )}
-
-                    {requestImage &&
-                      !loadingSearchAlgolia &&
-                      !props.isSearchStalled &&
-                      settings.rfq &&
-                      settings.rfq.enabled && (
-                        <RfqBanner
-                          rfqRef={rfqRef}
-                          rfqStatus={rfqStatus}
-                          setIsRfqModalOpen={setIsRfqModalOpen}
-                          requestImage={requestImage}
-                          selectedRegion={selectedRegion}
-                        />
-                      )}
-                    {!loadingSearchAlgolia &&
-                      !props.isSearchStalled &&
-                      settings.support &&
-                      settings.support.enabled &&
-                      (searchQuery || requestImage) && (
-                        <InquiryBanner
-                          requestImage={requestImage}
-                          selectedRegion={selectedRegion}
-                          query={searchQuery}
-                        />
-                      )}
-                  </Box>
-                </Box>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexGrow: 1,
+                        marginTop: !isAlgoliaEnabled ? '24px' : '',
+                      }}
+                    >
+                      {requestImage &&
+                        !loadingSearchAlgolia &&
+                        !props.isSearchStalled &&
+                        settings.rfq &&
+                        settings.rfq.enabled && (
+                          <RfqBanner
+                            rfqRef={rfqRef}
+                            rfqStatus={rfqStatus}
+                            setIsRfqModalOpen={setIsRfqModalOpen}
+                            requestImage={requestImage}
+                            selectedRegion={selectedRegion}
+                          />
+                        )}
+                      {!loadingSearchAlgolia &&
+                        !props.isSearchStalled &&
+                        settings.support &&
+                        settings.support.enabled &&
+                        (searchQuery || requestImage) && (
+                          <InquiryBanner
+                            requestImage={requestImage}
+                            selectedRegion={selectedRegion}
+                            query={searchQuery}
+                          />
+                        )}
+                    </div>
+                  </div>
+                </div>
                 {!isMobile &&
                   props.allSearchResults?.hits?.length > 0 &&
                   isAlgoliaEnabled && (
-                    <Box>
-                      <Box className="box-notify">
+                    <div>
+                      <div className="box-notify">
                         <FooterResult search={search}>
-                          <Box
-                            display={'flex'}
-                            style={{ padding: '0 20px' }}
+                          <div
+                            style={{ padding: '0 20px', display: 'flex' }}
                             className="box-change-hit-items"
                           >
                             <span style={{ paddingRight: '10px' }}>
@@ -569,10 +598,10 @@ function ResultComponent(props: Props) {
                               items={showHits}
                               defaultRefinement={20}
                             />
-                          </Box>
+                          </div>
                         </FooterResult>
-                      </Box>
-                    </Box>
+                      </div>
+                    </div>
                   )}
                 {isMobile && settings.showPoweredByNyris && (
                   <div
@@ -581,6 +610,7 @@ function ResultComponent(props: Props) {
                       display: 'flex',
                       justifyContent: 'center',
                       paddingBottom: '46px',
+                      paddingTop: '8px',
                     }}
                   >
                     <PoweredByNyrisImage
@@ -592,38 +622,11 @@ function ResultComponent(props: Props) {
                     />
                   </div>
                 )}
-              </Box>
-            </Box>
-          </Box>
+              </div>
+            </div>
+          </div>
         </>
       </div>
-      {isScrolled === 'scrolled' &&
-        requestImage &&
-        isMobile &&
-        props.allSearchResults.hits.length > 0 &&
-        settings.rfq &&
-        settings.rfq.enabled && (
-          <div
-            style={{
-              fontSize: '14px',
-              fontWeight: 'bold',
-              letterSpacing: '1.16px',
-              color: 'white',
-              borderRadius: '16px',
-              backgroundColor: '#4B4B4A',
-              boxShadow: '0px 0px 16px 0px rgba(85, 86, 107, 0.70)',
-              padding: '8px 16px',
-              zIndex: 100,
-              position: 'absolute',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '356px',
-              bottom: '86px',
-            }}
-          >
-            Scroll down for personalized support
-          </div>
-        )}
     </>
   );
 }

@@ -15,7 +15,6 @@ import NyrisAPI, {
   RectCoords,
   Region,
   SearchResult,
-  selectFirstCenteredRegion,
   urlOrBlobToCanvas,
 } from "@nyris/nyris-api";
 import { ResultProps } from "./Result";
@@ -24,8 +23,16 @@ import { makeFileHandler } from "@nyris/nyris-react-components";
 interface NyrisSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
   initiatorElementId: string;
+  primaryColor: string;
+  cameraIconColour: string;
+  browseGalleryButtonColor: string;
+  customerLogo: string;
+  logoWidth: string;
+  ctaButtonText: string;
+  language: string;
+  navigatePreference: string;
 }
-
+const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
 class Nyris {
   private nyrisApi: NyrisAPI;
   private screen: Screen = Screen.Hidden;
@@ -40,9 +47,9 @@ class Nyris {
   private readonly instantRedirectPatterns: string[];
   private loading: boolean = false;
 
-  constructor(settings: NyrisSettings) {
-    this.nyrisApi = new NyrisAPI(settings);
-    this.instantRedirectPatterns = settings.instantRedirectPatterns || [];
+  constructor(nyrisSettings: NyrisSettings) {
+    this.nyrisApi = new NyrisAPI({ ...nyrisSettings });
+    this.instantRedirectPatterns = nyrisSettings.instantRedirectPatterns || [];
 
     let mountPoint = document.getElementById("nyris-mount-point");
     if (!mountPoint) {
@@ -53,11 +60,11 @@ class Nyris {
 
     this.showScreen(Screen.Hidden);
 
-    if (settings.initiatorElementId) {
+    if (nyrisSettings.initiatorElementId) {
       document.body.addEventListener("click", (event) => {
         // @ts-ignore
         const isVisualSearchElement = event?.target?.closest(
-          `#${settings.initiatorElementId}`
+          `#${nyrisSettings.initiatorElementId}`
         );
 
         if (isVisualSearchElement) {
@@ -83,9 +90,7 @@ class Nyris {
       regions: this.regions,
       selection: this.selection,
       thumbnailUrl: this.thumbImageUrl,
-      showVisualSearchIcon: window.nyrisSettings.initiatorElementId
-        ? false
-        : true,
+      showVisualSearchIcon: !window.nyrisSettings.initiatorElementId,
       onSimilarSearch: (f) => this.handleFile(f),
       loading: this.loading,
     };
@@ -125,7 +130,7 @@ class Nyris {
   async showRefineSearch(regions: Region[]) {
     if (regions.length === 0) {
       this.regions.push({
-        normalizedRect: { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 },
+        normalizedRect: DEFAULT_RECT,
       });
     }
     await this.selectRegion(this.regions[0]);
@@ -157,8 +162,8 @@ class Nyris {
       console.warn("Could not get regions", e);
     }
 
-    this.selection = this.preselectDefaultRegion(this.regions);
-
+    const foundRegions = await this.nyrisApi.findRegions(this.image);
+    this.selection = this.getRegionByMaxConfidence(foundRegions);
     await this.startProcessing();
   }
 
@@ -184,10 +189,17 @@ class Nyris {
     this.showScreen(Screen.Result);
   }
 
-  preselectDefaultRegion(regions: Region[]) {
-    const defaultRect = { x1: 0.1, x2: 0.9, y1: 0.1, y2: 0.9 };
-    return selectFirstCenteredRegion(regions, 0.3, defaultRect);
-  }
+  getRegionByMaxConfidence = (regions: Region[]) => {
+    if (regions.length === 0) {
+      return DEFAULT_RECT;
+    }
+    const regionWithMaxConfidence = regions.reduce((prev, current) => {
+      prev.confidence = prev.confidence || 0;
+      current.confidence = current.confidence || 0;
+      return prev.confidence >= current.confidence ? prev : current;
+    });
+    return regionWithMaxConfidence.normalizedRect;
+  };
 
   async startProcessing() {
     // this.showScreen(Screen.Wait);
@@ -199,7 +211,6 @@ class Nyris {
       let options: ImageSearchOptions = {
         cropRect: this.selection,
       };
-
       const searchResult = await this.nyrisApi.find(options, this.image);
       if (
         searchResult.results.length === 1 &&
@@ -234,8 +245,14 @@ declare global {
   }
 }
 
+(window as any).loadWidget = () => {
+  let div = document.createElement("div");
+  div.id = "nyris-mount-point";
+  document.body.appendChild(div);
+  const nyris = new Nyris(window.nyrisSettings);
+};
+
 window.addEventListener("load", (e) => {
-  console.log("loading widget");
   let div = document.createElement("div");
   div.id = "nyris-mount-point";
   document.body.appendChild(div);

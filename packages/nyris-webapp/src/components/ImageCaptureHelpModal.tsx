@@ -1,4 +1,4 @@
-import { Box, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import React from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import { visualSearchHelp } from '../constants';
@@ -9,17 +9,20 @@ interface Props {
 
 function ImageCaptureHelpModal({ handleClose }: Props) {
   return (
-    <Box
+    <div
       style={{
         paddingBottom: '24px',
       }}
     >
-      <Box
-        display={'flex'}
-        justifyContent={'end'}
-        position={'sticky'}
-        top={0}
-        style={{ background: 'white', width: '100%' }}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'end',
+          position: 'sticky',
+          top: 0,
+          background: 'white',
+          width: '100%',
+        }}
       >
         <Button
           onClick={handleClose}
@@ -27,7 +30,7 @@ function ImageCaptureHelpModal({ handleClose }: Props) {
         >
           <CloseIcon fontSize={'small'} />
         </Button>
-      </Box>
+      </div>
       <p
         style={{
           fontSize: '40px',
@@ -94,7 +97,7 @@ function ImageCaptureHelpModal({ handleClose }: Props) {
           );
         })}
       </div>
-    </Box>
+    </div>
   );
 }
 

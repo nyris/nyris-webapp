@@ -3,9 +3,6 @@ import { SearchState } from './types';
 export const initialState: SearchState = {
   categoryPredictions: [],
   codes: [],
-  configureFilter: {},
-  errorMessage: '',
-  fetchingRegions: false,
   fetchingResults: false,
   filterOptions: [],
   filters: [],
@@ -18,7 +15,6 @@ export const initialState: SearchState = {
   regions: [],
   requestImage: undefined,
   results: [],
-  resultSearchText: [],
   selectedRegion: undefined,
   textSearchInputMobile: '',
   valueTextSearch: {
@@ -27,4 +23,5 @@ export const initialState: SearchState = {
     refinementList: '',
   },
   postFilter: {},
+  showFeedback: false,
 };

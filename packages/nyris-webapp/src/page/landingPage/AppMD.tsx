@@ -1,9 +1,9 @@
-import { Box } from '@material-ui/core';
 import React, { useState } from 'react';
 import './common.scss';
 import algoliasearch from 'algoliasearch/lite';
 import DragDropFile from 'components/DragDropFile';
 import CustomSearchBox from 'components/input/inputSearch';
+import ExperienceVisualSearch from 'components/Experience-visual-search/ExperienceVisualSearch';
 import { connectInfiniteHits } from 'react-instantsearch-dom';
 import { useAppSelector } from 'Store/Store';
 import { AlgoliaSettings } from '../../types';
@@ -27,15 +27,15 @@ function AppMD() {
   const CustomInfiniteHits = connectInfiniteHits(InfiniteHits);
 
   return (
-    <Box className={`box-content-main ${isLoading ? 'loading' : ''}`}>
-      <Box className="box-content_top" style={{ position: 'relative' }}>
+    <div className={`box-content-main ${isLoading ? 'loading' : ''}`}>
+      <div className="box-content_top" style={{ position: 'relative' }}>
         {settings.headerText && (
-          <Box
+          <div
             className="fw-700 text-f32 text-dark2"
             style={{ position: 'absolute', bottom: '49px' }}
           >
             <h1>{settings.headerText}</h1>
-          </Box>
+          </div>
         )}
         <div className="wrap-input-search">
           <div style={{ display: 'none' }}>
@@ -43,15 +43,20 @@ function AppMD() {
           </div>
           <CustomSearchBox />
         </div>
-      </Box>
-      <Box className="box-content_bottom">
+      </div>
+      <div className="box-content_bottom">
         <DragDropFile
           acceptTypes={acceptTypes}
           isLoading={isLoading}
           onChangeLoading={onChangeLoading}
         />
-      </Box>
-    </Box>
+        {settings.experienceVisualSearch ? (
+          <ExperienceVisualSearch />
+        ) : (
+         '' 
+        )}
+      </div>
+    </div>
   );
 }
 

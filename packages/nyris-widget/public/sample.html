@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Nyris widget</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+    #nyris-visual-search-initiator {
+      margin-top: 32px;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      background-color: #3E36DC;
+      color: #fff;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <button id="nyris-visual-search-initiator">Click to open widget</button>
+  </div>
+  <script>
+      window.nyrisSettings = {
+        apiKey: "", // Api key
+        initiatorElementId: 'nyris-visual-search-initiator', // HTML element id for trigger widget
+        primaryColor: '#3E36DC', // Main color of logo and buttons
+        cameraIconColour: '#2B2C46', // Color for camera button
+        browseGalleryButtonColor: '#E4E3FF', // Color for 'browse gallery' button on mobile view
+        customerLogo: '', // Url for logo, if this property is empty default logo will be used
+        logoWidth: 256, // Width for customer logo in pixels, works only with customerLogo
+        ctaButtonText: 'View more', // Text of button on result tile to go to product
+        language: 'en', // Language
+        navigatePreference: '_blank' // Behaviour of click to CTA button, open in current/new tab
+      };
+      var s = document.createElement("script");
+      s.src = "https://assets.nyris.io/nyris-widget/v1/widget.js";
+      document.getElementsByTagName('head')[0].appendChild(s);
+  </script>
+  
+</body>
+</html>

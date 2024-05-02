@@ -20,6 +20,7 @@ export const translations = {
       'Expand all': 'Expand all',
       'Collapse all': 'Collapse all',
       Brand: 'Brand',
+      'Product name': 'Product name',
       loading: 'loading',
       'No products were found matching your search criteria.':
         'No products were found matching your search criteria.',
@@ -27,6 +28,9 @@ export const translations = {
         'Please upload an image or enter a keyword to search.',
       'No matches found': 'No matches found',
       'No matches found for your request': 'No matches found for your request',
+      'Clear all': 'Clear all',
+      Cancel: 'Cancel',
+      Apply: 'Apply',
     },
   },
   de: {
@@ -50,6 +54,7 @@ export const translations = {
       'Expand all': 'Alles anzeigen',
       'Collapse all': 'Alles einklappen',
       Brand: 'Marke',
+      'Product name': 'Produktname',
       loading: 'Lädt',
       'No products were found matching your search criteria.':
         'Keine Produkte entsprechen Ihren Suchkriterien.',
@@ -58,6 +63,9 @@ export const translations = {
       'No matches found': 'Keine Treffer für Ihre Anfrage gefunden',
       'No matches found for your request':
         'Keine Treffer für Ihre Anfrage gefunden',
+      'Clear all': 'Alles löschen',
+      Cancel: 'Abbrechen',
+      Apply: 'Anwenden',
     },
   },
   pt: {
@@ -89,6 +97,9 @@ export const translations = {
         'Faça o upload de uma imagem ou busque via texto',
       'No matches found': 'No matches found',
       'No matches found for your request': 'No matches found for your request',
+      'Clear all': 'Clear all',
+      Cancel: 'Cancel',
+      Apply: 'Apply',
     },
   },
 };
