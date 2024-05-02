@@ -6,7 +6,6 @@ import {
   clearPostFilter,
   onResetRequestImage,
   setPreFilter,
-  setUpdateSession,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppState } from '../types';
@@ -15,7 +14,6 @@ import './common.scss';
 import FooterMobile from './FooterMobile';
 import HeaderMobile from './HeaderMobile';
 import Header from './Header';
-import { createSessionByApi } from 'services/session';
 import { isUndefined } from 'lodash';
 import AppMobile from './AppMobile';
 import jQuery from 'jquery';
