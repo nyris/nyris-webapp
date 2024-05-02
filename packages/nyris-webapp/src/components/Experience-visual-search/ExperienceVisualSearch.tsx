@@ -34,12 +34,10 @@ function ExperienceVisualSearch() {
             (button.current as HTMLElement).classList.toggle('hover');
           }
         }, 3000);
-      } else {
-        if (interval?.current) {
-          clearInterval(interval?.current);
-          if (button?.current && !(button.current as HTMLElement).classList.contains('hover')) {
-            (button.current as HTMLElement).classList.toggle('hover');
-          }
+      } else if (interval?.current) {
+        clearInterval(interval?.current);
+        if (button?.current && !(button.current as HTMLElement).classList.contains('hover')) {
+          (button.current as HTMLElement).classList.toggle('hover');
         }
       }
       return () => {

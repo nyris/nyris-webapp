@@ -15,6 +15,7 @@ import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
 import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useTranslation } from 'react-i18next';
+import { orderBy } from 'lodash';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -113,7 +114,7 @@ export default function PostFilterPanelAlgolia({
       ...refinements.reduce(
         (acc: any, current: any) => ({
           ...acc,
-          [getPanelId(current)]: Boolean(current.isExpanded),
+          [getPanelId(current)]: true,
         }),
         {},
       ),
@@ -133,22 +134,6 @@ export default function PostFilterPanelAlgolia({
     [setPanels],
   );
 
-  const TheList = connectRefinementList(
-    (props) => {
-      console.log(props);
-      return (
-        <ul>
-          {props.items.map((item) => (
-            <li>
-              <input type="checkbox" checked={item.isRefined} onChange={() => props.refine(item.value)}/>
-              {item.label}
-            </li>
-          ))}
-        </ul>
-      )
-    }
-  );
-
   const widgets = useMemo(
     () =>
       refinements.map((refinement: any) => {
@@ -156,6 +141,12 @@ export default function PostFilterPanelAlgolia({
           <RefinementList
             className="box-refinement-list"
             attribute={refinement.attribute}
+            {...refinement.options}
+            translations={{
+              noResults: 'No results',
+              placeholder: '',
+            }}
+            transformItems={(items: any) => orderBy(items, 'label', 'desc')}
           />
         );
       }),
