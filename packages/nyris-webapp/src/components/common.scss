@@ -151,10 +151,10 @@
 
   .feedback-section {
     position: fixed;
-    bottom: 65px;
+    bottom: 40px;
     @media screen and (max-width: 776px) {
       margin-left: 0px;
-      height: fit-content !important;
+      // height: fit-content !important;
       bottom: 125px;
      
     }

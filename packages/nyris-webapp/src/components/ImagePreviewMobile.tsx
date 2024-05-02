@@ -125,7 +125,10 @@ function ImagePreviewMobileComponent({
                 image={requestImage?.canvas}
                 selection={imageSelection || DEFAULT_REGION}
                 regions={filteredRegions}
-                minWidth={100 * (requestImage?.canvas?.width / requestImage?.canvas?.height)}
+                minWidth={
+                  100 *
+                  (requestImage?.canvas?.width / requestImage?.canvas?.height)
+                }
                 minHeight={80}
                 maxWidth={255}
                 maxHeight={255}
@@ -155,8 +158,9 @@ function ImagePreviewMobileComponent({
                 minWidth: '180px',
                 marginTop: 'auto',
                 position: 'absolute',
-                bottom: 0,
+                bottom: -25,
                 borderRadius: '16px',
+                zIndex: 1000,
               }}
             >
               <IconInfo color="white" />

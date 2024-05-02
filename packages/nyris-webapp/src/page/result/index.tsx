@@ -33,6 +33,7 @@ import {
   setRequestImage,
   setSearchResults,
   setSelectedRegion,
+  setShowFeedback,
   updateResultChangePosition,
   updateStatusLoading,
 } from 'Store/search/Search';
@@ -70,6 +71,7 @@ function ResultComponent(props: Props) {
     loadingSearchAlgolia,
     imageThumbSearchInput,
     results,
+    showFeedback,
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -89,7 +91,7 @@ function ResultComponent(props: Props) {
 
   const [feedbackStatus, setFeedbackStatus] = useState<
     'hidden' | 'submitted' | 'visible'
-  >('hidden');
+  >();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
   const query = useQuery();
   const searchQuery = query.get('query') || search.valueTextSearch.query;
@@ -254,6 +256,7 @@ function ResultComponent(props: Props) {
 
   useEffect(() => {
     document.title = 'Search results';
+    setFeedbackStatus('hidden');
 
     if (requestImage || isEmpty(searchQuery)) return;
     const preFilterValues = Object.keys(preFilter) as string[];
@@ -329,23 +332,32 @@ function ResultComponent(props: Props) {
   }, [showPostFilter, isPostFilterEnabled, requestImage]);
 
   useEffect(() => {
-    if (!settings.showFeedback || results?.length === 0) return;
-    setTimeout(() => {
-      setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
-    }, 4000);
+    if (!settings.showFeedback || results?.length === 0 || !showFeedback)
+      return;
 
     const handleScroll = () => {
       setTimeout(() => {
         setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
+        dispatch(setShowFeedback(false));
       }, 100);
     };
 
-    window.addEventListener('scroll', handleScroll, { capture: true });
+    setTimeout(() => {
+      window.removeEventListener('scroll', handleScroll, { capture: true });
+      setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
+      dispatch(setShowFeedback(false));
+    }, 4000);
+
+    window.addEventListener('scroll', handleScroll, {
+      capture: true,
+      once: true,
+    });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [results, settings.showFeedback]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showFeedback, settings.showFeedback]);
 
   const submitFeedback = async (data: boolean) => {
     setShowFeedbackSuccess(true);
@@ -354,6 +366,7 @@ function ResultComponent(props: Props) {
     }, 3000);
 
     setFeedbackStatus('submitted');
+    dispatch(setShowFeedback(false));
     feedbackSuccessEpic(stateGlobal, data);
   };
 
@@ -478,12 +491,7 @@ function ResultComponent(props: Props) {
                       >
                         {showFeedbackSuccess && (
                           <div className={'feedback-floating'}>
-                            <div
-                              style={{
-                                position: 'fixed',
-                                bottom: '65px',
-                              }}
-                            >
+                            <div className="feedback-section">
                               <div className="feedback-success">
                                 Thanks for your feedback!
                               </div>
@@ -498,6 +506,7 @@ function ResultComponent(props: Props) {
                                   submitFeedback={submitFeedback}
                                   onFeedbackClose={() => {
                                     setFeedbackStatus('submitted');
+                                    dispatch(setShowFeedback(false));
                                   }}
                                 />
                               </div>
