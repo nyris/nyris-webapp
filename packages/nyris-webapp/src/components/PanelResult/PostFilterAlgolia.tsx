@@ -7,7 +7,7 @@ import type {
   CurrentRefinementsProvided,
   SearchResults,
 } from 'react-instantsearch-core';
-import { RefinementList, connectRefinementList } from 'react-instantsearch-dom';
+import { RefinementList } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import { useAppSelector } from 'Store/Store';

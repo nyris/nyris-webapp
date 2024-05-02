@@ -66,6 +66,7 @@ function PreFilterComponent(props: Props) {
 
   useEffect(() => {
     filterSearchHandler(searchKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchKey]);
 
   const getDataFilterDesktop = async () => {
