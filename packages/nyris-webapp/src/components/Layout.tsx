@@ -4,7 +4,8 @@ import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import {
   clearPostFilter,
-  onResetRequestImage, setPreFilter,
+  onResetRequestImage,
+  setPreFilter,
   setUpdateSession,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
@@ -81,16 +82,6 @@ function Layout({ children }: ReactNode): JSX.Element {
   i18n.changeLanguage(language);
 
   useEffect(() => {
-    const createSession = async () => {
-      let payload = await createSessionByApi(settings);
-      dispatch(setUpdateSession(payload));
-    };
-
-    createSession().catch(console.log);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     if (history.location?.pathname === '/') {
       document.title = settings.appTitle || '';
       dispatch(onResetRequestImage(''));
@@ -100,7 +91,7 @@ function Layout({ children }: ReactNode): JSX.Element {
 
   useEffect(() => {
     if (settings.shouldUseUserMetadata && user) {
-      dispatch(setPreFilter({[user['/user_metadata'].value]: true}));
+      dispatch(setPreFilter({ [user['/user_metadata'].value]: true }));
     }
   }, [user, dispatch, settings.shouldUseUserMetadata]);
 

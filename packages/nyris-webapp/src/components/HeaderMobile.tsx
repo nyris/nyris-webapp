@@ -20,6 +20,7 @@ import {
   updateQueryText,
   updateStatusLoading,
   setSearchResults,
+  setShowFeedback,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppState } from 'types';
@@ -149,6 +150,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               };
               dispatch(setSearchResults(payload));
               dispatch(updateStatusLoading(false));
+              dispatch(setShowFeedback(true));
             })
             .catch((e: any) => {
               console.log('error input search', e);

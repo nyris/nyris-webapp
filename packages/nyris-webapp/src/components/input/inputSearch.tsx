@@ -24,6 +24,7 @@ import {
   setRegions,
   setSelectedRegion,
   updateQueryText,
+  setShowFeedback,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -120,6 +121,7 @@ const SearchBox = (props: any) => {
 
               dispatch(setSearchResults(payload));
               dispatch(updateStatusLoading(false));
+              dispatch(setShowFeedback(true));
             })
             .catch((e: any) => {
               console.log('error input search', e);
@@ -166,7 +168,6 @@ const SearchBox = (props: any) => {
       try {
         if (settings.regions) {
           let res = await findRegions(image, settings);
-          console.log(res);
 
           dispatch(setRegions(res.regions));
           region = res.selectedRegion;
@@ -193,6 +194,7 @@ const SearchBox = (props: any) => {
             };
             dispatch(setSearchResults(payload));
             dispatch(updateStatusLoading(false));
+            dispatch(setShowFeedback(true));
           })
           .catch((e: any) => {
             console.log('error input search', e);

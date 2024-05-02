@@ -10,6 +10,7 @@ import {
   loadingActionResults,
   setRegions,
   setSelectedRegion,
+  setShowFeedback,
 } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDownward.svg';
@@ -83,6 +84,8 @@ function DragDropFile(props: Props) {
           dispatch(setSearchResults(payload));
           onChangeLoading(false);
           dispatch(updateStatusLoading(false));
+          dispatch(setShowFeedback(true));
+
           return;
         });
       }

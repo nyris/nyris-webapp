@@ -19,6 +19,7 @@ import {
   loadingActionResults,
   setRegions,
   setSelectedRegion,
+  setShowFeedback,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 
@@ -102,6 +103,7 @@ function CameraCustom(props: Props) {
           };
           dispatch(setSearchResults(payload));
           dispatch(updateStatusLoading(false));
+          dispatch(setShowFeedback(true));
         })
         .catch((e: any) => {
           console.log('error input search', e);
