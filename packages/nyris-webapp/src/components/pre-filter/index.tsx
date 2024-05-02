@@ -134,7 +134,7 @@ function PreFilterComponent(props: Props) {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter) as string[],
+          values: Object.keys(preFilter),
         },
       ];
       dispatch(updateStatusLoading(true));

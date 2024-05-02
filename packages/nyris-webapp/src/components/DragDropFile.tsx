@@ -50,7 +50,7 @@ function DragDropFile(props: Props) {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter) as string[],
+          values: Object.keys(preFilter),
         },
       ];
       let region: RectCoords | undefined;
@@ -105,35 +105,32 @@ function DragDropFile(props: Props) {
           },
         })}
       >
-        <>
-          <div
-            className={`box-content-drop ${isDragActive ? 'drag-active' : ''}`}
-            {...getRootProps({
-              onClick: e => {
-                e.stopPropagation();
-              },
+        <div
+          className={`box-content-drop ${isDragActive ? 'drag-active' : ''}`}
+          {...getRootProps({
+            onClick: e => {
+              e.stopPropagation();},
             })}
-          >
-            <div style={{ marginBottom: 16 }}>
-              <IconDownload width={48} height={48} />
-            </div>
-            <label htmlFor="select_file" className="" style={{ fontSize: 14 }}>
-              <span className="fw-700 text-f14" style={{ paddingRight: '4px' }}>
-                {t('Drag and drop')}
-              </span>
-              {t('an image here')}
-            </label>
-            <input
-              {...getInputProps()}
-              type="file"
-              name="file"
-              id="select_file"
-              className="inputFile"
-              placeholder="Choose photo"
-              style={{ display: 'block', cursor: 'pointer' }}
-            />
+        >
+          <div style={{ marginBottom: 16 }}>
+            <IconDownload width={48} height={48} />
           </div>
-        </>
+          <label htmlFor="select_file" className="" style={{ fontSize: 14 }}>
+            <span className="fw-700 text-f14" style={{ paddingRight: '4px' }}>
+              {t('Drag and drop')}
+            </span>
+            {t('an image here')}
+          </label>
+          <input
+            {...getInputProps()}
+            type="file"
+            name="file"
+            id="select_file"
+            className="inputFile"
+            placeholder="Choose photo"
+            style={{ display: 'block', cursor: 'pointer' }}
+          />
+        </div>
       </div>
     </div>
   );
