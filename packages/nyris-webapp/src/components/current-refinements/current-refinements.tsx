@@ -12,6 +12,7 @@ import { getCurrentRefinement } from './getCurrentRefinement';
 import { ClearRefinements } from 'components/clear-refinements/clear-refinements';
 import ChipComponent from 'components/chip/chip';
 import { useAppSelector } from 'Store/Store';
+import { useTranslation } from 'react-i18next';
 
 export type CurrentRefinementsProps = CurrentRefinementsProvided & {
   header?: string;
@@ -35,6 +36,7 @@ function CurrentRefinementsComponent({
 }: CurrentRefinementsProps) {
   const stateGlobal = useAppSelector(state => state);
   const { settings } = stateGlobal;
+  const { t } = useTranslation();
   const [newItems, setListItems] = useState<any[]>([]);
 
   useEffect(() => {
@@ -74,14 +76,14 @@ function CurrentRefinementsComponent({
                 onClick={() => refine(refinement.value)}
               >
                 {refinement.category && (
-                  <div className="text-f12">{refinement.category}:</div>
+                  <div className="text-f12 fw-400">{refinement.category}:</div>
                 )}
                 <div
-                  className="capitalize fw-700"
                   style={{
                     marginLeft: 5,
                     textTransform: 'capitalize',
                     marginRight: 10,
+                    fontWeight: 400,
                   }}
                 >
                   {refinement.label}
@@ -97,7 +99,7 @@ function CurrentRefinementsComponent({
           })}
         >
           <ClearRefinements className="text-f12 fw-600">
-            Clear all
+            {t('Clear all')}
           </ClearRefinements>
         </li>
       </ul>

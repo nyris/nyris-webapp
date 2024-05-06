@@ -347,7 +347,7 @@ const SearchBox = (props: any) => {
                 fontSize: 14,
                 color: '#2B2C46',
               }}
-              className="input-search"
+              className="input-search hhhh"
               placeholder={t('Search')}
               value={valueInput}
               onChange={onChangeText}
