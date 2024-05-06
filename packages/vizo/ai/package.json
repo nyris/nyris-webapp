@@ -1,0 +1,16 @@
+{
+  "name": "@nyris/vizo-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI model for Vizo webapp",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@langchain/openai": "^0.0.28",
+    "langchain": "^0.1.36"
+  }
+}
