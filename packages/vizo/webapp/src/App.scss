@@ -1,5 +1,6 @@
 .layout {
   width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   header {
@@ -19,25 +20,65 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     .search-bar {
-      width: 90%;
-      padding: 12px;
-      border-radius: 25px;
-      border: 1px solid gray;
+      width: 512px;
       display: flex;
       flex-direction: row;
-      &-input {
-        border: 0;
-        flex: 1;
-        &:active,
-        &:focus,
-        &:focus-visible {
+      align-items: center;
+      justify-content: space-between;
+      .ask-vizo {
+        width: 118px;
+        padding: 12px;
+        border-radius: 25px;
+        display: flex;
+        flex-direction: row;
+        box-shadow: 0 2px 12px rgba(43, 44, 70, .13);
+        box-sizing: border-box;
+      }
+      .text-search-bar {
+        width: 388px;
+        padding: 12px;
+        border-radius: 25px;
+        display: flex;
+        flex-direction: row;
+        box-shadow: 0 2px 12px rgba(43, 44, 70, .13);
+        box-sizing: border-box;
+        &-input {
           border: 0;
-          outline: none;
+          flex: 1;
+          &:active,
+          &:focus,
+          &:focus-visible {
+            border: 0;
+            outline: none;
+          }
+        }
+        .clear-icon {
+          cursor: pointer;
         }
       }
-      .clear-icon {
-        cursor: pointer;
+    }
+    .drag-n-drop {
+      padding: 24px 16px;
+      margin-top: 24px;
+      border-radius: 2px;
+      border: 1px dashed #CACAD1;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 512px;
+      height: 136px;
+      &:hover,
+      &.active-drop {
+        background-color: rgba(#12171f, 0.06);
+      }
+      &-text {
+        margin-top: 12px;
+        color: #55566B;
       }
     }
   }
@@ -49,6 +90,17 @@
     justify-content: center;
     align-items: center;
     border-top: 1px solid #E0E0E0;
+    &:hover {
+      background-color: #f0efff;
+      a {
+        color: #3E36DC;
+        strong {
+          background: linear-gradient(0.25turn, #3E36DC, #E31B5D);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+    }
     a {
       text-decoration: none;
       color: #2B2C46;
