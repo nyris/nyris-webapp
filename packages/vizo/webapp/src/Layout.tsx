@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import './App.scss';
 import { ReactComponent as CloseIcon } from './assets/close.svg';
-import drop_zone from './assets/dropzone.svg';
+import { ReactComponent as VizoIcon } from './assets/Vizo.svg';
+
 interface ILayoutProps {
   children: any;
 }
@@ -28,9 +29,10 @@ function Layout(props: ILayoutProps) {
       </header>
       <main>
         <div className="search-bar">
-          <div className="ask-vizo">
+          <button className="ask-vizo">
+            <VizoIcon />
             Ask Vizo!
-          </div>
+          </button>
           <div className="text-search-bar">
             <input
               className="text-search-bar-input"

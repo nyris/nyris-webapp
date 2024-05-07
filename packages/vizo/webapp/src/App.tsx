@@ -7,6 +7,7 @@ interface IAppProps {
 }
 
 function App(props: IAppProps) {
+  console.log(props);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => onFileDropped(fs[0]),
   });
@@ -26,6 +27,14 @@ function App(props: IAppProps) {
         <div className="drag-n-drop-text">
           <strong>Drag and drop</strong> an image here
         </div>
+      </div>
+      <div className="help-buttons">
+        <button>
+          Are you looking for a specific brand?
+        </button>
+        <button>
+          Do you have a category in mind?
+        </button>
       </div>
     </>
   )

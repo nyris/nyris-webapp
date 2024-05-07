@@ -2,10 +2,16 @@ import React from 'react';
 
 interface IResultProps {}
 function ResultsComponent(props: IResultProps) {
-  console.log(window.NyrisSettings);
   console.log(props);
   return (
-    <div>Results Section</div>
+    <section className="results-container">
+      <aside>
+        Preview and postfilters
+      </aside>
+      <div>
+        Results
+      </div>
+    </section>
   )
 }
 
