@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useDropzone } from 'react-dropzone';
 import './App.scss';
 import { ReactComponent as CloseIcon } from './assets/close.svg';
 import { ReactComponent as VizoIcon } from './assets/Vizo.svg';
@@ -9,13 +8,6 @@ interface ILayoutProps {
 }
 function Layout(props: ILayoutProps) {
   const [searchKey, setSearchKey] = useState<string>('');
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (fs: File[]) => onFileDropped(fs[0]),
-  });
-
-  const onFileDropped = (file: any) => {
-    console.log(file);
-  }
 
   return (
     <div className="layout">

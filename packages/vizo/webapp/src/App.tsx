@@ -8,7 +8,7 @@ interface IAppProps {
 
 function App(props: IAppProps) {
   console.log(props);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => onFileDropped(fs[0]),
   });
 
