@@ -7,6 +7,10 @@
   font-family: 'Source Sans 3', sans-serif;
 }
 
+body.overflow-hidden {
+  overflow: hidden;
+}
+
 .layout {
   width: 100%;
   height: 100vh;
@@ -35,38 +39,21 @@
     align-items: center;
     .search-bar {
       width: 512px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      .ask-vizo {
-        width: 118px;
-        height: 48px;
-        padding: 0 12px;
-        border-radius: 25px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        box-shadow: 0 2px 12px rgba(43, 44, 70, .13);
-        box-sizing: border-box;
-        border: none;
-        background-color: #FFF;
-        cursor: pointer;
-      }
       .text-search-bar {
-        width: 388px;
+        width: 512px;
         height: 48px;
-        padding: 12px;
         border-radius: 25px;
-        display: flex;
-        flex-direction: row;
         box-shadow: 0 2px 12px rgba(43, 44, 70, .13);
         box-sizing: border-box;
         background-color: #fff;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         &-input {
           border: 0;
           flex: 1;
+          margin-left: 8px;
           &:active,
           &:focus,
           &:focus-visible {
@@ -74,7 +61,34 @@
             outline: none;
           }
         }
+        .ask-vizo {
+          width: 96px;
+          height: 48px;
+          display: flex;
+          border-radius: 25px 0 0 25px;
+          flex-direction: row;
+          justify-content: space-around;
+          align-items: center;
+          box-sizing: border-box;
+          border: none;
+          border-right: 1px solid #e0e0e0;
+          background-color: #FFF;
+          cursor: pointer;
+        }
         .clear-icon {
+          cursor: pointer;
+        }
+        .camera-icon {
+          width: 48px;
+          height: 48px;
+          display: flex;
+          border-radius: 0 25px 25px 0;
+          flex-direction: row;
+          justify-content: space-around;
+          align-items: center;
+          box-sizing: border-box;
+          border: none;
+          background-color: #FFF;
           cursor: pointer;
         }
       }
@@ -145,6 +159,34 @@
       text-decoration: none;
       color: #2B2C46;
       font-size: 10px;
+    }
+  }
+}
+
+.custom-modal {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background-color: rgba(22, 22, 22, 0.5);
+  z-index: 9999;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  &-body {
+    position: relative;
+    width: 350px;
+    height: 200px;
+    background-color: #F3F3F5;
+    padding: 32px 16px;
+    .close-icon {
+      top: 8px;
+      right: 8px;
+      position: absolute;
     }
   }
 }
