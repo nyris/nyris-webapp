@@ -13,7 +13,8 @@ body.overflow-hidden {
 
 .layout {
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: #FAFAFA;
@@ -39,6 +40,7 @@ body.overflow-hidden {
     align-items: center;
     .search-bar {
       width: 512px;
+      margin: 24px 0;
       .text-search-bar {
         width: 512px;
         height: 48px;
@@ -131,9 +133,77 @@ body.overflow-hidden {
         border-radius: 50px;
       }
     }
-    .results-container {
+    .results {
       width: 100%;
-      height: 60vh;
+      height: calc(100vh - 150px);
+      overflow: scroll;
+      &-container {
+        width: 850px;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin: 0 auto;
+        .result-tile {
+          width: 192px;
+          height: 345px;
+          display: flex;
+          flex-direction: column;
+          border: 1px solid #E0E0E0;
+          border-radius: 4px;
+          box-shadow: 0 0 16px 0 #E0E0E0CC;
+          image {
+            width: 192px;
+            &:hover {
+              transform: scale(1.1);
+            }
+          }
+          &-info {
+            padding: 8px;
+          }
+          &-title {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 17.09px;
+            letter-spacing: 0.22857144474983215px;
+            word-break: normal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          &-sku {
+            font-size: 10px;
+            font-weight: 400;
+            line-height: 14.24px;
+            letter-spacing: 0.22857144474983215px;
+          }
+          &-brand {
+            font-size: 10px;
+            font-weight: 400;
+            line-height: 12px;
+            letter-spacing: 0.22857144474983215px;
+            padding: 2px 8px;
+            border-radius: 2px;
+            background-color: #E9E9EC;
+            margin: 4px 0;
+          }
+          .cta-button {
+            width: 176px;
+            padding: 6px 8px 6px 8px;
+            border: 0;
+            border-radius: 2px;
+            background-color: #3E36DC;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 14px;
+            letter-spacing: 0.22857144474983215px;
+            color: #fff;
+            margin-bottom: 16px;
+            cursor: pointer;
+          }
+        }
+      }
     }
   }
   footer {

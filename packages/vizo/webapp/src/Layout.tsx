@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
+import {Route, useHistory} from 'react-router-dom';
 import './Layout.scss';
 import { ReactComponent as CloseIcon } from './assets/close.svg';
-import { ReactComponent as VizoIcon } from './assets/Vizo.svg';
 import { ReactComponent as CameraIcon } from './assets/camera.svg';
 import SelectModelPopup from './select-model-popup/select-model-popup';
-import NyrisAPI, {ImageSearchOptions, NyrisAPISettings, Region, urlOrBlobToCanvas} from '@nyris/nyris-api';
+import NyrisAPI, { ImageSearchOptions, NyrisAPISettings, Region, urlOrBlobToCanvas } from '@nyris/nyris-api';
+import { makeFileHandler } from '@nyris/nyris-react-components';
+import DragAndDrop from "./components/DragAndDrop";
+import ResultComponent from "./components/Results";
 
-interface ILayoutProps {
-  children: any;
-}
-function Layout(props: ILayoutProps) {
+function Layout() {
   const settings = {apiKey: 'GqjKwUgSXB1mPIihPoZNPVqIZxiKCy3R'} as NyrisAPISettings
   const [searchKey, setSearchKey] = useState<string>('');
+  const [results, setResults] = useState<any>([]);
+  const history = useHistory();
   const nyrisApi = new NyrisAPI({...settings});
 
   const getRegionByMaxConfidence = (regions: Region[]) => {
@@ -25,6 +27,7 @@ function Layout(props: ILayoutProps) {
     });
     return regionWithMaxConfidence.normalizedRect;
   };
+
   const imageSearch = async (f: File | string) => {
     const image = await urlOrBlobToCanvas(f);
     const foundRegions = await nyrisApi.findRegions(image);
@@ -33,7 +36,8 @@ function Layout(props: ILayoutProps) {
       cropRect: selection,
     };
     const searchResult = await nyrisApi.find(options, image);
-    console.log(searchResult);
+    setResults(searchResult.results);
+    history.push('/result');
   }
 
   return (
@@ -78,13 +82,26 @@ function Layout(props: ILayoutProps) {
               name="take-picture"
               id="nyris__hello-open-camera"
               accept="image/jpeg,image/png,image/webp"
-              onChange={(e) => imageSearch(e.target.value)}
+              onChange={makeFileHandler((e) => imageSearch(e))}
               style={{ display: "none" }}
             />
           </div>
         </div>
         <div>
-          {props.children}
+          <Route
+            exact
+            strict
+            path="/"
+            key="DragNDrop"
+            component={DragAndDrop}
+          />
+          <Route
+            exact
+            strict
+            path="/result"
+            key="Results"
+            render={(props) => <ResultComponent {...props} results={results}/>}
+          />
         </div>
       </main>
       <footer>
