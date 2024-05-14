@@ -3,20 +3,18 @@ import { useDropzone } from 'react-dropzone';
 import drop_zone from '../assets/dropzone.svg';
 
 interface IAppProps {
-  search: any;
+  search: (fs: File) => void;
+  searchBar: React.ReactNode;
 }
 
 function DragAndDrop(props: IAppProps) {
-  console.log(props);
   const { getRootProps, isDragActive } = useDropzone({
-    onDrop: (fs: File[]) => onFileDropped(fs[0]),
+    onDrop: (fs: File[]) => props.search(fs[0]),
   });
 
-  const onFileDropped = (file: any) => {
-    console.log(file);
-  }
   return (
     <>
+      {props.searchBar}
       <div
         className={`drag-n-drop ${
           isDragActive ? "active-drop" : ""

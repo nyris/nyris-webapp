@@ -52,6 +52,21 @@ body.overflow-hidden {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        .image-thumb {
+          width: 76px;
+          height: 40px;
+          border: 2px solid #655EE3;
+          background-color: #E4E3FF;
+          border-radius: 4px;
+          margin-left: 8px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          .clear-thumb {
+            margin-left: 8px;
+            cursor: pointer;
+          }
+        }
         &-input {
           border: 0;
           flex: 1;
@@ -135,8 +150,24 @@ body.overflow-hidden {
     }
     .results {
       width: 100%;
-      height: calc(100vh - 150px);
-      overflow: scroll;
+      height: calc(100vh - 82px);
+      display: flex;
+      flex-direction: row;
+      .side-panel {
+        width: 320px;
+        height: 100%;
+        border-right: 1px solid #E0E0E0;
+        .preview-container {
+          width: 255px;
+          margin: 24px auto;
+        }
+      }
+      .results-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
       &-container {
         width: 850px;
         height: 100%;
@@ -144,7 +175,7 @@ body.overflow-hidden {
         flex-direction: row;
         flex-wrap: wrap;
         gap: 24px;
-        margin: 0 auto;
+        overflow: scroll;
         .result-tile {
           width: 192px;
           height: 345px;
@@ -201,6 +232,10 @@ body.overflow-hidden {
             color: #fff;
             margin-bottom: 16px;
             cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
           }
         }
       }
