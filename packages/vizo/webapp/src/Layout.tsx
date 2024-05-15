@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Route, useHistory } from 'react-router-dom';
 import './Layout.scss';
 import { ReactComponent as CloseIcon } from './assets/close.svg';
 import { ReactComponent as CameraIcon } from './assets/camera.svg';
 import SelectModelPopup from './select-model-popup/select-model-popup';
-import NyrisAPI, {ImageSearchOptions, NyrisAPISettings, RectCoords, Region, urlOrBlobToCanvas} from '@nyris/nyris-api';
+import NyrisAPI, {
+  Filter,
+  ImageSearchOptions,
+  NyrisAPISettings,
+  RectCoords,
+  Region,
+  urlOrBlobToCanvas
+} from '@nyris/nyris-api';
 import { makeFileHandler } from '@nyris/nyris-react-components';
 import DragAndDrop from './components/DragAndDrop';
 import ResultComponent from './components/Results';
@@ -15,8 +22,19 @@ function Layout() {
   const [results, setResults] = useState<any>([]);
   const [searchImage, setSearchImage] = useState<HTMLCanvasElement | null>(null);
   const [imageThumb, setImageThumb] = useState('');
+  const [preFilters, setPreFilters] = useState<Filter>({} as Filter);
   const history = useHistory();
   const nyrisApi = new NyrisAPI({...settings});
+
+  useEffect(() => {
+    const getPreFilters = async () => {
+      const resp = await nyrisApi.getFilters(1000);
+      const filterdPreFilters = resp.filter(itemResp => itemResp.key === 'Bezeichnung')[0];
+      setPreFilters(filterdPreFilters);
+    }
+    getPreFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getRegionByMaxConfidence = (regions: Region[]) => {
     if (regions.length === 0) {
@@ -41,7 +59,7 @@ function Layout() {
     };
     const searchResult = await nyrisApi.find(options, image);
     setResults(searchResult.results);
-    history.push('/result');
+    history.push('/results');
   }
   
   const onSelectionChange = (r: RectCoords) => {
@@ -50,10 +68,10 @@ function Layout() {
   
   const SearchBar = <div className="search-bar">
     <div className="text-search-bar">
-      <SelectModelPopup />
+      <SelectModelPopup preFilters={preFilters} />
       {imageThumb ? (
         <div className="image-thumb">
-          <img src={imageThumb}  width={40} alt="searched image thumb" />
+          <img src={imageThumb} width={40} alt="searched thumb" />
           <CloseIcon
             width={16}
             height={16}
@@ -129,7 +147,7 @@ function Layout() {
           <Route
             exact
             strict
-            path="/result"
+            path="/results"
             key="Results"
             render={(props) => (
               <ResultComponent
@@ -137,6 +155,7 @@ function Layout() {
                 results={results}
                 searchBar={SearchBar}
                 searchImage={searchImage}
+                preFilters={preFilters}
                 onSelectionChange={onSelectionChange}
               />
             )}
