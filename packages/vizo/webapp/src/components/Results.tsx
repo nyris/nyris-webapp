@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Filter, RectCoords } from '@nyris/nyris-api';
+import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import { ReactComponent as CTAIcon } from '../assets/link.svg';
 
@@ -7,7 +7,7 @@ interface IResultProps {
   results: any[];
   searchBar: React.ReactNode;
   searchImage: any;
-  preFilters: Filter;
+  preFilters: string[];
   onSelectionChange: (r: RectCoords) => void;
 }
 function ResultsComponent(props: IResultProps) {
@@ -33,24 +33,8 @@ function ResultsComponent(props: IResultProps) {
               rounded={true}
             />
           </div>
-          <section className="prefilters">
-            {props.preFilters?.values?.map(itemFilter => (
-              <div>
-                <input
-                  type="checkbox"
-                  value={itemFilter}
-                  checked={selectedPreFilters.includes(itemFilter)}
-                  onChange={() => {
-                    if (selectedPreFilters.includes(itemFilter)) {
-                      setSelectedPreFilters(selectedPreFilters.filter(selected => selected !== itemFilter));
-                    } else {
-                      setSelectedPreFilters(prev => [...prev, itemFilter]);
-                    }
-                  }}
-                />
-                {itemFilter}
-              </div>
-            ))}
+          <section className="prefis4lters">
+            {props.preFilters?.map(itemFilter => <div>{itemFilter}</div>)}
           </section>
         </aside>
         <div className="results-main">

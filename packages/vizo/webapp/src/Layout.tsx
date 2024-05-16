@@ -23,6 +23,7 @@ function Layout() {
   const [searchImage, setSearchImage] = useState<HTMLCanvasElement | null>(null);
   const [imageThumb, setImageThumb] = useState('');
   const [preFilters, setPreFilters] = useState<Filter>({} as Filter);
+  const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([])
   const history = useHistory();
   const nyrisApi = new NyrisAPI({...settings});
 
@@ -68,7 +69,10 @@ function Layout() {
   
   const SearchBar = <div className="search-bar">
     <div className="text-search-bar">
-      <SelectModelPopup preFilters={preFilters} />
+      <SelectModelPopup
+        preFilters={preFilters}
+        setPreFilters={(prefilters) => setSelectedPreFilters(prefilters)}
+      />
       {imageThumb ? (
         <div className="image-thumb">
           <img src={imageThumb} width={40} alt="searched thumb" />
@@ -155,7 +159,7 @@ function Layout() {
                 results={results}
                 searchBar={SearchBar}
                 searchImage={searchImage}
-                preFilters={preFilters}
+                preFilters={selectedPreFilters}
                 onSelectionChange={onSelectionChange}
               />
             )}

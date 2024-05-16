@@ -47,11 +47,12 @@ body.overflow-hidden {
         border-radius: 25px;
         box-shadow: 0 2px 12px rgba(43, 44, 70, .13);
         box-sizing: border-box;
-        background-color: #fff;
+        background-color: #E9E9EC;
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        border: 1px solid #CACAD1;
         .image-thumb {
           width: 76px;
           height: 40px;
@@ -71,6 +72,7 @@ body.overflow-hidden {
           border: 0;
           flex: 1;
           margin-left: 8px;
+          background-color: #E9E9EC;
           &:active,
           &:focus,
           &:focus-visible {
@@ -78,9 +80,9 @@ body.overflow-hidden {
             outline: none;
           }
         }
-        .ask-vizo {
-          width: 96px;
-          height: 48px;
+        .prefilter-button {
+          width: 48px;
+          height: 46px;
           display: flex;
           border-radius: 25px 0 0 25px;
           flex-direction: row;
@@ -88,16 +90,39 @@ body.overflow-hidden {
           align-items: center;
           box-sizing: border-box;
           border: none;
-          border-right: 1px solid #e0e0e0;
-          background-color: #FFF;
+          border-right: 1px solid #CACAD1;
           cursor: pointer;
+          background-color: #E9E9EC;
+          .prefilter-button-icon-background {
+            background-color: #2B2C46;
+            border-radius: 50%;
+            width: 40px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            &.selected {
+              background-color: #3E36DC;
+            }
+            .indicator {
+              position: absolute;
+              top: 0;
+              right: 0;
+              width: 8px;
+              height: 8px;
+              background-color: #3E36DC;
+              border-radius: 50%;
+              border: 2px solid #FFFFFF
+            }
+          }
         }
         .clear-icon {
           cursor: pointer;
         }
         .camera-icon {
           width: 48px;
-          height: 48px;
+          height: 46px;
           display: flex;
           border-radius: 0 25px 25px 0;
           flex-direction: row;
@@ -105,7 +130,7 @@ body.overflow-hidden {
           align-items: center;
           box-sizing: border-box;
           border: none;
-          background-color: #FFF;
+          background-color: #E9E9EC;
           cursor: pointer;
         }
       }
@@ -294,16 +319,48 @@ body.overflow-hidden {
     position: relative;
     width: 800px;
     height: 480px;
-    background-color: #F3F3F5;
-    padding: 32px 16px;
+    background-color: #FFF;
     .close-icon {
       top: 8px;
       right: 8px;
       position: absolute;
     }
+    &-title {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 24px;
+      padding: 32px 16px 0;
+    }
     &-content {
       width: 100%;
-      height: 394px;
+      height: 358px;
+      padding: 0 16px;
+      overflow: hidden;
+      box-sizing: border-box;
+      .search-prefilter {
+        width: 512px;
+        height: 40px;
+        box-sizing: border-box;
+        background-color: #F3F3F5;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 8px 12px;
+        margin-top: 24px;
+        input {
+          flex: 1;
+          border: 0;
+          background-color: transparent;
+          margin-left: 8px;
+          &:active,
+          &:focus,
+          &:focus-visible {
+            border: 0;
+            outline: none;
+          }
+        }
+      }
       .selected-prefilters {
         min-height: 24px;
         display: flex;
@@ -328,10 +385,58 @@ body.overflow-hidden {
         height: 100%;
         overflow: scroll;
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        .item-prefilter {
-          width: 380px;
+        flex-direction: column;
+        .letter-section {
+          margin-bottom: 16px;
+          .section-name {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 20px;
+          }
+          .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            .grid-item {
+              cursor: pointer;
+              font-size: 12px;
+              font-weight: 400;
+              line-height: 20px;
+              padding: 2px 4px;
+              border-radius: 10px;
+              &.selected {
+                background-color: #E9E9EC;
+                font-size: 12px;
+                font-weight: 600;
+                line-height: 20px;
+              }
+            }
+          }
+        }
+      }
+    }
+    footer {
+      width: 100%;
+      height: 66px;
+      display: flex;
+      flex-direction: row;
+      button {
+        flex: 1;
+        border: 0;
+        cursor: pointer;
+        text-align: left;
+        padding: 0 16px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 18px;
+        letter-spacing: 0.1599999964237213px;
+        color: #fff;
+        &.cancel {
+          background-color: #2B2C46;
+        }
+        &.apply {
+          background-color: #3E36DC;
+
         }
       }
     }
