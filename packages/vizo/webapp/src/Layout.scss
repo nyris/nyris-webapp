@@ -113,7 +113,7 @@ body.overflow-hidden {
               height: 8px;
               background-color: #3E36DC;
               border-radius: 50%;
-              border: 2px solid #FFFFFF
+              border: 2px solid #FFFFFF;
             }
           }
         }
@@ -190,9 +190,39 @@ body.overflow-hidden {
           margin: 24px auto;
         }
         .prefilters {
-          width: 100%;
+          width: 272px;
+          margin: auto;
           flex: 1;
           overflow: scroll;
+          .prefilters-title {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 16px;
+            text-align: left;
+          }
+          .letter-section {
+            .section-name {
+              font-size: 12px;
+              font-weight: 700;
+              line-height: 16px;
+              margin: 8px 0;
+            }
+            .prefilters-container {
+              font-size: 12px;
+              font-weight: 400;
+              line-height: 16px;
+              text-align: left;
+              display: flex;
+              flex-direction: row;
+              flex-wrap: wrap;
+              gap: 10px;
+              .item-prefilter {
+                padding: 4px 6px;
+                background-color: #F3F3F5;
+                border-radius: 10px;
+              }
+            }
+          }
         }
       }
       .results-main {
@@ -368,6 +398,7 @@ body.overflow-hidden {
         flex-wrap: wrap;
         gap: 8px;
         margin: 8px 0;
+        align-items: center;
         &-item {
           background-color: #E4E3FF;
           padding: 4px 8px;
@@ -379,10 +410,24 @@ body.overflow-hidden {
           font-weight: 400;
           line-height: 16px;
         }
+        .counter {
+          font-size: 12px;
+          font-weight: 600;
+          line-height: 16px;
+          letter-spacing: 0.20000000298023224px;
+        }
+        .clean-all {
+          font-size: 13px;
+          font-weight: 400;
+          line-height: 16px;
+          letter-spacing: 0.1599999964237213px;
+          color: #E31B5D;
+          cursor: pointer;
+        }
       }
       .prefilters {
         width: 100%;
-        height: 100%;
+        height: 253px;
         overflow: scroll;
         display: flex;
         flex-direction: column;

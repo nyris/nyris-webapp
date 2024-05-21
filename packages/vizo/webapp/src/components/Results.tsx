@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import { ReactComponent as CTAIcon } from '../assets/link.svg';
+import { groupFiltersByFirstLetter } from '../Helpers';
 
 interface IResultProps {
   results: any[];
@@ -11,7 +12,7 @@ interface IResultProps {
   onSelectionChange: (r: RectCoords) => void;
 }
 function ResultsComponent(props: IResultProps) {
-  const [selectedPreFilters, setSelectedPreFilters] = useState<any[]>([]);
+  const groupedFilters = groupFiltersByFirstLetter(props?.preFilters);
 
   return props.searchImage ? 
     (
@@ -33,8 +34,23 @@ function ResultsComponent(props: IResultProps) {
               rounded={true}
             />
           </div>
-          <section className="prefis4lters">
-            {props.preFilters?.map(itemFilter => <div>{itemFilter}</div>)}
+          <section className="prefilters">
+            <div className="prefilters-title">Search criteria</div>
+            {Object.keys(groupedFilters).map((sectionName) => (
+              <article key={sectionName} className="letter-section">
+                <div className="section-name">{sectionName}</div>
+                <div className="prefilters-container">
+                  {groupedFilters[sectionName].map((filter, index) => (
+                    <div
+                      key={index}
+                      className="item-prefilter"
+                    >
+                      {filter}
+                    </div>
+                  ))}
+                </div>
+              </article>
+            ))}
           </section>
         </aside>
         <div className="results-main">

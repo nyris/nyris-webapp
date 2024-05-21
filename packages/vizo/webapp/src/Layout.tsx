@@ -1,9 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import { Route, useHistory } from 'react-router-dom';
-import './Layout.scss';
-import { ReactComponent as CloseIcon } from './assets/close.svg';
-import { ReactComponent as CameraIcon } from './assets/camera.svg';
-import SelectModelPopup from './select-model-popup/select-model-popup';
 import NyrisAPI, {
   Filter,
   ImageSearchOptions,
@@ -12,7 +8,11 @@ import NyrisAPI, {
   Region,
   urlOrBlobToCanvas
 } from '@nyris/nyris-api';
+import './Layout.scss';
+import { ReactComponent as CloseIcon } from './assets/close.svg';
+import { ReactComponent as CameraIcon } from './assets/camera.svg';
 import { makeFileHandler } from '@nyris/nyris-react-components';
+import SelectModelPopup from './components/SelectModelPopup';
 import DragAndDrop from './components/DragAndDrop';
 import ResultComponent from './components/Results';
 
@@ -145,7 +145,11 @@ function Layout() {
             path="/"
             key="DragNDrop"
             render={(props) => (
-              <DragAndDrop {...props} search={(e) => imageSearch(e)} searchBar={SearchBar} />
+              <DragAndDrop
+                {...props}
+                search={(e) => imageSearch(e)}
+                searchBar={SearchBar}
+              />
             )}
           />
           <Route

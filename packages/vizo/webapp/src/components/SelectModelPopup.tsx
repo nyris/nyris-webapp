@@ -4,23 +4,7 @@ import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import { Filter } from '@nyris/nyris-api';
 import { ReactComponent as SearchIcon } from '../assets/icon_search.svg';
 import { ReactComponent as IconFilter} from '../assets/filter_settings.svg';
-
-const groupFiltersByFirstLetter = (filters: string[]) => {
-  if (!filters) {
-    return {};
-  }
-  const groupedStrings: { [key: string]: string[] } = {};
-
-  filters.sort((a, b) => a.localeCompare(b)).forEach((str) => {
-    const firstLetter = str[0].toUpperCase();
-    if (!groupedStrings[firstLetter]) {
-      groupedStrings[firstLetter] = [];
-    }
-    groupedStrings[firstLetter].push(str);
-  });
-
-  return groupedStrings;
-};
+import { groupFiltersByFirstLetter } from '../Helpers';
 
 interface ISelectModalPopup {
   preFilters: Filter;
@@ -122,6 +106,18 @@ function SelectModelPopup(props: ISelectModalPopup) {
                       />
                     </div>
                   ))}
+                  {selectedPreFilters.length ? (
+                    <>
+                      <div className="counter">
+                        {`${selectedPreFilters.length} / 10`}
+                      </div>
+                      <div className="clean-all" onClick={() => setSelectedPreFilters([])}>
+                        Clean All
+                      </div>
+                    </>
+                  ) : (
+                    ''
+                  )}
                 </div>
                 <section className="prefilters">
                   {Object.keys(groupedFilters).map((sectionName) => (
@@ -135,7 +131,7 @@ function SelectModelPopup(props: ISelectModalPopup) {
                             onClick={() => {
                               if (selectedPreFilters.includes(filter)) {
                                 setSelectedPreFilters(selectedPreFilters.filter(selected => selected !== filter));
-                              } else {
+                              } else if(selectedPreFilters.length < 10) {
                                 setSelectedPreFilters(prev => [...prev, filter]);
                               }
                             }}
@@ -162,6 +158,7 @@ function SelectModelPopup(props: ISelectModalPopup) {
                   className="apply"
                   onClick={() => {
                     modalToggle(false);
+                    props.setPreFilters(selectedPreFilters);
                   }}
                 >
                   Apply
