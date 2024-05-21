@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import { ReactComponent as CTAIcon } from '../assets/link.svg';
@@ -59,7 +59,7 @@ function ResultsComponent(props: IResultProps) {
             {props.results
               .map((item) => (
                 <div className="result-tile">
-                  <img src={item.image} alt="result image" />
+                  <img src={item.image} alt="result" />
                   <div className="result-tile-info">
                     <div className="result-tile-title">{item.title}</div>
                     <div className="result-tile-sku">{item.sku}</div>
