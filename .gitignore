@@ -32,3 +32,4 @@ yarn-error.log*
 public/js/settings.js
 
 .idea/
+packages/vizo/ai/.env
