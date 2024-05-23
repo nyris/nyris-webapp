@@ -15,6 +15,8 @@
 /packages/nyris-widget/dist
 /packages/nyris-webapp/build
 /packages/nyris-webapp/dist
+/packages/vizo/ai/dist
+packages/vizo/ai/dist
 /packages/nyris-webapp/public/js/settings.js
 *.tgz
 
@@ -32,3 +34,4 @@ yarn-error.log*
 public/js/settings.js
 
 .idea/
+packages/vizo/ai/.env
