@@ -1,38 +1,44 @@
-import React, {useEffect, useState} from 'react';
-import { Route, useHistory } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Route, useHistory } from "react-router-dom";
 import NyrisAPI, {
   Filter,
   ImageSearchOptions,
   NyrisAPISettings,
   RectCoords,
   Region,
-  urlOrBlobToCanvas
-} from '@nyris/nyris-api';
-import './Layout.scss';
-import { ReactComponent as CloseIcon } from './assets/close.svg';
-import { ReactComponent as CameraIcon } from './assets/camera.svg';
-import { makeFileHandler } from '@nyris/nyris-react-components';
-import SelectModelPopup from './components/SelectModelPopup';
-import DragAndDrop from './components/DragAndDrop';
-import ResultComponent from './components/Results';
+  urlOrBlobToCanvas,
+} from "@nyris/nyris-api";
+import "./Layout.scss";
+import { ReactComponent as CloseIcon } from "./assets/close.svg";
+import { ReactComponent as CameraIcon } from "./assets/camera.svg";
+import { makeFileHandler } from "@nyris/nyris-react-components";
+import SelectModelPopup from "./components/SelectModelPopup";
+import DragAndDrop from "./components/DragAndDrop";
+import ResultComponent from "./components/Results";
 
 function Layout() {
-  const settings = {apiKey: 'GqjKwUgSXB1mPIihPoZNPVqIZxiKCy3R'} as NyrisAPISettings
-  const [searchKey, setSearchKey] = useState<string>('');
+  const settings = {
+    apiKey: "QXD2DTWWTjUDBl0Sjl2871RCMFqp5KMk",
+  } as NyrisAPISettings;
+  const [searchKey, setSearchKey] = useState<string>("");
   const [results, setResults] = useState<any>([]);
-  const [searchImage, setSearchImage] = useState<HTMLCanvasElement | null>(null);
-  const [imageThumb, setImageThumb] = useState('');
+  const [searchImage, setSearchImage] = useState<HTMLCanvasElement | null>(
+    null
+  );
+  const [imageThumb, setImageThumb] = useState("");
   const [preFilters, setPreFilters] = useState<Filter>({} as Filter);
-  const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([])
+  const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([]);
   const history = useHistory();
-  const nyrisApi = new NyrisAPI({...settings});
+  const nyrisApi = new NyrisAPI({ ...settings });
 
   useEffect(() => {
     const getPreFilters = async () => {
       const resp = await nyrisApi.getFilters(1000);
-      const filterdPreFilters = resp.filter(itemResp => itemResp.key === 'Bezeichnung')[0];
+      const filterdPreFilters = resp.filter(
+        (itemResp) => itemResp.key === "Bezeichnung"
+      )[0];
       setPreFilters(filterdPreFilters);
-    }
+    };
     getPreFilters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -60,81 +66,77 @@ function Layout() {
     };
     const searchResult = await nyrisApi.find(options, image);
     setResults(searchResult.results);
-    history.push('/results');
-  }
-  
+    history.push("/results");
+  };
+
   const onSelectionChange = (r: RectCoords) => {
     console.log(r);
-  }
-  
-  const SearchBar = <div className="search-bar">
-    <div className="text-search-bar">
-      <SelectModelPopup
-        preFilters={preFilters}
-        setPreFilters={(prefilters) => setSelectedPreFilters(prefilters)}
-      />
-      {imageThumb ? (
-        <div className="image-thumb">
-          <img src={imageThumb} width={40} alt="searched thumb" />
+  };
+
+  const SearchBar = (
+    <div className="search-bar">
+      <div className="text-search-bar">
+        <SelectModelPopup
+          preFilters={preFilters}
+          setPreFilters={(prefilters) => setSelectedPreFilters(prefilters)}
+        />
+        {imageThumb ? (
+          <div className="image-thumb">
+            <img src={imageThumb} width={40} alt="searched thumb" />
+            <CloseIcon
+              width={16}
+              height={16}
+              fill="#655EE3"
+              className="clear-thumb"
+              onClick={() => {
+                setSearchKey("");
+                setResults([]);
+                setSearchImage(null);
+                setImageThumb("");
+                history.push("/");
+              }}
+            />
+          </div>
+        ) : (
+          ""
+        )}
+        <input
+          className="text-search-bar-input"
+          type="text"
+          onChange={(e) => setSearchKey(e.target.value)}
+          value={searchKey}
+          placeholder="Search"
+        />
+        {searchKey ? (
           <CloseIcon
+            className="clear-icon"
             width={16}
             height={16}
-            fill="#655EE3"
-            className="clear-thumb"
-            onClick={() => {
-              setSearchKey('');
-              setResults([]);
-              setSearchImage(null);
-              setImageThumb('');
-              history.push('/');
-            }}
+            fill="#2B2C46"
+            onClick={() => setSearchKey("")}
           />
-        </div>
-      ) : (
-        ''
-      )}
-      <input
-        className="text-search-bar-input"
-        type="text"
-        onChange={(e) => setSearchKey(e.target.value)}
-        value={searchKey}
-        placeholder="Search"
-      />
-      {searchKey
-        ? <CloseIcon
-          className="clear-icon"
-          width={16}
-          height={16}
-          fill="#2B2C46"
-          onClick={() => setSearchKey('')}
+        ) : (
+          ""
+        )}
+        <label className="camera-icon" htmlFor="nyris__hello-open-camera">
+          <CameraIcon />
+        </label>
+        <input
+          type="file"
+          name="take-picture"
+          id="nyris__hello-open-camera"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={makeFileHandler((e) => imageSearch(e))}
+          style={{ display: "none" }}
         />
-        : ''
-      }
-      <label
-        className="camera-icon"
-        htmlFor="nyris__hello-open-camera"
-      >
-        <CameraIcon />
-      </label>
-      <input
-        type="file"
-        name="take-picture"
-        id="nyris__hello-open-camera"
-        accept="image/jpeg,image/png,image/webp"
-        onChange={makeFileHandler((e) => imageSearch(e))}
-        style={{ display: "none" }}
-      />
+      </div>
     </div>
-  </div>
+  );
 
   return (
     <div className="layout">
       <header>
-        <img
-          src={window.NyrisSettings.logo}
-          className="logo"
-          alt="logo"
-        />
+        <img src={window.NyrisSettings.logo} className="logo" alt="logo" />
         <div className="user-menu"></div>
       </header>
       <main>
@@ -171,16 +173,12 @@ function Layout() {
         </>
       </main>
       <footer>
-        <a
-          href={'https://www.nyris.io'}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href={"https://www.nyris.io"} target="_blank" rel="noreferrer">
           Powered by <strong>nyris®</strong>
         </a>
       </footer>
     </div>
-  )
+  );
 }
 
 export default Layout;

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
+    "@craco/craco": "^7.1.0",
     "@nyris/nyris-api": "^0.3.54",
     "@nyris/nyris-react-components": "^0.3.54",
     "@testing-library/jest-dom": "^5.17.0",
@@ -13,6 +14,7 @@
     "@types/node": "^16.18.96",
     "@types/react": "^18.2.65",
     "@types/react-dom": "^18.2.21",
+    "craco-babel-loader": "^1.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^5.3.0",
@@ -21,10 +23,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test"
   },
   "eslintConfig": {
     "extends": [
@@ -43,5 +44,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "babel-loader": "^9.1.3"
   }
 }
