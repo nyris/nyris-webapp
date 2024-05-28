@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import Router from './Router';
-import { BrowserRouter } from 'react-router-dom';
-import { Auth0Provider } from '@auth0/auth0-react';
+import Router from "./Router";
+import { BrowserRouter } from "react-router-dom";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 interface IAuth0 {
   domain: string;
@@ -11,14 +11,17 @@ interface IAuth0 {
 }
 
 interface INyrisSettings {
-  id: string;
   logo: string;
   auth0: IAuth0;
+  apiKey: string;
+  customer: string;
+  customerDescription: string;
+  preFilterKey: string;
 }
 
 declare global {
   interface Window {
-    NyrisSettings: INyrisSettings;
+    settings: INyrisSettings;
   }
 }
 
@@ -28,8 +31,8 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Auth0Provider
-      domain={window.NyrisSettings.auth0.domain || ''}
-      clientId={window.NyrisSettings.auth0.clientId || ''}
+      domain={window.settings.auth0.domain || ""}
+      clientId={window.settings.auth0.clientId || ""}
       authorizationParams={{
         redirect_uri: window.location.origin,
       }}

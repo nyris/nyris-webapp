@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Route, useHistory } from "react-router-dom";
 import NyrisAPI, {
-  Filter,
   ImageSearchOptions,
   NyrisAPISettings,
   RectCoords,
@@ -12,13 +11,14 @@ import "./Layout.scss";
 import { ReactComponent as CloseIcon } from "./assets/close.svg";
 import { ReactComponent as CameraIcon } from "./assets/camera.svg";
 import { makeFileHandler } from "@nyris/nyris-react-components";
-import SelectModelPopup from "./components/SelectModelPopup";
+import SelectModelPopup from "./components/PreFilter";
 import DragAndDrop from "./components/DragAndDrop";
 import ResultComponent from "./components/Results";
+import { VizoAgent } from "@nyris/vizo-ai";
 
 function Layout() {
   const settings = {
-    apiKey: "QXD2DTWWTjUDBl0Sjl2871RCMFqp5KMk",
+    apiKey: window.settings.apiKey,
   } as NyrisAPISettings;
   const [searchKey, setSearchKey] = useState<string>("");
   const [results, setResults] = useState<any>([]);
@@ -26,21 +26,27 @@ function Layout() {
     null
   );
   const [imageThumb, setImageThumb] = useState("");
-  const [preFilters, setPreFilters] = useState<Filter>({} as Filter);
   const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([]);
+
+  const [vizoResultAssessment, setVizoResultAssessment] = useState<{
+    filter: boolean;
+    ocr: boolean;
+    result: string[];
+  }>();
+
+  const [vizoLoading, setVizoLoading] = useState(false);
+
   const history = useHistory();
   const nyrisApi = new NyrisAPI({ ...settings });
 
-  useEffect(() => {
-    const getPreFilters = async () => {
-      const resp = await nyrisApi.getFilters(1000);
-      const filterdPreFilters = resp.filter(
-        (itemResp) => itemResp.key === "Bezeichnung"
-      )[0];
-      setPreFilters(filterdPreFilters);
-    };
-    getPreFilters();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const vizoAgent = useMemo(() => {
+    const vizoAgent = new VizoAgent({
+      apiKey: process.env.REACT_APP_OPENAI_API_KEY || "",
+      customer: window.settings.customer,
+      customerDescription: window.settings.customerDescription,
+    });
+
+    return vizoAgent;
   }, []);
 
   const getRegionByMaxConfidence = (regions: Region[]) => {
@@ -56,6 +62,9 @@ function Layout() {
   };
 
   const imageSearch = async (f: File) => {
+    vizoAgent.resetAgent();
+    vizoAgent.updateImage(f);
+
     const image = await urlOrBlobToCanvas(f);
     setSearchImage(image);
     setImageThumb(URL.createObjectURL(f));
@@ -64,7 +73,18 @@ function Layout() {
     const options: ImageSearchOptions = {
       cropRect: selection,
     };
+
     const searchResult = await nyrisApi.find(options, image);
+    vizoAgent.setResults(searchResult.results);
+
+    setVizoLoading(true);
+    vizoAgent.runImageAssessment().then((imageAssessment) => {
+      vizoAgent.refineResult().then((res) => {
+        setVizoResultAssessment(res);
+        setVizoLoading(false);
+      });
+    });
+
     setResults(searchResult.results);
     history.push("/results");
   };
@@ -77,8 +97,8 @@ function Layout() {
     <div className="search-bar">
       <div className="text-search-bar">
         <SelectModelPopup
-          preFilters={preFilters}
           setPreFilters={(prefilters) => setSelectedPreFilters(prefilters)}
+          selectedPreFilters={selectedPreFilters}
         />
         {imageThumb ? (
           <div className="image-thumb">
@@ -136,7 +156,7 @@ function Layout() {
   return (
     <div className="layout">
       <header>
-        <img src={window.NyrisSettings.logo} className="logo" alt="logo" />
+        <img src={window.settings.logo} className="logo" alt="logo" />
         <div className="user-menu"></div>
       </header>
       <main>
@@ -167,6 +187,9 @@ function Layout() {
                 searchImage={searchImage}
                 preFilters={selectedPreFilters}
                 onSelectionChange={onSelectionChange}
+                vizoResultAssessment={vizoResultAssessment}
+                ocr={vizoAgent.ocrResult}
+                vizoLoading={vizoLoading}
               />
             )}
           />

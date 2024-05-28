@@ -1,11 +1,6 @@
 import { z } from "zod";
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { getImage } from "./utils/indexDb";
-import {
-  CUSTOMER,
-  CUSTOMER_PRODUCTS_DESCRIPTION,
-  OPENAI_API_KEY,
-} from "./config";
 import axios from "axios";
 import { TOOL } from "./types";
 
@@ -14,7 +9,15 @@ enum Model {
   "gpt-4o" = "gpt-4o",
 }
 
-export const getImageAssesmentTool = () =>
+export const getImageAssesmentTool = ({
+  apiKey,
+  customer,
+  customerDescription,
+}: {
+  apiKey: string;
+  customer: string;
+  customerDescription: string;
+}) =>
   new DynamicStructuredTool({
     name: TOOL.IMAGE_ASSESSMENT,
     description:
@@ -33,8 +36,8 @@ export const getImageAssesmentTool = () =>
             content: [
               {
                 type: "text",
-                text: `The given image was used for image retrieval operation against a database containing images of ${CUSTOMER} products,
-                which normally contain ${CUSTOMER_PRODUCTS_DESCRIPTION}.
+                text: `The given image was used for image retrieval operation against a database containing images of ${customer} products,
+                which normally contain ${customerDescription}.
 
                 Assess this image and provide necessary information as a object with following format and JSON.parsable. Don't add json tag.
 
@@ -64,7 +67,7 @@ export const getImageAssesmentTool = () =>
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            Authorization: `Bearer ${apiKey}`,
           },
         }
       );
@@ -75,7 +78,7 @@ export const getImageAssesmentTool = () =>
     },
   });
 
-export const getOCRTool = () =>
+export const getOCRTool = ({ apiKey }: { apiKey: string }) =>
   new DynamicStructuredTool({
     name: TOOL.OCR_DETECTION,
     description: "Use this tool for finding OCR",
@@ -116,7 +119,7 @@ export const getOCRTool = () =>
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            Authorization: `Bearer ${apiKey}`,
           },
         }
       );
@@ -132,7 +135,7 @@ export const getOCRTool = () =>
     },
   });
 
-export const getImageAnalysisTool = () =>
+export const getImageAnalysisTool = ({ apiKey }: { apiKey: string }) =>
   new DynamicStructuredTool({
     name: TOOL.IMAGE_ANALYSIS,
     description: `Use this tool for describing the image or answering specific questions about the contents in the image. "
@@ -170,7 +173,7 @@ export const getImageAnalysisTool = () =>
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            Authorization: `Bearer ${apiKey}`,
           },
         }
       );

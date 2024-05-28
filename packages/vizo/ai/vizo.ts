@@ -12,7 +12,6 @@ import { AIMessage, BaseMessage, HumanMessage } from "@langchain/core/messages";
 import { AgentExecutor, createOpenAIFunctionsAgent } from "langchain/agents";
 import { formatToOpenAIFunctionMessages } from "langchain/agents/format_scratchpad";
 import { OpenAIFunctionsAgentOutputParser } from "langchain/agents/openai/output_parser";
-import { OPENAI_API_KEY } from "./config";
 import {
   getImageAnalysisTool,
   getImageAssesmentTool,
@@ -29,21 +28,27 @@ const modelName = "gpt-4o";
 
 export class VizoAgent {
   chatHistory: BaseMessage[] = [];
+  ocrResult: OcrAssessmentDataType = {};
   private executorWithMemory: any;
   private agentExecutor: any;
   private imageAssessment: ImageAssessmentDataType = {};
   private results: any;
-  ocrResult: OcrAssessmentDataType = {};
+  private apiKey: string;
+  private customer: string;
+  private customerDescription: string;
 
-  constructor(selectedImage?: File) {
-    if (selectedImage) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        storeImage(reader.result as string, REQUEST_IMAGE_KEY);
-      };
-      reader.readAsDataURL(selectedImage);
-    }
-
+  constructor({
+    apiKey,
+    customer,
+    customerDescription,
+  }: {
+    apiKey: string;
+    customer: string;
+    customerDescription: string;
+  }) {
+    this.customer = customer;
+    this.apiKey = apiKey;
+    this.customerDescription = customerDescription;
     this.initializeAgent();
   }
 
@@ -54,13 +59,17 @@ export class VizoAgent {
     const model = new ChatOpenAI({
       model: modelName,
       temperature: 0,
-      apiKey: OPENAI_API_KEY,
+      apiKey: this.apiKey,
     });
 
     const tools: any = [
-      getImageAssesmentTool(),
-      getImageAnalysisTool(),
-      getOCRTool(),
+      getImageAssesmentTool({
+        apiKey: this.apiKey,
+        customer: this.customer,
+        customerDescription: this.customerDescription,
+      }),
+      getImageAnalysisTool({ apiKey: this.apiKey }),
+      getOCRTool({ apiKey: this.apiKey }),
     ];
 
     const memoryPrompt = ChatPromptTemplate.fromMessages([
@@ -112,7 +121,7 @@ export class VizoAgent {
     });
   }
 
-  refineAssessmentResult(res: any): ImageAssessmentDataType {
+  private refineAssessmentResult(res: any): ImageAssessmentDataType {
     let ocr: OcrAssessmentDataType = {};
     let imageAssessment = {};
 
@@ -201,9 +210,9 @@ export class VizoAgent {
     this.chatHistory.push(new AIMessage(result.output));
 
     if (Object.keys(this.ocrResult).length > 0) {
-      return { ocr: true, result: JSON.parse(result.output) };
+      return { filter: false, ocr: true, result: JSON.parse(result.output) };
     } else {
-      return { filter: true, result: JSON.parse(result.output) };
+      return { ocr: false, filter: true, result: JSON.parse(result.output) };
     }
   }
 

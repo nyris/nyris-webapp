@@ -36,3 +36,4 @@ public/js/settings.js
 .idea/
 packages/vizo/ai/.env
 packages/vizo/webapp/public/js/settings.js
+packages/vizo/webapp/.env

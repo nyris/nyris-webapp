@@ -4,7 +4,12 @@ import { VizoAgent, results } from "@nyris/vizo-ai";
 
 function Vizo() {
   const [text, setText] = useState("");
-  const vizoAgent = new VizoAgent();
+
+  const vizoAgent = new VizoAgent({
+    apiKey: process.env.REACT_APP_OPENAI_API_KEY || "",
+    customer: window.settings.customer,
+    customerDescription: window.settings.customerDescription,
+  });
 
   const handleImageChange = (event: any) => {
     const selectedImage = event.target.files[0];

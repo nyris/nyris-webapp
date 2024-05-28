@@ -254,7 +254,7 @@ body.overflow-hidden {
         overflow: scroll;
         .result-tile {
           width: 192px;
-          height: 345px;
+          height: fit-content;
           display: flex;
           flex-direction: column;
           border: 1px solid #E0E0E0;
@@ -262,6 +262,10 @@ body.overflow-hidden {
           box-shadow: 0 0 16px 0 #E0E0E0CC;
           image {
             width: 192px;
+            height: 192px;
+            max-width: 192px;
+            max-height: 192px;
+
             &:hover {
               transform: scale(1.1);
             }
@@ -390,7 +394,6 @@ body.overflow-hidden {
         flex-direction: row;
         align-items: center;
         padding: 8px 12px;
-        margin-top: 24px;
         input {
           flex: 1;
           border: 0;
@@ -413,6 +416,8 @@ body.overflow-hidden {
         margin: 8px 0;
         align-items: center;
         &-item {
+          display: flex;
+          gap: 4px;
           background-color: #E4E3FF;
           padding: 4px 8px;
           border-radius: 25px;
@@ -489,6 +494,7 @@ body.overflow-hidden {
         line-height: 18px;
         letter-spacing: 0.1599999964237213px;
         color: #fff;
+        height: 100%;
         &.cancel {
           background-color: #2B2C46;
         }

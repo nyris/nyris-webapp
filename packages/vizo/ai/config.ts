@@ -1,8 +1,3 @@
-export const OPENAI_API_KEY = "**";
-
-export const CUSTOMER = "Inter cars";
-export const CUSTOMER_PRODUCTS_DESCRIPTION = "Car, Car parts";
-
 export const results = [
   {
     oid: "786c77f0-82d6-5938-b70e-28a2b8d66414",
