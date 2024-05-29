@@ -10,7 +10,6 @@ interface ISelectModalPopup {
 function SelectModelPopup(props: ISelectModalPopup) {
   const { setPreFilters, selectedPreFilters } = props;
   const [showModal, setShowModal] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
 
   const modalToggle = (isOpen: boolean) => {
     setShowModal(isOpen);
