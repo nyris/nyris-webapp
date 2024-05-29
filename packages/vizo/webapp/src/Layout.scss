@@ -29,6 +29,7 @@ body.overflow-hidden {
     align-items: center;
     .logo {
       height: 10px;
+      cursor: pointer;
     }
     .user-menu {
       position: relative;
@@ -95,9 +96,49 @@ body.overflow-hidden {
           display: flex;
           flex-direction: row;
           align-items: center;
-          .clear-thumb {
-            margin-left: 8px;
-            cursor: pointer;
+          img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+          }
+          &-clear {
+            position: relative;
+            width: 16px;
+            height: 16px;
+            .clear-thumb {
+              margin-left: 8px;
+              cursor: pointer;
+            }
+            .image-thumb-tooltip {
+              display: none;
+            }
+            &:hover {
+              .image-thumb-tooltip {
+                display: block;
+                position: absolute;
+                width: max-content;
+                height: max-content;
+                top: -36px;
+                left: -28px;
+                font-size: 10px;
+                background-color: black;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px;
+                z-index: 1;
+                &::after {
+                  content: "";
+                  position: absolute;
+                  top: 100%;
+                  left: 50%;
+                  margin-left: -5px;
+                  border-width: 5px;
+                  border-style: solid;
+                  border-color: black transparent transparent transparent;
+                }
+              }
+            }
           }
         }
         &-input {
@@ -125,6 +166,10 @@ body.overflow-hidden {
           border-right: 1px solid #CACAD1;
           cursor: pointer;
           background-color: #E9E9EC;
+          position: relative;
+          .tooltip {
+            display: none;
+          }
           .prefilter-button-icon-background {
             background-color: #2B2C46;
             border-radius: 50%;
@@ -148,9 +193,70 @@ body.overflow-hidden {
               border: 2px solid #FFFFFF;
             }
           }
+          &:hover {
+            .tooltip {
+              display: block;
+              position: absolute;
+              width: max-content;
+              height: max-content;
+              top: -30px;
+              font-size: 10px;
+              background-color: black;
+              color: #fff;
+              text-align: center;
+              border-radius: 6px;
+              padding: 5px;
+              z-index: 1;
+              &::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: black transparent transparent transparent;
+              }
+            }
+          }
         }
-        .clear-icon {
-          cursor: pointer;
+        .clear-text-search {
+          position: relative;
+          width: 16px;
+          height: 16px;
+          .clear-icon {
+            cursor: pointer;
+          }
+          .clear-text-tooltip {
+            display: none;
+          }
+          &:hover {
+            .clear-text-tooltip {
+              display: block;
+              position: absolute;
+              width: max-content;
+              height: max-content;
+              top: -36px;
+              left: -32px;
+              font-size: 10px;
+              background-color: black;
+              color: #fff;
+              text-align: center;
+              border-radius: 6px;
+              padding: 5px;
+              z-index: 1;
+              &::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: black transparent transparent transparent;
+              }
+            }
+          }
         }
         .camera-icon {
           width: 48px;
@@ -163,7 +269,37 @@ body.overflow-hidden {
           box-sizing: border-box;
           border: none;
           background-color: #E9E9EC;
+          position: relative;
           cursor: pointer;
+          .camera-tooltip {
+            display: none;
+          }
+          &:hover {
+            .camera-tooltip {
+              display: block;
+              position: absolute;
+              width: max-content;
+              height: max-content;
+              top: -21px;
+              font-size: 10px;
+              background-color: black;
+              color: #fff;
+              text-align: center;
+              border-radius: 6px;
+              padding: 5px;
+              z-index: 1;
+              &::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: black transparent transparent transparent;
+              }
+            }
+          }
         }
       }
     }
@@ -284,6 +420,7 @@ body.overflow-hidden {
         flex-wrap: wrap;
         gap: 24px;
         overflow-x: auto;
+        padding-bottom: 24px;
         .result-tile {
           width: 192px;
           height: fit-content;

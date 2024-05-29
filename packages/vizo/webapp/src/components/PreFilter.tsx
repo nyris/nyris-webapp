@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ReactComponent as IconFilter } from "../assets/filter_settings.svg";
-
 import PreFilterModal from "./PreFilterModal";
 
 interface ISelectModalPopup {
@@ -11,6 +10,7 @@ interface ISelectModalPopup {
 function SelectModelPopup(props: ISelectModalPopup) {
   const { setPreFilters, selectedPreFilters } = props;
   const [showModal, setShowModal] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const modalToggle = (isOpen: boolean) => {
     setShowModal(isOpen);
@@ -22,7 +22,7 @@ function SelectModelPopup(props: ISelectModalPopup) {
   };
 
   return (
-    <div>
+    <>
       <button className="prefilter-button" onClick={() => modalToggle(true)}>
         <div
           className={`prefilter-button-icon-background ${
@@ -32,6 +32,7 @@ function SelectModelPopup(props: ISelectModalPopup) {
           {selectedPreFilters.length ? <div className="indicator" /> : ""}
           <IconFilter color="white" />
         </div>
+        <div className="tooltip">Add or change pre-filter</div>
       </button>
       {showModal && (
         <PreFilterModal
@@ -40,7 +41,7 @@ function SelectModelPopup(props: ISelectModalPopup) {
           selectedPreFilters={selectedPreFilters}
         />
       )}
-    </div>
+    </>
   );
 }
 

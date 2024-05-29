@@ -122,19 +122,22 @@ function Layout() {
         {imageThumb ? (
           <div className="image-thumb">
             <img src={imageThumb} width={40} alt="searched thumb" />
-            <CloseIcon
-              width={16}
-              height={16}
-              fill="#655EE3"
-              className="clear-thumb"
-              onClick={() => {
-                setSearchKey("");
-                setResults([]);
-                setSearchImage(null);
-                setImageThumb("");
-                history.push("/");
-              }}
-            />
+            <div className="image-thumb-clear">
+              <CloseIcon
+                width={16}
+                height={16}
+                fill="#655EE3"
+                className="clear-thumb"
+                onClick={() => {
+                  setSearchKey("");
+                  setResults([]);
+                  setSearchImage(null);
+                  setImageThumb("");
+                  history.push("/");
+                }}
+              />
+              <div className="image-thumb-tooltip">Clear image search</div>
+            </div>
           </div>
         ) : (
           ""
@@ -147,18 +150,22 @@ function Layout() {
           placeholder="Search"
         />
         {searchKey ? (
-          <CloseIcon
-            className="clear-icon"
-            width={16}
-            height={16}
-            fill="#2B2C46"
-            onClick={() => setSearchKey("")}
-          />
+          <div className="clear-text-search">
+            <CloseIcon
+              className="clear-icon"
+              width={16}
+              height={16}
+              fill="#2B2C46"
+              onClick={() => setSearchKey("")}
+            />
+            <div className="clear-text-tooltip">Clear text search</div>
+          </div>
         ) : (
           ""
         )}
         <label className="camera-icon" htmlFor="nyris__hello-open-camera">
           <CameraIcon />
+          <div className="camera-tooltip">Search with an image</div>
         </label>
         <input
           type="file"
@@ -175,7 +182,14 @@ function Layout() {
   return (
     <div className="layout">
       <header>
-        <img src={window.settings.logo} className="logo" alt="logo" />
+        <img
+          src={window.settings.logo}
+          className="logo"
+          alt="logo"
+          onClick={() => {
+            window.location.href = window.location.origin;
+          }}
+        />
         <div
           ref={dropdown}
           className="user-menu"
