@@ -478,7 +478,7 @@ body.overflow-hidden {
       .prefilters {
         width: 100%;
         height: 253px;
-        overflow: scroll;
+        overflow-x: auto;
         display: flex;
         flex-direction: column;
         .letter-section {
