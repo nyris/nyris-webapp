@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Route, useHistory } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 import NyrisAPI, {
   ImageSearchOptions,
   NyrisAPISettings,
@@ -10,16 +11,19 @@ import NyrisAPI, {
 import "./Layout.scss";
 import { ReactComponent as CloseIcon } from "./assets/close.svg";
 import { ReactComponent as CameraIcon } from "./assets/camera.svg";
+import { ReactComponent as AvatarIcon } from './assets/avatar.svg';
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import SelectModelPopup from "./components/PreFilter";
 import DragAndDrop from "./components/DragAndDrop";
 import ResultComponent from "./components/Results";
 import { VizoAgent } from "@nyris/vizo-ai";
 
+
 function Layout() {
   const settings = {
     apiKey: window.settings.apiKey,
   } as NyrisAPISettings;
+  const { user, logout } = useAuth0();
   const [searchKey, setSearchKey] = useState<string>("");
   const [results, setResults] = useState<any>([]);
   const [searchImage, setSearchImage] = useState<HTMLCanvasElement | null>(
@@ -27,6 +31,8 @@ function Layout() {
   );
   const [imageThumb, setImageThumb] = useState("");
   const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([]);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const dropdown = useRef<HTMLDivElement>(null);
 
   const [vizoResultAssessment, setVizoResultAssessment] = useState<{
     filter: boolean;
@@ -48,6 +54,19 @@ function Layout() {
 
     return vizoAgent;
   }, []);
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (!dropdown?.current?.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [dropdown?.current]);
 
   const getRegionByMaxConfidence = (regions: Region[]) => {
     if (regions.length === 0) {
@@ -157,7 +176,30 @@ function Layout() {
     <div className="layout">
       <header>
         <img src={window.settings.logo} className="logo" alt="logo" />
-        <div className="user-menu"></div>
+        <div
+          ref={dropdown}
+          className="user-menu"
+          onClick={() => setIsUserMenuOpen((prev) => !prev)}
+        >
+          {user?.email}
+          <AvatarIcon className="user-menu-avatar" />
+          {isUserMenuOpen ? (
+            <div className="user-menu-dropdown">
+              <div
+                className="user-menu-dropdown-sign-out"
+                onClick={() => {
+                  logout({
+                    logoutParams: { returnTo: window.location.origin },
+                  });
+                }}
+              >
+                Sign out
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
+        </div>
       </header>
       <main>
         <>
