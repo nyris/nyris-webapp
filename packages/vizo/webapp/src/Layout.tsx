@@ -66,7 +66,7 @@ function Layout() {
     return () => {
       document.removeEventListener('click', handleClick);
     };
-  }, [dropdown?.current]);
+  }, []);
 
   const getRegionByMaxConfidence = (regions: Region[]) => {
     if (regions.length === 0) {
