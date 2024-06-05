@@ -8,6 +8,9 @@ import { ReactComponent as KeyboardArrowLeftOutlinedIcon } from "../assets/arrow
 import { reorderProducts } from "../utils/reorderProducts";
 import { getObjectValues } from "../utils/getObjValues";
 
+import { useHistory } from "react-router-dom";
+import Chat from "./Chat";
+
 interface IResultProps {
   results: any[];
   searchBar: React.ReactNode;
@@ -21,6 +24,8 @@ interface IResultProps {
   };
   vizoLoading: boolean;
   ocr?: any;
+  imageThumb?: any;
+  aiMessage?: string;
 }
 function ResultsComponent({
   onSelectionChange,
@@ -31,7 +36,11 @@ function ResultsComponent({
   vizoResultAssessment,
   ocr,
   vizoLoading,
+  imageThumb,
+  aiMessage,
 }: IResultProps) {
+  const history = useHistory();
+
   const groupedFilters = groupFiltersByFirstLetter(preFilters);
   const [isSidePanelExpanded, setIsSidePanelExpanded] = useState(true);
 
@@ -59,7 +68,11 @@ function ResultsComponent({
     return [];
   }, [ocr]);
 
-  return searchImage ? (
+  if (!searchImage) {
+    history.push("/");
+  }
+
+  return (
     <section className="results">
       <aside className={`side-panel ${isSidePanelExpanded ? "expanded" : ""}`}>
         <div className="side-panel-expand-btn">
@@ -81,7 +94,7 @@ function ResultsComponent({
                 image={searchImage}
                 selection={{ x1: 0, x2: 1, y1: 0, y2: 1 }}
                 regions={[]}
-                minWidth={100 * (searchImage.width / searchImage.height)}
+                minWidth={100 * (searchImage?.width / searchImage?.height)}
                 minHeight={80}
                 maxWidth={255}
                 maxHeight={255}
@@ -116,68 +129,70 @@ function ResultsComponent({
         )}
       </aside>
       <div className="results-main">
-        {searchBar}
-        <div style={{ display: "flex" }}>
-          {ocrList.map((value, index) => {
-            return <p key={index}>{`${index !== 0 ? `, ` : ""} ${value}`} </p>;
-          })}
-        </div>
         <div className="results-container">
-          {products.map((item, index) => (
-            <div className="result-tile" key={index}>
-              <div style={{ width: "192px", height: "192px" }}>
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <img
-                    src={item.image}
-                    alt="image_item"
-                    className="img-style product-image"
+          <Chat
+            imageThumb={imageThumb}
+            aiMessage={aiMessage}
+            ocrList={ocrList}
+            vizoLoading={vizoLoading}
+          />
+
+          <div className="results-product-list">
+            {products.map((item, index) => (
+              <div className="result-tile" key={index}>
+                <div style={{ width: "192px", height: "192px" }}>
+                  <div
                     style={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "contain",
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
-                  />
-                </div>
-              </div>
-
-              <div className="result-tile-info">
-                <div className="result-tile-title">{item.title}</div>
-                <div className="result-tile-sku">{item.sku}</div>
-                <div className="result-tile-brand">
-                  <strong>Brand:</strong>
-                  <br />
-                  {item.brand}
-                </div>
-                {/* <div className="result-tile-brand">
-                  <strong>Group ID:</strong>
-                  <br />
-                  {item.groupId}
-                </div> */}
-                {item.links?.main && (
-                  <button
-                    className="cta-button"
-                    onClick={() => window.open(item.links.main, "_blank")}
                   >
-                    Buy now
-                    <CTAIcon />
-                  </button>
-                )}
+                    <img
+                      src={item.image}
+                      alt="image_item"
+                      className="img-style product-image"
+                      style={{
+                        width: "98%",
+                        height: "100%",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="result-tile-info">
+                  <div className="result-tile-title">{item.title}</div>
+                  <div className="result-tile-sku">{item.sku}</div>
+                  <div className="result-tile-brand">
+                    <strong>Brand:</strong>
+                    <br />
+                    {item.brand}
+                  </div>
+                  {/* <div className="result-tile-brand">
+                <strong>Group ID:</strong>
+                <br />
+                {item.groupId}
+              </div> */}
+                  {item.links?.main && (
+                    <button
+                      className="cta-button"
+                      onClick={() => window.open(item.links.main, "_blank")}
+                    >
+                      Buy now
+                      <CTAIcon />
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
-  ) : (
-    <></>
   );
 }
 

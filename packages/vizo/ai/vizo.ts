@@ -147,7 +147,10 @@ export class VizoAgent {
     return this.imageAssessment;
   }
 
-  async runImageAssessment(): Promise<ImageAssessmentDataType> {
+  async runImageAssessment(): Promise<{
+    assessment: ImageAssessmentDataType;
+    message: string;
+  }> {
     const result = await this.agentExecutor.invoke({
       system: `You are very powerful assistant.The request image path is ${REQUEST_IMAGE_KEY}.`,
       input: `Run OCR detection if any OCR is not detected fot the image then run image assessment to validate input image and return the observation. The image path is ${REQUEST_IMAGE_KEY}`,
@@ -161,7 +164,10 @@ export class VizoAgent {
     );
     this.chatHistory.push(new AIMessage(result.output));
 
-    return this.refineAssessmentResult(result);
+    return {
+      assessment: this.refineAssessmentResult(result),
+      message: result.output,
+    };
   }
 
   async runUserQuery(text: string) {

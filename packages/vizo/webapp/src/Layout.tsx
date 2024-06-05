@@ -11,13 +11,12 @@ import NyrisAPI, {
 import "./Layout.scss";
 import { ReactComponent as CloseIcon } from "./assets/close.svg";
 import { ReactComponent as CameraIcon } from "./assets/camera.svg";
-import { ReactComponent as AvatarIcon } from './assets/avatar.svg';
+import { ReactComponent as AvatarIcon } from "./assets/avatar.svg";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import SelectModelPopup from "./components/PreFilter";
 import DragAndDrop from "./components/DragAndDrop";
 import ResultComponent from "./components/Results";
 import { VizoAgent } from "@nyris/vizo-ai";
-
 
 function Layout() {
   const settings = {
@@ -41,6 +40,7 @@ function Layout() {
   }>();
 
   const [vizoLoading, setVizoLoading] = useState(false);
+  const [aiMessage, setAiMessage] = useState("");
 
   const history = useHistory();
   const nyrisApi = new NyrisAPI({ ...settings });
@@ -62,9 +62,9 @@ function Layout() {
       }
     };
 
-    document.addEventListener('click', handleClick);
+    document.addEventListener("click", handleClick);
     return () => {
-      document.removeEventListener('click', handleClick);
+      document.removeEventListener("click", handleClick);
     };
   }, []);
 
@@ -87,6 +87,7 @@ function Layout() {
     const image = await urlOrBlobToCanvas(f);
     setSearchImage(image);
     setImageThumb(URL.createObjectURL(f));
+
     const foundRegions = await nyrisApi.findRegions(image);
     const selection = getRegionByMaxConfidence(foundRegions);
     const options: ImageSearchOptions = {
@@ -98,6 +99,7 @@ function Layout() {
 
     setVizoLoading(true);
     vizoAgent.runImageAssessment().then((imageAssessment) => {
+      setAiMessage(imageAssessment.message);
       vizoAgent.refineResult().then((res) => {
         setVizoResultAssessment(res);
         setVizoLoading(false);
@@ -211,7 +213,7 @@ function Layout() {
               </div>
             </div>
           ) : (
-            ''
+            ""
           )}
         </div>
       </header>
@@ -246,6 +248,8 @@ function Layout() {
                 vizoResultAssessment={vizoResultAssessment}
                 ocr={vizoAgent.ocrResult}
                 vizoLoading={vizoLoading}
+                imageThumb={imageThumb}
+                aiMessage={aiMessage}
               />
             )}
           />
