@@ -60,6 +60,7 @@ export class VizoAgent {
       model: modelName,
       temperature: 0,
       apiKey: this.apiKey,
+      streaming: false,
     });
 
     const tools: any = [
@@ -152,8 +153,8 @@ export class VizoAgent {
     message: string;
   }> {
     const result = await this.agentExecutor.invoke({
-      system: `You are very powerful assistant.The request image path is ${REQUEST_IMAGE_KEY}.`,
-      input: `Run OCR detection if any OCR is not detected fot the image then run image assessment to validate input image and return the observation. The image path is ${REQUEST_IMAGE_KEY}`,
+      system: `You are a very powerful assistant.The request image path is ${REQUEST_IMAGE_KEY}.`,
+      input: `Run OCR detection if any OCR is not detected for the image then run image assessment to validate input image and return the observation. The image path is ${REQUEST_IMAGE_KEY}`,
       [MEMORY_KEY]: this.chatHistory,
     });
 
@@ -197,11 +198,11 @@ export class VizoAgent {
         this.ocrResult
       )} refine the list of products ${JSON.stringify(
         this.results
-      )}  Products matched with ocrContent should in top.`;
+      )}  Products matched with ocrContent should be at the top.`;
     } else {
       input = `${JSON.stringify(
         this.results
-      )}. Can you return top 10 strings from the list of products based on number of times that string appears in the product list. Ignore availability, score. Return the result in JSON parsable list of string format without any other information.`;
+      )}. Return top 10 strings from the list of products based on the number of times that string appears in the product list. Ignore availability, score. Return the result in JSON parsable list of string format without any other information.`;
       system = `You are very powerful assistant.The request image path is ${REQUEST_IMAGE_KEY}. Don't add json tag or any other information that is not asked. `;
     }
 

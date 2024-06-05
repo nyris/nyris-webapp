@@ -36,20 +36,17 @@ export const getImageAssesmentTool = ({
             content: [
               {
                 type: "text",
-                text: `The given image was used for image retrieval operation against a database containing images of ${customer} products,
+                text: `The given image is used for image retrieval operation against a database containing images of ${customer} products,
                 which normally contain ${customerDescription}.
 
-                Assess this image and provide necessary information as a object with following format and JSON.parsable. Don't add json tag.
-
+                Assess this image and provide necessary information as a object with following format and JSON.parsable. Don't add a json tag.
                 {
                   "imageQuality": "A string value indicating the quality of image. Choose one value from ['good', 'okay', 'poor'].",
                   "hasValidObject": "A boolean indicating if the image has any meaningful object.",
                   "numOfObjects": "An string indicating number of objects in the image. Choose one value from ['single', 'multiple'].",
-                  "objectVisibility": "A string value indicating the visibility of object(s) in the image. Choose one value from ['visible', 'occluded'].", # noqa
+                  "objectVisibility": "A string value indicating the visibility of object(s) in the image. Choose one value from ['visible', 'occluded'].",
                   "isRelevantObject": "A boolean indicating if the image has one or more objects that are relevant to {customer}.",
-                }
-
-                `,
+                }`,
               },
               {
                 type: "image_url",
@@ -99,8 +96,8 @@ export const getOCRTool = ({ apiKey }: { apiKey: string }) =>
                 text: `
                 Detect OCR in the image and clean the ocr result to only useful information.
                 Provide the response in key value format and in a single JSON.parsable object format.
-                Don't add json tag. 
-                If OCR is not detected return empty object "{}". 
+                Don't add a json tag. 
+                If OCR is not detected, return an empty object "{}". 
                   `,
               },
               {

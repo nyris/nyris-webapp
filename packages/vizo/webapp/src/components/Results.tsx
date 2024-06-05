@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { RectCoords } from "@nyris/nyris-api";
 import { Preview } from "@nyris/nyris-react-components";
 import { ReactComponent as CTAIcon } from "../assets/link.svg";
@@ -10,10 +10,10 @@ import { getObjectValues } from "../utils/getObjValues";
 
 import { useHistory } from "react-router-dom";
 import Chat from "./Chat";
+import { Chat as ChatType } from "../types";
 
 interface IResultProps {
   results: any[];
-  searchBar: React.ReactNode;
   searchImage: any;
   preFilters: string[];
   onSelectionChange: (r: RectCoords) => void;
@@ -26,40 +26,89 @@ interface IResultProps {
   ocr?: any;
   imageThumb?: any;
   aiMessage?: string;
+  onUserQuery: (text: string) => void;
+  chatHistory: ChatType[];
+  filters: string[];
+  imageSearch?: any;
 }
+
+const isResultRefined = (skuInOrder: string[], products: any[]) => {
+  if (skuInOrder.length !== products.length) return true;
+  return skuInOrder.some((sku, index) => {
+    return sku !== products[index].sku;
+  });
+};
+
 function ResultsComponent({
   onSelectionChange,
   preFilters,
   results,
-  searchBar,
   searchImage,
   vizoResultAssessment,
   ocr,
   vizoLoading,
   imageThumb,
-  aiMessage,
+  onUserQuery,
+  chatHistory,
+  filters,
+  imageSearch,
 }: IResultProps) {
   const history = useHistory();
 
   const groupedFilters = groupFiltersByFirstLetter(preFilters);
   const [isSidePanelExpanded, setIsSidePanelExpanded] = useState(true);
+  const [products, setProducts] = useState(results);
+  const [showNewResultButton, setShowNewResultButton] = useState(false);
 
-  const products = useMemo(() => {
-    if (vizoResultAssessment && vizoResultAssessment.ocr && !vizoLoading) {
-      console.log("sku retured from llm", { vizoResultAssessment });
+  const showRefinedResult = () => {
+    if (typeof vizoResultAssessment?.result[0] === "object") {
+      const res = vizoResultAssessment?.result.map(
+        (item: { sku: any }) => item.sku
+      );
+      setProducts(reorderProducts(res, results));
+    } else {
+      setProducts(reorderProducts(vizoResultAssessment?.result, results));
+    }
+    setShowNewResultButton(false);
+  };
 
-      if (typeof vizoResultAssessment.result[0] === "object") {
+  useEffect(() => {
+    setProducts(results);
+  }, [results]);
+
+  useEffect(() => {
+    if (!vizoResultAssessment) {
+      setShowNewResultButton(false);
+      return;
+    }
+
+    if (
+      vizoResultAssessment.result.length > 0 &&
+      !vizoResultAssessment.filter &&
+      vizoResultAssessment.ocr
+    ) {
+      if (typeof vizoResultAssessment?.result[0] === "object") {
         const res = vizoResultAssessment.result.map(
           (item: { sku: any }) => item.sku
         );
-        return reorderProducts(res, results);
+        const show = isResultRefined(res, results);
+        setShowNewResultButton(show);
       } else {
-        return reorderProducts(vizoResultAssessment.result, results);
+        const show = isResultRefined(vizoResultAssessment?.result, results);
+        setShowNewResultButton(show);
       }
+    } else setShowNewResultButton(false);
+
+    if (
+      vizoResultAssessment.result.length > 0 &&
+      !vizoResultAssessment.filter &&
+      !vizoResultAssessment.ocr
+    ) {
+      showRefinedResult();
     }
 
-    return results;
-  }, [results, vizoResultAssessment, vizoLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vizoResultAssessment, results]);
 
   const ocrList = useMemo(() => {
     if (ocr) {
@@ -132,9 +181,14 @@ function ResultsComponent({
         <div className="results-container">
           <Chat
             imageThumb={imageThumb}
-            aiMessage={aiMessage}
             ocrList={ocrList}
             vizoLoading={vizoLoading}
+            onUserQuery={onUserQuery}
+            chatHistory={chatHistory}
+            filters={filters}
+            showNewResultButton={showNewResultButton}
+            showRefinedResult={showRefinedResult}
+            imageSearch={imageSearch}
           />
 
           <div className="results-product-list">

@@ -16,6 +16,7 @@
     "@types/react-dom": "^18.2.21",
     "autoprefixer": "^10.4.19",
     "craco-babel-loader": "^1.0.4",
+    "lodash": "^4.17.21",
     "postcss": "^8.4.38",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

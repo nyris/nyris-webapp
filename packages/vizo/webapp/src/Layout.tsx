@@ -17,6 +17,8 @@ import SelectModelPopup from "./components/PreFilter";
 import DragAndDrop from "./components/DragAndDrop";
 import ResultComponent from "./components/Results";
 import { VizoAgent } from "@nyris/vizo-ai";
+import { Chat, MessageType } from "./types";
+import { isUndefined } from "lodash";
 
 function Layout() {
   const settings = {
@@ -40,7 +42,9 @@ function Layout() {
   }>();
 
   const [vizoLoading, setVizoLoading] = useState(false);
-  const [aiMessage, setAiMessage] = useState("");
+
+  const [chatHistory, setChatHistory] = useState<Chat[]>([]);
+  const [filters, setFilters] = useState([]);
 
   const history = useHistory();
   const nyrisApi = new NyrisAPI({ ...settings });
@@ -81,8 +85,12 @@ function Layout() {
   };
 
   const imageSearch = async (f: File) => {
+    setChatHistory([]);
     vizoAgent.resetAgent();
     vizoAgent.updateImage(f);
+    setResults([]);
+    setVizoResultAssessment(undefined);
+    setFilters([]);
 
     const image = await urlOrBlobToCanvas(f);
     setSearchImage(image);
@@ -94,16 +102,83 @@ function Layout() {
       cropRect: selection,
     };
 
-    const searchResult = await nyrisApi.find(options, image);
+    const searchResult = await nyrisApi.find(
+      options,
+      image,
+      selectedPreFilters.length > 0
+        ? [
+            {
+              key: window.settings.preFilterKey,
+              values: selectedPreFilters,
+            },
+          ]
+        : undefined
+    );
     vizoAgent.setResults(searchResult.results);
 
     setVizoLoading(true);
     vizoAgent.runImageAssessment().then((imageAssessment) => {
-      setAiMessage(imageAssessment.message);
-      vizoAgent.refineResult().then((res) => {
-        setVizoResultAssessment(res);
+      const { hasValidObject, imageQuality, isRelevantObject } =
+        imageAssessment.assessment;
+
+      if (imageQuality === "poor" && !isUndefined(imageQuality)) {
+        const response: Chat = {
+          type: MessageType.AI,
+          message:
+            "The image provided is too blurry for a definitive analysis. To proceed effectively, we need an image where the part details are clear and distinct. Please upload a high-resolution photo with the part in focus.",
+          responseType: "upload_new_image",
+        };
+        setChatHistory([response]);
         setVizoLoading(false);
-      });
+      } else if (!isRelevantObject && !isUndefined(isRelevantObject)) {
+        const response: Chat = {
+          type: MessageType.AI,
+          message:
+            "The image provided is not relevant. A relevant image will help us refine the analysis and align the search with your specific needs for the spare part. Please upload a photo related to Car or Car parts.",
+          responseType: "upload_new_image",
+        };
+        setChatHistory([response]);
+        setVizoLoading(false);
+      } else if (!hasValidObject && !isUndefined(hasValidObject)) {
+        const response: Chat = {
+          type: MessageType.AI,
+          message:
+            "The image provided is too blurry for a definitive analysis. To proceed effectively, we need an image where the part details are clear and distinct. Please upload a high-resolution photo with the part in focus.",
+          responseType: "upload_new_image",
+        };
+        setChatHistory([response]);
+        setVizoLoading(false);
+      }
+
+      if (
+        (imageAssessment.assessment.hasValidObject &&
+          imageAssessment.assessment.imageQuality !== "poor" &&
+          imageAssessment.assessment.isRelevantObject) ||
+        Object.keys(vizoAgent.ocrResult).length > 0
+      ) {
+        vizoAgent.refineResult().then((res) => {
+          setVizoResultAssessment(res);
+
+          const response: Chat = {
+            type: MessageType.AI,
+            message: res.ocr
+              ? "List of detected OCR:"
+              : "List of detected Filter:",
+          };
+
+          if (res.ocr) {
+            response.responseType = "OCR";
+            response.message = "List of detected OCR:";
+          } else if (res.filter) {
+            response.responseType = "filter";
+            response.message = "List of detected Filters:";
+            setFilters(res.result);
+          }
+
+          setChatHistory([response]);
+          setVizoLoading(false);
+        });
+      }
     });
 
     setResults(searchResult.results);
@@ -112,6 +187,42 @@ function Layout() {
 
   const onSelectionChange = (r: RectCoords) => {
     console.log(r);
+  };
+
+  const onUserQuery = (userQuery: string) => {
+    setVizoLoading(true);
+    setChatHistory((s) => [
+      ...s,
+      {
+        type: MessageType.USER,
+        message: userQuery,
+      },
+    ]);
+
+    vizoAgent.runUserQuery(userQuery).then((res) => {
+      try {
+        const skus = JSON.parse(res);
+        setChatHistory((s) => [
+          ...s,
+          {
+            type: MessageType.AI,
+            message: "Refined result based on your query",
+            responseType: "LLM_response",
+          },
+        ]);
+        setVizoResultAssessment({ result: skus, filter: false, ocr: false });
+      } catch (error) {
+        setChatHistory((s) => [
+          ...s,
+          {
+            type: MessageType.AI,
+            message: res,
+            responseType: "LLM_response",
+          },
+        ]);
+      }
+      setVizoLoading(false);
+    });
   };
 
   const SearchBar = (
@@ -241,7 +352,6 @@ function Layout() {
               <ResultComponent
                 {...props}
                 results={results}
-                searchBar={SearchBar}
                 searchImage={searchImage}
                 preFilters={selectedPreFilters}
                 onSelectionChange={onSelectionChange}
@@ -249,7 +359,10 @@ function Layout() {
                 ocr={vizoAgent.ocrResult}
                 vizoLoading={vizoLoading}
                 imageThumb={imageThumb}
-                aiMessage={aiMessage}
+                onUserQuery={onUserQuery}
+                chatHistory={chatHistory}
+                filters={filters}
+                imageSearch={imageSearch}
               />
             )}
           />
