@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RectCoords } from "@nyris/nyris-api";
 import { Preview } from "@nyris/nyris-react-components";
 import { ReactComponent as CTAIcon } from "../assets/link.svg";
@@ -6,7 +6,6 @@ import { groupFiltersByFirstLetter } from "../Helpers";
 import { ReactComponent as KeyboardArrowRightOutlinedIcon } from "../assets/arrow_right.svg";
 import { ReactComponent as KeyboardArrowLeftOutlinedIcon } from "../assets/arrow_left.svg";
 import { reorderProducts } from "../utils/reorderProducts";
-import { getObjectValues } from "../utils/getObjValues";
 
 import { useHistory } from "react-router-dom";
 import Chat from "./Chat";
@@ -110,12 +109,12 @@ function ResultsComponent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vizoResultAssessment, results]);
 
-  const ocrList = useMemo(() => {
-    if (ocr) {
-      return getObjectValues(ocr);
-    }
-    return [];
-  }, [ocr]);
+  // const ocrList = useMemo(() => {
+  //   if (ocr) {
+  //     return getObjectValues(ocr);
+  //   }
+  //   return [];
+  // }, [ocr]);
 
   if (!searchImage) {
     history.push("/");
@@ -181,7 +180,7 @@ function ResultsComponent({
         <div className="results-container">
           <Chat
             imageThumb={imageThumb}
-            ocrList={ocrList}
+            ocrList={ocr}
             vizoLoading={vizoLoading}
             onUserQuery={onUserQuery}
             chatHistory={chatHistory}
