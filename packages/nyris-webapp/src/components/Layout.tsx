@@ -89,7 +89,9 @@ function Layout({ children }: ReactNode): JSX.Element {
 
   useEffect(() => {
     if (settings.shouldUseUserMetadata && user) {
-      dispatch(setPreFilter({ [user['/user_metadata'].value]: true }));
+      if (user['/user_metadata'].value) {
+        dispatch(setPreFilter({ [user['/user_metadata'].value]: true }));
+      }
     }
   }, [user, dispatch, settings.shouldUseUserMetadata]);
 

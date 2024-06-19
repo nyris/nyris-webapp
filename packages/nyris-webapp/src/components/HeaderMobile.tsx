@@ -223,6 +223,17 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings, results, props.allSearchResults?.hits]);
 
+  const showPreFilter = useMemo(() => {
+    if (settings.shouldUseUserMetadata && user) {
+      if (settings.preFilterOption && !user['/user_metadata'].value) {
+        return true;
+      }
+      return false;
+    }
+
+    return settings.preFilterOption;
+  }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
+
   return (
     <div style={{ width: '100%', background: '#fff' }}>
       {history.location?.pathname !== '/result' && (
@@ -285,14 +296,14 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 <div
                   className="pre-filter-icon"
                   onClick={() => {
-                    if (settings.preFilterOption) {
+                    if (showPreFilter) {
                       onToggleFilterMobile(false);
                       dispatch(setPreFilterDropdown(!preFilterDropdown));
                     }
                   }}
-                  style={{ cursor: settings.preFilterOption ? 'pointer' : '' }}
+                  style={{ cursor: showPreFilter ? 'pointer' : '' }}
                 >
-                  {settings.preFilterOption && (
+                  {showPreFilter && (
                     <div
                       className="icon-hover"
                       style={{
@@ -308,10 +319,8 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                       <IconFilter color="white" />
                     </div>
                   )}
-                  {!settings.preFilterOption && (
-                    <IconSearch width={16} height={16} />
-                  )}
-                  {settings.preFilterOption && !isEmpty(preFilter) && (
+                  {!showPreFilter && <IconSearch width={16} height={16} />}
+                  {!isEmpty(preFilter) && (
                     <div
                       style={{
                         position: 'absolute',
