@@ -2,8 +2,10 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Route, useHistory } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import NyrisAPI, {
+  ImageSearchOptions,
   NyrisAPISettings,
   RectCoords,
+  Region,
   urlOrBlobToCanvas,
 } from "@nyris/nyris-api";
 import "./Layout.scss";
@@ -47,6 +49,8 @@ function Layout() {
   const [chatHistory, setChatHistory] = useState<Chat[]>([]);
   const [filters, setFilters] = useState([]);
 
+  const [regions, setRegions] = useState<Region[]>([]);
+
   const history = useHistory();
   const nyrisApi = new NyrisAPI({ ...settings });
 
@@ -74,20 +78,28 @@ function Layout() {
     };
   }, []);
 
-  const imageSearch = async (f: File) => {
+  const onImageUpload = async (f: File) => {
+    const image = await urlOrBlobToCanvas(f);
+    setSearchImage(image);
+    setImageThumb(URL.createObjectURL(f));
+    vizoAgent.updateImage(f);
+
+    imageSearch(image);
+  };
+
+  const imageSearch = async (image: HTMLCanvasElement, r?: RectCoords) => {
     setChatHistory([]);
     vizoAgent.resetAgent();
-    vizoAgent.updateImage(f);
     setResults([]);
     setVizoResultAssessment(undefined);
     setFilters([]);
 
-    const image = await urlOrBlobToCanvas(f);
-    setSearchImage(image);
-    setImageThumb(URL.createObjectURL(f));
+    nyrisApi.findRegions(image).then((res) => {
+      setRegions(res);
+    });
 
     const searchResult: any = await nyrisApi.find(
-      {},
+      { cropRect: r },
       image,
       selectedPreFilters.length > 0
         ? [
@@ -194,7 +206,9 @@ function Layout() {
   };
 
   const onSelectionChange = (r: RectCoords) => {
-    console.log(r);
+    if (searchImage) {
+      imageSearch(searchImage, r);
+    }
   };
 
   const onUserQuery = (userQuery: string) => {
@@ -293,7 +307,7 @@ function Layout() {
           name="take-picture"
           id="nyris__hello-open-camera"
           accept="image/jpeg,image/png,image/webp"
-          onChange={makeFileHandler((e) => imageSearch(e))}
+          onChange={makeFileHandler((e) => onImageUpload(e))}
           style={{ display: "none" }}
         />
       </div>
@@ -346,8 +360,10 @@ function Layout() {
             render={(props) => (
               <DragAndDrop
                 {...props}
-                search={(e) => imageSearch(e)}
+                search={(e) => onImageUpload(e)}
                 searchBar={SearchBar}
+                setSearchImage={setSearchImage}
+                setImageThumb={setImageThumb}
               />
             )}
           />
@@ -370,7 +386,8 @@ function Layout() {
                 onUserQuery={onUserQuery}
                 chatHistory={chatHistory}
                 filters={filters}
-                imageSearch={imageSearch}
+                imageSearch={onImageUpload}
+                regions={regions}
               />
             )}
           />
