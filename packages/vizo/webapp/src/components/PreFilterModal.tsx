@@ -79,6 +79,7 @@ function PreFilterModal({
               <IconClose
                 width={16}
                 height={16}
+                className="cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedPreFilters([]);

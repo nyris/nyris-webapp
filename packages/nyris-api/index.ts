@@ -201,11 +201,16 @@ export default class NyrisAPI {
   async find(
     options: ImageSearchOptions,
     canvas?: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement,
-    filters?: Filter[]
+    filters?: Filter[],
+    xOptions?: any
   ): Promise<SearchResult> {
     var requestBody = new FormData();
     let params = {};
     let headers = this.getSearchRequestHeaders("image/jpeg");
+    if (xOptions) {
+      // headers["X-Nyris-Request-Options"] = xOptions;
+      headers["X-Options"] = xOptions;
+    }
     if (canvas && options.text) {
       requestBody.append("text", options.text);
       const { text, ...rest } = options;

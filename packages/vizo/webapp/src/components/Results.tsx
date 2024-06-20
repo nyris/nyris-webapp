@@ -1,12 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { RectCoords } from "@nyris/nyris-api";
+import React, { useEffect, useState } from "react";
+import { RectCoords, Region } from "@nyris/nyris-api";
 import { Preview } from "@nyris/nyris-react-components";
 import { ReactComponent as CTAIcon } from "../assets/link.svg";
 import { groupFiltersByFirstLetter } from "../Helpers";
 import { ReactComponent as KeyboardArrowRightOutlinedIcon } from "../assets/arrow_right.svg";
 import { ReactComponent as KeyboardArrowLeftOutlinedIcon } from "../assets/arrow_left.svg";
 import { reorderProducts } from "../utils/reorderProducts";
-import { getObjectValues } from "../utils/getObjValues";
 
 import { useHistory } from "react-router-dom";
 import Chat from "./Chat";
@@ -30,6 +29,7 @@ interface IResultProps {
   chatHistory: ChatType[];
   filters: string[];
   imageSearch?: any;
+  regions: Region[];
 }
 
 const isResultRefined = (skuInOrder: string[], products: any[]) => {
@@ -52,6 +52,7 @@ function ResultsComponent({
   chatHistory,
   filters,
   imageSearch,
+  regions,
 }: IResultProps) {
   const history = useHistory();
 
@@ -59,6 +60,13 @@ function ResultsComponent({
   const [isSidePanelExpanded, setIsSidePanelExpanded] = useState(true);
   const [products, setProducts] = useState(results);
   const [showNewResultButton, setShowNewResultButton] = useState(false);
+
+  const [selectedRegion, setSelectedRegion] = useState({
+    x1: 0,
+    x2: 1,
+    y1: 0,
+    y2: 1,
+  });
 
   const showRefinedResult = () => {
     if (typeof vizoResultAssessment?.result[0] === "object") {
@@ -110,12 +118,14 @@ function ResultsComponent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vizoResultAssessment, results]);
 
-  const ocrList = useMemo(() => {
-    if (ocr) {
-      return getObjectValues(ocr);
-    }
-    return [];
-  }, [ocr]);
+  useEffect(() => {
+    setSelectedRegion({
+      x1: 0,
+      x2: 1,
+      y1: 0,
+      y2: 1,
+    });
+  }, [searchImage]);
 
   if (!searchImage) {
     history.push("/");
@@ -139,14 +149,13 @@ function ResultsComponent({
           <>
             <div className="preview-container">
               <Preview
-                onSelectionChange={(r: RectCoords) => onSelectionChange(r)}
+                onSelectionChange={(r: RectCoords) => {
+                  setSelectedRegion(r);
+                  onSelectionChange(r);
+                }}
                 image={searchImage}
-                selection={{ x1: 0, x2: 1, y1: 0, y2: 1 }}
-                regions={[]}
-                minWidth={100 * (searchImage?.width / searchImage?.height)}
-                minHeight={80}
-                maxWidth={255}
-                maxHeight={255}
+                selection={selectedRegion}
+                regions={regions}
                 dotColor={"#FBD914"}
                 minCropWidth={30}
                 minCropHeight={30}
@@ -181,7 +190,7 @@ function ResultsComponent({
         <div className="results-container">
           <Chat
             imageThumb={imageThumb}
-            ocrList={ocrList}
+            ocrList={ocr}
             vizoLoading={vizoLoading}
             onUserQuery={onUserQuery}
             chatHistory={chatHistory}
@@ -199,7 +208,6 @@ function ResultsComponent({
                     style={{
                       width: "100%",
                       height: "100%",
-                      cursor: "pointer",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
