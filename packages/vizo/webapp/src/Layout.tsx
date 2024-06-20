@@ -2,7 +2,6 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Route, useHistory } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import NyrisAPI, {
-  ImageSearchOptions,
   NyrisAPISettings,
   RectCoords,
   Region,
@@ -109,7 +108,7 @@ function Layout() {
             },
           ]
         : undefined,
-      "+ocr.text +barcode +useids similarity.threshold.perfect=2 similarity.threshold=0.5 similarity.threshold.indicative=0.25 similarity.threshold.discard=0.2 ocr.threshold=40 ocr.threshold.indicative=20 ocr.threshold.perfect=100 similarity.limit=100"
+      "+ocr.text"
     );
 
     vizoAgent.setResults(
@@ -120,7 +119,7 @@ function Layout() {
 
     setVizoLoading(true);
     if (searchResult?.ocr?.text.length > 0) {
-      vizoAgent.refineResult(searchResult?.ocr?.text).then((res) => {
+      vizoAgent.refineResultGroq(searchResult?.ocr?.text).then((res) => {
         console.log({ res });
 
         setVizoResultAssessment({
