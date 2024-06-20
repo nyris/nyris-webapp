@@ -5,7 +5,14 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconCamera from 'common/assets/icons/camera.svg';
 import { useQuery } from 'hooks/useQuery';
 import { debounce, isEmpty } from 'lodash';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDropzone } from 'react-dropzone';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
@@ -31,6 +38,7 @@ import DefaultModal from 'components/modal/DefaultModal';
 import PreFilterComponent from 'components/pre-filter';
 import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
@@ -49,6 +57,8 @@ const SearchBox = (props: any) => {
     useState<boolean>(false);
   const { t } = useTranslation();
   const isAlgoliaEnabled = settings.algolia?.enabled;
+
+  const { user } = useAuth0();
 
   useEffect(() => {
     if (focusInp?.current) {
@@ -216,6 +226,17 @@ const SearchBox = (props: any) => {
     }
   };
 
+  const showPreFilter = useMemo(() => {
+    if (settings.shouldUseUserMetadata && user) {
+      if (settings.preFilterOption && !user['/user_metadata'].value) {
+        return true;
+      }
+      return false;
+    }
+
+    return settings.preFilterOption;
+  }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
+
   return (
     <div className="wrap-input-search-field">
       <div className="box-input-search d-flex">
@@ -229,20 +250,18 @@ const SearchBox = (props: any) => {
               }
               placement="top"
               arrow={true}
-              disableHoverListener={!settings.preFilterOption}
+              disableHoverListener={!showPreFilter}
             >
               <div
                 className="pre-filter-icon"
                 style={{
-                  cursor: settings.preFilterOption ? 'pointer' : 'default',
+                  cursor: showPreFilter ? 'pointer' : 'default',
                 }}
                 onClick={() =>
-                  settings.preFilterOption
-                    ? setToggleModalFilterDesktop(true)
-                    : false
+                  showPreFilter ? setToggleModalFilterDesktop(true) : false
                 }
               >
-                {settings.preFilterOption && (
+                {showPreFilter && (
                   <div
                     className="icon-hover"
                     style={{
@@ -258,9 +277,7 @@ const SearchBox = (props: any) => {
                     <IconFilter color="white" />
                   </div>
                 )}
-                {!settings.preFilterOption && (
-                  <IconSearch width={16} height={16} />
-                )}
+                {!showPreFilter && <IconSearch width={16} height={16} />}
                 {!isEmpty(preFilter) && (
                   <div
                     style={{
@@ -436,7 +453,7 @@ const SearchBox = (props: any) => {
           )}
         </div>
       </div>
-      {settings.preFilterOption && (
+      {showPreFilter && (
         <DefaultModal
           openModal={isOpenModalFilterDesktop}
           handleClose={() => setToggleModalFilterDesktop(false)}
