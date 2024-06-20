@@ -115,7 +115,7 @@ function InquiryBanner({
               style={{
                 display: 'flex',
                 gap: isMobile ? '8px' : '16px',
-                width: isMobile ? '100%' : '100%',
+                width: '100%',
                 maxWidth: '400px',
               }}
               className="support-button-wrapper"

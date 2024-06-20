@@ -125,7 +125,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         const preFilterValues = [
           {
             key: settings.visualSearchFilterKey,
-            values: Object.keys(preFilter) as string[],
+            values: Object.keys(preFilter),
           },
         ];
         if (value || requestImage) {

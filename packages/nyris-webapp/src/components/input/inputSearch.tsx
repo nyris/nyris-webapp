@@ -103,7 +103,7 @@ const SearchBox = (props: any) => {
         const preFilterValues = [
           {
             key: settings.visualSearchFilterKey,
-            values: Object.keys(preFilter) as string[],
+            values: Object.keys(preFilter),
           },
         ];
         if (value || requestImage) {
@@ -172,7 +172,7 @@ const SearchBox = (props: any) => {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter) as string[],
+          values: Object.keys(preFilter),
         },
       ];
       try {
@@ -366,7 +366,7 @@ const SearchBox = (props: any) => {
                 fontSize: 14,
                 color: '#2B2C46',
               }}
-              className="input-search"
+              className="input-search hhhh"
               placeholder={t('Search')}
               value={valueInput}
               onChange={onChangeText}

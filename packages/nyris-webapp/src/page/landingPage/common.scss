@@ -2,7 +2,7 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Source Sans 3' !important;
+  font-family: 'Source Sans 3', sans-serif !important;
 }
 .w-100 {
   width: 100% !important;
@@ -84,19 +84,19 @@ button {
 }
 
 .text-f10 {
-  font-family: 'Source Sans 3';
+  font-family: 'Source Sans 3', sans-serif;
   font-size: 10px !important;
   line-height: 10px !important;
 }
 
 .text-f22 {
-  font-family: 'Source Sans 3';
+  font-family: 'Source Sans 3', sans-serif;
   font-size: 22px !important;
   line-height: 20px !important;
 }
 
 .text-btn-small {
-  font-family: 'Source Sans 3';
+  font-family: 'Source Sans 3', sans-serif;;
   font-weight: 500 !important;
   font-size: 11px !important;
   line-height: 14px !important;
@@ -110,14 +110,14 @@ button {
 }
 
 .text-f8 {
-  font-family: 'Source Sans 3' !important;
+  font-family: 'Source Sans 3', sans-serif !important;
   font-weight: 500 !important;
   font-size: 11px !important;
   line-height: 14px !important;
 }
 
 .text-f9 {
-  font-family: 'Source Sans 3';
+  font-family: 'Source Sans 3', sans-serif;
   font-size: 11px !important;
   line-height: 14px !important;
 }
@@ -174,10 +174,10 @@ button {
 .btn-ct {
   border-right: 1px solid #e9e9ec;
   font-weight: 500;
-  font-size: 11 !important;
+  font-size: 11px !important;
   line-height: 14px !important;
   color: #2b2c46 !important;
-  font-family: 'Source Sans 3' !important;
+  font-family: 'Source Sans 3', sans-serif !important;
   padding: 0 10px;
   &::before,
   &::after {
@@ -682,7 +682,7 @@ button {
 
       .title-box {
         font-size: 11px;
-        font-family: 'Source Sans 3' !important;
+        font-family: 'Source Sans 3', sans-serif !important;
         line-height: 21px;
         color: #fff !important;
         text-align: center;
@@ -703,10 +703,10 @@ button {
     line-height: 21px;
     color: #ffffff;
     font-weight: 300;
-    font-family: 'Source Sans 3';
+    font-family: 'Source Sans 3', sans-serif;
   }
   .text-drop-file {
-    font-family: 'Source Sans 3';
+    font-family: 'Source Sans 3', sans-serif;
     font-weight: 700;
     font-size: 32px;
     line-height: 21px;
@@ -743,7 +743,7 @@ button {
     .box-bottom {
       margin-top: 26px;
       .text-bottom {
-        font-family: 'Source Sans 3';
+        font-family: 'Source Sans 3', sans-serif;
         font-weight: 600;
         font-size: 11px;
         line-height: 14px;
@@ -879,7 +879,7 @@ button {
   font-style: normal;
 }
 .text-f20 {
-  font-family: 'Source Sans 3';
+  font-family: 'Source Sans 3', sans-serif;
   font-size: 16px;
   line-height: 21px;
 }
@@ -1078,7 +1078,7 @@ button {
     }
     .box-change-hit-items {
       z-index: 500;
-      font-family: 'Source Sans 3';
+      font-family: 'Source Sans 3', sans-serif;
       font-style: normal;
       font-weight: 500;
       font-size: 12px;
@@ -1722,14 +1722,23 @@ button {
     align-items: center;
     li {
       list-style-type: none;
-      margin-bottom: 0px;
-      padding: 0px;
-      background: #f3f3f5;
-      border: 1px solid #e0e0e0;
-      border-radius: 1px;
+      margin-bottom: 0;
+      padding: 0 4px;
+      border-radius: 50px;
+      background: #E9E9EC;
+      font-family: 'Source Sans 3', sans-serif;;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      text-align: left;
+
       &:last-child {
-        border: 0px;
         background: initial;
+        button {
+          span {
+            color: #E31B5D;
+          }
+        }
       }
       button {
         padding: 2px 5px;
@@ -1772,7 +1781,7 @@ button {
       position: relative;
       padding: 0;
       a {
-        font-family: 'Source Sans 3';
+        font-family: 'Source Sans 3', sans-serif;;
         font-style: normal;
         font-weight: 400;
         font-size: 14px;
@@ -1843,7 +1852,7 @@ button {
         align-items: center;
         span {
           font-size: 14px;
-          font-family: 'Source Sans 3';
+          font-family: 'Source Sans 3', sans-serif;;
           font-style: normal;
           em {
             font-style: initial !important;
@@ -1857,7 +1866,7 @@ button {
 .box-switch-apply-fillter {
   span.MuiFormControlLabel-label {
     color: #aaabb5;
-    font-family: 'Source Sans 3';
+    font-family: 'Source Sans 3', sans-serif;;
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
@@ -1912,7 +1921,7 @@ button {
           background-color: #f3f3f5;
           border-radius: 21px;
           height: 40px;
-          .icon-search{
+          .icon-search {
             margin-left: 11px;
           }
           .input-search-filter {
@@ -1928,6 +1937,11 @@ button {
             @media only screen and (min-width: 980px) {
               width: 512px;
             }
+          }
+          .btn-clear-text {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
           }
         }
       }

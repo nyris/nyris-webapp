@@ -15,6 +15,7 @@ import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
 import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useTranslation } from 'react-i18next';
+import { orderBy } from 'lodash';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -113,7 +114,7 @@ export default function PostFilterPanelAlgolia({
       ...refinements.reduce(
         (acc: any, current: any) => ({
           ...acc,
-          [getPanelId(current)]: Boolean(current.isExpanded),
+          [getPanelId(current)]: true,
         }),
         {},
       ),
@@ -145,7 +146,7 @@ export default function PostFilterPanelAlgolia({
               noResults: 'No results',
               placeholder: '',
             }}
-            sortBy={['isRefined:desc', 'name:asc']}
+            transformItems={(items: any) => orderBy(items, 'label', 'desc')}
           />
         );
       }),

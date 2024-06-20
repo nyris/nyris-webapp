@@ -24,7 +24,7 @@ body.overflow-hidden {
       margin-right: 8px;
       overflow: hidden;
       white-space: nowrap;
-      font-family: 'Source Sans 3';
+      font-family: 'Source Sans 3', sans-serif;
       font-size: 14px;
       font-weight: 600;
       line-height: 16px;
@@ -63,7 +63,7 @@ body.overflow-hidden {
       position: absolute;
     }
     &-title {
-      font-family: 'Source Sans 3';
+      font-family: 'Source Sans 3', sans-serif;;
       font-size: 20px;
       font-weight: 700;
       line-height: 24px;
@@ -103,7 +103,6 @@ body.overflow-hidden {
             position: absolute;
             border-radius: 100%;
             background-color: #F3F3F5;
-            display: block;
             overflow: hidden;
             z-index: 11;
             width: 32px;
@@ -160,7 +159,7 @@ body.overflow-hidden {
       margin-right: 8px;
       overflow: hidden;
       white-space: nowrap;
-      font-family: 'Source Sans 3';
+      font-family: 'Source Sans 3', sans-serif;;
       font-size: 14px;
       font-weight: 600;
       line-height: 16px;
