@@ -34,18 +34,16 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 root.render(
-  <React.StrictMode>
-    <Fragment>
-      <Toaster />
-      <Provider store={store}>
-        <AuthProvider>
-          <MuiThemeProvider theme={theme}>
-            <BrowserRouter>
-              <Router />
-            </BrowserRouter>
-          </MuiThemeProvider>
-        </AuthProvider>
-      </Provider>
-    </Fragment>
-  </React.StrictMode>,
+  <Fragment>
+    <Toaster />
+    <Provider store={store}>
+      <AuthProvider>
+        <MuiThemeProvider theme={theme}>
+          <BrowserRouter>
+            <Router />
+          </BrowserRouter>
+        </MuiThemeProvider>
+      </AuthProvider>
+    </Provider>
+  </Fragment>,
 );
