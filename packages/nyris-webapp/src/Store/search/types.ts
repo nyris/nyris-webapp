@@ -35,4 +35,5 @@ export interface SearchState {
   firstSearchResults: any;
   firstSearchPrefilters: any;
   firstSearchThumbSearchInput: any;
+  countOfSearch: number;
 }

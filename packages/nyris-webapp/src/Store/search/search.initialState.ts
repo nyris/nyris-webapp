@@ -28,4 +28,5 @@ export const initialState: SearchState = {
   firstSearchResults: null,
   firstSearchPrefilters: null,
   firstSearchThumbSearchInput: null,
+  countOfSearch: 0,
 };

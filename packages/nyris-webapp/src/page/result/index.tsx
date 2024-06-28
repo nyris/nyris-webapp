@@ -39,7 +39,9 @@ import {
   setFirstSearchResults,
   setFirstSearchImage,
   setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput, setPreFilter,
+  setPreFilter,
+  setFirstCountOfSearches,
+  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
@@ -80,7 +82,7 @@ function ResultComponent(props: Props) {
     firstSearchResults,
     firstSearchImage,
     firstSearchPrefilters,
-    firstSearchThumbSearchInput,
+    countOfSearch,
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -246,12 +248,17 @@ function ResultComponent(props: Props) {
         region: searchRegion,
         filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       }).then((res: any) => {
+        console.log(countOfSearch);
         if (!firstSearchResults) {
           dispatch(setFirstSearchResults(res));
           dispatch(setFirstSearchImage(image));
           dispatch(setFirstSearchPrefilters(preFilter));
-          // dispatch(setFirstSearchThumbSearchInput(url))
+          dispatch(setFirstCountOfSearches(1));
+          if (!isMobile) {
+            dispatch(setFirstSearchThumbSearchInput(url))
+          }
         }
+        dispatch(setFirstCountOfSearches(1 + countOfSearch));
         dispatch(setSearchResults(res));
         dispatch(updateStatusLoading(false));
         return;
@@ -389,7 +396,7 @@ function ResultComponent(props: Props) {
     dispatch(setSearchResults(firstSearchResults));
     dispatch(setRequestImage(firstSearchImage));
     dispatch(setPreFilter(firstSearchPrefilters));
-    // dispatch(setImageSearchInput(firstSearchThumbSearchInput));
+    dispatch(setFirstCountOfSearches(1));
   }
 
   return (
@@ -483,7 +490,7 @@ function ResultComponent(props: Props) {
                     onClick={() => onGoBack()}
                   >
                     <GoBack width={16} height={16}  />
-                    Return to first image
+                    {countOfSearch === 2 ? 'Back' : 'Return to first image'}
                   </div>
                 ) : (
                   ''

@@ -14,7 +14,7 @@ import {
   setFirstSearchResults,
   setFirstSearchImage,
   setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput
+  setFirstSearchThumbSearchInput, setFirstCountOfSearches
 } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDownward.svg';
@@ -37,7 +37,7 @@ function DragDropFile(props: Props) {
   const searchState = useAppSelector(state => state);
   const {
     settings,
-    search: { preFilter },
+    search: { preFilter , countOfSearch},
   } = searchState;
   const { t } = useTranslation();
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -89,13 +89,12 @@ function DragDropFile(props: Props) {
           onChangeLoading(false);
           dispatch(updateStatusLoading(false));
           dispatch(setShowFeedback(true));
-
           // go back
           dispatch(setFirstSearchResults(payload));
           dispatch(setFirstSearchImage(image));
           dispatch(setFirstSearchPrefilters(preFilter));
           dispatch(setFirstSearchThumbSearchInput(URL.createObjectURL(fs[0])));
-
+          dispatch(setFirstCountOfSearches(countOfSearch + 1));
           return;
         });
       }

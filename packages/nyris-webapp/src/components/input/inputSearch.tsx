@@ -37,7 +37,8 @@ import {
   setFirstSearchImage,
   setFirstSearchPrefilters,
   setPreFilter,
-  setFirstSearchThumbSearchInput
+  setFirstSearchThumbSearchInput,
+  setFirstCountOfSearches,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -60,6 +61,7 @@ const SearchBox = (props: any) => {
     firstSearchImage,
     firstSearchPrefilters,
     firstSearchThumbSearchInput,
+    countOfSearch,
   } = search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
@@ -224,6 +226,7 @@ const SearchBox = (props: any) => {
             dispatch(setFirstSearchImage(image));
             dispatch(setFirstSearchPrefilters(preFilter));
             dispatch(setFirstSearchThumbSearchInput(URL.createObjectURL(fs[0])));
+            dispatch(setFirstCountOfSearches(1 + countOfSearch));
           })
           .catch((e: any) => {
             console.log('error input search', e);
@@ -261,6 +264,7 @@ const SearchBox = (props: any) => {
     dispatch(setRequestImage(firstSearchImage));
     dispatch(setPreFilter(firstSearchPrefilters));
     dispatch(setImageSearchInput(firstSearchThumbSearchInput));
+    dispatch(setFirstCountOfSearches(1));
   }
 
   return (
@@ -271,7 +275,7 @@ const SearchBox = (props: any) => {
           onClick={() => onGoBack()}
         >
           <GoBack width={16} height={16}  />
-          Return to first image
+          {countOfSearch === 2 ? 'Back' : 'Return to first image'}
         </div>
       ) : (
         ''

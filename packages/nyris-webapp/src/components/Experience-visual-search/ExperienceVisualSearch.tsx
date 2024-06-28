@@ -16,7 +16,7 @@ import {
   setFirstSearchResults,
   setFirstSearchImage,
   setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput
+  setFirstSearchThumbSearchInput, setFirstCountOfSearches
 } from '../../Store/search/Search';
 import { createImage, find, findRegions } from '../../services/image';
 import { RectCoords } from '@nyris/nyris-api';
@@ -98,6 +98,7 @@ function ExperienceVisualSearch() {
       dispatch(setFirstSearchImage(image));
       dispatch(setFirstSearchPrefilters(search.preFilter));
       dispatch(setFirstSearchThumbSearchInput(url));
+      dispatch(setFirstCountOfSearches(1 + search.countOfSearch));
       return;
     });
   };

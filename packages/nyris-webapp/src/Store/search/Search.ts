@@ -117,6 +117,7 @@ export const searchSlice = createSlice({
         firstSearchResults: null,
         firstSearchPrefilters: null,
         firstSearchThumbSearchInput: null,
+        countOfSearch: 0,
       };
     },
 
@@ -254,6 +255,10 @@ export const searchSlice = createSlice({
       ...state,
       firstSearchThumbSearchInput: data.payload,
     }),
+    setFirstCountOfSearches: (state, data: PayloadAction<any>) => ({
+      ...state,
+      countOfSearch: data.payload,
+    }),
   },
 });
 
@@ -286,5 +291,6 @@ export const {
   setFirstSearchResults,
   setFirstSearchPrefilters,
   setFirstSearchThumbSearchInput,
+  setFirstCountOfSearches,
 } = searchSlice.actions;
 export default searchSlice.reducer;

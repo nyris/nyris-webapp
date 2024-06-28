@@ -23,7 +23,7 @@ import {
   setFirstSearchResults,
   setFirstSearchImage,
   setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput
+  setFirstSearchThumbSearchInput, setFirstCountOfSearches
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 
@@ -44,7 +44,7 @@ function CameraCustom(props: Props) {
   const { search, settings } = stateGlobal;
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { preFilter } = search;
+  const { preFilter, countOfSearch } = search;
 
   const videoConstraints = {
     width: 1080,
@@ -113,6 +113,7 @@ function CameraCustom(props: Props) {
           dispatch(setFirstSearchImage(imageConvert));
           dispatch(setFirstSearchPrefilters(preFilter));
           dispatch(setFirstSearchThumbSearchInput(image));
+          dispatch(setFirstCountOfSearches(countOfSearch + 1));
         })
         .catch((e: any) => {
           console.log('error input search', e);
