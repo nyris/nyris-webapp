@@ -11,6 +11,10 @@ import {
   setRegions,
   setSelectedRegion,
   setShowFeedback,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput
 } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDownward.svg';
@@ -85,6 +89,12 @@ function DragDropFile(props: Props) {
           onChangeLoading(false);
           dispatch(updateStatusLoading(false));
           dispatch(setShowFeedback(true));
+
+          // go back
+          dispatch(setFirstSearchResults(payload));
+          dispatch(setFirstSearchImage(image));
+          dispatch(setFirstSearchPrefilters(preFilter));
+          dispatch(setFirstSearchThumbSearchInput(URL.createObjectURL(fs[0])));
 
           return;
         });

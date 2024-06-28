@@ -36,6 +36,10 @@ import {
   setShowFeedback,
   updateResultChangePosition,
   updateStatusLoading,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput, setPreFilter,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
@@ -51,6 +55,7 @@ import { useQuery } from 'hooks/useQuery';
 import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
 import Feedback from 'components/Feedback';
 import { SelectedPostFilter } from 'components/SelectedPostFilter';
+import { ReactComponent as GoBack } from 'common/assets/icons/path.svg';
 
 interface Props {
   allSearchResults: any;
@@ -72,6 +77,10 @@ function ResultComponent(props: Props) {
     imageThumbSearchInput,
     results,
     showFeedback,
+    firstSearchResults,
+    firstSearchImage,
+    firstSearchPrefilters,
+    firstSearchThumbSearchInput,
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -237,6 +246,12 @@ function ResultComponent(props: Props) {
         region: searchRegion,
         filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       }).then((res: any) => {
+        if (!firstSearchResults) {
+          dispatch(setFirstSearchResults(res));
+          dispatch(setFirstSearchImage(image));
+          dispatch(setFirstSearchPrefilters(preFilter));
+          // dispatch(setFirstSearchThumbSearchInput(url))
+        }
         dispatch(setSearchResults(res));
         dispatch(updateStatusLoading(false));
         return;
@@ -370,6 +385,13 @@ function ResultComponent(props: Props) {
     feedbackSuccessEpic(stateGlobal, data);
   };
 
+  const onGoBack = () => {
+    dispatch(setSearchResults(firstSearchResults));
+    dispatch(setRequestImage(firstSearchImage));
+    dispatch(setPreFilter(firstSearchPrefilters));
+    // dispatch(setImageSearchInput(firstSearchThumbSearchInput));
+  }
+
   return (
     <>
       <div
@@ -453,6 +475,18 @@ function ResultComponent(props: Props) {
                     }
                     showAdjustInfo={showAdjustInfo}
                   />
+                )}
+
+                {isMobile && firstSearchResults && requestImage?.canvas !== firstSearchImage ? (
+                  <div
+                    className="go-back-button"
+                    onClick={() => onGoBack()}
+                  >
+                    <GoBack width={16} height={16}  />
+                    Return to first image
+                  </div>
+                ) : (
+                  ''
                 )}
 
                 <div

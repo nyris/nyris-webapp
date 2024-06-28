@@ -20,6 +20,7 @@ import { useHistory } from 'react-router-dom';
 import { createImage, find, findRegions } from 'services/image';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
 import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
+import { ReactComponent as GoBack } from 'common/assets/icons/path.svg';
 
 import {
   reset,
@@ -32,6 +33,11 @@ import {
   setSelectedRegion,
   updateQueryText,
   setShowFeedback,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setPreFilter,
+  setFirstSearchThumbSearchInput
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -45,8 +51,16 @@ const SearchBox = (props: any) => {
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-  const { imageThumbSearchInput, preFilter, requestImage, selectedRegion } =
-    search;
+  const {
+    imageThumbSearchInput,
+    preFilter,
+    requestImage,
+    selectedRegion,
+    firstSearchResults,
+    firstSearchImage,
+    firstSearchPrefilters,
+    firstSearchThumbSearchInput,
+  } = search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -205,6 +219,11 @@ const SearchBox = (props: any) => {
             dispatch(setSearchResults(payload));
             dispatch(updateStatusLoading(false));
             dispatch(setShowFeedback(true));
+            // go back
+            dispatch(setFirstSearchResults(payload));
+            dispatch(setFirstSearchImage(image));
+            dispatch(setFirstSearchPrefilters(preFilter));
+            dispatch(setFirstSearchThumbSearchInput(URL.createObjectURL(fs[0])));
           })
           .catch((e: any) => {
             console.log('error input search', e);
@@ -237,8 +256,26 @@ const SearchBox = (props: any) => {
     return settings.preFilterOption;
   }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
 
+  const onGoBack = () => {
+    dispatch(setSearchResults(firstSearchResults));
+    dispatch(setRequestImage(firstSearchImage));
+    dispatch(setPreFilter(firstSearchPrefilters));
+    dispatch(setImageSearchInput(firstSearchThumbSearchInput));
+  }
+
   return (
     <div className="wrap-input-search-field">
+      {firstSearchResults && requestImage?.canvas !== firstSearchImage ? (
+        <div
+          className="go-back-button"
+          onClick={() => onGoBack()}
+        >
+          <GoBack width={16} height={16}  />
+          Return to first image
+        </div>
+      ) : (
+        ''
+      )}
       <div className="box-input-search d-flex">
         <div className="input-wrapper">
           <div className="box-inp">
