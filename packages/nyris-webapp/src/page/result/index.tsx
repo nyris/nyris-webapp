@@ -83,6 +83,7 @@ function ResultComponent(props: Props) {
     firstSearchImage,
     firstSearchPrefilters,
     countOfSearch,
+    firstSearchThumbSearchInput,
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -248,7 +249,6 @@ function ResultComponent(props: Props) {
         region: searchRegion,
         filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       }).then((res: any) => {
-        console.log(countOfSearch);
         if (!firstSearchResults) {
           dispatch(setFirstSearchResults(res));
           dispatch(setFirstSearchImage(image));
@@ -397,6 +397,9 @@ function ResultComponent(props: Props) {
     dispatch(setRequestImage(firstSearchImage));
     dispatch(setPreFilter(firstSearchPrefilters));
     dispatch(setFirstCountOfSearches(1));
+    if (!isMobile) {
+      dispatch(setImageSearchInput(firstSearchThumbSearchInput));
+    }
   }
 
   return (
@@ -484,7 +487,7 @@ function ResultComponent(props: Props) {
                   />
                 )}
 
-                {isMobile && firstSearchResults && requestImage?.canvas !== firstSearchImage ? (
+                {firstSearchResults && requestImage?.canvas !== firstSearchImage ? (
                   <div
                     className="go-back-button"
                     onClick={() => onGoBack()}

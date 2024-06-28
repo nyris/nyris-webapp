@@ -20,7 +20,6 @@ import { useHistory } from 'react-router-dom';
 import { createImage, find, findRegions } from 'services/image';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
 import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
-import { ReactComponent as GoBack } from 'common/assets/icons/path.svg';
 
 import {
   reset,
@@ -36,7 +35,6 @@ import {
   setFirstSearchResults,
   setFirstSearchImage,
   setFirstSearchPrefilters,
-  setPreFilter,
   setFirstSearchThumbSearchInput,
   setFirstCountOfSearches,
 } from 'Store/search/Search';
@@ -57,10 +55,6 @@ const SearchBox = (props: any) => {
     preFilter,
     requestImage,
     selectedRegion,
-    firstSearchResults,
-    firstSearchImage,
-    firstSearchPrefilters,
-    firstSearchThumbSearchInput,
     countOfSearch,
   } = search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
@@ -259,27 +253,8 @@ const SearchBox = (props: any) => {
     return settings.preFilterOption;
   }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
 
-  const onGoBack = () => {
-    dispatch(setSearchResults(firstSearchResults));
-    dispatch(setRequestImage(firstSearchImage));
-    dispatch(setPreFilter(firstSearchPrefilters));
-    dispatch(setImageSearchInput(firstSearchThumbSearchInput));
-    dispatch(setFirstCountOfSearches(1));
-  }
-
   return (
     <div className="wrap-input-search-field">
-      {firstSearchResults && requestImage?.canvas !== firstSearchImage ? (
-        <div
-          className="go-back-button"
-          onClick={() => onGoBack()}
-        >
-          <GoBack width={16} height={16}  />
-          {countOfSearch === 2 ? 'Back' : 'Return to first image'}
-        </div>
-      ) : (
-        ''
-      )}
       <div className="box-input-search d-flex">
         <div className="input-wrapper">
           <div className="box-inp">
