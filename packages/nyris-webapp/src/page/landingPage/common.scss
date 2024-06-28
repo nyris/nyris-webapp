@@ -925,6 +925,15 @@ button {
     justify-content: space-between;
     // overflow: auto;
     position: relative;
+    
+    .go-back-button {
+      margin-left: 16px;
+      margin-bottom: 16px;
+      background: #F3F3F5;
+      padding: 8px 16px;
+      border-radius: 20px;
+      width: max-content;
+    }
 
     .col-left {
       width: 100%;
@@ -2057,16 +2066,6 @@ button {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  .go-back-button {
-    margin-right: 16px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    cursor: pointer;
-    svg {
-      margin-right: 8px;
-    }
-  }
   .box-input-search {
     width: 512px;
     justify-content: space-between;
@@ -2213,5 +2212,16 @@ button {
   width: 100%;
   @media screen and (min-width: 2047px) {
     max-width: 1300px;
+  }
+}
+
+.go-back-button {
+  margin-right: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  svg {
+    margin-right: 8px;
   }
 }
