@@ -263,7 +263,7 @@ const SearchBox = (props: any) => {
               >
                 {showPreFilter && (
                   <div
-                    className="icon-hover"
+                    className="icon-hover desktop"
                     style={{
                       ...(!isEmpty(preFilter)
                         ? {

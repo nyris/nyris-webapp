@@ -72,6 +72,7 @@ function ResultComponent(props: Props) {
     imageThumbSearchInput,
     results,
     showFeedback,
+    queryText,
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -392,7 +393,7 @@ function ResultComponent(props: Props) {
             <Configure query={searchQuery} filters={filterString}></Configure>
           )}
           <div className="box-wrap-result-component">
-            {!isMobile && (
+            {!isMobile && !(imageThumbSearchInput || queryText) && (
               <div className="box-search">
                 <CustomSearchBox />
               </div>
@@ -401,7 +402,7 @@ function ResultComponent(props: Props) {
               className="box-result"
               style={{
                 height: settings.showPoweredByNyris
-                  ? 'calc(100vh - 177px)'
+                  ? 'calc(100vh - 79px)'
                   : 'calc(100vh - 148px)',
               }}
             >

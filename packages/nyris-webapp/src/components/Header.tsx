@@ -6,10 +6,11 @@ import { reset, setPreFilter } from 'Store/search/Search';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ReactComponent as AvatarIcon } from 'common/assets/icons/avatar.svg';
 import MenuItem from '@material-ui/core/MenuItem';
+import CustomSearchBox from "./input/inputSearch";
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
-  const { settings } = useAppSelector(state => state);
+  const { settings, search } = useAppSelector(state => state);
   const { user, isAuthenticated, logout } = useAuth0();
   const auth0 = settings.auth0;
 
@@ -79,6 +80,16 @@ function Header(): JSX.Element {
           }}
         />
       </a>
+      <div
+        style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: search.imageThumbSearchInput || search.queryText ? 'block' : 'none'
+        }}
+      >
+        <CustomSearchBox />
+      </div>
 
       {auth0.enabled && isAuthenticated && (
         <div style={{ position: 'relative' }}>
