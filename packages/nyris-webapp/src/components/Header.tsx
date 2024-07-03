@@ -61,7 +61,7 @@ function Header(): JSX.Element {
   }))(MenuItem);
 
   return (
-    <div className="box-content" style={{ display: 'flex' }}>
+    <div className="box-content" style={{ display: 'flex', position: 'relative' }}>
       <a
         href={window.location.origin}
         style={{ lineHeight: 0, paddingLeft: '10px' }}
@@ -84,7 +84,8 @@ function Header(): JSX.Element {
         style={{
           position: 'absolute',
           left: '50%',
-          transform: 'translateX(-50%)',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
           display: search.imageThumbSearchInput || search.queryText ? 'block' : 'none'
         }}
       >

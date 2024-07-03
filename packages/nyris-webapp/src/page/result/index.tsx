@@ -402,7 +402,7 @@ function ResultComponent(props: Props) {
               className="box-result"
               style={{
                 height: settings.showPoweredByNyris
-                  ? 'calc(100vh - 79px)'
+                  ? 'calc(100vh - 87px)'
                   : 'calc(100vh - 148px)',
               }}
             >

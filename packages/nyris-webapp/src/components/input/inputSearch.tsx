@@ -57,6 +57,7 @@ const SearchBox = (props: any) => {
     useState<boolean>(false);
   const { t } = useTranslation();
   const isAlgoliaEnabled = settings.algolia?.enabled;
+  const searchbar = useRef<HTMLDivElement | null>(null);
 
   const { user } = useAuth0();
 
@@ -65,6 +66,23 @@ const SearchBox = (props: any) => {
       focusInp?.current.focus();
     }
   }, [focusInp]);
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (searchbar.current) {
+        if (searchbar.current.contains(event.target as Node)) {
+          searchbar.current.classList.add('active');
+        } else {
+          searchbar.current.classList.remove('active');
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [searchbar]);
 
   useEffect(() => {
     const searchQuery = query.get('query') || '';
@@ -238,7 +256,7 @@ const SearchBox = (props: any) => {
   }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
 
   return (
-    <div className="wrap-input-search-field">
+    <div className="wrap-input-search-field" ref={searchbar}>
       <div className="box-input-search d-flex">
         <div className="input-wrapper">
           <div className="box-inp">
@@ -366,7 +384,7 @@ const SearchBox = (props: any) => {
                 fontSize: 14,
                 color: '#2B2C46',
               }}
-              className="input-search hhhh"
+              className="input-search"
               placeholder={t('Search')}
               value={valueInput}
               onChange={onChangeText}
