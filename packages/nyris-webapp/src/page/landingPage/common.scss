@@ -929,7 +929,6 @@ button {
     .go-back-button {
       margin-left: 8px;
       margin-bottom: 16px;
-      background: #F3F3F5;
       padding: 8px 16px;
       border-radius: 20px;
       width: max-content;
@@ -937,8 +936,18 @@ button {
       flex-direction: row;
       align-items: center;
       cursor: pointer;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
       svg {
         margin-right: 8px;
+      }
+      &:hover {
+        background: #F3F3F5;
+      }
+      &.mobile-view {
+        background: #F3F3F5;
       }
     }
 

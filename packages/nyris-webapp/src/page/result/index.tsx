@@ -84,6 +84,7 @@ function ResultComponent(props: Props) {
     firstSearchPrefilters,
     countOfSearch,
     firstSearchThumbSearchInput,
+    fetchingResults,
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -460,7 +461,8 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  paddingTop: isMobile ? '8px' : '40px',
+                  paddingTop: isMobile ? '8px' : 
+                    firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? '20px' : '40px',
                   overflow: !isMobile ? 'auto' : '',
                   display: 'flex',
                   flexDirection: 'column',
@@ -486,18 +488,20 @@ function ResultComponent(props: Props) {
                     showAdjustInfo={showAdjustInfo}
                   />
                 )}
-
-                {firstSearchResults && requestImage?.canvas !== firstSearchImage ? (
-                  <div
-                    className="go-back-button"
-                    onClick={() => onGoBack()}
-                  >
-                    <GoBack width={16} height={16}  />
-                    {countOfSearch === 2 ? 'Back' : 'Return to first image'}
-                  </div>
-                ) : (
-                  ''
-                )}
+  
+                <div>
+                  {firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? (
+                    <div
+                      className={`go-back-button ${isMobile ? 'mobile-view' : ''}`}
+                      onClick={() => onGoBack()}
+                    >
+                      <GoBack width={16} height={16}  />
+                      {countOfSearch === 2 ? 'Back' : 'Return to first image'}
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                </div>
 
                 <div
                   style={{
