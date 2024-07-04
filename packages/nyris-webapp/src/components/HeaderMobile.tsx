@@ -320,7 +320,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     </div>
                   )}
                   {!showPreFilter && <IconSearch width={16} height={16} />}
-                  {!isEmpty(preFilter) && (
+                  {!isEmpty(preFilter) && settings.preFilterOption && (
                     <div
                       style={{
                         position: 'absolute',
