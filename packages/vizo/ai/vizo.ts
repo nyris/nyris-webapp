@@ -235,7 +235,12 @@ export class VizoAgent {
        Only run image analysis, image assessment or ocr detection if the query is related to the image. Otherwise use this product list ${JSON.stringify(
          this.results
        )} to find products or refine result.
-      If asked to do product search or refine products or refine result always return list of "sku" of the products in JSON.parsable format. Don't add json tag or any other information. If no match is found output only "No result found" without any extra information.`,
+      If asked to do product search or refine products or refine result always 
+      Return the result as an object with the following format and JSON.parsable. Don't add a json tag.
+      {
+        "skus": "A list of string with the sku of list of products after refined",
+      }
+      .Don't add json tag or any other information. If no match is found output only "No result found" without any extra information.`,
       input: text,
       [MEMORY_KEY]: this.chatHistory,
     });
