@@ -16,7 +16,7 @@ const GoBackButton = (props: CurrentRefinementsProvided) => {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector(state => state);
-  const { search, settings } = stateGlobal;
+  const { search } = stateGlobal;
   const {
     firstSearchResults,
     firstSearchImage,
