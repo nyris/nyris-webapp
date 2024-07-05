@@ -12,7 +12,7 @@ import { connectCurrentRefinements } from 'react-instantsearch-dom';
 import { ReactComponent as GoBackIcon } from 'common/assets/icons/path.svg';
 import { useAppDispatch, useAppSelector } from '../Store/Store';
 
-const GoBackButton = (props: CurrentRefinementsProvided) => {
+const GoBackButton = ({ items, refine }: CurrentRefinementsProvided) => {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const dispatch = useAppDispatch();
   const stateGlobal = useAppSelector(state => state);
@@ -24,7 +24,7 @@ const GoBackButton = (props: CurrentRefinementsProvided) => {
     countOfSearch,
     firstSearchThumbSearchInput,
   } = search;
-  const clearPostFilters = useCallback(() => props.refine(props.items), [props.refine, props.items]);
+  const clearPostFilters = useCallback(() => refine(items), [refine, items]);
   const onGoBack = () => {
     dispatch(setSearchResults(firstSearchResults));
     dispatch(setRequestImage(firstSearchImage));
