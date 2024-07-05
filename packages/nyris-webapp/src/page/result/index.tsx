@@ -39,7 +39,6 @@ import {
   setFirstSearchResults,
   setFirstSearchImage,
   setFirstSearchPrefilters,
-  setPreFilter,
   setFirstCountOfSearches,
   setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
@@ -57,7 +56,7 @@ import { useQuery } from 'hooks/useQuery';
 import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
 import Feedback from 'components/Feedback';
 import { SelectedPostFilter } from 'components/SelectedPostFilter';
-import { ReactComponent as GoBack } from 'common/assets/icons/path.svg';
+import { GoBack } from '../../components/GoBackButton';
 
 interface Props {
   allSearchResults: any;
@@ -81,9 +80,7 @@ function ResultComponent(props: Props) {
     showFeedback,
     firstSearchResults,
     firstSearchImage,
-    firstSearchPrefilters,
     countOfSearch,
-    firstSearchThumbSearchInput,
     fetchingResults,
   } = search;
 
@@ -393,16 +390,6 @@ function ResultComponent(props: Props) {
     feedbackSuccessEpic(stateGlobal, data);
   };
 
-  const onGoBack = () => {
-    dispatch(setSearchResults(firstSearchResults));
-    dispatch(setRequestImage(firstSearchImage));
-    dispatch(setPreFilter(firstSearchPrefilters));
-    dispatch(setFirstCountOfSearches(1));
-    if (!isMobile) {
-      dispatch(setImageSearchInput(firstSearchThumbSearchInput));
-    }
-  }
-
   return (
     <>
       <div
@@ -491,13 +478,7 @@ function ResultComponent(props: Props) {
   
                 <div>
                   {firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? (
-                    <div
-                      className={`go-back-button ${isMobile ? 'mobile-view' : ''}`}
-                      onClick={() => onGoBack()}
-                    >
-                      <GoBack width={16} height={16}  />
-                      {countOfSearch === 2 ? 'Back' : 'Return to first image'}
-                    </div>
+                    <GoBack />
                   ) : (
                     ''
                   )}
