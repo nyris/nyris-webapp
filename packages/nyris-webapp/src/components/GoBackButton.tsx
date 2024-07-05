@@ -6,7 +6,8 @@ import {
   setImageSearchInput,
   setPreFilter,
   setRequestImage,
-  setSearchResults
+  setSearchResults,
+  clearPostFilter
 } from '../Store/search/Search';
 import { connectCurrentRefinements } from 'react-instantsearch-dom';
 import { ReactComponent as GoBackIcon } from 'common/assets/icons/path.svg';
@@ -30,6 +31,7 @@ const GoBackButton = ({ items, refine }: CurrentRefinementsProvided) => {
     dispatch(setRequestImage(firstSearchImage));
     dispatch(setPreFilter(firstSearchPrefilters));
     dispatch(setFirstCountOfSearches(1));
+    dispatch(clearPostFilter());
     clearPostFilters();
     if (!isMobile) {
       dispatch(setImageSearchInput(firstSearchThumbSearchInput));

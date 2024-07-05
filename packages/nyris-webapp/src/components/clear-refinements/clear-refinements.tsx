@@ -32,7 +32,7 @@ function ClearRefinementsComponent({
       style={{
         color: settings.theme.secondaryColor,
         fontWeight: 'bold',
-        textTransform: 'capitalize',
+        textTransform: 'none',
         padding: 0,
       }}
     >
