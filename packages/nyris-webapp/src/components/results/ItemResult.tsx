@@ -225,7 +225,7 @@ function ItemResult(props: Props) {
       {settings.simpleCardView ? (
         <div className="info-container">
           <div className="info-sku">{dataItem.sku}</div>
-          <div className="info-marking">{dataItem.Bezeichnung}</div>
+          <span className="info-marking">{dataItem.Bezeichnung}</span>
           <div className="info-description">{settings.language === 'en' ? dataItem.VK_Text_Englisch : dataItem.VK_Text_Deutsch}</div>
         </div>
       ) : (

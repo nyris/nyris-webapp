@@ -194,7 +194,7 @@ function ProductDetailView(props: Props) {
               style={{
                 position: 'absolute',
                 right: '16px',
-                background: '#E9E9EC',
+                background: 'rgba(243, 243, 245, 0.4)',
                 width: '32px',
                 height: '32px',
                 borderRadius: '100%',
@@ -293,7 +293,7 @@ function ProductDetailView(props: Props) {
           paddingLeft: '16px',
           paddingRight: '16px',
           paddingBottom: '16px',
-          backgroundColor: '#F3F3F5',
+          backgroundColor: settings.simpleCardView ? '#FaFafa' : '#F3F3F5',
           marginTop: '6px',
         }}
       >

@@ -481,11 +481,12 @@ button {
     }
   }
   .info-container {
-    padding: 16px;
+    padding: 16px 0 0 0;
     .info-sku {
       font-size: 18px;
       font-weight: 700;
       line-height: 25.63px;
+      padding-left: 4px;
     }
     .info-marking {
       width: max-content;
@@ -497,7 +498,7 @@ button {
       font-size: 14px;
       font-weight: 400;
       line-height: 19.94px;
-      padding: 8px 0 0 0;
+      padding: 8px 0 0 4px;
     }
   }
 }
@@ -540,7 +541,7 @@ button {
       right: 6px;
       position: absolute;
       border-radius: 100%;
-      background-color: #F3F3F5;
+      background-color: rgba(243, 243, 245, 0.4);
       display: block;
       overflow: hidden;
       z-index: 11;
@@ -1039,7 +1040,7 @@ button {
           height: 100%;
           .info-container {
             flex-direction: column;
-            background-color: rgb(243, 243, 245);
+            background-color: #FAFAFA;
             flex-grow: 1;
             z-index: 100;
             display: flex;
@@ -1048,6 +1049,7 @@ button {
               font-size: 14px;
               font-weight: 700;
               line-height: 19.94px;
+              padding-left: 2px;
             }
             .info-marking {
               max-width: max-content;
@@ -1063,6 +1065,7 @@ button {
               font-size: 10px;
               font-weight: 400;
               line-height: 11.39px;
+              padding-left: 2px;
             }
           }
         }
