@@ -493,6 +493,8 @@ button {
       background: #E9E9EC;
       border-radius: 2px;
       padding: 4px;
+      word-break: break-all;
+      line-height: 14px;
     }
     .info-description {
       font-size: 14px;
@@ -1056,9 +1058,10 @@ button {
               padding: 2px 4px;
               font-size: 12px;
               font-weight: 400;
-              line-height: 12px;
+              line-height: 14px;
               background: #E9E9EC;
               border-radius: 2px;
+              word-break: break-all;
             }
             .info-description {
               margin-top: 8px;
