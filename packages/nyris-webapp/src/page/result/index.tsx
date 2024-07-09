@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useHistory } from 'react-router-dom';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
@@ -39,7 +40,7 @@ import {
   setFirstSearchResults,
   setFirstSearchImage,
   setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput,
+  setFirstSearchThumbSearchInput, updateQueryText,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
@@ -80,7 +81,6 @@ function ResultComponent(props: Props) {
     firstSearchResults,
     firstSearchImage,
     fetchingResults,
-    queryText,
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -102,10 +102,12 @@ function ResultComponent(props: Props) {
     'hidden' | 'submitted' | 'visible'
   >();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
+  const [showSearchBar, setShowSearchBar] = useState(false);
   const query = useQuery();
   const searchQuery = query.get('query') || search.valueTextSearch.query;
   const isAlgoliaEnabled = settings.algolia?.enabled;
   const isPostFilterEnabled = settings.postFilterOption;
+  const history = useHistory();
 
   useEffect(() => {
     if (
@@ -323,6 +325,15 @@ function ResultComponent(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterSkusString, settings.alogoliaFilterField]);
 
+  useEffect(() => {
+    if (history.location?.pathname === '/') {
+      setShowSearchBar(true);
+    } else {
+      setShowSearchBar(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history.location]);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
@@ -409,7 +420,7 @@ function ResultComponent(props: Props) {
             <Configure query={searchQuery} filters={filterString}></Configure>
           )}
           <div className="box-wrap-result-component">
-            {!isMobile && !(imageThumbSearchInput || queryText) && (
+            {!isMobile && showSearchBar && (
               <div className="box-search">
                 <CustomSearchBox />
               </div>

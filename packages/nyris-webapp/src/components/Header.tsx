@@ -1,5 +1,6 @@
 import { Menu, MenuProps, withStyles } from '@material-ui/core';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import { useHistory } from 'react-router-dom';
 import './common.scss';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { reset, setPreFilter } from 'Store/search/Search';
@@ -8,13 +9,24 @@ import { ReactComponent as AvatarIcon } from 'common/assets/icons/avatar.svg';
 import MenuItem from '@material-ui/core/MenuItem';
 import CustomSearchBox from "./input/inputSearch";
 
+
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
   const { settings, search } = useAppSelector(state => state);
   const { user, isAuthenticated, logout } = useAuth0();
   const auth0 = settings.auth0;
-
+  const history = useHistory();
+  const [showSearchBar, setShowSearchBar] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  useEffect(() => {
+    if (history.location?.pathname === '/') {
+      setShowSearchBar(false);
+    } else {
+      setShowSearchBar(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history.location]);
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -86,7 +98,7 @@ function Header(): JSX.Element {
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          display: search.imageThumbSearchInput || search.queryText ? 'block' : 'none'
+          display: showSearchBar ? 'block' : 'none'
         }}
       >
         <CustomSearchBox />
