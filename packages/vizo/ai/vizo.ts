@@ -141,15 +141,16 @@ export class VizoAgent {
       messages: [
         {
           role: "system",
-          content: `You are a powerful spare parts finding assistant. Your task is to clean the provided OCR text, keeping only the information relevant for identifying a spare part.
+          content: `You are a powerful spare parts finding assistant. Your task is to clean the provided OCR text without referencing the List of products. Focus only on the OCR text, keeping the information relevant for identifying a spare part.
              Relevant information includes part numbers, model numbers, brand names, and specific part descriptions (e.g., dimensions, specifications). Discard any irrelevant text such as dates, general text not related to the part, and extraneous symbols.
             Don't use any tools and don't add json tag or any other information that is not asked.`,
         },
         {
           role: "user",
           content: `
-            List of products: ${JSON.stringify(this.results)}.
-            List of OCR: ${JSON.stringify(ocr)}
+          List of OCR: ${JSON.stringify(ocr)}
+          
+          List of products: ${JSON.stringify(this.results)}.
             
             After cleaning the OCR, use the refined OCR to re-rank the provided products. The re-ranked products should be at the top. Return only the cleaned OCR text and the re-ranked JSON results.
 
@@ -276,11 +277,12 @@ export class VizoAgent {
 
   async refineResult(ocr: string[]) {
     let input = "";
-    let system = `You are a powerful spare parts finding assistant. Your task is to clean the provided OCR text, keeping only the information relevant for identifying a spare part. Relevant information includes part numbers, model numbers, brand names, and specific part descriptions (e.g., dimensions, specifications). Discard any irrelevant text such as dates, general text not related to the part, and extraneous symbols. Don't use any tools and don't add json tag or any other information that is not asked.`;
+    let system = `You are a powerful spare parts finding assistant.  Your task is to clean the provided OCR text without referencing the List of products. Focus only on the OCR text, keeping the information relevant for identifying a spare part. Relevant information includes part numbers, model numbers, brand names, and specific part descriptions (e.g., dimensions, specifications). Discard any irrelevant text such as dates, general text not related to the part, and extraneous symbols. Don't use any tools and don't add json tag or any other information that is not asked.`;
 
     input = `
-    List of products: ${JSON.stringify(this.results)}.
     List of OCR: ${JSON.stringify(ocr)}
+
+    List of products: ${JSON.stringify(this.results)}.
     
     After cleaning the OCR, use the refined OCR to re-rank the provided products. The re-ranked products should be at the top. Return only the cleaned OCR text and the re-ranked JSON results.
 
@@ -306,11 +308,11 @@ export class VizoAgent {
 
   async refineResultGroq(ocr: string[]) {
     let input = "";
-    let system = `You are a powerful spare parts finding assistant. Your task is to clean the provided OCR text, keeping only the information relevant for identifying a spare part. Relevant information includes part numbers, model numbers, brand names, and specific part descriptions (e.g., dimensions, specifications). Discard any irrelevant text such as dates, general text not related to the part, and extraneous symbols. Don't use any tools and don't add json tag or any other information that is not asked.`;
 
     input = `
-    List of products: ${JSON.stringify(this.results)}.
     List of OCR: ${JSON.stringify(ocr)}
+
+    List of products: ${JSON.stringify(this.results)}.
     
     After cleaning the OCR, use the refined OCR to re-rank the provided products. The re-ranked products should be at the top. Return only the cleaned OCR text and the re-ranked JSON results.
 
@@ -322,14 +324,7 @@ export class VizoAgent {
     Products matched with ocrContent should be at the top.`;
 
     const chatCompletion = await this.getGroqChatCompletion(ocr);
-    // Print the completion returned by the LLM.
     const output = chatCompletion.choices[0]?.message?.content || "";
-
-    // const result = await this.agentExecutor.invoke({
-    //   system: system,
-    //   input: input,
-    //   [MEMORY_KEY]: this.chatHistory,
-    // });
 
     this.chatHistory.push(new HumanMessage(input));
 
