@@ -40,7 +40,7 @@ import {
   setFirstSearchResults,
   setFirstSearchImage,
   setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput, updateQueryText,
+  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';

@@ -12,7 +12,7 @@ import CustomSearchBox from "./input/inputSearch";
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
-  const { settings, search } = useAppSelector(state => state);
+  const { settings } = useAppSelector(state => state);
   const { user, isAuthenticated, logout } = useAuth0();
   const auth0 = settings.auth0;
   const history = useHistory();
