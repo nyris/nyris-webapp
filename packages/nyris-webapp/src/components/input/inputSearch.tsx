@@ -300,8 +300,8 @@ const SearchBox = (props: any) => {
                   <div
                     style={{
                       position: 'absolute',
-                      top: '5px',
-                      left: '35px',
+                      top: '1px',
+                      left: '26px',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
