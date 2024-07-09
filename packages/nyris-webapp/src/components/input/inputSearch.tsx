@@ -31,7 +31,11 @@ import {
   setRegions,
   setSelectedRegion,
   updateQueryText,
-  setShowFeedback, onResetRequestImage,
+  setShowFeedback,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -45,8 +49,12 @@ const SearchBox = (props: any) => {
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-  const { imageThumbSearchInput, preFilter, requestImage, selectedRegion } =
-    search;
+  const {
+    imageThumbSearchInput,
+    preFilter,
+    requestImage,
+    selectedRegion,
+  } = search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -231,6 +239,11 @@ const SearchBox = (props: any) => {
             dispatch(setSearchResults(payload));
             dispatch(updateStatusLoading(false));
             dispatch(setShowFeedback(true));
+            // go back
+            dispatch(setFirstSearchResults(payload));
+            dispatch(setFirstSearchImage(image));
+            dispatch(setFirstSearchPrefilters(preFilter));
+            dispatch(setFirstSearchThumbSearchInput(URL.createObjectURL(fs[0])));
           })
           .catch((e: any) => {
             console.log('error input search', e);
@@ -264,7 +277,7 @@ const SearchBox = (props: any) => {
   }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
 
   return (
-    <div className="wrap-input-search-field" ref={searchbar}>
+    <div className="wrap-input-search-field">
       <div className="box-input-search d-flex">
         <div className="input-wrapper">
           <div className="box-inp">
@@ -392,7 +405,7 @@ const SearchBox = (props: any) => {
                 fontSize: 14,
                 color: '#2B2C46',
               }}
-              className="input-search"
+              className="input-search hhhh"
               placeholder={t('Search')}
               value={valueInput}
               onChange={onChangeText}

@@ -36,6 +36,10 @@ import {
   setShowFeedback,
   updateResultChangePosition,
   updateStatusLoading,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
@@ -51,6 +55,7 @@ import { useQuery } from 'hooks/useQuery';
 import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
 import Feedback from 'components/Feedback';
 import { SelectedPostFilter } from 'components/SelectedPostFilter';
+import { GoBack } from '../../components/GoBackButton';
 
 interface Props {
   allSearchResults: any;
@@ -72,6 +77,9 @@ function ResultComponent(props: Props) {
     imageThumbSearchInput,
     results,
     showFeedback,
+    firstSearchResults,
+    firstSearchImage,
+    fetchingResults,
     queryText,
   } = search;
 
@@ -238,6 +246,14 @@ function ResultComponent(props: Props) {
         region: searchRegion,
         filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       }).then((res: any) => {
+        if (!firstSearchResults) {
+          dispatch(setFirstSearchResults(res));
+          dispatch(setFirstSearchImage(image));
+          dispatch(setFirstSearchPrefilters(preFilter));
+          if (!isMobile) {
+            dispatch(setFirstSearchThumbSearchInput(url))
+          }
+        }
         dispatch(setSearchResults(res));
         dispatch(updateStatusLoading(false));
         return;
@@ -429,12 +445,18 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  paddingTop: isMobile ? '8px' : '40px',
+                  paddingTop: isMobile ? '8px' : '',
                   overflow: !isMobile ? 'auto' : '',
                   display: 'flex',
                   flexDirection: 'column',
                 }}
               >
+                {!isMobile && firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? (
+                  <GoBack />
+                ) : (
+                  ''
+                )}
+                
                 {!isMobile && settings.algolia.enabled && (
                   <div className="wrap-box-refinements">
                     <CurrentRefinements statusSwitchButton={true} />
@@ -464,10 +486,19 @@ function ResultComponent(props: Props) {
                     backgroundColor: '#FAFAFA',
                   }}
                 >
+                  {isMobile && firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? (
+                    <div className="go-back-mobile-container">
+                      <GoBack />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  
                   <div
                     className={'box-item-result ml-auto mr-auto'}
                     style={{
                       paddingLeft: isMobile ? 0 : 16,
+                      paddingTop: isMobile ? 0 : 16,
                       height: '100%',
                       position: 'relative',
                     }}

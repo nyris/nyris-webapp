@@ -691,6 +691,13 @@
       max-width: 180px !important;
     }
   }
+  .box-wrap-result-component {
+    .box-result {
+      div.go-back-mobile-container {
+        width: 360px;
+      }
+    }
+  }
 }
 .pre-filter-icon {
   display: flex;

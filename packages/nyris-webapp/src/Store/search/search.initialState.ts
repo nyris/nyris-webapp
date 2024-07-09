@@ -24,4 +24,8 @@ export const initialState: SearchState = {
   },
   postFilter: {},
   showFeedback: false,
+  firstSearchImage: '',
+  firstSearchResults: null,
+  firstSearchPrefilters: null,
+  firstSearchThumbSearchInput: null,
 };

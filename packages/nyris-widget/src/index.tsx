@@ -46,6 +46,9 @@ class Nyris {
   private selection: RectCoords = { x1: 0, x2: 1, y1: 0, y2: 1 };
   private readonly instantRedirectPatterns: string[];
   private loading: boolean = false;
+  private firstSearchImage: HTMLCanvasElement = document.createElement("canvas");
+  private firstSearchResults: ResultProps[] = [];
+  private numberOfSearch = 0;
 
   constructor(nyrisSettings: NyrisSettings) {
     this.nyrisApi = new NyrisAPI({ ...nyrisSettings });
@@ -84,15 +87,18 @@ class Nyris {
       onRefine: () => this.refineSelection(),
       onToggle: () => this.toggleNyris(),
       onAcceptCrop: (s) => this.acceptCrop(s),
-      onFile: makeFileHandler((f: any) => this.handleFile(f)),
-      onFileDropped: (f) => this.handleFile(f),
+      onFile: makeFileHandler((f: any) => this.handleFile(f, true)),
+      onFileDropped: (f) => this.handleFile(f, true),
+      onGoBack: () => this.onGoBack(),
       results: this.results,
       regions: this.regions,
       selection: this.selection,
       thumbnailUrl: this.thumbImageUrl,
       showVisualSearchIcon: !window.nyrisSettings.initiatorElementId,
-      onSimilarSearch: (f) => this.handleFile(f),
+      onSimilarSearch: (f) => this.handleFile(f, false),
+      firstSearchImage: this.firstSearchImage,
       loading: this.loading,
+      numberOfSearch: this.numberOfSearch,
     };
     ReactDOM.render(
       <React.StrictMode>
@@ -124,7 +130,7 @@ class Nyris {
   async acceptCrop(s: RectCoords) {
     this.selection = s;
     await this.updateThumbnail();
-    await this.startProcessing();
+    await this.startProcessing(false);
   }
 
   async showRefineSearch(regions: Region[]) {
@@ -150,8 +156,13 @@ class Nyris {
     }
   }
 
-  async handleFile(f: File | string) {
+  async handleFile(f: File | string, isFirstSearch: boolean) {
     this.image = await urlOrBlobToCanvas(f);
+    if (isFirstSearch) {
+      this.firstSearchImage = this.image;
+      this.numberOfSearch = 0;
+    }
+    this.numberOfSearch = ++this.numberOfSearch;
     this.regions = [];
 
     this.showScreen(Screen.Wait);
@@ -164,7 +175,7 @@ class Nyris {
 
     const foundRegions = await this.nyrisApi.findRegions(this.image);
     this.selection = this.getRegionByMaxConfidence(foundRegions);
-    await this.startProcessing();
+    await this.startProcessing(isFirstSearch);
   }
 
   showScreen(s: Screen) {
@@ -178,15 +189,25 @@ class Nyris {
     );
   }
 
-  renderResults(results: OfferNyrisResult[]) {
+  renderResults(results: OfferNyrisResult[], isFirstSearch: boolean) {
     this.results = results.map((offer: any) => ({
       title: offer.title,
       imageUrl: offer?.image,
       links: offer.links,
       sku: offer.sku,
     }));
+    if (isFirstSearch) {
+      this.firstSearchResults = JSON.parse(JSON.stringify(this.results));
+    }
 
     this.showScreen(Screen.Result);
+  }
+  
+  onGoBack = () => {
+    this.results = JSON.parse(JSON.stringify(this.firstSearchResults));
+    this.image = this.firstSearchImage;
+    this.numberOfSearch = 1;
+    this.render();
   }
 
   getRegionByMaxConfidence = (regions: Region[]) => {
@@ -201,7 +222,7 @@ class Nyris {
     return regionWithMaxConfidence.normalizedRect;
   };
 
-  async startProcessing() {
+  async startProcessing(isFirstSearch: boolean) {
     // this.showScreen(Screen.Wait);
     this.loading = true;
     this.render();
@@ -221,7 +242,7 @@ class Nyris {
         return;
       }
       this.loading = false;
-      this.renderResults(searchResult.results);
+      this.renderResults(searchResult.results, isFirstSearch);
     } catch (e: any) {
       this.loading = false;
       this.err = e.toString();

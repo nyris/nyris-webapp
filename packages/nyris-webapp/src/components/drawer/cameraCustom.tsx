@@ -20,6 +20,10 @@ import {
   setRegions,
   setSelectedRegion,
   setShowFeedback,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 
@@ -104,6 +108,11 @@ function CameraCustom(props: Props) {
           dispatch(setSearchResults(payload));
           dispatch(updateStatusLoading(false));
           dispatch(setShowFeedback(true));
+          // go back
+          dispatch(setFirstSearchResults(payload));
+          dispatch(setFirstSearchImage(imageConvert));
+          dispatch(setFirstSearchPrefilters(preFilter));
+          dispatch(setFirstSearchThumbSearchInput(image));
         })
         .catch((e: any) => {
           console.log('error input search', e);

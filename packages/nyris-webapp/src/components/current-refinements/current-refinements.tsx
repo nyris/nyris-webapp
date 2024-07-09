@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { m } from 'framer-motion';
 import { atom } from 'jotai';
 import { useMemo } from 'react';
 import type {
@@ -10,9 +9,9 @@ import type {
 import { connectCurrentRefinements } from 'react-instantsearch-dom';
 import { getCurrentRefinement } from './getCurrentRefinement';
 import { ClearRefinements } from 'components/clear-refinements/clear-refinements';
-import ChipComponent from 'components/chip/chip';
 import { useAppSelector } from 'Store/Store';
 import { useTranslation } from 'react-i18next';
+import CloseOutlinedIcon from "@material-ui/icons/CloseOutlined";
 
 export type CurrentRefinementsProps = CurrentRefinementsProvided & {
   header?: string;
@@ -70,26 +69,13 @@ function CurrentRefinementsComponent({
       <ul className="flex flex-wrap gap-3">
         {refinements.map(refinement => {
           return (
-            <m.li key={[refinement.category, refinement.label].join(':')}>
-              <ChipComponent
-                closeIcon={true}
+            <li key={[refinement.category, refinement.label].join(':')}>
+              {refinement.label}
+              <CloseOutlinedIcon
+                style={{ fontSize: '14px', fontWeight: 'bold', cursor: 'pointer' }}
                 onClick={() => refine(refinement.value)}
-              >
-                {refinement.category && (
-                  <div className="text-f12 fw-400">{refinement.category}:</div>
-                )}
-                <div
-                  style={{
-                    marginLeft: 5,
-                    textTransform: 'capitalize',
-                    marginRight: 10,
-                    fontWeight: 400,
-                  }}
-                >
-                  {refinement.label}
-                </div>
-              </ChipComponent>
-            </m.li>
+              />
+            </li>
           );
         })}
         <li

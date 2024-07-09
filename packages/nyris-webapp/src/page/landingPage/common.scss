@@ -926,6 +926,37 @@ button {
     // overflow: auto;
     position: relative;
 
+    .go-back-mobile-container {
+      width: 390px;
+      margin: 0 auto 12px;
+    }
+    
+    .go-back-button {
+      margin-left: 24px;
+      margin-top: 24px;
+      padding: 8px;
+      border-radius: 20px;
+      width: max-content;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      cursor: pointer;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      svg {
+        margin-right: 8px;
+      }
+      &:hover {
+        background: #F3F3F5;
+      }
+      &.mobile-view {
+        background: #F3F3F5;
+        margin: 0;
+      }
+    }
+
     .col-left {
       width: 100%;
       height: fit-content;
@@ -1723,17 +1754,26 @@ button {
     li {
       list-style-type: none;
       margin-bottom: 0;
-      padding: 0 4px;
-      border-radius: 50px;
-      background: #E9E9EC;
-      font-family: 'Source Sans 3', sans-serif;;
+      padding: 4px 8px;
+      background: #F3F3F5;
+      border: 1px solid #E0E0E0;
       font-size: 12px;
       font-weight: 400;
       line-height: 16px;
-      text-align: left;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      cursor: default;
+      &:hover {
+        background: rgb(233 233 235);
+      }
+      svg {
+        margin-left: 10px;
+      }
 
       &:last-child {
         background: initial;
+        border: none;
         button {
           span {
             color: #E31B5D;

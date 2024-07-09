@@ -31,4 +31,8 @@ export interface SearchState {
   valueTextSearch: any;
   postFilter: Record<string, Record<string, boolean>>;
   showFeedback?: boolean;
+  firstSearchImage: any;
+  firstSearchResults: any;
+  firstSearchPrefilters: any;
+  firstSearchThumbSearchInput: any;
 }
