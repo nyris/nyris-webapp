@@ -31,7 +31,7 @@ import {
   setRegions,
   setSelectedRegion,
   updateQueryText,
-  setShowFeedback,
+  setShowFeedback, onResetRequestImage,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -110,6 +110,14 @@ const SearchBox = (props: any) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageThumbSearchInput, isAlgoliaEnabled]);
+
+  useEffect(() => {
+    if (history.location?.pathname === '/') {
+      setValueInput('');
+      dispatch(updateQueryText(''));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history.location]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchOrRedirect = useCallback(
