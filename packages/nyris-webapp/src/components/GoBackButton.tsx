@@ -1,4 +1,5 @@
 import React, {useCallback} from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'react-responsive';
 import { CurrentRefinementsProvided } from 'react-instantsearch-core';
 import {
@@ -24,6 +25,8 @@ const GoBackButton = ({ items, refine }: CurrentRefinementsProvided) => {
     firstSearchThumbSearchInput,
   } = search;
   const clearPostFilters = useCallback(() => refine(items), [refine, items]);
+  const { t } = useTranslation();
+
   const onGoBack = () => {
     dispatch(setSearchResults(firstSearchResults));
     dispatch(setRequestImage(firstSearchImage));
@@ -41,7 +44,7 @@ const GoBackButton = ({ items, refine }: CurrentRefinementsProvided) => {
       onClick={() => onGoBack()}
     >
       <GoBackIcon width={16} height={16}  />
-      Return to first image
+      {t('Back to request image')}
     </div>
   )
 };
