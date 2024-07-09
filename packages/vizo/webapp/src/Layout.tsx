@@ -119,9 +119,7 @@ function Layout() {
 
     setVizoLoading(true);
     if (searchResult?.ocr?.text.length > 0) {
-      vizoAgent.refineResultGroq(searchResult?.ocr?.text).then((res) => {
-        console.log({ res });
-
+      vizoAgent.refineResult(searchResult?.ocr?.text).then((res) => {
         setVizoResultAssessment({
           ocr: true,
           result: res.result.skus,
@@ -222,7 +220,7 @@ function Layout() {
 
     vizoAgent.runUserQuery(userQuery).then((res) => {
       try {
-        const skus = JSON.parse(res);
+        const resParsed = JSON.parse(res);
         setChatHistory((s) => [
           ...s,
           {
@@ -231,7 +229,11 @@ function Layout() {
             responseType: "LLM_response",
           },
         ]);
-        setVizoResultAssessment({ result: skus, filter: false, ocr: false });
+        setVizoResultAssessment({
+          result: resParsed.skus,
+          filter: false,
+          ocr: false,
+        });
       } catch (error) {
         setChatHistory((s) => [
           ...s,

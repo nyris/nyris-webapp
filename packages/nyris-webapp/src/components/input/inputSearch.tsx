@@ -317,7 +317,7 @@ const SearchBox = (props: any) => {
                   </div>
                 )}
                 {!showPreFilter && <IconSearch width={16} height={16} />}
-                {!isEmpty(preFilter) && (
+                {!isEmpty(preFilter) && showPreFilter && (
                   <div
                     style={{
                       position: 'absolute',
