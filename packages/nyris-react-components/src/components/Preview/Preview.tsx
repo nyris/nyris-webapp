@@ -717,7 +717,7 @@ const Preview = ({
               />
               <Rect
                 stroke="black"
-                draggable={draggable ? true : false}
+                draggable={!!draggable}
                 onDragMove={handleDragMoveRect}
                 dragBoundFunc={handleDragBoundRect}
                 onDragEnd={() => {

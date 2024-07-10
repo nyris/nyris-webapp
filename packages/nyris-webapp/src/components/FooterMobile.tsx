@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { ReactComponent as IconCameraMobile } from 'common/assets/icons/icon_camera_mobile.svg';
 import CameraCustom from './drawer/cameraCustom';
 import { ReactComponent as Home } from 'common/assets/icons/home.svg';
-import { NavLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
 import { ReactComponent as IconLogout } from 'common/assets/icons/logout.svg';
@@ -135,7 +135,7 @@ function FooterMobile(props: Props): JSX.Element {
           justifyContent: 'space-between',
         }}
       >
-        <NavLink
+        <a
           style={{
             width: '48px',
             height: '48px',
@@ -148,8 +148,7 @@ function FooterMobile(props: Props): JSX.Element {
                 ? `#E0E0E0`
                 : '',
           }}
-          activeClassName="active"
-          to={'/'}
+          href="/"
           className="nav-link p-0 menu-children rounded-0"
           onClick={() => {
             dispatch(reset(''));
@@ -164,7 +163,7 @@ function FooterMobile(props: Props): JSX.Element {
                 : '#AAABB5'
             }
           />
-        </NavLink>
+        </a>
         {history.location?.pathname !== '/' && !imageCaptureHelpModal && (
           <div className="box-icon-camera-mobile">
             <Button

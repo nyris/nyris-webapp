@@ -194,7 +194,7 @@ function ProductDetailView(props: Props) {
               style={{
                 position: 'absolute',
                 right: '16px',
-                background: '#E9E9EC',
+                background: 'rgba(243, 243, 245, 0.4)',
                 width: '32px',
                 height: '32px',
                 borderRadius: '100%',
@@ -293,176 +293,227 @@ function ProductDetailView(props: Props) {
           paddingLeft: '16px',
           paddingRight: '16px',
           paddingBottom: '16px',
-          backgroundColor: '#F3F3F5',
+          backgroundColor: settings.simpleCardView ? '#FaFafa' : '#F3F3F5',
           marginTop: '6px',
         }}
       >
-        <div
-          className="box-content"
-          style={{
-            display: 'flex',
-            marginTop: '16px',
-            flexDirection: 'column',
-            backgroundColor: '#F3F3F5',
-          }}
-        >
-          <div className="box-top">
-            {settings.warehouseVariant && (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  flexDirection: 'row',
-                  color: settings.theme.mainTextColor ||'#2B2C46',
-                  marginBottom: 10,
-                  paddingLeft: 16,
-                  paddingRight: 16,
-                  gridGap: 8,
-                }}
-              >
-                <Typography
-                  className="text-f12 max-line-1 fw-400"
+        {settings.simpleCardView ? (
+          <div className="info-container">
+            <div className="info-sku">{dataItem.sku}</div>
+            <div className="info-marking">{dataItem.Bezeichnung}</div>
+            <div className="info-description">{settings.language === 'en' ? dataItem.VK_Text_Englisch : dataItem.VK_Text_Deutsch}</div>
+          </div>
+        ) : (
+          <div
+            className="box-content"
+            style={{
+              display: 'flex',
+              marginTop: '16px',
+              flexDirection: 'column',
+              backgroundColor: '#F3F3F5',
+            }}
+          >
+            <div className="box-top">
+              {settings.warehouseVariant && (
+                <div
                   style={{
-                    color: settings.theme.mainTextColor || '#2B2C46',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    color: settings.theme.mainTextColor ||'#2B2C46',
+                    marginBottom: 10,
+                    paddingLeft: 16,
+                    paddingRight: 16,
+                    gridGap: 8,
                   }}
                 >
-                  {sku}
-                </Typography>
-
-                {settings.warehouseVariant &&
-                  !isUndefined(
-                    get(dataItem, settings.field.warehouseStockValue),
-                  ) && (
-                    <Typography
-                      className="text-f12 max-line-1 fw-400"
-                      style={{
-                        color: settings.theme.mainTextColor || '#2B2C46',
-                      }}
-                    >
-                      <span
+                  <Typography
+                    className="text-f12 max-line-1 fw-400"
+                    style={{
+                      color: settings.theme.mainTextColor || '#2B2C46',
+                    }}
+                  >
+                    {sku}
+                  </Typography>
+  
+                  {settings.warehouseVariant &&
+                    !isUndefined(
+                      get(dataItem, settings.field.warehouseStockValue),
+                    ) && (
+                      <Typography
+                        className="text-f12 max-line-1 fw-400"
                         style={{
-                          color: get(
-                            dataItem,
-                            settings.field.warehouseStockValue,
-                          )
-                            ? '#00C070'
-                            : '#c54545',
-                          fontWeight: 600,
+                          color: settings.theme.mainTextColor || '#2B2C46',
                         }}
                       >
-                        {get(dataItem, settings.field.warehouseStockValue) || 0}
-                      </span>
-                    </Typography>
-                  )}
-              </div>
-            )}
-
-            <Grid
-              container
-              justifyContent="space-between"
-              style={{ backgroundColor: '#F3F3F5' }}
-            >
-              <div
-                style={{
-                  gap: 6,
-                  display: 'flex',
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  width: '100%',
-                }}
-              >
-                {!settings.warehouseVariant && settings.CTAButtonText && (
-                  <ProductAttribute
-                    title={t('Product name')}
-                    value={title}
-                    backgroundColor={settings.theme.brandFieldBackground}
-                    width={
-                      settings.warehouseVariant
-                        ? { xs: '49%', md: 'fit-content' }
-                        : { xs: '100%', md: 'fit-content' }
-                    }
-                  />
-                )}
-                {!settings.warehouseVariant && (
-                  <ProductAttribute
-                    title={settings.itemIdLabel || 'SKU'}
-                    value={sku}
-                    backgroundColor={''}
-                    width={
-                      settings.warehouseVariant
-                        ? { xs: '49%', md: 'fit-content' }
-                        : { xs: '100%', md: 'fit-content' }
-                    }
-                  />
-                )}
-                {(brand || settings.brandName) && (
-                  <ProductAttribute
-                    title={t('Brand')}
-                    value={brand || settings.brandName}
-                    backgroundColor={settings.theme.brandFieldBackground}
-                    width={
-                      manufacturerNumber
-                        ? { xs: '49%', md: 'fit-content' }
-                        : { xs: '100%', md: 'fit-content' }
-                    }
-                  />
-                )}
-                {manufacturerNumber && (
-                  <ProductAttribute
-                    title={t('Manufacturer Number')}
-                    value={manufacturerNumber}
-                    width={
-                      brand || settings.brandName
-                        ? { xs: '49%', md: 'fit-content' }
-                        : { xs: '100%', md: 'fit-content' }
-                    }
-                  />
-                )}
-                {settings.warehouseVariant && (
-                  <>
-                    {settings.field.warehouseNumber && (
-                      <ProductAttribute
-                        title={
-                          get(dataItem, settings.field.warehouseNumber) ||
-                          settings.field.warehouseNumber
-                        }
-                        value={
-                          get(dataItem, settings.field.warehouseNumberValue) ||
-                          'N/A'
-                        }
-                        width={{ xs: '49%', md: 'fit-content' }}
-                      />
+                        <span
+                          style={{
+                            color: get(
+                              dataItem,
+                              settings.field.warehouseStockValue,
+                            )
+                              ? '#00C070'
+                              : '#c54545',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {get(dataItem, settings.field.warehouseStockValue) || 0}
+                        </span>
+                      </Typography>
                     )}
-                    {settings.field.warehouseShelfNumber && (
-                      <ProductAttribute
-                        title={
-                          get(dataItem, settings.field.warehouseShelfNumber) ||
-                          settings.field.warehouseShelfNumber
-                        }
-                        value={
-                          get(
-                            dataItem,
-                            settings.field.warehouseShelfNumberValue,
-                          ) || 'N/A'
-                        }
-                        width={{ xs: '49%', md: 'fit-content' }}
-                      />
-                    )}
-                  </>
-                )}
-              </div>
-
+                </div>
+              )}
+  
               <Grid
-                item
-                xs={12}
-                style={{
-                  backgroundColor: '#F3F3F5',
-                }}
+                container
+                justifyContent="space-between"
+                style={{ backgroundColor: '#F3F3F5' }}
               >
-                {settings.secondaryCTAButtonText && (
+                <div
+                  style={{
+                    gap: 6,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    width: '100%',
+                  }}
+                >
+                  {!settings.warehouseVariant && settings.CTAButtonText && (
+                    <ProductAttribute
+                      title={t('Product name')}
+                      value={title}
+                      backgroundColor={settings.theme.brandFieldBackground}
+                      width={
+                        settings.warehouseVariant
+                          ? { xs: '49%', md: 'fit-content' }
+                          : { xs: '100%', md: 'fit-content' }
+                      }
+                    />
+                  )}
+                  {!settings.warehouseVariant && (
+                    <ProductAttribute
+                      title={settings.itemIdLabel || 'SKU'}
+                      value={sku}
+                      backgroundColor={''}
+                      width={
+                        settings.warehouseVariant
+                          ? { xs: '49%', md: 'fit-content' }
+                          : { xs: '100%', md: 'fit-content' }
+                      }
+                    />
+                  )}
+                  {(brand || settings.brandName) && (
+                    <ProductAttribute
+                      title={t('Brand')}
+                      value={brand || settings.brandName}
+                      backgroundColor={settings.theme.brandFieldBackground}
+                      width={
+                        manufacturerNumber
+                          ? { xs: '49%', md: 'fit-content' }
+                          : { xs: '100%', md: 'fit-content' }
+                      }
+                    />
+                  )}
+                  {manufacturerNumber && (
+                    <ProductAttribute
+                      title={t('Manufacturer Number')}
+                      value={manufacturerNumber}
+                      width={
+                        brand || settings.brandName
+                          ? { xs: '49%', md: 'fit-content' }
+                          : { xs: '100%', md: 'fit-content' }
+                      }
+                    />
+                  )}
+                  {settings.warehouseVariant && (
+                    <>
+                      {settings.field.warehouseNumber && (
+                        <ProductAttribute
+                          title={
+                            get(dataItem, settings.field.warehouseNumber) ||
+                            settings.field.warehouseNumber
+                          }
+                          value={
+                            get(dataItem, settings.field.warehouseNumberValue) ||
+                            'N/A'
+                          }
+                          width={{ xs: '49%', md: 'fit-content' }}
+                        />
+                      )}
+                      {settings.field.warehouseShelfNumber && (
+                        <ProductAttribute
+                          title={
+                            get(dataItem, settings.field.warehouseShelfNumber) ||
+                            settings.field.warehouseShelfNumber
+                          }
+                          value={
+                            get(
+                              dataItem,
+                              settings.field.warehouseShelfNumberValue,
+                            ) || 'N/A'
+                          }
+                          width={{ xs: '49%', md: 'fit-content' }}
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
+  
+                <Grid
+                  item
+                  xs={12}
+                  style={{
+                    backgroundColor: '#F3F3F5',
+                  }}
+                >
+                  {settings.secondaryCTAButtonText && (
+                    <div
+                      style={{
+                        background: settings.theme.secondaryCTAButtonColor || '#2B2C46',
+                        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                        borderRadius: 4,
+                        marginTop: 8,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                      className="btn-detail-item"
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          width: '100%',
+                          padding: '0px 12px',
+                          minHeight: 64,
+                          cursor: secondaryCTALink ? 'pointer' : 'normal',
+                        }}
+                        onClick={() => {
+                          if (secondaryCTALink) {
+                            window.open(`${secondaryCTALink}`, '_blank');
+                          }
+                        }}
+                      >
+                        <Typography
+                          className="text-f18 fw-700 text-white max-line-2"
+                          align="left"
+                          style={{
+                            letterSpacing: '0.55px',
+                            maxWidth: '500px',
+                            paddingRight: '4px',
+                          }}
+                        >
+                          {settings.secondaryCTAButtonText}
+                        </Typography>
+                        {secondaryCTALink && <IconSettings color="white" />}
+                      </div>
+                    </div>
+                  )}
+  
                   <div
                     style={{
-                      background: settings.theme.secondaryCTAButtonColor || '#2B2C46',
+                      background: settings.theme?.CTAButtonColor || settings.theme?.primaryColor,
                       boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                       borderRadius: 4,
                       marginTop: 8,
@@ -480,212 +531,169 @@ function ProductDetailView(props: Props) {
                         width: '100%',
                         padding: '0px 12px',
                         minHeight: 64,
-                        cursor: secondaryCTALink ? 'pointer' : 'normal',
+                        cursor: ctaLink ? 'pointer' : 'normal',
                       }}
                       onClick={() => {
-                        if (secondaryCTALink) {
-                          window.open(`${secondaryCTALink}`, '_blank');
+                        if (ctaLink) {
+                          window.open(`${ctaLink}`, '_blank');
                         }
                       }}
                     >
                       <Typography
-                        className="text-f18 fw-700 text-white max-line-2"
+                        className="text-f18 fw-700 max-line-2"
                         align="left"
                         style={{
+                          color: settings.theme?.CTAButtonTextColor || '#FFFFFF',
                           letterSpacing: '0.55px',
                           maxWidth: '500px',
                           paddingRight: '4px',
                         }}
                       >
-                        {settings.secondaryCTAButtonText}
+                        {settings.CTAButtonText
+                          ? settings.CTAButtonText
+                          : dataItem[settings.field.productName]}
                       </Typography>
-                      {secondaryCTALink && <IconSettings color="white" />}
+                      {ctaLink && (
+                        <IconOpenLink fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'} width={16} />
+                      )}
                     </div>
                   </div>
-                )}
-
-                <div
-                  style={{
-                    background: settings.theme?.CTAButtonColor || settings.theme?.primaryColor,
-                    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                    borderRadius: 4,
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                  className="btn-detail-item"
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      width: '100%',
-                      padding: '0px 12px',
-                      minHeight: 64,
-                      cursor: ctaLink ? 'pointer' : 'normal',
-                    }}
-                    onClick={() => {
-                      if (ctaLink) {
-                        window.open(`${ctaLink}`, '_blank');
-                      }
-                    }}
-                  >
-                    <Typography
-                      className="text-f18 fw-700 max-line-2"
-                      align="left"
-                      style={{
-                        color: settings.theme?.CTAButtonTextColor || '#FFFFFF',
-                        letterSpacing: '0.55px',
-                        maxWidth: '500px',
-                        paddingRight: '4px',
-                      }}
-                    >
-                      {settings.CTAButtonText
-                        ? settings.CTAButtonText
-                        : dataItem[settings.field.productName]}
-                    </Typography>
-                    {ctaLink && (
-                      <IconOpenLink fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'} width={16} />
-                    )}
-                  </div>
-                </div>
-                {productDetails && (
-                  <div className="w-100">
-                    <Button
-                      className="w-100 button-hover"
-                      style={{
-                        backgroundColor: '#F3F3F5',
-                        color: settings.theme.mainTextColor || '#2b2c46',
-                        display: 'flex',
-                        fontSize: 14,
-                        justifyContent: 'space-between',
-                        marginTop: 12,
-                        paddingLeft: '15px',
-                        paddingRight: '15px',
-                        textTransform: 'initial',
-                      }}
-                      onClick={() => setCollapDescription(e => !e)}
-                    >
-                      {t('View details')}
-                      {collapDescription ? (
-                        <KeyboardArrowUpIcon
-                          htmlColor={settings.theme?.secondaryColor}
-                        />
-                      ) : (
-                        <KeyboardArrowDownIcon
-                          htmlColor={settings.theme?.secondaryColor}
-                        />
-                      )}
-                    </Button>
-                    <Collapse in={collapDescription}>
-                      <Typography
+                  {productDetails && (
+                    <div className="w-100">
+                      <Button
+                        className="w-100 button-hover"
                         style={{
-                          fontSize: 14,
-                          padding: 5,
-                          paddingLeft: 15,
-                          paddingRight: 15,
+                          backgroundColor: '#F3F3F5',
                           color: settings.theme.mainTextColor || '#2b2c46',
+                          display: 'flex',
+                          fontSize: 14,
+                          justifyContent: 'space-between',
+                          marginTop: 12,
+                          paddingLeft: '15px',
+                          paddingRight: '15px',
+                          textTransform: 'initial',
                         }}
+                        onClick={() => setCollapDescription(e => !e)}
                       >
-                        {productDetails}
-                      </Typography>
-                    </Collapse>
-                  </div>
-                )}
+                        {t('View details')}
+                        {collapDescription ? (
+                          <KeyboardArrowUpIcon
+                            htmlColor={settings.theme?.secondaryColor}
+                          />
+                        ) : (
+                          <KeyboardArrowDownIcon
+                            htmlColor={settings.theme?.secondaryColor}
+                          />
+                        )}
+                      </Button>
+                      <Collapse in={collapDescription}>
+                        <Typography
+                          style={{
+                            fontSize: 14,
+                            padding: 5,
+                            paddingLeft: 15,
+                            paddingRight: 15,
+                            color: settings.theme.mainTextColor || '#2b2c46',
+                          }}
+                        >
+                          {productDetails}
+                        </Typography>
+                      </Collapse>
+                    </div>
+                  )}
+                </Grid>
               </Grid>
-            </Grid>
-          </div>
-
-          {settings.showFeedbackAndShare && (
-            <div
-              className="box-bottom"
-              style={{
-                height: '48px',
-                padding: '0px 16px 0px 16px',
-                marginBottom: 10,
-                marginTop: 10,
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              <Grid
-                container
-                justifyContent={
-                  settings.shareOption ? 'space-between' : 'space-around'
-                }
-                alignItems="center"
+            </div>
+  
+            {settings.showFeedbackAndShare && (
+              <div
+                className="box-bottom"
+                style={{
+                  height: '48px',
+                  padding: '0px 16px 0px 16px',
+                  marginBottom: 10,
+                  marginTop: 10,
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
               >
-                <Grid item>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Button
-                      className="btn-item"
-                      onClick={() => {
-                        handlerFeedback('like');
-                        setFeedback('like');
-                      }}
-                    >
-                      <IconLike
-                        width={24}
-                        height={24}
-                        color={feedback === 'like' ? '#3E36DC' : '#000000'}
-                      />
-                    </Button>
-                  </div>
-                </Grid>
-                <Grid item>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Button
-                      className="btn-item"
-                      onClick={() => {
-                        handlerFeedback('dislike');
-                        setFeedback('dislike');
-                      }}
-                    >
-                      <IconDisLike
-                        width={24}
-                        height={24}
-                        color={feedback === 'dislike' ? '#CC1854' : '#000000'}
-                      />
-                    </Button>
-                  </div>
-                </Grid>
-                {settings.shareOption && (
+                <Grid
+                  container
+                  justifyContent={
+                    settings.shareOption ? 'space-between' : 'space-around'
+                  }
+                  alignItems="center"
+                >
                   <Grid item>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Button
                         className="btn-item"
-                        onClick={() => onHandlerModalShare()}
+                        onClick={() => {
+                          handlerFeedback('like');
+                          setFeedback('like');
+                        }}
                       >
-                        <IconShare width={24} height={24} color="#000000" />
+                        <IconLike
+                          width={24}
+                          height={24}
+                          color={feedback === 'like' ? '#3E36DC' : '#000000'}
+                        />
                       </Button>
                     </div>
                   </Grid>
-                )}
-                {/* <Grid item>
-              <div display={'flex'} alignItems={'center'}>
-                <Button className="btn-item">
-                  <div
-                    className=""
-                    display={'flex'}
-                    justifyContent={'center'}
-                    alignItems={'center'}
-                  >
-                    <img
-                      src={IconSupport}
-                      alt="image_item"
-                      className="icon_support"
-                      style={{ width: '30px' }}
-                    />
-                  </div>
-                </Button>
+                  <Grid item>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Button
+                        className="btn-item"
+                        onClick={() => {
+                          handlerFeedback('dislike');
+                          setFeedback('dislike');
+                        }}
+                      >
+                        <IconDisLike
+                          width={24}
+                          height={24}
+                          color={feedback === 'dislike' ? '#CC1854' : '#000000'}
+                        />
+                      </Button>
+                    </div>
+                  </Grid>
+                  {settings.shareOption && (
+                    <Grid item>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Button
+                          className="btn-item"
+                          onClick={() => onHandlerModalShare()}
+                        >
+                          <IconShare width={24} height={24} color="#000000" />
+                        </Button>
+                      </div>
+                    </Grid>
+                  )}
+                  {/* <Grid item>
+                <div display={'flex'} alignItems={'center'}>
+                  <Button className="btn-item">
+                    <div
+                      className=""
+                      display={'flex'}
+                      justifyContent={'center'}
+                      alignItems={'center'}
+                    >
+                      <img
+                        src={IconSupport}
+                        alt="image_item"
+                        className="icon_support"
+                        style={{ width: '30px' }}
+                      />
+                    </div>
+                  </Button>
+                </div>
+              </Grid> */}
+                </Grid>
               </div>
-            </Grid> */}
-              </Grid>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

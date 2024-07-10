@@ -5,7 +5,14 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconCamera from 'common/assets/icons/camera.svg';
 import { useQuery } from 'hooks/useQuery';
 import { debounce, isEmpty } from 'lodash';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDropzone } from 'react-dropzone';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
@@ -24,20 +31,30 @@ import {
   setRegions,
   setSelectedRegion,
   updateQueryText,
+  setShowFeedback,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import PreFilterComponent from 'components/pre-filter';
 import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-  const { imageThumbSearchInput, preFilter, requestImage, selectedRegion } =
-    search;
+  const {
+    imageThumbSearchInput,
+    preFilter,
+    requestImage,
+    selectedRegion,
+  } = search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -48,12 +65,32 @@ const SearchBox = (props: any) => {
     useState<boolean>(false);
   const { t } = useTranslation();
   const isAlgoliaEnabled = settings.algolia?.enabled;
+  const searchbar = useRef<HTMLDivElement | null>(null);
+
+  const { user } = useAuth0();
 
   useEffect(() => {
     if (focusInp?.current) {
       focusInp?.current.focus();
     }
   }, [focusInp]);
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (searchbar.current) {
+        if (searchbar.current.contains(event.target as Node)) {
+          searchbar.current.classList.add('active');
+        } else {
+          searchbar.current.classList.remove('active');
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [searchbar]);
 
   useEffect(() => {
     const searchQuery = query.get('query') || '';
@@ -82,6 +119,14 @@ const SearchBox = (props: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageThumbSearchInput, isAlgoliaEnabled]);
 
+  useEffect(() => {
+    if (history.location?.pathname === '/') {
+      setValueInput('');
+      dispatch(updateQueryText(''));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history.location]);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchOrRedirect = useCallback(
     debounce((value: any, withImage = true) => {
@@ -92,7 +137,7 @@ const SearchBox = (props: any) => {
         const preFilterValues = [
           {
             key: settings.visualSearchFilterKey,
-            values: Object.keys(preFilter) as string[],
+            values: Object.keys(preFilter),
           },
         ];
         if (value || requestImage) {
@@ -120,6 +165,7 @@ const SearchBox = (props: any) => {
 
               dispatch(setSearchResults(payload));
               dispatch(updateStatusLoading(false));
+              dispatch(setShowFeedback(true));
             })
             .catch((e: any) => {
               console.log('error input search', e);
@@ -160,13 +206,12 @@ const SearchBox = (props: any) => {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter) as string[],
+          values: Object.keys(preFilter),
         },
       ];
       try {
         if (settings.regions) {
           let res = await findRegions(image, settings);
-          console.log(res);
 
           dispatch(setRegions(res.regions));
           region = res.selectedRegion;
@@ -193,6 +238,12 @@ const SearchBox = (props: any) => {
             };
             dispatch(setSearchResults(payload));
             dispatch(updateStatusLoading(false));
+            dispatch(setShowFeedback(true));
+            // go back
+            dispatch(setFirstSearchResults(payload));
+            dispatch(setFirstSearchImage(image));
+            dispatch(setFirstSearchPrefilters(preFilter));
+            dispatch(setFirstSearchThumbSearchInput(URL.createObjectURL(fs[0])));
           })
           .catch((e: any) => {
             console.log('error input search', e);
@@ -214,6 +265,17 @@ const SearchBox = (props: any) => {
     }
   };
 
+  const showPreFilter = useMemo(() => {
+    if (settings.shouldUseUserMetadata && user) {
+      if (settings.preFilterOption && !user['/user_metadata'].value) {
+        return true;
+      }
+      return false;
+    }
+
+    return settings.preFilterOption;
+  }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
+
   return (
     <div className="wrap-input-search-field">
       <div className="box-input-search d-flex">
@@ -227,22 +289,20 @@ const SearchBox = (props: any) => {
               }
               placement="top"
               arrow={true}
-              disableHoverListener={!settings.preFilterOption}
+              disableHoverListener={!showPreFilter}
             >
               <div
                 className="pre-filter-icon"
                 style={{
-                  cursor: settings.preFilterOption ? 'pointer' : 'default',
+                  cursor: showPreFilter ? 'pointer' : 'default',
                 }}
                 onClick={() =>
-                  settings.preFilterOption
-                    ? setToggleModalFilterDesktop(true)
-                    : false
+                  showPreFilter ? setToggleModalFilterDesktop(true) : false
                 }
               >
-                {settings.preFilterOption && (
+                {showPreFilter && (
                   <div
-                    className="icon-hover"
+                    className="icon-hover desktop"
                     style={{
                       ...(!isEmpty(preFilter)
                         ? {
@@ -256,15 +316,13 @@ const SearchBox = (props: any) => {
                     <IconFilter color="white" />
                   </div>
                 )}
-                {!settings.preFilterOption && (
-                  <IconSearch width={16} height={16} />
-                )}
-                {!isEmpty(preFilter) && (
+                {!showPreFilter && <IconSearch width={16} height={16} />}
+                {!isEmpty(preFilter) && showPreFilter && (
                   <div
                     style={{
                       position: 'absolute',
-                      top: '5px',
-                      left: '35px',
+                      top: '1px',
+                      left: '26px',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -347,7 +405,7 @@ const SearchBox = (props: any) => {
                 fontSize: 14,
                 color: '#2B2C46',
               }}
-              className="input-search"
+              className="input-search hhhh"
               placeholder={t('Search')}
               value={valueInput}
               onChange={onChangeText}
@@ -434,7 +492,7 @@ const SearchBox = (props: any) => {
           )}
         </div>
       </div>
-      {settings.preFilterOption && (
+      {showPreFilter && (
         <DefaultModal
           openModal={isOpenModalFilterDesktop}
           handleClose={() => setToggleModalFilterDesktop(false)}

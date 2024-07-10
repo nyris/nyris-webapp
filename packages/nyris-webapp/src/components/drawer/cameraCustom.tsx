@@ -19,6 +19,11 @@ import {
   loadingActionResults,
   setRegions,
   setSelectedRegion,
+  setShowFeedback,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 
@@ -78,7 +83,7 @@ function CameraCustom(props: Props) {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter) as string[],
+          values: Object.keys(preFilter),
         },
       ];
       let filters: any[] = [];
@@ -102,6 +107,12 @@ function CameraCustom(props: Props) {
           };
           dispatch(setSearchResults(payload));
           dispatch(updateStatusLoading(false));
+          dispatch(setShowFeedback(true));
+          // go back
+          dispatch(setFirstSearchResults(payload));
+          dispatch(setFirstSearchImage(imageConvert));
+          dispatch(setFirstSearchPrefilters(preFilter));
+          dispatch(setFirstSearchThumbSearchInput(image));
         })
         .catch((e: any) => {
           console.log('error input search', e);

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 
 import eye from "./eye.svg";
 import close from "./images/close.svg";
@@ -12,6 +12,7 @@ import { debounce } from "lodash";
 
 import { ReactComponent as Logo } from "./images/logo.svg";
 import { ReactComponent as DeutscheLogo } from "./images/deutsche_logo.svg";
+import { ReactComponent as GoBack } from './images/path.svg';
 
 import "./styles/nyris.scss";
 
@@ -50,7 +51,9 @@ export interface AppProps {
   onFileDropped: (f: File) => void;
   onAcceptCrop: (r: RectCoords) => void;
   onSimilarSearch: (url: string) => void;
+  onGoBack: () => void;
   loading: boolean;
+  firstSearchImage: HTMLCanvasElement;
 }
 
 const SuccessMultiple = ({
@@ -63,11 +66,13 @@ const SuccessMultiple = ({
   onRestart,
   onFile,
   loading,
+  onGoBack,
+  firstSearchImage,
 }: AppProps) => {
   const noResult = results.length === 0;
 
   const [currentSelection, setCurrentSelection] = useState(selection);
-  const [expand, setExpand] = useState(noResult ? true : false);
+  const [expand, setExpand] = useState(noResult);
 
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
@@ -146,11 +151,24 @@ const SuccessMultiple = ({
 
           {loading && <LoadingSpinner />}
           {!loading && (
-            <div className="nyris__success-multiple-result-list">
-              {results.map((r, i) => (
-                <Result {...r} key={i} onSimilarSearch={onSimilarSearch} />
-              ))}
-            </div>
+            <>
+              {image !== firstSearchImage ? (
+                <div
+                  className="go-back-button"
+                  onClick={() => onGoBack()}
+                >
+                  <GoBack width={16} height={16}  />
+                  {labeles["Back to request image"]}
+                </div>
+              ) : (
+                ''
+              )}
+              <div className="nyris__success-multiple-result-list">
+                {results.map((r, i) => (
+                  <Result {...r} key={i} onSimilarSearch={onSimilarSearch} />
+                ))}
+              </div>
+            </>
           )}
         </div>
 

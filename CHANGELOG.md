@@ -3,7 +3,14 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.3.53 - 2024-04-24
+## 0.3.55 - 2024-07-10
+
+### Added
+- Go Back functionality for Webapp and Widget
+- Placed Search bar on Header
+- Added Simple Card View
+
+## 0.3.54 - 2024-04-24
 
 ### Fix
 - CTA button icon position

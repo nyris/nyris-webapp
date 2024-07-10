@@ -1,7 +1,8 @@
 {
   "packages": [
-    "packages/*"
+    "packages/*",
+    "packages/vizo/*"
   ],
-  "version": "0.3.54",
+  "version": "0.3.55",
   "npmClient": "yarn"
 }

@@ -31,6 +31,7 @@ export const translations = {
       'Clear all': 'Clear all',
       Cancel: 'Cancel',
       Apply: 'Apply',
+      'Back to request image': 'Back to request image',
     },
   },
   de: {
@@ -66,6 +67,7 @@ export const translations = {
       'Clear all': 'Alles löschen',
       Cancel: 'Abbrechen',
       Apply: 'Anwenden',
+      'Back to request image': 'Zurück zur Bildanfrage',
     },
   },
   pt: {
@@ -100,6 +102,7 @@ export const translations = {
       'Clear all': 'Clear all',
       Cancel: 'Cancel',
       Apply: 'Apply',
+      'Back to request image': 'Retroceder para imagem inicial',
     },
   },
 };

@@ -12,7 +12,11 @@ import {
   setRequestImage,
   setSearchResults,
   setSelectedRegion,
-  updateStatusLoading
+  updateStatusLoading,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput
 } from '../../Store/search/Search';
 import { createImage, find, findRegions } from '../../services/image';
 import { RectCoords } from '@nyris/nyris-api';
@@ -34,12 +38,10 @@ function ExperienceVisualSearch() {
             (button.current as HTMLElement).classList.toggle('hover');
           }
         }, 3000);
-      } else {
-        if (interval?.current) {
-          clearInterval(interval?.current);
-          if (button?.current && !(button.current as HTMLElement).classList.contains('hover')) {
-            (button.current as HTMLElement).classList.toggle('hover');
-          }
+      } else if (interval?.current) {
+        clearInterval(interval?.current);
+        if (button?.current && !(button.current as HTMLElement).classList.contains('hover')) {
+          (button.current as HTMLElement).classList.toggle('hover');
         }
       }
       return () => {
@@ -91,6 +93,11 @@ function ExperienceVisualSearch() {
     }).then((res: any) => {
       dispatch(setSearchResults(res));
       dispatch(updateStatusLoading(false));
+      // go back
+      dispatch(setFirstSearchResults(res));
+      dispatch(setFirstSearchImage(image));
+      dispatch(setFirstSearchPrefilters(search.preFilter));
+      dispatch(setFirstSearchThumbSearchInput(url));
       return;
     });
   };

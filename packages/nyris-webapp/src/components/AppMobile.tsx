@@ -1,6 +1,5 @@
 import React, { ReactNode, useState } from 'react';
 import HeaderMobile from './HeaderMobile';
-
 import {
   setPreFilterDropdown,
   setImageCaptureHelpModal,

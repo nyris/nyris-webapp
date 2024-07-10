@@ -1,0 +1,19 @@
+{
+  "name": "@nyris/vizo-ai",
+  "version": "0.3.55",
+  "private": true,
+  "description": "AI model for Vizo webapp",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@langchain/openai": "^0.0.28",
+    "compressorjs": "^1.2.1",
+    "env": "^0.0.2",
+    "groq-sdk": "^0.4.0",
+    "langchain": "^0.1.36",
+    "openai": "^4.42.0"
+  }
+}

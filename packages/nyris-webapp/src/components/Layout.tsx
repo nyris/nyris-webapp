@@ -4,8 +4,8 @@ import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import {
   clearPostFilter,
-  onResetRequestImage, setPreFilter,
-  setUpdateSession,
+  onResetRequestImage,
+  setPreFilter,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppState } from '../types';
@@ -14,7 +14,6 @@ import './common.scss';
 import FooterMobile from './FooterMobile';
 import HeaderMobile from './HeaderMobile';
 import Header from './Header';
-import { createSessionByApi } from 'services/session';
 import { isUndefined } from 'lodash';
 import AppMobile from './AppMobile';
 import jQuery from 'jquery';
@@ -81,16 +80,6 @@ function Layout({ children }: ReactNode): JSX.Element {
   i18n.changeLanguage(language);
 
   useEffect(() => {
-    const createSession = async () => {
-      let payload = await createSessionByApi(settings);
-      dispatch(setUpdateSession(payload));
-    };
-
-    createSession().catch(console.log);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     if (history.location?.pathname === '/') {
       document.title = settings.appTitle || '';
       dispatch(onResetRequestImage(''));
@@ -100,7 +89,9 @@ function Layout({ children }: ReactNode): JSX.Element {
 
   useEffect(() => {
     if (settings.shouldUseUserMetadata && user) {
-      dispatch(setPreFilter({[user['/user_metadata'].value]: true}));
+      if (user['/user_metadata'].value) {
+        dispatch(setPreFilter({ [user['/user_metadata'].value]: true }));
+      }
     }
   }, [user, dispatch, settings.shouldUseUserMetadata]);
 

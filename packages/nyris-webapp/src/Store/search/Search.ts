@@ -12,7 +12,7 @@ export const searchSlice = createSlice({
       const { payload } = data;
       const {
         results,
-        requestId,
+        session,
         categoryPredictions,
         codes,
         duration,
@@ -23,11 +23,11 @@ export const searchSlice = createSlice({
         ...state,
         filters,
         results,
-        requestId,
+        requestId: session,
         categoryPredictions,
         codes,
         duration,
-        sessionId: state.sessionId || requestId,
+        sessionId: session,
         fetchingResults: false,
       };
     },
@@ -61,49 +61,10 @@ export const searchSlice = createSlice({
       };
     },
 
-    loadFileSelectRegion: (state, data: PayloadAction<any>) => {
-      const { payload } = data;
-
-      const { results, requestId, categoryPredictions, codes, duration } =
-        payload;
-      return {
-        ...state,
-        results,
-        requestId,
-        categoryPredictions,
-        codes,
-        duration,
-        sessionId: state.sessionId || requestId,
-        fetchingRegions: false,
-      };
-    },
-
     loadingActionResults: state => {
       return {
         ...state,
         fetchingResults: true,
-      };
-    },
-
-    loadingActionRegions: state => {
-      return {
-        ...state,
-        fetchingRegions: true,
-      };
-    },
-
-    searchFileImageNonRegion: (state, data: PayloadAction<any>) => {
-      const { payload } = data;
-      const { results, requestId, duration, categoryPredictions, codes } =
-        payload;
-      return {
-        ...state,
-        results,
-        requestId,
-        duration,
-        categoryPredictions,
-        codes,
-        fetchingResults: false,
       };
     },
 
@@ -112,14 +73,6 @@ export const searchSlice = createSlice({
       return {
         ...state,
         valueTextSearch: payload,
-      };
-    },
-
-    resultSearchText: (state, data: PayloadAction<any>) => {
-      const { payload } = data;
-      return {
-        ...state,
-        resultSearchText: payload,
       };
     },
 
@@ -144,7 +97,6 @@ export const searchSlice = createSlice({
         selectedRegion: DEFAULT_REGION,
         requestImage: undefined,
         fetchingResults: false,
-        fetchingRegions: false,
         filterOptions: [],
         categoryPredictions: [],
         codes: [],
@@ -160,6 +112,11 @@ export const searchSlice = createSlice({
         postFilter: {},
         preFilterDropdown: false,
         imageCaptureHelpModal: false,
+        showFeedback: false,
+        firstSearchImage: null,
+        firstSearchResults: null,
+        firstSearchPrefilters: null,
+        firstSearchThumbSearchInput: null,
       };
     },
 
@@ -170,14 +127,6 @@ export const searchSlice = createSlice({
         imageThumbSearchInput: '',
         results: [],
         regions: [],
-      };
-    },
-
-    configureFilter: (state, data: PayloadAction<any>) => {
-      const { payload } = data;
-      return {
-        ...state,
-        configureFilter: payload,
       };
     },
 
@@ -196,15 +145,6 @@ export const searchSlice = createSlice({
         ...state,
         fetchingResults: false,
         results,
-      };
-    },
-
-    setError: (state, data: PayloadAction<string>) => {
-      return {
-        ...state,
-        fetchingRegions: false,
-        fetchingResults: false,
-        errorMessage: data.payload,
       };
     },
 
@@ -294,23 +234,37 @@ export const searchSlice = createSlice({
         postFilter: {},
       };
     },
+    setShowFeedback: (state, data: PayloadAction<boolean>) => ({
+      ...state,
+      showFeedback: data.payload,
+    }),
+    setFirstSearchResults: (state, data: PayloadAction<any>) => ({
+      ...state,
+      firstSearchResults: data.payload,
+    }),
+    setFirstSearchImage: (state, data: PayloadAction<any>) => ({
+      ...state,
+      firstSearchImage: data.payload,
+    }),
+    setFirstSearchPrefilters: (state, data: PayloadAction<any>) => ({
+      ...state,
+      firstSearchPrefilters: data.payload,
+    }),
+    setFirstSearchThumbSearchInput: (state, data: PayloadAction<any>) => ({
+      ...state,
+      firstSearchThumbSearchInput: data.payload,
+    }),
   },
 });
 
 export const {
   changeValueTextSearch,
   clearPostFilter,
-  configureFilter,
-  loadFileSelectRegion,
-  loadingActionRegions,
   loadingActionResults,
   onResetRequestImage,
   onToggleModalItemDetail,
   reset,
-  resultSearchText,
-  searchFileImageNonRegion,
   selectionChanged,
-  setError,
   setFilter,
   setImageCaptureHelpModal,
   setImageSearchInput,
@@ -327,5 +281,10 @@ export const {
   updateResults,
   updateStatusLoading,
   updateValueTextSearchMobile,
+  setShowFeedback,
+  setFirstSearchImage,
+  setFirstSearchResults,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput,
 } = searchSlice.actions;
 export default searchSlice.reducer;

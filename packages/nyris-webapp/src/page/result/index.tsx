@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useHistory } from 'react-router-dom';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
@@ -33,8 +34,13 @@ import {
   setRequestImage,
   setSearchResults,
   setSelectedRegion,
+  setShowFeedback,
   updateResultChangePosition,
   updateStatusLoading,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
@@ -50,6 +56,7 @@ import { useQuery } from 'hooks/useQuery';
 import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powered_by_nyris.svg';
 import Feedback from 'components/Feedback';
 import { SelectedPostFilter } from 'components/SelectedPostFilter';
+import { GoBack } from '../../components/GoBackButton';
 
 interface Props {
   allSearchResults: any;
@@ -70,6 +77,10 @@ function ResultComponent(props: Props) {
     loadingSearchAlgolia,
     imageThumbSearchInput,
     results,
+    showFeedback,
+    firstSearchResults,
+    firstSearchImage,
+    fetchingResults,
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -86,19 +97,17 @@ function ResultComponent(props: Props) {
   const [isRfqModalOpen, setIsRfqModalOpen] = useState(false);
   const imageUploadRef = useRef(null);
   const rfqRef = useRef<any>(null);
-  const [isScrolled, setIsScrolled] = useState<
-    'not-scrolled' | 'scrolled' | 'user-scrolled'
-  >('not-scrolled');
 
-  const [showFeedback, setShowFeedback] = useState<
-    'not-scrolled' | 'scrolled' | 'user-scrolled'
-  >('not-scrolled');
-
+  const [feedbackStatus, setFeedbackStatus] = useState<
+    'hidden' | 'submitted' | 'visible'
+  >();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
+  const [showSearchBar, setShowSearchBar] = useState(false);
   const query = useQuery();
   const searchQuery = query.get('query') || search.valueTextSearch.query;
   const isAlgoliaEnabled = settings.algolia?.enabled;
   const isPostFilterEnabled = settings.postFilterOption;
+  const history = useHistory();
 
   useEffect(() => {
     if (
@@ -120,18 +129,23 @@ function ResultComponent(props: Props) {
   }, [imageThumbSearchInput, loadingSearchAlgolia]);
 
   useEffect(() => {
+    if (loadingSearchAlgolia) {
+      setFeedbackStatus('hidden');
+      setShowFeedbackSuccess(false);
+    }
+  }, [loadingSearchAlgolia]);
+
+  useEffect(() => {
     if (selectedRegion) {
       setImageSelection(selectedRegion);
       setRfqStatus('inactive');
-      setIsScrolled('not-scrolled');
-      setShowFeedback('not-scrolled');
+      setFeedbackStatus('hidden');
     }
   }, [selectedRegion]);
 
   useEffect(() => {
     if (requestImage) {
-      setIsScrolled('not-scrolled');
-      setShowFeedback('not-scrolled');
+      setFeedbackStatus('hidden');
       executeScroll();
       setImageSelection(DEFAULT_REGION);
     }
@@ -142,7 +156,7 @@ function ResultComponent(props: Props) {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter) as string[],
+          values: Object.keys(preFilter)
         },
       ];
       dispatch(loadingActionResults());
@@ -225,7 +239,7 @@ function ResultComponent(props: Props) {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter) as string[],
+          values: Object.keys(preFilter),
         },
       ];
       find({
@@ -234,6 +248,14 @@ function ResultComponent(props: Props) {
         region: searchRegion,
         filters: !isEmpty(preFilter) ? preFilterValues : undefined,
       }).then((res: any) => {
+        if (!firstSearchResults) {
+          dispatch(setFirstSearchResults(res));
+          dispatch(setFirstSearchImage(image));
+          dispatch(setFirstSearchPrefilters(preFilter));
+          if (!isMobile) {
+            dispatch(setFirstSearchThumbSearchInput(url))
+          }
+        }
         dispatch(setSearchResults(res));
         dispatch(updateStatusLoading(false));
         return;
@@ -253,6 +275,7 @@ function ResultComponent(props: Props) {
 
   useEffect(() => {
     document.title = 'Search results';
+    setFeedbackStatus('hidden');
 
     if (requestImage || isEmpty(searchQuery)) return;
     const preFilterValues = Object.keys(preFilter) as string[];
@@ -302,6 +325,15 @@ function ResultComponent(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterSkusString, settings.alogoliaFilterField]);
 
+  useEffect(() => {
+    if (history.location?.pathname === '/') {
+      setShowSearchBar(true);
+    } else {
+      setShowSearchBar(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history.location]);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
@@ -328,48 +360,41 @@ function ResultComponent(props: Props) {
   }, [showPostFilter, isPostFilterEnabled, requestImage]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setTimeout(() => {
-        setIsScrolled(s => (s === 'not-scrolled' ? 'scrolled' : s));
-        setTimeout(() => {
-          setIsScrolled(s => (s === 'scrolled' ? 'user-scrolled' : s));
-        }, 5000);
-      }, 1000);
-    };
-    if (requestImage)
-      window.addEventListener('scroll', handleScroll, { capture: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [requestImage]);
-
-  useEffect(() => {
-    if (!requestImage || !settings.showFeedback) return;
-
-    setTimeout(() => {
-      setShowFeedback(s => (s === 'not-scrolled' ? 'scrolled' : s));
-    }, 5000);
+    if (!settings.showFeedback || results?.length === 0 || !showFeedback)
+      return;
 
     const handleScroll = () => {
       setTimeout(() => {
-        setShowFeedback(s => (s === 'not-scrolled' ? 'scrolled' : s));
+        setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
+        dispatch(setShowFeedback(false));
       }, 100);
     };
 
-    window.addEventListener('scroll', handleScroll, { capture: true });
+    setTimeout(() => {
+      window.removeEventListener('scroll', handleScroll, { capture: true });
+      setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
+      dispatch(setShowFeedback(false));
+    }, 4000);
+
+    window.addEventListener('scroll', handleScroll, {
+      capture: true,
+      once: true,
+    });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [requestImage, selectedRegion, settings.showFeedback]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showFeedback, settings.showFeedback]);
 
   const submitFeedback = async (data: boolean) => {
     setShowFeedbackSuccess(true);
     setTimeout(() => {
       setShowFeedbackSuccess(false);
     }, 3000);
-    setShowFeedback('user-scrolled');
+
+    setFeedbackStatus('submitted');
+    dispatch(setShowFeedback(false));
     feedbackSuccessEpic(stateGlobal, data);
   };
 
@@ -395,7 +420,7 @@ function ResultComponent(props: Props) {
             <Configure query={searchQuery} filters={filterString}></Configure>
           )}
           <div className="box-wrap-result-component">
-            {!isMobile && (
+            {!isMobile && showSearchBar && (
               <div className="box-search">
                 <CustomSearchBox />
               </div>
@@ -404,7 +429,7 @@ function ResultComponent(props: Props) {
               className="box-result"
               style={{
                 height: settings.showPoweredByNyris
-                  ? 'calc(100vh - 177px)'
+                  ? 'calc(100vh - 87px)'
                   : 'calc(100vh - 148px)',
               }}
             >
@@ -431,12 +456,18 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  paddingTop: isMobile ? '8px' : '40px',
+                  paddingTop: isMobile ? '8px' : '',
                   overflow: !isMobile ? 'auto' : '',
                   display: 'flex',
                   flexDirection: 'column',
                 }}
               >
+                {!isMobile && firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? (
+                  <GoBack />
+                ) : (
+                  ''
+                )}
+                
                 {!isMobile && settings.algolia.enabled && (
                   <div className="wrap-box-refinements">
                     <CurrentRefinements statusSwitchButton={true} />
@@ -466,27 +497,23 @@ function ResultComponent(props: Props) {
                     backgroundColor: '#FAFAFA',
                   }}
                 >
+                  {isMobile && firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? (
+                    <div className="go-back-mobile-container">
+                      <GoBack />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  
                   <div
                     className={'box-item-result ml-auto mr-auto'}
-                    style={{ paddingLeft: isMobile ? 0 : 16 }}
+                    style={{
+                      paddingLeft: isMobile ? 0 : 16,
+                      paddingTop: isMobile ? 0 : 16,
+                      height: '100%',
+                      position: 'relative',
+                    }}
                   >
-                    {showFeedbackSuccess && (
-                      <div className={'box-item-result feedback-floating'}>
-                        <div className="feedback-success">
-                          Thanks for your feedback!
-                        </div>
-                      </div>
-                    )}
-                    {showFeedback === 'scrolled' && !showFeedbackSuccess && (
-                      <div className={'box-item-result feedback-floating'}>
-                        <Feedback
-                          submitFeedback={submitFeedback}
-                          onFeedbackClose={() => {
-                            setShowFeedback('user-scrolled');
-                          }}
-                        />
-                      </div>
-                    )}
                     <div
                       className="box-item-result ml-auto mr-auto"
                       style={{ height: 'fit-content' }}
@@ -501,6 +528,34 @@ function ResultComponent(props: Props) {
                         requestImage={requestImage}
                         searchQuery={searchQuery}
                       />
+                      <div
+                        className="box-item-result ml-auto mr-auto"
+                        style={{ position: 'absolute' }}
+                      >
+                        {showFeedbackSuccess && (
+                          <div className={'feedback-floating'}>
+                            <div className="feedback-section">
+                              <div className="feedback-success">
+                                Thanks for your feedback!
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {feedbackStatus === 'visible' &&
+                          !showFeedbackSuccess && (
+                            <div className={'feedback-floating'}>
+                              <div className="feedback-section">
+                                <Feedback
+                                  submitFeedback={submitFeedback}
+                                  onFeedbackClose={() => {
+                                    setFeedbackStatus('submitted');
+                                    dispatch(setShowFeedback(false));
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+                      </div>
                     </div>
                   </div>
                   <div
@@ -539,6 +594,7 @@ function ResultComponent(props: Props) {
                       style={{
                         display: 'flex',
                         flexGrow: 1,
+                        marginTop: !isAlgoliaEnabled ? '24px' : '',
                       }}
                     >
                       {requestImage &&
@@ -614,33 +670,6 @@ function ResultComponent(props: Props) {
           </div>
         </>
       </div>
-      {isScrolled === 'scrolled' &&
-        requestImage &&
-        isMobile &&
-        props.allSearchResults.hits.length > 0 &&
-        settings.rfq &&
-        settings.rfq.enabled && (
-          <div
-            style={{
-              fontSize: '14px',
-              fontWeight: 'bold',
-              letterSpacing: '1.16px',
-              color: 'white',
-              borderRadius: '16px',
-              backgroundColor: '#4B4B4A',
-              boxShadow: '0px 0px 16px 0px rgba(85, 86, 107, 0.70)',
-              padding: '8px 16px',
-              zIndex: 100,
-              position: 'absolute',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '356px',
-              bottom: '86px',
-            }}
-          >
-            Scroll down for personalized support
-          </div>
-        )}
     </>
   );
 }

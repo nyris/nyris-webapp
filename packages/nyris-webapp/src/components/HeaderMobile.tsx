@@ -20,6 +20,7 @@ import {
   updateQueryText,
   updateStatusLoading,
   setSearchResults,
+  setShowFeedback,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppState } from 'types';
@@ -124,7 +125,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         const preFilterValues = [
           {
             key: settings.visualSearchFilterKey,
-            values: Object.keys(preFilter) as string[],
+            values: Object.keys(preFilter),
           },
         ];
         if (value || requestImage) {
@@ -149,6 +150,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               };
               dispatch(setSearchResults(payload));
               dispatch(updateStatusLoading(false));
+              dispatch(setShowFeedback(true));
             })
             .catch((e: any) => {
               console.log('error input search', e);
@@ -221,6 +223,17 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings, results, props.allSearchResults?.hits]);
 
+  const showPreFilter = useMemo(() => {
+    if (settings.shouldUseUserMetadata && user) {
+      if (settings.preFilterOption && !user['/user_metadata'].value) {
+        return true;
+      }
+      return false;
+    }
+
+    return settings.preFilterOption;
+  }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
+
   return (
     <div style={{ width: '100%', background: '#fff' }}>
       {history.location?.pathname !== '/result' && (
@@ -283,20 +296,20 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 <div
                   className="pre-filter-icon"
                   onClick={() => {
-                    if (settings.preFilterOption) {
+                    if (showPreFilter) {
                       onToggleFilterMobile(false);
                       dispatch(setPreFilterDropdown(!preFilterDropdown));
                     }
                   }}
-                  style={{ cursor: settings.preFilterOption ? 'pointer' : '' }}
+                  style={{ cursor: showPreFilter ? 'pointer' : '' }}
                 >
-                  {settings.preFilterOption && (
+                  {showPreFilter && (
                     <div
                       className="icon-hover"
                       style={{
                         ...(!isEmpty(preFilter)
                           ? {
-                              backgroundColor: `${settings.theme?.primaryColor}`,
+                              backgroundColor: settings.theme?.primaryColor,
                             }
                           : {
                               backgroundColor: `#2B2C46`,
@@ -306,10 +319,8 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                       <IconFilter color="white" />
                     </div>
                   )}
-                  {!settings.preFilterOption && (
-                    <IconSearch width={16} height={16} />
-                  )}
-                  {settings.preFilterOption && !isEmpty(preFilter) && (
+                  {!showPreFilter && <IconSearch width={16} height={16} />}
+                  {!isEmpty(preFilter) && showPreFilter && (
                     <div
                       style={{
                         position: 'absolute',
@@ -394,7 +405,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 style={{
                   display: 'flex',
                   background: `${
-                    disablePostFilter ? '#F3F3F5' : settings.theme?.primaryColor
+                    disablePostFilter
+                      ? '#F3F3F5'
+                      : isPostFilterApplied
+                      ? settings.theme?.primaryColor
+                      : '#2B2C46'
                   }`,
                   borderRadius: '40px',
                   width: '40px',
@@ -408,7 +423,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 />
               </div>
 
-              {isPostFilterApplied && !disablePostFilter && (
+              {isPostFilterApplied && (
                 <div
                   style={{
                     position: 'absolute',
@@ -427,7 +442,9 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     style={{
                       width: '8px',
                       height: '8px',
-                      background: settings.theme?.primaryColor,
+                      background: disablePostFilter
+                        ? '#E0E0E0'
+                        : settings.theme?.primaryColor,
                       borderRadius: '100%',
                     }}
                   ></div>

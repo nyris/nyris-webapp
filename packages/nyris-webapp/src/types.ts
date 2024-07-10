@@ -76,6 +76,7 @@ export interface AppSettings extends NyrisAPISettings {
   showGroup?: boolean;
   showPoweredByNyris?: boolean;
   support?: Support;
+  simpleCardView?: boolean;
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
   warehouseVariant?: boolean;
