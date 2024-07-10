@@ -48,7 +48,6 @@ class Nyris {
   private loading: boolean = false;
   private firstSearchImage: HTMLCanvasElement = document.createElement("canvas");
   private firstSearchResults: ResultProps[] = [];
-  private numberOfSearch = 0;
 
   constructor(nyrisSettings: NyrisSettings) {
     this.nyrisApi = new NyrisAPI({ ...nyrisSettings });
@@ -98,7 +97,6 @@ class Nyris {
       onSimilarSearch: (f) => this.handleFile(f, false),
       firstSearchImage: this.firstSearchImage,
       loading: this.loading,
-      numberOfSearch: this.numberOfSearch,
     };
     ReactDOM.render(
       <React.StrictMode>
@@ -160,9 +158,7 @@ class Nyris {
     this.image = await urlOrBlobToCanvas(f);
     if (isFirstSearch) {
       this.firstSearchImage = this.image;
-      this.numberOfSearch = 0;
     }
-    this.numberOfSearch = ++this.numberOfSearch;
     this.regions = [];
 
     this.showScreen(Screen.Wait);
@@ -206,7 +202,6 @@ class Nyris {
   onGoBack = () => {
     this.results = JSON.parse(JSON.stringify(this.firstSearchResults));
     this.image = this.firstSearchImage;
-    this.numberOfSearch = 1;
     this.render();
   }
 

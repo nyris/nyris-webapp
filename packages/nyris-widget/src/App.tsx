@@ -54,7 +54,6 @@ export interface AppProps {
   onGoBack: () => void;
   loading: boolean;
   firstSearchImage: HTMLCanvasElement;
-  numberOfSearch: number;
 }
 
 const SuccessMultiple = ({
@@ -69,7 +68,6 @@ const SuccessMultiple = ({
   loading,
   onGoBack,
   firstSearchImage,
-  numberOfSearch,
 }: AppProps) => {
   const noResult = results.length === 0;
 
@@ -160,7 +158,7 @@ const SuccessMultiple = ({
                   onClick={() => onGoBack()}
                 >
                   <GoBack width={16} height={16}  />
-                  {numberOfSearch === 2 ? 'Back' : 'Return to first image'}
+                  {labeles["Back to request image"]}
                 </div>
               ) : (
                 ''
