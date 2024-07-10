@@ -114,7 +114,7 @@ export default function PostFilterPanelAlgolia({
       ...refinements.reduce(
         (acc: any, current: any) => ({
           ...acc,
-          [getPanelId(current)]: true,
+          [getPanelId(current)]: !isMobile ? true : Boolean(current.isExpanded),
         }),
         {},
       ),

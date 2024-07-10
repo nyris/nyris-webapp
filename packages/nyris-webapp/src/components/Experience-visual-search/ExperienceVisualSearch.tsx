@@ -12,7 +12,11 @@ import {
   setRequestImage,
   setSearchResults,
   setSelectedRegion,
-  updateStatusLoading
+  updateStatusLoading,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput
 } from '../../Store/search/Search';
 import { createImage, find, findRegions } from '../../services/image';
 import { RectCoords } from '@nyris/nyris-api';
@@ -89,6 +93,11 @@ function ExperienceVisualSearch() {
     }).then((res: any) => {
       dispatch(setSearchResults(res));
       dispatch(updateStatusLoading(false));
+      // go back
+      dispatch(setFirstSearchResults(res));
+      dispatch(setFirstSearchImage(image));
+      dispatch(setFirstSearchPrefilters(search.preFilter));
+      dispatch(setFirstSearchThumbSearchInput(url));
       return;
     });
   };

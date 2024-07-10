@@ -77,6 +77,7 @@ var settings = {
   itemIdLabel: 'SKU',
   preFilterTitle: '',
   CTAButtonText: 'View More',
+  simpleCardView: false,
   secondaryCTAButtonText: 'Configure Now',
 
   //field mappins

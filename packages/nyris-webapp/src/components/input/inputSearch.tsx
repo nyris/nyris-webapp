@@ -32,6 +32,10 @@ import {
   setSelectedRegion,
   updateQueryText,
   setShowFeedback,
+  setFirstSearchResults,
+  setFirstSearchImage,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -45,8 +49,12 @@ const SearchBox = (props: any) => {
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-  const { imageThumbSearchInput, preFilter, requestImage, selectedRegion } =
-    search;
+  const {
+    imageThumbSearchInput,
+    preFilter,
+    requestImage,
+    selectedRegion,
+  } = search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -57,6 +65,7 @@ const SearchBox = (props: any) => {
     useState<boolean>(false);
   const { t } = useTranslation();
   const isAlgoliaEnabled = settings.algolia?.enabled;
+  const searchbar = useRef<HTMLDivElement | null>(null);
 
   const { user } = useAuth0();
 
@@ -65,6 +74,23 @@ const SearchBox = (props: any) => {
       focusInp?.current.focus();
     }
   }, [focusInp]);
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (searchbar.current) {
+        if (searchbar.current.contains(event.target as Node)) {
+          searchbar.current.classList.add('active');
+        } else {
+          searchbar.current.classList.remove('active');
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [searchbar]);
 
   useEffect(() => {
     const searchQuery = query.get('query') || '';
@@ -92,6 +118,14 @@ const SearchBox = (props: any) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageThumbSearchInput, isAlgoliaEnabled]);
+
+  useEffect(() => {
+    if (history.location?.pathname === '/') {
+      setValueInput('');
+      dispatch(updateQueryText(''));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history.location]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchOrRedirect = useCallback(
@@ -205,6 +239,11 @@ const SearchBox = (props: any) => {
             dispatch(setSearchResults(payload));
             dispatch(updateStatusLoading(false));
             dispatch(setShowFeedback(true));
+            // go back
+            dispatch(setFirstSearchResults(payload));
+            dispatch(setFirstSearchImage(image));
+            dispatch(setFirstSearchPrefilters(preFilter));
+            dispatch(setFirstSearchThumbSearchInput(URL.createObjectURL(fs[0])));
           })
           .catch((e: any) => {
             console.log('error input search', e);
@@ -263,7 +302,7 @@ const SearchBox = (props: any) => {
               >
                 {showPreFilter && (
                   <div
-                    className="icon-hover"
+                    className="icon-hover desktop"
                     style={{
                       ...(!isEmpty(preFilter)
                         ? {
@@ -282,8 +321,8 @@ const SearchBox = (props: any) => {
                   <div
                     style={{
                       position: 'absolute',
-                      top: '5px',
-                      left: '35px',
+                      top: '1px',
+                      left: '26px',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',

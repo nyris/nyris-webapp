@@ -113,6 +113,10 @@ export const searchSlice = createSlice({
         preFilterDropdown: false,
         imageCaptureHelpModal: false,
         showFeedback: false,
+        firstSearchImage: null,
+        firstSearchResults: null,
+        firstSearchPrefilters: null,
+        firstSearchThumbSearchInput: null,
       };
     },
 
@@ -234,6 +238,22 @@ export const searchSlice = createSlice({
       ...state,
       showFeedback: data.payload,
     }),
+    setFirstSearchResults: (state, data: PayloadAction<any>) => ({
+      ...state,
+      firstSearchResults: data.payload,
+    }),
+    setFirstSearchImage: (state, data: PayloadAction<any>) => ({
+      ...state,
+      firstSearchImage: data.payload,
+    }),
+    setFirstSearchPrefilters: (state, data: PayloadAction<any>) => ({
+      ...state,
+      firstSearchPrefilters: data.payload,
+    }),
+    setFirstSearchThumbSearchInput: (state, data: PayloadAction<any>) => ({
+      ...state,
+      firstSearchThumbSearchInput: data.payload,
+    }),
   },
 });
 
@@ -262,5 +282,9 @@ export const {
   updateStatusLoading,
   updateValueTextSearchMobile,
   setShowFeedback,
+  setFirstSearchImage,
+  setFirstSearchResults,
+  setFirstSearchPrefilters,
+  setFirstSearchThumbSearchInput,
 } = searchSlice.actions;
 export default searchSlice.reducer;

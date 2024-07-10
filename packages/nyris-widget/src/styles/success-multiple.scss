@@ -211,6 +211,22 @@
     border-radius: 32px;
     box-shadow: 0 0 8px 0 rgba(85, 86, 107, 0.60);
   }
+  
+  .go-back-button {
+    align-self: flex-start;
+    margin-bottom: 32px;
+    background: #F3F3F5;
+    padding: 8px 16px;
+    border-radius: 20px;
+    width: max-content;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    svg {
+      margin-right: 8px;
+    }
+  }
 
 }
 
