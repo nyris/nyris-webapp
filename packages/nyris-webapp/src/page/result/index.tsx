@@ -509,7 +509,6 @@ function ResultComponent(props: Props) {
                     className={'box-item-result ml-auto mr-auto'}
                     style={{
                       paddingLeft: isMobile ? 0 : 16,
-                      paddingTop: isMobile ? 0 : 16,
                       height: '100%',
                       position: 'relative',
                     }}
