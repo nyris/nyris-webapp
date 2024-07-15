@@ -59,7 +59,7 @@ function CurrentRefinementsComponent({
     <div
       className={className}
       style={{
-        marginBottom: refinements.length > 0 ? '10px' : '0px',
+        marginBottom: '16px',
       }}
     >
       <ul className="flex flex-wrap gap-3">
