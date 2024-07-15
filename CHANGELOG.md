@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.56 - 2024-07-15
+
+### Added
+- Changing results, go-back and post-filter sections layout
+- Update font size for simplified card view
+
 ## 0.3.55 - 2024-07-10
 
 ### Added

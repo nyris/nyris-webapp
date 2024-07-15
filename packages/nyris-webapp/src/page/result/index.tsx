@@ -456,7 +456,7 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  paddingTop: isMobile ? '8px' : '',
+                  paddingTop: isMobile ? '8px' : '40px',
                   overflow: !isMobile ? 'auto' : '',
                   display: 'flex',
                   flexDirection: 'column',
@@ -509,7 +509,6 @@ function ResultComponent(props: Props) {
                     className={'box-item-result ml-auto mr-auto'}
                     style={{
                       paddingLeft: isMobile ? 0 : 16,
-                      paddingTop: isMobile ? 0 : 16,
                       height: '100%',
                       position: 'relative',
                     }}
