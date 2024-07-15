@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { atom } from 'jotai';
 import { useMemo } from 'react';
 import type {
   CurrentRefinementsProvided,
@@ -24,8 +23,6 @@ export type CurrentRefinement = {
   label: string;
   value: RefinementValue;
 };
-
-export const refinementCountAtom = atom(0);
 
 function CurrentRefinementsComponent({
   items,
@@ -63,7 +60,6 @@ function CurrentRefinementsComponent({
       className={className}
       style={{
         marginBottom: refinements.length > 0 ? '10px' : '0px',
-        marginTop: refinements.length > 0 ? '16px' : '0px',
       }}
     >
       <ul className="flex flex-wrap gap-3">
