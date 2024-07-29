@@ -7,6 +7,22 @@ module.exports = {
       boxShadow: {
         outer: "0 0 16px 0 rgba(202, 202, 209, 0.5)",
       },
+      keyframes: {
+        slideUp: {
+          "0%": { transform: "translateY(100%)" },
+          "100%": { transform: "translateY(0)" },
+        },
+        slideDown: {
+          "0%": {
+            transform: "translateY(0)",
+          },
+          "100%": { transform: "translateY(100%)" },
+        },
+      },
+      animation: {
+        slideUp: "slideUp 0.3s linear",
+        slideDown: "slideDown 0.3s linear",
+      },
     },
   },
   plugins: [],

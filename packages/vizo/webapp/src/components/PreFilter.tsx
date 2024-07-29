@@ -38,6 +38,7 @@ function SelectModelPopup(props: ISelectModalPopup) {
           modalToggle={modalToggle}
           setSelectedPreFilters={setPreFilters}
           selectedPreFilters={selectedPreFilters}
+          animation={false}
         />
       )}
     </>

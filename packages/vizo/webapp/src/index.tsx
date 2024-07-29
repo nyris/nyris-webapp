@@ -30,16 +30,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <Auth0Provider
-      domain={window.settings.auth0.domain || ""}
-      clientId={window.settings.auth0.clientId || ""}
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-      }}
-    >
-      <BrowserRouter>
-        <Router />
-      </BrowserRouter>
-    </Auth0Provider>
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
   </React.StrictMode>
 );
