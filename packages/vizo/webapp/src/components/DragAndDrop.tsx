@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import drop_zone from "../assets/dropzone.svg";
+import { ReactComponent as UploadIcon } from "../assets/dropzone.svg";
 
 interface IAppProps {
   search: (fs: File) => void;
@@ -29,7 +29,7 @@ function DragAndDrop(props: IAppProps) {
         className={`drag-n-drop ${isDragActive ? "active-drop" : ""}`}
         {...getRootProps()}
       >
-        <img src={drop_zone} width={48} height={48} alt="drag and drop zone" />
+        <UploadIcon className="w-12 h-12 text-[#55566B]" />
         <div className="drag-n-drop-text">
           <strong>Drag and drop</strong> an image here
         </div>

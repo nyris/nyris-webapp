@@ -1,4 +1,7 @@
+import classNames from "classnames";
+
 import React, { useMemo, useState, useEffect, useRef } from "react";
+
 import { Route, useHistory } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import NyrisAPI, {
@@ -13,10 +16,11 @@ import { ReactComponent as CameraIcon } from "./assets/camera.svg";
 import { ReactComponent as AvatarIcon } from "./assets/avatar.svg";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import SelectModelPopup from "./components/PreFilter";
-import DragAndDrop from "./components/DragAndDrop";
-import ResultComponent from "./components/Results";
+import ResultComponent from "./page/Results";
 import { VizoAgent } from "@nyris/vizo-ai";
 import { Chat, MessageType } from "./types";
+import Home from "./page/Home";
+import CameraCustom from "./components/CameraCustom";
 import { isUndefined } from "lodash";
 
 function Layout() {
@@ -29,7 +33,7 @@ function Layout() {
   const [searchImage, setSearchImage] = useState<HTMLCanvasElement | null>(
     null
   );
-  const [imageThumb, setImageThumb] = useState("");
+  const [imageThumb, setImageThumb] = useState<any>();
   const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([]);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
@@ -47,6 +51,7 @@ function Layout() {
 
   const [chatHistory, setChatHistory] = useState<Chat[]>([]);
   const [filters, setFilters] = useState([]);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const [regions, setRegions] = useState<Region[]>([]);
 
@@ -79,14 +84,18 @@ function Layout() {
 
   const onImageUpload = async (f: File) => {
     const image = await urlOrBlobToCanvas(f);
-    setSearchImage(image);
-    setImageThumb(URL.createObjectURL(f));
-    vizoAgent.updateImage(f);
-
     imageSearch(image);
   };
 
   const imageSearch = async (image: HTMLCanvasElement, r?: RectCoords) => {
+    setSearchImage(image);
+    image.toBlob((blob) => {
+      if (blob) {
+        vizoAgent.updateImage(blob);
+        setImageThumb(URL.createObjectURL(blob));
+      }
+    });
+
     setChatHistory([]);
     vizoAgent.resetAgent();
     setResults([]);
@@ -119,7 +128,7 @@ function Layout() {
 
     setVizoLoading(true);
     if (searchResult?.ocr?.text.length > 0) {
-      vizoAgent.refineResult(searchResult?.ocr?.text).then((res) => {
+      vizoAgent.refineResultGroq(searchResult?.ocr?.text).then((res) => {
         setVizoResultAssessment({
           ocr: true,
           result: res.result.skus,
@@ -199,6 +208,8 @@ function Layout() {
     }
 
     setResults(searchResult.results);
+    // setResults(intercars_data);
+
     history.push("/results");
   };
 
@@ -248,6 +259,14 @@ function Layout() {
     });
   };
 
+  const onImageRemove = () => {
+    setSearchKey("");
+    setResults([]);
+    setSearchImage(null);
+    setImageThumb("");
+    history.push("/");
+  };
+
   const SearchBar = (
     <div className="search-bar">
       <div className="text-search-bar">
@@ -265,11 +284,7 @@ function Layout() {
                 fill="#655EE3"
                 className="clear-thumb"
                 onClick={() => {
-                  setSearchKey("");
-                  setResults([]);
-                  setSearchImage(null);
-                  setImageThumb("");
-                  history.push("/");
+                  onImageRemove();
                 }}
               />
               <div className="image-thumb-tooltip">Clear image search</div>
@@ -317,7 +332,17 @@ function Layout() {
 
   return (
     <div className="layout">
-      <header>
+      <header
+        className={classNames([
+          "fixed",
+          "md:relative",
+          "w-full",
+          "bg-white",
+          "z-10",
+          "h-12",
+          "md:h-14",
+        ])}
+      >
         <img
           src={window.settings.logo}
           className="logo"
@@ -351,51 +376,83 @@ function Layout() {
           )}
         </div>
       </header>
-      <main>
-        <>
-          <Route
-            exact
-            strict
-            path="/"
-            key="DragNDrop"
-            render={(props) => (
-              <DragAndDrop
-                {...props}
-                search={(e) => onImageUpload(e)}
-                searchBar={SearchBar}
-                setSearchImage={setSearchImage}
-                setImageThumb={setImageThumb}
-              />
-            )}
+      <Route
+        exact
+        strict
+        path="/"
+        key="home"
+        render={(props) => (
+          <main>
+            <Home
+              {...props}
+              search={(e) => onImageUpload(e)}
+              searchBar={SearchBar}
+              setSearchImage={setSearchImage}
+              setImageThumb={setImageThumb}
+              imageSearch={imageSearch}
+              setIsCameraOpen={(val: boolean) => {
+                setIsCameraOpen(val);
+              }}
+              isCameraOpen={isCameraOpen}
+              setSelectedPreFilters={setSelectedPreFilters}
+              selectedPreFilters={selectedPreFilters}
+            />
+          </main>
+        )}
+      />
+      <Route
+        exact
+        strict
+        path="/results"
+        key="Results"
+        render={(props) => (
+          <ResultComponent
+            {...props}
+            results={results}
+            searchImage={searchImage as HTMLCanvasElement}
+            preFilters={selectedPreFilters}
+            onSelectionChange={onSelectionChange}
+            vizoResultAssessment={vizoResultAssessment}
+            ocr={ocr}
+            vizoLoading={vizoLoading}
+            imageThumb={imageThumb}
+            onUserQuery={onUserQuery}
+            chatHistory={chatHistory}
+            filters={filters}
+            imageSearch={onImageUpload}
+            regions={regions}
+            setIsCameraOpen={(val: boolean) => {
+              setIsCameraOpen(val);
+            }}
+            isCameraOpen={isCameraOpen}
+            onImageRemove={onImageRemove}
+            setSelectedPreFilters={setSelectedPreFilters}
+            selectedPreFilters={selectedPreFilters}
           />
-          <Route
-            exact
-            strict
-            path="/results"
-            key="Results"
-            render={(props) => (
-              <ResultComponent
-                {...props}
-                results={results}
-                searchImage={searchImage}
-                preFilters={selectedPreFilters}
-                onSelectionChange={onSelectionChange}
-                vizoResultAssessment={vizoResultAssessment}
-                ocr={ocr}
-                vizoLoading={vizoLoading}
-                imageThumb={imageThumb}
-                onUserQuery={onUserQuery}
-                chatHistory={chatHistory}
-                filters={filters}
-                imageSearch={onImageUpload}
-                regions={regions}
-              />
-            )}
-          />
-        </>
-      </main>
-      <footer>
-        <a href={"https://www.nyris.io"} target="_blank" rel="noreferrer">
+        )}
+      />
+      <div className="block md:hidden">
+        {isCameraOpen && (
+          <div className="fixed z-50 inset-0 ">
+            <CameraCustom
+              onCapture={(image: HTMLCanvasElement) => {
+                imageSearch(image);
+                setIsCameraOpen(false);
+              }}
+              onClose={() => {
+                setIsCameraOpen(false);
+              }}
+            />
+          </div>
+        )}
+      </div>
+      <footer className="md:border-t border-solid border-[#E0E0E0]">
+        <a
+          href={"https://www.nyris.io"}
+          target="_blank"
+          rel="noreferrer"
+          className="text-[#AAABB5] md:text-[#2B2C46]"
+        >
           Powered by <strong>nyris®</strong>
         </a>
       </footer>

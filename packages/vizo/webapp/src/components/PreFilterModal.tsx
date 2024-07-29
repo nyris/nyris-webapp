@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import classNames from "classnames";
+
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ReactComponent as SearchIcon } from "../assets/icon_search.svg";
 import { ReactComponent as IconClose } from "../assets/close.svg";
 import NyrisAPI, { NyrisAPISettings } from "@nyris/nyris-api";
@@ -9,10 +11,16 @@ function PreFilterModal({
   modalToggle,
   setSelectedPreFilters,
   selectedPreFilters,
+  showModal,
+  animation,
+  modalClassNames,
 }: {
   modalToggle: any;
   setSelectedPreFilters: any;
   selectedPreFilters: any;
+  showModal?: boolean;
+  animation?: boolean;
+  modalClassNames?: string;
 }) {
   const [groupedFilters, setGroupedFilters] = useState<any>();
   const [searchKey, setSearchKey] = useState<string>("");
@@ -48,19 +56,51 @@ function PreFilterModal({
     });
   }, [getPreFilters]);
 
+  const modalRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (animation) {
+      modalRef.current?.classList.add("hidden");
+    }
+  }, [animation]);
+
+  useEffect(() => {
+    if (!animation) return;
+
+    if (showModal) {
+      modalRef.current?.classList.remove("hidden", "animate-slideDown");
+      modalRef.current?.classList.add("animate-slideUp");
+    } else {
+      modalRef.current?.classList.remove("animate-slideUp");
+      modalRef.current?.classList.add("animate-slideDown");
+      setTimeout(() => {
+        modalRef.current?.classList.add("hidden");
+      }, 300);
+    }
+  }, [animation, showModal]);
+
   return (
     <>
       {createPortal(
         <div
-          className="custom-modal"
+          className={`custom-modal ${modalClassNames}`}
           onClick={(e) => {
             e.stopPropagation();
             setSelectedPreFilters([]);
             modalToggle(false);
           }}
+          ref={modalRef}
         >
           <div
-            className="custom-modal-body"
+            className={classNames([
+              "custom-modal-body",
+              "w-full",
+              "md:w-[800px]",
+              "h-full",
+              "md:h-[480px]",
+              "flex",
+              "flex-col",
+            ])}
             onClick={(e) => {
               e.stopPropagation();
             }}
@@ -83,12 +123,27 @@ function PreFilterModal({
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedPreFilters([]);
+
                   modalToggle(false);
                 }}
               />
             </div>
-            <div className="custom-modal-body-content">
-              <div className="search-prefilter">
+            <div
+              className={classNames([
+                "custom-modal-body-content",
+                "flex",
+                "flex-col",
+                "h-full",
+                "md:h-[358px]",
+              ])}
+            >
+              <div
+                className={classNames([
+                  "search-prefilter",
+                  "w-full",
+                  "md:w-[512px]",
+                ])}
+              >
                 <SearchIcon fill="#55566B" width={18} />
                 <input
                   type="text"
@@ -141,12 +196,19 @@ function PreFilterModal({
                   ""
                 )}
               </div>
-              <section className="prefilters">
+              <section className={classNames(["prefilters", "flex-1"])}>
                 {groupedFilters &&
                   Object.keys(groupedFilters).map((sectionName) => (
                     <article key={sectionName} className="letter-section">
                       <div className="section-name">{sectionName}</div>
-                      <div className="filters-grid">
+                      <div
+                        className={classNames([
+                          "filters-grid",
+                          "flex",
+                          "flex-col",
+                          "md:grid",
+                        ])}
+                      >
                         {groupedFilters[sectionName].map(
                           (filter: any, index: number) => (
                             <div

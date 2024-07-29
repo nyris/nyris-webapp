@@ -333,7 +333,7 @@ export class VizoAgent {
     return { filter: false, ocr: true, result: JSON.parse(output) };
   }
 
-  updateImage(selectedImage: File) {
+  updateImage(selectedImage: File | Blob) {
     if (selectedImage) {
       new Compressor(selectedImage, {
         quality: 1,
