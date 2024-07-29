@@ -226,7 +226,14 @@ function ItemResult(props: Props) {
         <div className="info-container">
           <div className="info-sku">{dataItem.sku}</div>
           <span className="info-marking">{dataItem.Bezeichnung}</span>
-          <div className="info-description">{settings.language === 'en' ? dataItem.VK_Text_Englisch : dataItem.VK_Text_Deutsch}</div>
+          <Tooltip
+            title={settings.language === 'en' ? dataItem.VK_Text_Englisch: dataItem.VK_Text_Deutsch}
+            placement="top"
+            arrow={true}
+            disableHoverListener={settings.language === 'en' ? dataItem.VK_Text_Englisch?.length < 76 : dataItem.VK_Text_Deutsch?.length < 76}
+          >
+            <div className="info-description">{settings.language === 'en' ? dataItem.VK_Text_Englisch : dataItem.VK_Text_Deutsch}</div>
+          </Tooltip>
         </div>
       ) : (
         <div
