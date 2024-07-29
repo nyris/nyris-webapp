@@ -39,6 +39,7 @@ function SelectModelPopup(props: ISelectModalPopup) {
           setSelectedPreFilters={setPreFilters}
           selectedPreFilters={selectedPreFilters}
           animation={false}
+          modalClassNames="flex"
         />
       )}
     </>
