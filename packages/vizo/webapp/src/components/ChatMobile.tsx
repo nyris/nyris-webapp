@@ -1,15 +1,13 @@
 import classNames from "classnames";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { ReactComponent as AvatarIcon } from "../assets/avatar.svg";
 import { ReactComponent as ArrowDownIcon } from "../assets/arrow_down_expanded.svg";
 import { ReactComponent as CloseIcon } from "../assets/close.svg";
 import { ReactComponent as VizoAvatarIcon } from "../assets/vizo_avatar.svg";
 import { ReactComponent as HistoryIcon } from "../assets/history.svg";
 
-import { ReactComponent as EnterIcon } from "../assets/enter.svg";
 import { ReactComponent as CameraIcon } from "../assets/camera.svg";
 import { ReactComponent as RefreshIcon } from "../assets/refresh.svg";
 import { ReactComponent as CameraSimpleIcon } from "../assets/camera_simple.svg";
@@ -59,13 +57,13 @@ const ChatMobile: React.FC<Props> = ({
 
   const [showChat, setShowChat] = useState(true);
 
-  const showDisclaimerDisabled = useMemo(() => {
-    const disclaimer = localStorage.getItem("upload-disclaimer");
+  // const showDisclaimerDisabled = useMemo(() => {
+  //   const disclaimer = localStorage.getItem("upload-disclaimer");
 
-    if (!disclaimer) return false;
-    return disclaimer === "dont-show";
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDisclaimer]);
+  //   if (!disclaimer) return false;
+  //   return disclaimer === "dont-show";
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [showDisclaimer]);
 
   const handleKeyDown = (event: { key: string }) => {
     if (event.key === "Enter") {

@@ -20,7 +20,6 @@ import ResultComponent from "./page/Results";
 import { VizoAgent } from "@nyris/vizo-ai";
 import { Chat, MessageType } from "./types";
 import Home from "./page/Home";
-import { intercars_data } from "./data";
 import CameraCustom from "./components/CameraCustom";
 import { isUndefined } from "lodash";
 

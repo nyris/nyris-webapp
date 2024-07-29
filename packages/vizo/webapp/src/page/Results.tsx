@@ -15,8 +15,6 @@ import { Chat as ChatType } from "../types";
 import ImagePreviewMobile from "../components/ImagePreviewMobile";
 import ChatMobile from "../components/ChatMobile";
 
-const DEFAULT_REGION = { x1: 0, x2: 1, y1: 0, y2: 1 };
-
 interface IResultProps {
   results: any[];
   searchImage: HTMLCanvasElement;

@@ -8,11 +8,11 @@ import Logout from "./components/Logout";
 function Router(): JSX.Element {
   const { user, isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
 
-  // useEffect(() => {
-  //   if (!isLoading && !user && !isAuthenticated) {
-  //     loginWithRedirect();
-  //   }
-  // }, [loginWithRedirect, isLoading, user, isAuthenticated]);
+  useEffect(() => {
+    if (!isLoading && !user && !isAuthenticated) {
+      loginWithRedirect();
+    }
+  }, [loginWithRedirect, isLoading, user, isAuthenticated]);
 
   return (
     <Switch>
