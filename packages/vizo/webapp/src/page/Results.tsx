@@ -39,6 +39,8 @@ interface IResultProps {
   onImageRemove: any;
   setSelectedPreFilters: any;
   selectedPreFilters: any;
+  notification: boolean;
+  setNotification: any;
 }
 
 const isResultRefined = (skuInOrder: string[], products: any[]) => {
@@ -66,6 +68,8 @@ function ResultsComponent({
   onImageRemove,
   setSelectedPreFilters,
   selectedPreFilters,
+  notification,
+  setNotification,
 }: IResultProps) {
   const history = useHistory();
 
@@ -143,7 +147,6 @@ function ResultsComponent({
   if (!searchImage) {
     history.push("/");
   }
-  console.log({ searchImage });
 
   return (
     <>
@@ -380,6 +383,8 @@ function ResultsComponent({
           setIsCameraOpen={setIsCameraOpen}
           setSelectedPreFilters={setSelectedPreFilters}
           selectedPreFilters={selectedPreFilters}
+          notification={notification}
+          setNotification={setNotification}
         />
       </div>
     </>
