@@ -23,6 +23,10 @@ module.exports = {
         slideUp: "slideUp 0.3s linear",
         slideDown: "slideDown 0.3s linear",
       },
+      colors: {
+        primary: "#2B2C46",
+        secondary: "#3E36DC",
+      },
     },
   },
   plugins: [],

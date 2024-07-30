@@ -31,6 +31,8 @@ interface Props {
   setIsCameraOpen: any;
   setSelectedPreFilters: any;
   selectedPreFilters: any;
+  notification: boolean;
+  setNotification: any;
 }
 
 const ChatMobile: React.FC<Props> = ({
@@ -46,6 +48,8 @@ const ChatMobile: React.FC<Props> = ({
   setIsCameraOpen,
   setSelectedPreFilters,
   selectedPreFilters,
+  notification,
+  setNotification,
 }) => {
   const history = useHistory();
 
@@ -97,6 +101,7 @@ const ChatMobile: React.FC<Props> = ({
                 className="w-full h-10 flex justify-center items-center fixed bg-gradient-to-b from-[#F3F3F5] to-[#ffffff00]"
                 onClick={() => {
                   setShowChat(false);
+                  setNotification(false);
                 }}
               >
                 <ArrowDownIcon className="text-[#2B2C46]" />
@@ -117,10 +122,6 @@ const ChatMobile: React.FC<Props> = ({
                           height={16}
                           color="#655EE3"
                           onClick={() => {
-                            // setSearchKey("");
-                            // setResults([]);
-                            // setSearchImage(null);
-                            // setImageThumb("");
                             history.push("/");
                           }}
                         />
@@ -271,9 +272,13 @@ const ChatMobile: React.FC<Props> = ({
           ])}
           onClick={() => {
             setShowChat(true);
+            setNotification(false);
           }}
         >
           <HistoryIcon className={classNames(["text-white"])} />
+          {notification && (
+            <div className="min-w-3 min-h-3 bg-primary rounded-full absolute border-2 border-white -top-0.5 right-2.5"></div>
+          )}
         </div>
       )}
 
@@ -305,6 +310,7 @@ const ChatMobile: React.FC<Props> = ({
               }}
               onClick={() => {
                 setShowChat(true);
+                setNotification(false);
               }}
               onKeyDown={handleKeyDown}
             />

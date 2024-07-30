@@ -54,6 +54,7 @@ function Layout() {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const [regions, setRegions] = useState<Region[]>([]);
+  const [notification, setNotification] = useState(false);
 
   const history = useHistory();
   const nyrisApi = new NyrisAPI({ ...settings });
@@ -128,7 +129,7 @@ function Layout() {
 
     setVizoLoading(true);
     if (searchResult?.ocr?.text.length > 0) {
-      vizoAgent.refineResultGroq(searchResult?.ocr?.text).then((res) => {
+      vizoAgent.refineResult(searchResult?.ocr?.text).then((res) => {
         setVizoResultAssessment({
           ocr: true,
           result: res.result.skus,
@@ -146,6 +147,7 @@ function Layout() {
 
         setChatHistory([response]);
         setVizoLoading(false);
+        setNotification(true);
       });
     } else {
       vizoAgent.runImageAssessment().then((imageAssessment) => {
@@ -181,29 +183,32 @@ function Layout() {
           setVizoLoading(false);
         }
 
-        if (
-          imageAssessment.assessment.hasValidObject &&
-          imageAssessment.assessment.imageQuality !== "poor" &&
-          imageAssessment.assessment.isRelevantObject
-        ) {
-          vizoAgent.getFilters().then((res) => {
-            setVizoResultAssessment(res);
+        // if (
+        //   imageAssessment.assessment.hasValidObject &&
+        //   imageAssessment.assessment.imageQuality !== "poor" &&
+        //   imageAssessment.assessment.isRelevantObject
+        // ) {
+        //   vizoAgent.getFilters().then((res) => {
+        //     setVizoResultAssessment(res);
 
-            const response: Chat = {
-              type: MessageType.AI,
-              message: res.ocr
-                ? "List of detected OCR:"
-                : "List of detected Filter:",
-            };
+        //     const response: Chat = {
+        //       type: MessageType.AI,
+        //       message: res.ocr
+        //         ? "List of detected OCR:"
+        //         : "List of detected Filter:",
+        //     };
 
-            response.responseType = "filter";
-            response.message = "List of detected Filters:";
-            setFilters(res.result);
+        //     response.responseType = "filter";
+        //     response.message = "List of detected Filters:";
+        //     setFilters(res.result);
 
-            setChatHistory([response]);
-            setVizoLoading(false);
-          });
-        }
+        //     setChatHistory([response]);
+        //     setVizoLoading(false);
+        //     setNotification(true);
+        //   });
+        // }
+
+        setNotification(true);
       });
     }
 
@@ -256,6 +261,7 @@ function Layout() {
         ]);
       }
       setVizoLoading(false);
+      setNotification(true);
     });
   };
 
@@ -329,6 +335,24 @@ function Layout() {
       </div>
     </div>
   );
+
+  // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+  let vh = window.innerHeight * 0.01;
+  // Then we set the value in the --vh custom property to the root of the document
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
+
+  useEffect(() => {
+    const handleResize = () => {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className="layout">
@@ -428,6 +452,8 @@ function Layout() {
             onImageRemove={onImageRemove}
             setSelectedPreFilters={setSelectedPreFilters}
             selectedPreFilters={selectedPreFilters}
+            notification={notification}
+            setNotification={setNotification}
           />
         )}
       />
