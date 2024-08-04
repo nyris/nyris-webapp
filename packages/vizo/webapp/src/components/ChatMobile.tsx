@@ -79,6 +79,13 @@ const ChatMobile: React.FC<Props> = ({
     }, 0);
   }, [chatHistory]);
 
+  useEffect(() => {
+    if (vizoLoading) {
+      setShowChat(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className={classNames(["fixed", "bottom-8", "w-full"])}>
       {showChat && (
