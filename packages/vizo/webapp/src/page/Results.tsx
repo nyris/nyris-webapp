@@ -41,6 +41,7 @@ interface IResultProps {
   selectedPreFilters: any;
   notification: boolean;
   setNotification: any;
+  vizoLoadingMessage: string;
 }
 
 const isResultRefined = (skuInOrder: string[], products: any[]) => {
@@ -70,6 +71,7 @@ function ResultsComponent({
   selectedPreFilters,
   notification,
   setNotification,
+  vizoLoadingMessage,
 }: IResultProps) {
   const history = useHistory();
 
@@ -218,6 +220,7 @@ function ResultsComponent({
               showNewResultButton={showNewResultButton}
               showRefinedResult={showRefinedResult}
               imageSearch={imageSearch}
+              vizoLoadingMessage={vizoLoadingMessage}
             />
 
             <div className="results-product-list w-[850px] gap-6">
@@ -272,6 +275,12 @@ function ResultsComponent({
                 </div>
               ))}
             </div>
+
+            {products.length === 0 && !vizoLoading && (
+              <div className="flex h-full items-center justify-center">
+                <p className="text-[#AAABB5]">No results.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -368,6 +377,11 @@ function ResultsComponent({
                 </div>
               ))}
             </div>
+            {products.length === 0 && !vizoLoading && (
+              <div className="flex h-full items-center justify-center">
+                <p className="text-[#AAABB5]">No results.</p>
+              </div>
+            )}
           </div>
         </div>
         <ChatMobile
@@ -385,6 +399,7 @@ function ResultsComponent({
           selectedPreFilters={selectedPreFilters}
           notification={notification}
           setNotification={setNotification}
+          vizoLoadingMessage={vizoLoadingMessage}
         />
       </div>
     </>

@@ -18,10 +18,16 @@ module.exports = {
           },
           "100%": { transform: "translateY(100%)" },
         },
+        loadingTextColor: {
+          "0%, 100%": { color: "#1f2937" }, // Gray color
+          "50%": { color: "#3b82f6" }, // Blue color
+        },
       },
+
       animation: {
         slideUp: "slideUp 0.3s linear",
         slideDown: "slideDown 0.3s linear",
+        loadingTextColor: "loadingTextColor 2s infinite",
       },
       colors: {
         primary: "#2B2C46",

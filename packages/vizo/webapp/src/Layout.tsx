@@ -48,6 +48,7 @@ function Layout() {
   }>();
 
   const [vizoLoading, setVizoLoading] = useState(false);
+  const [vizoLoadingMessage, setVizoLoadingMessage] = useState("");
 
   const [chatHistory, setChatHistory] = useState<Chat[]>([]);
   const [filters, setFilters] = useState([]);
@@ -102,24 +103,32 @@ function Layout() {
     setResults([]);
     setVizoResultAssessment(undefined);
     setFilters([]);
+    history.push("/results");
+
+    setVizoLoading(true);
+    setVizoLoadingMessage("fetching results...");
 
     nyrisApi.findRegions(image).then((res) => {
       setRegions(res);
     });
 
-    const searchResult: any = await nyrisApi.find(
-      { cropRect: r },
-      image,
-      selectedPreFilters.length > 0
-        ? [
-            {
-              key: window.settings.preFilterKey,
-              values: selectedPreFilters,
-            },
-          ]
-        : undefined,
-      "+ocr.text"
-    );
+    let searchResult: any = { results: [] };
+
+    try {
+      searchResult = await nyrisApi.find(
+        { cropRect: r },
+        image,
+        selectedPreFilters.length > 0
+          ? [
+              {
+                key: window.settings.preFilterKey,
+                values: selectedPreFilters,
+              },
+            ]
+          : undefined,
+        "+ocr.text"
+      );
+    } catch (error) {}
 
     vizoAgent.setResults(
       searchResult.results.map(
@@ -127,95 +136,73 @@ function Layout() {
       )
     );
 
-    setVizoLoading(true);
-    if (searchResult?.ocr?.text.length > 0) {
-      vizoAgent.refineResult(searchResult?.ocr?.text).then((res) => {
-        setVizoResultAssessment({
-          ocr: true,
-          result: res.result.skus,
-          filter: false,
+    if (searchResult?.ocr?.text?.length > 0) {
+      setVizoLoadingMessage(
+        "Cleaning the captured text and refining your results"
+      );
+
+      vizoAgent
+        .refineResultGroq(searchResult?.ocr?.text)
+        .then((res) => {
+          setVizoResultAssessment({
+            ocr: true,
+            result: res.result.skus,
+            filter: false,
+          });
+          setOcr(res?.result.ocr);
+
+          const response: Chat = {
+            type: MessageType.AI,
+            message: "Here is the relevant captured text.",
+          };
+
+          response.responseType = "OCR";
+          response.message = "Here is the relevant captured text.";
+
+          setChatHistory([response]);
+          setVizoLoading(false);
+          setNotification(true);
+        })
+        .catch(() => {
+          setVizoLoading(false);
         });
-        setOcr(res?.result.ocr);
+    } else if (
+      searchResult.results.length < 0 ||
+      searchResult.results[0]?.score < 0.5
+    ) {
+      setVizoLoadingMessage("Analyzing the image for optimal results");
 
-        const response: Chat = {
-          type: MessageType.AI,
-          message: "List of detected OCR:",
-        };
+      vizoAgent
+        .runImageAssessment()
+        .then((imageAssessment) => {
+          const { hasValidObject, imageQuality, isRelevantObject } =
+            imageAssessment.assessment;
 
-        response.responseType = "OCR";
-        response.message = "List of detected OCR:";
+          if (
+            (imageQuality === "poor" || !isRelevantObject || !hasValidObject) &&
+            !isUndefined(imageQuality)
+          ) {
+            const response: Chat = {
+              type: MessageType.AI,
+              message:
+                "The image quality is poor or the object is not recognized. Please upload a new image for better results.",
+              responseType: "upload_new_image",
+            };
+            setChatHistory([response]);
+          }
 
-        setChatHistory([response]);
-        setVizoLoading(false);
-        setNotification(true);
-      });
+          setVizoLoading(false);
+          setNotification(true);
+        })
+        .catch(() => {
+          setVizoLoading(false);
+        });
     } else {
-      vizoAgent.runImageAssessment().then((imageAssessment) => {
-        const { hasValidObject, imageQuality, isRelevantObject } =
-          imageAssessment.assessment;
-
-        if (imageQuality === "poor" && !isUndefined(imageQuality)) {
-          const response: Chat = {
-            type: MessageType.AI,
-            message:
-              "The image provided is too blurry for a definitive analysis. To proceed effectively, we need an image where the part details are clear and distinct. Please upload a high-resolution photo with the part in focus.",
-            responseType: "upload_new_image",
-          };
-          setChatHistory([response]);
-          setVizoLoading(false);
-        } else if (!isRelevantObject && !isUndefined(isRelevantObject)) {
-          const response: Chat = {
-            type: MessageType.AI,
-            message:
-              "The image provided is not relevant. A relevant image will help us refine the analysis and align the search with your specific needs for the spare part. Please upload a photo related to Car or Car parts.",
-            responseType: "upload_new_image",
-          };
-          setChatHistory([response]);
-          setVizoLoading(false);
-        } else if (!hasValidObject && !isUndefined(hasValidObject)) {
-          const response: Chat = {
-            type: MessageType.AI,
-            message:
-              "The image provided is too blurry for a definitive analysis. To proceed effectively, we need an image where the part details are clear and distinct. Please upload a high-resolution photo with the part in focus.",
-            responseType: "upload_new_image",
-          };
-          setChatHistory([response]);
-          setVizoLoading(false);
-        }
-
-        // if (
-        //   imageAssessment.assessment.hasValidObject &&
-        //   imageAssessment.assessment.imageQuality !== "poor" &&
-        //   imageAssessment.assessment.isRelevantObject
-        // ) {
-        //   vizoAgent.getFilters().then((res) => {
-        //     setVizoResultAssessment(res);
-
-        //     const response: Chat = {
-        //       type: MessageType.AI,
-        //       message: res.ocr
-        //         ? "List of detected OCR:"
-        //         : "List of detected Filter:",
-        //     };
-
-        //     response.responseType = "filter";
-        //     response.message = "List of detected Filters:";
-        //     setFilters(res.result);
-
-        //     setChatHistory([response]);
-        //     setVizoLoading(false);
-        //     setNotification(true);
-        //   });
-        // }
-
-        setNotification(true);
-      });
+      setVizoLoading(false);
+      setNotification(true);
     }
 
     setResults(searchResult.results);
-    // setResults(intercars_data);
-
-    history.push("/results");
   };
 
   const onSelectionChange = (r: RectCoords) => {
@@ -226,6 +213,8 @@ function Layout() {
 
   const onUserQuery = (userQuery: string) => {
     setVizoLoading(true);
+    setVizoLoadingMessage("Analyzing results...");
+
     setChatHistory((s) => [
       ...s,
       {
@@ -234,35 +223,40 @@ function Layout() {
       },
     ]);
 
-    vizoAgent.runUserQuery(userQuery).then((res) => {
-      try {
-        const resParsed = JSON.parse(res);
-        setChatHistory((s) => [
-          ...s,
-          {
-            type: MessageType.AI,
-            message: "Refined result based on your query",
-            responseType: "LLM_response",
-          },
-        ]);
-        setVizoResultAssessment({
-          result: resParsed.skus,
-          filter: false,
-          ocr: false,
-        });
-      } catch (error) {
-        setChatHistory((s) => [
-          ...s,
-          {
-            type: MessageType.AI,
-            message: res,
-            responseType: "LLM_response",
-          },
-        ]);
-      }
-      setVizoLoading(false);
-      setNotification(true);
-    });
+    vizoAgent
+      .runUserQuery(userQuery)
+      .then((res) => {
+        try {
+          const resParsed = JSON.parse(res);
+          setChatHistory((s) => [
+            ...s,
+            {
+              type: MessageType.AI,
+              message: "Refined result based on your query",
+              responseType: "LLM_response",
+            },
+          ]);
+          setVizoResultAssessment({
+            result: resParsed.skus,
+            filter: false,
+            ocr: false,
+          });
+        } catch (error) {
+          setChatHistory((s) => [
+            ...s,
+            {
+              type: MessageType.AI,
+              message: res,
+              responseType: "LLM_response",
+            },
+          ]);
+        }
+
+        setNotification(true);
+      })
+      .finally(() => {
+        setVizoLoading(false);
+      });
   };
 
   const onImageRemove = () => {
@@ -454,6 +448,7 @@ function Layout() {
             selectedPreFilters={selectedPreFilters}
             notification={notification}
             setNotification={setNotification}
+            vizoLoadingMessage={vizoLoadingMessage}
           />
         )}
       />

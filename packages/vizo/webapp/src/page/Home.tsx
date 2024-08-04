@@ -61,7 +61,7 @@ function Home(props: IAppProps) {
           </div>
         </div>
       </div>
-      <div
+      {/* <div
         className={classNames([
           "block",
           "md:hidden",
@@ -107,9 +107,6 @@ function Home(props: IAppProps) {
                   "items-center",
                   "bg-[#F3F3F5]",
                 ])}
-                onClick={() => {
-                  setIsCameraOpen(true);
-                }}
               >
                 <ArrowEnter className="text-white" />
               </div>
@@ -133,7 +130,7 @@ function Home(props: IAppProps) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }
