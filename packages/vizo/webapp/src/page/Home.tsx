@@ -1,13 +1,8 @@
-import classNames from "classnames";
-
 import React from "react";
 import DragAndDrop from "../components/DragAndDrop";
 import { ReactComponent as CameraIcon } from "../assets/take_photo.svg";
-import { ReactComponent as CameraSimpleIcon } from "../assets/camera_simple.svg";
-import { ReactComponent as ArrowEnter } from "../assets/arrow_enter.svg";
 
 import "../style/takePhoto.scss";
-import PreFilterMobile from "../components/PreFilterMobile";
 
 interface IAppProps {
   search: (fs: File) => void;
@@ -22,15 +17,8 @@ interface IAppProps {
 }
 
 function Home(props: IAppProps) {
-  const {
-    search,
-    searchBar,
-    setImageThumb,
-    setSearchImage,
-    setIsCameraOpen,
-    selectedPreFilters,
-    setSelectedPreFilters,
-  } = props;
+  const { search, searchBar, setImageThumb, setSearchImage, setIsCameraOpen } =
+    props;
 
   return (
     <>
@@ -61,7 +49,7 @@ function Home(props: IAppProps) {
           </div>
         </div>
       </div>
-      <div
+      {/* <div
         className={classNames([
           "block",
           "md:hidden",
@@ -107,9 +95,6 @@ function Home(props: IAppProps) {
                   "items-center",
                   "bg-[#F3F3F5]",
                 ])}
-                onClick={() => {
-                  setIsCameraOpen(true);
-                }}
               >
                 <ArrowEnter className="text-white" />
               </div>
@@ -133,7 +118,7 @@ function Home(props: IAppProps) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

@@ -10,7 +10,7 @@ interface IAppProps {
 }
 
 function DragAndDrop(props: IAppProps) {
-  const { getRootProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => props.search(fs[0]),
   });
 
@@ -24,12 +24,13 @@ function DragAndDrop(props: IAppProps) {
 
   return (
     <>
-      {props.searchBar}
+      {/* {props.searchBar} */}
       <div
         className={`drag-n-drop ${isDragActive ? "active-drop" : ""}`}
         {...getRootProps()}
       >
         <UploadIcon className="w-12 h-12 text-[#55566B]" />
+        <input {...getInputProps()} />
         <div className="drag-n-drop-text">
           <strong>Drag and drop</strong> an image here
         </div>

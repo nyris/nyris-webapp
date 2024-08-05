@@ -50,11 +50,13 @@ function PreFilterModal({
   }, [preFilters, searchKey]);
 
   useEffect(() => {
-    getPreFilters().then((res) => {
-      setGroupedFilters(groupFiltersByFirstLetter(res.values));
-      setPreFilters(res.values);
-    });
-  }, [getPreFilters]);
+    if (showModal) {
+      getPreFilters().then((res) => {
+        setGroupedFilters(groupFiltersByFirstLetter(res.values));
+        setPreFilters(res.values);
+      });
+    }
+  }, [getPreFilters, showModal]);
 
   const modalRef = useRef<any>(null);
 
