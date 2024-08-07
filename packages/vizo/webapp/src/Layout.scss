@@ -414,11 +414,12 @@ body.overflow-hidden {
 
     }
     &-container {
-      width: 850px;
+      max-width: 880px;
       height: 100%;
       display: flex;
       flex-direction: column;
       gap: 24px;
+      padding: 0 16px;
       .result-tile {
         width: 192px;
         height: fit-content;
@@ -487,7 +488,7 @@ body.overflow-hidden {
       }
     }
     &-product-list {
-  
+      max-width: 880px;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;

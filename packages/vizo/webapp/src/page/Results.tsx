@@ -223,7 +223,7 @@ function ResultsComponent({
               vizoLoadingMessage={vizoLoadingMessage}
             />
 
-            <div className="results-product-list w-[850px] gap-6">
+            <div className="results-product-list gap-6">
               {products.map((item, index) => (
                 <div className="result-tile" key={index}>
                   <div style={{ width: "192px", height: "192px" }}>
