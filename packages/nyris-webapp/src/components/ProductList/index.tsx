@@ -58,7 +58,7 @@ function ProductListComponent({
     }
     return productList.map((hit: any, i: number) => {
       return (
-        <div key={i} style={{ height: 'fit-content' }}>
+        <div key={i} style={{ height: 'fit-content' }} className={settings.simpleCardView ? 'border' : ''}>
           <ItemResult
             dataItem={hit}
             indexItem={i}
