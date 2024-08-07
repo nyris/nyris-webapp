@@ -41,7 +41,8 @@ function DragDropFile(props: Props) {
   } = searchState;
   const { t } = useTranslation();
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: async (fs: File[]) => {
+    onDrop: async (fs: File[], _, e) => {
+      e.stopPropagation();
       history.push('/result');
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
@@ -126,7 +127,7 @@ function DragDropFile(props: Props) {
           <div style={{ marginBottom: 16 }}>
             <IconDownload width={48} height={48} />
           </div>
-          <label htmlFor="select_file" className="" style={{ fontSize: 14 }}>
+          <label className="" style={{ fontSize: 14 }}>
             <span className="fw-700 text-f14" style={{ paddingRight: '4px' }}>
               {t('Drag and drop')}
             </span>
