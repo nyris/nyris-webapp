@@ -61,10 +61,12 @@ const ChatMobile: React.FC<Props> = ({
   // }, [showDisclaimer]);
 
   const handleKeyDown = (event: { key: string }) => {
-    if (event.key === "Enter") {
-      onUserQuery(userQuery);
-      setUserQuery("");
-      // Perform any additional actions here
+    if (userQuery.length > 0 && !vizoLoading) {
+      if (event.key === "Enter") {
+        onUserQuery(userQuery);
+        setUserQuery("");
+        // Perform any additional actions here
+      }
     }
   };
 
@@ -162,7 +164,7 @@ const ChatMobile: React.FC<Props> = ({
             /> */}
             <input
               placeholder="Message Vizo..."
-              className="text-xs outline-none w-full pr-2"
+              className="text-xs outline-none w-full pr-2 bg-transparent"
               value={userQuery}
               disabled={userQueryCount > 3}
               onChange={(e) => {
@@ -184,11 +186,15 @@ const ChatMobile: React.FC<Props> = ({
                 "flex",
                 "justify-center",
                 "items-center",
-                userQuery.length > 0 ? "bg-[#2B2C46]" : "bg-[#F3F3F5]",
-                userQuery.length > 0 ? "cursor-pointer" : "cursor-default",
+                userQuery.length > 0 && !vizoLoading
+                  ? "bg-[#2B2C46]"
+                  : "bg-[#F3F3F5]",
+                userQuery.length > 0 && !vizoLoading
+                  ? "cursor-pointer"
+                  : "cursor-default",
               ])}
               onClick={() => {
-                if (userQuery?.length > 0) {
+                if (userQuery?.length > 0 && !vizoLoading) {
                   onUserQuery(userQuery);
                   setUserQuery("");
                 }

@@ -1,3 +1,5 @@
+import classNames from "classnames";
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { makeFileHandler } from "@nyris/nyris-react-components";
@@ -7,6 +9,7 @@ import { ReactComponent as CameraIcon } from "../assets/camera.svg";
 
 import { Chat as ChatType, MessageType } from "../types";
 import ChatHistory from "./ChatHistory";
+import { ReactComponent as ArrowEnter } from "../assets/arrow_enter.svg";
 
 interface Props {
   imageThumb: any;
@@ -69,10 +72,12 @@ const Chat: React.FC<Props> = ({
   }, [chatHistory]);
 
   const handleKeyDown = (event: { key: string }) => {
-    if (event.key === "Enter") {
-      onUserQuery(userQuery);
-      setUserQuery("");
-      // Perform any additional actions here
+    if (userQuery.length > 0 && !vizoLoading) {
+      if (event.key === "Enter") {
+        onUserQuery(userQuery);
+        setUserQuery("");
+        // Perform any additional actions here
+      }
     }
   };
 
@@ -104,7 +109,7 @@ const Chat: React.FC<Props> = ({
         userQueryCount={userQueryCount}
       />
 
-      <div className="w-full relative border-t border-[#E0E0E0] h-12 bg-[#F6F6F6]">
+      <div className="w-full relative border-t border-[#E0E0E0] h-12 bg-[#FAFAFA]">
         <EnterIcon className="absolute top-4 left-9" />
         <input
           value={userQuery}
@@ -114,20 +119,46 @@ const Chat: React.FC<Props> = ({
           disabled={userQueryCount > 3}
           onKeyDown={handleKeyDown}
           placeholder="Message Vizo..."
-          className="w-full  bg-[#F6F6F6] pl-24 pr-9 pt-3 outline-none"
+          className="w-full  bg-[#FAFAFA] pl-24 pr-16 pt-3 outline-none"
         />
+        <div className="absolute top-0 right-3 h-full flex items-center gap-3">
+          <div
+            className={classNames([
+              "w-4",
+              "h-4",
+              "rounded-3xl",
+              "flex",
+              "justify-center",
+              "items-center",
+              userQuery.length > 0 && !vizoLoading
+                ? "bg-[#2B2C46]"
+                : "bg-[#F3F3F5]",
+              userQuery.length > 0 && !vizoLoading
+                ? "cursor-pointer"
+                : "cursor-default",
+            ])}
+            onClick={() => {
+              if (userQuery?.length > 0 && !vizoLoading) {
+                onUserQuery(userQuery);
+                setUserQuery("");
+              }
+            }}
+          >
+            <ArrowEnter className="text-white w-2.5 h-2.5" />
+          </div>
 
-        <label
-          className="cursor-pointer"
-          htmlFor={showDisclaimerDisabled ? "nyris__hello-open-camera" : ""}
-          onClick={() => {
-            if (!showDisclaimerDisabled) {
-              setShowDisclaimer(true);
-            }
-          }}
-        >
-          <CameraIcon className="absolute top-4 right-3" />
-        </label>
+          <label
+            className="cursor-pointer"
+            htmlFor={showDisclaimerDisabled ? "nyris__hello-open-camera" : ""}
+            onClick={() => {
+              if (!showDisclaimerDisabled) {
+                setShowDisclaimer(true);
+              }
+            }}
+          >
+            <CameraIcon className="" />
+          </label>
+        </div>
 
         <input
           type="file"
