@@ -52,13 +52,13 @@ const ChatMobile: React.FC<Props> = ({
 
   const [showChat, setShowChat] = useState(false);
 
-  // const showDisclaimerDisabled = useMemo(() => {
-  //   const disclaimer = localStorage.getItem("upload-disclaimer");
+  const showDisclaimerDisabled = useMemo(() => {
+    const disclaimer = localStorage.getItem("upload-disclaimer");
 
-  //   if (!disclaimer) return false;
-  //   return disclaimer === "dont-show";
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [showDisclaimer]);
+    if (!disclaimer) return false;
+    return disclaimer === "dont-show";
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showDisclaimer]);
 
   const handleKeyDown = (event: { key: string }) => {
     if (userQuery.length > 0 && !vizoLoading) {
@@ -110,6 +110,10 @@ const ChatMobile: React.FC<Props> = ({
                 setNotification={setNotification}
                 setShowChat={setShowChat}
                 userQueryCount={userQueryCount}
+                onDisclaimerContinue={() => {
+                  setIsCameraOpen(true);
+                }}
+                isMobile={true}
               />
             </div>
           </div>
@@ -215,7 +219,11 @@ const ChatMobile: React.FC<Props> = ({
                 "cursor-pointer",
               ])}
               onClick={() => {
-                setIsCameraOpen(true);
+                if (!showDisclaimerDisabled) {
+                  setShowDisclaimer(true);
+                } else {
+                  setIsCameraOpen(true);
+                }
               }}
             >
               <CameraSimpleIcon className="text-[#3E36DC]" />

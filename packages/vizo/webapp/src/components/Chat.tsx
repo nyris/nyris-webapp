@@ -107,6 +107,12 @@ const Chat: React.FC<Props> = ({
         setShowDisclaimer={setShowDisclaimer}
         showDisclaimer={showDisclaimer}
         userQueryCount={userQueryCount}
+        onDisclaimerContinue={(file: any, dontShowAgain: boolean) => {
+          if (dontShowAgain) {
+            localStorage.setItem("upload-disclaimer", "dont-show");
+          }
+          imageSearch(file);
+        }}
       />
 
       <div className="w-full relative border-t border-[#E0E0E0] h-12 bg-[#FAFAFA]">

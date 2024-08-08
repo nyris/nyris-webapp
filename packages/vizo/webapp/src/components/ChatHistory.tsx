@@ -27,6 +27,8 @@ function ChatHistory({
   vizoLoadingMessage,
   ocrList,
   userQueryCount,
+  onDisclaimerContinue,
+  isMobile,
 }: {
   lastChatRef: any;
   chatHistory: ChatType[];
@@ -43,6 +45,8 @@ function ChatHistory({
   imageSearch?: any;
   setShowChat?: any;
   setNotification?: any;
+  onDisclaimerContinue?: any;
+  isMobile?: any;
 }) {
   const history = useHistory();
 
@@ -54,12 +58,14 @@ function ChatHistory({
             setShowDisclaimer(false);
           }}
           onContinue={(file: any, dontShowAgain: boolean) => {
-            if (dontShowAgain) {
-              localStorage.setItem("upload-disclaimer", "dont-show");
+            if (!isMobile) {
+              onDisclaimerContinue(file, dontShowAgain);
+            } else {
+              onDisclaimerContinue();
             }
             setShowDisclaimer(false);
-            imageSearch(file);
           }}
+          isMobile={isMobile}
         />
       )}
       <div
