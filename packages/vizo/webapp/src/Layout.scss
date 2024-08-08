@@ -414,6 +414,7 @@ body.overflow-hidden {
 
     }
     &-container {
+      width: 100%;
       max-width: 880px;
       height: 100%;
       display: flex;
@@ -569,6 +570,8 @@ body.overflow-hidden {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    z-index: 100;
+    background: #fff;
     &:hover {
       background-color: #f0efff;
       a {
