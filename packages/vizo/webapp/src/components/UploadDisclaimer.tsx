@@ -57,7 +57,7 @@ function UploadDisclaimer({
                 htmlFor={!isMobile ? "nyris__upload-photo" : ""}
                 onClick={() => {
                   if (isMobile) {
-                    onContinue();
+                    onContinue({ dontShowAgain });
                   }
                 }}
               >
@@ -68,7 +68,9 @@ function UploadDisclaimer({
                 name="take-picture"
                 id="nyris__upload-photo"
                 accept="image/jpeg,image/png,image/webp"
-                onChange={makeFileHandler((e) => onContinue(e, dontShowAgain))}
+                onChange={makeFileHandler((file) =>
+                  onContinue({ file, dontShowAgain })
+                )}
                 style={{ display: "none" }}
               />
             </div>

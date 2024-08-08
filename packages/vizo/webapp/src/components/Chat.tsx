@@ -107,7 +107,13 @@ const Chat: React.FC<Props> = ({
         setShowDisclaimer={setShowDisclaimer}
         showDisclaimer={showDisclaimer}
         userQueryCount={userQueryCount}
-        onDisclaimerContinue={(file: any, dontShowAgain: boolean) => {
+        onDisclaimerContinue={({
+          file,
+          dontShowAgain,
+        }: {
+          file: any;
+          dontShowAgain: any;
+        }) => {
           if (dontShowAgain) {
             localStorage.setItem("upload-disclaimer", "dont-show");
           }

@@ -57,11 +57,17 @@ function ChatHistory({
           onClose={() => {
             setShowDisclaimer(false);
           }}
-          onContinue={(file: any, dontShowAgain: boolean) => {
+          onContinue={({
+            file,
+            dontShowAgain,
+          }: {
+            file: any;
+            dontShowAgain: any;
+          }) => {
             if (!isMobile) {
-              onDisclaimerContinue(file, dontShowAgain);
+              onDisclaimerContinue({ file, dontShowAgain });
             } else {
-              onDisclaimerContinue();
+              onDisclaimerContinue({ dontShowAgain });
             }
             setShowDisclaimer(false);
           }}

@@ -110,7 +110,16 @@ const ChatMobile: React.FC<Props> = ({
                 setNotification={setNotification}
                 setShowChat={setShowChat}
                 userQueryCount={userQueryCount}
-                onDisclaimerContinue={() => {
+                onDisclaimerContinue={({
+                  file,
+                  dontShowAgain,
+                }: {
+                  file: any;
+                  dontShowAgain: any;
+                }) => {
+                  if (dontShowAgain) {
+                    localStorage.setItem("upload-disclaimer", "dont-show");
+                  }
                   setIsCameraOpen(true);
                 }}
                 isMobile={true}
