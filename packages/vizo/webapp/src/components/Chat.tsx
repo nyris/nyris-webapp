@@ -136,18 +136,13 @@ const Chat: React.FC<Props> = ({
         <div className="absolute top-0 right-3 h-full flex items-center gap-3">
           <div
             className={classNames([
-              "w-4",
-              "h-4",
               "rounded-3xl",
               "flex",
               "justify-center",
               "items-center",
-              userQuery.length > 0 && !vizoLoading
-                ? "bg-[#2B2C46]"
-                : "bg-[#F3F3F5]",
-              userQuery.length > 0 && !vizoLoading
-                ? "cursor-pointer"
-                : "cursor-default",
+              "bg-transparent",
+              "w-7 h-7",
+              "hover:bg-[#F3F3F5]",
             ])}
             onClick={() => {
               if (userQuery?.length > 0 && !vizoLoading) {
@@ -156,11 +151,38 @@ const Chat: React.FC<Props> = ({
               }
             }}
           >
-            <ArrowEnter className="text-white w-2.5 h-2.5" />
+            <div
+              className={classNames([
+                "min-w-4",
+                "min-h-4",
+                "rounded-3xl",
+                "flex",
+                "justify-center",
+                "items-center",
+                userQuery.length > 0 && !vizoLoading
+                  ? "bg-[#2B2C46]"
+                  : "bg-[#F3F3F5]",
+                userQuery.length > 0 && !vizoLoading
+                  ? "cursor-pointer"
+                  : "cursor-default",
+              ])}
+            >
+              <ArrowEnter className="text-white w-2.5 h-2.5" />
+            </div>
           </div>
 
           <label
-            className="cursor-pointer"
+            className={classNames([
+              "cursor-pointer",
+              "w-7",
+              "h-7",
+              "bg-transparent",
+              "hover:bg-[#F3F3F5]",
+              "rounded-3xl",
+              "flex",
+              "justify-center",
+              "items-center",
+            ])}
             htmlFor={showDisclaimerDisabled ? "nyris__hello-open-camera" : ""}
             onClick={() => {
               if (!showDisclaimerDisabled) {
