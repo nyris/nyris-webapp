@@ -183,7 +183,7 @@ function ChatHistory({
             height={40}
           />
           <div className="flex flex-col gap-y-2">
-            <p className="text-base bg-clip-text bg-gradient-to-r from-[#3E36DC] to-[#E31B5D] text-transparent">
+            <p className="text-base animate-loadingTextColor ">
               {vizoLoadingMessage}
             </p>
           </div>

@@ -73,8 +73,6 @@ const ChatMobile: React.FC<Props> = ({
   const userQueryCount = useMemo(() => {
     return chatHistory.reduce((count, item) => {
       if (item.type === MessageType.USER) {
-        console.log({ item });
-
         return count + 1;
       }
       return count;

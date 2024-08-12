@@ -3,7 +3,6 @@ import classNames from "classnames";
 import React, { useEffect, useState } from "react";
 import { RectCoords, Region } from "@nyris/nyris-api";
 import { Preview } from "@nyris/nyris-react-components";
-import { ReactComponent as CTAIcon } from "../assets/link.svg";
 import { groupFiltersByFirstLetter } from "../Helpers";
 import { ReactComponent as KeyboardArrowRightOutlinedIcon } from "../assets/arrow_right.svg";
 import { ReactComponent as KeyboardArrowLeftOutlinedIcon } from "../assets/arrow_left.svg";
@@ -14,6 +13,7 @@ import Chat from "../components/Chat";
 import { Chat as ChatType } from "../types";
 import ImagePreviewMobile from "../components/ImagePreviewMobile";
 import ChatMobile from "../components/ChatMobile";
+import ProductCard from "../components/ProductCard";
 
 interface IResultProps {
   results: any[];
@@ -225,54 +225,7 @@ function ResultsComponent({
 
             <div className="results-product-list gap-6">
               {products.map((item, index) => (
-                <div className="result-tile" key={index}>
-                  <div style={{ width: "192px", height: "192px" }}>
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <img
-                        src={item.image}
-                        alt="image_item"
-                        className="img-style product-image"
-                        style={{
-                          width: "98%",
-                          height: "100%",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="result-tile-info">
-                    <div className="result-tile-title">{item.title}</div>
-                    <div className="result-tile-sku">{item.sku}</div>
-                    <div className="result-tile-brand">
-                      <strong>Brand:</strong>
-                      <br />
-                      {item.brand}
-                    </div>
-                    {/* <div className="result-tile-brand">
-                <strong>Group ID:</strong>
-                <br />
-                {item.groupId}
-              </div> */}
-                    {item.links?.main && (
-                      <button
-                        className="cta-button"
-                        onClick={() => window.open(item.links.main, "_blank")}
-                      >
-                        Buy now
-                        <CTAIcon />
-                      </button>
-                    )}
-                  </div>
-                </div>
+                <ProductCard product={item} key={index} />
               ))}
             </div>
 
@@ -327,54 +280,7 @@ function ResultsComponent({
               ])}
             >
               {products.map((item, index) => (
-                <div className="result-tile" key={index}>
-                  <div style={{ width: "192px", height: "192px" }}>
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <img
-                        src={item.image}
-                        alt="image_item"
-                        className="img-style product-image"
-                        style={{
-                          width: "98%",
-                          height: "100%",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="result-tile-info">
-                    <div className="result-tile-title">{item.title}</div>
-                    <div className="result-tile-sku">{item.sku}</div>
-                    <div className="result-tile-brand">
-                      <strong>Brand:</strong>
-                      <br />
-                      {item.brand}
-                    </div>
-                    {/* <div className="result-tile-brand">
-                <strong>Group ID:</strong>
-                <br />
-                {item.groupId}
-              </div> */}
-                    {item.links?.main && (
-                      <button
-                        className="cta-button"
-                        onClick={() => window.open(item.links.main, "_blank")}
-                      >
-                        Buy now
-                        <CTAIcon />
-                      </button>
-                    )}
-                  </div>
-                </div>
+                <ProductCard product={item} key={index} />
               ))}
             </div>
             {products.length === 0 && !vizoLoading && (

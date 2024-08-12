@@ -106,7 +106,7 @@ function Layout() {
     history.push("/results");
 
     setVizoLoading(true);
-    setVizoLoadingMessage("fetching results...");
+    setVizoLoadingMessage("Fetching results...");
 
     nyrisApi.findRegions(image).then((res) => {
       setRegions(res);
@@ -138,7 +138,7 @@ function Layout() {
 
     if (searchResult?.ocr?.text?.length > 0) {
       setVizoLoadingMessage(
-        "Cleaning the captured text and refining your results"
+        "Cleaning the captured text and refining your results..."
       );
 
       vizoAgent
@@ -170,7 +170,7 @@ function Layout() {
       searchResult.results.length < 0 ||
       searchResult.results[0]?.score < 0.5
     ) {
-      setVizoLoadingMessage("Analyzing the image for optimal results");
+      setVizoLoadingMessage("Analyzing the image for optimal results...");
 
       vizoAgent
         .runImageAssessment()

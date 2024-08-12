@@ -19,15 +19,26 @@ module.exports = {
           "100%": { transform: "translateY(100%)" },
         },
         loadingTextColor: {
-          "0%, 100%": { color: "#1f2937" }, // Gray color
-          "50%": { color: "#3b82f6" }, // Blue color
+          "0%, 100%": {
+            color: "transparent",
+            backgroundImage:
+              "linear-gradient(90deg, rgba(62, 54, 220, 1) 0%, rgba(227, 27, 93, 1) 100%);",
+            backgroundClip: "text",
+            opacity: 1,
+          },
+          "50%": {
+            color: "rgba(170, 171, 181)",
+            backgroundClip: "text",
+            opacity: 0.4,
+          },
         },
       },
 
       animation: {
         slideUp: "slideUp 0.3s linear",
         slideDown: "slideDown 0.3s linear",
-        loadingTextColor: "loadingTextColor 2s infinite",
+        loadingTextColor:
+          "loadingTextColor 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       colors: {
         primary: "#2B2C46",
