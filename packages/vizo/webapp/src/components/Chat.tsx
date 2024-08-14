@@ -22,6 +22,7 @@ interface Props {
   showRefinedResult: any;
   imageSearch: any;
   vizoLoadingMessage: string;
+  noResult: boolean;
 }
 
 const Chat: React.FC<Props> = ({
@@ -35,6 +36,7 @@ const Chat: React.FC<Props> = ({
   showRefinedResult,
   imageSearch,
   vizoLoadingMessage,
+  noResult,
 }) => {
   const [userQuery, setUserQuery] = useState("");
 
@@ -105,6 +107,7 @@ const Chat: React.FC<Props> = ({
         setShowDisclaimer={setShowDisclaimer}
         showDisclaimer={showDisclaimer}
         userQueryCount={userQueryCount}
+        noResult={noResult}
         onDisclaimerContinue={({
           file,
           dontShowAgain,

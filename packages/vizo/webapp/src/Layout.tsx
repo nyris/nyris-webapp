@@ -142,7 +142,7 @@ function Layout() {
       );
 
       vizoAgent
-        .refineResultGroq(searchResult?.ocr?.text)
+        .refineResult(searchResult?.ocr?.text)
         .then((res) => {
           setVizoResultAssessment({
             ocr: true,
