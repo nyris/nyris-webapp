@@ -9,6 +9,7 @@ export interface ResultProps {
   links: Record<string, string>;
   imageUrl: string;
   onSimilarSearch?: any;
+  metadata?: string;
 }
 export const Result = (r: ResultProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -78,7 +79,7 @@ export const Result = (r: ResultProps) => {
           </div>
           <a 
             className="nyris__product-cta"
-            href={r.links?.main}
+            href={r.metadata ? `${window.location.href}#/${r.metadata}` : r.links?.main}
             target={window.nyrisSettings.navigatePreference}
             style={{ backgroundColor: window.nyrisSettings.primaryColor || '#3E36DC' }}
           >
