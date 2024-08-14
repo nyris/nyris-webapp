@@ -12,7 +12,7 @@ function AppMobile(): JSX.Element {
     if (settings.clarityId) {
       clarify(window, document, 'clarity', 'script', settings.clarityId);
     }
-  }, []);
+  }, [settings.clarityId]);
 
   const clarify = function (
     c: any,

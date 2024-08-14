@@ -19,7 +19,7 @@ function AppMD() {
       if (settings.clarityId) {
         clarify(window, document, 'clarity', 'script', settings.clarityId); 
       }
-    }, []);
+    }, [settings.clarityId]);
 
   const acceptTypes = ['image/*'];
   const InfiniteHits = ({ hits }: any) => {
