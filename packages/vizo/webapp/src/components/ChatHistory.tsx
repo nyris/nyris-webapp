@@ -78,7 +78,7 @@ function ChatHistory({
       )}
       {/* bg-gradient-to-b from-[#F3F3F5] to-[#ffffff00] */}
       <div
-        className="w-[98%] h-10 flex justify-center items-center fixed  rounded-[21px] md:hidden"
+        className="w-[calc(100%-16px)] h-10 flex justify-center items-center fixed bg-gradient-to-b from-[#F3F3F5] to-[#ffffff00] rounded-t-[21px] md:hidden"
         onClick={() => {
           setShowChat(false);
           setNotification(false);

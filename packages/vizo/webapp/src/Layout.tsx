@@ -468,7 +468,7 @@ function Layout() {
         )}
       </div>
       {!isCameraOpen && (
-        <footer className="md:border-t border-solid border-[#E0E0E0] pb-1">
+        <footer className="md:border-t bg-transparent md:bg-white border-solid border-[#E0E0E0] pb-1">
           <a
             href={"https://www.nyris.io"}
             target="_blank"
