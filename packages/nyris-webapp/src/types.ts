@@ -83,6 +83,7 @@ export interface AppSettings extends NyrisAPISettings {
   shouldUseUserMetadata?: boolean;
   experienceVisualSearch?: boolean;
   experienceVisualSearchImages?: string[];
+  clarityId?: string,
 }
 
 export interface SearchSuiteSettings {
