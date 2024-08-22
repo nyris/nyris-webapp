@@ -227,12 +227,24 @@ function ItemResult(props: Props) {
           <div className="info-sku">{dataItem.sku}</div>
           <span className="info-marking">{dataItem.Bezeichnung}</span>
           <Tooltip
-            title={settings.language === 'en' ? dataItem.VK_Text_Englisch: dataItem.VK_Text_Deutsch}
+            title={
+              settings.language === 'en'
+                ? dataItem.VK_Text_Englisch
+                : dataItem.VK_Text_Deutsch
+            }
             placement="top"
             arrow={true}
-            disableHoverListener={settings.language === 'en' ? dataItem.VK_Text_Englisch?.length < 76 : dataItem.VK_Text_Deutsch?.length < 76}
+            disableHoverListener={
+              settings.language === 'en'
+                ? dataItem.VK_Text_Englisch?.length < 76
+                : dataItem.VK_Text_Deutsch?.length < 76
+            }
           >
-            <div className="info-description">{settings.language === 'en' ? dataItem.VK_Text_Englisch : dataItem.VK_Text_Deutsch}</div>
+            <div className="info-description">
+              {settings.language === 'en'
+                ? dataItem.VK_Text_Englisch
+                : dataItem.VK_Text_Deutsch}
+            </div>
           </Tooltip>
         </div>
       ) : (
@@ -242,7 +254,7 @@ function ItemResult(props: Props) {
             flexDirection: 'column',
             backgroundColor: '#F3F3F5',
             flexGrow: 1,
-            zIndex: 100,
+            zIndex: 10,
             display: 'flex',
           }}
         >
@@ -306,16 +318,19 @@ function ItemResult(props: Props) {
                         color: settings.theme?.mainTextColor || '#2B2C46',
                       }}
                     >
-                    <span
-                      style={{
-                        color: get(dataItem, settings.field.warehouseStockValue)
-                          ? '#00C070'
-                          : '#c54545',
-                        fontWeight: 600,
-                      }}
-                    >
-                      {get(dataItem, settings.field.warehouseStockValue) || 0}
-                    </span>
+                      <span
+                        style={{
+                          color: get(
+                            dataItem,
+                            settings.field.warehouseStockValue,
+                          )
+                            ? '#00C070'
+                            : '#c54545',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {get(dataItem, settings.field.warehouseStockValue) || 0}
+                      </span>
                     </Typography>
                   )}
               </div>
@@ -397,7 +412,8 @@ function ItemResult(props: Props) {
                   boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                   // marginBottom: 22,
                   height: 40,
-                  background: settings.theme.secondaryCTAButtonColor || '#2B2C46',
+                  background:
+                    settings.theme.secondaryCTAButtonColor || '#2B2C46',
                   borderRadius: 4,
                   padding: '0px 8px',
                   marginTop: '8px',
@@ -431,7 +447,8 @@ function ItemResult(props: Props) {
                       fontSize: '12px',
                       letterSpacing: '0.27px',
                       wordBreak: 'break-all',
-                      maxWidth: !isMobile && secondaryCTALink ? '136px' : '164x',
+                      maxWidth:
+                        !isMobile && secondaryCTALink ? '136px' : '164x',
                       paddingRight: '8px',
                     }}
                     align="left"

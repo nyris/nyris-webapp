@@ -14,7 +14,7 @@ import {
   setFirstSearchResults,
   setFirstSearchImage,
   setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput
+  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDownward.svg';
@@ -104,7 +104,7 @@ function DragDropFile(props: Props) {
   return (
     <div
       className={`box-content-main`}
-      style={{ marginTop: 32, paddingTop: 0 }}
+      style={{ marginTop: 32, paddingTop: 0, display: 'flex' }}
     >
       {isLoading && <Loading />}
 
@@ -121,8 +121,9 @@ function DragDropFile(props: Props) {
           className={`box-content-drop ${isDragActive ? 'drag-active' : ''}`}
           {...getRootProps({
             onClick: e => {
-              e.stopPropagation();},
-            })}
+              e.stopPropagation();
+            },
+          })}
         >
           <div style={{ marginBottom: 16 }}>
             <IconDownload width={48} height={48} />

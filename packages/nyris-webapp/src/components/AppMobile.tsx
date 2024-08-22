@@ -1,22 +1,28 @@
 import React, { ReactNode, useState } from 'react';
-import HeaderMobile from './HeaderMobile';
+
+import { useHistory } from 'react-router-dom';
+import { isUndefined } from 'lodash';
+
 import {
   setPreFilterDropdown,
   setImageCaptureHelpModal,
 } from 'Store/search/Search';
-import { isUndefined } from 'lodash';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+
 import ImageCaptureHelpModal from './ImageCaptureHelpModal';
 import MobilePostFilter from './MobilePostFilter';
 import PreFilterComponent from './pre-filter';
-import { useAppDispatch, useAppSelector } from 'Store/Store';
+import HeaderMobile from './HeaderMobile';
+
 import { AppState } from 'types';
-import FooterMobile from './FooterMobile';
 
 function AppMobile({ children }: { children: ReactNode }) {
   const dispatch = useAppDispatch();
   const { search } = useAppSelector<AppState>((state: any) => state);
   const { preFilterDropdown, imageCaptureHelpModal } = search;
   const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
+
+  const history = useHistory();
 
   return (
     <>
@@ -41,14 +47,31 @@ function AppMobile({ children }: { children: ReactNode }) {
         >
           {children}
         </div>
-        <div
+        {/* <div
           className="footer-wrap-main"
           style={{
             zIndex: 999,
           }}
         >
           <FooterMobile />
-        </div>
+        </div> */}
+        {history.location?.pathname === '/' && (
+          <footer className="h-11 w-full flex justify-center items-center bg-white">
+            <a
+              href={'https://www.nyris.io'}
+              target="_blank"
+              rel="noreferrer"
+              className="text-[#AAABB5] md:text-[#2B2C46]"
+            >
+              <p className="text-xs font-normal text-[#AAABB5] inline">
+                Powered by
+              </p>
+              <p className="text-xs font-bold text-[#AAABB5] inline pl-0.5">
+                nyris®
+              </p>
+            </a>
+          </footer>
+        )}
       </div>
       <div
         className={`box-filter ${isOpenFilter ? 'open' : 'close'} `}
@@ -60,6 +83,7 @@ function AppMobile({ children }: { children: ReactNode }) {
         }}
       >
         <MobilePostFilter
+          isOpenFilter={isOpenFilter}
           onApply={() => {
             setOpenFilter(!isOpenFilter);
           }}

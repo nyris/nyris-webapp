@@ -9,19 +9,24 @@ import { useAppSelector } from 'Store/Store';
 interface Props {
   allSearchResults: any;
   onApply: any;
+  isOpenFilter: boolean;
 }
 
 function MobilePostFilter(props: Props) {
   const settings = useAppSelector(state => state.settings);
+  const { isOpenFilter, allSearchResults, onApply } = props;
+
   return (
     <>
-      {settings.algolia.enabled && (
+      {settings.algolia.enabled && isOpenFilter && (
         <PostFilterPanelAlgolia
-          disjunctiveFacets={props?.allSearchResults?.disjunctiveFacets}
-          onApply={props.onApply}
+          disjunctiveFacets={allSearchResults?.disjunctiveFacets}
+          onApply={onApply}
         />
       )}
-      {!settings.algolia.enabled && <PostFilterPanel onApply={props.onApply} />}
+      {!settings.algolia.enabled && isOpenFilter && (
+        <PostFilterPanel onApply={onApply} />
+      )}
     </>
   );
 }

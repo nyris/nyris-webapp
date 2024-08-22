@@ -1,7 +1,3 @@
-import { Button } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
-
 import React, {
   memo,
   useCallback,
@@ -10,8 +6,15 @@ import React, {
   useRef,
   useState,
 } from 'react';
+
 import { connectSearchBox, connectStateResults } from 'react-instantsearch-dom';
 import { NavLink, useHistory } from 'react-router-dom';
+
+import classNames from 'classnames';
+import { debounce, isEmpty } from 'lodash';
+import { useTranslation } from 'react-i18next';
+import { useAuth0 } from '@auth0/auth0-react';
+
 import {
   reset,
   updateValueTextSearchMobile,
@@ -23,15 +26,18 @@ import {
   setShowFeedback,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { AppState } from 'types';
-import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
-import { ReactComponent as FilterIcon } from 'common/assets/icons/filter.svg';
 
-import { debounce, isEmpty } from 'lodash';
+import { AppState } from 'types';
+
+import { ReactComponent as FilterIcon } from 'common/assets/icons/filter.svg';
+import { ReactComponent as LogoutIcon } from 'common/assets/icons/logout.svg';
+import { ReactComponent as CameraSimpleIcon } from 'common/assets/icons/camera_simple.svg';
+import { ReactComponent as PreFilterIcon } from 'common/assets/icons/filter_settings.svg';
+import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
+
 import { useQuery } from 'hooks/useQuery';
-import { useTranslation } from 'react-i18next';
 import { find } from 'services/image';
-import { useAuth0 } from '@auth0/auth0-react';
+import DefaultModal from './modal/DefaultModal';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -40,7 +46,7 @@ interface Props {
 }
 
 function HeaderMobileComponent(props: Props): JSX.Element {
-  const { user } = useAuth0();
+  const { user, isAuthenticated, logout } = useAuth0();
   const { auth0 } = useAppSelector(state => state.settings);
 
   const { onToggleFilterMobile, refine } = props;
@@ -61,7 +67,10 @@ function HeaderMobileComponent(props: Props): JSX.Element {
 
   const query = useQuery();
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
+
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const history = useHistory();
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const [valueInput, setValueInput] = useState<string>(queryText || '');
@@ -235,20 +244,88 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
 
   return (
-    <div style={{ width: '100%', background: '#fff' }}>
-      {history.location?.pathname !== '/result' && (
+    <>
+      <DefaultModal
+        openModal={showLogoutModal}
+        handleClose={() => {
+          setShowLogoutModal(false);
+        }}
+      >
         <div
-          className="box-content"
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            height: '48px',
+            backgroundColor: 'white',
+            width: '360px',
+            padding: '24px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+            onClick={() => setShowLogoutModal(false)}
+          >
+            <CloseIcon
+              width={'16px'}
+              height={'16px'}
+              fontSize={'16px'}
+              color="black"
+            />
+          </div>
+          <p style={{ fontSize: '36px', fontWeight: 'bold', color: '#2B2C46' }}>
+            Logout
+          </p>
+          <p style={{ fontSize: '13px', color: '#2B2C46', paddingTop: '16px' }}>
+            Are you sure you want to log out? Your session will be securely
+            closed.
+          </p>
+          <p style={{ fontSize: '13px', color: '#2B2C46', paddingTop: '16px' }}>
+            Email
+          </p>
+          <div
+            style={{
+              backgroundColor: '#FAFAFA',
+              height: '32px',
+              paddingLeft: '16px',
+              paddingRight: '16px',
+              marginTop: '8px',
+            }}
+          >
+            {user?.email}
+          </div>
+          <div style={{ display: 'flex', width: '100%', marginTop: '16px' }}>
+            <div
+              style={{
+                width: '50%',
+                backgroundColor: '#2B2C46',
+                color: 'white',
+                padding: '16px',
+              }}
+              onClick={() => {
+                logout({
+                  logoutParams: { returnTo: window.location.origin },
+                });
+              }}
+            >
+              Confirm log out
+            </div>
+          </div>
+        </div>
+      </DefaultModal>
+      <div style={{ width: '100%', background: '#fff' }}>
+        <div
+          className={`box-content flex items-center justify-between h-12 pr-6 pl-4 ${
+            history.location?.pathname === '/result'
+              ? 'border-solid border-b border-[#afafaf52] '
+              : ''
+          }`}
+          style={{
             background: settings.theme?.headerColor,
           }}
         >
           <NavLink
             to="/"
-            style={{ lineHeight: 0, paddingLeft: '10px' }}
+            style={{ lineHeight: 0 }}
             onClick={() => {
               dispatch(reset(''));
               dispatch(setPreFilter({}));
@@ -264,122 +341,117 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               }}
             />
           </NavLink>
-        </div>
-      )}
-
-      {((auth0.enabled && user?.email_verified) || !auth0.enabled) && (
-        <div
-          style={{
-            margin: '16px 8px',
-            display: 'flex',
-            columnGap: '8px',
-            alignItems: 'center',
-          }}
-        >
-          <div className="wrap-header-mobile" style={{ height: '56px' }}>
+          {auth0.enabled && isAuthenticated && (
             <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                height: '100%',
+              onClick={() => {
+                setShowLogoutModal(true);
               }}
             >
-              <div
-                ref={containerRefInputMobile}
-                id="box-input-search"
-                className="d-flex w-100"
-                style={{
-                  alignItems: 'center',
-                  height: '100%',
-                }}
-              >
-                <div
-                  className="pre-filter-icon"
-                  onClick={() => {
-                    if (showPreFilter) {
-                      onToggleFilterMobile(false);
+              <LogoutIcon className="text-[#AAABB5]" />
+            </div>
+          )}
+        </div>
+
+        <div
+          className={classNames([
+            'flex',
+            'md:hidden',
+            'fixed',
+            history.location?.pathname !== '/' ? 'bottom-4' : 'bottom-12',
+            'w-full',
+            'px-2',
+            'gap-2',
+          ])}
+        >
+          <div className={classNames(['flex-grow'])}>
+            <div
+              className={classNames([
+                'h-12',
+                'rounded-3xl',
+                'shadow-outer',
+                'w-full',
+                'bg-white',
+                'px-2',
+                'flex',
+                'items-center',
+                'justify-between',
+              ])}
+            >
+              <div className="flex flex-1 gap-x-2">
+                {showPreFilter && (
+                  <button
+                    className={classNames([
+                      '!min-w-8',
+                      'min-h-8',
+                      'rounded-3xl',
+                      'flex',
+                      'justify-center',
+                      'items-center',
+                      'bg-[#F3F3F5]',
+                      'relative',
+                    ])}
+                    onClick={() => {
                       dispatch(setPreFilterDropdown(!preFilterDropdown));
-                    }
-                  }}
-                  style={{ cursor: showPreFilter ? 'pointer' : '' }}
-                >
-                  {showPreFilter && (
+                    }}
+                    title="pre-filter"
+                  >
                     <div
-                      className="icon-hover"
-                      style={{
-                        ...(!isEmpty(preFilter)
-                          ? {
-                              backgroundColor: settings.theme?.primaryColor,
-                            }
-                          : {
-                              backgroundColor: `#2B2C46`,
-                            }),
-                      }}
-                    >
-                      <IconFilter color="white" />
-                    </div>
-                  )}
-                  {!showPreFilter && <IconSearch width={16} height={16} />}
-                  {!isEmpty(preFilter) && showPreFilter && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '7px',
-                        left: '35px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        background: 'white',
-                        width: '10px',
-                        height: '10px',
-                        borderRadius: '100%',
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: '8px',
-                          height: '8px',
-                          background: settings.theme?.primaryColor,
-                          borderRadius: '100%',
-                        }}
-                      ></div>
-                    </div>
-                  )}
-                </div>
+                      className={classNames([
+                        !isEmpty(preFilter) ? 'block' : 'hidden',
+                        'absolute',
+                        'top-0',
+                        'right-0',
+                        'w-2',
+                        'min-w-2',
+                        'h-2',
+                        'bg-[#3E36DC]',
+                        'border-2',
+                        'border-white',
+                        'rounded-full',
+                      ])}
+                    />
+                    <PreFilterIcon
+                      className={classNames(
+                        !isEmpty(preFilter) ? 'text-[#3E36DC]' : 'text-black',
+                      )}
+                    />
+                  </button>
+                )}
 
                 <Input value={valueInput} onChange={onChangeText} />
-
-                {history.location?.pathname !== '/' && valueInput && (
-                  <Button
-                    onClick={() => {
-                      setValueInput('');
-                      if (imageThumbSearchInput) {
-                        history.push('/result');
-                        dispatch(updateValueTextSearchMobile(''));
-                        refine('');
-                        return;
-                      }
-                      dispatch(updateValueTextSearchMobile(''));
-                      dispatch(reset(''));
-                      refine('');
-                      history.push('/');
-                    }}
-                    style={{
-                      // background: '#fff',
-                      marginRight: '8px',
-                      border: 0,
-                      width: '40px',
-                      height: '40px',
-                    }}
-                  >
-                    <CloseIcon
-                      style={{
-                        fontSize: 16,
-                        color: settings.theme?.secondaryColor,
-                      }}
-                    />
-                  </Button>
-                )}
+              </div>
+              <div className="flex gap-x-2">
+                {/* <div
+                className={classNames([
+                  'w-8',
+                  'h-8',
+                  'rounded-3xl',
+                  'flex',
+                  'justify-center',
+                  'items-center',
+                  valueInput.length > 0 ? 'bg-[#2B2C46]' : 'bg-[#F3F3F5]',
+                  valueInput.length > 0 ? 'cursor-pointer' : 'cursor-default',
+                ])}
+              >
+                <ArrowEnter className="text-white" />
+                
+              </div> */}
+                <div
+                  className={classNames([
+                    history.location?.pathname !== '/' ? 'flex' : 'hidden',
+                    'w-8',
+                    'h-8',
+                    'rounded-3xl',
+                    'justify-center',
+                    'items-center',
+                    'bg-[#F3F3F5]',
+                  ])}
+                  // onClick={() => {
+                  //   setIsCameraOpen(true);
+                  // }}
+                >
+                  <CameraSimpleIcon />
+                </div>
               </div>
             </div>
           </div>
@@ -387,8 +459,8 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             <div
               style={{
                 position: 'relative',
-                width: '56px',
-                height: '56px',
+                width: '48px',
+                height: '48px',
                 padding: ' 8px',
                 flexShrink: 0,
                 borderRadius: '32px',
@@ -408,18 +480,21 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     disablePostFilter
                       ? '#F3F3F5'
                       : isPostFilterApplied
-                      ? settings.theme?.primaryColor
-                      : '#2B2C46'
+                      ? '#F0EFFF'
+                      : '#F3F3F5'
                   }`,
                   borderRadius: '40px',
-                  width: '40px',
-                  height: '40px',
+                  width: '32px',
+                  height: '32px',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
               >
                 <FilterIcon
-                  color={`${disablePostFilter ? '#E0E0E0' : 'white'}`}
+                  className={classNames([
+                    isPostFilterApplied ? 'text-[#3E36DC]' : 'text-[#2B2C46]',
+                  ])}
+                  // color={`${disablePostFilter ? '#E0E0E0' : '2B2C46'}`}
                 />
               </div>
 
@@ -428,7 +503,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   style={{
                     position: 'absolute',
                     top: '8px',
-                    left: '37px',
+                    left: '35px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -453,8 +528,8 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             </div>
           )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
 

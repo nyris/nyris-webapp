@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
+
 import CameraCustom from 'components/drawer/cameraCustom';
-import React, { useEffect, useState } from 'react';
-import { useAppSelector } from 'Store/Store';
 import { ReactComponent as CameraIcon } from 'common/assets/icons/take_photo.svg';
+
+import { useAppSelector } from 'Store/Store';
 import ExperienceVisualSearch from '../../components/Experience-visual-search/ExperienceVisualSearch';
 
 function AppMobile(): JSX.Element {
@@ -19,7 +21,7 @@ function AppMobile(): JSX.Element {
     l: Document,
     a: string,
     r: string,
-    i: string
+    i: string,
   ) {
     c[a] =
       c[a] ||
@@ -38,13 +40,13 @@ function AppMobile(): JSX.Element {
   return (
     <div
       style={{
-        display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
         height: '100%',
       }}
+      className="flex desktop:hidden"
     >
       <div className="take-photo">
         <div
@@ -73,11 +75,7 @@ function AppMobile(): JSX.Element {
           }}
         />
       </div>
-      {settings.experienceVisualSearch ? (
-        <ExperienceVisualSearch />
-      ) : (
-        ''
-      )}
+      {settings.experienceVisualSearch ? <ExperienceVisualSearch /> : ''}
     </div>
   );
 }

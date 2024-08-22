@@ -30,33 +30,6 @@ export type Panels = {
   [key: string]: boolean;
 };
 
-export function useHasRefinements(
-  searchResults: SearchResults,
-  attributes: string[] = [],
-) {
-  const facets = useMemo(() => {
-    const disjunctiveFacets = searchResults?.disjunctiveFacets || [];
-    const hierarchicalFacets = searchResults?.hierarchicalFacets || [];
-    return [...disjunctiveFacets, ...hierarchicalFacets];
-  }, [searchResults]);
-
-  const hasRefinements = useMemo(() => {
-    let found = !attributes.length;
-
-    facets.forEach(facet => {
-      attributes?.forEach(attribute => {
-        if (facet.name === attribute && facet.data) {
-          found = true;
-        }
-      });
-    });
-
-    return found;
-  }, [facets, attributes]);
-
-  return hasRefinements;
-}
-
 function togglePanels(panels: Panels, val: boolean) {
   return Object.keys(panels).reduce(
     (acc, panelKey) => ({ ...acc, [panelKey]: val }),

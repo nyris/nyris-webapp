@@ -54,7 +54,11 @@ function AppMD() {
   const CustomInfiniteHits = connectInfiniteHits(InfiniteHits);
 
   return (
-    <div className={`box-content-main ${isLoading ? 'loading' : ''}`}>
+    <div
+      className={`box-content-main ${
+        isLoading ? 'loading' : ''
+      } hidden desktop:flex`}
+    >
       <div className="box-content_top" style={{ position: 'relative' }}>
         {settings.headerText && (
           <div
@@ -77,11 +81,7 @@ function AppMD() {
           isLoading={isLoading}
           onChangeLoading={onChangeLoading}
         />
-        {settings.experienceVisualSearch ? (
-          <ExperienceVisualSearch />
-        ) : (
-         '' 
-        )}
+        {settings.experienceVisualSearch ? <ExperienceVisualSearch /> : ''}
       </div>
     </div>
   );

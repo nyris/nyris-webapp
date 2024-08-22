@@ -10,9 +10,13 @@ import AppMobile from 'page/landingPage/AppMobile';
 
 function App(): JSX.Element {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-  let SelectedApp: any = isMobile ? AppMobile : AppMD;
 
-  return <SelectedApp />;
+  return (
+    <>
+      <AppMobile />
+      <AppMD />
+    </>
+  );
 }
 
 export default App;

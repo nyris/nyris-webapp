@@ -96,11 +96,9 @@ function Layout({ children }: ReactNode): JSX.Element {
   }, [user, dispatch, settings.shouldUseUserMetadata]);
 
   let HeaderApp: any;
-  let FooterApp: any;
   let classNameBoxVersion: string = 'newVersion';
   if (isMobile) {
     classNameBoxVersion = 'mobile';
-    FooterApp = FooterMobile;
     HeaderApp = HeaderMobile;
   } else {
     HeaderApp = Header;
@@ -169,11 +167,7 @@ function Layout({ children }: ReactNode): JSX.Element {
             <div className={`box-body-${classNameBoxVersion}-wrap-main`}>
               {children}
             </div>
-            {isMobile && (
-              <div className="footer-wrap-main">
-                <FooterApp />
-              </div>
-            )}
+
             {showPoweredByNyris && <PoweredByNyris />}
           </div>
         )}
