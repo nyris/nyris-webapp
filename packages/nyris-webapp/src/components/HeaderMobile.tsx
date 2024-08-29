@@ -38,6 +38,9 @@ import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useQuery } from 'hooks/useQuery';
 import { find } from 'services/image';
 import DefaultModal from './modal/DefaultModal';
+import useRequestStore from 'Store/requestStore';
+import CameraCustom from './drawer/cameraCustom';
+import UploadDisclaimer from './UploadDisclaimer';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -68,8 +71,14 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const query = useQuery();
   const containerRefInputMobile = useRef<HTMLDivElement>(null);
 
+  const { resetRequestState } = useRequestStore(state => ({
+    resetRequestState: state.reset,
+  }));
+
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   const history = useHistory();
   const { settings } = useAppSelector<AppState>((state: any) => state);
@@ -243,6 +252,14 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     return settings.preFilterOption;
   }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
 
+  const showDisclaimerDisabled = useMemo(() => {
+    const disclaimer = localStorage.getItem('upload-disclaimer-webapp');
+
+    if (!disclaimer) return false;
+    return disclaimer === 'dont-show';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showDisclaimer]);
+
   return (
     <>
       <DefaultModal
@@ -312,6 +329,28 @@ function HeaderMobileComponent(props: Props): JSX.Element {
           </div>
         </div>
       </DefaultModal>
+      {showDisclaimer && (
+        <UploadDisclaimer
+          onClose={() => {
+            setShowDisclaimer(false);
+          }}
+          onContinue={({
+            file,
+            dontShowAgain,
+          }: {
+            file: any;
+            dontShowAgain: any;
+          }) => {
+            if (dontShowAgain) {
+              localStorage.setItem('upload-disclaimer-webapp', 'dont-show');
+            }
+            setOpenModalCamera(true);
+
+            setShowDisclaimer(false);
+          }}
+          isMobile={true}
+        />
+      )}
       <div style={{ width: '100%', background: '#fff' }}>
         <div
           className={`box-content flex items-center justify-between h-12 pr-6 pl-4 ${
@@ -329,6 +368,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             onClick={() => {
               dispatch(reset(''));
               dispatch(setPreFilter({}));
+              resetRequestState();
             }}
           >
             <img
@@ -446,9 +486,13 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     'items-center',
                     'bg-[#F3F3F5]',
                   ])}
-                  // onClick={() => {
-                  //   setIsCameraOpen(true);
-                  // }}
+                  onClick={() => {
+                    if (!showDisclaimerDisabled) {
+                      setShowDisclaimer(true);
+                    } else {
+                      setOpenModalCamera(true);
+                    }
+                  }}
                 >
                   <CameraSimpleIcon />
                 </div>
@@ -528,6 +572,13 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             </div>
           )}
         </div>
+        <CameraCustom
+          show={isOpenModalCamera}
+          onClose={() => {
+            setOpenModalCamera(!isOpenModalCamera);
+          }}
+          newSearch={true}
+        />
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core';
 import { ReactComponent as RemoveIcon } from 'common/assets/icons/minus.svg';
-import { ReactComponent as AddIcon } from 'common/assets/icons/add.svg';
+import { ReactComponent as AddIcon } from 'common/assets/icons/add-rounded.svg';
 import classNames from 'classnames';
 import { Collapse } from 'components/collapse/collapse';
 import type { MouseEventHandler } from 'react';

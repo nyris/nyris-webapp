@@ -2326,3 +2326,12 @@ button {
     max-width: 1300px;
   }
 }
+
+
+.MuiPaper-root {
+  background-color: inherit !important;
+}
+
+.MuiDrawer-paperAnchorBottom {
+  height: 100% !important;
+}

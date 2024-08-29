@@ -43,7 +43,8 @@
     "sass": "^1.71.1",
     "typeface-roboto": "^1.1.13",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.5.5"
   },
   "scripts": {
     "start": "react-scripts start",

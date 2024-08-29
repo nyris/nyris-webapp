@@ -115,11 +115,11 @@ function AppMobile({ children }: { children: ReactNode }) {
 
       {imageCaptureHelpModal && (
         <div
-          className={`box-filter open`}
+          className={`box-filter open !h-full`}
           style={{
             top: '0px',
             width: '100%',
-            zIndex: 100,
+            zIndex: 1400,
             position: 'absolute',
           }}
         >

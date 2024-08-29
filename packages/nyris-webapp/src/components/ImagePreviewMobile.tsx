@@ -1,5 +1,9 @@
-// @ts-nocheck
-import React, { memo, useState } from 'react';
+// // @ts-nocheck
+
+import React, { memo, useEffect, useRef, useState } from 'react';
+
+import cx from 'classnames';
+
 import { Typography, Hidden } from '@material-ui/core';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
@@ -10,6 +14,9 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { ReactComponent as ArrowUp } from 'common/assets/icons/arrow_up.svg';
 import { ReactComponent as ArrowDown } from 'common/assets/icons/arrow_down.svg';
 import { ReactComponent as Trash } from 'common/assets/icons/trash.svg';
+import { ReactComponent as PlusIcon } from 'common/assets/icons/plus.svg';
+import { ReactComponent as CropIcon } from 'common/assets/icons/crop.svg';
+
 import { useQuery } from 'hooks/useQuery';
 import {
   reset,
@@ -19,6 +26,8 @@ import {
 import { useHistory } from 'react-router-dom';
 import { find } from 'services/image';
 import { isEmpty } from 'lodash';
+import useRequestStore from 'Store/requestStore';
+import CameraCustom from './drawer/cameraCustom';
 
 function ImagePreviewMobileComponent({
   requestImage,
@@ -38,13 +47,26 @@ function ImagePreviewMobileComponent({
   showAdjustInfo: any;
 }) {
   const { t } = useTranslation();
-  const [editActive, setEditActive] = useState(false);
   const settings = useAppSelector(state => state.settings);
   const { preFilter } = useAppSelector(state => state.search);
   const isAlgoliaEnabled = settings.algolia?.enabled;
   const query = useQuery();
   const dispatch = useAppDispatch();
   const history = useHistory();
+
+  const { requestImages, regions } = useRequestStore(state => ({
+    requestImages: state.requestImages,
+    regions: state.regions,
+  }));
+
+  const [editActive, setEditActive] = useState(true);
+  const [showCamera, setShowCamera] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(requestImages.length - 1);
+  const [isVisible, setIsVisible] = useState(false);
+  const [translateValue, setTranslateValue] = useState(0);
+  const [isAbsolute, setIsAbsolute] = useState(false);
+
+  const previewWrapperRef = useRef<any>(null);
 
   const handleArrowClick = () => {
     setEditActive(s => !s);
@@ -100,137 +122,161 @@ function ImagePreviewMobileComponent({
     }
   };
 
-  return (
-    <div
-      className="col-left"
-      style={{
-        backgroundColor: '#5D5D63',
-        marginBottom: '15px',
-      }}
-    >
-      <div>
-        <div className="box-preview">
-          <div>
-            <div
-              className="preview-item"
-              style={{
-                backgroundColor: 'transparent',
-              }}
-            >
-              <Preview
-                key={requestImage?.id}
-                onSelectionChange={(r: RectCoords) => {
-                  debouncedOnImageSelectionChange(r);
-                }}
-                image={requestImage?.canvas}
-                selection={imageSelection || DEFAULT_REGION}
-                regions={filteredRegions}
-                minWidth={
-                  Math.min(80 * (requestImage?.canvas?.width / requestImage?.canvas?.height), 200)
-                }
-                minHeight={80}
-                maxWidth={255}
-                maxHeight={255}
-                dotColor={editActive ? '#FBD914' : ''}
-                minCropWidth={editActive ? 30 : 5}
-                minCropHeight={editActive ? 30 : 5}
-                rounded={false}
-                expandAnimation={editActive}
-                shrinkAnimation={!editActive}
-                onExpand={() => {
-                  setEditActive(true);
-                }}
-                showGrip={editActive}
-                draggable={editActive ? true : false}
-              />
-            </div>
-          </div>
+  const handleExpand = () => {
+    setIsVisible(s => !s);
 
-          {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
+    // Change to absolute after the transition
+    setTimeout(() => {
+      setIsAbsolute(s => !s);
+    }, 500); // Match the duration of the transition
+  };
+
+  useEffect(() => {
+    if (previewWrapperRef.current) {
+      // Set translate value to the height of divA
+      setTranslateValue(previewWrapperRef.current.clientHeight);
+    }
+  }, []);
+
+  return (
+    <>
+      <div
+        ref={previewWrapperRef}
+        className={cx([
+          'bg-primary',
+          'flex',
+          'justify-center',
+          isVisible ? 'pt-6' : '',
+          'px-7',
+          'w-full',
+        ])}
+        style={{
+          opacity: isVisible ? 1 : 0,
+          height: isVisible ? '100%' : 0,
+          transition: 'opacity 0.4s ease, height 0.2s ease',
+        }}
+      >
+        <div className="w-full bg-[#55566b] aspect-square flex just items-center">
+          <Preview
+            onSelectionChange={(r: RectCoords) => {
+              debouncedOnImageSelectionChange(r, currentIndex);
+            }}
+            image={requestImages[currentIndex]}
+            selection={regions[currentIndex] || DEFAULT_REGION}
+            regions={filteredRegions}
+            dotColor={editActive ? '#FBD914' : ''}
+            minCropWidth={30}
+            minCropHeight={30}
+            rounded={true}
+          />
+        </div>
+        <div className="max-w-[300px] max-h-[300px]"></div>
+      </div>
+      <div
+        style={{
+          transform: isVisible ? 'translateY(0)' : `translateY(0%)`,
+          transition: 'transform 0.3s ease',
+        }}
+      >
+        <div
+          className={cx([
+            'flex',
+            'items-center',
+            'gap-x-2',
+            'h-28',
+            'w-full',
+            'bg-primary',
+            'justify-center',
+            'relative',
+            'py-4',
+          ])}
+        >
+          {requestImages.map((image, index) => {
+            return (
+              <div
+                key={index}
+                className={cx([
+                  'rounded-md',
+                  'relative',
+                  'p-1',
+                  currentIndex === index && isVisible
+                    ? ' bg-white'
+                    : 'bg-transparent',
+                ])}
+              >
+                <img
+                  className={cx([
+                    'w-[70px]',
+                    'h-[70px]',
+                    'rounded-md',
+                    'object-cover',
+                    'shadow-inner',
+                  ])}
+                  src={image.toDataURL()}
+                  alt=""
+                  onClick={() => {
+                    setCurrentIndex(index);
+                    if (!isVisible) {
+                      handleExpand();
+                    }
+                  }}
+                />
+                {currentIndex === index && (
+                  <div
+                    className={cx([
+                      'absolute',
+                      'w-[70px]',
+                      'h-[70px]',
+                      'rounded-md',
+                      'top-1',
+                      'bg-black/15',
+                    ])}
+                  />
+                )}
+              </div>
+            );
+          })}
+          {requestImages.length < 3 && (
             <div
-              style={{
-                backgroundColor: '#3E36DC',
-                display: 'flex',
-                columnGap: '6px',
-                padding: '5px',
-                width: 'fit-content',
-                minWidth: '180px',
-                marginTop: 'auto',
-                position: 'absolute',
-                bottom: -25,
-                borderRadius: '16px',
-                zIndex: 1000,
+              className={cx([
+                'w-[70px]',
+                'h-[70px]',
+                'bg-[#55566B]/50',
+                'flex',
+                'justify-center',
+                'items-center',
+                'border',
+                'border-dashed',
+                'border-[#AAABB5]',
+                'rounded-md',
+              ])}
+              onClick={() => {
+                setShowCamera(true);
               }}
             >
-              <IconInfo color="white" />
-              <Typography
-                style={{
-                  fontSize: 10,
-                  color: '#fff',
-                }}
-              >
-                {showAdjustInfo
-                  ? t('Crop the image for better results')
-                  : 'Crop the image for better results'}
-              </Typography>
+              <PlusIcon className={cx(['text-[#AAABB5]'])} />
             </div>
           )}
-        </div>
-        <>
-          <Hidden>
-            <div
-              style={{
-                position: 'absolute',
-                left: '15px',
-                top: '25px',
-                padding: '4px',
-              }}
-              onClick={onImageRemove}
-            >
-              <div
-                style={{
-                  width: '24px',
-                  height: '24px',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  display: 'flex',
-                  borderRadius: '100%',
-                }}
-              >
-                <Trash color="white" fill="white" />
-              </div>
-            </div>
-          </Hidden>
 
-          <Hidden mdUp>
-            <div
-              className="slideDown"
-              style={{
-                position: 'absolute',
-                bottom: '25px',
-                right: '20px',
-              }}
-              onClick={handleArrowClick}
-            >
-              <div
-                style={{
-                  width: '24px',
-                  height: '24px',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  display: 'flex',
-                  borderRadius: '100%',
-                  backgroundColor: 'white',
-                }}
-              >
-                {editActive && <ArrowUp color="black" />}
-                {!editActive && <ArrowDown color="black" fill="black" />}
-              </div>
-            </div>
-          </Hidden>
-        </>
+          <div
+            className="absolute right-5 rounded-full bg-white w-6 h-6 flex justify-center items-center"
+            onClick={() => handleExpand()}
+          >
+            <CropIcon className="text-primary" />
+          </div>
+
+          <CameraCustom
+            show={showCamera}
+            onClose={() => setShowCamera(false)}
+          />
+        </div>
+        {requestImages.length < 3 && (
+          <p className="text-[10px] pb-4 w-full text-center bg-primary text-white -mt-[1px]">
+            Add up to three photos for a more accurate visual search.
+          </p>
+        )}
       </div>
-    </div>
+    </>
   );
 }
 const ImagePreviewMobile = memo(ImagePreviewMobileComponent);

@@ -15,7 +15,7 @@ import FooterMobile from './FooterMobile';
 import HeaderMobile from './HeaderMobile';
 import Header from './Header';
 import { isUndefined } from 'lodash';
-import AppMobile from './AppMobile';
+import MobileLayout from './MobileLayout';
 import jQuery from 'jquery';
 import Loading from './Loading';
 import i18n from 'i18next';
@@ -140,7 +140,7 @@ function Layout({ children }: ReactNode): JSX.Element {
         </div>
       )}
       <InstantSearchProvider>
-        {isMobile && showApp && <AppMobile>{children}</AppMobile>}
+        {isMobile && showApp && <MobileLayout>{children}</MobileLayout>}
         {!isMobile && showApp && (
           <div className={`layout-main-${classNameBoxVersion}`}>
             <div

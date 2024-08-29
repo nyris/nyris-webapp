@@ -217,8 +217,8 @@ function FooterMobile(props: Props): JSX.Element {
       </div>
       <div className="box-screenshot-camera">
         <CameraCustom
-          isToggle={isOpenModalCamera}
-          onToggleModal={() => {
+          show={isOpenModalCamera}
+          onClose={() => {
             setOpenModalCamera(!isOpenModalCamera);
           }}
         />

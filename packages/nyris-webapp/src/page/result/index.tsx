@@ -57,6 +57,8 @@ import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powe
 import Feedback from 'components/Feedback';
 import { SelectedPostFilter } from 'components/SelectedPostFilter';
 import { GoBack } from '../../components/GoBackButton';
+import { useImageSearch } from 'hooks/useImageSearch';
+import useRequestStore from 'Store/requestStore';
 
 interface Props {
   allSearchResults: any;
@@ -109,6 +111,13 @@ function ResultComponent(props: Props) {
   const isPostFilterEnabled = settings.postFilterOption;
   const history = useHistory();
 
+  const { singleImageSearch } = useImageSearch();
+
+  const { updateRegion } = useRequestStore(state => ({
+    requestImages: state.requestImages,
+    updateRegion: state.updateRegion,
+  }));
+
   useEffect(() => {
     if (
       !loadingSearchAlgolia &&
@@ -156,7 +165,7 @@ function ResultComponent(props: Props) {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter)
+          values: Object.keys(preFilter),
         },
       ];
       dispatch(loadingActionResults());
@@ -223,44 +232,8 @@ function ResultComponent(props: Props) {
     dispatch(loadingActionResults());
     dispatch(setImageSearchInput(url));
     let image = await createImage(url);
-    dispatch(setRequestImage(image));
 
-    let searchRegion: RectCoords | undefined = undefined;
-
-    try {
-      if (settings.regions) {
-        let res = await findRegions(image, settings);
-        searchRegion = res.selectedRegion;
-        dispatch(setRegions(res.regions));
-        dispatch(setSelectedRegion(searchRegion));
-      }
-    } catch (error) {
-    } finally {
-      const preFilterValues = [
-        {
-          key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
-        },
-      ];
-      find({
-        image,
-        settings,
-        region: searchRegion,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-      }).then((res: any) => {
-        if (!firstSearchResults) {
-          dispatch(setFirstSearchResults(res));
-          dispatch(setFirstSearchImage(image));
-          dispatch(setFirstSearchPrefilters(preFilter));
-          if (!isMobile) {
-            dispatch(setFirstSearchThumbSearchInput(url))
-          }
-        }
-        dispatch(setSearchResults(res));
-        dispatch(updateStatusLoading(false));
-        return;
-      });
-    }
+    singleImageSearch({ image, settings, showFeedback: false });
   };
   const nonEmptyFilter: any[] = !requestImage
     ? []
@@ -336,7 +309,10 @@ function ResultComponent(props: Props) {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
-    debounce((r: RectCoords) => {
+    debounce((r: RectCoords, index?: number) => {
+      if (index) {
+        updateRegion(r, index);
+      }
       setImageSelection(r);
       feedbackRegionEpic(stateGlobal, r);
       dispatch(selectionChanged(r));
@@ -456,18 +432,21 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  paddingTop: isMobile ? '8px' : '40px',
+                  paddingTop: isMobile ? '0px' : '40px',
                   overflow: !isMobile ? 'auto' : '',
                   display: 'flex',
                   flexDirection: 'column',
                 }}
               >
-                {!isMobile && firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? (
+                {!isMobile &&
+                firstSearchResults &&
+                requestImage?.canvas !== firstSearchImage &&
+                !fetchingResults ? (
                   <GoBack />
                 ) : (
                   ''
                 )}
-                
+
                 {!isMobile && settings.algolia.enabled && (
                   <div className="wrap-box-refinements">
                     <CurrentRefinements statusSwitchButton={true} />
@@ -496,15 +475,19 @@ function ResultComponent(props: Props) {
                     flexGrow: 1,
                     backgroundColor: '#FAFAFA',
                   }}
+                  className="mt-4 desktop:mt-0"
                 >
-                  {isMobile && firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? (
+                  {isMobile &&
+                  firstSearchResults &&
+                  requestImage?.canvas !== firstSearchImage &&
+                  !fetchingResults ? (
                     <div className="go-back-mobile-container">
                       <GoBack />
                     </div>
                   ) : (
                     ''
                   )}
-                  
+
                   <div
                     className={'box-item-result ml-auto mr-auto'}
                     style={{
