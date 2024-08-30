@@ -58,13 +58,10 @@ function CameraCustom(props: Props) {
 
   const { singleImageSearch } = useImageSearch();
 
-  const { requestImages, addRequestImage, setRequestImages } = useRequestStore(
-    state => ({
-      requestImages: state.requestImages,
-      addRequestImage: state.addRequestImage,
-      setRequestImages: state.setRequestImages,
-    }),
-  );
+  const { requestImages, setRequestImages } = useRequestStore(state => ({
+    requestImages: state.requestImages,
+    setRequestImages: state.setRequestImages,
+  }));
 
   const [capturedImages, setCapturedImages] = useState<HTMLCanvasElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -95,7 +92,9 @@ function CameraCustom(props: Props) {
     }
     let imageConvert = await createImage(image);
 
-    singleImageSearch({ image: imageConvert, settings });
+    singleImageSearch({ image: imageConvert, settings }).then(() => {
+      dispatch(updateStatusLoading(false));
+    });
 
     dispatch(onToggleModalItemDetail(false));
     handleClose();

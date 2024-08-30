@@ -233,7 +233,9 @@ function ResultComponent(props: Props) {
     dispatch(setImageSearchInput(url));
     let image = await createImage(url);
 
-    singleImageSearch({ image, settings, showFeedback: false });
+    singleImageSearch({ image, settings, showFeedback: false }).then(() => {
+      dispatch(updateStatusLoading(false));
+    });
   };
   const nonEmptyFilter: any[] = !requestImage
     ? []
@@ -455,12 +457,9 @@ function ResultComponent(props: Props) {
 
                 {isMobile && settings.preview && requestImage && (
                   <ImagePreviewMobile
-                    requestImage={requestImage}
-                    imageSelection={imageSelection}
                     debouncedOnImageSelectionChange={
                       debouncedOnImageSelectionChange
                     }
-                    filteredRegions={filteredRegions}
                     showAdjustInfoBasedOnConfidence={
                       showAdjustInfoBasedOnConfidence
                     }

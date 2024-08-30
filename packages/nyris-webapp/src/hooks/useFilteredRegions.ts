@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 const useFilteredRegions = (regions: any, imageSelection: any) => {
   const filteredRegions = useMemo(
     () =>
-      regions.map(
+      regions?.map(
         (region: {
           normalizedRect: { x1: any; x2: any; y1: any; y2: any };
         }) => {

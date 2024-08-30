@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash';
 import { useCallback } from 'react';
 import { find, findRegions } from 'services/image';
 import useRequestStore from 'Store/requestStore';
+import useResultStore from 'Store/resultStore';
 import {
   setRegions,
   setRequestImage,
@@ -26,6 +27,10 @@ export const useImageSearch = () => {
     setImageRegions: state.setRegions,
   }));
 
+  const { setDetectedObject } = useResultStore(state => ({
+    setDetectedObject: state.setDetectedObject,
+  }));
+
   const singleImageSearch = useCallback(
     async ({
       image,
@@ -44,6 +49,7 @@ export const useImageSearch = () => {
       try {
         if (regions) {
           let res = await findRegions(image, settings);
+          setDetectedObject(res.regions, 0);
           dispatch(setRegions(res.regions));
           region = res.selectedRegion;
           dispatch(setSelectedRegion(region));
@@ -77,7 +83,6 @@ export const useImageSearch = () => {
               filters,
             };
             dispatch(setSearchResults(payload));
-            dispatch(updateStatusLoading(false));
 
             if (showFeedback) {
               dispatch(setShowFeedback(true));
@@ -101,6 +106,7 @@ export const useImageSearch = () => {
       firstSearchResults,
       preFilter,
       regions,
+      setDetectedObject,
       setImageRegions,
       setRequestImages,
     ],

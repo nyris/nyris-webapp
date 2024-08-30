@@ -68,7 +68,9 @@ function ExperienceVisualSearch() {
     dispatch(setImageSearchInput(url));
     let image = await createImage(url);
 
-    singleImageSearch({ image, settings });
+    singleImageSearch({ image, settings }).then(() => {
+      dispatch(updateStatusLoading(false));
+    });
   };
 
   return (

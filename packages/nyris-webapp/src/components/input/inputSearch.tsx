@@ -43,18 +43,15 @@ import PreFilterComponent from 'components/pre-filter';
 import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useImageSearch } from 'hooks/useImageSearch';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-  const {
-    imageThumbSearchInput,
-    preFilter,
-    requestImage,
-    selectedRegion,
-  } = search;
+  const { imageThumbSearchInput, preFilter, requestImage, selectedRegion } =
+    search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -66,7 +63,7 @@ const SearchBox = (props: any) => {
   const { t } = useTranslation();
   const isAlgoliaEnabled = settings.algolia?.enabled;
   const searchbar = useRef<HTMLDivElement | null>(null);
-
+  const { singleImageSearch } = useImageSearch();
   const { user } = useAuth0();
 
   useEffect(() => {
@@ -196,60 +193,12 @@ const SearchBox = (props: any) => {
       if (history.location.pathname !== '/result') {
         history.push('/result');
       }
-      let payload: any;
-      let filters: any[] = [];
-      let region: RectCoords | undefined;
 
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
-      dispatch(setRequestImage(image));
-      const preFilterValues = [
-        {
-          key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
-        },
-      ];
-      try {
-        if (settings.regions) {
-          let res = await findRegions(image, settings);
-
-          dispatch(setRegions(res.regions));
-          region = res.selectedRegion;
-          dispatch(setSelectedRegion(region));
-        }
-      } catch (error) {
-      } finally {
-        return find({
-          image,
-          settings,
-          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-          region,
-        })
-          .then((res: any) => {
-            res?.results.forEach((item: any) => {
-              filters.push({
-                sku: item.sku,
-                score: item.score,
-              });
-            });
-            payload = {
-              ...res,
-              filters,
-            };
-            dispatch(setSearchResults(payload));
-            dispatch(updateStatusLoading(false));
-            dispatch(setShowFeedback(true));
-            // go back
-            dispatch(setFirstSearchResults(payload));
-            dispatch(setFirstSearchImage(image));
-            dispatch(setFirstSearchPrefilters(preFilter));
-            dispatch(setFirstSearchThumbSearchInput(URL.createObjectURL(fs[0])));
-          })
-          .catch((e: any) => {
-            console.log('error input search', e);
-            dispatch(updateStatusLoading(false));
-          });
-      }
+      singleImageSearch({ image, settings, showFeedback: true }).then(() => {
+        dispatch(updateStatusLoading(false));
+      });
     },
   });
 

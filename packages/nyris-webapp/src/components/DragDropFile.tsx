@@ -23,6 +23,7 @@ import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
 import Loading from './Loading';
+import { useImageSearch } from 'hooks/useImageSearch';
 
 interface Props {
   acceptTypes: any;
@@ -40,64 +41,23 @@ function DragDropFile(props: Props) {
     search: { preFilter },
   } = searchState;
   const { t } = useTranslation();
+
+  const { singleImageSearch } = useImageSearch();
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[], _, e) => {
       e.stopPropagation();
       history.push('/result');
+
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
-      onChangeLoading(true);
-      let payload: any;
-      let filters: any[] = [];
-      console.log('fs', fs);
+
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
-      dispatch(setRequestImage(image));
-      const preFilterValues = [
-        {
-          key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
-        },
-      ];
-      let region: RectCoords | undefined;
 
-      try {
-        if (settings.regions) {
-          let res = await findRegions(image, settings);
-          dispatch(setRegions(res.regions));
-          region = res.selectedRegion;
-          dispatch(setSelectedRegion(region));
-        }
-      } catch (error) {
-      } finally {
-        return find({
-          image,
-          settings,
-          region,
-          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-        }).then((res: any) => {
-          res?.results.forEach((item: any) => {
-            filters.push({
-              sku: item.sku,
-              score: item.score,
-            });
-          });
-          payload = {
-            ...res,
-            filters,
-          };
-          dispatch(setSearchResults(payload));
-          onChangeLoading(false);
-          dispatch(updateStatusLoading(false));
-          dispatch(setShowFeedback(true));
-          // go back
-          dispatch(setFirstSearchResults(payload));
-          dispatch(setFirstSearchImage(image));
-          dispatch(setFirstSearchPrefilters(preFilter));
-          dispatch(setFirstSearchThumbSearchInput(URL.createObjectURL(fs[0])));
-          return;
-        });
-      }
+      singleImageSearch({ image, settings, showFeedback: true }).then(() => {
+        dispatch(updateStatusLoading(false));
+      });
     },
   });
 

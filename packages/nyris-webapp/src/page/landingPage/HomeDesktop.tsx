@@ -15,11 +15,11 @@ function AppMD() {
   const searchClient = algoliasearch(appId, apiKey);
   searchClient.initIndex(indexName);
 
-    useEffect(() => {
-      if (settings.clarityId) {
-        clarify(window, document, 'clarity', 'script', settings.clarityId); 
-      }
-    }, [settings.clarityId]);
+  useEffect(() => {
+    if (settings.clarityId) {
+      clarify(window, document, 'clarity', 'script', settings.clarityId);
+    }
+  }, [settings.clarityId]);
 
   const acceptTypes = ['image/*'];
   const InfiniteHits = ({ hits }: any) => {
@@ -31,13 +31,13 @@ function AppMD() {
     l: Document,
     a: string,
     r: string,
-    i: string
+    i: string,
   ) {
     c[a] =
       c[a] ||
       function () {
-      (c[a].q = c[a].q || []).push(arguments);
-    };
+        (c[a].q = c[a].q || []).push(arguments);
+      };
     const t: any = l.createElement(r);
     t.async = true;
     t.src = `https://www.clarity.ms/tag/${i}`;

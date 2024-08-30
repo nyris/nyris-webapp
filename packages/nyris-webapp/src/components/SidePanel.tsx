@@ -12,6 +12,7 @@ import { ReactComponent as KeyboardArrowLeftOutlinedIcon } from 'common/assets/i
 
 import { DEFAULT_REGION } from '../constants';
 import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
+import ImagePreviewMobile from './ImagePreviewMobile';
 
 function SidePanel({
   setImageSelection,
@@ -85,15 +86,10 @@ function SidePanel({
               >
                 <div
                   style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    backgroundColor: '#F3F3F5',
                     width: '100%',
-                    paddingTop: '16px',
-                    paddingBottom: '16px',
                   }}
                 >
-                  <div
+                  {/* <div
                     style={{
                       width: '288px',
                       height: 'fit-content',
@@ -112,37 +108,21 @@ function SidePanel({
                       minCropHeight={30}
                       rounded={true}
                     />
-                  </div>
+                  </div> */}
+                  <ImagePreviewMobile
+                    debouncedOnImageSelectionChange={
+                      debouncedOnImageSelectionChange
+                    }
+                    showAdjustInfoBasedOnConfidence={
+                      showAdjustInfoBasedOnConfidence
+                    }
+                    showAdjustInfo={showAdjustInfo}
+                    isExpanded={true}
+                    isCameraUploadEnabled={false}
+                  />
                 </div>
               </div>
             </div>
-            {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
-              <div
-                style={{
-                  alignItems: 'center',
-                  backgroundColor: '#3E36DC',
-                  display: 'flex',
-                  columnGap: '6px',
-                  padding: '5px',
-                  marginTop: 'auto',
-                  position: 'absolute',
-                  bottom: 0,
-                  borderRadius: '16px',
-                }}
-              >
-                <IconInfo color="white" />
-                <Typography
-                  style={{
-                    fontSize: 10,
-                    color: '#fff',
-                  }}
-                >
-                  {showAdjustInfo
-                    ? t('Crop the image for better results')
-                    : 'Crop the image for better results'}
-                </Typography>
-              </div>
-            )}
           </div>
         )}
 

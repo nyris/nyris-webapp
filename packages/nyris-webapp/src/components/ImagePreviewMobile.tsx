@@ -1,50 +1,51 @@
-// // @ts-nocheck
-
-import React, { memo, useEffect, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 
 import cx from 'classnames';
 
-import { Typography, Hidden } from '@material-ui/core';
 import { RectCoords } from '@nyris/nyris-api';
 import { Preview } from '@nyris/nyris-react-components';
 import { DEFAULT_REGION } from '../constants';
-import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { ReactComponent as ArrowUp } from 'common/assets/icons/arrow_up.svg';
-import { ReactComponent as ArrowDown } from 'common/assets/icons/arrow_down.svg';
-import { ReactComponent as Trash } from 'common/assets/icons/trash.svg';
 import { ReactComponent as PlusIcon } from 'common/assets/icons/plus.svg';
 import { ReactComponent as CropIcon } from 'common/assets/icons/crop.svg';
+import { ReactComponent as DownloadIcon } from 'common/assets/icons/download.svg';
+import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
 
 import { useQuery } from 'hooks/useQuery';
 import {
   reset,
+  setImageSearchInput,
   setSearchResults,
   updateStatusLoading,
 } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
-import { find } from 'services/image';
+import { createImage, find } from 'services/image';
 import { isEmpty } from 'lodash';
 import useRequestStore from 'Store/requestStore';
 import CameraCustom from './drawer/cameraCustom';
+import useFilteredRegions from 'hooks/useFilteredRegions';
+import useResultStore from 'Store/resultStore';
+import { useDropzone } from 'react-dropzone';
 
 function ImagePreviewMobileComponent({
   requestImage,
   imageSelection,
   debouncedOnImageSelectionChange,
-  filteredRegions,
   showAdjustInfo,
   showAdjustInfoBasedOnConfidence,
+  isExpanded,
+  isCameraUploadEnabled = true,
   ...rest
 }: {
-  requestImage: any;
-  imageSelection: any;
-
+  requestImage?: any;
+  imageSelection?: any;
+  filteredRegions?: any;
   debouncedOnImageSelectionChange: any;
-  filteredRegions: any;
   showAdjustInfoBasedOnConfidence: any;
   showAdjustInfo: any;
+  isCameraUploadEnabled?: boolean;
+  isExpanded?: boolean;
 }) {
   const { t } = useTranslation();
   const settings = useAppSelector(state => state.settings);
@@ -54,23 +55,23 @@ function ImagePreviewMobileComponent({
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const { requestImages, regions } = useRequestStore(state => ({
-    requestImages: state.requestImages,
-    regions: state.regions,
+  const { requestImages, addRequestImage, regions } = useRequestStore(
+    state => ({
+      requestImages: state.requestImages,
+      regions: state.regions,
+      addRequestImage: state.addRequestImage,
+    }),
+  );
+
+  const { detectedObject } = useResultStore(state => ({
+    detectedObject: state.detectedObject,
   }));
 
-  const [editActive, setEditActive] = useState(true);
   const [showCamera, setShowCamera] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(requestImages.length - 1);
-  const [isVisible, setIsVisible] = useState(false);
-  const [translateValue, setTranslateValue] = useState(0);
-  const [isAbsolute, setIsAbsolute] = useState(false);
+  const [isVisible, setIsVisible] = useState(isExpanded);
 
   const previewWrapperRef = useRef<any>(null);
-
-  const handleArrowClick = () => {
-    setEditActive(s => !s);
-  };
 
   const searchQuery = query.get('query') || '';
 
@@ -90,7 +91,7 @@ function ImagePreviewMobileComponent({
           values: Object.keys(preFilter),
         },
       ];
-      if (searchQuery || requestImage) {
+      if (searchQuery || requestImages.length > 0) {
         dispatch(updateStatusLoading(true));
         find({
           settings,
@@ -124,19 +125,24 @@ function ImagePreviewMobileComponent({
 
   const handleExpand = () => {
     setIsVisible(s => !s);
-
-    // Change to absolute after the transition
-    setTimeout(() => {
-      setIsAbsolute(s => !s);
-    }, 500); // Match the duration of the transition
   };
 
-  useEffect(() => {
-    if (previewWrapperRef.current) {
-      // Set translate value to the height of divA
-      setTranslateValue(previewWrapperRef.current.clientHeight);
-    }
-  }, []);
+  const filteredRegions = useFilteredRegions(
+    detectedObject[currentIndex],
+    regions[currentIndex],
+  );
+
+  const { getInputProps } = useDropzone({
+    onDrop: async (fs: File[]) => {
+      if (!fs[0]) return;
+
+      dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
+      let image = await createImage(fs[0]);
+      console.log({ image });
+
+      addRequestImage(image);
+    },
+  });
 
   return (
     <>
@@ -149,6 +155,8 @@ function ImagePreviewMobileComponent({
           isVisible ? 'pt-6' : '',
           'px-7',
           'w-full',
+          'desktop:px-5',
+          'relative',
         ])}
         style={{
           opacity: isVisible ? 1 : 0,
@@ -163,14 +171,47 @@ function ImagePreviewMobileComponent({
             }}
             image={requestImages[currentIndex]}
             selection={regions[currentIndex] || DEFAULT_REGION}
-            regions={filteredRegions}
-            dotColor={editActive ? '#FBD914' : ''}
+            regions={filteredRegions || []}
+            dotColor={'#FBD914'}
             minCropWidth={30}
             minCropHeight={30}
             rounded={true}
           />
         </div>
         <div className="max-w-[300px] max-h-[300px]"></div>
+        {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
+          <div
+            style={{
+              backgroundColor: '#3E36DC',
+              display: 'flex',
+              columnGap: '6px',
+              padding: '5px',
+              width: 'fit-content',
+              minWidth: '180px',
+              marginTop: 'auto',
+              position: 'absolute',
+              bottom: 125,
+              borderRadius: '16px',
+              zIndex: 1000,
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              height: 'fit-content',
+            }}
+          >
+            <IconInfo color="white" />
+            <p
+              style={{
+                fontSize: 10,
+                color: '#fff',
+              }}
+            >
+              {showAdjustInfo
+                ? t('Crop the image for better results')
+                : 'Crop the image for better results'}
+            </p>
+          </div>
+        )}
       </div>
       <div
         style={{
@@ -189,6 +230,7 @@ function ImagePreviewMobileComponent({
             'justify-center',
             'relative',
             'py-4',
+            'desktop:pt-7 desktop:pb-5',
           ])}
         >
           {requestImages.map((image, index) => {
@@ -208,6 +250,8 @@ function ImagePreviewMobileComponent({
                   className={cx([
                     'w-[70px]',
                     'h-[70px]',
+                    'desktop:w-[52px]',
+                    'desktop:h-[52px]',
                     'rounded-md',
                     'object-cover',
                     'shadow-inner',
@@ -227,6 +271,8 @@ function ImagePreviewMobileComponent({
                       'absolute',
                       'w-[70px]',
                       'h-[70px]',
+                      'desktop:w-[52px]',
+                      'desktop:h-[52px]',
                       'rounded-md',
                       'top-1',
                       'bg-black/15',
@@ -237,10 +283,12 @@ function ImagePreviewMobileComponent({
             );
           })}
           {requestImages.length < 3 && (
-            <div
+            <button
               className={cx([
                 'w-[70px]',
                 'h-[70px]',
+                'desktop:w-[52px]',
+                'desktop:h-[52px]',
                 'bg-[#55566B]/50',
                 'flex',
                 'justify-center',
@@ -251,15 +299,31 @@ function ImagePreviewMobileComponent({
                 'rounded-md',
               ])}
               onClick={() => {
-                setShowCamera(true);
+                if (isCameraUploadEnabled) {
+                  setShowCamera(true);
+                }
               }}
             >
-              <PlusIcon className={cx(['text-[#AAABB5]'])} />
-            </div>
+              <input
+                accept="image/*"
+                id="icon-add-image"
+                type="file"
+                style={{ display: 'none' }}
+                {...getInputProps({
+                  onClick: e => {
+                    e.stopPropagation();
+                  },
+                })}
+              />
+              <PlusIcon className={cx(['text-[#AAABB5] desktop:hidden'])} />
+              <label htmlFor="icon-add-image" className="hidden desktop:block">
+                <DownloadIcon className={cx(['text-[#AAABB5]'])} />
+              </label>
+            </button>
           )}
 
           <div
-            className="absolute right-5 rounded-full bg-white w-6 h-6 flex justify-center items-center"
+            className="absolute right-5 rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden"
             onClick={() => handleExpand()}
           >
             <CropIcon className="text-primary" />
