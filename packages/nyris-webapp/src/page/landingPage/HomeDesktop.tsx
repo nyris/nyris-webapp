@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './common.scss';
 import algoliasearch from 'algoliasearch/lite';
 import DragDropFile from 'components/DragDropFile';
@@ -15,36 +15,9 @@ function AppMD() {
   const searchClient = algoliasearch(appId, apiKey);
   searchClient.initIndex(indexName);
 
-  useEffect(() => {
-    if (settings.clarityId) {
-      clarify(window, document, 'clarity', 'script', settings.clarityId);
-    }
-  }, [settings.clarityId]);
-
   const acceptTypes = ['image/*'];
   const InfiniteHits = ({ hits }: any) => {
     return <div></div>;
-  };
-
-  const clarify = function (
-    c: any,
-    l: Document,
-    a: string,
-    r: string,
-    i: string,
-  ) {
-    c[a] =
-      c[a] ||
-      function () {
-        (c[a].q = c[a].q || []).push(arguments);
-      };
-    const t: any = l.createElement(r);
-    t.async = true;
-    t.src = `https://www.clarity.ms/tag/${i}`;
-    const y = l.getElementsByTagName(r)[0];
-    if (y.parentNode) {
-      y.parentNode.insertBefore(t, y);
-    }
   };
 
   const onChangeLoading = (value: boolean) => {

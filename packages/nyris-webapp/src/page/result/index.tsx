@@ -1,11 +1,4 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
@@ -15,7 +8,7 @@ import { CurrentRefinements } from 'components/current-refinements/current-refin
 import FooterResult from 'components/FooterResult';
 import CustomSearchBox from 'components/input/inputSearch';
 import ProductList from 'components/ProductList';
-import { debounce, isEmpty } from 'lodash';
+import { debounce, isEmpty, isUndefined } from 'lodash';
 import {
   Configure,
   connectStateResults,
@@ -24,23 +17,15 @@ import {
 } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { feedbackRegionEpic, feedbackSuccessEpic } from 'services/Feedback';
-import { createImage, find, findRegions } from 'services/image';
+import { createImage, find } from 'services/image';
 import {
   loadingActionResults,
   onToggleModalItemDetail,
   selectionChanged,
   setImageSearchInput,
-  setRegions,
-  setRequestImage,
-  setSearchResults,
-  setSelectedRegion,
   setShowFeedback,
   updateResultChangePosition,
   updateStatusLoading,
-  setFirstSearchResults,
-  setFirstSearchImage,
-  setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
@@ -49,7 +34,7 @@ import { useTranslation } from 'react-i18next';
 import RfqModal from 'components/rfq/RfqModal';
 import SidePanel from 'components/SidePanel';
 import useFilteredRegions from 'hooks/useFilteredRegions';
-import ImagePreviewMobile from 'components/ImagePreviewMobile';
+import ImagePreview from 'components/ImagePreview';
 import RfqBanner from 'components/rfq/RfqBanner';
 import InquiryBanner from 'components/Inquiry/InquiryBanner';
 import { useQuery } from 'hooks/useQuery';
@@ -111,12 +96,15 @@ function ResultComponent(props: Props) {
   const isPostFilterEnabled = settings.postFilterOption;
   const history = useHistory();
 
-  const { singleImageSearch } = useImageSearch();
+  const { singleImageSearch, multiImageSearch } = useImageSearch();
 
-  const { updateRegion } = useRequestStore(state => ({
-    requestImages: state.requestImages,
-    updateRegion: state.updateRegion,
-  }));
+  const { updateRegion, resetRegions, imageRegions, requestImages } =
+    useRequestStore(state => ({
+      requestImages: state.requestImages,
+      updateRegion: state.updateRegion,
+      resetRegions: state.resetRegions,
+      imageRegions: state.regions,
+    }));
 
   useEffect(() => {
     if (
@@ -157,7 +145,9 @@ function ResultComponent(props: Props) {
       setFeedbackStatus('hidden');
       executeScroll();
       setImageSelection(DEFAULT_REGION);
+      resetRegions();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestImage]);
 
   const findImageByApiNyris = useCallback(
@@ -312,15 +302,30 @@ function ResultComponent(props: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords, index?: number) => {
-      if (index) {
+      if (requestImages.length > 0 && !isUndefined(index)) {
         updateRegion(r, index);
+        multiImageSearchOnRegionChange(r, index);
+      } else {
+        setImageSelection(r);
+        dispatch(selectionChanged(r));
+        findItemsInSelection(r);
       }
-      setImageSelection(r);
       feedbackRegionEpic(stateGlobal, r);
-      dispatch(selectionChanged(r));
-      findItemsInSelection(r);
     }, 50),
     [findItemsInSelection, stateGlobal.search],
+  );
+
+  const multiImageSearchOnRegionChange = useCallback(
+    (r: RectCoords, index: number) => {
+      let modifiedRegions = [...imageRegions];
+      modifiedRegions[index] = r;
+      multiImageSearch({
+        images: requestImages,
+        regions: modifiedRegions,
+        settings,
+      });
+    },
+    [imageRegions, multiImageSearch, requestImages, settings],
   );
 
   const filteredRegions = useFilteredRegions(regions, imageSelection);
@@ -456,7 +461,7 @@ function ResultComponent(props: Props) {
                 )}
 
                 {isMobile && settings.preview && requestImage && (
-                  <ImagePreviewMobile
+                  <ImagePreview
                     debouncedOnImageSelectionChange={
                       debouncedOnImageSelectionChange
                     }

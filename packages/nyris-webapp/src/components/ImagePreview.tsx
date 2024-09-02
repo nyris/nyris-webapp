@@ -27,6 +27,7 @@ import CameraCustom from './drawer/cameraCustom';
 import useFilteredRegions from 'hooks/useFilteredRegions';
 import useResultStore from 'Store/resultStore';
 import { useDropzone } from 'react-dropzone';
+import { useImageSearch } from 'hooks/useImageSearch';
 
 function ImagePreviewMobileComponent({
   requestImage,
@@ -66,6 +67,8 @@ function ImagePreviewMobileComponent({
   const { detectedObject } = useResultStore(state => ({
     detectedObject: state.detectedObject,
   }));
+
+  const { multiImageSearch } = useImageSearch();
 
   const [showCamera, setShowCamera] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(requestImages.length - 1);
@@ -138,8 +141,12 @@ function ImagePreviewMobileComponent({
 
       dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
-      console.log({ image });
 
+      multiImageSearch({
+        images: [...requestImages, image],
+        regions: regions,
+        settings,
+      });
       addRequestImage(image);
     },
   });
@@ -277,6 +284,12 @@ function ImagePreviewMobileComponent({
                       'top-1',
                       'bg-black/15',
                     ])}
+                    onClick={() => {
+                      setCurrentIndex(index);
+                      if (!isVisible) {
+                        handleExpand();
+                      }
+                    }}
                   />
                 )}
               </div>
@@ -311,6 +324,7 @@ function ImagePreviewMobileComponent({
                 style={{ display: 'none' }}
                 {...getInputProps({
                   onClick: e => {
+                    e.currentTarget.value = '';
                     e.stopPropagation();
                   },
                 })}
@@ -343,5 +357,5 @@ function ImagePreviewMobileComponent({
     </>
   );
 }
-const ImagePreviewMobile = memo(ImagePreviewMobileComponent);
-export default ImagePreviewMobile;
+const ImagePreview = memo(ImagePreviewMobileComponent);
+export default ImagePreview;

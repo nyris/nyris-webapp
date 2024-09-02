@@ -1,11 +1,4 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { connectSearchBox, connectStateResults } from 'react-instantsearch-dom';
 import { NavLink, useHistory } from 'react-router-dom';
@@ -18,7 +11,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import {
   reset,
   updateValueTextSearchMobile,
-  setPreFilterDropdown,
   setPreFilter,
   updateQueryText,
   updateStatusLoading,
@@ -41,6 +33,7 @@ import DefaultModal from './modal/DefaultModal';
 import useRequestStore from 'Store/requestStore';
 import CameraCustom from './drawer/cameraCustom';
 import UploadDisclaimer from './UploadDisclaimer';
+import PreFilterComponent from './pre-filter';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -59,7 +52,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const {
     imageThumbSearchInput,
     preFilter,
-    preFilterDropdown,
     valueTextSearch,
     queryText,
     requestImage,
@@ -69,7 +61,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   } = search;
 
   const query = useQuery();
-  const containerRefInputMobile = useRef<HTMLDivElement>(null);
 
   const { resetRequestState } = useRequestStore(state => ({
     resetRequestState: state.reset,
@@ -79,6 +70,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [preFilterDropdown, setPreFilterDropdown] = useState(false);
 
   const history = useHistory();
   const { settings } = useAppSelector<AppState>((state: any) => state);
@@ -262,6 +254,26 @@ function HeaderMobileComponent(props: Props): JSX.Element {
 
   return (
     <>
+      {preFilterDropdown && (
+        <div
+          className={`box-filter open`}
+          style={{
+            top: '0px',
+            height: '100%',
+            width: '100%',
+            zIndex: 999,
+            position: 'absolute',
+          }}
+        >
+          <div style={{ width: '100%' }} className={'wrap-filter-desktop'}>
+            <div className={'bg-white box-filter-desktop isMobile'}>
+              <PreFilterComponent
+                handleClose={() => setPreFilterDropdown(s => !s)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
       <DefaultModal
         openModal={showLogoutModal}
         handleClose={() => {
@@ -431,7 +443,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                       'relative',
                     ])}
                     onClick={() => {
-                      dispatch(setPreFilterDropdown(!preFilterDropdown));
+                      setPreFilterDropdown(s => !s);
                     }}
                     title="pre-filter"
                   >
@@ -514,7 +526,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               onClick={() => {
                 if (disablePostFilter) return;
                 onToggleFilterMobile();
-                dispatch(setPreFilterDropdown(false));
+                setPreFilterDropdown(false);
               }}
             >
               <div

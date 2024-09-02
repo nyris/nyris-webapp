@@ -110,7 +110,6 @@ export const searchSlice = createSlice({
         isShowModalDetailItemMobile: false,
         preFilter: state.preFilter || {},
         postFilter: {},
-        preFilterDropdown: false,
         imageCaptureHelpModal: false,
         showFeedback: false,
         firstSearchImage: null,
@@ -182,12 +181,6 @@ export const searchSlice = createSlice({
       return {
         ...state,
         preFilter: payload,
-      };
-    },
-    setPreFilterDropdown: (state, data: PayloadAction<boolean>) => {
-      return {
-        ...state,
-        preFilterDropdown: data.payload,
       };
     },
     setImageCaptureHelpModal: (state, data: PayloadAction<boolean>) => {
@@ -270,7 +263,6 @@ export const {
   setImageSearchInput,
   setPostFilter,
   setPreFilter,
-  setPreFilterDropdown,
   setRegions,
   setRequestImage,
   setSearchResults,

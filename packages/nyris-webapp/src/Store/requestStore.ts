@@ -12,6 +12,7 @@ interface RequestState {
   setRegions: (r: RectCoords[]) => void;
   setQuery: (query: string) => void;
   removeImage: (index: number) => void;
+  resetRegions: () => void;
   reset: () => void;
 }
 
@@ -48,6 +49,13 @@ const useRequestStore = create<RequestState>()((set, get) => ({
 
   setRegions: regions => set(state => ({ regions: regions })),
   setQuery: query => set(state => ({ query: query })),
+
+  resetRegions: () =>
+    set(state => ({
+      regions: [Array(3)].map(() => {
+        return { x1: 0, x2: 1, y1: 0, y2: 1 };
+      }),
+    })),
 
   reset: () =>
     set(state => ({

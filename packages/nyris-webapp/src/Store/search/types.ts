@@ -17,7 +17,6 @@ export interface SearchState {
   isShowModalDetailItemMobile?: boolean;
   preFilter: Record<string, boolean>;
   loadingSearchAlgolia: boolean;
-  preFilterDropdown?: boolean;
   imageCaptureHelpModal?: boolean;
   regions: Region[];
   requestId?: string;
@@ -26,7 +25,6 @@ export interface SearchState {
   selectedRegion?: RectCoords;
   sessionId?: string;
   queryText?: string;
-  setPreFilterDropdown?: any;
   textSearchInputMobile?: string;
   valueTextSearch: any;
   postFilter: Record<string, Record<string, boolean>>;

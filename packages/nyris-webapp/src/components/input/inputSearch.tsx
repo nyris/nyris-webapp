@@ -44,6 +44,7 @@ import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useImageSearch } from 'hooks/useImageSearch';
+import UploadDisclaimer from 'components/UploadDisclaimer';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
@@ -65,6 +66,7 @@ const SearchBox = (props: any) => {
   const searchbar = useRef<HTMLDivElement | null>(null);
   const { singleImageSearch } = useImageSearch();
   const { user } = useAuth0();
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   useEffect(() => {
     if (focusInp?.current) {
@@ -185,22 +187,19 @@ const SearchBox = (props: any) => {
     [requestImage, preFilter, selectedRegion, isAlgoliaEnabled],
   );
 
-  const { getInputProps } = useDropzone({
-    onDrop: async (fs: File[]) => {
-      if (!fs[0]) return;
-      dispatch(updateStatusLoading(true));
-      dispatch(loadingActionResults());
-      if (history.location.pathname !== '/result') {
-        history.push('/result');
-      }
+  const onImageUpload = async (fs: any) => {
+    dispatch(updateStatusLoading(true));
+    dispatch(loadingActionResults());
+    if (history.location.pathname !== '/result') {
+      history.push('/result');
+    }
 
-      dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
-      let image = await createImage(fs[0]);
-      singleImageSearch({ image, settings, showFeedback: true }).then(() => {
-        dispatch(updateStatusLoading(false));
-      });
-    },
-  });
+    dispatch(setImageSearchInput(URL.createObjectURL(fs)));
+    let image = await createImage(fs);
+    singleImageSearch({ image, settings, showFeedback: true }).then(() => {
+      dispatch(updateStatusLoading(false));
+    });
+  };
 
   const onChangeText = (event: any) => {
     setValueInput(event.currentTarget.value);
@@ -225,235 +224,280 @@ const SearchBox = (props: any) => {
     return settings.preFilterOption;
   }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
 
+  const showDisclaimerDisabled = useMemo(() => {
+    const disclaimer = localStorage.getItem('upload-disclaimer-webapp');
+
+    if (!disclaimer) return false;
+    return disclaimer === 'dont-show';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showDisclaimer]);
+
   return (
-    <div className="wrap-input-search-field">
-      <div className="box-input-search d-flex">
-        <div className="input-wrapper">
-          <div className="box-inp">
-            <Tooltip
-              title={
-                !isEmpty(preFilter)
-                  ? Object.keys(preFilter).join(', ')
-                  : t('Add or change pre-filter')
-              }
-              placement="top"
-              arrow={true}
-              disableHoverListener={!showPreFilter}
-            >
-              <div
-                className="pre-filter-icon"
-                style={{
-                  cursor: showPreFilter ? 'pointer' : 'default',
-                }}
-                onClick={() =>
-                  showPreFilter ? setToggleModalFilterDesktop(true) : false
+    <>
+      {showDisclaimer && (
+        <UploadDisclaimer
+          onClose={() => {
+            setShowDisclaimer(false);
+          }}
+          onContinue={({
+            file,
+            dontShowAgain,
+          }: {
+            file: any;
+            dontShowAgain: any;
+          }) => {
+            if (dontShowAgain) {
+              localStorage.setItem('upload-disclaimer-webapp', 'dont-show');
+            }
+            onImageUpload(file);
+
+            setShowDisclaimer(false);
+          }}
+          isMobile={false}
+        />
+      )}
+      <div className="wrap-input-search-field">
+        <div className="box-input-search d-flex">
+          <div className="input-wrapper">
+            <div className="box-inp">
+              <Tooltip
+                title={
+                  !isEmpty(preFilter)
+                    ? Object.keys(preFilter).join(', ')
+                    : t('Add or change pre-filter')
                 }
+                placement="top"
+                arrow={true}
+                disableHoverListener={!showPreFilter}
               >
-                {showPreFilter && (
-                  <div
-                    className="icon-hover desktop"
-                    style={{
-                      ...(!isEmpty(preFilter)
-                        ? {
-                            backgroundColor: `${settings.theme?.primaryColor}`,
-                          }
-                        : {
-                            backgroundColor: '#2B2C46',
-                          }),
-                    }}
-                  >
-                    <IconFilter color="white" />
-                  </div>
-                )}
-                {!showPreFilter && <IconSearch width={16} height={16} />}
-                {!isEmpty(preFilter) && showPreFilter && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '1px',
-                      left: '26px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      background: 'white',
-                      width: '12px',
-                      height: '12px',
-                      borderRadius: '100%',
-                    }}
-                  >
+                <div
+                  className="pre-filter-icon"
+                  style={{
+                    cursor: showPreFilter ? 'pointer' : 'default',
+                  }}
+                  onClick={() =>
+                    showPreFilter ? setToggleModalFilterDesktop(true) : false
+                  }
+                >
+                  {showPreFilter && (
+                    <div
+                      className="icon-hover desktop"
+                      style={{
+                        ...(!isEmpty(preFilter)
+                          ? {
+                              backgroundColor: `${settings.theme?.primaryColor}`,
+                            }
+                          : {
+                              backgroundColor: '#2B2C46',
+                            }),
+                      }}
+                    >
+                      <IconFilter color="white" />
+                    </div>
+                  )}
+                  {!showPreFilter && <IconSearch width={16} height={16} />}
+                  {!isEmpty(preFilter) && showPreFilter && (
                     <div
                       style={{
-                        width: '8px',
-                        height: '8px',
-                        background: settings.theme?.primaryColor,
+                        position: 'absolute',
+                        top: '1px',
+                        left: '26px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        background: 'white',
+                        width: '12px',
+                        height: '12px',
                         borderRadius: '100%',
-                        strokeWidth: '2px',
                       }}
-                    ></div>
+                    >
+                      <div
+                        style={{
+                          width: '8px',
+                          height: '8px',
+                          background: settings.theme?.primaryColor,
+                          borderRadius: '100%',
+                          strokeWidth: '2px',
+                        }}
+                      ></div>
+                    </div>
+                  )}
+                </div>
+              </Tooltip>
+              <div
+                style={{
+                  height: '75%',
+                  order: 1,
+                }}
+              >
+                {imageThumbSearchInput && (
+                  <div
+                    style={{
+                      border: `2px solid ${settings.theme?.primaryColor}`,
+                      backgroundColor: `${settings.theme?.primaryColor}26`,
+                      marginRight: '5px',
+                      display: 'flex',
+                    }}
+                    className="box-image-search-thumb"
+                  >
+                    <img
+                      src={imageThumbSearchInput}
+                      style={{ objectFit: 'contain' }}
+                      alt="img_search"
+                    />
+                    <Tooltip
+                      title={t('Clear image search')}
+                      placement="top"
+                      arrow={true}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!valueInput) {
+                            dispatch(reset(''));
+                            history.push('/');
+                          }
+                          dispatch(reset(''));
+                          if (isAlgoliaEnabled) {
+                            refine(valueInput);
+                          } else {
+                            searchOrRedirect(valueInput, false);
+                          }
+                        }}
+                      >
+                        <CloseIcon
+                          style={{
+                            fontSize: 20,
+                            color: settings.theme?.primaryColor,
+                          }}
+                        />
+                      </button>
+                    </Tooltip>
                   </div>
                 )}
               </div>
-            </Tooltip>
-            <div
-              style={{
-                height: '75%',
-                order: 1,
-              }}
-            >
-              {imageThumbSearchInput && (
-                <div
-                  style={{
-                    border: `2px solid ${settings.theme?.primaryColor}`,
-                    backgroundColor: `${settings.theme?.primaryColor}26`,
-                    marginRight: '5px',
-                    display: 'flex',
-                  }}
-                  className="box-image-search-thumb"
-                >
-                  <img
-                    src={imageThumbSearchInput}
-                    style={{ objectFit: 'contain' }}
-                    alt="img_search"
-                  />
-                  <Tooltip
-                    title={t('Clear image search')}
-                    placement="top"
-                    arrow={true}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!valueInput) {
-                          dispatch(reset(''));
-                          history.push('/');
-                        }
-                        dispatch(reset(''));
-                        if (isAlgoliaEnabled) {
-                          refine(valueInput);
-                        } else {
-                          searchOrRedirect(valueInput, false);
-                        }
-                      }}
-                    >
-                      <CloseIcon
-                        style={{
-                          fontSize: 20,
-                          color: settings.theme?.primaryColor,
-                        }}
-                      />
-                    </button>
-                  </Tooltip>
-                </div>
-              )}
+
+              <input
+                style={{
+                  border: '0px',
+                  width: '100%',
+                  fontSize: 14,
+                  color: '#2B2C46',
+                }}
+                className="input-search hhhh"
+                placeholder={t('Search')}
+                value={valueInput}
+                onChange={onChangeText}
+                ref={focusInp}
+              />
             </div>
 
-            <input
-              style={{
-                border: '0px',
-                width: '100%',
-                fontSize: 14,
-                color: '#2B2C46',
-              }}
-              className="input-search hhhh"
-              placeholder={t('Search')}
-              value={valueInput}
-              onChange={onChangeText}
-              ref={focusInp}
-            />
-          </div>
-
-          {history.location.pathname === '/result' && valueInput && (
-            <Button
-              className="btn-clear-text"
-              onClick={() => {
-                if (imageThumbSearchInput) {
-                  history.push('/result');
-                  if (!isAlgoliaEnabled) {
-                    searchOrRedirect('');
+            {history.location.pathname === '/result' && valueInput && (
+              <Button
+                className="btn-clear-text"
+                onClick={() => {
+                  if (imageThumbSearchInput) {
+                    history.push('/result');
+                    if (!isAlgoliaEnabled) {
+                      searchOrRedirect('');
+                    }
+                    setValueInput('');
+                    if (isAlgoliaEnabled) {
+                      refine('');
+                    }
+                    return;
                   }
                   setValueInput('');
                   if (isAlgoliaEnabled) {
                     refine('');
                   }
-                  return;
-                }
-                setValueInput('');
-                if (isAlgoliaEnabled) {
-                  refine('');
-                }
-                dispatch(reset(''));
-                history.push('/');
-              }}
-            >
-              <Tooltip
-                title={t('Clear text search')}
-                placement="top"
-                arrow={true}
+                  dispatch(reset(''));
+                  history.push('/');
+                }}
               >
-                <ClearOutlinedIcon style={{ fontSize: 16, color: '#2B2C46' }} />
-              </Tooltip>
-            </Button>
-          )}
-          {!isMobile ? (
-            <div className="wrap-box-input-mobile d-flex">
-              <input
-                accept="image/*"
-                id="icon-button-file"
-                type="file"
-                style={{ display: 'none' }}
-                {...getInputProps({
-                  onClick: e => {
+                <Tooltip
+                  title={t('Clear text search')}
+                  placement="top"
+                  arrow={true}
+                >
+                  <ClearOutlinedIcon
+                    style={{ fontSize: 16, color: '#2B2C46' }}
+                  />
+                </Tooltip>
+              </Button>
+            )}
+            {!isMobile ? (
+              <div className="wrap-box-input-mobile d-flex">
+                <input
+                  accept="image/*"
+                  id="icon-button-file"
+                  type="file"
+                  style={{ display: 'none' }}
+                  onClick={e => {
                     e.stopPropagation();
-                  },
-                })}
-              />
-              <Tooltip
-                title={t('Search with an image')}
-                placement="top"
-                arrow={true}
-              >
-                <label htmlFor="icon-button-file">
-                  <IconButton
-                    color="primary"
-                    aria-label="upload picture"
-                    component="span"
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: '100%',
-                      padding: 7,
+                  }}
+                  onChange={e => {
+                    if (e?.target?.files) {
+                      const file = e?.target?.files[0];
+                      onImageUpload(file);
+                    }
+                  }}
+                />
+                <Tooltip
+                  title={t('Search with an image')}
+                  placement="top"
+                  arrow={true}
+                >
+                  <label
+                    htmlFor={showDisclaimerDisabled ? 'icon-button-file' : ''}
+                    onClick={e => {
+                      if (!showDisclaimerDisabled) {
+                        setShowDisclaimer(true);
+                      }
                     }}
                   >
-                    <img src={IconCamera} alt="" width={18} height={18} />
-                  </IconButton>
-                </label>
-              </Tooltip>
-            </div>
-          ) : (
-            <div>
-              <Button
-                className="btn-mobile-filter"
-                onClick={onToggleFilterMobile}
-              >
-                <IconFilter width={18} height={18} />
-              </Button>
-            </div>
-          )}
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="span"
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: '100%',
+                        padding: 7,
+                      }}
+                    >
+                      <img src={IconCamera} alt="" width={18} height={18} />
+                    </IconButton>
+                  </label>
+                </Tooltip>
+              </div>
+            ) : (
+              <div>
+                <Button
+                  className="btn-mobile-filter"
+                  onClick={onToggleFilterMobile}
+                >
+                  <IconFilter width={18} height={18} />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      {showPreFilter && (
-        <DefaultModal
-          openModal={isOpenModalFilterDesktop}
-          handleClose={() => setToggleModalFilterDesktop(false)}
-          classNameModal="wrap-filter-desktop"
-          classNameComponentChild="bg-white box-filter-desktop"
-        >
-          <PreFilterComponent
+        {showPreFilter && (
+          <DefaultModal
+            openModal={isOpenModalFilterDesktop}
             handleClose={() => setToggleModalFilterDesktop(false)}
-          />
-        </DefaultModal>
-      )}
-    </div>
+            classNameModal="wrap-filter-desktop"
+            classNameComponentChild="bg-white box-filter-desktop"
+          >
+            <PreFilterComponent
+              handleClose={() => setToggleModalFilterDesktop(false)}
+            />
+          </DefaultModal>
+        )}
+      </div>
+    </>
   );
 };
 

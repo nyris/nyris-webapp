@@ -1,18 +1,11 @@
-import { Button, Typography } from '@material-ui/core';
-import { RectCoords } from '@nyris/nyris-api';
-import { Preview } from '@nyris/nyris-react-components';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PostFilterPanel from './PanelResult/PostFilter';
 import PostFilterPanelAlgolia from './PanelResult/PostFilterAlgolia';
 
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from 'Store/Store';
-import { ReactComponent as KeyboardArrowRightOutlinedIcon } from 'common/assets/icons/arrow_right.svg';
-import { ReactComponent as KeyboardArrowLeftOutlinedIcon } from 'common/assets/icons/arrow_left.svg';
 
-import { DEFAULT_REGION } from '../constants';
-import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
-import ImagePreviewMobile from './ImagePreviewMobile';
+import ImagePreview from './ImagePreview';
 
 function SidePanel({
   setImageSelection,
@@ -34,8 +27,6 @@ function SidePanel({
   allSearchResults: any;
   disjunctiveFacets: any;
 }) {
-  const { t } = useTranslation();
-  const [toggleColLeft, setToggleColLeft] = useState<boolean>(false);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
 
@@ -43,35 +34,13 @@ function SidePanel({
 
   return (
     <div
-      className={`wrap-main-col-left ${toggleColLeft ? 'toggle' : ''}`}
+      className={`wrap-main-col-left`}
       style={{
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
       }}
     >
-      <div
-        className="box-toggle-coloumn"
-        style={{
-          right: '0px',
-        }}
-      >
-        <Button
-          style={{
-            color: '#55566b',
-            height: '32px',
-          }}
-          onClick={() => {
-            setToggleColLeft(!toggleColLeft);
-          }}
-        >
-          {toggleColLeft ? (
-            <KeyboardArrowRightOutlinedIcon />
-          ) : (
-            <KeyboardArrowLeftOutlinedIcon />
-          )}
-        </Button>
-      </div>
       <div>
         {settings.preview && requestImage && (
           <div className="col-left">
@@ -80,7 +49,6 @@ function SidePanel({
                 className="preview-item"
                 style={{
                   backgroundColor: 'white',
-                  paddingTop: '32px',
                   width: '100%',
                 }}
               >
@@ -89,27 +57,7 @@ function SidePanel({
                     width: '100%',
                   }}
                 >
-                  {/* <div
-                    style={{
-                      width: '288px',
-                      height: 'fit-content',
-                    }}
-                  >
-                    <Preview
-                      key={requestImage?.id}
-                      onSelectionChange={(r: RectCoords) => {
-                        debouncedOnImageSelectionChange(r);
-                      }}
-                      image={requestImage?.canvas}
-                      selection={imageSelection || DEFAULT_REGION}
-                      regions={filteredRegions}
-                      dotColor={'#FBD914'}
-                      minCropWidth={30}
-                      minCropHeight={30}
-                      rounded={true}
-                    />
-                  </div> */}
-                  <ImagePreviewMobile
+                  <ImagePreview
                     debouncedOnImageSelectionChange={
                       debouncedOnImageSelectionChange
                     }

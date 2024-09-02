@@ -10,7 +10,6 @@ export const initialState: SearchState = {
   isShowModalDetailItemMobile: false,
   preFilter: {},
   loadingSearchAlgolia: false,
-  preFilterDropdown: false,
   imageCaptureHelpModal: false,
   regions: [],
   requestImage: undefined,
