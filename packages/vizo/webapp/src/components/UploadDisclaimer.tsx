@@ -7,9 +7,11 @@ import { makeFileHandler } from "@nyris/nyris-react-components";
 function UploadDisclaimer({
   onClose,
   onContinue,
+  isMobile,
 }: {
   onClose: any;
   onContinue: any;
+  isMobile: boolean;
 }) {
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
@@ -52,7 +54,12 @@ function UploadDisclaimer({
               </button>
               <label
                 className="w-1/2 h-16 p-4 text-start text-sm text-white bg-[#E31B5D] cursor-pointer"
-                htmlFor="nyris__upload-photo"
+                htmlFor={!isMobile ? "nyris__upload-photo" : ""}
+                onClick={() => {
+                  if (isMobile) {
+                    onContinue({ dontShowAgain });
+                  }
+                }}
               >
                 Continue
               </label>
@@ -61,7 +68,9 @@ function UploadDisclaimer({
                 name="take-picture"
                 id="nyris__upload-photo"
                 accept="image/jpeg,image/png,image/webp"
-                onChange={makeFileHandler((e) => onContinue(e, dontShowAgain))}
+                onChange={makeFileHandler((file) =>
+                  onContinue({ file, dontShowAgain })
+                )}
                 style={{ display: "none" }}
               />
             </div>

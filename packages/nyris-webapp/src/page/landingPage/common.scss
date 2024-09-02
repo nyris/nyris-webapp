@@ -490,7 +490,7 @@ button {
     }
     .info-marking {
       width: max-content;
-      background: #E9E9EC;
+      background: #E0E0E0;
       border-radius: 2px;
       padding: 4px;
       word-break: break-all;
@@ -1068,26 +1068,32 @@ button {
         flex-wrap: wrap;
         gap: 24px;
         padding-left: 2px;
+        .border {
+          border: 1px solid #E0E0E0;
+          border-radius: 4px;
+        }
         .wrap-main-item-result {
           display: flex;
           flex-direction: column;
-          max-width: 192px;
-          width: 192px;
+          max-width: 190px;
+          width: 190px;
           border-radius: 4px;
           overflow: hidden;
           height: 100%;
           .info-container {
             flex-direction: column;
-            background-color: #FAFAFA;
+            background-color: #F3F3F5;
             flex-grow: 1;
             z-index: 100;
             display: flex;
             padding: 8px;
+            height: 140px;
             .info-sku {
               font-size: 16px;
               font-weight: 700;
-              line-height: 19.94px;
-              padding-left: 2px;
+              line-height: 22.78px;
+              letter-spacing: 0.22857144474983215px;
+              padding-left: 4px;
             }
             .info-marking {
               max-width: max-content;
@@ -1095,9 +1101,15 @@ button {
               font-size: 14px;
               font-weight: 400;
               line-height: 14px;
-              background: #E9E9EC;
+              letter-spacing: 0.22857144474983215px;
+              background: #E0E0E0;
               border-radius: 2px;
               word-break: break-all;
+              overflow: hidden;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              line-clamp: 2;
+              -webkit-box-orient: vertical;
             }
             .info-description {
               margin-top: 8px;
@@ -1105,7 +1117,13 @@ button {
               font-weight: 400;
               line-height: 19.94px;
               letter-spacing: 0.22857144474983215px;
-              padding-left: 2px;
+              word-break: break-all;
+              padding-left: 4px;
+              overflow: hidden;
+              display: -webkit-box;
+              -webkit-line-clamp: 3;
+              line-clamp: 2;
+              -webkit-box-orient: vertical;
             }
           }
         }

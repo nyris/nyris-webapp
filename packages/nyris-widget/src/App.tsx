@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import eye from "./eye.svg";
 import close from "./images/close.svg";
@@ -12,7 +12,7 @@ import { debounce } from "lodash";
 
 import { ReactComponent as Logo } from "./images/logo.svg";
 import { ReactComponent as DeutscheLogo } from "./images/deutsche_logo.svg";
-import { ReactComponent as GoBack } from './images/path.svg';
+import { ReactComponent as GoBack } from "./images/path.svg";
 
 import "./styles/nyris.scss";
 
@@ -153,15 +153,12 @@ const SuccessMultiple = ({
           {!loading && (
             <>
               {image !== firstSearchImage ? (
-                <div
-                  className="go-back-button"
-                  onClick={() => onGoBack()}
-                >
-                  <GoBack width={16} height={16}  />
+                <div className="go-back-button" onClick={() => onGoBack()}>
+                  <GoBack width={16} height={16} />
                   {labeles["Back to request image"]}
                 </div>
               ) : (
-                ''
+                ""
               )}
               <div className="nyris__success-multiple-result-list">
                 {results.map((r, i) => (
