@@ -24,7 +24,6 @@ export interface SearchState {
   selectedRegion?: RectCoords;
   sessionId?: string;
   queryText?: string;
-  textSearchInputMobile?: string;
   valueTextSearch: any;
   postFilter: Record<string, Record<string, boolean>>;
   showFeedback?: boolean;

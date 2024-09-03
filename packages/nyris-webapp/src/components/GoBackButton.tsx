@@ -22,8 +22,10 @@ const GoBackButton = ({ items, refine }: CurrentRefinementsProvided) => {
     search;
   const clearPostFilters = useCallback(() => refine(items), [refine, items]);
   const { t } = useTranslation();
-  const { setRequestImages } = useRequestStore(state => ({
+
+  const { setRequestImages, resetRegions } = useRequestStore(state => ({
     setRequestImages: state.setRequestImages,
+    resetRegions: state.resetRegions,
   }));
   const onGoBack = () => {
     dispatch(setSearchResults(firstSearchResults));
@@ -31,6 +33,7 @@ const GoBackButton = ({ items, refine }: CurrentRefinementsProvided) => {
     setRequestImages([firstSearchImage]);
     dispatch(setPreFilter(firstSearchPrefilters));
     dispatch(clearPostFilter());
+    resetRegions();
     clearPostFilters();
   };
 

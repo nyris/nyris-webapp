@@ -22,6 +22,7 @@
     "axios": "^0.26.1",
     "blueimp-load-image": "^5.16.0",
     "classnames": "^2.5.1",
+    "compressorjs": "^1.2.1",
     "framer-motion": "^11.0.12",
     "i18next": "^23.10.1",
     "jotai": "^1.4.7",

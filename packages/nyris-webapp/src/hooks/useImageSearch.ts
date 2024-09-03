@@ -17,14 +17,16 @@ import {
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppSettings } from 'types';
+import { compressImage } from 'utils';
 
 export const useImageSearch = () => {
   const dispatch = useAppDispatch();
 
-  const {
-    search: { preFilter, firstSearchResults },
-    settings: { regions },
-  } = useAppSelector(state => state);
+  const preFilter = useAppSelector(state => state.search.preFilter);
+  const firstSearchResults = useAppSelector(
+    state => state.search.firstSearchResults,
+  );
+  const regions = useAppSelector(state => state.settings.regions);
 
   const { setRequestImages, setImageRegions } = useRequestStore(state => ({
     setRequestImages: state.setRequestImages,
@@ -45,7 +47,7 @@ export const useImageSearch = () => {
       imageRegion,
       newSearch,
     }: {
-      image: File | string | HTMLCanvasElement;
+      image: any;
       settings: AppSettings;
       showFeedback?: boolean;
       imageRegion?: RectCoords;
@@ -53,8 +55,13 @@ export const useImageSearch = () => {
     }) => {
       let region: RectCoords | undefined = imageRegion;
       let res: any;
+      let compressedBase64;
 
-      let canvasImage = await createImage(image);
+      try {
+        compressedBase64 = await compressImage(image);
+      } catch (error) {}
+
+      let canvasImage = await createImage(compressedBase64 || image);
 
       if (!imageRegion) {
         dispatch(setRequestImage(canvasImage));
@@ -138,9 +145,6 @@ export const useImageSearch = () => {
       settings: AppSettings;
       showFeedback?: boolean;
     }) => {
-      // dispatch(setRequestImage(image));
-      // setRequestImages([image]);
-
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
@@ -172,20 +176,13 @@ export const useImageSearch = () => {
         if (showFeedback) {
           dispatch(setShowFeedback(true));
         }
-        // go back
-        if (!firstSearchResults) {
-          // dispatch(setFirstSearchResults(payload));
-          // dispatch(setFirstSearchImage(imageConvert));
-          // dispatch(setFirstSearchPrefilters(preFilter));
-          // dispatch(setFirstSearchThumbSearchInput(image));
-        }
       } catch (error) {
         dispatch(updateStatusLoading(false));
       }
 
       return res;
     },
-    [dispatch, firstSearchResults, preFilter],
+    [dispatch, preFilter],
   );
 
   return { singleImageSearch, multiImageSearch };

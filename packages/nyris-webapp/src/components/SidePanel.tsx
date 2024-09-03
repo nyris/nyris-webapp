@@ -1,27 +1,15 @@
-import { useState } from 'react';
 import PostFilterPanel from './PanelResult/PostFilter';
 import PostFilterPanelAlgolia from './PanelResult/PostFilterAlgolia';
 
-import { useTranslation } from 'react-i18next';
 import { useAppSelector } from 'Store/Store';
 
 import ImagePreview from './ImagePreview';
 
 function SidePanel({
-  setImageSelection,
-  imageSelection,
-  debouncedOnImageSelectionChange,
-  filteredRegions,
-  showAdjustInfoBasedOnConfidence,
   showAdjustInfo,
   showPostFilter,
   disjunctiveFacets,
 }: {
-  setImageSelection: any;
-  imageSelection: any;
-  debouncedOnImageSelectionChange: any;
-  filteredRegions: any;
-  showAdjustInfoBasedOnConfidence: any;
   showAdjustInfo: any;
   showPostFilter: any;
   allSearchResults: any;
@@ -58,12 +46,6 @@ function SidePanel({
                   }}
                 >
                   <ImagePreview
-                    debouncedOnImageSelectionChange={
-                      debouncedOnImageSelectionChange
-                    }
-                    showAdjustInfoBasedOnConfidence={
-                      showAdjustInfoBasedOnConfidence
-                    }
                     showAdjustInfo={showAdjustInfo}
                     isExpanded={true}
                     isCameraUploadEnabled={false}

@@ -15,7 +15,6 @@ export const initialState: SearchState = {
   requestImage: undefined,
   results: [],
   selectedRegion: undefined,
-  textSearchInputMobile: '',
   valueTextSearch: {
     configure: { filters: '' },
     page: 1,

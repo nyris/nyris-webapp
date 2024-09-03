@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import cx from 'classnames';
 
@@ -14,60 +14,66 @@ import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg
 
 import { useQuery } from 'hooks/useQuery';
 import {
+  loadingActionResults,
   reset,
   setSearchResults,
+  updateResultChangePosition,
   updateStatusLoading,
 } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
 import { createImage, find } from 'services/image';
-import { isEmpty } from 'lodash';
+import { debounce, isEmpty, isUndefined } from 'lodash';
 import useRequestStore from 'Store/requestStore';
 import CameraCustom from './drawer/cameraCustom';
 import useFilteredRegions from 'hooks/useFilteredRegions';
 import useResultStore from 'Store/resultStore';
 import { useDropzone } from 'react-dropzone';
 import { useImageSearch } from 'hooks/useImageSearch';
+import { compressImage } from 'utils';
+import React from 'react';
 
-function ImagePreviewMobileComponent({
-  requestImage,
-  imageSelection,
-  debouncedOnImageSelectionChange,
-  showAdjustInfo,
-  showAdjustInfoBasedOnConfidence,
+function ImagePreviewComponent({
+  showAdjustInfo = false,
   isExpanded,
   isCameraUploadEnabled = true,
-  ...rest
 }: {
   requestImage?: any;
   imageSelection?: any;
   filteredRegions?: any;
-  debouncedOnImageSelectionChange: any;
-  showAdjustInfoBasedOnConfidence: any;
-  showAdjustInfo: any;
+  showAdjustInfo?: any;
   isCameraUploadEnabled?: boolean;
   isExpanded?: boolean;
 }) {
+  const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
+    useState(false);
+
   const { t } = useTranslation();
   const settings = useAppSelector(state => state.settings);
-  const { preFilter } = useAppSelector(state => state.search);
+  const preFilter = useAppSelector(state => state.search.preFilter);
   const isAlgoliaEnabled = settings.algolia?.enabled;
   const query = useQuery();
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const { requestImages, addRequestImage, regions } = useRequestStore(
-    state => ({
-      requestImages: state.requestImages,
-      regions: state.regions,
-      addRequestImage: state.addRequestImage,
-    }),
-  );
+  const {
+    requestImages,
+    addRequestImage,
+    regions,
+    updateRegion,
+    imageRegions,
+  } = useRequestStore(state => ({
+    requestImages: state.requestImages,
+    regions: state.regions,
+    addRequestImage: state.addRequestImage,
+    updateRegion: state.updateRegion,
+    imageRegions: state.regions,
+  }));
 
   const { detectedObject } = useResultStore(state => ({
     detectedObject: state.detectedObject,
   }));
 
-  const { multiImageSearch } = useImageSearch();
+  const { multiImageSearch, singleImageSearch } = useImageSearch();
 
   const [showCamera, setShowCamera] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(requestImages.length - 1);
@@ -138,16 +144,83 @@ function ImagePreviewMobileComponent({
     onDrop: async (fs: File[]) => {
       if (!fs[0]) return;
 
-      let image = await createImage(fs[0]);
+      dispatch(updateStatusLoading(true));
+      dispatch(loadingActionResults());
+
+      const compressedBase64 = await compressImage(fs[0]);
+      let image = await createImage(compressedBase64);
 
       multiImageSearch({
         images: [...requestImages, image],
         regions: regions,
         settings,
+      }).then(() => {
+        dispatch(updateStatusLoading(false));
       });
       addRequestImage(image);
     },
   });
+
+  const findItemsInSelection = useCallback(
+    debounce(async (r: RectCoords, image: HTMLCanvasElement) => {
+      dispatch(updateStatusLoading(true));
+      singleImageSearch({ image: image, settings, imageRegion: r }).then(
+        (res: any) => {
+          dispatch(updateStatusLoading(false));
+
+          dispatch(updateResultChangePosition(res));
+          const highConfidence = res.results.find(
+            (data: { score: number }) => data.score >= 0.65,
+          );
+          if (!highConfidence) {
+            setShowAdjustInfoBasedOnConfidence(true);
+          }
+          setTimeout(() => {
+            setShowAdjustInfoBasedOnConfidence(false);
+          }, 2000);
+        },
+      );
+      return;
+    }, 250),
+    [dispatch, settings, singleImageSearch],
+  );
+
+  const multiImageSearchOnRegionChange = useCallback(
+    (r: RectCoords, index: number) => {
+      dispatch(updateStatusLoading(true));
+      dispatch(loadingActionResults());
+      let modifiedRegions = [...imageRegions];
+      modifiedRegions[index] = r;
+      multiImageSearch({
+        images: requestImages,
+        regions: modifiedRegions,
+        settings,
+      }).then(() => {
+        dispatch(updateStatusLoading(false));
+      });
+    },
+    [dispatch, imageRegions, multiImageSearch, requestImages, settings],
+  );
+
+  const debouncedOnImageSelectionChange = useCallback(
+    debounce((r: RectCoords, index?: number) => {
+      if (requestImages.length > 1 && !isUndefined(index)) {
+        updateRegion(r, index);
+        multiImageSearchOnRegionChange(r, index);
+      } else {
+        updateRegion(r, 0);
+        // setImageSelection(r);
+        // dispatch(selectionChanged(r));
+        findItemsInSelection(r, requestImages[0]);
+      }
+    }, 50),
+    [
+      findItemsInSelection,
+      multiImageSearchOnRegionChange,
+      requestImages,
+      updateRegion,
+    ],
+  );
 
   return (
     <>
@@ -335,12 +408,13 @@ function ImagePreviewMobileComponent({
               </div>
             </label>
           )}
-
           <div
-            className="absolute right-5 rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden"
             onClick={() => handleExpand()}
+            className="absolute right-5 flex justify-center items-center desktop:hidden p-2"
           >
-            <CropIcon className="text-primary" />
+            <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
+              <CropIcon className="text-primary" />
+            </div>
           </div>
 
           <CameraCustom
@@ -357,5 +431,5 @@ function ImagePreviewMobileComponent({
     </>
   );
 }
-const ImagePreview = memo(ImagePreviewMobileComponent);
+const ImagePreview = React.memo(ImagePreviewComponent);
 export default ImagePreview;

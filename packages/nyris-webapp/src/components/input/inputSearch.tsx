@@ -3,22 +3,19 @@ import IconButton from '@material-ui/core/IconButton';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import IconCamera from 'common/assets/icons/camera.svg';
 import { useQuery } from 'hooks/useQuery';
-import { debounce, isEmpty } from 'lodash';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { isEmpty } from 'lodash';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
-import { find } from 'services/image';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
 import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
 
 import {
   reset,
-  setSearchResults,
   updateStatusLoading,
   loadingActionResults,
   updateQueryText,
-  setShowFeedback,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -28,13 +25,14 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useImageSearch } from 'hooks/useImageSearch';
 import UploadDisclaimer from 'components/UploadDisclaimer';
 import useRequestStore from 'Store/requestStore';
+import { useSearchOrRedirect } from 'hooks/useSearchOrRedirect';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
-  const stateGlobal = useAppSelector(state => state);
-  const { search, settings } = stateGlobal;
-  const { preFilter, requestImage, selectedRegion } = search;
+  const preFilter = useAppSelector(state => state.search.preFilter);
+  const settings = useAppSelector(state => state.settings);
+
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -115,65 +113,7 @@ const SearchBox = (props: any) => {
   }, [history.location]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchOrRedirect = useCallback(
-    debounce((value: any, withImage = true) => {
-      if (!isAlgoliaEnabled) {
-        dispatch(updateQueryText(value));
-        let payload: any;
-        let filters: any[] = [];
-        const preFilterValues = [
-          {
-            key: settings.visualSearchFilterKey,
-            values: Object.keys(preFilter),
-          },
-        ];
-        if (value || requestImage) {
-          dispatch(updateStatusLoading(true));
-          find({
-            image: withImage
-              ? (requestImage?.canvas as HTMLCanvasElement)
-              : undefined,
-            settings,
-            filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-            region: withImage ? selectedRegion : undefined,
-            text: value,
-          })
-            .then((res: any) => {
-              res?.results.forEach((item: any) => {
-                filters.push({
-                  sku: item.sku,
-                  score: item.score,
-                });
-              });
-              payload = {
-                ...res,
-                filters,
-              };
-
-              dispatch(setSearchResults(payload));
-              dispatch(updateStatusLoading(false));
-              dispatch(setShowFeedback(true));
-            })
-            .catch((e: any) => {
-              console.log('error input search', e);
-              dispatch(updateStatusLoading(false));
-            });
-        } else {
-          dispatch(setSearchResults([]));
-        }
-      }
-
-      if (value) {
-        history.push({
-          pathname: '/result',
-          search: `?query=${value}`,
-        });
-      } else {
-        history.push('/result');
-      }
-    }, 500),
-    [requestImage, preFilter, selectedRegion, isAlgoliaEnabled],
-  );
+  const searchOrRedirect = useSearchOrRedirect();
 
   const onImageUpload = async (fs: any) => {
     dispatch(updateStatusLoading(true));

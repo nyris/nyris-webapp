@@ -3,10 +3,7 @@ import { DynamicWidgetsCT } from 'components/dynamic-widgets/dynamic-widgets';
 import IconLabel from 'components/icon-label/icon-label';
 import { atom, useAtom } from 'jotai';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import type {
-  CurrentRefinementsProvided,
-  SearchResults,
-} from 'react-instantsearch-core';
+import type { CurrentRefinementsProvided } from 'react-instantsearch-core';
 import { RefinementList } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';

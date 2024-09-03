@@ -1,25 +1,15 @@
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 
 import { connectSearchBox, connectStateResults } from 'react-instantsearch-dom';
 import { NavLink, useHistory } from 'react-router-dom';
 
 import classNames from 'classnames';
-import { debounce, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
 
-import {
-  reset,
-  updateValueTextSearchMobile,
-  setPreFilter,
-  updateQueryText,
-  updateStatusLoading,
-  setSearchResults,
-  setShowFeedback,
-} from 'Store/search/Search';
+import { reset, setPreFilter, updateQueryText } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-
-import { AppState } from 'types';
 
 import { ReactComponent as FilterIcon } from 'common/assets/icons/filter.svg';
 import { ReactComponent as LogoutIcon } from 'common/assets/icons/logout.svg';
@@ -28,12 +18,12 @@ import { ReactComponent as PreFilterIcon } from 'common/assets/icons/filter_sett
 import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 
 import { useQuery } from 'hooks/useQuery';
-import { find } from 'services/image';
 import DefaultModal from './modal/DefaultModal';
 import useRequestStore from 'Store/requestStore';
 import CameraCustom from './drawer/cameraCustom';
 import UploadDisclaimer from './UploadDisclaimer';
 import PreFilterComponent from './pre-filter';
+import { useSearchOrRedirect } from 'hooks/useSearchOrRedirect';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -42,24 +32,24 @@ interface Props {
 }
 
 function HeaderMobileComponent(props: Props): JSX.Element {
-  const { user, isAuthenticated, logout } = useAuth0();
-  const { auth0 } = useAppSelector(state => state.settings);
-
   const { onToggleFilterMobile, refine } = props;
-  const dispatch = useAppDispatch();
-  const stateGlobal = useAppSelector(state => state);
-  const { search } = stateGlobal;
-  const {
-    preFilter,
-    valueTextSearch,
-    queryText,
-    requestImage,
-    selectedRegion,
-    results,
-    postFilter,
-  } = search;
 
+  const { user, isAuthenticated, logout } = useAuth0();
+
+  const dispatch = useAppDispatch();
   const query = useQuery();
+  const history = useHistory();
+
+  const auth0 = useAppSelector(state => state.settings.auth0);
+
+  const preFilter = useAppSelector(state => state.search.preFilter);
+  const valueTextSearch = useAppSelector(state => state.search.valueTextSearch);
+  const queryText = useAppSelector(state => state.search.queryText);
+  const results = useAppSelector(state => state.search.results);
+  const postFilter = useAppSelector(state => state.search.postFilter);
+  const settings = useAppSelector(state => state.settings);
+
+  const isAlgoliaEnabled = settings.algolia?.enabled;
 
   const { resetRequestState, requestImages } = useRequestStore(state => ({
     resetRequestState: state.reset,
@@ -72,8 +62,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [preFilterDropdown, setPreFilterDropdown] = useState(false);
 
-  const history = useHistory();
-  const { settings } = useAppSelector<AppState>((state: any) => state);
   const [valueInput, setValueInput] = useState<string>(queryText || '');
   const searchQuery = query.get('query') || '';
   const visualSearch = useMemo(() => requestImages.length > 0, [requestImages]);
@@ -92,15 +80,14 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   useEffect(() => {
     if (visualSearch) {
       history.push('/result');
-      dispatch(updateValueTextSearchMobile(''));
       setValueInput('');
-      if (settings.algolia?.enabled) {
+      if (isAlgoliaEnabled) {
         refine('');
       } else {
         dispatch(updateQueryText(''));
       }
     } else {
-      if (settings.algolia?.enabled) {
+      if (isAlgoliaEnabled) {
         // not an ideal solution: fixes text search not working after removing image
         setTimeout(() => {
           refine(searchQuery);
@@ -108,13 +95,12 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visualSearch, dispatch, refine, history, settings.algolia]);
+  }, [visualSearch, dispatch, refine, history, isAlgoliaEnabled]);
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {
       setValueInput(searchQuery);
-      dispatch(updateValueTextSearchMobile(searchQuery));
-      if (settings.algolia?.enabled) {
+      if (isAlgoliaEnabled) {
         refine(searchQuery);
         // not an ideal solution: fixes text search not working from landing page
         setTimeout(() => {
@@ -124,69 +110,15 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         dispatch(updateQueryText(searchQuery));
       }
     }
-  }, [query, refine, dispatch, searchQuery, settings.algolia]);
+  }, [query, refine, dispatch, searchQuery, isAlgoliaEnabled]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchOrRedirect = useCallback(
-    debounce((value: any) => {
-      if (!settings.algolia?.enabled) {
-        dispatch(updateQueryText(value));
-        let payload: any;
-        let filters: any[] = [];
-        const preFilterValues = [
-          {
-            key: settings.visualSearchFilterKey,
-            values: Object.keys(preFilter),
-          },
-        ];
-        if (value || requestImage) {
-          dispatch(updateStatusLoading(true));
-          find({
-            image: requestImage?.canvas as HTMLCanvasElement,
-            settings,
-            filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-            region: selectedRegion,
-            text: value,
-          })
-            .then((res: any) => {
-              res?.results.forEach((item: any) => {
-                filters.push({
-                  sku: item.sku,
-                  score: item.score,
-                });
-              });
-              payload = {
-                ...res,
-                filters,
-              };
-              dispatch(setSearchResults(payload));
-              dispatch(updateStatusLoading(false));
-              dispatch(setShowFeedback(true));
-            })
-            .catch((e: any) => {
-              console.log('error input search', e);
-              dispatch(updateStatusLoading(false));
-            });
-        } else {
-          dispatch(setSearchResults([]));
-        }
-      }
+  const searchOrRedirect = useSearchOrRedirect();
 
-      if (value) {
-        history.push({
-          pathname: '/result',
-          search: `?query=${value}`,
-        });
-      } else {
-        history.push('/result');
-      }
-    }, 500),
-    [requestImage],
-  );
   const isPostFilterApplied = useMemo(() => {
     let isApplied = false;
 
-    if (settings.algolia.enabled) {
+    if (isAlgoliaEnabled) {
       if (!valueTextSearch?.refinementList) return false;
       Object.keys(valueTextSearch?.refinementList).forEach(key => {
         if (typeof valueTextSearch.refinementList[key] === 'object') {
@@ -212,18 +144,17 @@ function HeaderMobileComponent(props: Props): JSX.Element {
 
   const onChangeText = (event: any) => {
     setValueInput(event.currentTarget.value);
-    // debounceSearch(event.currentTarget.value);
     searchOrRedirect(event.currentTarget.value);
     if (event.currentTarget.value === '') {
-      dispatch(updateValueTextSearchMobile(''));
-      refine('');
-    } else {
-      dispatch(updateValueTextSearchMobile(event.currentTarget.value));
+      setValueInput('');
+      if (isAlgoliaEnabled) {
+        refine('');
+      }
     }
   };
 
   const disablePostFilter = useMemo(() => {
-    if (settings.algolia.enabled) {
+    if (isAlgoliaEnabled) {
       return settings.postFilterOption &&
         props.allSearchResults?.hits.length > 0
         ? false

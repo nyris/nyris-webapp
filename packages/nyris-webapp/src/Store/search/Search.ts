@@ -105,7 +105,6 @@ export const searchSlice = createSlice({
         resultSearchText: [],
         filters: [],
         loadingSearchAlgolia: false,
-        textSearchInputMobile: '',
         isShowModalDetailItemMobile: false,
         preFilter: state.preFilter || {},
         postFilter: {},
@@ -151,13 +150,7 @@ export const searchSlice = createSlice({
         loadingSearchAlgolia: payload,
       };
     },
-    updateValueTextSearchMobile: (state, data: PayloadAction<string>) => {
-      const { payload } = data;
-      return {
-        ...state,
-        textSearchInputMobile: payload,
-      };
-    },
+
     onToggleModalItemDetail: (state, data: PayloadAction<boolean>) => {
       const { payload } = data;
 
@@ -257,7 +250,6 @@ export const {
   updateResultChangePosition,
   updateResults,
   updateStatusLoading,
-  updateValueTextSearchMobile,
   setShowFeedback,
   setFirstSearchImage,
   setFirstSearchResults,

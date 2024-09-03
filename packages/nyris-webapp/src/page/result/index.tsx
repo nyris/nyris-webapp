@@ -8,7 +8,7 @@ import { CurrentRefinements } from 'components/current-refinements/current-refin
 import FooterResult from 'components/FooterResult';
 import CustomSearchBox from 'components/input/inputSearch';
 import ProductList from 'components/ProductList';
-import { debounce, isEmpty, isUndefined } from 'lodash';
+import { isEmpty } from 'lodash';
 import {
   Configure,
   connectStateResults,
@@ -16,23 +16,20 @@ import {
   Pagination,
 } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
-import { feedbackRegionEpic, feedbackSuccessEpic } from 'services/Feedback';
+import { feedbackSuccessEpic } from 'services/Feedback';
 import { find } from 'services/image';
 import {
   loadingActionResults,
   onToggleModalItemDetail,
-  selectionChanged,
   setShowFeedback,
   updateResultChangePosition,
   updateStatusLoading,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
-import { DEFAULT_REGION } from '../../constants';
 import { useTranslation } from 'react-i18next';
 import RfqModal from 'components/rfq/RfqModal';
 import SidePanel from 'components/SidePanel';
-import useFilteredRegions from 'hooks/useFilteredRegions';
 import ImagePreview from 'components/ImagePreview';
 import RfqBanner from 'components/rfq/RfqBanner';
 import InquiryBanner from 'components/Inquiry/InquiryBanner';
@@ -57,7 +54,6 @@ function ResultComponent(props: Props) {
   const { allSearchResults } = props;
   const {
     requestImage,
-    regions,
     selectedRegion,
     preFilter,
     loadingSearchAlgolia,
@@ -69,13 +65,11 @@ function ResultComponent(props: Props) {
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-  const [imageSelection, setImageSelection] = useState<any>(null);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
   const [filterString, setFilterString] = useState<string>();
   const { t } = useTranslation();
   const [showAdjustInfo] = useState(false);
-  const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
-    useState(false);
+
   const [rfqStatus, setRfqStatus] = useState<'inactive' | 'loading' | 'sent'>(
     'inactive',
   );
@@ -94,15 +88,16 @@ function ResultComponent(props: Props) {
   const isPostFilterEnabled = settings.postFilterOption;
   const history = useHistory();
 
-  const { singleImageSearch, multiImageSearch } = useImageSearch();
+  const { singleImageSearch } = useImageSearch();
 
-  const { updateRegion, resetRegions, imageRegions, requestImages } =
-    useRequestStore(state => ({
+  const { resetRegions, imageRegions, requestImages } = useRequestStore(
+    state => ({
       requestImages: state.requestImages,
       updateRegion: state.updateRegion,
       resetRegions: state.resetRegions,
       imageRegions: state.regions,
-    }));
+    }),
+  );
 
   // useEffect(() => {
   //   if (
@@ -132,7 +127,6 @@ function ResultComponent(props: Props) {
 
   useEffect(() => {
     if (selectedRegion) {
-      setImageSelection(selectedRegion);
       setRfqStatus('inactive');
       setFeedbackStatus('hidden');
     }
@@ -142,7 +136,6 @@ function ResultComponent(props: Props) {
     if (requestImage) {
       setFeedbackStatus('hidden');
       executeScroll();
-      setImageSelection(DEFAULT_REGION);
       resetRegions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -176,32 +169,6 @@ function ResultComponent(props: Props) {
         });
     },
     [settings, dispatch, preFilter],
-  );
-
-  // TODO: Search offers for image:
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const findItemsInSelection = useCallback(
-    debounce(async (r: RectCoords, image: HTMLCanvasElement) => {
-      dispatch(updateStatusLoading(true));
-      singleImageSearch({ image: image, settings, imageRegion: r }).then(
-        (res: any) => {
-          dispatch(updateStatusLoading(false));
-
-          dispatch(updateResultChangePosition(res));
-          const highConfidence = res.results.find(
-            (data: { score: number }) => data.score >= 0.65,
-          );
-          if (!highConfidence) {
-            setShowAdjustInfoBasedOnConfidence(true);
-          }
-          setTimeout(() => {
-            setShowAdjustInfoBasedOnConfidence(false);
-          }, 2000);
-        },
-      );
-      return;
-    }, 250),
-    [requestImage, findImageByApiNyris],
   );
 
   // TODO: Handler like dislike
@@ -298,36 +265,6 @@ function ResultComponent(props: Props) {
   }, [history.location]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedOnImageSelectionChange = useCallback(
-    debounce((r: RectCoords, index?: number) => {
-      if (requestImages.length > 1 && !isUndefined(index)) {
-        updateRegion(r, index);
-        multiImageSearchOnRegionChange(r, index);
-      } else {
-        updateRegion(r, 0);
-        setImageSelection(r);
-        dispatch(selectionChanged(r));
-        findItemsInSelection(r, requestImages[0]);
-      }
-      feedbackRegionEpic(stateGlobal, r);
-    }, 50),
-    [findItemsInSelection, stateGlobal.search],
-  );
-
-  const multiImageSearchOnRegionChange = useCallback(
-    (r: RectCoords, index: number) => {
-      let modifiedRegions = [...imageRegions];
-      modifiedRegions[index] = r;
-      multiImageSearch({
-        images: requestImages,
-        regions: modifiedRegions,
-        settings,
-      });
-    },
-    [imageRegions, multiImageSearch, requestImages, settings],
-  );
-
-  const filteredRegions = useFilteredRegions(regions, imageSelection);
 
   const showPostFilter = useMemo(() => {
     return (
@@ -390,8 +327,6 @@ function ResultComponent(props: Props) {
         <>
           {isRfqModalOpen && (
             <RfqModal
-              requestImage={requestImage}
-              selectedRegion={selectedRegion}
               setIsRfqModalOpen={setIsRfqModalOpen}
               isRfqModalOpen={isRfqModalOpen}
               setRfqStatus={setRfqStatus}
@@ -417,17 +352,8 @@ function ResultComponent(props: Props) {
             >
               {!isMobile && showSidePanel && (
                 <SidePanel
-                  setImageSelection={setImageSelection}
                   allSearchResults={props.allSearchResults}
-                  debouncedOnImageSelectionChange={
-                    debouncedOnImageSelectionChange
-                  }
-                  filteredRegions={filteredRegions}
-                  imageSelection={imageSelection}
                   showAdjustInfo={showAdjustInfo}
-                  showAdjustInfoBasedOnConfidence={
-                    showAdjustInfoBasedOnConfidence
-                  }
                   showPostFilter={showPostFilter}
                   disjunctiveFacets={props.allSearchResults.disjunctiveFacets}
                 />
@@ -459,17 +385,11 @@ function ResultComponent(props: Props) {
                   </div>
                 )}
 
-                {isMobile && settings.preview && requestImage && (
-                  <ImagePreview
-                    debouncedOnImageSelectionChange={
-                      debouncedOnImageSelectionChange
-                    }
-                    showAdjustInfoBasedOnConfidence={
-                      showAdjustInfoBasedOnConfidence
-                    }
-                    showAdjustInfo={showAdjustInfo}
-                  />
-                )}
+                <div className="flex flex-col desktop:hidden">
+                  {settings.preview && requestImages.length > 0 && (
+                    <ImagePreview showAdjustInfo={false} />
+                  )}
+                </div>
 
                 <div
                   style={{
@@ -582,7 +502,7 @@ function ResultComponent(props: Props) {
                         marginTop: !isAlgoliaEnabled ? '24px' : '',
                       }}
                     >
-                      {requestImage &&
+                      {requestImages.length > 0 &&
                         !loadingSearchAlgolia &&
                         !props.isSearchStalled &&
                         settings.rfq &&
@@ -591,8 +511,8 @@ function ResultComponent(props: Props) {
                             rfqRef={rfqRef}
                             rfqStatus={rfqStatus}
                             setIsRfqModalOpen={setIsRfqModalOpen}
-                            requestImage={requestImage}
-                            selectedRegion={selectedRegion}
+                            requestImage={requestImages[0]}
+                            selectedRegion={imageRegions[0]}
                           />
                         )}
                       {!loadingSearchAlgolia &&

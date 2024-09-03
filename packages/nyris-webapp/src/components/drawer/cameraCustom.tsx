@@ -23,6 +23,7 @@ import useRequestStore from 'Store/requestStore';
 import { useImageSearch } from 'hooks/useImageSearch';
 import ImageCaptureHelpModal from 'components/ImageCaptureHelpModal';
 import { createPortal } from 'react-dom';
+import { compressImage } from 'utils';
 
 interface Props {
   show: boolean;
@@ -62,7 +63,8 @@ function CameraCustom(props: Props) {
   };
 
   const addCapturedImage = async (image: any) => {
-    let imageConvert = await createImage(image);
+    const compressedBase64 = await compressImage(image);
+    let imageConvert = await createImage(compressedBase64);
     setCapturedImages(state => [...state, imageConvert]);
   };
 
