@@ -1,27 +1,11 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { createImage, find, findRegions } from 'services/image';
-import {
-  setSearchResults,
-  setRequestImage,
-  setImageSearchInput,
-  updateStatusLoading,
-  loadingActionResults,
-  setRegions,
-  setSelectedRegion,
-  setShowFeedback,
-  setFirstSearchResults,
-  setFirstSearchImage,
-  setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput,
-} from 'Store/search/Search';
+import { updateStatusLoading, loadingActionResults } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDownward.svg';
 
-import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
-import { isEmpty } from 'lodash';
 import Loading from './Loading';
 import { useImageSearch } from 'hooks/useImageSearch';
 
@@ -34,12 +18,8 @@ interface Props {
 function DragDropFile(props: Props) {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { onChangeLoading, isLoading } = props;
-  const searchState = useAppSelector(state => state);
-  const {
-    settings,
-    search: { preFilter },
-  } = searchState;
+  const { isLoading } = props;
+  const settings = useAppSelector(state => state.settings);
   const { t } = useTranslation();
 
   const { singleImageSearch } = useImageSearch();
@@ -52,12 +32,11 @@ function DragDropFile(props: Props) {
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
 
-      dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
-      let image = await createImage(fs[0]);
-
-      singleImageSearch({ image, settings, showFeedback: true }).then(() => {
-        dispatch(updateStatusLoading(false));
-      });
+      singleImageSearch({ image: fs[0], settings, showFeedback: true }).then(
+        () => {
+          dispatch(updateStatusLoading(false));
+        },
+      );
     },
   });
 

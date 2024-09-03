@@ -17,12 +17,11 @@ import {
 } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { feedbackRegionEpic, feedbackSuccessEpic } from 'services/Feedback';
-import { createImage, find } from 'services/image';
+import { find } from 'services/image';
 import {
   loadingActionResults,
   onToggleModalItemDetail,
   selectionChanged,
-  setImageSearchInput,
   setShowFeedback,
   updateResultChangePosition,
   updateStatusLoading,
@@ -62,7 +61,6 @@ function ResultComponent(props: Props) {
     selectedRegion,
     preFilter,
     loadingSearchAlgolia,
-    imageThumbSearchInput,
     results,
     showFeedback,
     firstSearchResults,
@@ -75,14 +73,14 @@ function ResultComponent(props: Props) {
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
   const [filterString, setFilterString] = useState<string>();
   const { t } = useTranslation();
-  const [showAdjustInfo, setAdjustInfo] = useState(false);
+  const [showAdjustInfo] = useState(false);
   const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
     useState(false);
   const [rfqStatus, setRfqStatus] = useState<'inactive' | 'loading' | 'sent'>(
     'inactive',
   );
   const [isRfqModalOpen, setIsRfqModalOpen] = useState(false);
-  const imageUploadRef = useRef(null);
+  // const imageUploadRef = useRef(null);
   const rfqRef = useRef<any>(null);
 
   const [feedbackStatus, setFeedbackStatus] = useState<
@@ -106,24 +104,24 @@ function ResultComponent(props: Props) {
       imageRegions: state.regions,
     }));
 
-  useEffect(() => {
-    if (
-      !loadingSearchAlgolia &&
-      (imageThumbSearchInput.includes('blob:') ||
-        imageThumbSearchInput.includes('data:')) &&
-      imageUploadRef.current !== imageThumbSearchInput
-    ) {
-      setAdjustInfo(true);
-      const timeout = setTimeout(() => {
-        setAdjustInfo(false);
-      }, 2000);
-      imageUploadRef.current = imageThumbSearchInput;
-      return () => {
-        clearTimeout(timeout);
-        setAdjustInfo(false);
-      };
-    }
-  }, [imageThumbSearchInput, loadingSearchAlgolia]);
+  // useEffect(() => {
+  //   if (
+  //     !loadingSearchAlgolia &&
+  //     (imageThumbSearchInput.includes('blob:') ||
+  //       imageThumbSearchInput.includes('data:')) &&
+  //     imageUploadRef.current !== imageThumbSearchInput
+  //   ) {
+  //     setAdjustInfo(true);
+  //     const timeout = setTimeout(() => {
+  //       setAdjustInfo(false);
+  //     }, 2000);
+  //     imageUploadRef.current = imageThumbSearchInput;
+  //     return () => {
+  //       clearTimeout(timeout);
+  //       setAdjustInfo(false);
+  //     };
+  //   }
+  // }, [imageThumbSearchInput, loadingSearchAlgolia]);
 
   useEffect(() => {
     if (loadingSearchAlgolia) {
@@ -183,24 +181,24 @@ function ResultComponent(props: Props) {
   // TODO: Search offers for image:
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const findItemsInSelection = useCallback(
-    debounce(async (r: RectCoords) => {
-      if (!requestImage) {
-        return;
-      }
+    debounce(async (r: RectCoords, image: HTMLCanvasElement) => {
       dispatch(updateStatusLoading(true));
-      const { canvas }: any = requestImage;
-      findImageByApiNyris(canvas, r).then((res: any) => {
-        dispatch(updateResultChangePosition(res));
-        const highConfidence = res.results.find(
-          (data: { score: number }) => data.score >= 0.65,
-        );
-        if (!highConfidence) {
-          setShowAdjustInfoBasedOnConfidence(true);
-        }
-        setTimeout(() => {
-          setShowAdjustInfoBasedOnConfidence(false);
-        }, 2000);
-      });
+      singleImageSearch({ image: image, settings, imageRegion: r }).then(
+        (res: any) => {
+          dispatch(updateStatusLoading(false));
+
+          dispatch(updateResultChangePosition(res));
+          const highConfidence = res.results.find(
+            (data: { score: number }) => data.score >= 0.65,
+          );
+          if (!highConfidence) {
+            setShowAdjustInfoBasedOnConfidence(true);
+          }
+          setTimeout(() => {
+            setShowAdjustInfoBasedOnConfidence(false);
+          }, 2000);
+        },
+      );
       return;
     }, 250),
     [requestImage, findImageByApiNyris],
@@ -220,12 +218,12 @@ function ResultComponent(props: Props) {
       dispatch(onToggleModalItemDetail(false));
     }
     dispatch(loadingActionResults());
-    dispatch(setImageSearchInput(url));
-    let image = await createImage(url);
 
-    singleImageSearch({ image, settings, showFeedback: false }).then(() => {
-      dispatch(updateStatusLoading(false));
-    });
+    singleImageSearch({ image: url, settings, showFeedback: false }).then(
+      () => {
+        dispatch(updateStatusLoading(false));
+      },
+    );
   };
   const nonEmptyFilter: any[] = !requestImage
     ? []
@@ -302,13 +300,14 @@ function ResultComponent(props: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords, index?: number) => {
-      if (requestImages.length > 0 && !isUndefined(index)) {
+      if (requestImages.length > 1 && !isUndefined(index)) {
         updateRegion(r, index);
         multiImageSearchOnRegionChange(r, index);
       } else {
+        updateRegion(r, 0);
         setImageSelection(r);
         dispatch(selectionChanged(r));
-        findItemsInSelection(r);
+        findItemsInSelection(r, requestImages[0]);
       }
       feedbackRegionEpic(stateGlobal, r);
     }, 50),
@@ -447,7 +446,7 @@ function ResultComponent(props: Props) {
               >
                 {!isMobile &&
                 firstSearchResults &&
-                requestImage?.canvas !== firstSearchImage &&
+                requestImages[0] !== firstSearchImage &&
                 !fetchingResults ? (
                   <GoBack />
                 ) : (
@@ -483,7 +482,7 @@ function ResultComponent(props: Props) {
                 >
                   {isMobile &&
                   firstSearchResults &&
-                  requestImage?.canvas !== firstSearchImage &&
+                  requestImages[0] !== firstSearchImage &&
                   !fetchingResults ? (
                     <div className="go-back-mobile-container">
                       <GoBack />

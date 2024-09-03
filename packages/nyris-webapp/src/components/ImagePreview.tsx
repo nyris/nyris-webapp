@@ -15,7 +15,6 @@ import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg
 import { useQuery } from 'hooks/useQuery';
 import {
   reset,
-  setImageSearchInput,
   setSearchResults,
   updateStatusLoading,
 } from 'Store/search/Search';
@@ -139,7 +138,6 @@ function ImagePreviewMobileComponent({
     onDrop: async (fs: File[]) => {
       if (!fs[0]) return;
 
-      dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
       let image = await createImage(fs[0]);
 
       multiImageSearch({
@@ -296,7 +294,7 @@ function ImagePreviewMobileComponent({
             );
           })}
           {requestImages.length < 3 && (
-            <button
+            <label
               className={cx([
                 'w-[70px]',
                 'h-[70px]',
@@ -310,12 +308,14 @@ function ImagePreviewMobileComponent({
                 'border-dashed',
                 'border-[#AAABB5]',
                 'rounded-md',
+                'cursor-pointer',
               ])}
               onClick={() => {
                 if (isCameraUploadEnabled) {
                   setShowCamera(true);
                 }
               }}
+              htmlFor={isCameraUploadEnabled ? '' : 'icon-add-image'}
             >
               <input
                 accept="image/*"
@@ -330,10 +330,10 @@ function ImagePreviewMobileComponent({
                 })}
               />
               <PlusIcon className={cx(['text-[#AAABB5] desktop:hidden'])} />
-              <label htmlFor="icon-add-image" className="hidden desktop:block">
+              <div className="hidden desktop:block">
                 <DownloadIcon className={cx(['text-[#AAABB5]'])} />
-              </label>
-            </button>
+              </div>
+            </label>
           )}
 
           <div

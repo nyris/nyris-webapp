@@ -50,7 +50,6 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const stateGlobal = useAppSelector(state => state);
   const { search } = stateGlobal;
   const {
-    imageThumbSearchInput,
     preFilter,
     valueTextSearch,
     queryText,
@@ -62,8 +61,9 @@ function HeaderMobileComponent(props: Props): JSX.Element {
 
   const query = useQuery();
 
-  const { resetRequestState } = useRequestStore(state => ({
+  const { resetRequestState, requestImages } = useRequestStore(state => ({
     resetRequestState: state.reset,
+    requestImages: state.requestImages,
   }));
 
   const [isShowFilter, setShowFilter] = useState<boolean>(false);
@@ -76,20 +76,21 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const [valueInput, setValueInput] = useState<string>(queryText || '');
   const searchQuery = query.get('query') || '';
+  const visualSearch = useMemo(() => requestImages.length > 0, [requestImages]);
 
   useEffect(() => {
     if (
       history.location?.pathname === '/result' &&
-      (imageThumbSearchInput || valueInput)
+      (visualSearch || valueInput)
     ) {
       setShowFilter(true);
     } else {
       setShowFilter(false);
     }
-  }, [imageThumbSearchInput, history.location, valueInput]);
+  }, [history.location, valueInput, visualSearch]);
 
   useEffect(() => {
-    if (imageThumbSearchInput !== '') {
+    if (visualSearch) {
       history.push('/result');
       dispatch(updateValueTextSearchMobile(''));
       setValueInput('');
@@ -107,7 +108,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageThumbSearchInput, dispatch, refine, history, settings.algolia]);
+  }, [visualSearch, dispatch, refine, history, settings.algolia]);
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {
@@ -246,11 +247,11 @@ function HeaderMobileComponent(props: Props): JSX.Element {
 
   const showDisclaimerDisabled = useMemo(() => {
     const disclaimer = localStorage.getItem('upload-disclaimer-webapp');
-
+    if (requestImages.length === 0) return true;
     if (!disclaimer) return false;
     return disclaimer === 'dont-show';
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDisclaimer]);
+  }, [showDisclaimer, requestImages]);
 
   return (
     <>

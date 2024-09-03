@@ -1,58 +1,40 @@
 import { Button, Tooltip } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
-import CloseIcon from '@material-ui/icons/Close';
 import IconCamera from 'common/assets/icons/camera.svg';
 import { useQuery } from 'hooks/useQuery';
 import { debounce, isEmpty } from 'lodash';
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { useDropzone } from 'react-dropzone';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
-import { createImage, find, findRegions } from 'services/image';
+import { find } from 'services/image';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
 import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
 
 import {
   reset,
-  setImageSearchInput,
-  setRequestImage,
   setSearchResults,
   updateStatusLoading,
   loadingActionResults,
-  setRegions,
-  setSelectedRegion,
   updateQueryText,
   setShowFeedback,
-  setFirstSearchResults,
-  setFirstSearchImage,
-  setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
 import PreFilterComponent from 'components/pre-filter';
-import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useImageSearch } from 'hooks/useImageSearch';
 import UploadDisclaimer from 'components/UploadDisclaimer';
+import useRequestStore from 'Store/requestStore';
 
 const SearchBox = (props: any) => {
   const { refine, onToggleFilterMobile }: any = props;
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const stateGlobal = useAppSelector(state => state);
   const { search, settings } = stateGlobal;
-  const { imageThumbSearchInput, preFilter, requestImage, selectedRegion } =
-    search;
+  const { preFilter, requestImage, selectedRegion } = search;
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
@@ -67,6 +49,12 @@ const SearchBox = (props: any) => {
   const { singleImageSearch } = useImageSearch();
   const { user } = useAuth0();
   const [showDisclaimer, setShowDisclaimer] = useState(false);
+
+  const { requestImages } = useRequestStore(state => ({
+    requestImages: state.requestImages,
+  }));
+
+  const visualSearch = useMemo(() => requestImages.length > 0, [requestImages]);
 
   useEffect(() => {
     if (focusInp?.current) {
@@ -108,7 +96,7 @@ const SearchBox = (props: any) => {
   }, [query, refine, dispatch, isAlgoliaEnabled]);
 
   useEffect(() => {
-    if (imageThumbSearchInput) {
+    if (visualSearch) {
       setValueInput('');
       if (isAlgoliaEnabled) {
         refine('');
@@ -116,7 +104,7 @@ const SearchBox = (props: any) => {
       history.push('/result');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageThumbSearchInput, isAlgoliaEnabled]);
+  }, [visualSearch, isAlgoliaEnabled]);
 
   useEffect(() => {
     if (history.location?.pathname === '/') {
@@ -194,9 +182,12 @@ const SearchBox = (props: any) => {
       history.push('/result');
     }
 
-    dispatch(setImageSearchInput(URL.createObjectURL(fs)));
-    let image = await createImage(fs);
-    singleImageSearch({ image, settings, showFeedback: true }).then(() => {
+    singleImageSearch({
+      image: fs,
+      settings,
+      showFeedback: true,
+      newSearch: true,
+    }).then(() => {
       dispatch(updateStatusLoading(false));
     });
   };
@@ -226,11 +217,11 @@ const SearchBox = (props: any) => {
 
   const showDisclaimerDisabled = useMemo(() => {
     const disclaimer = localStorage.getItem('upload-disclaimer-webapp');
-
+    if (requestImages.length === 0) return true;
     if (!disclaimer) return false;
     return disclaimer === 'dont-show';
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDisclaimer]);
+  }, [showDisclaimer, requestImages]);
 
   return (
     <>
@@ -324,58 +315,6 @@ const SearchBox = (props: any) => {
                   )}
                 </div>
               </Tooltip>
-              <div
-                style={{
-                  height: '75%',
-                  order: 1,
-                }}
-              >
-                {imageThumbSearchInput && (
-                  <div
-                    style={{
-                      border: `2px solid ${settings.theme?.primaryColor}`,
-                      backgroundColor: `${settings.theme?.primaryColor}26`,
-                      marginRight: '5px',
-                      display: 'flex',
-                    }}
-                    className="box-image-search-thumb"
-                  >
-                    <img
-                      src={imageThumbSearchInput}
-                      style={{ objectFit: 'contain' }}
-                      alt="img_search"
-                    />
-                    <Tooltip
-                      title={t('Clear image search')}
-                      placement="top"
-                      arrow={true}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (!valueInput) {
-                            dispatch(reset(''));
-                            history.push('/');
-                          }
-                          dispatch(reset(''));
-                          if (isAlgoliaEnabled) {
-                            refine(valueInput);
-                          } else {
-                            searchOrRedirect(valueInput, false);
-                          }
-                        }}
-                      >
-                        <CloseIcon
-                          style={{
-                            fontSize: 20,
-                            color: settings.theme?.primaryColor,
-                          }}
-                        />
-                      </button>
-                    </Tooltip>
-                  </div>
-                )}
-              </div>
 
               <input
                 style={{
@@ -396,7 +335,7 @@ const SearchBox = (props: any) => {
               <Button
                 className="btn-clear-text"
                 onClick={() => {
-                  if (imageThumbSearchInput) {
+                  if (visualSearch) {
                     history.push('/result');
                     if (!isAlgoliaEnabled) {
                       searchOrRedirect('');

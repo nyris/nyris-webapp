@@ -7,10 +7,8 @@ import { useAppDispatch, useAppSelector } from '../../Store/Store';
 import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
 import {
   loadingActionResults,
-  setImageSearchInput,
   updateStatusLoading,
 } from '../../Store/search/Search';
-import { createImage } from '../../services/image';
 import { useImageSearch } from 'hooks/useImageSearch';
 
 function ExperienceVisualSearch() {
@@ -65,10 +63,8 @@ function ExperienceVisualSearch() {
   const getUrlToCanvasFile = async (url: string) => {
     dispatch(updateStatusLoading(true));
     dispatch(loadingActionResults());
-    dispatch(setImageSearchInput(url));
-    let image = await createImage(url);
 
-    singleImageSearch({ image, settings }).then(() => {
+    singleImageSearch({ image: url, settings }).then(() => {
       dispatch(updateStatusLoading(false));
     });
   };

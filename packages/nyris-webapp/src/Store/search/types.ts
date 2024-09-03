@@ -13,7 +13,6 @@ export interface SearchState {
   fetchingResults: boolean;
   filterOptions: string[];
   filters: any[];
-  imageThumbSearchInput?: any;
   isShowModalDetailItemMobile?: boolean;
   preFilter: Record<string, boolean>;
   loadingSearchAlgolia: boolean;
@@ -32,5 +31,4 @@ export interface SearchState {
   firstSearchImage: any;
   firstSearchResults: any;
   firstSearchPrefilters: any;
-  firstSearchThumbSearchInput: any;
 }

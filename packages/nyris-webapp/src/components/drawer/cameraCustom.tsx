@@ -88,9 +88,8 @@ function CameraCustom(props: Props) {
     if (history.location.pathname !== '/result') {
       history.push('/result');
     }
-    let imageConvert = await createImage(image);
 
-    singleImageSearch({ image: imageConvert, settings }).then(() => {
+    singleImageSearch({ image: image, settings, newSearch }).then(() => {
       dispatch(updateStatusLoading(false));
     });
 
@@ -232,9 +231,7 @@ function CameraCustom(props: Props) {
                             onChange={(fs: any) => {
                               const file = fs.target?.files[0];
                               if (!file) return;
-                              // dispatch(
-                              //   setImageSearchInput(URL.createObjectURL(file)),
-                              // );
+
                               if (multiImageUpload) {
                                 setCurrentIndex(state =>
                                   Math.min(state + 1, 2),
@@ -267,7 +264,6 @@ function CameraCustom(props: Props) {
                             } else {
                               handlerFindImage(imageSrc);
                             }
-                            // dispatch(setImageSearchInput(imageSrc));
                           }}
                           className={cx([
                             'w-fit',

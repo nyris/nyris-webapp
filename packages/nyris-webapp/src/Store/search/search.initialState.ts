@@ -6,7 +6,7 @@ export const initialState: SearchState = {
   fetchingResults: false,
   filterOptions: [],
   filters: [],
-  imageThumbSearchInput: '',
+
   isShowModalDetailItemMobile: false,
   preFilter: {},
   loadingSearchAlgolia: false,
@@ -26,5 +26,4 @@ export const initialState: SearchState = {
   firstSearchImage: '',
   firstSearchResults: null,
   firstSearchPrefilters: null,
-  firstSearchThumbSearchInput: null,
 };
