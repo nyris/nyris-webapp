@@ -16,7 +16,7 @@ import { truncateString } from 'helpers/truncateString';
 import { find } from 'services/image';
 import { useQuery } from 'hooks/useQuery';
 import { useTranslation } from 'react-i18next';
-import ClearOutlinedIcon from "@material-ui/icons/ClearOutlined";
+import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 
 interface Props {
   handleClose?: any;
@@ -46,7 +46,6 @@ function PreFilterComponent(props: Props) {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [columns, setColumns] = useState<number>(0);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-  const [searchKey, setSearchKey] = useState<string>('');
 
   const selectedFilter = useMemo(
     () =>
@@ -64,10 +63,10 @@ function PreFilterComponent(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    filterSearchHandler(searchKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchKey]);
+  // useEffect(() => {
+  //   filterSearchHandler(searchKey);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [searchKey]);
 
   const getDataFilterDesktop = async () => {
     setLoading(true);
@@ -239,14 +238,13 @@ function PreFilterComponent(props: Props) {
             className="input-search-filter"
             placeholder={t('Search')}
             onChange={(e: any) => {
-              setSearchKey(e.target.value);
+              filterSearchHandler(e.target.value);
             }}
-            value={searchKey}
           />
           <Button
             className="btn-clear-text"
             onClick={() => {
-              setSearchKey('');
+              filterSearchHandler('');
             }}
           >
             <ClearOutlinedIcon style={{ fontSize: 16, color: '#2B2C46' }} />

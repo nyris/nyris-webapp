@@ -199,7 +199,9 @@ export default function PostFilterPanelAlgolia({
             }}
           >
             <Button
-              onClick={onApply}
+              onClick={() => {
+                onApply();
+              }}
               style={{
                 width: '32px',
                 height: '32px',

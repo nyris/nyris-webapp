@@ -148,6 +148,7 @@ export const searchSlice = createSlice({
       return {
         ...state,
         loadingSearchAlgolia: payload,
+        fetchingResults: payload,
       };
     },
 

@@ -78,6 +78,7 @@ function ImagePreviewComponent({
   const [showCamera, setShowCamera] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(requestImages.length - 1);
   const [isVisible, setIsVisible] = useState(isExpanded);
+  const [zIndex, setZIndex] = useState<number>(0);
 
   const previewWrapperRef = useRef<any>(null);
 
@@ -122,7 +123,6 @@ function ImagePreviewComponent({
             dispatch(updateStatusLoading(false));
           })
           .catch((e: any) => {
-            console.log('error input search', e);
             dispatch(updateStatusLoading(false));
           });
       } else {
@@ -132,6 +132,13 @@ function ImagePreviewComponent({
   };
 
   const handleExpand = () => {
+    if (isVisible) {
+      setTimeout(() => {
+        setZIndex(-1);
+      }, 300);
+    } else {
+      setZIndex(0);
+    }
     setIsVisible(s => !s);
   };
 
@@ -209,8 +216,6 @@ function ImagePreviewComponent({
         multiImageSearchOnRegionChange(r, index);
       } else {
         updateRegion(r, 0);
-        // setImageSelection(r);
-        // dispatch(selectionChanged(r));
         findItemsInSelection(r, requestImages[0]);
       }
     }, 50),
@@ -236,10 +241,18 @@ function ImagePreviewComponent({
           'desktop:px-5',
           'relative',
         ])}
+        // style={{
+        //   height: '100%',
+        //   maxHeight: isVisible ? '800px' : 0,
+        //   overflow: 'hidden',
+        //   zIndex: zIndex,
+        // }}
         style={{
-          opacity: isVisible ? 1 : 0,
-          height: isVisible ? '100%' : 0,
-          transition: 'opacity 0.4s ease, height 0.2s ease',
+          // transform: isVisible ? 'translateY(0)' : `translateY(-100%)`,
+          // opacity: isVisible ? 1 : 0,
+          marginTop: isVisible ? '0px' : 'calc(-100% + 56px)',
+          transition: isVisible ? 'margin-top 0.4s linear' : '',
+          zIndex: zIndex,
         }}
       >
         <div className="w-full bg-[#55566b] aspect-square flex just items-center">
@@ -256,7 +269,6 @@ function ImagePreviewComponent({
             rounded={true}
           />
         </div>
-        <div className="max-w-[300px] max-h-[300px]"></div>
         {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
           <div
             style={{
@@ -291,12 +303,8 @@ function ImagePreviewComponent({
           </div>
         )}
       </div>
-      <div
-        style={{
-          transform: isVisible ? 'translateY(0)' : `translateY(0%)`,
-          transition: 'transform 0.3s ease',
-        }}
-      >
+
+      <div>
         <div
           className={cx([
             'flex',

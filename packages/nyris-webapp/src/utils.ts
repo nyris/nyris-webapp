@@ -57,7 +57,7 @@ export const compressImage = (blobOrImage: any) => {
 
   return new Promise<string>((resolve, reject) => {
     new Compressor(blob || blobOrImage, {
-      quality: 0.95,
+      quality: 0.91,
       maxHeight: 1024,
       maxWidth: 1024,
       strict: true,

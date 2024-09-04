@@ -305,62 +305,51 @@ const SearchBox = (props: any) => {
                 </Tooltip>
               </Button>
             )}
-            {!isMobile ? (
-              <div className="wrap-box-input-mobile d-flex">
-                <input
-                  accept="image/*"
-                  id="icon-button-file"
-                  type="file"
-                  style={{ display: 'none' }}
+            <div className="wrap-box-input-mobile d-flex">
+              <input
+                accept="image/*"
+                id="icon-button-file"
+                type="file"
+                style={{ display: 'none' }}
+                onClick={e => {
+                  e.stopPropagation();
+                }}
+                onChange={e => {
+                  if (e?.target?.files) {
+                    const file = e?.target?.files[0];
+                    onImageUpload(file);
+                  }
+                }}
+              />
+              <Tooltip
+                title={t('Search with an image')}
+                placement="top"
+                arrow={true}
+              >
+                <label
+                  htmlFor={showDisclaimerDisabled ? 'icon-button-file' : ''}
                   onClick={e => {
-                    e.stopPropagation();
-                  }}
-                  onChange={e => {
-                    if (e?.target?.files) {
-                      const file = e?.target?.files[0];
-                      onImageUpload(file);
+                    if (!showDisclaimerDisabled) {
+                      setShowDisclaimer(true);
                     }
                   }}
-                />
-                <Tooltip
-                  title={t('Search with an image')}
-                  placement="top"
-                  arrow={true}
                 >
-                  <label
-                    htmlFor={showDisclaimerDisabled ? 'icon-button-file' : ''}
-                    onClick={e => {
-                      if (!showDisclaimerDisabled) {
-                        setShowDisclaimer(true);
-                      }
+                  <IconButton
+                    color="primary"
+                    aria-label="upload picture"
+                    component="span"
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: '100%',
+                      padding: 7,
                     }}
                   >
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="span"
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: '100%',
-                        padding: 7,
-                      }}
-                    >
-                      <img src={IconCamera} alt="" width={18} height={18} />
-                    </IconButton>
-                  </label>
-                </Tooltip>
-              </div>
-            ) : (
-              <div>
-                <Button
-                  className="btn-mobile-filter"
-                  onClick={onToggleFilterMobile}
-                >
-                  <IconFilter width={18} height={18} />
-                </Button>
-              </div>
-            )}
+                    <img src={IconCamera} alt="" width={18} height={18} />
+                  </IconButton>
+                </label>
+              </Tooltip>
+            </div>
           </div>
         </div>
         {showPreFilter && (

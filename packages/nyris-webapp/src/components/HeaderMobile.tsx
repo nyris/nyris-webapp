@@ -24,6 +24,7 @@ import CameraCustom from './drawer/cameraCustom';
 import UploadDisclaimer from './UploadDisclaimer';
 import PreFilterComponent from './pre-filter';
 import { useSearchOrRedirect } from 'hooks/useSearchOrRedirect';
+import MobilePostFilter from './MobilePostFilter';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -61,6 +62,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [preFilterDropdown, setPreFilterDropdown] = useState(false);
+  const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
 
   const [valueInput, setValueInput] = useState<string>(queryText || '');
   const searchQuery = query.get('query') || '';
@@ -456,8 +458,9 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
               }}
               onClick={() => {
-                if (disablePostFilter) return;
-                onToggleFilterMobile();
+                if (disablePostFilter && !isPostFilterApplied) return;
+                setOpenFilter(true);
+
                 setPreFilterDropdown(false);
               }}
             >
@@ -480,9 +483,12 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               >
                 <FilterIcon
                   className={classNames([
-                    isPostFilterApplied ? 'text-[#3E36DC]' : 'text-[#2B2C46]',
+                    isPostFilterApplied
+                      ? 'text-[#3E36DC]'
+                      : disablePostFilter
+                      ? 'text-[#E0E0E0]'
+                      : 'text-[#2B2C46]',
                   ])}
-                  // color={`${disablePostFilter ? '#E0E0E0' : '2B2C46'}`}
                 />
               </div>
 
@@ -505,11 +511,15 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     style={{
                       width: '8px',
                       height: '8px',
-                      background: disablePostFilter
-                        ? '#E0E0E0'
-                        : settings.theme?.primaryColor,
                       borderRadius: '100%',
                     }}
+                    className={classNames([
+                      isPostFilterApplied
+                        ? 'bg-[#3E36DC]'
+                        : disablePostFilter
+                        ? 'bg-[#E0E0E0]'
+                        : 'bg-[#2B2C46]',
+                    ])}
                   ></div>
                 </div>
               )}
@@ -523,6 +533,22 @@ function HeaderMobileComponent(props: Props): JSX.Element {
           }}
           newSearch={true}
         />
+        <div
+          className={`box-filter ${isOpenFilter ? '' : '!hidden'}`}
+          style={{
+            top: '0px',
+            height: '100%',
+            width: '100%',
+            position: 'absolute',
+          }}
+        >
+          <MobilePostFilter
+            isOpenFilter={isOpenFilter}
+            onApply={() => {
+              setOpenFilter(false);
+            }}
+          />
+        </div>
       </div>
     </>
   );

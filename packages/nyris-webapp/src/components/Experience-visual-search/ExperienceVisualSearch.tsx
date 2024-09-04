@@ -10,6 +10,7 @@ import {
   updateStatusLoading,
 } from '../../Store/search/Search';
 import { useImageSearch } from 'hooks/useImageSearch';
+import { useHistory } from 'react-router-dom';
 
 function ExperienceVisualSearch() {
   const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ function ExperienceVisualSearch() {
   const [images, setImages] = useState<string[]>([]);
   const button = useRef(null);
   let interval = useRef<NodeJS.Timeout | null>(null);
+  const history = useHistory();
 
   const { singleImageSearch } = useImageSearch();
 
@@ -67,6 +69,7 @@ function ExperienceVisualSearch() {
     singleImageSearch({ image: url, settings }).then(() => {
       dispatch(updateStatusLoading(false));
     });
+    history.push('/result');
   };
 
   return (

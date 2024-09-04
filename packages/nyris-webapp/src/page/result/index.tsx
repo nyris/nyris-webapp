@@ -1,9 +1,8 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
-import { RectCoords } from '@nyris/nyris-api';
 import { CurrentRefinements } from 'components/current-refinements/current-refinements';
 import FooterResult from 'components/FooterResult';
 import CustomSearchBox from 'components/input/inputSearch';
@@ -17,12 +16,10 @@ import {
 } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { feedbackSuccessEpic } from 'services/Feedback';
-import { find } from 'services/image';
 import {
   loadingActionResults,
   onToggleModalItemDetail,
   setShowFeedback,
-  updateResultChangePosition,
   updateStatusLoading,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
@@ -88,7 +85,7 @@ function ResultComponent(props: Props) {
   const isPostFilterEnabled = settings.postFilterOption;
   const history = useHistory();
 
-  const { singleImageSearch } = useImageSearch();
+  const { singleImageSearch, multiImageSearch } = useImageSearch();
 
   const { resetRegions, imageRegions, requestImages } = useRequestStore(
     state => ({
@@ -141,36 +138,6 @@ function ResultComponent(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestImage]);
 
-  const findImageByApiNyris = useCallback(
-    async (canvas: any, r?: RectCoords) => {
-      const preFilterValues = [
-        {
-          key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
-        },
-      ];
-      dispatch(loadingActionResults());
-
-      return find({
-        image: canvas,
-        settings,
-        region: r,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-      })
-        .then((res: any) => {
-          dispatch(updateStatusLoading(false));
-          return {
-            ...res,
-          };
-        })
-        .catch((e: any) => {
-          dispatch(updateStatusLoading(false));
-          console.log('error call api change selection find image', e);
-        });
-    },
-    [settings, dispatch, preFilter],
-  );
-
   // TODO: Handler like dislike
   const sendFeedBackAction = async (type: string) => {
     feedbackSuccessEpic(stateGlobal, type === 'like');
@@ -220,15 +187,29 @@ function ResultComponent(props: Props) {
   }, [preFilter, requestImage, searchQuery, settings.alogoliaFilterField]);
 
   useEffect(() => {
-    if (!requestImage || !isAlgoliaEnabled) {
+    if (requestImages.length === 0 || !isAlgoliaEnabled) {
       return;
     }
     dispatch(updateStatusLoading(true));
-    const { canvas }: any = requestImage;
-    findImageByApiNyris(canvas).then((res: any) => {
-      // setPreFilter(keyFilter);
-      dispatch(updateResultChangePosition(res));
-    });
+    dispatch(loadingActionResults());
+
+    if (requestImages.length === 1) {
+      singleImageSearch({
+        image: requestImages[0],
+        settings,
+        imageRegion: imageRegions[0],
+      }).then(res => {
+        dispatch(updateStatusLoading(false));
+      });
+    } else {
+      multiImageSearch({
+        images: requestImages,
+        settings,
+        regions: imageRegions,
+      }).then(res => {
+        dispatch(updateStatusLoading(false));
+      });
+    }
 
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -385,7 +366,7 @@ function ResultComponent(props: Props) {
                   </div>
                 )}
 
-                <div className="flex flex-col desktop:hidden">
+                <div className="flex flex-col h-fit desktop:hidden">
                   {settings.preview && requestImages.length > 0 && (
                     <ImagePreview showAdjustInfo={false} />
                   )}

@@ -18,12 +18,13 @@ function MobilePostFilter(props: Props) {
 
   return (
     <>
-      {settings.algolia.enabled && isOpenFilter && (
+      {settings.algolia.enabled && (
         <PostFilterPanelAlgolia
           disjunctiveFacets={allSearchResults?.disjunctiveFacets}
           onApply={onApply}
         />
       )}
+
       {!settings.algolia.enabled && isOpenFilter && (
         <PostFilterPanel onApply={onApply} />
       )}

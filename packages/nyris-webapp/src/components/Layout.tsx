@@ -156,11 +156,7 @@ function Layout({ children }: ReactNode): JSX.Element {
                   : {}),
               }}
             >
-              <HeaderApp
-                onToggleFilterMobile={(show: boolean) => {
-                  setOpenFilter(isUndefined(show) ? !isOpenFilter : show);
-                }}
-              />
+              <HeaderApp />
             </div>
 
             <div className={`box-body-${classNameBoxVersion}-wrap-main`}>

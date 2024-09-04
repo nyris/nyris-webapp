@@ -60,7 +60,6 @@ export const useSearchOrRedirect = () => {
               dispatch(setShowFeedback(true));
             })
             .catch((e: any) => {
-              console.log('error input search', e);
               dispatch(updateStatusLoading(false));
             });
         } else {
