@@ -188,7 +188,7 @@ function ProductDetailView(props: Props) {
               }}
             />
           )}
-          {dataImageCarousel.length > 0 && (
+          {dataImageCarousel.length > 0 && !settings.noSimilarSearch && (
             <Button
               className={classes.buttonStyleImageSearch}
               style={{
