@@ -84,6 +84,7 @@ export interface AppSettings extends NyrisAPISettings {
   experienceVisualSearch?: boolean;
   experienceVisualSearchImages?: string[];
   clarityId?: string,
+  noSimilarSearch?: boolean;
 }
 
 export interface SearchSuiteSettings {

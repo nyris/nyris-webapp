@@ -80,6 +80,7 @@ var settings = {
   simpleCardView: false,
   secondaryCTAButtonText: 'Configure Now',
   clarityId: '',
+  noSimilarSearch: true,
 
   //field mappins
   field: {
