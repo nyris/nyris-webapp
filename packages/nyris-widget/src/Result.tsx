@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import link from './images/link.svg';
 import similar_search from './images/similar_search.svg';
 import { createPortal } from 'react-dom';
+import Popup3D from './Popup3D';
 
 export interface ResultProps {
   title: string;
@@ -18,6 +19,9 @@ export const Result = (r: ResultProps) => {
     <div className="nyris__success-multiple-result">
       <div className="nyris__success-multiple-result-box">
         <div style={{ position: "relative" }}>
+          <div className="nyris__product-popur-3d">
+            <Popup3D resultDetails={r} />
+          </div>
           <a
             href={r.links?.main}
             target={window.nyrisSettings.navigatePreference}

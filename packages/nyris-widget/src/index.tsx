@@ -33,6 +33,32 @@ interface NyrisSettings extends NyrisAPISettings {
   navigatePreference: string;
 }
 const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
+
+declare var psol: any;
+
+document.addEventListener('DOMContentLoaded', function () {
+  psol.core.setUserInfo({
+    server_type: 'oem_apps_cadenas_webcomponentsdemo',
+    title: 'Herr',
+    firstname: 'Max',
+    lastname: 'Mustermann',
+    userfirm: 'CADENAS GmbH',
+    street: 'Berliner Allee 28 b+c',
+    zip: '86153',
+    city: 'Augsburg',
+    country: 'de',
+    phone: '+49 (0) 821 2 58 58 0-0',
+    fax: '+49 (0) 821 2 58 58 0-999',
+    email: 'info@cadenas.de',
+  });
+  psol.core.setServiceBaseUrl('https://webapi.partcommunity.com');
+  window.onpageshow = function (event: any) {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  };
+});
+
 class Nyris {
   private nyrisApi: NyrisAPI;
   private screen: Screen = Screen.Hidden;
