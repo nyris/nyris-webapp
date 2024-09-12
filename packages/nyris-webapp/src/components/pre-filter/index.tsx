@@ -331,12 +331,11 @@ function PreFilterComponent(props: Props) {
                 columnCount: 4,
                 padding: '24px 24px 40px 24px',
                 height: '100%',
-
                 backgroundColor: '#FAFAFA',
               }
         }
       >
-        {Object.entries(resultFilter).map(([key, value]: any, i: any) => {
+        {Object.entries(resultFilter).sort().map(([key, value]: any, i: any) => {
           return (
             <div className="box-group-items" key={key}>
               <div
