@@ -166,7 +166,7 @@ function ItemResult(props: Props) {
             </Button>
           </div>
         )}
-        {!isHover && main_image_link && (
+        {!isHover && main_image_link && !settings.noSimilarSearch && (
           <div
             className="box-icon-modal"
             onClick={() => {
