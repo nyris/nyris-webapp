@@ -23,8 +23,9 @@ import classNames from "classnames";
 import { useDropzone } from "react-dropzone";
 import translations from "./translations";
 
-const labeles = translations(window.nyrisSettings.language);
+const labels = translations(window.nyrisSettings.language);
 
+declare var psol: any;
 export enum Screen {
   Hidden = "hidden",
   Hello = "hello",
@@ -85,12 +86,12 @@ const SuccessMultiple = ({
     <>
       <div className="nyris__screen nyris__success-multiple">
         <div className="nyris__main-heading ">
-          {noResult ? labeles["Let’s try that again"] : labeles["Success!"]}
+          {noResult ? labels["Let’s try that again"] : labels["Success!"]}
         </div>
         <div className="nyris__main-description">
           {noResult
-            ? labeles["We couldn’t find matches"]
-            : `${results.length} ${labeles["matches found"]}`}
+            ? labels["We couldn’t find matches"]
+            : `${results.length} ${labels["matches found"]}`}
         </div>
         <div className="nyris__main-content">
           <div className="nyris__success-multiple-preview">
@@ -155,7 +156,7 @@ const SuccessMultiple = ({
               {image !== firstSearchImage ? (
                 <div className="go-back-button" onClick={() => onGoBack()}>
                   <GoBack width={16} height={16} />
-                  {labeles["Back to request image"]}
+                  {labels["Back to request image"]}
                 </div>
               ) : (
                 ""
@@ -190,16 +191,16 @@ const LoadingSpinner = () => {
       <div className="nyris__wait-spinner">
         <img src={spinner} width={66} height={66} />
       </div>
-      <div>{labeles["Analyzing image..."]}</div>
+      <div>{labels["Analyzing image..."]}</div>
     </div>
   );
 };
 
 const Wait = () => (
   <div className="nyris__screen nyris__wait">
-    <div className="nyris__main-heading">{labeles["Hold on"]}</div>
+    <div className="nyris__main-heading">{labels["Hold on"]}</div>
     <div className="nyris__main-description">
-      {labeles["We are working hard on finding the product"]}
+      {labels["We are working hard on finding the product"]}
     </div>
     <LoadingSpinner />
   </div>
@@ -228,7 +229,7 @@ const Fail = ({
         <p>
           <br />
           <br />
-          {labeles["Oops!"]}
+          {labels["Oops!"]}
         </p>
       </div>
       <div className="nyris__fail-content">
@@ -238,8 +239,8 @@ const Fail = ({
         >
           <span>
             {isMobile
-              ? labeles["Click a picture"]
-              : labeles["Upload a picture"]}
+              ? labels["Click a picture"]
+              : labels["Upload a picture"]}
           </span>
           <img src={camera} width={16} height={16} />
         </label>
@@ -297,14 +298,14 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
               backgroundColor: window.nyrisSettings.browseGalleryButtonColor,
             }}
           >
-            {labeles["Browse gallery"]}
+            {labels["Browse gallery"]}
           </label>
           <label
             className="nyris__hello-upload"
             style={{ backgroundColor: window.nyrisSettings.primaryColor }}
             htmlFor="nyris__hello-open-camera"
           >
-            {labeles["Take a photo"]}
+            {labels["Take a photo"]}
             <img src={camera} width={16} height={16} />
           </label>
         </div>
@@ -315,7 +316,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
             style={{ backgroundColor: window.nyrisSettings.primaryColor }}
             htmlFor="nyris__hello-upload-input"
           >
-            {labeles["Upload a picture"]}
+            {labels["Upload a picture"]}
             <img src={camera} width={16} height={16} />
           </label>
 
@@ -328,7 +329,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
             <img src={drop_zone} width={48} height={48} />
             <div>
               <span className="nyris__hello-drop-zone-bold-text">
-                {labeles["Drag and drop an image here"]}
+                {labels["Drag and drop an image here"]}
               </span>
             </div>
           </div>
@@ -371,6 +372,41 @@ export const App = (props: AppProps) => {
   let resultsSingle = false;
   let resultsMultiple = false;
 
+  useEffect(() => {
+    const handleDOMContentLoaded = () => {
+      psol.core.setUserInfo({
+        server_type: 'oem_apps_cadenas_webcomponentsdemo',
+        title: 'Herr',
+        firstname: 'Max',
+        lastname: 'Mustermann',
+        userfirm: 'CADENAS GmbH',
+        street: 'Berliner Allee 28 b+c',
+        zip: '86153',
+        city: 'Augsburg',
+        country: 'de',
+        phone: '+49 (0) 821 2 58 58 0-0',
+        fax: '+49 (0) 821 2 58 58 0-999',
+        email: 'info@cadenas.de',
+      });
+      psol.core.setServiceBaseUrl('https://webapi.partcommunity.com');
+      window.onpageshow = function (event: any) {
+        if (event.persisted) {
+          window.location.reload();
+        }
+      };
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
+    } else {
+      handleDOMContentLoaded();
+    }
+
+    return () => {
+      document.removeEventListener('DOMContentLoaded', handleDOMContentLoaded);
+    };
+  }, []);
+
   switch (showScreen) {
     case Screen.Hello:
       content = <Hello {...props} />;
@@ -380,7 +416,7 @@ export const App = (props: AppProps) => {
       break;
     case Screen.Fail:
       content = (
-        <Fail {...props} errorMessage={labeles["Something went wrong"]} />
+        <Fail {...props} errorMessage={labels["Something went wrong"]} />
       );
       break;
     case Screen.Result:

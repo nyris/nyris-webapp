@@ -210,6 +210,7 @@
     gap: 10px;
     border-radius: 32px;
     box-shadow: 0 0 8px 0 rgba(85, 86, 107, 0.60);
+    z-index: 2;
   }
   
   .go-back-button {
@@ -329,7 +330,7 @@
     z-index: 1;
     
     .popup-3d {
-      
+      height: 16px;
     }
   }
 
@@ -386,16 +387,77 @@
   &-body {
     position: relative;
     width: 376px;
-    height: 528px;
     border-radius: 8px;
-    background-color: #F3F3F5;
-    padding: 32px 16px;
+    background-color: #FFF;
+    padding-top: 8px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     .close-icon {
-      top: 8px;
-      right: 8px;
+      top: 16px;
+      right: 16px;
       position: absolute;
       cursor: pointer;
+      z-index: 1;
     }
+    &-info {
+      padding: 16px;
+      background-color: #FAFAFA;
+      border-radius: 0 0 8px 8px;
+      &-title {
+        font-family: 'Source Sans 3', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 22.78px;
+        letter-spacing: 0.22857144474983215px;
+        text-align: left;
+        margin-left: 6px;
+      }
+      &-sku {
+        font-family: 'Source Sans 3', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 19.94px;
+        letter-spacing: 0.22857144474983215px;
+        text-align: left;
+        margin-bottom: 8px;
+        margin-left: 6px;
+      }
+      .nyris__product-cta {
+        height: 34px;
+        box-sizing: border-box;
+        .nyris__product-button {
+          font-family: 'Source Sans 3', sans-serif;
+          font-size: 16px;
+          font-weight: 600;
+          line-height: 18px;
+          letter-spacing: 0.22857144474983215px;
+          text-align: left;
+        }
+      }
+    }
+  }
+}
+
+.psol-comp-viewbase-iconbutton-44 {
+  width: 32px;
+  height: 32px;
+  .psol-comp-viewbase-svgicon {
+    width: 20px;
+    height: 20px;
+    margin: 6px;
+  }
+}
+
+.psol-comp-webviewer3d-copyright-container {
+  a:link {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 16px;
+    text-align: center;
+    // sorry! I need to change style added as an attr inside lib
+    color: #55566B !important;
+    text-decoration: none;
   }
 }

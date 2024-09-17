@@ -4,6 +4,7 @@ import { ReactComponent as Box3dIcon } from './images/3d.svg';
 import { ReactComponent as IconClose } from './images/close.svg';
 import { ResultProps } from './Result';
 import CadenasWebViewer from './CadenasWebViewer';
+import link from './images/link.svg';
 
 const Popup3D = ({ resultDetails }: {resultDetails: ResultProps }) => {
   const [showModal, setShowModal] = useState(false);
@@ -46,8 +47,9 @@ const Popup3D = ({ resultDetails }: {resultDetails: ResultProps }) => {
              }}
            >
              <IconClose
-               width={16}
-               height={16}
+               width={24}
+               height={24}
+               fill={'#2B2C46'}
                className="close-icon"
                onClick={(e) => {
                  e.stopPropagation();
@@ -60,9 +62,21 @@ const Popup3D = ({ resultDetails }: {resultDetails: ResultProps }) => {
                status3dView={status3dView}
                setStatus3dView={setStatus3dView}
              />
-             <div>{resultDetails.title}</div>
-             <div>{resultDetails.sku}</div>
-             
+             <div className="custom-modal-body-info">
+               <div className="custom-modal-body-info-title">{resultDetails.title}</div>
+               <div className="custom-modal-body-info-sku">{resultDetails.sku}</div>
+               <a
+                 className="nyris__product-cta"
+                 href={resultDetails.links?.main}
+                 target={window.nyrisSettings.navigatePreference}
+                 style={{ backgroundColor: window.nyrisSettings.primaryColor || '#3E36DC' }}
+               >
+                 <div className="nyris__product-button">{window.nyrisSettings.ctaButtonText}</div>
+                 {resultDetails.links?.main && (
+                   <img src={link} width={"14px"} height={"14px"} />
+                 )}
+               </a>
+             </div>
            </div> 
           </div>,
           mountPoint

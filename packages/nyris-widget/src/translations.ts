@@ -24,6 +24,7 @@ const translations = (language: string) => {
             'We couldn’t find matches': 'Diesmal konnten wir keine Übereinstimmungen finden. Um die besten Ergebnisse zu erzielen, verwenden Sie bitte ein scharfes, gut beleuchtetes und zentriertes Foto mit einem ruhigen Hintergrund und versuchen Sie es noch einmal!',
             'Click a picture': 'Klicken Sie auf ein Bild',
             'Back to request image': 'Zurück zur Bildanfrage',
+            'View full description': 'Vollständige Beschreibung anzeigen',
         }
     }
     return {
@@ -50,6 +51,7 @@ const translations = (language: string) => {
         'We couldn’t find matches': 'We couldn’t find matches this time. For the best results, please use a sharp, well-lit, and centered photo with a clean background, and give it another go!',
         'Click a picture': 'Click a picture',
         'Back to request image': 'Back to request image',
+        'View full description': 'View full description',
     };
 };
 

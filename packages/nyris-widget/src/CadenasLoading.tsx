@@ -34,7 +34,6 @@ const LoadingSpinner = () => (
 );
 
 function CadenasLoading() {
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { t } = useTranslation();
   return (
     <div
@@ -42,7 +41,7 @@ function CadenasLoading() {
         borderRadius: '2px',
         background: 'linear-gradient(180deg, #FAFAFA 0%, #E4E3FF 100%)',
         width: '100%',
-        height: isMobile ? '368px' : '456px',
+        height: '368px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

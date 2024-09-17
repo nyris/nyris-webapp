@@ -15,13 +15,18 @@ export const Result = (r: ResultProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [bounding, setBounding] = useState<any>(null);
   const mountPoint = document.querySelector('#nyris-mount-point');
+  const { cadenasAPIKey, cadenasCatalogy } = window.nyrisSettings
   return (
     <div className="nyris__success-multiple-result">
       <div className="nyris__success-multiple-result-box">
         <div style={{ position: "relative" }}>
-          <div className="nyris__product-popur-3d">
-            <Popup3D resultDetails={r} />
-          </div>
+          {!!cadenasAPIKey && !!cadenasCatalogy ? (
+            <div className="nyris__product-popur-3d">
+              <Popup3D resultDetails={r} />
+            </div>
+          ) : (
+            ''
+          )}
           <a
             href={r.links?.main}
             target={window.nyrisSettings.navigatePreference}

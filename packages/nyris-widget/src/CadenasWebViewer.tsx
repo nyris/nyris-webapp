@@ -28,7 +28,7 @@ function CadenasWebViewer({
   useEffect(() => {
     // prepare 3d viewer settings.
     let webViewer3DSettings = {
-      $container: document.querySelector('#cnsWebViewer3d'),
+      $container: $('#cnsWebViewer3d'),
       viewerBackendType: psol.components.WebViewer3D.ViewerBackends.WebGL,
       devicePixelRatio: window.devicePixelRatio,
       radialMenuActions: [],
@@ -69,14 +69,14 @@ function CadenasWebViewer({
 
     // initialize 3d viewer
     let webviewer3d = new psol.components.WebViewer3D(webViewer3DSettings);
-    psol.core.setApiKey('66c56a38010f4a81a82f6ed51c903399');
+    psol.core.setApiKey(window.nyrisSettings.cadenasAPIKey);
     setStatus3dView('loading');
     // run search and display result in 3D viewer.
     psol.core
       .ajaxGetOrPost({
         url: psol.core.getServiceBaseUrl() + '/service/reversemap',
         data: {
-          catalog: 'ganter',
+          catalog: window.nyrisSettings.cadenasCatalogy,
           part: sku,
           exact: '0',
         },
@@ -118,8 +118,8 @@ function CadenasWebViewer({
       <div
         style={{
           position: 'absolute',
-          bottom: '19px',
-          right: '26px',
+          top: ' 314px',
+          right: '20px',
         }}
       >
         {is3dView && status3dView === 'loaded' && (
