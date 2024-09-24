@@ -9,6 +9,9 @@ import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { ReactComponent as PlusIcon } from 'common/assets/icons/plus.svg';
 import { ReactComponent as CropIcon } from 'common/assets/icons/crop.svg';
+import { ReactComponent as CollapseIcon } from 'common/assets/icons/collpase.svg';
+import { ReactComponent as TrashIcon } from 'common/assets/icons/trash.svg';
+
 import { ReactComponent as DownloadIcon } from 'common/assets/icons/download.svg';
 import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
 
@@ -51,11 +54,15 @@ function ImagePreviewComponent({
   const settings = useAppSelector(state => state.settings);
   const preFilter = useAppSelector(state => state.search.preFilter);
   const isAlgoliaEnabled = settings.algolia?.enabled;
+  const isMultiImageSearchEnabled = settings.multiImageSearch;
+
   const query = useQuery();
   const dispatch = useAppDispatch();
   const history = useHistory();
 
   const {
+    setRequestImages,
+    resetRegions,
     requestImages,
     addRequestImage,
     regions,
@@ -67,6 +74,8 @@ function ImagePreviewComponent({
     addRequestImage: state.addRequestImage,
     updateRegion: state.updateRegion,
     imageRegions: state.regions,
+    resetRegions: state.resetRegions,
+    setRequestImages: state.setRequestImages,
   }));
 
   const { detectedObject } = useResultStore(state => ({
@@ -77,7 +86,7 @@ function ImagePreviewComponent({
 
   const [showCamera, setShowCamera] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(requestImages.length - 1);
-  const [isVisible, setIsVisible] = useState(isExpanded);
+  const [isVisible, setIsVisible] = useState(true);
   const [zIndex, setZIndex] = useState<number>(0);
 
   const previewWrapperRef = useRef<any>(null);
@@ -85,11 +94,12 @@ function ImagePreviewComponent({
   const searchQuery = query.get('query') || '';
 
   const onImageRemove = () => {
+    dispatch(reset(''));
+    resetRegions();
+    setRequestImages([]);
     if (!searchQuery) {
-      dispatch(reset(''));
       history.push('/');
     }
-    dispatch(reset(''));
 
     if (!isAlgoliaEnabled) {
       let payload: any;
@@ -168,6 +178,7 @@ function ImagePreviewComponent({
     },
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const findItemsInSelection = useCallback(
     debounce(async (r: RectCoords, image: HTMLCanvasElement) => {
       dispatch(updateStatusLoading(true));
@@ -209,6 +220,7 @@ function ImagePreviewComponent({
     [dispatch, imageRegions, multiImageSearch, requestImages, settings],
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords, index?: number) => {
       if (requestImages.length > 1 && !isUndefined(index)) {
@@ -227,19 +239,21 @@ function ImagePreviewComponent({
     ],
   );
 
+  const [editActive, setEditActive] = useState(false);
   return (
     <>
       <div
         ref={previewWrapperRef}
         className={cx([
           'bg-primary',
-          'flex',
           'justify-center',
-          isVisible ? 'pt-6' : '',
+          isVisible ? (!isMultiImageSearchEnabled ? 'py-5' : 'pt-6') : '',
           'px-7',
           'w-full',
           'desktop:px-5',
           'relative',
+          'hidden',
+          'desktop:flex',
         ])}
         // style={{
         //   height: '100%',
@@ -250,7 +264,7 @@ function ImagePreviewComponent({
         style={{
           // transform: isVisible ? 'translateY(0)' : `translateY(-100%)`,
           // opacity: isVisible ? 1 : 0,
-          marginTop: isVisible ? '0px' : 'calc(-100% + 56px)',
+          marginTop: isVisible ? '0px' : 'calc(-100% + 30px)',
           transition: isVisible ? 'margin-top 0.4s linear' : '',
           zIndex: zIndex,
         }}
@@ -302,9 +316,86 @@ function ImagePreviewComponent({
             </p>
           </div>
         )}
+        <div
+          onClick={() => onImageRemove()}
+          className={`absolute left-2 top-2 flex justify-center items-center cursor-pointer`}
+        >
+          <div className="rounded-full bg-white/50 hover:bg-white w-6 h-6 flex justify-center items-center">
+            <TrashIcon className="text-primary" />
+          </div>
+        </div>
       </div>
 
-      <div>
+      <div
+        className={cx([
+          'bg-primary',
+          'justify-center',
+          'p-5',
+          !editActive ? 'py-2' : '',
+          'w-full',
+          'relative',
+          'flex',
+          'desktop:hidden',
+        ])}
+      >
+        <div
+          className={`w-full ${
+            editActive ? 'bg-[#55566b] ' : ''
+          } flex just items-center`}
+        >
+          <Preview
+            onSelectionChange={(r: RectCoords) => {
+              debouncedOnImageSelectionChange(r, currentIndex);
+            }}
+            image={requestImages[currentIndex]}
+            selection={regions[currentIndex] || DEFAULT_REGION}
+            regions={filteredRegions || []}
+            minWidth={Math.min(
+              80 *
+                (requestImages[currentIndex]?.width /
+                  requestImages[currentIndex]?.height),
+              200,
+            )}
+            minHeight={80}
+            dotColor={editActive ? '#FBD914' : ''}
+            minCropWidth={editActive ? 30 : 5}
+            minCropHeight={editActive ? 30 : 5}
+            rounded={false}
+            expandAnimation={editActive}
+            shrinkAnimation={!editActive}
+            onExpand={() => {
+              setEditActive(true);
+            }}
+            showGrip={editActive}
+            draggable={editActive ? true : false}
+          />
+        </div>
+
+        <div
+          onClick={() => setEditActive(s => !s)}
+          className={`absolute right-1 ${
+            editActive ? 'bottom-1' : 'bottom-8'
+          } flex justify-center items-center desktop:hidden p-1`}
+        >
+          <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
+            {editActive && <CollapseIcon className="text-primary" />}
+            {!editActive && <CropIcon className="text-primary" />}
+          </div>
+        </div>
+
+        <div
+          onClick={() => onImageRemove()}
+          className={`absolute left-1 ${
+            editActive ? 'top-1' : 'top-8'
+          } flex justify-center items-center desktop:hidden p-1`}
+        >
+          <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
+            <TrashIcon className="text-primary" />
+          </div>
+        </div>
+      </div>
+
+      <div className={cx([!isMultiImageSearchEnabled && 'hidden'])}>
         <div
           className={cx([
             'flex',
@@ -374,7 +465,7 @@ function ImagePreviewComponent({
               </div>
             );
           })}
-          {requestImages.length < 3 && (
+          {requestImages.length < 3 && isMultiImageSearchEnabled && (
             <label
               className={cx([
                 'w-[70px]',
@@ -430,7 +521,7 @@ function ImagePreviewComponent({
             onClose={() => setShowCamera(false)}
           />
         </div>
-        {requestImages.length < 3 && (
+        {requestImages.length < 3 && isMultiImageSearchEnabled && (
           <p className="text-[10px] pb-4 w-full text-center bg-primary text-white -mt-[1px]">
             Add up to three photos for a more accurate visual search.
           </p>
