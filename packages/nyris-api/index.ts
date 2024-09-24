@@ -46,6 +46,7 @@ export interface NyrisAPISettings {
 export default class NyrisAPI {
   private readonly httpClient: AxiosInstance;
   private readonly imageMatchingUrl: string;
+  private readonly imageMatchingUrlMulti: string;
   private readonly cadMatchingUrl: string;
   private readonly regionProposalUrl: string;
   private readonly responseFormat: string;
@@ -74,6 +75,7 @@ export default class NyrisAPI {
     this.apiKey = settings.apiKey;
     const baseUrl = settings.baseUrl || "https://api.nyris.io";
     this.imageMatchingUrl = `${baseUrl}/find/v1.1`;
+    this.imageMatchingUrlMulti = `${baseUrl}/find/v1.2`;
     this.cadMatchingUrl = `${baseUrl}/cad/find/v0.1`;
     this.imageMatchingUrlBySku = `${baseUrl}/recommend/v1/`;
     this.imageMatchingSubmitManualUrl = `${baseUrl}/find/v1/manual/`;
@@ -124,6 +126,15 @@ export default class NyrisAPI {
     const xOptions = [];
     if (this.xOptions) xOptions.push(this.xOptions as string);
     if (xOptions.length > 0) headers["X-Options"] = xOptions.join(" ");
+
+    return headers;
+  }
+
+  private getMultiSearchRequestHeaders(contentType?: string) {
+    // Create headers
+    let headers: any = {
+      "X-Api-Key": this.apiKey,
+    };
 
     return headers;
   }
@@ -248,6 +259,75 @@ export default class NyrisAPI {
         headers,
         responseType: "json",
         ...(canvas || (filters && filters.length)
+          ? { data: requestBody }
+          : { data: null }),
+      })
+    );
+
+    return res.data;
+  }
+
+  /**
+   * Search for an image.
+   * @param canvas Image, Video (frame) or Canvas to use use for image search.
+   * @param filters key values of filters
+   * @param options See [[ImageSearchOptions]].
+   */
+  async findMulti(
+    options: ImageSearchOptions,
+    images?: HTMLCanvasElement[],
+    regions: RectCoords[] = [],
+    filters?: Filter[],
+    xOptions?: any
+  ): Promise<SearchResult> {
+    var requestBody = new FormData();
+    let params = {};
+    let headers = this.getMultiSearchRequestHeaders();
+    if (xOptions) {
+      // headers["X-Nyris-Request-Options"] = xOptions;
+      headers["X-Options"] = xOptions;
+    }
+
+    if (images && options.text) {
+      requestBody.append("text", options.text);
+      const { text, ...rest } = options;
+      params = this.getParams(rest);
+    } else if (options.text && filters && filters.length > 0) {
+      requestBody.append("text", options.text);
+    } else {
+      params = this.getParams(options);
+    }
+
+    if (images) {
+      let index = 0;
+      for (const image of images) {
+        const imageBytes = await this.prepareImage(image, regions[index]);
+        requestBody.append("images", imageBytes);
+
+        index = index + 1;
+      }
+    }
+
+    if (filters && filters.length > 0) {
+      for (let i = 0; i < filters.length; i++) {
+        requestBody.append(`filters[${i}].filterType`, filters[i].key!);
+        for (let j = 0; j < filters[i].values.length; j++) {
+          requestBody.append(
+            `filters[${i}].filterValues[${j}]`,
+            filters[i].values[j]
+          );
+        }
+      }
+    }
+
+    let { res }: any = await timePromise(
+      this.httpClient.request<SearchResult>({
+        method: "POST",
+        url: this.imageMatchingUrlMulti,
+        params,
+        headers,
+        responseType: "json",
+        ...(images || (filters && filters.length)
           ? { data: requestBody }
           : { data: null }),
       })

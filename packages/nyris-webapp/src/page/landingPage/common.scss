@@ -740,7 +740,6 @@ button {
     line-height: 21px;
     color: #ffffff;
   }
-  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -2326,4 +2325,13 @@ button {
   @media screen and (min-width: 2047px) {
     max-width: 1300px;
   }
+}
+
+
+.MuiPaper-root {
+  background-color: inherit !important;
+}
+
+.MuiDrawer-paperAnchorBottom {
+  height: 100% !important;
 }

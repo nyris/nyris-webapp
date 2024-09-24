@@ -1,11 +1,11 @@
 import React, { memo } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Layout from 'components/Layout';
-import App from 'App';
 import ResultComponent from 'page/result';
 import AuthenticatedRoute from 'components/AuthenticatedRoute';
 import Login from 'page/Login';
 import Logout from 'page/Logout';
+import Home from 'page/landingPage/Home';
 
 function Router(): JSX.Element {
   return (
@@ -15,7 +15,7 @@ function Router(): JSX.Element {
         <Route path={'/logout'} exact component={Logout} />
 
         <Layout>
-          <AuthenticatedRoute exact strict path="/" component={App} />
+          <AuthenticatedRoute exact strict path="/" component={Home} />
           <AuthenticatedRoute
             exact
             strict

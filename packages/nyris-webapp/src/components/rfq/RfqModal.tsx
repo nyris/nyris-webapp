@@ -10,9 +10,8 @@ import toast from 'react-hot-toast';
 import { ReactComponent as ErrorIcon } from 'common/assets/icons/error.svg';
 import { useMediaQuery } from 'react-responsive';
 import { useAppSelector } from '../../Store/Store';
+import useRequestStore from 'Store/requestStore';
 interface Props {
-  requestImage: any;
-  selectedRegion: any;
   setIsRfqModalOpen: any;
   isRfqModalOpen?: any;
   setRfqStatus: any;
@@ -35,8 +34,6 @@ const getErrorMessage = (error: any) => {
 };
 
 export default function RfqModal({
-  requestImage,
-  selectedRegion,
   setIsRfqModalOpen,
   isRfqModalOpen,
   setRfqStatus,
@@ -47,6 +44,12 @@ export default function RfqModal({
   const { settings } = useAppSelector(state => state);
 
   const [information, setInformation] = useState('');
+
+  const { requestImages, regions } = useRequestStore(state => ({
+    requestImages: state.requestImages,
+    regions: state.regions,
+  }));
+
   const setFormattedContent = React.useCallback(
     (text: string) => {
       setInformation(text.slice(0, 150));
@@ -61,8 +64,8 @@ export default function RfqModal({
 
   const handleRfq = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    const { canvas }: any = requestImage;
-    const croppedImage = getCroppedCanvas(canvas, selectedRegion);
+    const canvas: any = requestImages[0];
+    const croppedImage = getCroppedCanvas(canvas, regions[0]);
     const serviceId = 'service_zfsxshi';
     setIsRfqModalOpen(false);
     const templateId = settings.rfq?.emailTemplateId;
@@ -179,10 +182,7 @@ export default function RfqModal({
           }}
         >
           <img
-            src={getCroppedCanvas(
-              requestImage?.canvas,
-              selectedRegion,
-            )?.toDataURL()}
+            src={getCroppedCanvas(requestImages[0], regions[0])?.toDataURL()}
             alt="request_image"
             style={{ maxHeight: '200px' }}
           />

@@ -1,5 +1,5 @@
 import { ReactNode } from 'components/common';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import {
@@ -11,11 +11,9 @@ import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppState } from '../types';
 import './appMobile.scss';
 import './common.scss';
-import FooterMobile from './FooterMobile';
 import HeaderMobile from './HeaderMobile';
 import Header from './Header';
-import { isUndefined } from 'lodash';
-import AppMobile from './AppMobile';
+import MobileLayout from './MobileLayout';
 import jQuery from 'jquery';
 import Loading from './Loading';
 import i18n from 'i18next';
@@ -65,7 +63,6 @@ function Layout({ children }: ReactNode): JSX.Element {
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
   const { loadingSearchAlgolia } = search;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-  const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
   const history = useHistory();
   const query = useQuery();
   const searchQuery = query.get('query') || '';
@@ -96,11 +93,9 @@ function Layout({ children }: ReactNode): JSX.Element {
   }, [user, dispatch, settings.shouldUseUserMetadata]);
 
   let HeaderApp: any;
-  let FooterApp: any;
   let classNameBoxVersion: string = 'newVersion';
   if (isMobile) {
     classNameBoxVersion = 'mobile';
-    FooterApp = FooterMobile;
     HeaderApp = HeaderMobile;
   } else {
     HeaderApp = Header;
@@ -142,7 +137,7 @@ function Layout({ children }: ReactNode): JSX.Element {
         </div>
       )}
       <InstantSearchProvider>
-        {isMobile && showApp && <AppMobile>{children}</AppMobile>}
+        {isMobile && showApp && <MobileLayout>{children}</MobileLayout>}
         {!isMobile && showApp && (
           <div className={`layout-main-${classNameBoxVersion}`}>
             <div
@@ -159,21 +154,13 @@ function Layout({ children }: ReactNode): JSX.Element {
                   : {}),
               }}
             >
-              <HeaderApp
-                onToggleFilterMobile={(show: boolean) => {
-                  setOpenFilter(isUndefined(show) ? !isOpenFilter : show);
-                }}
-              />
+              <HeaderApp />
             </div>
 
             <div className={`box-body-${classNameBoxVersion}-wrap-main`}>
               {children}
             </div>
-            {isMobile && (
-              <div className="footer-wrap-main">
-                <FooterApp />
-              </div>
-            )}
+
             {showPoweredByNyris && <PoweredByNyris />}
           </div>
         )}

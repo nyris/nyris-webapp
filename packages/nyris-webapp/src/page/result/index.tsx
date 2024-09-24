@@ -1,21 +1,13 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
-import { RectCoords } from '@nyris/nyris-api';
 import { CurrentRefinements } from 'components/current-refinements/current-refinements';
 import FooterResult from 'components/FooterResult';
 import CustomSearchBox from 'components/input/inputSearch';
 import ProductList from 'components/ProductList';
-import { debounce, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import {
   Configure,
   connectStateResults,
@@ -23,33 +15,19 @@ import {
   Pagination,
 } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
-import { feedbackRegionEpic, feedbackSuccessEpic } from 'services/Feedback';
-import { createImage, find, findRegions } from 'services/image';
+import { feedbackSuccessEpic } from 'services/Feedback';
 import {
   loadingActionResults,
   onToggleModalItemDetail,
-  selectionChanged,
-  setImageSearchInput,
-  setRegions,
-  setRequestImage,
-  setSearchResults,
-  setSelectedRegion,
   setShowFeedback,
-  updateResultChangePosition,
   updateStatusLoading,
-  setFirstSearchResults,
-  setFirstSearchImage,
-  setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput,
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { showHits } from '../../constants';
-import { DEFAULT_REGION } from '../../constants';
 import { useTranslation } from 'react-i18next';
 import RfqModal from 'components/rfq/RfqModal';
 import SidePanel from 'components/SidePanel';
-import useFilteredRegions from 'hooks/useFilteredRegions';
-import ImagePreviewMobile from 'components/ImagePreviewMobile';
+import ImagePreview from 'components/ImagePreview';
 import RfqBanner from 'components/rfq/RfqBanner';
 import InquiryBanner from 'components/Inquiry/InquiryBanner';
 import { useQuery } from 'hooks/useQuery';
@@ -57,6 +35,8 @@ import { ReactComponent as PoweredByNyrisImage } from 'common/assets/images/powe
 import Feedback from 'components/Feedback';
 import { SelectedPostFilter } from 'components/SelectedPostFilter';
 import { GoBack } from '../../components/GoBackButton';
+import { useImageSearch } from 'hooks/useImageSearch';
+import useRequestStore from 'Store/requestStore';
 
 interface Props {
   allSearchResults: any;
@@ -71,11 +51,9 @@ function ResultComponent(props: Props) {
   const { allSearchResults } = props;
   const {
     requestImage,
-    regions,
     selectedRegion,
     preFilter,
     loadingSearchAlgolia,
-    imageThumbSearchInput,
     results,
     showFeedback,
     firstSearchResults,
@@ -84,18 +62,16 @@ function ResultComponent(props: Props) {
   } = search;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-  const [imageSelection, setImageSelection] = useState<any>(null);
   const executeScroll = () => refBoxResult.current.scrollIntoView('-100px');
   const [filterString, setFilterString] = useState<string>();
   const { t } = useTranslation();
-  const [showAdjustInfo, setAdjustInfo] = useState(false);
-  const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
-    useState(false);
+  const [showAdjustInfo] = useState(false);
+
   const [rfqStatus, setRfqStatus] = useState<'inactive' | 'loading' | 'sent'>(
     'inactive',
   );
   const [isRfqModalOpen, setIsRfqModalOpen] = useState(false);
-  const imageUploadRef = useRef(null);
+  // const imageUploadRef = useRef(null);
   const rfqRef = useRef<any>(null);
 
   const [feedbackStatus, setFeedbackStatus] = useState<
@@ -109,24 +85,35 @@ function ResultComponent(props: Props) {
   const isPostFilterEnabled = settings.postFilterOption;
   const history = useHistory();
 
-  useEffect(() => {
-    if (
-      !loadingSearchAlgolia &&
-      (imageThumbSearchInput.includes('blob:') ||
-        imageThumbSearchInput.includes('data:')) &&
-      imageUploadRef.current !== imageThumbSearchInput
-    ) {
-      setAdjustInfo(true);
-      const timeout = setTimeout(() => {
-        setAdjustInfo(false);
-      }, 2000);
-      imageUploadRef.current = imageThumbSearchInput;
-      return () => {
-        clearTimeout(timeout);
-        setAdjustInfo(false);
-      };
-    }
-  }, [imageThumbSearchInput, loadingSearchAlgolia]);
+  const { singleImageSearch, multiImageSearch } = useImageSearch();
+
+  const { resetRegions, imageRegions, requestImages } = useRequestStore(
+    state => ({
+      requestImages: state.requestImages,
+      updateRegion: state.updateRegion,
+      resetRegions: state.resetRegions,
+      imageRegions: state.regions,
+    }),
+  );
+
+  // useEffect(() => {
+  //   if (
+  //     !loadingSearchAlgolia &&
+  //     (imageThumbSearchInput.includes('blob:') ||
+  //       imageThumbSearchInput.includes('data:')) &&
+  //     imageUploadRef.current !== imageThumbSearchInput
+  //   ) {
+  //     setAdjustInfo(true);
+  //     const timeout = setTimeout(() => {
+  //       setAdjustInfo(false);
+  //     }, 2000);
+  //     imageUploadRef.current = imageThumbSearchInput;
+  //     return () => {
+  //       clearTimeout(timeout);
+  //       setAdjustInfo(false);
+  //     };
+  //   }
+  // }, [imageThumbSearchInput, loadingSearchAlgolia]);
 
   useEffect(() => {
     if (loadingSearchAlgolia) {
@@ -137,7 +124,6 @@ function ResultComponent(props: Props) {
 
   useEffect(() => {
     if (selectedRegion) {
-      setImageSelection(selectedRegion);
       setRfqStatus('inactive');
       setFeedbackStatus('hidden');
     }
@@ -147,65 +133,10 @@ function ResultComponent(props: Props) {
     if (requestImage) {
       setFeedbackStatus('hidden');
       executeScroll();
-      setImageSelection(DEFAULT_REGION);
+      resetRegions();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestImage]);
-
-  const findImageByApiNyris = useCallback(
-    async (canvas: any, r?: RectCoords) => {
-      const preFilterValues = [
-        {
-          key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter)
-        },
-      ];
-      dispatch(loadingActionResults());
-
-      return find({
-        image: canvas,
-        settings,
-        region: r,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-      })
-        .then((res: any) => {
-          dispatch(updateStatusLoading(false));
-          return {
-            ...res,
-          };
-        })
-        .catch((e: any) => {
-          dispatch(updateStatusLoading(false));
-          console.log('error call api change selection find image', e);
-        });
-    },
-    [settings, dispatch, preFilter],
-  );
-
-  // TODO: Search offers for image:
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const findItemsInSelection = useCallback(
-    debounce(async (r: RectCoords) => {
-      if (!requestImage) {
-        return;
-      }
-      dispatch(updateStatusLoading(true));
-      const { canvas }: any = requestImage;
-      findImageByApiNyris(canvas, r).then((res: any) => {
-        dispatch(updateResultChangePosition(res));
-        const highConfidence = res.results.find(
-          (data: { score: number }) => data.score >= 0.65,
-        );
-        if (!highConfidence) {
-          setShowAdjustInfoBasedOnConfidence(true);
-        }
-        setTimeout(() => {
-          setShowAdjustInfoBasedOnConfidence(false);
-        }, 2000);
-      });
-      return;
-    }, 250),
-    [requestImage, findImageByApiNyris],
-  );
 
   // TODO: Handler like dislike
   const sendFeedBackAction = async (type: string) => {
@@ -221,46 +152,12 @@ function ResultComponent(props: Props) {
       dispatch(onToggleModalItemDetail(false));
     }
     dispatch(loadingActionResults());
-    dispatch(setImageSearchInput(url));
-    let image = await createImage(url);
-    dispatch(setRequestImage(image));
 
-    let searchRegion: RectCoords | undefined = undefined;
-
-    try {
-      if (settings.regions) {
-        let res = await findRegions(image, settings);
-        searchRegion = res.selectedRegion;
-        dispatch(setRegions(res.regions));
-        dispatch(setSelectedRegion(searchRegion));
-      }
-    } catch (error) {
-    } finally {
-      const preFilterValues = [
-        {
-          key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
-        },
-      ];
-      find({
-        image,
-        settings,
-        region: searchRegion,
-        filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-      }).then((res: any) => {
-        if (!firstSearchResults) {
-          dispatch(setFirstSearchResults(res));
-          dispatch(setFirstSearchImage(image));
-          dispatch(setFirstSearchPrefilters(preFilter));
-          if (!isMobile) {
-            dispatch(setFirstSearchThumbSearchInput(url))
-          }
-        }
-        dispatch(setSearchResults(res));
+    singleImageSearch({ image: url, settings, showFeedback: false }).then(
+      () => {
         dispatch(updateStatusLoading(false));
-        return;
-      });
-    }
+      },
+    );
   };
   const nonEmptyFilter: any[] = !requestImage
     ? []
@@ -290,15 +187,29 @@ function ResultComponent(props: Props) {
   }, [preFilter, requestImage, searchQuery, settings.alogoliaFilterField]);
 
   useEffect(() => {
-    if (!requestImage || !isAlgoliaEnabled) {
+    if (requestImages.length === 0 || !isAlgoliaEnabled) {
       return;
     }
     dispatch(updateStatusLoading(true));
-    const { canvas }: any = requestImage;
-    findImageByApiNyris(canvas).then((res: any) => {
-      // setPreFilter(keyFilter);
-      dispatch(updateResultChangePosition(res));
-    });
+    dispatch(loadingActionResults());
+
+    if (requestImages.length === 1) {
+      singleImageSearch({
+        image: requestImages[0],
+        settings,
+        imageRegion: imageRegions[0],
+      }).then(res => {
+        dispatch(updateStatusLoading(false));
+      });
+    } else {
+      multiImageSearch({
+        images: requestImages,
+        settings,
+        regions: imageRegions,
+      }).then(res => {
+        dispatch(updateStatusLoading(false));
+      });
+    }
 
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -335,17 +246,6 @@ function ResultComponent(props: Props) {
   }, [history.location]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedOnImageSelectionChange = useCallback(
-    debounce((r: RectCoords) => {
-      setImageSelection(r);
-      feedbackRegionEpic(stateGlobal, r);
-      dispatch(selectionChanged(r));
-      findItemsInSelection(r);
-    }, 50),
-    [findItemsInSelection, stateGlobal.search],
-  );
-
-  const filteredRegions = useFilteredRegions(regions, imageSelection);
 
   const showPostFilter = useMemo(() => {
     return (
@@ -408,8 +308,6 @@ function ResultComponent(props: Props) {
         <>
           {isRfqModalOpen && (
             <RfqModal
-              requestImage={requestImage}
-              selectedRegion={selectedRegion}
               setIsRfqModalOpen={setIsRfqModalOpen}
               isRfqModalOpen={isRfqModalOpen}
               setRfqStatus={setRfqStatus}
@@ -435,17 +333,8 @@ function ResultComponent(props: Props) {
             >
               {!isMobile && showSidePanel && (
                 <SidePanel
-                  setImageSelection={setImageSelection}
                   allSearchResults={props.allSearchResults}
-                  debouncedOnImageSelectionChange={
-                    debouncedOnImageSelectionChange
-                  }
-                  filteredRegions={filteredRegions}
-                  imageSelection={imageSelection}
                   showAdjustInfo={showAdjustInfo}
-                  showAdjustInfoBasedOnConfidence={
-                    showAdjustInfoBasedOnConfidence
-                  }
                   showPostFilter={showPostFilter}
                   disjunctiveFacets={props.allSearchResults.disjunctiveFacets}
                 />
@@ -456,38 +345,32 @@ function ResultComponent(props: Props) {
                   settings.preview && 'ml-auto mr-auto'
                 } ${isMobile && 'col-right-result-mobile'}`}
                 style={{
-                  paddingTop: isMobile ? '8px' : '40px',
+                  paddingTop: isMobile ? '0px' : '40px',
                   overflow: !isMobile ? 'auto' : '',
                   display: 'flex',
                   flexDirection: 'column',
                 }}
               >
-                {!isMobile && firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? (
+                {!isMobile &&
+                firstSearchResults &&
+                requestImages[0] !== firstSearchImage &&
+                !fetchingResults ? (
                   <GoBack />
                 ) : (
                   ''
                 )}
-                
+
                 {!isMobile && settings.algolia.enabled && (
                   <div className="wrap-box-refinements">
                     <CurrentRefinements statusSwitchButton={true} />
                   </div>
                 )}
 
-                {isMobile && settings.preview && requestImage && (
-                  <ImagePreviewMobile
-                    requestImage={requestImage}
-                    imageSelection={imageSelection}
-                    debouncedOnImageSelectionChange={
-                      debouncedOnImageSelectionChange
-                    }
-                    filteredRegions={filteredRegions}
-                    showAdjustInfoBasedOnConfidence={
-                      showAdjustInfoBasedOnConfidence
-                    }
-                    showAdjustInfo={showAdjustInfo}
-                  />
-                )}
+                <div className="flex flex-col h-fit desktop:hidden">
+                  {settings.preview && requestImages.length > 0 && (
+                    <ImagePreview showAdjustInfo={false} />
+                  )}
+                </div>
 
                 <div
                   style={{
@@ -496,15 +379,19 @@ function ResultComponent(props: Props) {
                     flexGrow: 1,
                     backgroundColor: '#FAFAFA',
                   }}
+                  className="mt-4 desktop:mt-0"
                 >
-                  {isMobile && firstSearchResults && requestImage?.canvas !== firstSearchImage && !fetchingResults ? (
+                  {isMobile &&
+                  firstSearchResults &&
+                  requestImages[0] !== firstSearchImage &&
+                  !fetchingResults ? (
                     <div className="go-back-mobile-container">
                       <GoBack />
                     </div>
                   ) : (
                     ''
                   )}
-                  
+
                   <div
                     className={'box-item-result ml-auto mr-auto'}
                     style={{
@@ -596,7 +483,7 @@ function ResultComponent(props: Props) {
                         marginTop: !isAlgoliaEnabled ? '24px' : '',
                       }}
                     >
-                      {requestImage &&
+                      {requestImages.length > 0 &&
                         !loadingSearchAlgolia &&
                         !props.isSearchStalled &&
                         settings.rfq &&
@@ -605,8 +492,8 @@ function ResultComponent(props: Props) {
                             rfqRef={rfqRef}
                             rfqStatus={rfqStatus}
                             setIsRfqModalOpen={setIsRfqModalOpen}
-                            requestImage={requestImage}
-                            selectedRegion={selectedRegion}
+                            requestImage={requestImages[0]}
+                            selectedRegion={imageRegions[0]}
                           />
                         )}
                       {!loadingSearchAlgolia &&
@@ -615,8 +502,8 @@ function ResultComponent(props: Props) {
                         settings.support.enabled &&
                         (searchQuery || requestImage) && (
                           <InquiryBanner
-                            requestImage={requestImage}
-                            selectedRegion={selectedRegion}
+                            requestImage={requestImages[0]}
+                            selectedRegion={imageRegions[0]}
                             query={searchQuery}
                           />
                         )}
