@@ -6,7 +6,6 @@ import { useQuery } from 'hooks/useQuery';
 import { isEmpty } from 'lodash';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
-import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
 import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
