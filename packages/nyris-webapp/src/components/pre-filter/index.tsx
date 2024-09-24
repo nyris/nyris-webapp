@@ -32,12 +32,7 @@ function PreFilterComponent(props: Props) {
   const query = useQuery();
   const searchQuery = query.get('query') || '';
   const { search } = stateGlobal;
-  const {
-    preFilter: keyFilterState,
-
-    requestImage,
-    selectedRegion,
-  } = search;
+  const { preFilter: keyFilterState, requestImage, selectedRegion } = search;
 
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
@@ -333,71 +328,73 @@ function PreFilterComponent(props: Props) {
               }
         }
       >
-        {Object.entries(resultFilter).sort().map(([key, value]: any, i: any) => {
-          return (
-            <div className="box-group-items" key={key}>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  rowGap: '12px',
-                  width: '100%',
-                }}
-              >
-                <Typography
+        {Object.entries(resultFilter)
+          .sort()
+          .map(([key, value]: any, i: any) => {
+            return (
+              <div className="box-group-items" key={key}>
+                <div
                   style={{
-                    fontWeight: 'bold',
-                    color: '#000',
-                    fontSize: '12px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    rowGap: '12px',
+                    width: '100%',
                   }}
                 >
-                  {key}
-                </Typography>
+                  <Typography
+                    style={{
+                      fontWeight: 'bold',
+                      color: '#000',
+                      fontSize: '12px',
+                    }}
+                  >
+                    {key}
+                  </Typography>
 
-                {value.map((item: any, index: any) => {
-                  return (
-                    <Tooltip
-                      key={item}
-                      title={item}
-                      placement="top"
-                      arrow={true}
-                      disableHoverListener={item.length < 35}
-                    >
-                      <div
-                        aria-label={item}
-                        style={{
-                          cursor: 'pointer',
-                          fontSize: '12px',
-                          minHeight: '20px',
-                          color: '#2B2C46',
-                          width: '100%',
-                          maxWidth: 'fit-content',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                          backgroundColor: keyFilter[item] ? '#E9E9EC' : '',
-                          borderRadius: 8,
-                          paddingLeft: '8px',
-                          paddingRight: '8px',
-                        }}
-                        onClick={() => {
-                          if (selectedFilter < maxFilter) {
-                            setKeyFilter({
-                              ...keyFilter,
-                              [item]: !keyFilter[item],
-                            });
-                          }
-                        }}
+                  {value.map((item: any, index: any) => {
+                    return (
+                      <Tooltip
+                        key={item}
+                        title={item}
+                        placement="top"
+                        arrow={true}
+                        disableHoverListener={item.length < 35}
                       >
-                        {truncateString(item, !isMobile ? 35 : 35)}
-                      </div>
-                    </Tooltip>
-                  );
-                })}
+                        <div
+                          aria-label={item}
+                          style={{
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            minHeight: '20px',
+                            color: '#2B2C46',
+                            width: '100%',
+                            maxWidth: 'fit-content',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            backgroundColor: keyFilter[item] ? '#E9E9EC' : '',
+                            borderRadius: 8,
+                            paddingLeft: '8px',
+                            paddingRight: '8px',
+                          }}
+                          onClick={() => {
+                            if (selectedFilter < maxFilter) {
+                              setKeyFilter({
+                                ...keyFilter,
+                                [item]: !keyFilter[item],
+                              });
+                            }
+                          }}
+                        >
+                          {truncateString(item, !isMobile ? 35 : 35)}
+                        </div>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
         {isLoading && (
           <div style={{ columnCount: isMobile ? 1 : 4 }}>
             {Array(12)

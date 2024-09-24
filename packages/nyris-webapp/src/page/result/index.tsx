@@ -502,8 +502,8 @@ function ResultComponent(props: Props) {
                         settings.support.enabled &&
                         (searchQuery || requestImage) && (
                           <InquiryBanner
-                            requestImage={requestImage}
-                            selectedRegion={selectedRegion}
+                            requestImage={requestImages[0]}
+                            selectedRegion={imageRegions[0]}
                             query={searchQuery}
                           />
                         )}
