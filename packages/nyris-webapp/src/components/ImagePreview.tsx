@@ -242,6 +242,7 @@ function ImagePreviewComponent({
   const [editActive, setEditActive] = useState(false);
   return (
     <>
+      {/* Image preview Desktop, To-do: Remove and use same code as Image preview for Mobile */}
       <div
         ref={previewWrapperRef}
         className={cx([
@@ -291,23 +292,20 @@ function ImagePreviewComponent({
               columnGap: '6px',
               padding: '5px',
               width: 'fit-content',
-              minWidth: '180px',
               marginTop: 'auto',
               position: 'absolute',
-              bottom: 125,
+              bottom: -20,
               borderRadius: '16px',
               zIndex: 1000,
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
               height: 'fit-content',
             }}
           >
             <IconInfo color="white" />
             <p
               style={{
-                fontSize: 10,
+                fontSize: 12,
                 color: '#fff',
+                paddingRight: '4px',
               }}
             >
               {showAdjustInfo
@@ -325,7 +323,7 @@ function ImagePreviewComponent({
           </div>
         </div>
       </div>
-
+      {/* Image preview Mobile*/}
       <div
         className={cx([
           'bg-primary',
@@ -370,7 +368,36 @@ function ImagePreviewComponent({
             draggable={editActive ? true : false}
           />
         </div>
-
+        {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
+          <div
+            style={{
+              backgroundColor: '#3E36DC',
+              display: 'flex',
+              columnGap: '6px',
+              padding: '5px',
+              width: 'fit-content',
+              marginTop: 'auto',
+              position: 'absolute',
+              bottom: -16,
+              borderRadius: '16px',
+              zIndex: 1000,
+              height: 'fit-content',
+            }}
+          >
+            <IconInfo color="white" />
+            <p
+              style={{
+                fontSize: 12,
+                color: '#fff',
+                paddingRight: '4px',
+              }}
+            >
+              {showAdjustInfo
+                ? t('Crop the image for better results')
+                : 'Crop the image for better results'}
+            </p>
+          </div>
+        )}
         <div
           onClick={() => setEditActive(s => !s)}
           className={`absolute right-1 ${
