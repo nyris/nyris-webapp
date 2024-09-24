@@ -1,5 +1,5 @@
 import { ReactNode } from 'components/common';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
 import {
@@ -13,7 +13,6 @@ import './appMobile.scss';
 import './common.scss';
 import HeaderMobile from './HeaderMobile';
 import Header from './Header';
-import { isUndefined } from 'lodash';
 import MobileLayout from './MobileLayout';
 import jQuery from 'jquery';
 import Loading from './Loading';
@@ -64,7 +63,6 @@ function Layout({ children }: ReactNode): JSX.Element {
   const { settings, search } = useAppSelector<AppState>((state: any) => state);
   const { loadingSearchAlgolia } = search;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-  const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
   const history = useHistory();
   const query = useQuery();
   const searchQuery = query.get('query') || '';

@@ -28,7 +28,7 @@ import useRequestStore from 'Store/requestStore';
 import { useSearchOrRedirect } from 'hooks/useSearchOrRedirect';
 
 const SearchBox = (props: any) => {
-  const { refine, onToggleFilterMobile }: any = props;
+  const { refine }: any = props;
   // const containerRefInputMobile = useRef<HTMLDivElement>(null);
   const preFilter = useAppSelector(state => state.search.preFilter);
   const settings = useAppSelector(state => state.settings);
@@ -37,7 +37,6 @@ const SearchBox = (props: any) => {
   const history = useHistory();
   const [valueInput, setValueInput] = useState<string>('');
   const dispatch = useAppDispatch();
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const query = useQuery();
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] =
     useState<boolean>(false);

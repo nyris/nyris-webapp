@@ -23,6 +23,7 @@ export const useSearchOrRedirect = () => {
   const settings = useAppSelector(state => state.settings);
   const isAlgoliaEnabled = settings.algolia?.enabled;
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
       if (!isAlgoliaEnabled) {

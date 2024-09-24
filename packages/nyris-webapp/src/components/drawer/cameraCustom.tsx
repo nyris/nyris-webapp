@@ -307,7 +307,7 @@ function CameraCustom(props: Props) {
               />
             )}
 
-            {capturedImages.length > 0 && (
+            {capturedImages.length > 0 && settings.multiImageSearch && (
               <>
                 <div
                   className={cx([

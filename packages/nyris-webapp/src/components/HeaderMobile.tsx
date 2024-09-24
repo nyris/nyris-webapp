@@ -33,7 +33,7 @@ interface Props {
 }
 
 function HeaderMobileComponent(props: Props): JSX.Element {
-  const { onToggleFilterMobile, refine } = props;
+  const { refine } = props;
 
   const { user, isAuthenticated, logout } = useAuth0();
 
