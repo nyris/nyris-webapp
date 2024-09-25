@@ -22,6 +22,7 @@ import { Preview } from "@nyris/nyris-react-components";
 import classNames from "classnames";
 import { useDropzone } from "react-dropzone";
 import translations from "./translations";
+import { addAssets } from "./utils";
 
 const labels = translations(window.nyrisSettings.language);
 
@@ -34,7 +35,7 @@ export enum Screen {
   Result = "results",
   Refine = "refine",
 }
-
+export type CadenasScriptStatus = "ready" | "loading" | "failed" | "disabled";
 export interface AppProps {
   image: HTMLCanvasElement;
   errorMessage: string;
@@ -55,6 +56,7 @@ export interface AppProps {
   onGoBack: () => void;
   loading: boolean;
   firstSearchImage: HTMLCanvasElement;
+  cadenasScriptStatus: CadenasScriptStatus;
 }
 
 const SuccessMultiple = ({
@@ -69,6 +71,7 @@ const SuccessMultiple = ({
   loading,
   onGoBack,
   firstSearchImage,
+  cadenasScriptStatus,
 }: AppProps) => {
   const noResult = results.length === 0;
 
@@ -163,7 +166,12 @@ const SuccessMultiple = ({
               )}
               <div className="nyris__success-multiple-result-list">
                 {results.map((r, i) => (
-                  <Result {...r} key={i} onSimilarSearch={onSimilarSearch} />
+                  <Result
+                    {...r}
+                    key={i}
+                    onSimilarSearch={onSimilarSearch}
+                    cadenasScriptStatus={cadenasScriptStatus}
+                  />
                 ))}
               </div>
             </>
@@ -238,9 +246,7 @@ const Fail = ({
           htmlFor="nyris__hello-open-camera"
         >
           <span>
-            {isMobile
-              ? labels["Click a picture"]
-              : labels["Upload a picture"]}
+            {isMobile ? labels["Click a picture"] : labels["Upload a picture"]}
           </span>
           <img src={camera} width={16} height={16} />
         </label>
@@ -372,40 +378,38 @@ export const App = (props: AppProps) => {
   let resultsSingle = false;
   let resultsMultiple = false;
 
+  const [cadenasScriptStatus, setCadenasScriptStatus] =
+    useState<CadenasScriptStatus>("disabled");
+
   useEffect(() => {
-    if (!!window.nyrisSettings.cadenasCatalogy && !!window.nyrisSettings.cadenasAPIKey) {
-      const handleDOMContentLoaded = () => {
-        psol.core.setUserInfo({
-          server_type: 'oem_apps_cadenas_webcomponentsdemo',
-          title: 'Herr',
-          firstname: 'Max',
-          lastname: 'Mustermann',
-          userfirm: 'CADENAS GmbH',
-          street: 'Berliner Allee 28 b+c',
-          zip: '86153',
-          city: 'Augsburg',
-          country: 'de',
-          phone: '+49 (0) 821 2 58 58 0-0',
-          fax: '+49 (0) 821 2 58 58 0-999',
-          email: 'info@cadenas.de',
+    if (
+      !!window.nyrisSettings.cadenasCatalogy &&
+      !!window.nyrisSettings.cadenasAPIKey
+    ) {
+      setCadenasScriptStatus("loading");
+      addAssets([
+        "https://assets.i.nyris.io/nyris-widget/cadenas/8.1.0/api/css/psol.components.min.css",
+      ]).catch((error: any) => {
+        setCadenasScriptStatus("failed");
+      });
+
+      addAssets([
+        "https://assets.i.nyris.io/nyris-widget/cadenas/8.1.0/api/js/thirdparty.min.js",
+      ])
+        .then(() => {
+          addAssets([
+            "https://assets.i.nyris.io/nyris-widget/cadenas/8.1.0/api/js/psol.components.min.js",
+          ])
+            .then(() => {
+              setCadenasScriptStatus("ready");
+            })
+            .catch((error: any) => {
+              setCadenasScriptStatus("failed");
+            });
+        })
+        .catch((error: any) => {
+          setCadenasScriptStatus("failed");
         });
-        psol.core.setServiceBaseUrl('https://webapi.partcommunity.com');
-        window.onpageshow = function (event: any) {
-          if (event.persisted) {
-            window.location.reload();
-          }
-        };
-      };
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
-      } else {
-        handleDOMContentLoaded();
-      }
-
-      return () => {
-        document.removeEventListener('DOMContentLoaded', handleDOMContentLoaded);
-      }; 
     }
   }, []);
 
@@ -422,7 +426,9 @@ export const App = (props: AppProps) => {
       );
       break;
     case Screen.Result:
-      content = <SuccessMultiple {...props} />;
+      content = (
+        <SuccessMultiple {...props} cadenasScriptStatus={cadenasScriptStatus} />
+      );
       wide = true;
       resultsMultiple = true;
       break;
