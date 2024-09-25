@@ -25,7 +25,8 @@ import translations from "./translations";
 import { addAssets } from "./utils";
 
 const labels = translations(window.nyrisSettings.language);
-
+const assets_base_url =
+  "https://assets.i.nyris.io/nyris-widget/cadenas/8.1.0/api";
 declare var psol: any;
 export enum Screen {
   Hidden = "hidden",
@@ -387,19 +388,15 @@ export const App = (props: AppProps) => {
       !!window.nyrisSettings.cadenasAPIKey
     ) {
       setCadenasScriptStatus("loading");
-      addAssets([
-        "https://assets.i.nyris.io/nyris-widget/cadenas/8.1.0/api/css/psol.components.min.css",
-      ]).catch((error: any) => {
-        setCadenasScriptStatus("failed");
-      });
+      addAssets([`${assets_base_url}/css/psol.components.min.css`]).catch(
+        (error: any) => {
+          setCadenasScriptStatus("failed");
+        }
+      );
 
-      addAssets([
-        "https://assets.i.nyris.io/nyris-widget/cadenas/8.1.0/api/js/thirdparty.min.js",
-      ])
+      addAssets([`${assets_base_url}/js/thirdparty.min.js`])
         .then(() => {
-          addAssets([
-            "https://assets.i.nyris.io/nyris-widget/cadenas/8.1.0/api/js/psol.components.min.js",
-          ])
+          addAssets([`${assets_base_url}/js/psol.components.min.js`])
             .then(() => {
               setCadenasScriptStatus("ready");
             })
