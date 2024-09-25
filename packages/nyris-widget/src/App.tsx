@@ -373,38 +373,40 @@ export const App = (props: AppProps) => {
   let resultsMultiple = false;
 
   useEffect(() => {
-    const handleDOMContentLoaded = () => {
-      psol.core.setUserInfo({
-        server_type: 'oem_apps_cadenas_webcomponentsdemo',
-        title: 'Herr',
-        firstname: 'Max',
-        lastname: 'Mustermann',
-        userfirm: 'CADENAS GmbH',
-        street: 'Berliner Allee 28 b+c',
-        zip: '86153',
-        city: 'Augsburg',
-        country: 'de',
-        phone: '+49 (0) 821 2 58 58 0-0',
-        fax: '+49 (0) 821 2 58 58 0-999',
-        email: 'info@cadenas.de',
-      });
-      psol.core.setServiceBaseUrl('https://webapi.partcommunity.com');
-      window.onpageshow = function (event: any) {
-        if (event.persisted) {
-          window.location.reload();
-        }
+    if (!!window.nyrisSettings.cadenasCatalogy && !!window.nyrisSettings.cadenasAPIKey) {
+      const handleDOMContentLoaded = () => {
+        psol.core.setUserInfo({
+          server_type: 'oem_apps_cadenas_webcomponentsdemo',
+          title: 'Herr',
+          firstname: 'Max',
+          lastname: 'Mustermann',
+          userfirm: 'CADENAS GmbH',
+          street: 'Berliner Allee 28 b+c',
+          zip: '86153',
+          city: 'Augsburg',
+          country: 'de',
+          phone: '+49 (0) 821 2 58 58 0-0',
+          fax: '+49 (0) 821 2 58 58 0-999',
+          email: 'info@cadenas.de',
+        });
+        psol.core.setServiceBaseUrl('https://webapi.partcommunity.com');
+        window.onpageshow = function (event: any) {
+          if (event.persisted) {
+            window.location.reload();
+          }
+        };
       };
-    };
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
-    } else {
-      handleDOMContentLoaded();
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
+      } else {
+        handleDOMContentLoaded();
+      }
+
+      return () => {
+        document.removeEventListener('DOMContentLoaded', handleDOMContentLoaded);
+      }; 
     }
-
-    return () => {
-      document.removeEventListener('DOMContentLoaded', handleDOMContentLoaded);
-    };
   }, []);
 
   switch (showScreen) {

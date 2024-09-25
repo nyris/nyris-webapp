@@ -26,76 +26,78 @@ function CadenasWebViewer({
   const [mident, setMident] = useState('');
 
   useEffect(() => {
-    // prepare 3d viewer settings.
-    let webViewer3DSettings = {
-      $container: $('#cnsWebViewer3d'),
-      viewerBackendType: psol.components.WebViewer3D.ViewerBackends.WebGL,
-      devicePixelRatio: window.devicePixelRatio,
-      radialMenuActions: [],
-      favoriteActions: favoriteActions3d,
-      showProgressDialog: false,
-      webglViewerSettings: {
-        ColorTL: '#fff',
-        ColorTR: '#fff',
-        ColorML: '#fff',
-        ColorMR: '#fff',
-        ColorBL: '#fff',
-        ColorBR: '#fff',
-        showLogo: false,
-        logoTexture: './img/logo.png',
-        logoScaleFactor: 1.0,
-        logoMixFactor: 0.5,
-        material: {
-          preset: 'pcloud',
-          edit: false,
-        },
-        measureGrid: {
-          colors: {
-            dimensions: '#000000',
-            outline: '#0000ff',
-            grid: '#757575',
-            unit: 'mm',
+    if (!!window.nyrisSettings.cadenasCatalogy && !!window.nyrisSettings.cadenasAPIKey) {
+      // prepare 3d viewer settings.
+      let webViewer3DSettings = {
+        $container: $('#cnsWebViewer3d'),
+        viewerBackendType: psol.components.WebViewer3D.ViewerBackends.WebGL,
+        devicePixelRatio: window.devicePixelRatio,
+        radialMenuActions: [],
+        favoriteActions: favoriteActions3d,
+        showProgressDialog: false,
+        webglViewerSettings: {
+          ColorTL: '#fff',
+          ColorTR: '#fff',
+          ColorML: '#fff',
+          ColorMR: '#fff',
+          ColorBL: '#fff',
+          ColorBR: '#fff',
+          showLogo: false,
+          logoTexture: './img/logo.png',
+          logoScaleFactor: 1.0,
+          logoMixFactor: 0.5,
+          material: {
+            preset: 'pcloud',
+            edit: false,
           },
+          measureGrid: {
+            colors: {
+              dimensions: '#000000',
+              outline: '#0000ff',
+              grid: '#757575',
+              unit: 'mm',
+            },
+          },
+          helperOptions: {
+            gridOn: false,
+            axisOn: false,
+          },
+          shadeMode: psol.components.WebViewer3D.ShadeModes.ShadeAndLines,
+          enableEditableDimensions: true,
+          showPartNameTooltip: false,
         },
-        helperOptions: {
-          gridOn: false,
-          axisOn: false,
-        },
-        shadeMode: psol.components.WebViewer3D.ShadeModes.ShadeAndLines,
-        enableEditableDimensions: true,
-        showPartNameTooltip: false,
-      },
-    };
+      };
 
-    // initialize 3d viewer
-    let webviewer3d = new psol.components.WebViewer3D(webViewer3DSettings);
-    psol.core.setApiKey(window.nyrisSettings.cadenasAPIKey);
-    setStatus3dView('loading');
-    // run search and display result in 3D viewer.
-    psol.core
-      .ajaxGetOrPost({
-        url: psol.core.getServiceBaseUrl() + '/service/reversemap',
-        data: {
-          catalog: window.nyrisSettings.cadenasCatalogy,
-          part: sku,
-          exact: '0',
-        },
-      })
-      .then(function (reverseMapResult: { mident: string }) {
-        let mident = reverseMapResult.mident || '';
-        setMident(mident);
-        // load geometry in 3d viewer.
-        webviewer3d.show().then(function () {
-          webviewer3d
-            .loadByVarset(null, null, mident)
-            .then(() => {
-              setStatus3dView('loaded');
-            })
-            .catch((err: any) => {
-              setStatus3dView('not-found');
-            });
+      // initialize 3d viewer
+      let webviewer3d = new psol.components.WebViewer3D(webViewer3DSettings);
+      psol.core.setApiKey(window.nyrisSettings.cadenasAPIKey);
+      setStatus3dView('loading');
+      // run search and display result in 3D viewer.
+      psol.core
+        .ajaxGetOrPost({
+          url: psol.core.getServiceBaseUrl() + '/service/reversemap',
+          data: {
+            catalog: window.nyrisSettings.cadenasCatalogy,
+            part: sku,
+            exact: '0',
+          },
+        })
+        .then(function (reverseMapResult: { mident: string }) {
+          let mident = reverseMapResult.mident || '';
+          setMident(mident);
+          // load geometry in 3d viewer.
+          webviewer3d.show().then(function () {
+            webviewer3d
+              .loadByVarset(null, null, mident)
+              .then(() => {
+                setStatus3dView('loaded');
+              })
+              .catch((err: any) => {
+                setStatus3dView('not-found');
+              });
+          });
         });
-      });
+    }
   }, [sku, setStatus3dView]);
 
   const showWebViewer = !is3dView || status3dView !== 'loaded';
