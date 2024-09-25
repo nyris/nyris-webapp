@@ -378,7 +378,7 @@ function ProductDetailView(props: Props) {
                     width: '100%',
                   }}
                 >
-                  {!settings.warehouseVariant && settings.CTAButtonText && (
+                  {!settings.warehouseVariant && settings.CTAButton?.CTAButtonText && (
                     <ProductAttribute
                       title={t('Product name')}
                       value={title}
@@ -549,8 +549,8 @@ function ProductDetailView(props: Props) {
                           paddingRight: '4px',
                         }}
                       >
-                        {settings.CTAButtonText
-                          ? settings.CTAButtonText
+                        {settings.CTAButton?.CTAButtonText
+                          ? settings.CTAButton?.CTAButtonText
                           : dataItem[settings.field.productName]}
                       </Typography>
                       {ctaLink && (

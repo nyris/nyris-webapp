@@ -46,6 +46,16 @@ var settings = {
     brandFieldBackground: '',
     brandFieldPadding: '',
   },
+  // CTA button
+  CTAButton: {
+    CTAButton: true,
+    CTAButtonText: '',
+    CTAButtonTextColor: '',
+    CTAButtonColor: '',
+    CTAIcon: '',
+    CTAIconSource: '',
+    CTALinkField: '',
+  },
   language: 'en',
   // features
   showPoweredByNyris: '',
@@ -90,6 +100,16 @@ var settings = {
     productDetails: 'keyword_1',
     manufacturerNumber: 'keyword_0',
     productTag: 'brand',
+    productAttributes: true,
+    labelsAttributes: true,
+    attributeOneLabelValue: '',
+    attributeOneValue: '',
+    attributeTwoLabelValue: '',
+    attributeTwoValue: '',
+    attributeThreeLabelValue: '',
+    attributeThreeValue: '',
+    attributeFourLabelValue: '',
+    attributeFourValue: '',
     //WarehouseVariant
     warehouseNumber: 'custom_id_key_2',
     warehouseNumberValue: 'custom_id_value_2',

@@ -8,6 +8,7 @@ interface Props {
   width?: any;
   backgroundColor?: string;
   isTitleVisible?: boolean;
+  maxWidth?: string;
 }
 
 function ProductAttribute(props: Props) {
@@ -17,6 +18,7 @@ function ProductAttribute(props: Props) {
     padding = props.padding || '4px 16px',
     width = props.width || 'fit-content',
     isTitleVisible = typeof props.isTitleVisible === 'boolean' ? props.isTitleVisible : true,
+    maxWidth
   } = props;
 
   return (
@@ -28,6 +30,7 @@ function ProductAttribute(props: Props) {
             flexDirection: 'column',
             borderRadius: 2,
             width: width,
+            maxWidth: maxWidth || 'fit-content',
             backgroundColor: props.backgroundColor || '#E0E0E0',
             padding: padding,
             flexGrow: 1,

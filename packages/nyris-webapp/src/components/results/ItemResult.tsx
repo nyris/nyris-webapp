@@ -268,7 +268,7 @@ function ItemResult(props: Props) {
                 color: settings.theme.mainTextColor || '#2B2C46',
               }}
             >
-              {settings.CTAButtonText && (
+              {settings.CTAButton?.CTAButtonText && (
                 <Typography
                   className="text-f12 max-line-1 fw-700"
                   style={{
@@ -286,7 +286,7 @@ function ItemResult(props: Props) {
                   flexDirection: 'row',
                   gridGap: 8,
                   color: settings.theme.mainTextColor || '#2B2C46',
-                  marginTop: settings.CTAButtonText ? 0 : 8,
+                  marginTop: settings.CTAButton?.CTAButtonText ? 0 : 8,
                 }}
               >
                 <Tooltip
@@ -339,11 +339,12 @@ function ItemResult(props: Props) {
                   display: 'flex',
                   justifyContent: 'space-between',
                   flexDirection: 'row',
+                  flexWrap: 'wrap',
                   gridGap: 8,
                   color: settings.theme.mainTextColor || '#2B2C46',
                 }}
               >
-                {(brand || settings.brandName) && (
+                {!(brand || settings.brandName) && (
                   <ProductAttribute
                     title={t('Brand')}
                     value={brand || settings.brandName}
@@ -354,13 +355,53 @@ function ItemResult(props: Props) {
                   />
                 )}
 
-                {manufacturerNumber && (
+                {!manufacturerNumber && (
                   <ProductAttribute
                     title={t('Mfr. No.')}
                     value={manufacturerNumber}
                     padding="4px 8px"
                     width={{ xs: '49%' }}
                   />
+                )}
+                {settings.field.productAttributes && (
+                  <>
+                    <ProductAttribute
+                      title={settings.field.attributeOneLabelValue}
+                      value={get(dataItem, settings.field.attributeOneValue || '') || 0}
+                      padding={settings.theme.brandFieldPadding || '4px 8px'}
+                      width={'48%'}
+                      maxWidth={'calc(50% - 4px)'}
+                      backgroundColor={settings.theme.brandFieldBackground}
+                      isTitleVisible={settings.field.labelsAttributes}
+                    />
+                    <ProductAttribute
+                      title={settings.field.attributeTwoLabelValue}
+                      value={get(dataItem, settings.field.attributeTwoValue || '')}
+                      padding={settings.theme.brandFieldPadding || '4px 8px'}
+                      width={'48%'}
+                      maxWidth={'calc(50% - 4px)'}
+                      backgroundColor={settings.theme.brandFieldBackground}
+                      isTitleVisible={settings.field.labelsAttributes}
+                    />
+                    <ProductAttribute
+                      title={settings.field.attributeThreeLabelValue}
+                      value={get(dataItem, settings.field.attributeThreeValue || '')}
+                      padding={settings.theme.brandFieldPadding || '4px 8px'}
+                      width={'48%'}
+                      maxWidth={'calc(50% - 4px)'}
+                      backgroundColor={settings.theme.brandFieldBackground}
+                      isTitleVisible={settings.field.labelsAttributes}
+                    />
+                    <ProductAttribute
+                      title={settings.field.attributeFourLabelValue}
+                      value={get(dataItem, settings.field.attributeFourValue || '')}
+                      padding={settings.theme.brandFieldPadding || '4px 8px'}
+                      width={'48%'}
+                      maxWidth={'calc(50% - 4px)'}
+                      backgroundColor={settings.theme.brandFieldBackground}
+                      isTitleVisible={settings.field.labelsAttributes}
+                    />
+                  </>
                 )}
               </div>
             </div>
@@ -461,7 +502,7 @@ function ItemResult(props: Props) {
                 </div>
               </div>
             )}
-            {!settings.CTAButtonText ? (
+            {!settings.CTAButton?.CTAButtonText ? (
               <Tooltip
                 title={dataItem[settings.field.productName]}
                 placement="top"
@@ -578,7 +619,7 @@ function ItemResult(props: Props) {
                     }}
                     align="left"
                   >
-                    {settings.CTAButtonText}
+                    {settings.CTAButton.CTAButtonText}
                   </Typography>
                   {!isMobile && ctaLink && (
                     <IconOpenLink

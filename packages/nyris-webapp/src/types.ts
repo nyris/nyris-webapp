@@ -45,6 +45,25 @@ export interface Field {
   warehouseShelfNumberValue: string;
   warehouseStock: string;
   warehouseStockValue: string;
+  productAttributes?: boolean;
+  labelsAttributes?: boolean,
+  attributeOneLabelValue?: string,
+  attributeOneValue?: string,
+  attributeTwoLabelValue?: string,
+  attributeTwoValue?: string,
+  attributeThreeLabelValue?: string,
+  attributeThreeValue?: string,
+  attributeFourLabelValue?: string,
+  attributeFourValue?: string,
+}
+interface CTAButtonSettings {
+  CTAButton?: boolean,
+  CTAButtonText?: string,
+  CTAButtonTextColor?: string,
+  CTAButtonColor?: string,
+  CTAIcon?: string,
+  CTAIconSource?: string,
+  CTALinkField?: string,
 }
 
 export interface AppSettings extends NyrisAPISettings {
@@ -55,7 +74,7 @@ export interface AppSettings extends NyrisAPISettings {
   brandName?: string;
   cadenas?: Cadenas;
   clarityId?: string;
-  CTAButtonText?: string;
+  CTAButton?: CTAButtonSettings;
   experienceVisualSearch?: boolean;
   experienceVisualSearchImages?: string[];
   field: Field;
