@@ -26,7 +26,7 @@ import { addAssets } from "./utils";
 
 const labels = translations(window.nyrisSettings.language);
 const assets_base_url =
-  "https://assets.i.nyris.io/nyris-widget/cadenas/8.1.0/api";
+  "https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api";
 declare var psol: any;
 export enum Screen {
   Hidden = "hidden",
