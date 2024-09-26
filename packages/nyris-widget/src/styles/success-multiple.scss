@@ -444,17 +444,19 @@
   }
 }
 
-.psol-comp-viewbase-iconbutton-44 {
-  width: 32px;
-  height: 32px;
-  .psol-comp-viewbase-svgicon {
-    width: 20px;
-    height: 20px;
-    margin: 6px;
+.psol-comp-buttonBar-container {
+  .psol-comp-viewbase-iconbutton-44 {
+    width: 32px;
+    height: 32px;
+    .psol-comp-viewbase-svgicon {
+      width: 20px;
+      height: 20px;
+      margin: 6px;
+    }
   }
 }
 
-.psol-comp-webviewer3d-copyright-container {
+div.psol-comp-webviewer3d-copyright-container {
   a:link {
     font-family: 'Source Sans 3', sans-serif;
     font-size: 10px;
