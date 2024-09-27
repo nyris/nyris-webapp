@@ -384,7 +384,7 @@ export const App = (props: AppProps) => {
 
   useEffect(() => {
     if (
-      !!window.nyrisSettings.cadenasCatalogy &&
+      !!window.nyrisSettings.cadenasCatalog &&
       !!window.nyrisSettings.cadenasAPIKey
     ) {
       setCadenasScriptStatus("loading");

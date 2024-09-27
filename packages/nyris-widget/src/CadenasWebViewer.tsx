@@ -30,7 +30,7 @@ function CadenasWebViewer({
 
   useEffect(() => {
     if (
-      !!window.nyrisSettings.cadenasCatalogy &&
+      !!window.nyrisSettings.cadenasCatalog &&
       !!window.nyrisSettings.cadenasAPIKey &&
       cadenasScriptStatus === "loading"
     ) {
@@ -38,7 +38,7 @@ function CadenasWebViewer({
     }
 
     if (
-      !!window.nyrisSettings.cadenasCatalogy &&
+      !!window.nyrisSettings.cadenasCatalog &&
       !!window.nyrisSettings.cadenasAPIKey &&
       cadenasScriptStatus === "ready"
     ) {
@@ -108,7 +108,7 @@ function CadenasWebViewer({
         .ajaxGetOrPost({
           url: psol.core.getServiceBaseUrl() + "/service/reversemap",
           data: {
-            catalog: window.nyrisSettings.cadenasCatalogy,
+            catalog: window.nyrisSettings.cadenasCatalog,
             part: sku,
             exact: "0",
           },
