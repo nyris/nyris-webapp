@@ -144,7 +144,7 @@ function CadenasWebViewer({
               }).show();
             }}
           >
-            <DownloadIcon width={14} height={14} color={'#FFF'} />
+            <DownloadIcon width={14} height={14} className="text-black" />
           </div>
         )}
       </div>
