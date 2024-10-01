@@ -31,8 +31,11 @@ interface NyrisSettings extends NyrisAPISettings {
   ctaButtonText: string;
   language: string;
   navigatePreference: string;
+  cadenasAPIKey?: string;
+  cadenasCatalog?: string;
 }
 const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
+
 class Nyris {
   private nyrisApi: NyrisAPI;
   private screen: Screen = Screen.Hidden;
@@ -46,7 +49,8 @@ class Nyris {
   private selection: RectCoords = { x1: 0, x2: 1, y1: 0, y2: 1 };
   private readonly instantRedirectPatterns: string[];
   private loading: boolean = false;
-  private firstSearchImage: HTMLCanvasElement = document.createElement("canvas");
+  private firstSearchImage: HTMLCanvasElement =
+    document.createElement("canvas");
   private firstSearchResults: ResultProps[] = [];
 
   constructor(nyrisSettings: NyrisSettings) {
@@ -97,6 +101,7 @@ class Nyris {
       onSimilarSearch: (f) => this.handleFile(f, false),
       firstSearchImage: this.firstSearchImage,
       loading: this.loading,
+      cadenasScriptStatus: "disabled",
     };
     ReactDOM.render(
       <React.StrictMode>
@@ -198,12 +203,12 @@ class Nyris {
 
     this.showScreen(Screen.Result);
   }
-  
+
   onGoBack = () => {
     this.results = JSON.parse(JSON.stringify(this.firstSearchResults));
     this.image = this.firstSearchImage;
     this.render();
-  }
+  };
 
   getRegionByMaxConfidence = (regions: Region[]) => {
     if (regions.length === 0) {
