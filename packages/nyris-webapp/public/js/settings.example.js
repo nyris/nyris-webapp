@@ -46,7 +46,7 @@ var settings = {
     brandFieldBackground: '',
     brandFieldPadding: '',
   },
-  // CTA button
+  // Card Results
   CTAButton: {
     CTAButton: true,
     CTAButtonText: '',
@@ -55,6 +55,15 @@ var settings = {
     CTAIcon: '',
     CTAIconSource: '',
     CTALinkField: '',
+  },
+  secondaryCTAButton: {
+    secondaryCTAButton: '',
+    secondaryCTAButtonText: '',
+    secondaryCTAButtonTextColor: '',
+    secondaryCTAButtonColor: '',
+    secondaryCTAIcon: '',
+    secondaryCTAIconSource: '',
+    secondaryCTALinkField: '',
   },
   language: 'en',
   // features

@@ -447,14 +447,14 @@ function ItemResult(props: Props) {
             </div>
           )}
           <div>
-            {settings.secondaryCTAButtonText && (
+            {settings.secondaryCTAButton?.secondaryCTAButtonText && (
               <div
                 style={{
                   boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                   // marginBottom: 22,
                   height: 40,
                   background:
-                    settings.theme.secondaryCTAButtonColor || '#2B2C46',
+                    settings.secondaryCTAButton?.secondaryCTAButtonColor || '#2B2C46',
                   borderRadius: 4,
                   padding: '0px 8px',
                   marginTop: '8px',
@@ -494,7 +494,7 @@ function ItemResult(props: Props) {
                     }}
                     align="left"
                   >
-                    {settings.secondaryCTAButtonText}
+                    {settings.secondaryCTAButton?.secondaryCTAButtonText}
                   </Typography>
                   {!isMobile && secondaryCTALink && (
                     <IconSettings color="white" />

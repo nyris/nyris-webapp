@@ -66,6 +66,16 @@ interface CTAButtonSettings {
   CTALinkField?: string,
 }
 
+interface SecondaryCTAButton {
+  secondaryCTAButton?: boolean,
+  secondaryCTAButtonText?: string,
+  secondaryCTAButtonTextColor?: string,
+  secondaryCTAButtonColor?: string,
+  secondaryCTAIcon?: string,
+  secondaryCTAIconSource?: string,
+  secondaryCTALinkField?: string,
+}
+
 export interface AppSettings extends NyrisAPISettings {
   algolia: AlgoliaSettings;
   alogoliaFilterField?: string;
@@ -75,6 +85,7 @@ export interface AppSettings extends NyrisAPISettings {
   cadenas?: Cadenas;
   clarityId?: string;
   CTAButton?: CTAButtonSettings;
+  secondaryCTAButton?: SecondaryCTAButton;
   experienceVisualSearch?: boolean;
   experienceVisualSearchImages?: string[];
   field: Field;
