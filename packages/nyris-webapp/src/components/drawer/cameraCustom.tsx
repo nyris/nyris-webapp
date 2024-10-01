@@ -91,7 +91,12 @@ function CameraCustom(props: Props) {
       history.push('/result');
     }
 
-    singleImageSearch({ image: image, settings, newSearch }).then(() => {
+    singleImageSearch({
+      image: image,
+      settings,
+      newSearch,
+      showFeedback: true,
+    }).then(() => {
       dispatch(updateStatusLoading(false));
     });
 

@@ -12,19 +12,18 @@ function Feedback({
 }) {
   return (
     <div className="feedback-wrapper">
-      <p>Are these results useful?</p>
-
-      <div
-        className="feedback-icon-wrapper"
-        onClick={() => submitFeedback(true)}
-      >
-        <IconLike />
-      </div>
+      <p className="w-full">Are these results useful?</p>
       <div
         className="feedback-icon-wrapper"
         onClick={() => submitFeedback(false)}
       >
         <IconDislike />
+      </div>
+      <div
+        className="feedback-icon-wrapper scroll-n"
+        onClick={() => submitFeedback(true)}
+      >
+        <IconLike />
       </div>
       <div className="feedback-icon-wrapper" onClick={() => onFeedbackClose()}>
         <IconClose />
