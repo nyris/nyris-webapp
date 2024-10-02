@@ -19,6 +19,7 @@ import NyrisAPI, {
 } from "@nyris/nyris-api";
 import { ResultProps } from "./Result";
 import { makeFileHandler } from "@nyris/nyris-react-components";
+import packageJson from "../package.json";
 
 interface NyrisSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
@@ -67,6 +68,8 @@ class Nyris {
     this.showScreen(Screen.Hidden);
 
     if (nyrisSettings.initiatorElementId) {
+      console.log("Nyris.widget.VERSION:", packageJson.version);
+
       document.body.addEventListener("click", (event) => {
         // @ts-ignore
         const isVisualSearchElement = event?.target?.closest(
