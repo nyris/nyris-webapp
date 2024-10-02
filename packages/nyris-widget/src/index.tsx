@@ -169,13 +169,13 @@ class Nyris {
     this.showScreen(Screen.Wait);
 
     try {
-      this.regions = await this.nyrisApi.findRegions(this.image);
+      const foundRegions = await this.nyrisApi.findRegions(this.image);
+      this.regions = foundRegions;
+      this.selection = this.getRegionByMaxConfidence(foundRegions);
     } catch (e) {
       console.warn("Could not get regions", e);
     }
 
-    const foundRegions = await this.nyrisApi.findRegions(this.image);
-    this.selection = this.getRegionByMaxConfidence(foundRegions);
     await this.startProcessing(isFirstSearch);
   }
 
