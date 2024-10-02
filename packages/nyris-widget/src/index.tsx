@@ -196,6 +196,7 @@ class Nyris {
       imageUrl: offer?.image,
       links: offer.links,
       sku: offer.sku,
+      metadata: offer.metadata,
     }));
     if (isFirstSearch) {
       this.firstSearchResults = JSON.parse(JSON.stringify(this.results));

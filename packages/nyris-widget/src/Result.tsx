@@ -6,6 +6,7 @@ import Popup3D from "./Popup3D";
 import { CadenasScriptStatus } from "./App";
 
 export interface ResultProps {
+  metadata: string;
   title: string;
   sku: string;
   links: Record<string, string>;

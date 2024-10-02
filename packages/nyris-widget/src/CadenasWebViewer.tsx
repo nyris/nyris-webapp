@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ReactComponent as DownloadIcon } from "./images/download.svg";
 import CadenasLoading from "./CadenasLoading";
 import { CadenasScriptStatus } from "./App";
@@ -16,6 +16,7 @@ const favoriteActions3d = [
 function CadenasWebViewer({
   is3dView,
   sku,
+  metadata,
   setStatus3dView,
   status3dView,
   cadenasScriptStatus,
@@ -25,8 +26,17 @@ function CadenasWebViewer({
   is3dView: boolean;
   setStatus3dView: any;
   cadenasScriptStatus?: CadenasScriptStatus;
+  metadata?: string;
 }) {
   const [mident, setMident] = useState("");
+
+  const path = useMemo(() => {
+    if (!metadata) return "";
+
+    const regex = /info=(.*?\.prj)/;
+    const match = metadata.match(regex) || [];
+    return match[1];
+  }, [metadata]);
 
   useEffect(() => {
     if (
@@ -104,32 +114,47 @@ function CadenasWebViewer({
       psol.core.setApiKey(window.nyrisSettings.cadenasAPIKey);
       setStatus3dView("loading");
       // run search and display result in 3D viewer.
-      psol.core
-        .ajaxGetOrPost({
-          url: psol.core.getServiceBaseUrl() + "/service/reversemap",
-          data: {
-            catalog: window.nyrisSettings.cadenasCatalog,
-            part: sku,
-            exact: "0",
-          },
-        })
-        .then(function (reverseMapResult: { mident: string }) {
-          let mident = reverseMapResult.mident || "";
-          setMident(mident);
-          // load geometry in 3d viewer.
-          webviewer3d.show().then(function () {
-            webviewer3d
-              .loadByVarset(null, null, mident)
-              .then(() => {
-                setStatus3dView("loaded");
-              })
-              .catch((err: any) => {
-                setStatus3dView("not-found");
-              });
+      if (!path) {
+        psol.core
+          .ajaxGetOrPost({
+            url: psol.core.getServiceBaseUrl() + "/service/reversemap",
+            data: {
+              catalog: window.nyrisSettings.cadenasCatalog,
+              part: sku,
+              exact: "0",
+            },
+          })
+          .then(function (reverseMapResult: { mident: string }) {
+            let mident = reverseMapResult.mident || "";
+            setMident(mident);
+            // load geometry in 3d viewer.
+            webviewer3d.show().then(function () {
+              webviewer3d
+                .loadByVarset(null, null, mident)
+                .then(() => {
+                  setStatus3dView("loaded");
+                })
+                .catch((err: any) => {
+                  setStatus3dView("not-found");
+                });
+            });
           });
+      }
+
+      if (path) {
+        webviewer3d.show().then(() => {
+          webviewer3d
+            .loadByVarset(path)
+            .then(() => {
+              setStatus3dView("loaded");
+            })
+            .catch((err: any) => {
+              setStatus3dView("not-found");
+            });
         });
+      }
     }
-  }, [sku, setStatus3dView, cadenasScriptStatus]);
+  }, [sku, setStatus3dView, cadenasScriptStatus, path]);
 
   const showWebViewer = !is3dView || status3dView !== "loaded";
 
@@ -139,7 +164,8 @@ function CadenasWebViewer({
         <div
           id="cnsWebViewer3d"
           style={{
-            height: showWebViewer ? "0px" : "368px",
+            position: showWebViewer ? "absolute" : "unset",
+            height: "368px",
             width: "100%",
             opacity: showWebViewer ? 0 : 1,
             transition:
@@ -168,9 +194,15 @@ function CadenasWebViewer({
               cursor: "pointer",
             }}
             onClick={() => {
-              new psol.components.DownloadDialog({
-                mident: mident,
-              }).show();
+              if (path) {
+                new psol.components.DownloadDialog({
+                  path: path,
+                }).show();
+              } else {
+                new psol.components.DownloadDialog({
+                  mident: mident,
+                }).show();
+              }
             }}
           >
             <DownloadIcon width={14} height={14} color={"#FFF"} />

@@ -66,6 +66,7 @@ const Popup3D = ({
                 status3dView={status3dView}
                 setStatus3dView={setStatus3dView}
                 cadenasScriptStatus={cadenasScriptStatus}
+                metadata={resultDetails.metadata}
               />
               <div className="custom-modal-body-info">
                 <div className="custom-modal-body-info-title">
