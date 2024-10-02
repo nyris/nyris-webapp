@@ -38,14 +38,14 @@ const Popup3D = ({
         showModal &&
         createPortal(
           <div
-            className="custom-modal"
+            className="nyris__custom-modal"
             onClick={(e) => {
               e.stopPropagation();
               modalToggle(false);
             }}
           >
             <div
-              className="custom-modal-body"
+              className="nyris__custom-modal-body"
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -61,18 +61,17 @@ const Popup3D = ({
                 }}
               />
               <CadenasWebViewer
-                is3dView={true}
                 sku={resultDetails.sku}
                 status3dView={status3dView}
                 setStatus3dView={setStatus3dView}
                 cadenasScriptStatus={cadenasScriptStatus}
                 metadata={resultDetails.metadata}
               />
-              <div className="custom-modal-body-info">
-                <div className="custom-modal-body-info-title">
+              <div className="nyris__custom-modal-body-info">
+                <div className="nyris__custom-modal-body-info-title">
                   {resultDetails.title}
                 </div>
-                <div className="custom-modal-body-info-sku">
+                <div className="nyris__custom-modal-body-info-sku">
                   {resultDetails.sku}
                 </div>
                 <a

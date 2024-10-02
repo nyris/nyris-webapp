@@ -94,10 +94,10 @@
     overflow-y: auto;
     height: 100%;
 
-    // @media #{$mobile-query} {
-    //   padding: 0px 15px 18px 15px;
+    @media #{$mobile-query} {
+      padding: 0px 15px 18px 15px;
 
-    // }
+    }
         
     &-heading {
       margin-left: 8px;
@@ -240,6 +240,79 @@
 
   &--purple {
     color: #3023ae;
+  }
+
+  &__custom-modal {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    background-color: rgba(22, 22, 22, 0.5);
+    z-index: 9999;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  
+    @media #{$desktop-query} {
+      width: 450px;
+    }
+  
+    &-body {
+      position: relative;
+      width: 376px;
+      border-radius: 8px;
+      background-color: #FFF;
+      padding-top: 8px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      .close-icon {
+        top: 16px;
+        right: 16px;
+        position: absolute;
+        cursor: pointer;
+        z-index: 1;
+      }
+      &-info {
+        padding: 16px;
+        background-color: #FAFAFA;
+        border-radius: 0 0 8px 8px;
+        &-title {
+          font-family: 'Source Sans 3', sans-serif;
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 22.78px;
+          letter-spacing: 0.22857144474983215px;
+          text-align: left;
+          margin-left: 6px;
+        }
+        &-sku {
+          font-family: 'Source Sans 3', sans-serif;
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 19.94px;
+          letter-spacing: 0.22857144474983215px;
+          text-align: left;
+          margin-bottom: 8px;
+          margin-left: 6px;
+        }
+        .nyris__product-cta {
+          height: 34px;
+          box-sizing: border-box;
+          .nyris__product-button {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 18px;
+            letter-spacing: 0.22857144474983215px;
+            text-align: left;
+          }
+        }
+      }
+    }
   }
 }
 

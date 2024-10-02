@@ -14,7 +14,6 @@ const favoriteActions3d = [
 ];
 
 function CadenasWebViewer({
-  is3dView,
   sku,
   metadata,
   setStatus3dView,
@@ -23,7 +22,6 @@ function CadenasWebViewer({
 }: {
   status3dView: string | undefined;
   sku: string;
-  is3dView: boolean;
   setStatus3dView: any;
   cadenasScriptStatus?: CadenasScriptStatus;
   metadata?: string;
@@ -156,7 +154,7 @@ function CadenasWebViewer({
     }
   }, [sku, setStatus3dView, cadenasScriptStatus, path]);
 
-  const showWebViewer = !is3dView || status3dView !== "loaded";
+  const showWebViewer = status3dView !== "loaded";
 
   return (
     <>
@@ -167,9 +165,6 @@ function CadenasWebViewer({
             position: showWebViewer ? "absolute" : "unset",
             height: "368px",
             width: "100%",
-            opacity: showWebViewer ? 0 : 1,
-            transition:
-              is3dView && status3dView !== "loaded" ? "opacity 2s ease" : "",
           }}
         ></div>
       )}
@@ -181,7 +176,7 @@ function CadenasWebViewer({
           right: "20px",
         }}
       >
-        {is3dView && status3dView === "loaded" && (
+        {status3dView === "loaded" && (
           <div
             style={{
               background: "#E9E9EC",
@@ -210,9 +205,9 @@ function CadenasWebViewer({
         )}
       </div>
 
-      {status3dView === "loading" && is3dView && <CadenasLoading />}
+      {status3dView === "loading" && <CadenasLoading />}
 
-      {status3dView === "not-found" && is3dView && (
+      {status3dView === "not-found" && (
         <div
           style={{
             height: "368px",
