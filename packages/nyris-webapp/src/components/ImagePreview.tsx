@@ -182,22 +182,25 @@ function ImagePreviewComponent({
   const findItemsInSelection = useCallback(
     debounce(async (r: RectCoords, image: HTMLCanvasElement) => {
       dispatch(updateStatusLoading(true));
-      singleImageSearch({ image: image, settings, imageRegion: r }).then(
-        (res: any) => {
-          dispatch(updateStatusLoading(false));
+      singleImageSearch({
+        image: image,
+        settings,
+        imageRegion: r,
+        showFeedback: true,
+      }).then((res: any) => {
+        dispatch(updateStatusLoading(false));
 
-          dispatch(updateResultChangePosition(res));
-          const highConfidence = res.results.find(
-            (data: { score: number }) => data.score >= 0.65,
-          );
-          if (!highConfidence) {
-            setShowAdjustInfoBasedOnConfidence(true);
-          }
-          setTimeout(() => {
-            setShowAdjustInfoBasedOnConfidence(false);
-          }, 2000);
-        },
-      );
+        dispatch(updateResultChangePosition(res));
+        const highConfidence = res.results.find(
+          (data: { score: number }) => data.score >= 0.65,
+        );
+        if (!highConfidence) {
+          setShowAdjustInfoBasedOnConfidence(true);
+        }
+        setTimeout(() => {
+          setShowAdjustInfoBasedOnConfidence(false);
+        }, 2000);
+      });
       return;
     }, 250),
     [dispatch, settings, singleImageSearch],

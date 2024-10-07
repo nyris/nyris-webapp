@@ -153,11 +153,9 @@ function ResultComponent(props: Props) {
     }
     dispatch(loadingActionResults());
 
-    singleImageSearch({ image: url, settings, showFeedback: false }).then(
-      () => {
-        dispatch(updateStatusLoading(false));
-      },
-    );
+    singleImageSearch({ image: url, settings, showFeedback: true }).then(() => {
+      dispatch(updateStatusLoading(false));
+    });
   };
   const nonEmptyFilter: any[] = !requestImage
     ? []
@@ -264,17 +262,15 @@ function ResultComponent(props: Props) {
       return;
 
     const handleScroll = () => {
-      setTimeout(() => {
-        setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
-        dispatch(setShowFeedback(false));
-      }, 100);
+      setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
+      dispatch(setShowFeedback(false));
     };
 
     setTimeout(() => {
       window.removeEventListener('scroll', handleScroll, { capture: true });
       setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
       dispatch(setShowFeedback(false));
-    }, 4000);
+    }, 3000);
 
     window.addEventListener('scroll', handleScroll, {
       capture: true,
@@ -349,8 +345,33 @@ function ResultComponent(props: Props) {
                   overflow: !isMobile ? 'auto' : '',
                   display: 'flex',
                   flexDirection: 'column',
+                  overflowX: 'hidden',
+                  position: 'relative',
                 }}
               >
+                {showFeedbackSuccess && (
+                  <div className={'feedback-floating'}>
+                    <div className="feedback-section">
+                      <div className="feedback-success">
+                        Thanks for your feedback!
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {feedbackStatus === 'visible' && !showFeedbackSuccess && (
+                  <div className={'feedback-floating'}>
+                    <div className="feedback-section">
+                      <Feedback
+                        submitFeedback={submitFeedback}
+                        onFeedbackClose={() => {
+                          setFeedbackStatus('submitted');
+                          dispatch(setShowFeedback(false));
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 {!isMobile &&
                 firstSearchResults &&
                 requestImages[0] !== firstSearchImage &&
@@ -414,34 +435,12 @@ function ResultComponent(props: Props) {
                         requestImage={requestImage}
                         searchQuery={searchQuery}
                       />
-                      <div
+                      {/* <div
                         className="box-item-result ml-auto mr-auto"
                         style={{ position: 'absolute' }}
                       >
-                        {showFeedbackSuccess && (
-                          <div className={'feedback-floating'}>
-                            <div className="feedback-section">
-                              <div className="feedback-success">
-                                Thanks for your feedback!
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        {feedbackStatus === 'visible' &&
-                          !showFeedbackSuccess && (
-                            <div className={'feedback-floating'}>
-                              <div className="feedback-section">
-                                <Feedback
-                                  submitFeedback={submitFeedback}
-                                  onFeedbackClose={() => {
-                                    setFeedbackStatus('submitted');
-                                    dispatch(setShowFeedback(false));
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          )}
-                      </div>
+                     
+                      </div> */}
                     </div>
                   </div>
                   <div
