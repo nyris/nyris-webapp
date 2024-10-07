@@ -18,7 +18,7 @@ const Popup3D = ({
   const mountPoint = document.querySelector(".nyris__wrapper");
   const [status3dView, setStatus3dView] = useState<
     "loading" | "loaded" | "not-found" | undefined
-  >();
+  >("loading");
 
   const modalToggle = (isOpen: boolean) => {
     setShowModal(isOpen);
@@ -30,22 +30,28 @@ const Popup3D = ({
   };
 
   return (
-    <div className="popup-3d">
-      <div className="poput-button-3d" onClick={() => modalToggle(true)}>
+    <>
+      <div
+        className="nyris__product-popur-3d"
+        onClick={() => {
+          modalToggle(true);
+        }}
+      >
         <Box3dIcon width={16} height={16} color={"#AAABB5"} />
       </div>
+
       {mountPoint &&
         showModal &&
         createPortal(
           <div
-            className="custom-modal"
+            className="nyris__custom-modal"
             onClick={(e) => {
               e.stopPropagation();
               modalToggle(false);
             }}
           >
             <div
-              className="custom-modal-body"
+              className="nyris__custom-modal-body"
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -61,18 +67,17 @@ const Popup3D = ({
                 }}
               />
               <CadenasWebViewer
-                is3dView={true}
                 sku={resultDetails.sku}
                 status3dView={status3dView}
                 setStatus3dView={setStatus3dView}
                 cadenasScriptStatus={cadenasScriptStatus}
                 metadata={resultDetails.metadata}
               />
-              <div className="custom-modal-body-info">
-                <div className="custom-modal-body-info-title">
+              <div className="nyris__custom-modal-body-info">
+                <div className="nyris__custom-modal-body-info-title">
                   {resultDetails.title}
                 </div>
-                <div className="custom-modal-body-info-sku">
+                <div className="nyris__custom-modal-body-info-sku">
                   {resultDetails.sku}
                 </div>
                 <a
@@ -96,7 +101,7 @@ const Popup3D = ({
           </div>,
           mountPoint
         )}
-    </div>
+    </>
   );
 };
 

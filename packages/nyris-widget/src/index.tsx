@@ -19,6 +19,7 @@ import NyrisAPI, {
 } from "@nyris/nyris-api";
 import { ResultProps } from "./Result";
 import { makeFileHandler } from "@nyris/nyris-react-components";
+import packageJson from "../package.json";
 
 interface NyrisSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
@@ -67,6 +68,8 @@ class Nyris {
     this.showScreen(Screen.Hidden);
 
     if (nyrisSettings.initiatorElementId) {
+      console.log("Nyris.widget.VERSION:", packageJson.version);
+
       document.body.addEventListener("click", (event) => {
         // @ts-ignore
         const isVisualSearchElement = event?.target?.closest(
@@ -169,13 +172,13 @@ class Nyris {
     this.showScreen(Screen.Wait);
 
     try {
-      this.regions = await this.nyrisApi.findRegions(this.image);
+      const foundRegions = await this.nyrisApi.findRegions(this.image);
+      this.regions = foundRegions;
+      this.selection = this.getRegionByMaxConfidence(foundRegions);
     } catch (e) {
       console.warn("Could not get regions", e);
     }
 
-    const foundRegions = await this.nyrisApi.findRegions(this.image);
-    this.selection = this.getRegionByMaxConfidence(foundRegions);
     await this.startProcessing(isFirstSearch);
   }
 

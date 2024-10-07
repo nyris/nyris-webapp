@@ -24,7 +24,7 @@ export const Result = (r: ResultProps) => {
       <div className="nyris__success-multiple-result-box">
         <div style={{ position: "relative" }}>
           {!!cadenasAPIKey && !!cadenasCatalog ? (
-            <div className="nyris__product-popur-3d">
+            <div>
               <Popup3D
                 resultDetails={r}
                 cadenasScriptStatus={r.cadenasScriptStatus}
