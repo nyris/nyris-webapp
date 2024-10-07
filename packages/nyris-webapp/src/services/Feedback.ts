@@ -10,10 +10,9 @@ export const feedbackSuccessEpic = async (
   success: boolean,
 ) => {
   const { search, settings } = state;
-  const sessionId = search.sessionId;
-  const requestId = search.requestId || search.sessionId;
+  const requestId = search.requestId;
 
-  return await sendFeedbackByApi(settings, sessionId, requestId, {
+  return await sendFeedbackByApi(settings, undefined, requestId, {
     event: 'feedback',
     data: { success },
   });
@@ -64,9 +63,9 @@ export const sendFeedbackByApi = async (
   payload: FeedbackEventPayload,
 ) => {
   const api = new NyrisAPI(settings);
-  if (sessionId && requestId) {
+  if (requestId) {
     try {
-      await api.sendFeedback(sessionId, requestId, payload).then(res => {});
+      await api.sendFeedback({ sessionId, requestId, payload }).then(res => {});
     } catch (error) {
       console.log('error sendFeedbackByApi', error);
     }

@@ -152,7 +152,15 @@
 
   .feedback-section {
     backdrop-filter: blur(2px);
-    border-radius: 24px;  
+    border-radius: 24px;
+    min-width: 332px;
+    min-height: 48px;
+
+    @media screen and (max-width: 776px) {
+      min-width: 300px;
+      min-height: 40px;
+    }
+
   }
 
   @media screen and (max-width: 776px) {
@@ -169,14 +177,14 @@
 
 
 .feedback-wrapper {
-  background-color: #e4e3ffed;
+  // background-color: #e4e3ffed;
   mix-blend-mode: multiply;
   border-radius: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding-left: 24px;
+  padding-right: 8px;
   padding-top: 8px;
   padding-bottom: 8px;
   width: fit-content;
@@ -187,14 +195,11 @@
   flex-shrink: 0;
   color: #2B2C46;
 
-  &:hover{
-    background-color: rgb(211, 209, 255, 0.97);
-
-  }
-
   @media screen and (max-width: 776px) {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 16px;
+    padding-right: 4px;
+    padding-right: 6px;
+    padding-top: 6px;
   }
 
   p{
@@ -206,12 +211,38 @@
   }
 
   .feedback-icon-wrapper {
-    width: 34px;
-    height: 34px;
+    min-width: 32px;
+    min-height: 32px;
     border-radius: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media screen and (max-width: 776px) {
+      min-width: 28px;
+      min-height: 28px;
+    }
+
+    &-close {
+      min-width: 32px;
+      min-height: 32px;
+      border-radius: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      @media screen and (max-width: 776px) {
+        min-width: 28px;
+        min-height: 28px;
+      }
+
+      &:hover {
+        background-color: #D3D1FF;
+        cursor: pointer;  
+      }
+    }
+
+    
 
     &:hover {
       background-color: #FFF;
@@ -243,17 +274,17 @@
   font-weight: 600;
   color: #fff;
   background-color: #2B2C46;
-  width: 282px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  width: 100%;
+  height: 100%;
   text-align: center;
   border-radius: 26px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   @media screen and (max-width: 776px) {
     font-size: 12px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    width: 264px;
+
   }
 }
 
