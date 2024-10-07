@@ -6,6 +6,7 @@ import Popup3D from "./Popup3D";
 import { CadenasScriptStatus } from "./App";
 
 export interface ResultProps {
+  metadata: string;
   title: string;
   sku: string;
   links: Record<string, string>;
@@ -23,7 +24,7 @@ export const Result = (r: ResultProps) => {
       <div className="nyris__success-multiple-result-box">
         <div style={{ position: "relative" }}>
           {!!cadenasAPIKey && !!cadenasCatalog ? (
-            <div className="nyris__product-popur-3d">
+            <div>
               <Popup3D
                 resultDetails={r}
                 cadenasScriptStatus={r.cadenasScriptStatus}
