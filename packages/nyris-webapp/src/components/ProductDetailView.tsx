@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import ProductAttribute from './ProductAttribute';
 import CadenasWebViewer from './CadenasWebViewer';
 import { makeStyles } from '@material-ui/core/styles';
-import { get, isUndefined } from 'lodash';
+import { get } from 'lodash';
 import { ReactComponent as IconSettings } from 'common/assets/icons/settings.svg';
 import {truncateString} from "../helpers/truncateString";
 
@@ -57,10 +57,9 @@ function ProductDetailView(props: Props) {
     show3dView = false,
     onSearchImage,
   } = props;
-  const { sku, title } = dataItem;
+  const { sku } = dataItem;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = useAppSelector<AppState>((state: any) => state);
-  const brand = dataItem[settings.field.productTag];
 
   const [collapseDescription, setCollapseDescription] = useState(false);
   const [feedback, setFeedback] = useState('none');

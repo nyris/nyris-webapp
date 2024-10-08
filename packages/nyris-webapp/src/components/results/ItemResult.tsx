@@ -22,7 +22,7 @@ import { useMediaQuery } from 'react-responsive';
 import { feedbackClickEpic, feedbackConversionEpic } from 'services/Feedback';
 import ProductDetailView from 'components/ProductDetailView';
 import ProductAttribute from '../ProductAttribute';
-import { get, isUndefined } from 'lodash';
+import { get } from 'lodash';
 import { ReactComponent as IconSettings } from 'common/assets/icons/settings.svg';
 
 interface Props {
@@ -63,8 +63,7 @@ function ItemResult(props: Props) {
   const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
   const [feedback, setFeedback] = useState('none');
   const { t } = useTranslation();
-  const { sku, collap } = dataItem;
-  const brand = dataItem[settings.field.productTag];
+  const { collap } = dataItem;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   useEffect(() => {
