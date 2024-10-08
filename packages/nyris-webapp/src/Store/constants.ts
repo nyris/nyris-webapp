@@ -23,9 +23,10 @@ export const defaultSettings: AppSettings = {
     '^https?://(www.)?dailymotion.com/',
     '^https?://(www.)?dai.ly/',
   ],
+  mainTitle: '',
+  secondaryTitle: '',
   theme: {},
   field: {
-    ctaLinkField: '',
     productName: '',
     productDetails: '',
     manufacturerNumber: '',

@@ -33,8 +33,6 @@ export interface Cadenas {
   catalog?: string;
 }
 export interface Field {
-  ctaLinkField: string;
-  secondaryCTALinkField?: string;
   productName: string;
   productDetails: string;
   manufacturerNumber: string;
@@ -45,7 +43,29 @@ export interface Field {
   warehouseShelfNumberValue: string;
   warehouseStock: string;
   warehouseStockValue: string;
-  productAttributes?: boolean;
+}
+interface CTAButtonSettings {
+  CTAButton?: boolean,
+  CTAButtonText?: string,
+  CTAButtonTextColor?: string,
+  CTAButtonColor?: string,
+  CTAIcon?: boolean,
+  CTAIconSource?: string,
+  CTALinkField?: string,
+}
+
+interface SecondaryCTAButton {
+  secondaryCTAButton?: boolean,
+  secondaryCTAButtonText?: string,
+  secondaryCTAButtonTextColor?: string,
+  secondaryCTAButtonColor?: string,
+  secondaryCTAIcon?: boolean,
+  secondaryCTAIconSource?: string,
+  secondaryCTALinkField?: string,
+}
+
+interface Attributes {
+  productAttributes?: boolean,
   labelsAttributes?: boolean,
   attributeOneLabelValue?: string,
   attributeOneValue?: string,
@@ -56,25 +76,6 @@ export interface Field {
   attributeFourLabelValue?: string,
   attributeFourValue?: string,
 }
-interface CTAButtonSettings {
-  CTAButton?: boolean,
-  CTAButtonText?: string,
-  CTAButtonTextColor?: string,
-  CTAButtonColor?: string,
-  CTAIcon?: string,
-  CTAIconSource?: string,
-  CTALinkField?: string,
-}
-
-interface SecondaryCTAButton {
-  secondaryCTAButton?: boolean,
-  secondaryCTAButtonText?: string,
-  secondaryCTAButtonTextColor?: string,
-  secondaryCTAButtonColor?: string,
-  secondaryCTAIcon?: string,
-  secondaryCTAIconSource?: string,
-  secondaryCTALinkField?: string,
-}
 
 export interface AppSettings extends NyrisAPISettings {
   algolia: AlgoliaSettings;
@@ -84,8 +85,11 @@ export interface AppSettings extends NyrisAPISettings {
   brandName?: string;
   cadenas?: Cadenas;
   clarityId?: string;
+  mainTitle: string,
+  secondaryTitle: string,
   CTAButton?: CTAButtonSettings;
   secondaryCTAButton?: SecondaryCTAButton;
+  attributes?: Attributes;
   experienceVisualSearch?: boolean;
   experienceVisualSearchImages?: string[];
   field: Field;
@@ -126,9 +130,6 @@ export interface SearchSuiteSettings {
   mobileFooterImageColor?: string;
   primaryColor?: string;
   secondaryColor?: string;
-  secondaryCTAButtonColor?: string;
-  CTAButtonColor?: string;
-  CTAButtonTextColor?: string;
   mainTextColor?: string;
   brandFieldBackground?: string;
   brandFieldPadding?: string;

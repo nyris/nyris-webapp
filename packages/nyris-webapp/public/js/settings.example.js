@@ -47,6 +47,20 @@ var settings = {
     brandFieldPadding: '',
   },
   // Card Results
+  mainTitle: '',
+  secondaryTitle: '',
+  attributes: {
+    productAttributes: true,
+    labelsAttributes: true,
+    attributeOneLabelValue: '',
+    attributeOneValue: '',
+    attributeTwoLabelValue: '',
+    attributeTwoValue: '',
+    attributeThreeLabelValue: '',
+    attributeThreeValue: '',
+    attributeFourLabelValue: '',
+    attributeFourValue: '',
+  },
   CTAButton: {
     CTAButton: true,
     CTAButtonText: '',
@@ -104,21 +118,10 @@ var settings = {
   //field mappins
   field: {
     ctaLinkField: 'main_offer_link',
-    secondaryCTALinkField: 'main_offer_link',
     productName: 'title',
     productDetails: 'keyword_1',
     manufacturerNumber: 'keyword_0',
     productTag: 'brand',
-    productAttributes: true,
-    labelsAttributes: true,
-    attributeOneLabelValue: '',
-    attributeOneValue: '',
-    attributeTwoLabelValue: '',
-    attributeTwoValue: '',
-    attributeThreeLabelValue: '',
-    attributeThreeValue: '',
-    attributeFourLabelValue: '',
-    attributeFourValue: '',
     //WarehouseVariant
     warehouseNumber: 'custom_id_key_2',
     warehouseNumberValue: 'custom_id_value_2',

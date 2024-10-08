@@ -108,18 +108,6 @@ function ItemResult(props: Props) {
 
     dispatch(onToggleModalItemDetail(true));
   };
-  const ctaLink = get(
-    dataItem,
-    settings.field?.ctaLinkField ? settings.field?.ctaLinkField : 'links.main',
-  );
-  const manufacturerNumber = get(dataItem, settings.field.manufacturerNumber);
-
-  const secondaryCTALink = get(
-    dataItem,
-    settings.field?.secondaryCTALinkField
-      ? settings.field?.secondaryCTALinkField
-      : '',
-  );
 
   return (
     <div className="wrap-main-item-result">
@@ -276,7 +264,7 @@ function ItemResult(props: Props) {
                     marginTop: 8,
                   }}
                 >
-                  {truncateString(dataItem[settings.field.productName], 45)}
+                  {truncateString(dataItem[settings.mainTitle], 45)}
                 </Typography>
               )}
               <div
@@ -290,10 +278,10 @@ function ItemResult(props: Props) {
                 }}
               >
                 <Tooltip
-                  title={sku}
+                  title={dataItem[settings.secondaryTitle]}
                   placement="top"
                   arrow={true}
-                  disableHoverListener={sku?.length < 19 || !sku}
+                  disableHoverListener={dataItem[settings.secondaryTitle]?.length < 19 || !dataItem[settings.secondaryTitle]}
                 >
                   <Typography
                     className="text-f12 max-line-1 fw-400"
@@ -302,37 +290,11 @@ function ItemResult(props: Props) {
                     }}
                   >
                     {truncateString(
-                      sku,
+                      dataItem[settings.secondaryTitle],
                       !settings.warehouseVariant ? 29 : isMobile ? 17 : 20,
                     )}
                   </Typography>
                 </Tooltip>
-
-                {settings.warehouseVariant &&
-                  !isUndefined(
-                    get(dataItem, settings.field.warehouseStockValue),
-                  ) && (
-                    <Typography
-                      className="text-f12 max-line-1 fw-400"
-                      style={{
-                        color: settings.theme?.mainTextColor || '#2B2C46',
-                      }}
-                    >
-                      <span
-                        style={{
-                          color: get(
-                            dataItem,
-                            settings.field.warehouseStockValue,
-                          )
-                            ? '#00C070'
-                            : '#c54545',
-                          fontWeight: 600,
-                        }}
-                      >
-                        {get(dataItem, settings.field.warehouseStockValue) || 0}
-                      </span>
-                    </Typography>
-                  )}
               </div>
               <div
                 style={{
@@ -344,110 +306,51 @@ function ItemResult(props: Props) {
                   color: settings.theme.mainTextColor || '#2B2C46',
                 }}
               >
-                {!(brand || settings.brandName) && (
-                  <ProductAttribute
-                    title={t('Brand')}
-                    value={brand || settings.brandName}
-                    padding={settings.theme.brandFieldPadding || '4px 8px'}
-                    width={{ xs: '49%' }}
-                    backgroundColor={settings.theme.brandFieldBackground}
-                    isTitleVisible={settings.isBrandNameTitleVisible}
-                  />
-                )}
-
-                {!manufacturerNumber && (
-                  <ProductAttribute
-                    title={t('Mfr. No.')}
-                    value={manufacturerNumber}
-                    padding="4px 8px"
-                    width={{ xs: '49%' }}
-                  />
-                )}
-                {settings.field.productAttributes && (
+                {settings.attributes?.productAttributes && (
                   <>
                     <ProductAttribute
-                      title={settings.field.attributeOneLabelValue}
-                      value={get(dataItem, settings.field.attributeOneValue || '') || 0}
+                      title={settings.attributes?.attributeOneLabelValue}
+                      value={get(dataItem, settings.attributes?.attributeOneValue || '') || 0}
                       padding={settings.theme.brandFieldPadding || '4px 8px'}
                       width={'48%'}
                       maxWidth={'calc(50% - 4px)'}
                       backgroundColor={settings.theme.brandFieldBackground}
-                      isTitleVisible={settings.field.labelsAttributes}
+                      isTitleVisible={settings.attributes?.labelsAttributes}
                     />
                     <ProductAttribute
-                      title={settings.field.attributeTwoLabelValue}
-                      value={get(dataItem, settings.field.attributeTwoValue || '')}
+                      title={settings.attributes?.attributeTwoLabelValue}
+                      value={get(dataItem, settings.attributes?.attributeTwoValue || '')}
                       padding={settings.theme.brandFieldPadding || '4px 8px'}
                       width={'48%'}
                       maxWidth={'calc(50% - 4px)'}
                       backgroundColor={settings.theme.brandFieldBackground}
-                      isTitleVisible={settings.field.labelsAttributes}
+                      isTitleVisible={settings.attributes?.labelsAttributes}
                     />
                     <ProductAttribute
-                      title={settings.field.attributeThreeLabelValue}
-                      value={get(dataItem, settings.field.attributeThreeValue || '')}
+                      title={settings.attributes?.attributeThreeLabelValue}
+                      value={get(dataItem, settings.attributes?.attributeThreeValue || '')}
                       padding={settings.theme.brandFieldPadding || '4px 8px'}
                       width={'48%'}
                       maxWidth={'calc(50% - 4px)'}
                       backgroundColor={settings.theme.brandFieldBackground}
-                      isTitleVisible={settings.field.labelsAttributes}
+                      isTitleVisible={settings.attributes?.labelsAttributes}
                     />
                     <ProductAttribute
-                      title={settings.field.attributeFourLabelValue}
-                      value={get(dataItem, settings.field.attributeFourValue || '')}
+                      title={settings.attributes?.attributeFourLabelValue}
+                      value={get(dataItem, settings.attributes?.attributeFourValue || '')}
                       padding={settings.theme.brandFieldPadding || '4px 8px'}
                       width={'48%'}
                       maxWidth={'calc(50% - 4px)'}
                       backgroundColor={settings.theme.brandFieldBackground}
-                      isTitleVisible={settings.field.labelsAttributes}
+                      isTitleVisible={settings.attributes?.labelsAttributes}
                     />
                   </>
                 )}
               </div>
             </div>
           </div>
-          {settings.warehouseVariant && (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                gridGap: 10,
-                color: settings.theme.mainTextColor || '#2B2C46',
-                marginTop: 8,
-              }}
-            >
-              {settings.field.warehouseNumber && (
-                <ProductAttribute
-                  title={
-                    get(dataItem, settings.field.warehouseNumber) ||
-                    settings.field.warehouseNumber
-                  }
-                  value={
-                    get(dataItem, settings.field.warehouseNumberValue) || 'N/A'
-                  }
-                  padding="4px 8px"
-                  width={{ xs: '49%' }}
-                />
-              )}
-
-              {settings.field.warehouseShelfNumber && (
-                <ProductAttribute
-                  title={
-                    get(dataItem, settings.field.warehouseShelfNumber) ||
-                    settings.field.warehouseShelfNumber
-                  }
-                  value={
-                    get(dataItem, settings.field.warehouseShelfNumberValue) ||
-                    'N/A'
-                  }
-                  padding="4px 8px"
-                  width={{ xs: '49%' }}
-                />
-              )}
-            </div>
-          )}
           <div>
-            {settings.secondaryCTAButton?.secondaryCTAButtonText && (
+            {settings.secondaryCTAButton?.secondaryCTAButton && (
               <div
                 style={{
                   boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
@@ -470,12 +373,12 @@ function ItemResult(props: Props) {
                     justifyContent: 'space-between',
                     width: '100%',
                     padding: 0,
-                    cursor: secondaryCTALink ? 'pointer' : 'normal',
+                    cursor: settings.secondaryCTAButton.secondaryCTALinkField ? 'pointer' : 'normal',
                   }}
                   onClick={() => {
-                    if (secondaryCTALink) {
+                    if (settings.secondaryCTAButton?.secondaryCTALinkField) {
                       feedbackConversionEpic(state, indexItem, dataItem.sku);
-                      window.open(`${secondaryCTALink}`, '_blank');
+                      window.open(`${settings.secondaryCTAButton?.secondaryCTALinkField}`, '_blank');
                     }
                   }}
                 >
@@ -489,95 +392,40 @@ function ItemResult(props: Props) {
                       letterSpacing: '0.27px',
                       wordBreak: 'break-all',
                       maxWidth:
-                        !isMobile && secondaryCTALink ? '136px' : '164x',
+                        !isMobile && settings.secondaryCTAButton.secondaryCTALinkField ? '136px' : '164x',
                       paddingRight: '8px',
                     }}
                     align="left"
                   >
                     {settings.secondaryCTAButton?.secondaryCTAButtonText}
                   </Typography>
-                  {!isMobile && secondaryCTALink && (
-                    <IconSettings color="white" />
-                  )}
+                  {!isMobile && settings.secondaryCTAButton.secondaryCTAIcon && (
+                    <>
+                      {!settings.secondaryCTAButton.secondaryCTAIconSource ? (
+                        <IconSettings fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'} />
+                      ) : (
+                        <img
+                          alt="secondary"
+                          style={{
+                            width: '16px',
+                            objectFit: 'contain',
+                          }}
+                          src={settings.secondaryCTAButton.secondaryCTAIconSource}
+                        />
+                      )}
+                    </>
+                    )}
                 </div>
               </div>
             )}
-            {!settings.CTAButton?.CTAButtonText ? (
-              <Tooltip
-                title={dataItem[settings.field.productName]}
-                placement="top"
-                arrow={true}
-                disableHoverListener={
-                  dataItem[settings.field.productName]?.length < 45
-                }
-              >
-                <div
-                  style={{
-                    boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
-                    // marginBottom: 22,
-                    height: 40,
-                    background:
-                      settings.theme?.CTAButtonColor ||
-                      settings.theme?.primaryColor,
-                    borderRadius: 4,
-                    padding: '0px 8px',
-                    marginTop: '8px',
-                    display: 'flex',
-                    justifyItems: 'center',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      width: '100%',
-                      padding: 0,
-                      cursor: ctaLink ? 'pointer' : 'normal',
-                    }}
-                    onClick={() => {
-                      if (ctaLink) {
-                        feedbackConversionEpic(state, indexItem, dataItem.sku);
-                        window.open(`${ctaLink}`, '_blank');
-                      }
-                    }}
-                  >
-                    <Typography
-                      className="max-line-2"
-                      style={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        fontWeight: 500,
-                        color: settings.theme?.CTAButtonTextColor || '#FFFFFF',
-                        fontSize: '12px',
-                        letterSpacing: '0.27px',
-                        wordBreak: 'break-all',
-                        maxWidth: !isMobile && ctaLink ? '136px' : '164x',
-                        paddingRight: '8px',
-                      }}
-                      align="left"
-                    >
-                      {truncateString(dataItem[settings.field.productName], 45)}
-                    </Typography>
-                    {!isMobile && ctaLink && (
-                      <IconOpenLink
-                        fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'}
-                        width={16}
-                      />
-                    )}
-                  </div>
-                </div>
-              </Tooltip>
-            ) : (
+            {settings.CTAButton?.CTAButton && (
               <div
                 style={{
                   boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
                   // marginBottom: 22,
                   height: 40,
                   background:
-                    settings.theme?.CTAButtonColor ||
+                    settings.CTAButton?.CTAButtonColor ||
                     settings.theme?.primaryColor,
                   borderRadius: 4,
                   padding: '0px 8px',
@@ -595,12 +443,12 @@ function ItemResult(props: Props) {
                     alignItems: 'center',
                     width: '100%',
                     padding: 0,
-                    cursor: ctaLink ? 'pointer' : 'normal',
+                    cursor: settings.CTAButton?.CTALinkField ? 'pointer' : 'normal',
                   }}
                   onClick={() => {
-                    if (ctaLink) {
+                    if (settings.CTAButton?.CTALinkField) {
                       feedbackConversionEpic(state, indexItem, dataItem.sku);
-                      window.open(`${ctaLink}`, '_blank');
+                      window.open(`${settings.CTAButton?.CTALinkField}`, '_blank');
                     }
                   }}
                 >
@@ -610,22 +458,35 @@ function ItemResult(props: Props) {
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       fontWeight: 500,
-                      color: settings.theme?.CTAButtonTextColor || '#FFFFFF',
+                      color: settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
                       fontSize: '12px',
                       letterSpacing: '0.27px',
                       wordBreak: 'break-all',
-                      maxWidth: !isMobile && ctaLink ? '136px' : '164x',
+                      maxWidth: !isMobile && settings.CTAButton?.CTALinkField ? '136px' : '164x',
                       paddingRight: '8px',
                     }}
                     align="left"
                   >
-                    {settings.CTAButton.CTAButtonText}
+                    {settings.CTAButton?.CTAButtonText || ''}
                   </Typography>
-                  {!isMobile && ctaLink && (
-                    <IconOpenLink
-                      fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'}
-                      width={16}
-                    />
+                  {!isMobile && settings.CTAButton?.CTAIcon && (
+                    <>
+                      {!settings.CTAButton.CTAIconSource ? (
+                        <IconOpenLink
+                          fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'}
+                          width={16}
+                        />
+                      ) : (
+                        <img
+                          alt="secondary"
+                          style={{
+                          width: '16px',
+                          objectFit: 'contain',
+                        }}
+                        src={settings.CTAButton.CTAIconSource}
+                      />
+                    )}
+                    </>
                   )}
                 </div>
               </div>
