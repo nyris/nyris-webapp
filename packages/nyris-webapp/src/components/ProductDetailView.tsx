@@ -344,42 +344,50 @@ function ProductDetailView(props: Props) {
                   </div>
                   {settings.attributes?.productAttributes && (
                     <>
-                      <ProductAttribute
-                        title={settings.attributes?.attributeOneLabelValue}
-                        value={get(dataItem, settings.attributes?.attributeOneValue || '') || 0}
-                        padding={settings.theme.brandFieldPadding || '4px 8px'}
-                        width={'48%'}
-                        maxWidth={'calc(50% - 4px)'}
-                        backgroundColor={settings.theme.brandFieldBackground}
-                        isTitleVisible={settings.attributes?.labelsAttributes}
-                      />
-                      <ProductAttribute
-                        title={settings.attributes?.attributeTwoLabelValue}
-                        value={get(dataItem, settings.attributes?.attributeTwoValue || '')}
-                        padding={settings.theme.brandFieldPadding || '4px 8px'}
-                        width={'48%'}
-                        maxWidth={'calc(50% - 4px)'}
-                        backgroundColor={settings.theme.brandFieldBackground}
-                        isTitleVisible={settings.attributes?.labelsAttributes}
-                      />
-                      <ProductAttribute
-                        title={settings.attributes?.attributeThreeLabelValue}
-                        value={get(dataItem, settings.attributes?.attributeThreeValue || '')}
-                        padding={settings.theme.brandFieldPadding || '4px 8px'}
-                        width={'48%'}
-                        maxWidth={'calc(50% - 4px)'}
-                        backgroundColor={settings.theme.brandFieldBackground}
-                        isTitleVisible={settings.attributes?.labelsAttributes}
-                      />
-                      <ProductAttribute
-                        title={settings.attributes?.attributeFourLabelValue}
-                        value={get(dataItem, settings.attributes?.attributeFourValue || '')}
-                        padding={settings.theme.brandFieldPadding || '4px 8px'}
-                        width={'48%'}
-                        maxWidth={'calc(50% - 4px)'}
-                        backgroundColor={settings.theme.brandFieldBackground}
-                        isTitleVisible={settings.attributes?.labelsAttributes}
-                      />
+                      {!!settings.attributes?.attributeOneValue && (
+                        <ProductAttribute
+                          title={settings.attributes?.attributeOneLabelValue}
+                          value={get(dataItem, settings.attributes?.attributeOneValue || '') || 0}
+                          padding={settings.theme.brandFieldPadding || '4px 8px'}
+                          width={'48%'}
+                          maxWidth={'calc(50% - 4px)'}
+                          backgroundColor={settings.theme.brandFieldBackground}
+                          isTitleVisible={settings.attributes?.labelsAttributes}
+                        />
+                      )}
+                      {!!settings.attributes?.attributeTwoValue && (
+                        <ProductAttribute
+                          title={settings.attributes?.attributeTwoLabelValue}
+                          value={get(dataItem, settings.attributes?.attributeTwoValue || '')}
+                          padding={settings.theme.brandFieldPadding || '4px 8px'}
+                          width={'48%'}
+                          maxWidth={'calc(50% - 4px)'}
+                          backgroundColor={settings.theme.brandFieldBackground}
+                          isTitleVisible={settings.attributes?.labelsAttributes}
+                        />
+                      )}
+                      {!!settings.attributes?.attributeThreeValue && (
+                        <ProductAttribute
+                          title={settings.attributes?.attributeThreeLabelValue}
+                          value={get(dataItem, settings.attributes?.attributeThreeValue || '')}
+                          padding={settings.theme.brandFieldPadding || '4px 8px'}
+                          width={'48%'}
+                          maxWidth={'calc(50% - 4px)'}
+                          backgroundColor={settings.theme.brandFieldBackground}
+                          isTitleVisible={settings.attributes?.labelsAttributes}
+                        />
+                      )}
+                      {!!settings.attributes?.attributeFourValue && (
+                        <ProductAttribute
+                          title={settings.attributes?.attributeFourLabelValue}
+                          value={get(dataItem, settings.attributes?.attributeFourValue || '')}
+                          padding={settings.theme.brandFieldPadding || '4px 8px'}
+                          width={'48%'}
+                          maxWidth={'calc(50% - 4px)'}
+                          backgroundColor={settings.theme.brandFieldBackground}
+                          isTitleVisible={settings.attributes?.labelsAttributes}
+                        />
+                      )}
                     </>
                   )}
                 </div>
@@ -421,7 +429,7 @@ function ProductDetailView(props: Props) {
                         }}
                       >
                         <Typography
-                          className="text-f18 fw-700 text-white max-line-2"
+                          className="text-f18 fw-700 max-line-2"
                           align="left"
                           style={{
                             letterSpacing: '0.55px',

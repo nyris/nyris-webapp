@@ -22,49 +22,45 @@ function ProductAttribute(props: Props) {
   } = props;
 
   return (
-    <>
-      {title && (
-        <div
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        borderRadius: 2,
+        width: width,
+        maxWidth: maxWidth || 'fit-content',
+        backgroundColor: props.backgroundColor || '#E0E0E0',
+        padding: padding,
+        flexGrow: 1,
+      }}
+    >
+      {isTitleVisible ? (
+        <Typography
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            borderRadius: 2,
-            width: width,
-            maxWidth: maxWidth || 'fit-content',
-            backgroundColor: props.backgroundColor || '#E0E0E0',
-            padding: padding,
-            flexGrow: 1,
+            color: '#2B2C46',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
           }}
+          className="text-f12 fw-700"
         >
-          {isTitleVisible ? (
-            <Typography
-              style={{
-                color: '#2B2C46',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-              className="text-f12 fw-700"
-            >
-              {title}
-            </Typography>
-          ) : (
-           '' 
-          )}
-          <Typography
-            style={{
-              color: '#2B2C46',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-            className="text-f12 fw-400"
-          >
-            {value}
-          </Typography>
-        </div>
+          {title}
+        </Typography>
+      ) : (
+        '' 
       )}
-    </>
+      <Typography
+        style={{
+          color: '#2B2C46',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}
+        className="text-f12 fw-400"
+      >
+        {value}
+      </Typography>
+    </div>
   );
 }
 
