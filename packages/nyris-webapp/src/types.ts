@@ -53,16 +53,20 @@ export interface AppSettings extends NyrisAPISettings {
   appTitle?: string;
   auth0: Auth0Settings;
   brandName?: string;
-  isBrandNameTitleVisible?: boolean;
   cadenas?: Cadenas;
+  clarityId?: string;
   CTAButtonText?: string;
-  secondaryCTAButtonText?: string;
+  experienceVisualSearch?: boolean;
+  experienceVisualSearchImages?: string[];
   field: Field;
   headerText?: string;
   instantRedirectPatterns: string[];
+  isBrandNameTitleVisible?: boolean;
   itemIdLabel?: string;
   language?: string;
+  multiImageSearch?: boolean;
   noImageUrl?: string;
+  noSimilarSearch?: boolean;
   postFilterOption?: boolean;
   preFilterOption?: boolean;
   preFilterTitle?: string;
@@ -70,19 +74,18 @@ export interface AppSettings extends NyrisAPISettings {
   refinements?: any;
   regions: boolean;
   rfq?: Rfq;
+  secondaryCTAButtonText?: string;
   shareOption?: boolean;
+  shouldUseUserMetadata?: boolean;
   showFeedback?: boolean;
   showFeedbackAndShare?: boolean;
   showGroup?: boolean;
   showPoweredByNyris?: boolean;
-  support?: Support;
   simpleCardView?: boolean;
+  support?: Support;
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
   warehouseVariant?: boolean;
-  shouldUseUserMetadata?: boolean;
-  experienceVisualSearch?: boolean;
-  experienceVisualSearchImages?: string[];
 }
 
 export interface SearchSuiteSettings {

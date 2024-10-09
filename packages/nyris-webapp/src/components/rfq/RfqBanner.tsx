@@ -42,10 +42,7 @@ function RfqBanner({
       >
         <div>
           <img
-            src={getCroppedCanvas(
-              requestImage?.canvas,
-              selectedRegion,
-            )?.toDataURL()}
+            src={getCroppedCanvas(requestImage, selectedRegion)?.toDataURL()}
             alt="request_image"
             style={{
               mixBlendMode: rfqStatus !== 'inactive' ? 'overlay' : 'unset',

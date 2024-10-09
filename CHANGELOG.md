@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.57 - 2024-09-12
+
+### Fix
+- Sorting pre-filters in alphabetical order
+
+### Added
+- Parameter for hiding similar search
+
+## 0.3.57 - 2024-08-02
+
+### Added
+- Add clarity for search suite
+- Vizo stable release
+- Simplified product card view
+
 ## 0.3.56 - 2024-07-15
 
 ### Added

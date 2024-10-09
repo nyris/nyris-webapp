@@ -26,6 +26,7 @@ interface Props {
   notification: boolean;
   setNotification: any;
   vizoLoadingMessage: string;
+  noResult: boolean;
 }
 
 const ChatMobile: React.FC<Props> = ({
@@ -43,6 +44,7 @@ const ChatMobile: React.FC<Props> = ({
   notification,
   setNotification,
   vizoLoadingMessage,
+  noResult,
 }) => {
   const lastChatRef = useRef<any>(null);
   const containerRef = useRef<any>(null);
@@ -91,8 +93,9 @@ const ChatMobile: React.FC<Props> = ({
       {showChat && (
         <div className={classNames(["px-2"])}>
           <div className={classNames(["rounded-[21px]", "w-full", "bg-white"])}>
-            <div className="w-full rounded-[21px] shadow-outer max-h-[292px] overflow-y-auto">
+            <div className="w-full rounded-[21px] shadow-outer200 max-h-[292px] overflow-y-auto">
               <ChatHistory
+                noResult={noResult}
                 lastChatRef={lastChatRef}
                 chatHistory={chatHistory}
                 imageThumb={imageThumb}
@@ -159,10 +162,11 @@ const ChatMobile: React.FC<Props> = ({
           className={classNames([
             "h-12",
             "rounded-3xl",
-            "shadow-outer",
+            "shadow-outer200",
             "w-full",
             "bg-white",
-            "px-2",
+            "pr-2",
+            "pl-4",
             "flex",
             "items-center",
             "justify-between",

@@ -1,3 +1,5 @@
+import Compressor from 'compressorjs';
+
 import { WH } from '@nyris/nyris-api';
 
 /**
@@ -38,3 +40,45 @@ export function getThumbSizeLongestEdge(
     h: (iH * maxW) / iW,
   };
 }
+
+export const compressImage = (blobOrImage: any) => {
+  let blob: any;
+
+  if (typeof blobOrImage === 'string' && !blobOrImage.startsWith('https:')) {
+    const byteString = atob(blobOrImage.split(',')[1]);
+    const mimeString = blobOrImage.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    blob = new Blob([ab], { type: mimeString });
+  }
+
+  return new Promise<string>((resolve, reject) => {
+    new Compressor(blob || blobOrImage, {
+      quality: 0.91,
+      maxHeight: 1024,
+      maxWidth: 1024,
+      strict: true,
+      success: compressedResult => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (reader.result) {
+            resolve(reader.result as string);
+          } else {
+            reject(new Error('Failed to read compressed image data.'));
+          }
+        };
+        reader.onerror = () => {
+          reject(new Error('Error reading compressed image data.'));
+        };
+        reader.readAsDataURL(compressedResult);
+      },
+      error: err => {
+        console.error('Compression error:', err);
+        reject(err);
+      },
+    });
+  });
+};

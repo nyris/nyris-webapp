@@ -67,7 +67,7 @@ function InquiryBanner({
             <div>
               <img
                 src={getCroppedCanvas(
-                  requestImage?.canvas,
+                  requestImage,
                   selectedRegion,
                 )?.toDataURL()}
                 alt="request_image"

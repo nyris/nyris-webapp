@@ -70,9 +70,9 @@ export default function InquiryModal({
 
   const handleInquiry = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    const { canvas }: any = requestImage || {};
-    const croppedImage = canvas
-      ? getCroppedCanvas(canvas, selectedRegion)
+
+    const croppedImage = requestImage
+      ? getCroppedCanvas(requestImage, selectedRegion)
       : null;
     const serviceId = 'service_zfsxshi';
     setIsInquiryModalOpen(false);
@@ -200,10 +200,7 @@ export default function InquiryModal({
             }}
           >
             <img
-              src={getCroppedCanvas(
-                requestImage?.canvas,
-                selectedRegion,
-              )?.toDataURL()}
+              src={getCroppedCanvas(requestImage, selectedRegion)?.toDataURL()}
               alt="request_image"
               style={{ maxHeight: '200px' }}
             />

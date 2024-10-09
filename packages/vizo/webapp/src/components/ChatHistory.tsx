@@ -29,6 +29,7 @@ function ChatHistory({
   userQueryCount,
   onDisclaimerContinue,
   isMobile,
+  noResult,
 }: {
   lastChatRef: any;
   chatHistory: ChatType[];
@@ -39,6 +40,7 @@ function ChatHistory({
   vizoLoading: boolean;
   vizoLoadingMessage: string;
   userQueryCount: number;
+  noResult: boolean;
   ocrList?: string[];
   showDisclaimer?: boolean;
   setShowDisclaimer?: any;
@@ -74,8 +76,9 @@ function ChatHistory({
           isMobile={isMobile}
         />
       )}
+      {/* bg-gradient-to-b from-[#F3F3F5] to-[#ffffff00] */}
       <div
-        className="w-full h-10 flex justify-center items-center fixed bg-gradient-to-b from-[#F3F3F5] to-[#ffffff00] md:hidden"
+        className="w-[calc(100%-16px)] h-10 flex justify-center items-center fixed bg-gradient-to-b from-[#F3F3F5] to-[#ffffff00] rounded-t-[21px] md:hidden"
         onClick={() => {
           setShowChat(false);
           setNotification(false);
@@ -87,16 +90,22 @@ function ChatHistory({
         ref={containerRef}
         className="md:max-h-96 overflow-y-auto pt-10 md:pt-2"
       >
-        <div className="flex px-2 gap-8 justify-end">
+        <div
+          className={`flex px-2 gap-8 justify-end ${noResult ? "mb-2" : ""}`}
+        >
           <div className="p-3 rounded-2xl bg-[#F4F4F6]">
-            <div className="flex justify-center items-center rounded h-10 border-2 border-[#3E36DC]">
+            <div
+              className={`flex justify-center items-center rounded h-10 border-2 ${
+                noResult ? "border-[#E31B5D]" : "border-[#3E36DC]"
+              } `}
+            >
               <img
                 src={imageThumb}
                 width={36}
                 alt="searched thumb"
                 className="h-full object-contain"
               />
-              <div className="bg-[#E4E3FF] w-9 h-full flex justify-center items-center cursor-pointer">
+              <div className="bg-[#E4E3FF] w-9 h-full hidden md:flex justify-center items-center cursor-pointer ">
                 <CloseIcon
                   width={16}
                   height={16}

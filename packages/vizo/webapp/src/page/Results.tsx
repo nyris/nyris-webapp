@@ -150,6 +150,8 @@ function ResultsComponent({
     history.push("/");
   }
 
+  const noResult = products.length === 0 && !vizoLoading;
+
   return (
     <>
       <section className="results hidden md:flex">
@@ -221,15 +223,16 @@ function ResultsComponent({
               showRefinedResult={showRefinedResult}
               imageSearch={imageSearch}
               vizoLoadingMessage={vizoLoadingMessage}
+              noResult={noResult}
             />
 
-            <div className="results-product-list gap-6">
+            <div className="results-product-list gap-[1.66rem]">
               {products.map((item, index) => (
                 <ProductCard product={item} key={index} />
               ))}
             </div>
 
-            {products.length === 0 && !vizoLoading && (
+            {noResult && (
               <div className="flex h-full items-center justify-center">
                 <p className="text-[#AAABB5]">No results.</p>
               </div>
@@ -283,7 +286,7 @@ function ResultsComponent({
                 <ProductCard product={item} key={index} />
               ))}
             </div>
-            {products.length === 0 && !vizoLoading && (
+            {noResult && (
               <div className="flex h-full items-center justify-center">
                 <p className="text-[#AAABB5]">No results.</p>
               </div>
@@ -306,6 +309,7 @@ function ResultsComponent({
           notification={notification}
           setNotification={setNotification}
           vizoLoadingMessage={vizoLoadingMessage}
+          noResult={noResult}
         />
       </div>
     </>

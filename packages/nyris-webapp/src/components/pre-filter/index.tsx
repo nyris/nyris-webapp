@@ -16,7 +16,7 @@ import { truncateString } from 'helpers/truncateString';
 import { find } from 'services/image';
 import { useQuery } from 'hooks/useQuery';
 import { useTranslation } from 'react-i18next';
-import ClearOutlinedIcon from "@material-ui/icons/ClearOutlined";
+import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 
 interface Props {
   handleClose?: any;
@@ -32,12 +32,7 @@ function PreFilterComponent(props: Props) {
   const query = useQuery();
   const searchQuery = query.get('query') || '';
   const { search } = stateGlobal;
-  const {
-    preFilter: keyFilterState,
-
-    requestImage,
-    selectedRegion,
-  } = search;
+  const { preFilter: keyFilterState, requestImage, selectedRegion } = search;
 
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
@@ -46,7 +41,6 @@ function PreFilterComponent(props: Props) {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [columns, setColumns] = useState<number>(0);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-  const [searchKey, setSearchKey] = useState<string>('');
 
   const selectedFilter = useMemo(
     () =>
@@ -64,10 +58,10 @@ function PreFilterComponent(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    filterSearchHandler(searchKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchKey]);
+  // useEffect(() => {
+  //   filterSearchHandler(searchKey);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [searchKey]);
 
   const getDataFilterDesktop = async () => {
     setLoading(true);
@@ -239,14 +233,13 @@ function PreFilterComponent(props: Props) {
             className="input-search-filter"
             placeholder={t('Search')}
             onChange={(e: any) => {
-              setSearchKey(e.target.value);
+              filterSearchHandler(e.target.value);
             }}
-            value={searchKey}
           />
           <Button
             className="btn-clear-text"
             onClick={() => {
-              setSearchKey('');
+              filterSearchHandler('');
             }}
           >
             <ClearOutlinedIcon style={{ fontSize: 16, color: '#2B2C46' }} />
@@ -331,76 +324,77 @@ function PreFilterComponent(props: Props) {
                 columnCount: 4,
                 padding: '24px 24px 40px 24px',
                 height: '100%',
-
                 backgroundColor: '#FAFAFA',
               }
         }
       >
-        {Object.entries(resultFilter).map(([key, value]: any, i: any) => {
-          return (
-            <div className="box-group-items" key={key}>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  rowGap: '12px',
-                  width: '100%',
-                }}
-              >
-                <Typography
+        {Object.entries(resultFilter)
+          .sort()
+          .map(([key, value]: any, i: any) => {
+            return (
+              <div className="box-group-items" key={key}>
+                <div
                   style={{
-                    fontWeight: 'bold',
-                    color: '#000',
-                    fontSize: '12px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    rowGap: '12px',
+                    width: '100%',
                   }}
                 >
-                  {key}
-                </Typography>
+                  <Typography
+                    style={{
+                      fontWeight: 'bold',
+                      color: '#000',
+                      fontSize: '12px',
+                    }}
+                  >
+                    {key}
+                  </Typography>
 
-                {value.map((item: any, index: any) => {
-                  return (
-                    <Tooltip
-                      key={item}
-                      title={item}
-                      placement="top"
-                      arrow={true}
-                      disableHoverListener={item.length < 35}
-                    >
-                      <div
-                        aria-label={item}
-                        style={{
-                          cursor: 'pointer',
-                          fontSize: '12px',
-                          minHeight: '20px',
-                          color: '#2B2C46',
-                          width: '100%',
-                          maxWidth: 'fit-content',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                          backgroundColor: keyFilter[item] ? '#E9E9EC' : '',
-                          borderRadius: 8,
-                          paddingLeft: '8px',
-                          paddingRight: '8px',
-                        }}
-                        onClick={() => {
-                          if (selectedFilter < maxFilter) {
-                            setKeyFilter({
-                              ...keyFilter,
-                              [item]: !keyFilter[item],
-                            });
-                          }
-                        }}
+                  {value.map((item: any, index: any) => {
+                    return (
+                      <Tooltip
+                        key={item}
+                        title={item}
+                        placement="top"
+                        arrow={true}
+                        disableHoverListener={item.length < 35}
                       >
-                        {truncateString(item, !isMobile ? 35 : 35)}
-                      </div>
-                    </Tooltip>
-                  );
-                })}
+                        <div
+                          aria-label={item}
+                          style={{
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            minHeight: '20px',
+                            color: '#2B2C46',
+                            width: '100%',
+                            maxWidth: 'fit-content',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            backgroundColor: keyFilter[item] ? '#E9E9EC' : '',
+                            borderRadius: 8,
+                            paddingLeft: '8px',
+                            paddingRight: '8px',
+                          }}
+                          onClick={() => {
+                            if (selectedFilter < maxFilter) {
+                              setKeyFilter({
+                                ...keyFilter,
+                                [item]: !keyFilter[item],
+                              });
+                            }
+                          }}
+                        >
+                          {truncateString(item, !isMobile ? 35 : 35)}
+                        </div>
+                      </Tooltip>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
         {isLoading && (
           <div style={{ columnCount: isMobile ? 1 : 4 }}>
             {Array(12)
