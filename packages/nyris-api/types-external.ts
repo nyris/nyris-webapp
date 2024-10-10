@@ -83,7 +83,7 @@ export type FeedbackEventPayload =
 export type FeedbackEvent = FeedbackEventPayload & {
   request_id: string;
   timestamp: Date;
-  session_id: string;
+  session_id?: string;
 };
 export interface CategoryPrediction {
   name: string;
