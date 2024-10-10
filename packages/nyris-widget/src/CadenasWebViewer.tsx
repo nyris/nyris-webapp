@@ -29,7 +29,7 @@ function CadenasWebViewer({
   const [mident, setMident] = useState("");
 
   const path = useMemo(() => {
-    if (!metadata) return "";
+    if (!metadata || !metadata.startsWith('search?')) return "";
 
     const regex = /info=(.*?\.prj)/;
     const match = metadata.match(regex) || [];

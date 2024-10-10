@@ -21,7 +21,7 @@ export const Result = (r: ResultProps) => {
   const { cadenasAPIKey, cadenasCatalog } = window.nyrisSettings;
 
   const getCTAURL = () => {
-    if (!r.metadata) {
+    if (!r.metadata || !r.metadata.startsWith('search?')) {
       return r.links?.main;
     }
     const index = window.location.href.indexOf('/#/');
