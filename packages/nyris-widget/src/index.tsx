@@ -35,6 +35,7 @@ interface NyrisSettings extends NyrisAPISettings {
   navigatePreference: string;
   cadenasAPIKey?: string;
   cadenasCatalog?: string;
+  feedback?: boolean;
 }
 const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
 
@@ -112,7 +113,9 @@ class Nyris {
       submitFeedback: (data) => this.submitFeedback(data),
       feedbackStatus: this.feedbackStatus,
       setFeedbackStatus: (status: FeedbackStatus) =>
-        this.setFeedbackStatus(status),
+        this.setFeedbackStatus(
+          this.feedbackStatus === "submitted" ? "submitted" : status
+        ),
     };
     ReactDOM.render(
       <React.StrictMode>
@@ -235,6 +238,8 @@ class Nyris {
   onGoBack = () => {
     this.results = JSON.parse(JSON.stringify(this.firstSearchResults));
     this.image = this.firstSearchImage;
+    this.setFeedbackStatus("submitted");
+
     this.render();
   };
 
@@ -274,12 +279,14 @@ class Nyris {
         return;
       }
       this.loading = false;
-      setTimeout(() => {
-        // window.removeEventListener('scroll', handleScroll, { capture: true });
-        if (this.feedbackStatus === "hidden") {
-          this.setFeedbackStatus("visible");
-        }
-      }, 2500);
+      if (window.nyrisSettings.feedback && searchResult.results.length > 0) {
+        setTimeout(() => {
+          // window.removeEventListener('scroll', handleScroll, { capture: true });
+          if (this.feedbackStatus === "hidden") {
+            this.setFeedbackStatus("visible");
+          }
+        }, 2500);
+      }
       this.renderResults(searchResult.results, isFirstSearch);
     } catch (e: any) {
       this.loading = false;

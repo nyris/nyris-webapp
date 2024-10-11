@@ -108,7 +108,8 @@ const SuccessMultiple = ({
     if (
       results?.length === 0 ||
       feedbackStatus === "submitted" ||
-      feedbackStatus === "visible"
+      feedbackStatus === "visible" ||
+      !window.nyrisSettings.feedback
     ) {
       return;
     }
