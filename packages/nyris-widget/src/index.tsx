@@ -20,6 +20,7 @@ import NyrisAPI, {
 import { ResultProps } from "./Result";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import packageJson from "../package.json";
+import { FeedbackStatus } from "./type";
 
 interface NyrisSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
@@ -54,10 +55,13 @@ class Nyris {
     document.createElement("canvas");
   private firstSearchResults: ResultProps[] = [];
 
+  private feedbackStatus: FeedbackStatus;
+  private requestId = "";
+
   constructor(nyrisSettings: NyrisSettings) {
     this.nyrisApi = new NyrisAPI({ ...nyrisSettings });
     this.instantRedirectPatterns = nyrisSettings.instantRedirectPatterns || [];
-
+    this.feedbackStatus = "hidden";
     let mountPoint = document.getElementById("nyris-mount-point");
     if (!mountPoint) {
       console.warn("#nyris-mount-point not found. Attaching widget to body");
@@ -105,6 +109,10 @@ class Nyris {
       firstSearchImage: this.firstSearchImage,
       loading: this.loading,
       cadenasScriptStatus: "disabled",
+      submitFeedback: (data) => this.submitFeedback(data),
+      feedbackStatus: this.feedbackStatus,
+      setFeedbackStatus: (status: FeedbackStatus) =>
+        this.setFeedbackStatus(status),
     };
     ReactDOM.render(
       <React.StrictMode>
@@ -121,6 +129,22 @@ class Nyris {
   restart() {
     this.showScreen(Screen.Hello);
     // TODO this.dom.window.removeClass('nyris__main--wide');
+  }
+
+  setFeedbackStatus(status: FeedbackStatus) {
+    this.feedbackStatus = status;
+
+    this.render();
+  }
+
+  async submitFeedback(data: boolean) {
+    this.nyrisApi.sendFeedback({
+      requestId: this.requestId,
+      payload: {
+        event: "feedback",
+        data: { success: data },
+      },
+    });
   }
 
   async updateThumbnail() {
@@ -228,6 +252,7 @@ class Nyris {
 
   async startProcessing(isFirstSearch: boolean) {
     // this.showScreen(Screen.Wait);
+    this.setFeedbackStatus("hidden");
     this.loading = true;
     this.render();
     try {
@@ -237,6 +262,9 @@ class Nyris {
         cropRect: this.selection,
       };
       const searchResult = await this.nyrisApi.find(options, this.image);
+
+      this.requestId = searchResult.id;
+
       if (
         searchResult.results.length === 1 &&
         this.shouldRedirect(searchResult)
@@ -246,6 +274,12 @@ class Nyris {
         return;
       }
       this.loading = false;
+      setTimeout(() => {
+        // window.removeEventListener('scroll', handleScroll, { capture: true });
+        if (this.feedbackStatus === "hidden") {
+          this.setFeedbackStatus("visible");
+        }
+      }, 2500);
       this.renderResults(searchResult.results, isFirstSearch);
     } catch (e: any) {
       this.loading = false;

@@ -4,6 +4,7 @@ import similar_search from "./images/similar_search.svg";
 import { createPortal } from "react-dom";
 import Popup3D from "./Popup3D";
 import { CadenasScriptStatus } from "./App";
+import Feedback from "./Components/Feedback";
 
 export interface ResultProps {
   metadata: string;
@@ -17,8 +18,10 @@ export interface ResultProps {
 export const Result = (r: ResultProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [bounding, setBounding] = useState<any>(null);
+
   const mountPoint = document.querySelector("#nyris-mount-point");
   const { cadenasAPIKey, cadenasCatalog } = window.nyrisSettings;
+
   return (
     <div className="nyris__success-multiple-result">
       <div className="nyris__success-multiple-result-box">

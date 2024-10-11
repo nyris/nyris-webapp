@@ -23,6 +23,8 @@ import classNames from "classnames";
 import { useDropzone } from "react-dropzone";
 import translations from "./translations";
 import { addAssets } from "./utils";
+import Feedback from "./Components/Feedback";
+import { FeedbackStatus } from "./type";
 
 const labels = translations(window.nyrisSettings.language);
 const assets_base_url =
@@ -58,6 +60,9 @@ export interface AppProps {
   loading: boolean;
   firstSearchImage: HTMLCanvasElement;
   cadenasScriptStatus: CadenasScriptStatus;
+  submitFeedback: (data: boolean) => Promise<void>;
+  feedbackStatus: FeedbackStatus;
+  setFeedbackStatus: (status: FeedbackStatus) => void;
 }
 
 const SuccessMultiple = ({
@@ -73,11 +78,24 @@ const SuccessMultiple = ({
   onGoBack,
   firstSearchImage,
   cadenasScriptStatus,
+  submitFeedback,
+  feedbackStatus,
+  setFeedbackStatus,
 }: AppProps) => {
   const noResult = results.length === 0;
 
   const [currentSelection, setCurrentSelection] = useState(selection);
   const [expand, setExpand] = useState(noResult);
+
+  const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
+  const handleSubmitFeedback = async (data: boolean) => {
+    setShowFeedbackSuccess(true);
+    setTimeout(() => {
+      setShowFeedbackSuccess(false);
+    }, 3000);
+    setFeedbackStatus("submitted");
+    submitFeedback(data).then(() => {});
+  };
 
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
@@ -85,6 +103,29 @@ const SuccessMultiple = ({
     }, 500),
     []
   );
+
+  useEffect(() => {
+    if (
+      results?.length === 0 ||
+      feedbackStatus === "submitted" ||
+      feedbackStatus === "visible"
+    ) {
+      return;
+    }
+
+    const handleScroll = () => {
+      setFeedbackStatus("visible");
+    };
+
+    window.addEventListener("scroll", handleScroll, {
+      capture: true,
+      once: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [feedbackStatus, results]);
 
   return (
     <>
@@ -175,6 +216,24 @@ const SuccessMultiple = ({
                   />
                 ))}
               </div>
+              {showFeedbackSuccess && (
+                <div className="nyris__feedback-section">
+                  <div className="nyris__feedback-success">
+                    Thanks for your feedback!
+                  </div>
+                </div>
+              )}
+              {feedbackStatus === "visible" && !showFeedbackSuccess && (
+                <div className="nyris__feedback-section">
+                  <Feedback
+                    submitFeedback={handleSubmitFeedback}
+                    onFeedbackClose={() => {
+                      setFeedbackStatus("submitted");
+                      // dispatch(setShowFeedback(false));
+                    }}
+                  />
+                </div>
+              )}
             </>
           )}
         </div>
