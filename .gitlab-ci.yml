@@ -45,8 +45,9 @@ publish to github:
     - mkdir -p ~/.ssh
     - ssh-keyscan github.com >> ~/.ssh/known_hosts
     - chmod 600 $SSH_KEY
-    - export GIT_SSH_COMMAND='ssh -i $CI_COMMIT_REF_NAME'
-    - echo $SSH_KEY
+    - export GIT_SSH_COMMAND='ssh -i $SSH_KEY'
     - git remote add github git@github.com:nyris/nyris-webapp.git
-    - git push --follow-tags github HEAD:refs/heads/$CI_COMMIT_REF_NAME
+    - git fetch --unshallow
+    - git gc
+    - git push --follow-tags --no-thin github HEAD:refs/heads/$CI_COMMIT_REF_NAME
 
