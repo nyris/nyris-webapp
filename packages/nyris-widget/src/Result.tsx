@@ -23,7 +23,7 @@ export const Result = (r: ResultProps) => {
     <div className="nyris__success-multiple-result">
       <div className="nyris__success-multiple-result-box">
         <div style={{ position: "relative" }}>
-          {!!cadenasAPIKey ? (
+          {cadenasAPIKey ? (
             <div>
               <Popup3D
                 resultDetails={r}
