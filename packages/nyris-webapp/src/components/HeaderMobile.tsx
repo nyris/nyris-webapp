@@ -1,37 +1,30 @@
-import { Button } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
+import { memo, useEffect, useMemo, useState } from 'react';
 
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
 import { connectSearchBox, connectStateResults } from 'react-instantsearch-dom';
 import { NavLink, useHistory } from 'react-router-dom';
-import {
-  reset,
-  updateValueTextSearchMobile,
-  setPreFilterDropdown,
-  setPreFilter,
-  updateQueryText,
-  updateStatusLoading,
-  setSearchResults,
-  setShowFeedback,
-} from 'Store/search/Search';
-import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { AppState } from 'types';
-import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
-import { ReactComponent as FilterIcon } from 'common/assets/icons/filter.svg';
 
-import { debounce, isEmpty } from 'lodash';
-import { useQuery } from 'hooks/useQuery';
+import classNames from 'classnames';
+import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { find } from 'services/image';
 import { useAuth0 } from '@auth0/auth0-react';
+
+import { reset, setPreFilter, updateQueryText } from 'Store/search/Search';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
+
+import { ReactComponent as FilterIcon } from 'common/assets/icons/filter.svg';
+import { ReactComponent as LogoutIcon } from 'common/assets/icons/logout.svg';
+import { ReactComponent as CameraSimpleIcon } from 'common/assets/icons/camera_simple.svg';
+import { ReactComponent as PreFilterIcon } from 'common/assets/icons/filter_settings.svg';
+import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
+
+import { useQuery } from 'hooks/useQuery';
+import DefaultModal from './modal/DefaultModal';
+import useRequestStore from 'Store/requestStore';
+import CameraCustom from './drawer/cameraCustom';
+import UploadDisclaimer from './UploadDisclaimer';
+import PreFilterComponent from './pre-filter';
+import { useSearchOrRedirect } from 'hooks/useSearchOrRedirect';
+import MobilePostFilter from './MobilePostFilter';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -40,56 +33,63 @@ interface Props {
 }
 
 function HeaderMobileComponent(props: Props): JSX.Element {
-  const { user } = useAuth0();
-  const { auth0 } = useAppSelector(state => state.settings);
+  const { refine } = props;
 
-  const { onToggleFilterMobile, refine } = props;
+  const { user, isAuthenticated, logout } = useAuth0();
+
   const dispatch = useAppDispatch();
-  const stateGlobal = useAppSelector(state => state);
-  const { search } = stateGlobal;
-  const {
-    imageThumbSearchInput,
-    preFilter,
-    preFilterDropdown,
-    valueTextSearch,
-    queryText,
-    requestImage,
-    selectedRegion,
-    results,
-    postFilter,
-  } = search;
-
   const query = useQuery();
-  const containerRefInputMobile = useRef<HTMLDivElement>(null);
-  const [isShowFilter, setShowFilter] = useState<boolean>(false);
   const history = useHistory();
-  const { settings } = useAppSelector<AppState>((state: any) => state);
+
+  const auth0 = useAppSelector(state => state.settings.auth0);
+
+  const preFilter = useAppSelector(state => state.search.preFilter);
+  const valueTextSearch = useAppSelector(state => state.search.valueTextSearch);
+  const queryText = useAppSelector(state => state.search.queryText);
+  const results = useAppSelector(state => state.search.results);
+  const postFilter = useAppSelector(state => state.search.postFilter);
+  const settings = useAppSelector(state => state.settings);
+
+  const isAlgoliaEnabled = settings.algolia?.enabled;
+
+  const { resetRequestState, requestImages } = useRequestStore(state => ({
+    resetRequestState: state.reset,
+    requestImages: state.requestImages,
+  }));
+
+  const [isShowFilter, setShowFilter] = useState<boolean>(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [preFilterDropdown, setPreFilterDropdown] = useState(false);
+  const [isOpenFilter, setOpenFilter] = useState<boolean>(false);
+
   const [valueInput, setValueInput] = useState<string>(queryText || '');
   const searchQuery = query.get('query') || '';
+  const visualSearch = useMemo(() => requestImages.length > 0, [requestImages]);
 
   useEffect(() => {
     if (
       history.location?.pathname === '/result' &&
-      (imageThumbSearchInput || valueInput)
+      (visualSearch || valueInput)
     ) {
       setShowFilter(true);
     } else {
       setShowFilter(false);
     }
-  }, [imageThumbSearchInput, history.location, valueInput]);
+  }, [history.location, valueInput, visualSearch]);
 
   useEffect(() => {
-    if (imageThumbSearchInput !== '') {
+    if (visualSearch) {
       history.push('/result');
-      dispatch(updateValueTextSearchMobile(''));
       setValueInput('');
-      if (settings.algolia?.enabled) {
+      if (isAlgoliaEnabled) {
         refine('');
       } else {
         dispatch(updateQueryText(''));
       }
     } else {
-      if (settings.algolia?.enabled) {
+      if (isAlgoliaEnabled) {
         // not an ideal solution: fixes text search not working after removing image
         setTimeout(() => {
           refine(searchQuery);
@@ -97,13 +97,12 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageThumbSearchInput, dispatch, refine, history, settings.algolia]);
+  }, [visualSearch, dispatch, refine, history, isAlgoliaEnabled]);
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {
       setValueInput(searchQuery);
-      dispatch(updateValueTextSearchMobile(searchQuery));
-      if (settings.algolia?.enabled) {
+      if (isAlgoliaEnabled) {
         refine(searchQuery);
         // not an ideal solution: fixes text search not working from landing page
         setTimeout(() => {
@@ -113,69 +112,15 @@ function HeaderMobileComponent(props: Props): JSX.Element {
         dispatch(updateQueryText(searchQuery));
       }
     }
-  }, [query, refine, dispatch, searchQuery, settings.algolia]);
+  }, [query, refine, dispatch, searchQuery, isAlgoliaEnabled]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const searchOrRedirect = useCallback(
-    debounce((value: any) => {
-      if (!settings.algolia?.enabled) {
-        dispatch(updateQueryText(value));
-        let payload: any;
-        let filters: any[] = [];
-        const preFilterValues = [
-          {
-            key: settings.visualSearchFilterKey,
-            values: Object.keys(preFilter),
-          },
-        ];
-        if (value || requestImage) {
-          dispatch(updateStatusLoading(true));
-          find({
-            image: requestImage?.canvas as HTMLCanvasElement,
-            settings,
-            filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-            region: selectedRegion,
-            text: value,
-          })
-            .then((res: any) => {
-              res?.results.forEach((item: any) => {
-                filters.push({
-                  sku: item.sku,
-                  score: item.score,
-                });
-              });
-              payload = {
-                ...res,
-                filters,
-              };
-              dispatch(setSearchResults(payload));
-              dispatch(updateStatusLoading(false));
-              dispatch(setShowFeedback(true));
-            })
-            .catch((e: any) => {
-              console.log('error input search', e);
-              dispatch(updateStatusLoading(false));
-            });
-        } else {
-          dispatch(setSearchResults([]));
-        }
-      }
+  const searchOrRedirect = useSearchOrRedirect();
 
-      if (value) {
-        history.push({
-          pathname: '/result',
-          search: `?query=${value}`,
-        });
-      } else {
-        history.push('/result');
-      }
-    }, 500),
-    [requestImage],
-  );
   const isPostFilterApplied = useMemo(() => {
     let isApplied = false;
 
-    if (settings.algolia.enabled) {
+    if (isAlgoliaEnabled) {
       if (!valueTextSearch?.refinementList) return false;
       Object.keys(valueTextSearch?.refinementList).forEach(key => {
         if (typeof valueTextSearch.refinementList[key] === 'object') {
@@ -201,18 +146,17 @@ function HeaderMobileComponent(props: Props): JSX.Element {
 
   const onChangeText = (event: any) => {
     setValueInput(event.currentTarget.value);
-    // debounceSearch(event.currentTarget.value);
     searchOrRedirect(event.currentTarget.value);
     if (event.currentTarget.value === '') {
-      dispatch(updateValueTextSearchMobile(''));
-      refine('');
-    } else {
-      dispatch(updateValueTextSearchMobile(event.currentTarget.value));
+      setValueInput('');
+      if (isAlgoliaEnabled) {
+        refine('');
+      }
     }
   };
 
   const disablePostFilter = useMemo(() => {
-    if (settings.algolia.enabled) {
+    if (isAlgoliaEnabled) {
       return settings.postFilterOption &&
         props.allSearchResults?.hits.length > 0
         ? false
@@ -234,24 +178,143 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     return settings.preFilterOption;
   }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
 
+  const showDisclaimerDisabled = useMemo(() => {
+    const disclaimer = localStorage.getItem('upload-disclaimer-webapp');
+    if (requestImages.length === 0) return true;
+    if (!disclaimer) return false;
+    return disclaimer === 'dont-show';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showDisclaimer, requestImages]);
+
   return (
-    <div style={{ width: '100%', background: '#fff' }}>
-      {history.location?.pathname !== '/result' && (
+    <>
+      {preFilterDropdown && (
         <div
-          className="box-content"
+          className={`box-filter open`}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            height: '48px',
+            top: '0px',
+            height: '100%',
+            width: '100%',
+            zIndex: 999,
+            position: 'absolute',
+          }}
+        >
+          <div style={{ width: '100%' }} className={'wrap-filter-desktop'}>
+            <div className={'bg-white box-filter-desktop isMobile'}>
+              <PreFilterComponent
+                handleClose={() => setPreFilterDropdown(s => !s)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      <DefaultModal
+        openModal={showLogoutModal}
+        handleClose={() => {
+          setShowLogoutModal(false);
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: 'white',
+            width: '360px',
+            padding: '24px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+            onClick={() => setShowLogoutModal(false)}
+          >
+            <CloseIcon
+              width={'16px'}
+              height={'16px'}
+              fontSize={'16px'}
+              color="black"
+            />
+          </div>
+          <p style={{ fontSize: '36px', fontWeight: 'bold', color: '#2B2C46' }}>
+            Logout
+          </p>
+          <p style={{ fontSize: '13px', color: '#2B2C46', paddingTop: '16px' }}>
+            Are you sure you want to log out? Your session will be securely
+            closed.
+          </p>
+          <p style={{ fontSize: '13px', color: '#2B2C46', paddingTop: '16px' }}>
+            Email
+          </p>
+          <div
+            style={{
+              backgroundColor: '#FAFAFA',
+              height: '32px',
+              paddingLeft: '16px',
+              paddingRight: '16px',
+              marginTop: '8px',
+            }}
+          >
+            {user?.email}
+          </div>
+          <div style={{ display: 'flex', width: '100%', marginTop: '16px' }}>
+            <div
+              style={{
+                width: '50%',
+                backgroundColor: '#2B2C46',
+                color: 'white',
+                padding: '16px',
+              }}
+              onClick={() => {
+                logout({
+                  logoutParams: { returnTo: window.location.origin },
+                });
+              }}
+            >
+              Confirm log out
+            </div>
+          </div>
+        </div>
+      </DefaultModal>
+      {showDisclaimer && (
+        <UploadDisclaimer
+          onClose={() => {
+            setShowDisclaimer(false);
+          }}
+          onContinue={({
+            file,
+            dontShowAgain,
+          }: {
+            file: any;
+            dontShowAgain: any;
+          }) => {
+            if (dontShowAgain) {
+              localStorage.setItem('upload-disclaimer-webapp', 'dont-show');
+            }
+            setOpenModalCamera(true);
+
+            setShowDisclaimer(false);
+          }}
+          isMobile={true}
+        />
+      )}
+      <div style={{ width: '100%', background: '#fff' }}>
+        <div
+          className={`box-content flex items-center justify-between h-12 pr-6 pl-4 ${
+            history.location?.pathname === '/result'
+              ? 'border-solid border-b border-[#afafaf52] '
+              : ''
+          }`}
+          style={{
             background: settings.theme?.headerColor,
           }}
         >
           <NavLink
             to="/"
-            style={{ lineHeight: 0, paddingLeft: '10px' }}
+            style={{ lineHeight: 0 }}
             onClick={() => {
               dispatch(reset(''));
               dispatch(setPreFilter({}));
+              resetRequestState();
             }}
           >
             <img
@@ -264,122 +327,121 @@ function HeaderMobileComponent(props: Props): JSX.Element {
               }}
             />
           </NavLink>
-        </div>
-      )}
-
-      {((auth0.enabled && user?.email_verified) || !auth0.enabled) && (
-        <div
-          style={{
-            margin: '16px 8px',
-            display: 'flex',
-            columnGap: '8px',
-            alignItems: 'center',
-          }}
-        >
-          <div className="wrap-header-mobile" style={{ height: '56px' }}>
+          {auth0.enabled && isAuthenticated && (
             <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                height: '100%',
+              onClick={() => {
+                setShowLogoutModal(true);
               }}
             >
-              <div
-                ref={containerRefInputMobile}
-                id="box-input-search"
-                className="d-flex w-100"
-                style={{
-                  alignItems: 'center',
-                  height: '100%',
-                }}
-              >
-                <div
-                  className="pre-filter-icon"
-                  onClick={() => {
-                    if (showPreFilter) {
-                      onToggleFilterMobile(false);
-                      dispatch(setPreFilterDropdown(!preFilterDropdown));
-                    }
-                  }}
-                  style={{ cursor: showPreFilter ? 'pointer' : '' }}
-                >
-                  {showPreFilter && (
+              <LogoutIcon className="text-[#AAABB5]" />
+            </div>
+          )}
+        </div>
+
+        <div
+          className={classNames([
+            'flex',
+            'md:hidden',
+            'fixed',
+            history.location?.pathname !== '/' ? 'bottom-4' : 'bottom-12',
+            'w-full',
+            'px-2',
+            'gap-2',
+          ])}
+        >
+          <div className={classNames(['flex-grow'])}>
+            <div
+              className={classNames([
+                'h-12',
+                'rounded-3xl',
+                'shadow-outer',
+                'w-full',
+                'bg-white',
+                'px-2',
+                'flex',
+                'items-center',
+                'justify-between',
+              ])}
+            >
+              <div className="flex flex-1 gap-x-2">
+                {showPreFilter && (
+                  <button
+                    className={classNames([
+                      '!min-w-8',
+                      'min-h-8',
+                      'rounded-3xl',
+                      'flex',
+                      'justify-center',
+                      'items-center',
+                      'bg-[#F3F3F5]',
+                      'relative',
+                    ])}
+                    onClick={() => {
+                      setPreFilterDropdown(s => !s);
+                    }}
+                    title="pre-filter"
+                  >
                     <div
-                      className="icon-hover"
-                      style={{
-                        ...(!isEmpty(preFilter)
-                          ? {
-                              backgroundColor: settings.theme?.primaryColor,
-                            }
-                          : {
-                              backgroundColor: `#2B2C46`,
-                            }),
-                      }}
-                    >
-                      <IconFilter color="white" />
-                    </div>
-                  )}
-                  {!showPreFilter && <IconSearch width={16} height={16} />}
-                  {!isEmpty(preFilter) && showPreFilter && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '7px',
-                        left: '35px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        background: 'white',
-                        width: '10px',
-                        height: '10px',
-                        borderRadius: '100%',
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: '8px',
-                          height: '8px',
-                          background: settings.theme?.primaryColor,
-                          borderRadius: '100%',
-                        }}
-                      ></div>
-                    </div>
-                  )}
-                </div>
+                      className={classNames([
+                        !isEmpty(preFilter) ? 'block' : 'hidden',
+                        'absolute',
+                        'top-0',
+                        'right-0',
+                        'w-2',
+                        'min-w-2',
+                        'h-2',
+                        'bg-[#3E36DC]',
+                        'border-2',
+                        'border-white',
+                        'rounded-full',
+                      ])}
+                    />
+                    <PreFilterIcon
+                      className={classNames(
+                        !isEmpty(preFilter) ? 'text-[#3E36DC]' : 'text-black',
+                      )}
+                    />
+                  </button>
+                )}
 
                 <Input value={valueInput} onChange={onChangeText} />
-
-                {history.location?.pathname !== '/' && valueInput && (
-                  <Button
-                    onClick={() => {
-                      setValueInput('');
-                      if (imageThumbSearchInput) {
-                        history.push('/result');
-                        dispatch(updateValueTextSearchMobile(''));
-                        refine('');
-                        return;
-                      }
-                      dispatch(updateValueTextSearchMobile(''));
-                      dispatch(reset(''));
-                      refine('');
-                      history.push('/');
-                    }}
-                    style={{
-                      // background: '#fff',
-                      marginRight: '8px',
-                      border: 0,
-                      width: '40px',
-                      height: '40px',
-                    }}
-                  >
-                    <CloseIcon
-                      style={{
-                        fontSize: 16,
-                        color: settings.theme?.secondaryColor,
-                      }}
-                    />
-                  </Button>
-                )}
+              </div>
+              <div className="flex gap-x-2">
+                {/* <div
+                className={classNames([
+                  'w-8',
+                  'h-8',
+                  'rounded-3xl',
+                  'flex',
+                  'justify-center',
+                  'items-center',
+                  valueInput.length > 0 ? 'bg-[#2B2C46]' : 'bg-[#F3F3F5]',
+                  valueInput.length > 0 ? 'cursor-pointer' : 'cursor-default',
+                ])}
+              >
+                <ArrowEnter className="text-white" />
+                
+              </div> */}
+                <div
+                  className={classNames([
+                    history.location?.pathname !== '/' ? 'flex' : 'hidden',
+                    'w-8',
+                    'h-8',
+                    'rounded-3xl',
+                    'justify-center',
+                    'items-center',
+                    'bg-[#F3F3F5]',
+                  ])}
+                  onClick={() => {
+                    if (!showDisclaimerDisabled) {
+                      setShowDisclaimer(true);
+                    } else {
+                      setOpenModalCamera(true);
+                    }
+                  }}
+                >
+                  <CameraSimpleIcon />
+                </div>
               </div>
             </div>
           </div>
@@ -387,8 +449,8 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             <div
               style={{
                 position: 'relative',
-                width: '56px',
-                height: '56px',
+                width: '48px',
+                height: '48px',
                 padding: ' 8px',
                 flexShrink: 0,
                 borderRadius: '32px',
@@ -396,9 +458,10 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
               }}
               onClick={() => {
-                if (disablePostFilter) return;
-                onToggleFilterMobile();
-                dispatch(setPreFilterDropdown(false));
+                if (disablePostFilter && !isPostFilterApplied) return;
+                setOpenFilter(true);
+
+                setPreFilterDropdown(false);
               }}
             >
               <div
@@ -408,18 +471,24 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     disablePostFilter
                       ? '#F3F3F5'
                       : isPostFilterApplied
-                      ? settings.theme?.primaryColor
-                      : '#2B2C46'
+                      ? '#F0EFFF'
+                      : '#F3F3F5'
                   }`,
                   borderRadius: '40px',
-                  width: '40px',
-                  height: '40px',
+                  width: '32px',
+                  height: '32px',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
               >
                 <FilterIcon
-                  color={`${disablePostFilter ? '#E0E0E0' : 'white'}`}
+                  className={classNames([
+                    isPostFilterApplied
+                      ? 'text-[#3E36DC]'
+                      : disablePostFilter
+                      ? 'text-[#E0E0E0]'
+                      : 'text-[#2B2C46]',
+                  ])}
                 />
               </div>
 
@@ -428,7 +497,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   style={{
                     position: 'absolute',
                     top: '8px',
-                    left: '37px',
+                    left: '35px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -442,19 +511,46 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     style={{
                       width: '8px',
                       height: '8px',
-                      background: disablePostFilter
-                        ? '#E0E0E0'
-                        : settings.theme?.primaryColor,
                       borderRadius: '100%',
                     }}
+                    className={classNames([
+                      isPostFilterApplied
+                        ? 'bg-[#3E36DC]'
+                        : disablePostFilter
+                        ? 'bg-[#E0E0E0]'
+                        : 'bg-[#2B2C46]',
+                    ])}
                   ></div>
                 </div>
               )}
             </div>
           )}
         </div>
-      )}
-    </div>
+        <CameraCustom
+          show={isOpenModalCamera}
+          onClose={() => {
+            setOpenModalCamera(!isOpenModalCamera);
+          }}
+          newSearch={true}
+        />
+        <div
+          className={`box-filter ${isOpenFilter ? '' : '!hidden'}`}
+          style={{
+            top: '0px',
+            height: '100%',
+            width: '100%',
+            position: 'absolute',
+          }}
+        >
+          <MobilePostFilter
+            isOpenFilter={isOpenFilter}
+            onApply={() => {
+              setOpenFilter(false);
+            }}
+          />
+        </div>
+      </div>
+    </>
   );
 }
 

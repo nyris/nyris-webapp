@@ -108,7 +108,6 @@ function CameraCustom({ onClose, onCapture }: Props) {
                   onClick={() => {
                     const imageSrc = getScreenshot();
                     handlerFindImage(imageSrc);
-                    // dispatch(setImageSearchInput(imageSrc));
                   }}
                   className={classNames([
                     "absolute",
@@ -208,7 +207,6 @@ function CameraCustom({ onClose, onCapture }: Props) {
               onChange={(fs: any) => {
                 const file = fs.target?.files[0];
                 if (!file) return;
-                // dispatch(setImageSearchInput(URL.createObjectURL(file)));
                 handlerFindImage(file);
               }}
               accept="image/jpeg,image/png,image/webp"

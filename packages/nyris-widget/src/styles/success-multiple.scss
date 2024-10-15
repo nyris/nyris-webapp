@@ -63,8 +63,8 @@
 
     @media #{$mobile-query} {
       row-gap: 12px;
+      column-gap: 4px;
       padding: 0 0 0 0;
-
     }
   }
 
@@ -210,6 +210,7 @@
     gap: 10px;
     border-radius: 32px;
     box-shadow: 0 0 8px 0 rgba(85, 86, 107, 0.60);
+    z-index: 2;
   }
   
   .go-back-button {
@@ -312,6 +313,24 @@
     }
 
   }
+  
+  &-popur-3d {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    background-color: #F3F3F5;
+    border-radius: 100%;
+    flex-shrink: 0;
+    left: 8px;
+    bottom: 8px;
+    cursor: pointer;
+    z-index: 1;
+    
+  
+  }
 
   &-similar-search {
     position: absolute;
@@ -348,4 +367,29 @@
   font-weight: 400;
   line-height: 20px;
   letter-spacing: 0.16px;
+}
+
+.psol-comp-buttonBar-container {
+  .psol-comp-viewbase-iconbutton-44 {
+    width: 32px;
+    height: 32px;
+    .psol-comp-viewbase-svgicon {
+      width: 20px;
+      height: 20px;
+      margin: 6px;
+    }
+  }
+}
+
+div.psol-comp-webviewer3d-copyright-container {
+  a:link {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 16px;
+    text-align: center;
+    // sorry! I need to change style added as an attr inside lib
+    color: #55566B !important;
+    text-decoration: none;
+  }
 }

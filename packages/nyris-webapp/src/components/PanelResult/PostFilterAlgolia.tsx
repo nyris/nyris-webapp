@@ -3,10 +3,7 @@ import { DynamicWidgetsCT } from 'components/dynamic-widgets/dynamic-widgets';
 import IconLabel from 'components/icon-label/icon-label';
 import { atom, useAtom } from 'jotai';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import type {
-  CurrentRefinementsProvided,
-  SearchResults,
-} from 'react-instantsearch-core';
+import type { CurrentRefinementsProvided } from 'react-instantsearch-core';
 import { RefinementList } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
 import { useHistory } from 'react-router-dom';
@@ -29,33 +26,6 @@ export type ExpandablePanelProps = CurrentRefinementsProvided & {
 export type Panels = {
   [key: string]: boolean;
 };
-
-export function useHasRefinements(
-  searchResults: SearchResults,
-  attributes: string[] = [],
-) {
-  const facets = useMemo(() => {
-    const disjunctiveFacets = searchResults?.disjunctiveFacets || [];
-    const hierarchicalFacets = searchResults?.hierarchicalFacets || [];
-    return [...disjunctiveFacets, ...hierarchicalFacets];
-  }, [searchResults]);
-
-  const hasRefinements = useMemo(() => {
-    let found = !attributes.length;
-
-    facets.forEach(facet => {
-      attributes?.forEach(attribute => {
-        if (facet.name === attribute && facet.data) {
-          found = true;
-        }
-      });
-    });
-
-    return found;
-  }, [facets, attributes]);
-
-  return hasRefinements;
-}
 
 function togglePanels(panels: Panels, val: boolean) {
   return Object.keys(panels).reduce(
@@ -229,7 +199,9 @@ export default function PostFilterPanelAlgolia({
             }}
           >
             <Button
-              onClick={onApply}
+              onClick={() => {
+                onApply();
+              }}
               style={{
                 width: '32px',
                 height: '32px',

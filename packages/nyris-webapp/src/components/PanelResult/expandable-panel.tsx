@@ -1,19 +1,13 @@
 import { Button } from '@material-ui/core';
 import { ReactComponent as RemoveIcon } from 'common/assets/icons/minus.svg';
-import { ReactComponent as AddIcon } from 'common/assets/icons/add.svg';
+import { ReactComponent as AddIcon } from 'common/assets/icons/add-rounded.svg';
 import classNames from 'classnames';
 import { Collapse } from 'components/collapse/collapse';
-import { useAtomValue } from 'jotai/utils';
 import type { MouseEventHandler } from 'react';
 import React, { memo } from 'react';
-import type {
-  CurrentRefinementsProvided,
-  SearchResults,
-} from 'react-instantsearch-core';
+import type { CurrentRefinementsProvided } from 'react-instantsearch-core';
 import { connectCurrentRefinements } from 'react-instantsearch-dom';
 import { useMediaQuery } from 'react-responsive';
-import { useHasRefinements } from './PostFilterAlgolia';
-import { searchResultsAtom } from './virtual-state-results';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -34,19 +28,12 @@ function ExpandablePanelComponent({
   items,
   onToggle,
 }: ExpandablePanelProps) {
-  const searchResults = useAtomValue(searchResultsAtom) as SearchResults;
-  const hasRefinements = useHasRefinements(searchResults, attributes);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   return (
     <div>
       <div
-        className={classNames(
-          {
-            hidden: !hasRefinements,
-          },
-          className,
-        )}
+        className={classNames(className)}
         style={{
           borderTop: !isMobile ? '1px solid #d3d4d8' : '',
         }}

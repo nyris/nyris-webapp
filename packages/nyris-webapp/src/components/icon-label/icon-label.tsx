@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as RemoveIcon } from 'common/assets/icons/minus.svg';
-import { ReactComponent as AddIcon } from 'common/assets/icons/add.svg';
+import { ReactComponent as AddIcon } from 'common/assets/icons/add-rounded.svg';
 
 export type LabelPosition = 'bottom' | 'left' | 'right' | 'top';
 

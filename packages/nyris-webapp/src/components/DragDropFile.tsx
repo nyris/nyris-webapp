@@ -1,28 +1,13 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { createImage, find, findRegions } from 'services/image';
-import {
-  setSearchResults,
-  setRequestImage,
-  setImageSearchInput,
-  updateStatusLoading,
-  loadingActionResults,
-  setRegions,
-  setSelectedRegion,
-  setShowFeedback,
-  setFirstSearchResults,
-  setFirstSearchImage,
-  setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput
-} from 'Store/search/Search';
+import { updateStatusLoading, loadingActionResults } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
 import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDownward.svg';
 
-import { RectCoords } from '@nyris/nyris-api';
 import { useTranslation } from 'react-i18next';
-import { isEmpty } from 'lodash';
 import Loading from './Loading';
+import { useImageSearch } from 'hooks/useImageSearch';
 
 interface Props {
   acceptTypes: any;
@@ -33,78 +18,32 @@ interface Props {
 function DragDropFile(props: Props) {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { onChangeLoading, isLoading } = props;
-  const searchState = useAppSelector(state => state);
-  const {
-    settings,
-    search: { preFilter },
-  } = searchState;
+  const { isLoading } = props;
+  const settings = useAppSelector(state => state.settings);
   const { t } = useTranslation();
+
+  const { singleImageSearch } = useImageSearch();
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[], _, e) => {
       e.stopPropagation();
       history.push('/result');
+
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
-      onChangeLoading(true);
-      let payload: any;
-      let filters: any[] = [];
-      console.log('fs', fs);
-      dispatch(setImageSearchInput(URL.createObjectURL(fs[0])));
-      let image = await createImage(fs[0]);
-      dispatch(setRequestImage(image));
-      const preFilterValues = [
-        {
-          key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
-        },
-      ];
-      let region: RectCoords | undefined;
 
-      try {
-        if (settings.regions) {
-          let res = await findRegions(image, settings);
-          dispatch(setRegions(res.regions));
-          region = res.selectedRegion;
-          dispatch(setSelectedRegion(region));
-        }
-      } catch (error) {
-      } finally {
-        return find({
-          image,
-          settings,
-          region,
-          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-        }).then((res: any) => {
-          res?.results.forEach((item: any) => {
-            filters.push({
-              sku: item.sku,
-              score: item.score,
-            });
-          });
-          payload = {
-            ...res,
-            filters,
-          };
-          dispatch(setSearchResults(payload));
-          onChangeLoading(false);
+      singleImageSearch({ image: fs[0], settings, showFeedback: true }).then(
+        () => {
           dispatch(updateStatusLoading(false));
-          dispatch(setShowFeedback(true));
-          // go back
-          dispatch(setFirstSearchResults(payload));
-          dispatch(setFirstSearchImage(image));
-          dispatch(setFirstSearchPrefilters(preFilter));
-          dispatch(setFirstSearchThumbSearchInput(URL.createObjectURL(fs[0])));
-          return;
-        });
-      }
+        },
+      );
     },
   });
 
   return (
     <div
       className={`box-content-main`}
-      style={{ marginTop: 32, paddingTop: 0 }}
+      style={{ marginTop: 32, paddingTop: 0, display: 'flex' }}
     >
       {isLoading && <Loading />}
 
@@ -121,8 +60,9 @@ function DragDropFile(props: Props) {
           className={`box-content-drop ${isDragActive ? 'drag-active' : ''}`}
           {...getRootProps({
             onClick: e => {
-              e.stopPropagation();},
-            })}
+              e.stopPropagation();
+            },
+          })}
         >
           <div style={{ marginBottom: 16 }}>
             <IconDownload width={48} height={48} />

@@ -105,18 +105,14 @@ export const searchSlice = createSlice({
         resultSearchText: [],
         filters: [],
         loadingSearchAlgolia: false,
-        imageThumbSearchInput: '',
-        textSearchInputMobile: '',
         isShowModalDetailItemMobile: false,
         preFilter: state.preFilter || {},
         postFilter: {},
-        preFilterDropdown: false,
         imageCaptureHelpModal: false,
         showFeedback: false,
         firstSearchImage: null,
         firstSearchResults: null,
         firstSearchPrefilters: null,
-        firstSearchThumbSearchInput: null,
       };
     },
 
@@ -124,7 +120,6 @@ export const searchSlice = createSlice({
       return {
         ...state,
         requestImage: undefined,
-        imageThumbSearchInput: '',
         results: [],
         regions: [],
       };
@@ -148,27 +143,15 @@ export const searchSlice = createSlice({
       };
     },
 
-    setImageSearchInput: (state, data: PayloadAction<string>) => {
-      const { payload } = data;
-      return {
-        ...state,
-        imageThumbSearchInput: payload,
-      };
-    },
     updateStatusLoading: (state, data: PayloadAction<any>) => {
       const { payload } = data;
       return {
         ...state,
         loadingSearchAlgolia: payload,
+        fetchingResults: payload,
       };
     },
-    updateValueTextSearchMobile: (state, data: PayloadAction<string>) => {
-      const { payload } = data;
-      return {
-        ...state,
-        textSearchInputMobile: payload,
-      };
-    },
+
     onToggleModalItemDetail: (state, data: PayloadAction<boolean>) => {
       const { payload } = data;
 
@@ -182,12 +165,6 @@ export const searchSlice = createSlice({
       return {
         ...state,
         preFilter: payload,
-      };
-    },
-    setPreFilterDropdown: (state, data: PayloadAction<boolean>) => {
-      return {
-        ...state,
-        preFilterDropdown: data.payload,
       };
     },
     setImageCaptureHelpModal: (state, data: PayloadAction<boolean>) => {
@@ -250,10 +227,6 @@ export const searchSlice = createSlice({
       ...state,
       firstSearchPrefilters: data.payload,
     }),
-    setFirstSearchThumbSearchInput: (state, data: PayloadAction<any>) => ({
-      ...state,
-      firstSearchThumbSearchInput: data.payload,
-    }),
   },
 });
 
@@ -267,10 +240,8 @@ export const {
   selectionChanged,
   setFilter,
   setImageCaptureHelpModal,
-  setImageSearchInput,
   setPostFilter,
   setPreFilter,
-  setPreFilterDropdown,
   setRegions,
   setRequestImage,
   setSearchResults,
@@ -280,11 +251,9 @@ export const {
   updateResultChangePosition,
   updateResults,
   updateStatusLoading,
-  updateValueTextSearchMobile,
   setShowFeedback,
   setFirstSearchImage,
   setFirstSearchResults,
   setFirstSearchPrefilters,
-  setFirstSearchThumbSearchInput,
 } = searchSlice.actions;
 export default searchSlice.reducer;

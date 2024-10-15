@@ -70,3 +70,22 @@ export const find = ({
   }
   return nyrisApi.find(options, image, filters);
 };
+
+export const findMulti = ({
+  images,
+  settings,
+  regions,
+  filters,
+  text,
+}: {
+  images?: HTMLCanvasElement[];
+  settings: NyrisAPISettings;
+  regions?: RectCoords[];
+  filters?: Filter[];
+  text?: string;
+}) => {
+  const nyrisApi = new NyrisAPI(settings);
+  let options: ImageSearchOptions = text ? { text } : {};
+
+  return nyrisApi.findMulti(options, images, regions, filters);
+};
