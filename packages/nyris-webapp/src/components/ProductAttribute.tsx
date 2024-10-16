@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography, Tooltip } from '@material-ui/core';
 import React from 'react';
 
 interface Props {
@@ -26,8 +26,10 @@ function ProductAttribute(props: Props) {
       style={{
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'center',
         borderRadius: 2,
         width: width,
+        height: '36px',
         maxWidth: maxWidth || 'fit-content',
         backgroundColor: props.backgroundColor || '#E0E0E0',
         padding: padding,
@@ -42,24 +44,30 @@ function ProductAttribute(props: Props) {
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
           }}
-          className="text-f12 fw-700"
+          className="text-f12 fw-600"
         >
           {title}
         </Typography>
       ) : (
         '' 
       )}
-      <Typography
-        style={{
-          color: '#2B2C46',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-        }}
-        className="text-f12 fw-400"
+      <Tooltip
+        title={value}
+        placement="top"
+        arrow={true}
       >
-        {value}
-      </Typography>
+        <Typography
+          style={{
+            color: '#2B2C46',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+          className="text-f12 fw-400"
+        >
+          {value}
+        </Typography>
+      </Tooltip>
     </div>
   );
 }

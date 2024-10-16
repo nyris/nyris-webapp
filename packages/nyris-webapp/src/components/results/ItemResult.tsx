@@ -251,50 +251,57 @@ function ItemResult(props: Props) {
                 display: 'flex',
                 justifyContent: 'space-between',
                 flexDirection: 'column',
-                gridGap: 8,
                 color: settings.theme.mainTextColor || '#2B2C46',
               }}
             >
-              {settings.CTAButton?.CTAButtonText && (
-                <Typography
-                  className="text-f12 max-line-1 fw-700"
-                  style={{
-                    color: settings.theme.mainTextColor || '#2B2C46',
-                    marginTop: 8,
-                  }}
-                >
-                  {truncateString(dataItem[settings.mainTitle], 45)}
-                </Typography>
-              )}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  flexDirection: 'row',
-                  gridGap: 8,
-                  color: settings.theme.mainTextColor || '#2B2C46',
-                  marginTop: settings.CTAButton?.CTAButtonText ? 0 : 8,
-                }}
-              >
+              {dataItem[settings.mainTitle] && (
                 <Tooltip
-                  title={dataItem[settings.secondaryTitle]}
+                  title={dataItem[settings.mainTitle] || ''}
                   placement="top"
                   arrow={true}
-                  disableHoverListener={dataItem[settings.secondaryTitle]?.length < 19 || !dataItem[settings.secondaryTitle]}
                 >
                   <Typography
-                    className="text-f12 max-line-1 fw-400"
+                    className="text-f12 max-line-1 fw-700"
                     style={{
                       color: settings.theme.mainTextColor || '#2B2C46',
+                      marginTop: 8,
                     }}
                   >
-                    {truncateString(
-                      dataItem[settings.secondaryTitle],
-                      !settings.warehouseVariant ? 29 : isMobile ? 17 : 20,
-                    )}
+                    {truncateString(dataItem[settings.mainTitle], 45)}
                   </Typography>
                 </Tooltip>
-              </div>
+              )}
+              {dataItem[settings.secondaryTitle] && (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    marginBottom: 12,
+                    color: settings.theme.mainTextColor || '#2B2C46',
+                    marginTop: settings.mainTitle ? 4 : 12,
+                  }}
+                >
+                  <Tooltip
+                    title={dataItem[settings.secondaryTitle]}
+                    placement="top"
+                    arrow={true}
+                    disableHoverListener={dataItem[settings.secondaryTitle]?.length < 19 || !dataItem[settings.secondaryTitle]}
+                  >
+                    <Typography
+                      className="text-f10 max-line-1 fw-400"
+                      style={{
+                        color: settings.theme.mainTextColor || '#2B2C46',
+                      }}
+                    >
+                      {truncateString(
+                        dataItem[settings.secondaryTitle],
+                        !settings.warehouseVariant ? 29 : isMobile ? 17 : 20,
+                      )}
+                    </Typography>
+                  </Tooltip>
+                </div>
+              )}
               <div
                 style={{
                   display: 'flex',
@@ -307,10 +314,10 @@ function ItemResult(props: Props) {
               >
                 {settings.attributes?.productAttributes && (
                   <>
-                    {!!settings.attributes?.attributeOneValue && (
+                    {!!get(dataItem, settings.attributes?.attributeOneValue || '') && (
                       <ProductAttribute
                         title={settings.attributes?.attributeOneLabelValue}
-                        value={get(dataItem, settings.attributes?.attributeOneValue || '') || 0}
+                        value={get(dataItem, settings.attributes?.attributeOneValue || '')}
                         padding={settings.theme.brandFieldPadding || '4px 8px'}
                         width={'48%'}
                         maxWidth={'calc(50% - 4px)'}
@@ -318,7 +325,7 @@ function ItemResult(props: Props) {
                         isTitleVisible={settings.attributes?.labelsAttributes}
                       />
                     )}
-                    {!!settings.attributes?.attributeTwoValue && (
+                    {!!get(dataItem, settings.attributes?.attributeTwoValue || '') && (
                       <ProductAttribute
                         title={settings.attributes?.attributeTwoLabelValue}
                         value={get(dataItem, settings.attributes?.attributeTwoValue || '')}
@@ -329,7 +336,7 @@ function ItemResult(props: Props) {
                         isTitleVisible={settings.attributes?.labelsAttributes}
                       />
                     )}
-                    {!!settings.attributes?.attributeThreeValue && (
+                    {!!get(dataItem, settings.attributes?.attributeThreeValue || '') && (
                       <ProductAttribute
                         title={settings.attributes?.attributeThreeLabelValue}
                         value={get(dataItem, settings.attributes?.attributeThreeValue || '')}
@@ -340,7 +347,7 @@ function ItemResult(props: Props) {
                         isTitleVisible={settings.attributes?.labelsAttributes}
                       />
                     )}
-                    {!!settings.attributes?.attributeFourValue && (
+                    {!!get(dataItem, settings.attributes?.attributeFourValue || '') && (
                       <ProductAttribute
                         title={settings.attributes?.attributeFourLabelValue}
                         value={get(dataItem, settings.attributes?.attributeFourValue || '')}
@@ -365,7 +372,7 @@ function ItemResult(props: Props) {
                   height: 40,
                   background:
                     settings.secondaryCTAButton?.secondaryCTAButtonColor || '#2B2C46',
-                  borderRadius: 4,
+                  borderRadius: 2,
                   padding: '0px 8px',
                   marginTop: '8px',
                   display: 'flex',
@@ -389,27 +396,34 @@ function ItemResult(props: Props) {
                     }
                   }}
                 >
-                  <Typography
-                    className="max-line-2"
-                    style={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      fontWeight: 500,
-                      fontSize: '12px',
-                      letterSpacing: '0.27px',
-                      wordBreak: 'break-all',
-                      maxWidth:
-                        !isMobile && settings.secondaryCTAButton.secondaryCTALinkField ? '136px' : '164x',
-                      paddingRight: '8px',
-                    }}
-                    align="left"
+                  <Tooltip
+                    title={settings.secondaryCTAButton?.secondaryCTAButtonText || ''}
+                    placement="top"
+                    arrow={true}
                   >
-                    {settings.secondaryCTAButton?.secondaryCTAButtonText}
-                  </Typography>
-                  {!isMobile && settings.secondaryCTAButton.secondaryCTAIcon && (
-                    <>
+                    <Typography
+                      className="max-line-2"
+                      style={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontWeight: 600,
+                        fontSize: '12px',
+                        letterSpacing: '0.27px',
+                        wordBreak: 'break-all',
+                        color: settings.secondaryCTAButton.secondaryCTAButtonTextColor || '#FFFFFF',
+                        maxWidth:
+                          !isMobile && settings.secondaryCTAButton.secondaryCTALinkField ? '136px' : '164x',
+                        paddingRight: '8px',
+                      }}
+                      align="left"
+                    >
+                      {settings.secondaryCTAButton?.secondaryCTAButtonText}
+                    </Typography>
+                  </Tooltip>
+                  {settings.secondaryCTAButton.secondaryCTAIcon && (
+                    <div style={{ width: '16px' }}>
                       {!settings.secondaryCTAButton.secondaryCTAIconSource ? (
-                        <IconSettings fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'} />
+                        <IconSettings fill={settings.secondaryCTAButton?.secondaryCTAButtonTextColor || '#FFFFFF'} />
                       ) : (
                         <img
                           alt="secondary"
@@ -420,7 +434,7 @@ function ItemResult(props: Props) {
                           src={settings.secondaryCTAButton.secondaryCTAIconSource}
                         />
                       )}
-                    </>
+                    </div>
                     )}
                 </div>
               </div>
@@ -434,7 +448,7 @@ function ItemResult(props: Props) {
                   background:
                     settings.CTAButton?.CTAButtonColor ||
                     settings.theme?.primaryColor,
-                  borderRadius: 4,
+                  borderRadius: 2,
                   padding: '0px 8px',
                   marginTop: '8px',
                   display: 'flex',
@@ -455,29 +469,35 @@ function ItemResult(props: Props) {
                   onClick={() => {
                     if (settings.CTAButton?.CTALinkField) {
                       feedbackConversionEpic(state, indexItem, dataItem.sku);
-                      window.open(`${settings.CTAButton?.CTALinkField}`, '_blank');
+                      window.open(`${get(dataItem, settings.CTAButton?.CTALinkField)}`, '_blank');
                     }
                   }}
                 >
-                  <Typography
-                    className="max-line-2"
-                    style={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      fontWeight: 500,
-                      color: settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
-                      fontSize: '12px',
-                      letterSpacing: '0.27px',
-                      wordBreak: 'break-all',
-                      maxWidth: !isMobile && settings.CTAButton?.CTALinkField ? '136px' : '164x',
-                      paddingRight: '8px',
-                    }}
-                    align="left"
+                  <Tooltip
+                    title={get(dataItem, settings.CTAButton?.CTAButtonText || '') || settings.CTAButton?.CTAButtonText || ''}
+                    placement="top"
+                    arrow={true}
                   >
-                    {settings.CTAButton?.CTAButtonText || ''}
-                  </Typography>
-                  {!isMobile && settings.CTAButton?.CTAIcon && (
-                    <>
+                    <Typography
+                      className="max-line-2"
+                      style={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontWeight: 600,
+                        color: settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
+                        fontSize: '12px',
+                        letterSpacing: '0.27px',
+                        wordBreak: 'break-all',
+                        maxWidth: !isMobile && settings.CTAButton?.CTALinkField ? '136px' : '164x',
+                        paddingRight: '8px',
+                      }}
+                      align="left"
+                    >
+                      {get(dataItem, settings.CTAButton?.CTAButtonText || '') || settings.CTAButton?.CTAButtonText || ''}
+                    </Typography>
+                  </Tooltip>
+                  {settings.CTAButton?.CTAIcon && (
+                    <div style={{ width: '16px' }}>
                       {!settings.CTAButton.CTAIconSource ? (
                         <IconOpenLink
                           fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'}
@@ -493,7 +513,7 @@ function ItemResult(props: Props) {
                         src={settings.CTAButton.CTAIconSource}
                       />
                     )}
-                    </>
+                    </div>
                   )}
                 </div>
               </div>

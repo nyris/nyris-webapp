@@ -61,15 +61,6 @@ var settings = {
     attributeFourLabelValue: '',
     attributeFourValue: '',
   },
-  CTAButton: {
-    CTAButton: true,
-    CTAButtonText: '',
-    CTAButtonTextColor: '',
-    CTAButtonColor: '',
-    CTAIcon: '',
-    CTAIconSource: '',
-    CTALinkField: '',
-  },
   secondaryCTAButton: {
     secondaryCTAButton: '',
     secondaryCTAButtonText: '',
@@ -78,6 +69,15 @@ var settings = {
     secondaryCTAIcon: '',
     secondaryCTAIconSource: '',
     secondaryCTALinkField: '',
+  },
+  CTAButton: {
+    CTAButton: true,
+    CTAButtonText: '',
+    CTAButtonTextColor: '',
+    CTAButtonColor: '',
+    CTAIcon: '',
+    CTAIconSource: '',
+    CTALinkField: '',
   },
   language: 'en',
   // features
