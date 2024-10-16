@@ -38,18 +38,13 @@ function CadenasWebViewer({
 
   useEffect(() => {
     if (
-      !!window.nyrisSettings.cadenasCatalog &&
-      !!window.nyrisSettings.cadenasAPIKey &&
+      window.nyrisSettings.cadenasAPIKey &&
       cadenasScriptStatus === "loading"
     ) {
       setStatus3dView("loading");
     }
 
-    if (
-      !!window.nyrisSettings.cadenasCatalog &&
-      !!window.nyrisSettings.cadenasAPIKey &&
-      cadenasScriptStatus === "ready"
-    ) {
+    if (window.nyrisSettings.cadenasAPIKey && cadenasScriptStatus === "ready") {
       // prepare 3d viewer settings.
       let webViewer3DSettings = {
         $container: $("#cnsWebViewer3d"),

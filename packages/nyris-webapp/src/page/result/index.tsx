@@ -170,7 +170,7 @@ function ResultComponent(props: Props) {
 
   useEffect(() => {
     document.title = 'Search results';
-    setFeedbackStatus('hidden');
+    // setFeedbackStatus('hidden');
 
     if (requestImage || isEmpty(searchQuery)) return;
     const preFilterValues = Object.keys(preFilter) as string[];

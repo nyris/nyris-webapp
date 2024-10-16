@@ -18,7 +18,7 @@ export const Result = (r: ResultProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [bounding, setBounding] = useState<any>(null);
   const mountPoint = document.querySelector("#nyris-mount-point");
-  const { cadenasAPIKey, cadenasCatalog } = window.nyrisSettings;
+  const { cadenasAPIKey } = window.nyrisSettings;
 
   const getCTAURL = () => {
     if (!r.metadata || !r.metadata.startsWith('search?')) {
@@ -34,7 +34,7 @@ export const Result = (r: ResultProps) => {
     <div className="nyris__success-multiple-result">
       <div className="nyris__success-multiple-result-box">
         <div style={{ position: "relative" }}>
-          {!!cadenasAPIKey && !!cadenasCatalog ? (
+          {cadenasAPIKey ? (
             <div>
               <Popup3D
                 resultDetails={r}

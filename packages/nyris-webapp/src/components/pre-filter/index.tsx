@@ -37,6 +37,7 @@ function PreFilterComponent(props: Props) {
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
   );
+  const [searchKey, setSearchKey] = useState<string>('');
 
   const [isLoading, setLoading] = useState<boolean>(false);
   const [columns, setColumns] = useState<number>(0);
@@ -234,11 +235,14 @@ function PreFilterComponent(props: Props) {
             placeholder={t('Search')}
             onChange={(e: any) => {
               filterSearchHandler(e.target.value);
+              setSearchKey(e.target.value);
             }}
+            value={searchKey}
           />
           <Button
             className="btn-clear-text"
             onClick={() => {
+              setSearchKey('');
               filterSearchHandler('');
             }}
           >

@@ -383,10 +383,7 @@ export const App = (props: AppProps) => {
     useState<CadenasScriptStatus>("disabled");
 
   useEffect(() => {
-    if (
-      !!window.nyrisSettings.cadenasCatalog &&
-      !!window.nyrisSettings.cadenasAPIKey
-    ) {
+    if (window.nyrisSettings.cadenasAPIKey) {
       setCadenasScriptStatus("loading");
       addAssets([`${assets_base_url}/css/psol.components.min.css`]).catch(
         (error: any) => {
