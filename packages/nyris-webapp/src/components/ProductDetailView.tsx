@@ -330,6 +330,7 @@ function ProductDetailView(props: Props) {
                             fontFamily: 'Source Sans 3',
                             fontSize: '16px',
                             lineHeight: '22.78px',
+                            width: 'fit-content',
                           }}
                         >
                           {truncateString(dataItem[settings.mainTitle], 45)}
@@ -346,6 +347,7 @@ function ProductDetailView(props: Props) {
                           className="text-f14 max-line-1 fw-400"
                           style={{
                             color: settings.theme.mainTextColor || '#2B2C46',
+                            width: 'fit-content',
                           }}
                         >
                           {truncateString(
@@ -432,6 +434,7 @@ function ProductDetailView(props: Props) {
                           justifyContent: 'space-between',
                           alignItems: 'center',
                           height: isMobile ? '34px' : '50px',
+                          maxWidth: isMobile ? '100%' : 'calc(50% - 3px)',
                         }}
                         className="btn-detail-item"
                       >
@@ -461,7 +464,7 @@ function ProductDetailView(props: Props) {
                               align="left"
                               style={{
                                 letterSpacing: '0.55px',
-                                maxWidth: '500px',
+                                maxWidth: '220px',
                                 paddingRight: '4px',
                                 color: settings.secondaryCTAButton.secondaryCTAButtonTextColor || '#FFFFFF',
                               }}
@@ -499,6 +502,7 @@ function ProductDetailView(props: Props) {
                           justifyContent: 'space-between',
                           alignItems: 'center',
                           height: isMobile ? '34px' : '50px',
+                          maxWidth: isMobile ? '100%' : 'calc(50% - 3px)',
                         }}
                         className="btn-detail-item"
                       >
@@ -529,7 +533,7 @@ function ProductDetailView(props: Props) {
                               style={{
                                 color: settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
                                 letterSpacing: '0.55px',
-                                maxWidth: '500px',
+                                maxWidth: '220px',
                                 paddingRight: '4px',
                               }}
                             >

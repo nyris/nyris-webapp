@@ -243,6 +243,7 @@ function ItemResult(props: Props) {
             flexGrow: 1,
             zIndex: 10,
             display: 'flex',
+            paddingTop: 8,
           }}
         >
           <div className="box-top" style={{ color: '#FFFFFF' }}>
@@ -254,113 +255,118 @@ function ItemResult(props: Props) {
                 color: settings.theme.mainTextColor || '#2B2C46',
               }}
             >
-              {dataItem[settings.mainTitle] && (
-                <Tooltip
-                  title={dataItem[settings.mainTitle] || ''}
-                  placement="top"
-                  arrow={true}
-                >
-                  <Typography
-                    className="text-f12 max-line-1 fw-700"
+              <div
+                style={{
+                  maxHeight: '38px',
+                  height: 'fit-content'
+                }}
+              >
+                {dataItem[settings.mainTitle] && (
+                  <Tooltip
+                    title={dataItem[settings.mainTitle] || ''}
+                    placement="top"
+                    arrow={true}
+                  >
+                    <Typography
+                      className="text-f12 max-line-1 fw-700"
+                      style={{
+                        color: settings.theme.mainTextColor || '#2B2C46',
+                        marginBottom: 4,
+                      }}
+                    >
+                      {truncateString(dataItem[settings.mainTitle], 45)}
+                    </Typography>
+                  </Tooltip>
+                )}
+                {dataItem[settings.secondaryTitle] && (
+                  <div
                     style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      flexDirection: 'row',
                       color: settings.theme.mainTextColor || '#2B2C46',
-                      marginTop: 8,
                     }}
                   >
-                    {truncateString(dataItem[settings.mainTitle], 45)}
-                  </Typography>
-                </Tooltip>
-              )}
-              {dataItem[settings.secondaryTitle] && (
+                    <Tooltip
+                      title={dataItem[settings.secondaryTitle]}
+                      placement="top"
+                      arrow={true}
+                      disableHoverListener={dataItem[settings.secondaryTitle]?.length < 19 || !dataItem[settings.secondaryTitle]}
+                    >
+                      <Typography
+                        className="text-f10 max-line-1 fw-400"
+                        style={{
+                          color: settings.theme.mainTextColor || '#2B2C46',
+                          marginBottom: 8,
+                        }}
+                      >
+                        {truncateString(
+                          dataItem[settings.secondaryTitle],
+                          !settings.warehouseVariant ? 29 : isMobile ? 17 : 40,
+                        )}
+                      </Typography>
+                    </Tooltip>
+                  </div>
+                )}
+              </div>
+              {settings.attributes?.productAttributes && (
                 <div
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     flexDirection: 'row',
-                    marginBottom: 12,
+                    flexWrap: 'wrap',
+                    marginBottom: 8,
+                    gridGap: 8,
                     color: settings.theme.mainTextColor || '#2B2C46',
-                    marginTop: settings.mainTitle ? 4 : 12,
                   }}
                 >
-                  <Tooltip
-                    title={dataItem[settings.secondaryTitle]}
-                    placement="top"
-                    arrow={true}
-                    disableHoverListener={dataItem[settings.secondaryTitle]?.length < 19 || !dataItem[settings.secondaryTitle]}
-                  >
-                    <Typography
-                      className="text-f10 max-line-1 fw-400"
-                      style={{
-                        color: settings.theme.mainTextColor || '#2B2C46',
-                      }}
-                    >
-                      {truncateString(
-                        dataItem[settings.secondaryTitle],
-                        !settings.warehouseVariant ? 29 : isMobile ? 17 : 20,
-                      )}
-                    </Typography>
-                  </Tooltip>
+                  {!!get(dataItem, settings.attributes?.attributeOneValue || '') && (
+                    <ProductAttribute
+                      title={settings.attributes?.attributeOneLabelValue}
+                      value={get(dataItem, settings.attributes?.attributeOneValue || '')}
+                      padding={settings.theme.brandFieldPadding || '4px 8px'}
+                      width={'48%'}
+                      maxWidth={'calc(50% - 4px)'}
+                      backgroundColor={settings.theme.brandFieldBackground}
+                      isTitleVisible={settings.attributes?.labelsAttributes}
+                    />
+                  )}
+                  {!!get(dataItem, settings.attributes?.attributeTwoValue || '') && (
+                    <ProductAttribute
+                      title={settings.attributes?.attributeTwoLabelValue}
+                      value={get(dataItem, settings.attributes?.attributeTwoValue || '')}
+                      padding={settings.theme.brandFieldPadding || '4px 8px'}
+                      width={'48%'}
+                      maxWidth={'calc(50% - 4px)'}
+                      backgroundColor={settings.theme.brandFieldBackground}
+                      isTitleVisible={settings.attributes?.labelsAttributes}
+                    />
+                  )}
+                  {!!get(dataItem, settings.attributes?.attributeThreeValue || '') && (
+                    <ProductAttribute
+                      title={settings.attributes?.attributeThreeLabelValue}
+                      value={get(dataItem, settings.attributes?.attributeThreeValue || '')}
+                      padding={settings.theme.brandFieldPadding || '4px 8px'}
+                      width={'48%'}
+                      maxWidth={'calc(50% - 4px)'}
+                      backgroundColor={settings.theme.brandFieldBackground}
+                      isTitleVisible={settings.attributes?.labelsAttributes}
+                    />
+                  )}
+                  {!!get(dataItem, settings.attributes?.attributeFourValue || '') && (
+                    <ProductAttribute
+                      title={settings.attributes?.attributeFourLabelValue}
+                      value={get(dataItem, settings.attributes?.attributeFourValue || '')}
+                      padding={settings.theme.brandFieldPadding || '4px 8px'}
+                      width={'48%'}
+                      maxWidth={'calc(50% - 4px)'}
+                      backgroundColor={settings.theme.brandFieldBackground}
+                      isTitleVisible={settings.attributes?.labelsAttributes}
+                    />
+                  )}
                 </div>
               )}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  gridGap: 8,
-                  color: settings.theme.mainTextColor || '#2B2C46',
-                }}
-              >
-                {settings.attributes?.productAttributes && (
-                  <>
-                    {!!get(dataItem, settings.attributes?.attributeOneValue || '') && (
-                      <ProductAttribute
-                        title={settings.attributes?.attributeOneLabelValue}
-                        value={get(dataItem, settings.attributes?.attributeOneValue || '')}
-                        padding={settings.theme.brandFieldPadding || '4px 8px'}
-                        width={'48%'}
-                        maxWidth={'calc(50% - 4px)'}
-                        backgroundColor={settings.theme.brandFieldBackground}
-                        isTitleVisible={settings.attributes?.labelsAttributes}
-                      />
-                    )}
-                    {!!get(dataItem, settings.attributes?.attributeTwoValue || '') && (
-                      <ProductAttribute
-                        title={settings.attributes?.attributeTwoLabelValue}
-                        value={get(dataItem, settings.attributes?.attributeTwoValue || '')}
-                        padding={settings.theme.brandFieldPadding || '4px 8px'}
-                        width={'48%'}
-                        maxWidth={'calc(50% - 4px)'}
-                        backgroundColor={settings.theme.brandFieldBackground}
-                        isTitleVisible={settings.attributes?.labelsAttributes}
-                      />
-                    )}
-                    {!!get(dataItem, settings.attributes?.attributeThreeValue || '') && (
-                      <ProductAttribute
-                        title={settings.attributes?.attributeThreeLabelValue}
-                        value={get(dataItem, settings.attributes?.attributeThreeValue || '')}
-                        padding={settings.theme.brandFieldPadding || '4px 8px'}
-                        width={'48%'}
-                        maxWidth={'calc(50% - 4px)'}
-                        backgroundColor={settings.theme.brandFieldBackground}
-                        isTitleVisible={settings.attributes?.labelsAttributes}
-                      />
-                    )}
-                    {!!get(dataItem, settings.attributes?.attributeFourValue || '') && (
-                      <ProductAttribute
-                        title={settings.attributes?.attributeFourLabelValue}
-                        value={get(dataItem, settings.attributes?.attributeFourValue || '')}
-                        padding={settings.theme.brandFieldPadding || '4px 8px'}
-                        width={'48%'}
-                        maxWidth={'calc(50% - 4px)'}
-                        backgroundColor={settings.theme.brandFieldBackground}
-                        isTitleVisible={settings.attributes?.labelsAttributes}
-                      />
-                    )}
-                  </>
-                )}
-              </div>
             </div>
           </div>
           <div>
@@ -368,13 +374,12 @@ function ItemResult(props: Props) {
               <div
                 style={{
                   boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
-                  // marginBottom: 22,
-                  height: 40,
+                  minHeight: 28,
                   background:
                     settings.secondaryCTAButton?.secondaryCTAButtonColor || '#2B2C46',
                   borderRadius: 2,
                   padding: '0px 8px',
-                  marginTop: '8px',
+                  marginBottom: 8,
                   display: 'flex',
                   justifyItems: 'center',
                   alignItems: 'center',
@@ -385,6 +390,7 @@ function ItemResult(props: Props) {
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
+                    alignItems: 'center',
                     width: '100%',
                     padding: 0,
                     cursor: settings.secondaryCTAButton.secondaryCTALinkField ? 'pointer' : 'normal',
@@ -428,8 +434,9 @@ function ItemResult(props: Props) {
                         <img
                           alt="secondary"
                           style={{
-                            width: '16px',
-                            objectFit: 'contain',
+                            width: 16,
+                            height: 16,
+                            objectFit: 'cover',
                           }}
                           src={settings.secondaryCTAButton.secondaryCTAIconSource}
                         />
@@ -443,14 +450,12 @@ function ItemResult(props: Props) {
               <div
                 style={{
                   boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
-                  // marginBottom: 22,
-                  height: 40,
+                  minHeight: 28,
                   background:
                     settings.CTAButton?.CTAButtonColor ||
                     settings.theme?.primaryColor,
                   borderRadius: 2,
                   padding: '0px 8px',
-                  marginTop: '8px',
                   display: 'flex',
                   justifyItems: 'center',
                   alignItems: 'center',
@@ -507,9 +512,10 @@ function ItemResult(props: Props) {
                         <img
                           alt="secondary"
                           style={{
-                          width: '16px',
-                          objectFit: 'contain',
-                        }}
+                            width: 16,
+                            height: 16,
+                            objectFit: 'cover',
+                          }}
                         src={settings.CTAButton.CTAIconSource}
                       />
                     )}
