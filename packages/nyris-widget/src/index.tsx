@@ -243,7 +243,7 @@ class Nyris {
       
       let prefilters;
       if (prefilterFromUrl) {
-        prefilters = [{ key: 'keyword', values: [prefilterFromUrl] }]
+        prefilters = [{ key: 'brand', values: [prefilterFromUrl.toLocaleUpperCase()] }]
       }
 
       let options: ImageSearchOptions = {
