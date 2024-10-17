@@ -415,7 +415,7 @@ function ProductDetailView(props: Props) {
                       gap: isMobile ? 0 : '6px',
                     }}
                   >
-                    {settings.secondaryCTAButton && (
+                    {settings.secondaryCTAButton?.secondaryCTAButton && (
                       <div
                         style={{
                           background: settings.secondaryCTAButton?.secondaryCTAButtonColor || '#2B2C46',

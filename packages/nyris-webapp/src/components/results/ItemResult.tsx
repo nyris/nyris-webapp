@@ -302,7 +302,7 @@ function ItemResult(props: Props) {
                       >
                         {truncateString(
                           dataItem[settings.secondaryTitle],
-                          !settings.warehouseVariant ? 29 : isMobile ? 17 : 40,
+                            isMobile ? 17 : 40,
                         )}
                       </Typography>
                     </Tooltip>

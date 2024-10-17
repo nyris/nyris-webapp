@@ -197,7 +197,10 @@ button {
 
   &:hover {
     background-position: left bottom !important;
-    // background-size: 200% 100% !important;
+  }
+  &:nth-child(odd):nth-last-child(1) {
+    width: 100%;
+    max-width: 100% !important;;
   }
 }
 

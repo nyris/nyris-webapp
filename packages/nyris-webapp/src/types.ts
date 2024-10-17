@@ -96,7 +96,6 @@ export interface AppSettings extends NyrisAPISettings {
   headerText?: string;
   instantRedirectPatterns: string[];
   isBrandNameTitleVisible?: boolean;
-  itemIdLabel?: string;
   language?: string;
   multiImageSearch?: boolean;
   noImageUrl?: string;
@@ -119,7 +118,6 @@ export interface AppSettings extends NyrisAPISettings {
   support?: Support;
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
-  warehouseVariant?: boolean;
 }
 
 export interface SearchSuiteSettings {

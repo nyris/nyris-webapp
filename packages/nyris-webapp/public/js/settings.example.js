@@ -82,7 +82,6 @@ var settings = {
   language: 'en',
   // features
   showPoweredByNyris: '',
-  warehouseVariant: false,
   postFilterOption: '',
   preFilterOption: '',
   experienceVisualSearch: false,
@@ -107,7 +106,6 @@ var settings = {
   appTitle: '',
   brandName: '',
   headerText: '',
-  itemIdLabel: 'SKU',
   preFilterTitle: '',
   CTAButtonText: 'View More',
   simpleCardView: false,
