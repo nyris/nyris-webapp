@@ -1,7 +1,6 @@
 import { Button, Tooltip, Typography } from '@material-ui/core';
 import React, { useEffect, useMemo, useState } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
-import IconSearch from 'common/assets/icons/icon_search.svg';
 import { getFilters, searchFilters } from 'services/filter';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import {
@@ -17,6 +16,7 @@ import { find } from 'services/image';
 import { useQuery } from 'hooks/useQuery';
 import { useTranslation } from 'react-i18next';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
+import { Icon } from '@nyris/nyris-react-components';
 
 interface Props {
   handleClose?: any;
@@ -221,12 +221,11 @@ function PreFilterComponent(props: Props) {
               alignItems: 'center',
             }}
           >
-            <img
-              style={{ maxWidth: 'fit-content' }}
-              src={IconSearch}
-              alt=""
+            <Icon
+              name="search"
               width={18}
               height={18}
+              style={{ maxWidth: 'fit-content' }}
             />
           </div>
 

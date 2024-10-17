@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { ReactComponent as DownloadIcon } from 'common/assets/icons/download.svg';
 import CadenasLoading from './CadenasLoading';
 import { useAppSelector } from '../Store/Store';
+import { Icon } from '@nyris/nyris-react-components';
 
 declare const psol: any;
 
@@ -144,7 +144,13 @@ function CadenasWebViewer({
               }).show();
             }}
           >
-            <DownloadIcon width={14} height={14} className="text-black" />
+            {/* <DownloadIcon width={14} height={14} className="text-black" /> */}
+            <Icon
+              name="download"
+              width={14}
+              height={14}
+              className="text-black"
+            />
           </div>
         )}
       </div>

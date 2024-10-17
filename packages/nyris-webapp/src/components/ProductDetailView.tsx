@@ -1,27 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Collapse, Grid, Typography } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import { ReactComponent as IconOpenLink }  from 'common/assets/icons/Union.svg';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { useMediaQuery } from 'react-responsive';
 import { ImagePreviewCarousel } from './carousel/ImagePreviewCarousel';
-import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
-import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
-import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
-import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
+
 import { AppState } from 'types';
 import { useAppSelector } from 'Store/Store';
 import { prepareImageList } from '../helpers/CommonHelper';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import NoImage from '../common/assets/images/no-image.svg';
-import { ReactComponent as Box3dIcon } from 'common/assets/icons/3d.svg';
-import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
+
 import { useTranslation } from 'react-i18next';
 import ProductAttribute from './ProductAttribute';
 import CadenasWebViewer from './CadenasWebViewer';
 import { makeStyles } from '@material-ui/core/styles';
 import { get, isUndefined } from 'lodash';
-import { ReactComponent as IconSettings } from 'common/assets/icons/settings.svg';
+import { Icon } from '@nyris/nyris-react-components';
 
 const useStyles = makeStyles(theme => ({
   buttonStyle3D: {
@@ -212,7 +207,7 @@ function ProductDetailView(props: Props) {
                 }
               }}
             >
-              <IconSearchImage color={'#AAABB5'} />
+              <Icon name="search_image" color={'#AAABB5'} />
             </Button>
           )}
           {dataImageCarousel.length === 0 && (
@@ -261,7 +256,7 @@ function ProductDetailView(props: Props) {
                   setIs3dView(true);
                 }}
               >
-                <Box3dIcon width={16} height={16} color={'#AAABB5'} />
+                <Icon name="box3d" width={16} height={16} color={'#AAABB5'} />
               </div>
             )}
           {is3dView && (
@@ -280,7 +275,7 @@ function ProductDetailView(props: Props) {
                 setIs3dView(false);
               }}
             >
-              <CloseIcon width={16} height={16} color={'#FFF'} />
+              <Icon name="close" color={'#FFF'} />
             </div>
           )}
         </div>
@@ -301,7 +296,11 @@ function ProductDetailView(props: Props) {
           <div className="info-container">
             <div className="info-sku">{dataItem.sku}</div>
             <div className="info-marking">{dataItem.Bezeichnung}</div>
-            <div className="info-description">{settings.language === 'en' ? dataItem.VK_Text_Englisch : dataItem.VK_Text_Deutsch}</div>
+            <div className="info-description">
+              {settings.language === 'en'
+                ? dataItem.VK_Text_Englisch
+                : dataItem.VK_Text_Deutsch}
+            </div>
           </div>
         ) : (
           <div
@@ -320,7 +319,7 @@ function ProductDetailView(props: Props) {
                     display: 'flex',
                     justifyContent: 'space-between',
                     flexDirection: 'row',
-                    color: settings.theme.mainTextColor ||'#2B2C46',
+                    color: settings.theme.mainTextColor || '#2B2C46',
                     marginBottom: 10,
                     paddingLeft: 16,
                     paddingRight: 16,
@@ -335,7 +334,7 @@ function ProductDetailView(props: Props) {
                   >
                     {sku}
                   </Typography>
-  
+
                   {settings.warehouseVariant &&
                     !isUndefined(
                       get(dataItem, settings.field.warehouseStockValue),
@@ -357,13 +356,14 @@ function ProductDetailView(props: Props) {
                             fontWeight: 600,
                           }}
                         >
-                          {get(dataItem, settings.field.warehouseStockValue) || 0}
+                          {get(dataItem, settings.field.warehouseStockValue) ||
+                            0}
                         </span>
                       </Typography>
                     )}
                 </div>
               )}
-  
+
               <Grid
                 container
                 justifyContent="space-between"
@@ -434,8 +434,10 @@ function ProductDetailView(props: Props) {
                             settings.field.warehouseNumber
                           }
                           value={
-                            get(dataItem, settings.field.warehouseNumberValue) ||
-                            'N/A'
+                            get(
+                              dataItem,
+                              settings.field.warehouseNumberValue,
+                            ) || 'N/A'
                           }
                           width={{ xs: '49%', md: 'fit-content' }}
                         />
@@ -443,8 +445,10 @@ function ProductDetailView(props: Props) {
                       {settings.field.warehouseShelfNumber && (
                         <ProductAttribute
                           title={
-                            get(dataItem, settings.field.warehouseShelfNumber) ||
-                            settings.field.warehouseShelfNumber
+                            get(
+                              dataItem,
+                              settings.field.warehouseShelfNumber,
+                            ) || settings.field.warehouseShelfNumber
                           }
                           value={
                             get(
@@ -458,7 +462,7 @@ function ProductDetailView(props: Props) {
                     </>
                   )}
                 </div>
-  
+
                 <Grid
                   item
                   xs={12}
@@ -469,7 +473,8 @@ function ProductDetailView(props: Props) {
                   {settings.secondaryCTAButtonText && (
                     <div
                       style={{
-                        background: settings.theme.secondaryCTAButtonColor || '#2B2C46',
+                        background:
+                          settings.theme.secondaryCTAButtonColor || '#2B2C46',
                         boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                         borderRadius: 4,
                         marginTop: 8,
@@ -506,14 +511,18 @@ function ProductDetailView(props: Props) {
                         >
                           {settings.secondaryCTAButtonText}
                         </Typography>
-                        {secondaryCTALink && <IconSettings color="white" />}
+                        {secondaryCTALink && (
+                          <Icon name="settings" color="white" />
+                        )}
                       </div>
                     </div>
                   )}
-  
+
                   <div
                     style={{
-                      background: settings.theme?.CTAButtonColor || settings.theme?.primaryColor,
+                      background:
+                        settings.theme?.CTAButtonColor ||
+                        settings.theme?.primaryColor,
                       boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                       borderRadius: 4,
                       marginTop: 8,
@@ -543,7 +552,8 @@ function ProductDetailView(props: Props) {
                         className="text-f18 fw-700 max-line-2"
                         align="left"
                         style={{
-                          color: settings.theme?.CTAButtonTextColor || '#FFFFFF',
+                          color:
+                            settings.theme?.CTAButtonTextColor || '#FFFFFF',
                           letterSpacing: '0.55px',
                           maxWidth: '500px',
                           paddingRight: '4px',
@@ -554,7 +564,11 @@ function ProductDetailView(props: Props) {
                           : dataItem[settings.field.productName]}
                       </Typography>
                       {ctaLink && (
-                        <IconOpenLink fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'} width={16} />
+                        <Icon
+                          name="link"
+                          fill={settings.theme?.CTAButtonTextColor || '#FFFFFF'}
+                          width={16}
+                        />
                       )}
                     </div>
                   </div>
@@ -604,94 +618,6 @@ function ProductDetailView(props: Props) {
                 </Grid>
               </Grid>
             </div>
-  
-            {settings.showFeedbackAndShare && (
-              <div
-                className="box-bottom"
-                style={{
-                  height: '48px',
-                  padding: '0px 16px 0px 16px',
-                  marginBottom: 10,
-                  marginTop: 10,
-                  display: 'flex',
-                  justifyContent: 'center',
-                }}
-              >
-                <Grid
-                  container
-                  justifyContent={
-                    settings.shareOption ? 'space-between' : 'space-around'
-                  }
-                  alignItems="center"
-                >
-                  <Grid item>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Button
-                        className="btn-item"
-                        onClick={() => {
-                          handlerFeedback('like');
-                          setFeedback('like');
-                        }}
-                      >
-                        <IconLike
-                          width={24}
-                          height={24}
-                          color={feedback === 'like' ? '#3E36DC' : '#000000'}
-                        />
-                      </Button>
-                    </div>
-                  </Grid>
-                  <Grid item>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Button
-                        className="btn-item"
-                        onClick={() => {
-                          handlerFeedback('dislike');
-                          setFeedback('dislike');
-                        }}
-                      >
-                        <IconDisLike
-                          width={24}
-                          height={24}
-                          color={feedback === 'dislike' ? '#CC1854' : '#000000'}
-                        />
-                      </Button>
-                    </div>
-                  </Grid>
-                  {settings.shareOption && (
-                    <Grid item>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Button
-                          className="btn-item"
-                          onClick={() => onHandlerModalShare()}
-                        >
-                          <IconShare width={24} height={24} color="#000000" />
-                        </Button>
-                      </div>
-                    </Grid>
-                  )}
-                  {/* <Grid item>
-                <div display={'flex'} alignItems={'center'}>
-                  <Button className="btn-item">
-                    <div
-                      className=""
-                      display={'flex'}
-                      justifyContent={'center'}
-                      alignItems={'center'}
-                    >
-                      <img
-                        src={IconSupport}
-                        alt="image_item"
-                        className="icon_support"
-                        style={{ width: '30px' }}
-                      />
-                    </div>
-                  </Button>
-                </div>
-              </Grid> */}
-                </Grid>
-              </div>
-            )}
           </div>
         )}
       </div>

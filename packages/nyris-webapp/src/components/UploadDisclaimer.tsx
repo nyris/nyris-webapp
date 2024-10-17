@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
-import { makeFileHandler } from '@nyris/nyris-react-components';
+import { Icon, makeFileHandler } from '@nyris/nyris-react-components';
 
 function UploadDisclaimer({
   onClose,
@@ -23,7 +22,8 @@ function UploadDisclaimer({
             <div className="p-4">
               <div className="flex justify-between items-center">
                 <div className="font-bold text-xl">Replace Current Data?</div>
-                <CloseIcon
+                <Icon
+                  name="close"
                   className="cursor-pointer"
                   width={12}
                   height={12}
