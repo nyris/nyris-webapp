@@ -359,14 +359,12 @@ function ProductDetailView(props: Props) {
                     )}
                   </div>
                   {settings.attributes?.productAttributes && (
-                    <>
+                    <div className="attribute-container">
                       {!!get(dataItem, settings.attributes?.attributeOneValue || '') && (
                         <ProductAttribute
                           title={settings.attributes?.attributeOneLabelValue}
                           value={get(dataItem, settings.attributes?.attributeOneValue || '')}
                           padding={settings.theme.brandFieldPadding || '4px 8px'}
-                          width={'48%'}
-                          maxWidth={'calc(50% - 4px)'}
                           backgroundColor={settings.theme.brandFieldBackground}
                           isTitleVisible={settings.attributes?.labelsAttributes}
                         />
@@ -376,8 +374,6 @@ function ProductDetailView(props: Props) {
                           title={settings.attributes?.attributeTwoLabelValue}
                           value={get(dataItem, settings.attributes?.attributeTwoValue || '')}
                           padding={settings.theme.brandFieldPadding || '4px 8px'}
-                          width={'48%'}
-                          maxWidth={'calc(50% - 4px)'}
                           backgroundColor={settings.theme.brandFieldBackground}
                           isTitleVisible={settings.attributes?.labelsAttributes}
                         />
@@ -387,8 +383,6 @@ function ProductDetailView(props: Props) {
                           title={settings.attributes?.attributeThreeLabelValue}
                           value={get(dataItem, settings.attributes?.attributeThreeValue || '')}
                           padding={settings.theme.brandFieldPadding || '4px 8px'}
-                          width={'48%'}
-                          maxWidth={'calc(50% - 4px)'}
                           backgroundColor={settings.theme.brandFieldBackground}
                           isTitleVisible={settings.attributes?.labelsAttributes}
                         />
@@ -398,13 +392,11 @@ function ProductDetailView(props: Props) {
                           title={settings.attributes?.attributeFourLabelValue}
                           value={get(dataItem, settings.attributes?.attributeFourValue || '')}
                           padding={settings.theme.brandFieldPadding || '4px 8px'}
-                          width={'48%'}
-                          maxWidth={'calc(50% - 4px)'}
                           backgroundColor={settings.theme.brandFieldBackground}
                           isTitleVisible={settings.attributes?.labelsAttributes}
                         />
                       )}
-                    </>
+                    </div>
                   )}
                 </div>
   

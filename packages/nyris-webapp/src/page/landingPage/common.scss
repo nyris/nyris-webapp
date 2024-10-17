@@ -457,6 +457,19 @@ button {
         height: 10px;
       }
     }
+    .attribute-container {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+      .item-attribute {
+        width: calc(50% - 4px);
+        &:nth-child(odd):nth-last-child(1) {
+          width: 100%;
+        }
+      }
+    }
   }
 
   .box-btn-next-item {
@@ -543,13 +556,20 @@ button {
         text-transform: initial;
       }
     }
+    .attribute-container {
+      .item-attribute {
+        width: calc(50% - 4px);
+        &:nth-child(odd):nth-last-child(1) {
+          width: 100%;
+        }
+      }
+    }
     .box-icon-modal {
       bottom: 6px;
       right: 6px;
       position: absolute;
       border-radius: 100%;
       background-color: rgba(243, 243, 245, 0.4);
-      display: block;
       overflow: hidden;
       z-index: 11;
       width: 32px;
