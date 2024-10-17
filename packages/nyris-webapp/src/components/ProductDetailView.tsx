@@ -43,21 +43,13 @@ interface Props {
 }
 
 function ProductDetailView(props: Props) {
-  const {
-    dataItem,
-    handleClose,
-    handlerFeedback,
-    onHandlerModalShare,
-    show3dView = false,
-    onSearchImage,
-  } = props;
+  const { dataItem, handleClose, show3dView = false, onSearchImage } = props;
   const { sku, title } = dataItem;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = useAppSelector<AppState>((state: any) => state);
   const brand = dataItem[settings.field.productTag];
 
   const [collapDescription, setCollapDescription] = useState(false);
-  const [feedback, setFeedback] = useState('none');
   const [is3dView, setIs3dView] = useState(show3dView);
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
   const [urlImage, setUrlImage] = useState<string>('');
