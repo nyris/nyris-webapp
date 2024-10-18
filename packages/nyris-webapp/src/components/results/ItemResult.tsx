@@ -272,6 +272,7 @@ function ItemResult(props: Props) {
                       style={{
                         color: settings.theme.mainTextColor || '#2B2C46',
                         marginBottom: 4,
+                        marginLeft: 8,
                       }}
                     >
                       {truncateString(dataItem[settings.mainTitle], 45)}
@@ -298,18 +299,23 @@ function ItemResult(props: Props) {
                         style={{
                           color: settings.theme.mainTextColor || '#2B2C46',
                           marginBottom: 8,
+                          marginLeft: 8,
                         }}
                       >
                         {truncateString(
                           dataItem[settings.secondaryTitle],
-                            isMobile ? 17 : 40,
+                            isMobile ? 30 : 40,
                         )}
                       </Typography>
                     </Tooltip>
                   </div>
                 )}
               </div>
-              {settings.attributes?.productAttributes && (
+              {(settings.attributes?.productAttributes
+                && (settings.attributes?.attributeOneValue
+                || settings.attributes?.attributeTwoValue
+                || settings.attributes?.attributeThreeValue
+                || settings.attributes?.attributeFourValue)) && (
                 <div
                   className="attribute-container"
                   style={{
@@ -317,7 +323,7 @@ function ItemResult(props: Props) {
                     justifyContent: 'space-between',
                     flexDirection: 'row',
                     flexWrap: 'wrap',
-                    marginBottom: 8,
+                    marginBottom: settings.CTAButton?.CTAButton || settings.secondaryCTAButton?.secondaryCTAButton ? 8 : 0,
                     gridGap: 8,
                     color: settings.theme.mainTextColor || '#2B2C46',
                   }}
@@ -372,7 +378,7 @@ function ItemResult(props: Props) {
                     settings.secondaryCTAButton?.secondaryCTAButtonColor || '#2B2C46',
                   borderRadius: 2,
                   padding: '0px 8px',
-                  marginBottom: 8,
+                  marginBottom: settings.CTAButton?.CTAButton ? 8 : 0,
                   display: 'flex',
                   justifyItems: 'center',
                   alignItems: 'center',
@@ -391,7 +397,7 @@ function ItemResult(props: Props) {
                   onClick={() => {
                     if (settings.secondaryCTAButton?.secondaryCTALinkField) {
                       feedbackConversionEpic(state, indexItem, dataItem.sku);
-                      window.open(`${settings.secondaryCTAButton?.secondaryCTALinkField}`, '_blank');
+                      window.open(`${get(dataItem, settings.secondaryCTAButton?.secondaryCTALinkField)}`, '_blank');
                     }
                   }}
                 >
@@ -401,7 +407,7 @@ function ItemResult(props: Props) {
                     arrow={true}
                   >
                     <Typography
-                      className="max-line-2"
+                      className="max-line-1"
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -477,7 +483,7 @@ function ItemResult(props: Props) {
                     arrow={true}
                   >
                     <Typography
-                      className="max-line-2"
+                      className="max-line-1"
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',

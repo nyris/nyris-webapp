@@ -331,6 +331,7 @@ function ProductDetailView(props: Props) {
                             fontSize: '16px',
                             lineHeight: '22.78px',
                             width: 'fit-content',
+                            marginLeft: 8,
                           }}
                         >
                           {truncateString(dataItem[settings.mainTitle], 45)}
@@ -348,11 +349,13 @@ function ProductDetailView(props: Props) {
                           style={{
                             color: settings.theme.mainTextColor || '#2B2C46',
                             width: 'fit-content',
+                            marginLeft: 8,
+                            fontSize: 14,
                           }}
                         >
                           {truncateString(
                             dataItem[settings.secondaryTitle],
-                            45,
+                            isMobile ? 45 : 70,
                           )}
                         </Typography>
                       </Tooltip>
@@ -442,7 +445,7 @@ function ProductDetailView(props: Props) {
                           }}
                           onClick={() => {
                             if (settings.secondaryCTAButton?.secondaryCTALinkField) {
-                              window.open(`${settings.secondaryCTAButton?.secondaryCTALinkField}`, '_blank');
+                              window.open(`${get(dataItem, settings.secondaryCTAButton?.secondaryCTALinkField)}`, '_blank');
                             }
                           }}
                         >
@@ -452,7 +455,7 @@ function ProductDetailView(props: Props) {
                             arrow={true}
                           >
                             <Typography
-                              className="text-f16 fw-600 max-line-2"
+                              className="text-f16 fw-600 max-line-1"
                               align="left"
                               style={{
                                 letterSpacing: '0.55px',
@@ -510,7 +513,7 @@ function ProductDetailView(props: Props) {
                           }}
                           onClick={() => {
                             if (settings.CTAButton?.CTALinkField) {
-                              window.open(`${settings.CTAButton?.CTALinkField}`, '_blank');
+                              window.open(`${get(dataItem, settings.CTAButton?.CTALinkField)}`, '_blank');
                             }
                           }}
                         >
@@ -520,7 +523,7 @@ function ProductDetailView(props: Props) {
                             arrow={true}
                           >
                             <Typography
-                              className="text-f16 fw-600 max-line-2"
+                              className="text-f16 fw-600 max-line-1"
                               align="left"
                               style={{
                                 color: settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
