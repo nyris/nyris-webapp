@@ -315,7 +315,12 @@ function ImagePreviewComponent({
           className={`absolute left-2 top-2 flex justify-center items-center cursor-pointer`}
         >
           <div className="rounded-full bg-white/50 hover:bg-white w-6 h-6 flex justify-center items-center">
-            <Icon name="trash" className="text-primary" />
+            <Icon
+              name="trash"
+              className="text-primary"
+              width={14}
+              height={14}
+            />
           </div>
         </div>
       </div>
@@ -414,7 +419,12 @@ function ImagePreviewComponent({
           } flex justify-center items-center desktop:hidden p-1`}
         >
           <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
-            <Icon name="trash" className="text-primary" />
+            <Icon
+              name="trash"
+              className="text-primary"
+              width={14}
+              height={14}
+            />
           </div>
         </div>
       </div>
