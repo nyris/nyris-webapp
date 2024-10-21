@@ -1,6 +1,6 @@
 {
   "name": "@nyris/nyris-react-components",
-  "version": "0.3.58",
+  "version": "0.3.60",
   "homepage": "https://github.com/nyris/nyris-webapp",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -10,7 +10,7 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "@nyris/nyris-api": "^0.3.58",
+    "@nyris/nyris-api": "^0.3.60",
     "konva": "^9.3.6",
     "react-konva": "^18.2.10",
     "react-move": "^6.1.0"

@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import InquiryModal from './InquiryModal';
 import { useAppSelector } from 'Store/Store';
-import { ReactComponent as EmailIcon } from 'common/assets/icons/icon_email.svg';
-import { ReactComponent as CallIcon } from 'common/assets/icons/call.svg';
 import { useTranslation } from 'react-i18next';
+import { Icon } from '@nyris/nyris-react-components';
 
 function InquiryBanner({
   requestImage,
@@ -157,7 +156,7 @@ function InquiryBanner({
                     }}
                   >
                     <p>Inquiry</p>
-                    <EmailIcon color="#fff" width={16} height={16} />
+                    <Icon name="email" color="#fff" width={16} height={12} />
                   </div>
                 </div>
               )}
@@ -192,7 +191,7 @@ function InquiryBanner({
                     }}
                   >
                     <p> Call us</p>
-                    <CallIcon color="#fff" width={16} height={16} />
+                    <Icon name="call" color="#fff" width={16} height={16} />
                   </div>
                 </a>
               )}

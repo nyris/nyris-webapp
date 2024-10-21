@@ -1,14 +1,13 @@
 import { Menu, MenuProps, withStyles } from '@material-ui/core';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import './common.scss';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { reset, setPreFilter } from 'Store/search/Search';
 import { useAuth0 } from '@auth0/auth0-react';
-import { ReactComponent as AvatarIcon } from 'common/assets/icons/avatar.svg';
 import MenuItem from '@material-ui/core/MenuItem';
-import CustomSearchBox from "./input/inputSearch";
-
+import CustomSearchBox from './input/inputSearch';
+import { Icon } from '@nyris/nyris-react-components';
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -73,7 +72,10 @@ function Header(): JSX.Element {
   }))(MenuItem);
 
   return (
-    <div className="box-content" style={{ display: 'flex', position: 'relative' }}>
+    <div
+      className="box-content"
+      style={{ display: 'flex', position: 'relative' }}
+    >
       <a
         href={window.location.origin}
         style={{ lineHeight: 0, paddingLeft: '10px' }}
@@ -98,7 +100,7 @@ function Header(): JSX.Element {
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          display: showSearchBar ? 'block' : 'none'
+          display: showSearchBar ? 'block' : 'none',
         }}
       >
         <CustomSearchBox />
@@ -119,7 +121,7 @@ function Header(): JSX.Element {
             onClick={handleClick}
           >
             <p style={{ color: '#2B2C46' }}>{user?.email}</p>
-            <AvatarIcon />
+            <Icon name="avatar" />
           </div>
           <StyledMenu
             id="simple-menu"

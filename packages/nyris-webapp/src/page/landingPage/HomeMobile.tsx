@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 import CameraCustom from 'components/drawer/cameraCustom';
-import { ReactComponent as CameraIcon } from 'common/assets/icons/take_photo.svg';
 
 import { useAppSelector } from 'Store/Store';
 import ExperienceVisualSearch from '../../components/Experience-visual-search/ExperienceVisualSearch';
+import { Icon } from '@nyris/nyris-react-components';
 
 function AppMobile(): JSX.Element {
   const { settings } = useAppSelector(state => state);
@@ -35,7 +35,7 @@ function AppMobile(): JSX.Element {
             }}
           >
             <div className="inner">
-              <CameraIcon color={'#2B2C46'} />
+              <Icon name="camera" color={'#2B2C46'} width={121} height={96} />
             </div>
           </div>
         </div>

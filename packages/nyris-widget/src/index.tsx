@@ -19,6 +19,7 @@ import NyrisAPI, {
 } from "@nyris/nyris-api";
 import { ResultProps } from "./Result";
 import { makeFileHandler } from "@nyris/nyris-react-components";
+import packageJson from "../package.json";
 
 interface NyrisSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
@@ -31,8 +32,11 @@ interface NyrisSettings extends NyrisAPISettings {
   ctaButtonText: string;
   language: string;
   navigatePreference: string;
+  cadenasAPIKey?: string;
+  cadenasCatalog?: string;
 }
 const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
+
 class Nyris {
   private nyrisApi: NyrisAPI;
   private screen: Screen = Screen.Hidden;
@@ -46,7 +50,8 @@ class Nyris {
   private selection: RectCoords = { x1: 0, x2: 1, y1: 0, y2: 1 };
   private readonly instantRedirectPatterns: string[];
   private loading: boolean = false;
-  private firstSearchImage: HTMLCanvasElement = document.createElement("canvas");
+  private firstSearchImage: HTMLCanvasElement =
+    document.createElement("canvas");
   private firstSearchResults: ResultProps[] = [];
 
   constructor(nyrisSettings: NyrisSettings) {
@@ -63,6 +68,8 @@ class Nyris {
     this.showScreen(Screen.Hidden);
 
     if (nyrisSettings.initiatorElementId) {
+      console.log("Nyris.widget.VERSION:", packageJson.version);
+
       document.body.addEventListener("click", (event) => {
         // @ts-ignore
         const isVisualSearchElement = event?.target?.closest(
@@ -97,6 +104,7 @@ class Nyris {
       onSimilarSearch: (f) => this.handleFile(f, false),
       firstSearchImage: this.firstSearchImage,
       loading: this.loading,
+      cadenasScriptStatus: "disabled",
     };
     ReactDOM.render(
       <React.StrictMode>
@@ -164,13 +172,13 @@ class Nyris {
     this.showScreen(Screen.Wait);
 
     try {
-      this.regions = await this.nyrisApi.findRegions(this.image);
+      const foundRegions = await this.nyrisApi.findRegions(this.image);
+      this.regions = foundRegions;
+      this.selection = this.getRegionByMaxConfidence(foundRegions);
     } catch (e) {
       console.warn("Could not get regions", e);
     }
 
-    const foundRegions = await this.nyrisApi.findRegions(this.image);
-    this.selection = this.getRegionByMaxConfidence(foundRegions);
     await this.startProcessing(isFirstSearch);
   }
 
@@ -191,6 +199,7 @@ class Nyris {
       imageUrl: offer?.image,
       links: offer.links,
       sku: offer.sku,
+      metadata: offer.metadata,
     }));
     if (isFirstSearch) {
       this.firstSearchResults = JSON.parse(JSON.stringify(this.results));
@@ -198,12 +207,12 @@ class Nyris {
 
     this.showScreen(Screen.Result);
   }
-  
+
   onGoBack = () => {
     this.results = JSON.parse(JSON.stringify(this.firstSearchResults));
     this.image = this.firstSearchImage;
     this.render();
-  }
+  };
 
   getRegionByMaxConfidence = (regions: Region[]) => {
     if (regions.length === 0) {

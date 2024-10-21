@@ -24,6 +24,8 @@ import InstantSearchProvider from './Provider/InstantSearchProvider';
 import PoweredByNyris from './PoweredByNyris';
 import { useQuery } from 'hooks/useQuery';
 
+import packageJson from '../../package.json';
+
 declare var psol: any;
 
 jQuery(document).ready(function () {
@@ -107,6 +109,8 @@ function Layout({ children }: ReactNode): JSX.Element {
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 
   useEffect(() => {
+    console.log('App version:', packageJson.version);
+
     const handleResize = () => {
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);

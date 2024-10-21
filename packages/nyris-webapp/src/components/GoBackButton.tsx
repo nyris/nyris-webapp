@@ -9,9 +9,9 @@ import {
   clearPostFilter,
 } from '../Store/search/Search';
 import { connectCurrentRefinements } from 'react-instantsearch-dom';
-import { ReactComponent as GoBackIcon } from 'common/assets/icons/path.svg';
 import { useAppDispatch, useAppSelector } from '../Store/Store';
 import useRequestStore from 'Store/requestStore';
+import { Icon } from '@nyris/nyris-react-components';
 
 const GoBackButton = ({ items, refine }: CurrentRefinementsProvided) => {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -42,7 +42,7 @@ const GoBackButton = ({ items, refine }: CurrentRefinementsProvided) => {
       className={`go-back-button ${isMobile ? 'mobile-view' : ''}`}
       onClick={() => onGoBack()}
     >
-      <GoBackIcon width={16} height={16} />
+      <Icon name="back" />
       {t('Back to request image')}
     </div>
   );

@@ -1,6 +1,5 @@
+import { Icon } from '@nyris/nyris-react-components';
 import React, { useEffect, useState } from 'react';
-import { ReactComponent as RemoveIcon } from 'common/assets/icons/minus.svg';
-import { ReactComponent as AddIcon } from 'common/assets/icons/add-rounded.svg';
 
 export type LabelPosition = 'bottom' | 'left' | 'right' | 'top';
 
@@ -63,9 +62,9 @@ export default function IconLabel({
         </div>
       )}
       {tagIcon === 'remove' ? (
-        <RemoveIcon width={16} height={16} />
+        <Icon name="minus" />
       ) : (
-        <AddIcon width={16} height={16} />
+        <Icon name="plus_rounded" />
       )}
     </div>
   );

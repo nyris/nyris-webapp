@@ -1,13 +1,7 @@
-import { Button, Grid, Tooltip, Typography } from '@material-ui/core';
-import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
-import { ReactComponent as IconOpenLink } from 'common/assets/icons/Union.svg';
-import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
-import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
-import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
-import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
-import { ReactComponent as Box3dIcon } from 'common/assets/icons/3d.svg';
-
 import React, { memo, useEffect, useState } from 'react';
+import { Button, Tooltip, Typography } from '@material-ui/core';
+import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRightOutlined';
+import { Icon } from '@nyris/nyris-react-components';
 import NoImage from 'common/assets/images/no-image.svg';
 import { RootState, useAppDispatch, useAppSelector } from 'Store/Store';
 import DefaultModal from 'components/modal/DefaultModal';
@@ -15,7 +9,6 @@ import {
   onToggleModalItemDetail,
   updateStatusLoading,
 } from 'Store/search/Search';
-import { ShareModal } from '../ShareModal';
 import { truncateString } from 'helpers/truncateString';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery } from 'react-responsive';
@@ -23,7 +16,6 @@ import { feedbackClickEpic, feedbackConversionEpic } from 'services/Feedback';
 import ProductDetailView from 'components/ProductDetailView';
 import ProductAttribute from '../ProductAttribute';
 import { get } from 'lodash';
-import { ReactComponent as IconSettings } from 'common/assets/icons/settings.svg';
 
 interface Props {
   dataItem: any;
@@ -60,8 +52,6 @@ function ItemResult(props: Props) {
     '3d' | 'image' | undefined
   >();
 
-  const [isOpenModalShare, setOpenModalShare] = useState<boolean>(false);
-  const [feedback, setFeedback] = useState('none');
   const { t } = useTranslation();
   const { collap } = dataItem;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
@@ -123,7 +113,6 @@ function ItemResult(props: Props) {
           }}
           handlerFeedback={handlerFeedback}
           show3dView={openDetailedView === '3d'}
-          onHandlerModalShare={() => setOpenModalShare(true)}
           onSearchImage={(url: string) => {
             dispatch(updateStatusLoading(true));
             onSearchImage(url);
@@ -131,11 +120,6 @@ function ItemResult(props: Props) {
         />
       </DefaultModal>
 
-      <ShareModal
-        setModalState={setOpenModalShare}
-        dataItem={dataItem}
-        isOpen={isOpenModalShare}
-      />
       <div className="box-top">
         {isGroupItem && collap && (
           <div className="btn-show-result">
@@ -162,7 +146,12 @@ function ItemResult(props: Props) {
               }
             }}
           >
-            <IconSearchImage width={16} height={16} color={'#AAABB5'} />
+            <Icon
+              name="search_image"
+              width={16}
+              height={16}
+              color={'#AAABB5'}
+            />
           </div>
         )}
         {settings.cadenas?.cadenas3dWebView && (
@@ -172,7 +161,7 @@ function ItemResult(props: Props) {
               setOpenDetailedView('3d');
             }}
           >
-            <Box3dIcon width={16} height={16} color={'#AAABB5'} />
+            <Icon name="box3d" width={16} height={16} color={'#AAABB5'} />
           </div>
         )}
 
@@ -428,7 +417,7 @@ function ItemResult(props: Props) {
                   {settings.secondaryCTAButton.secondaryCTAIcon && (
                     <div style={{ width: '16px' }}>
                       {!settings.secondaryCTAButton.secondaryCTAIconSource ? (
-                        <IconSettings fill={settings.secondaryCTAButton?.secondaryCTAButtonTextColor || '#FFFFFF'} />
+                        <Icon name="settings" color="white" />
                       ) : (
                         <img
                           alt="secondary"
@@ -503,7 +492,8 @@ function ItemResult(props: Props) {
                   {settings.CTAButton?.CTAIcon && (
                     <div style={{ width: '16px' }}>
                       {!settings.CTAButton.CTAIconSource ? (
-                        <IconOpenLink
+                        <Icon
+                          name="link"
                           fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'}
                           width={16}
                         />
@@ -521,83 +511,6 @@ function ItemResult(props: Props) {
                     </div>
                   )}
                 </div>
-              </div>
-            )}
-
-            {settings.showFeedbackAndShare && (
-              <div
-                className="box-bottom"
-                style={{ marginBottom: 6, marginTop: 12 }}
-              >
-                <Grid
-                  container
-                  justifyContent={
-                    settings.shareOption ? 'space-between' : 'space-around'
-                  }
-                  alignItems="center"
-                >
-                  <Grid item>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Button
-                        className="btn-item"
-                        onClick={() => {
-                          handlerFeedback('like');
-                          setFeedback('like');
-                        }}
-                      >
-                        <IconLike
-                          width={16}
-                          height={16}
-                          color={feedback === 'like' ? '#3E36DC' : '#000000'}
-                        />
-                      </Button>
-                    </div>
-                  </Grid>
-                  <Grid item>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Button
-                        className="btn-item"
-                        onClick={() => {
-                          handlerFeedback('dislike');
-                          setFeedback('dislike');
-                        }}
-                      >
-                        <IconDisLike
-                          width={16}
-                          height={16}
-                          color={feedback === 'dislike' ? '#CC1854' : '#000000'}
-                        />
-                      </Button>
-                    </div>
-                  </Grid>
-                  {settings.shareOption && (
-                    <Grid item>
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Button
-                          className="btn-item"
-                          onClick={() => setOpenModalShare(true)}
-                        >
-                          <IconShare width={16} height={16} color="#000000" />
-                        </Button>
-                      </div>
-                    </Grid>
-                  )}
-                </Grid>
               </div>
             )}
           </div>

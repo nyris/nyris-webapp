@@ -3,7 +3,23 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.3.57 - 2024-09-12
+## 0.3.60 - 2024-10-16
+
+### Fix
+- Fix pipeline: publish to github not working
+
+
+## 0.3.59 - 2024-10-15
+
+### Added
+- Multi image search
+- Feedback
+- Cadenas for widget
+- 
+### Removed
+- Elastic/text search 
+
+## 0.3.58 - 2024-09-12
 
 ### Fix
 - Sorting pre-filters in alphabetical order

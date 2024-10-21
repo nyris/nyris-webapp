@@ -3,17 +3,10 @@ import { useCallback, useRef, useState } from 'react';
 import cx from 'classnames';
 
 import { RectCoords } from '@nyris/nyris-api';
-import { Preview } from '@nyris/nyris-react-components';
+import { Icon, Preview } from '@nyris/nyris-react-components';
 import { DEFAULT_REGION } from '../constants';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { ReactComponent as PlusIcon } from 'common/assets/icons/plus.svg';
-import { ReactComponent as CropIcon } from 'common/assets/icons/crop.svg';
-import { ReactComponent as CollapseIcon } from 'common/assets/icons/collpase.svg';
-import { ReactComponent as TrashIcon } from 'common/assets/icons/trash.svg';
-
-import { ReactComponent as DownloadIcon } from 'common/assets/icons/download.svg';
-import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
 
 import { useQuery } from 'hooks/useQuery';
 import {
@@ -182,22 +175,25 @@ function ImagePreviewComponent({
   const findItemsInSelection = useCallback(
     debounce(async (r: RectCoords, image: HTMLCanvasElement) => {
       dispatch(updateStatusLoading(true));
-      singleImageSearch({ image: image, settings, imageRegion: r }).then(
-        (res: any) => {
-          dispatch(updateStatusLoading(false));
+      singleImageSearch({
+        image: image,
+        settings,
+        imageRegion: r,
+        showFeedback: true,
+      }).then((res: any) => {
+        dispatch(updateStatusLoading(false));
 
-          dispatch(updateResultChangePosition(res));
-          const highConfidence = res.results.find(
-            (data: { score: number }) => data.score >= 0.65,
-          );
-          if (!highConfidence) {
-            setShowAdjustInfoBasedOnConfidence(true);
-          }
-          setTimeout(() => {
-            setShowAdjustInfoBasedOnConfidence(false);
-          }, 2000);
-        },
-      );
+        dispatch(updateResultChangePosition(res));
+        const highConfidence = res.results.find(
+          (data: { score: number }) => data.score >= 0.65,
+        );
+        if (!highConfidence) {
+          setShowAdjustInfoBasedOnConfidence(true);
+        }
+        setTimeout(() => {
+          setShowAdjustInfoBasedOnConfidence(false);
+        }, 2000);
+      });
       return;
     }, 250),
     [dispatch, settings, singleImageSearch],
@@ -300,7 +296,7 @@ function ImagePreviewComponent({
               height: 'fit-content',
             }}
           >
-            <IconInfo color="white" />
+            <Icon name="info" color="white" width={12} height={12} />
             <p
               style={{
                 fontSize: 12,
@@ -319,7 +315,12 @@ function ImagePreviewComponent({
           className={`absolute left-2 top-2 flex justify-center items-center cursor-pointer`}
         >
           <div className="rounded-full bg-white/50 hover:bg-white w-6 h-6 flex justify-center items-center">
-            <TrashIcon className="text-primary" />
+            <Icon
+              name="trash"
+              className="text-primary"
+              width={14}
+              height={14}
+            />
           </div>
         </div>
       </div>
@@ -382,9 +383,10 @@ function ImagePreviewComponent({
               borderRadius: '16px',
               zIndex: 1000,
               height: 'fit-content',
+              alignItems: 'center',
             }}
           >
-            <IconInfo color="white" />
+            <Icon name="info" color="white" width={12} height={12} />
             <p
               style={{
                 fontSize: 12,
@@ -405,8 +407,8 @@ function ImagePreviewComponent({
           } flex justify-center items-center desktop:hidden p-1`}
         >
           <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
-            {editActive && <CollapseIcon className="text-primary" />}
-            {!editActive && <CropIcon className="text-primary" />}
+            {editActive && <Icon name="collapse" className="text-primary" />}
+            {!editActive && <Icon name="crop" className="text-primary" />}
           </div>
         </div>
 
@@ -417,7 +419,12 @@ function ImagePreviewComponent({
           } flex justify-center items-center desktop:hidden p-1`}
         >
           <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
-            <TrashIcon className="text-primary" />
+            <Icon
+              name="trash"
+              className="text-primary"
+              width={14}
+              height={14}
+            />
           </div>
         </div>
       </div>
@@ -528,9 +535,12 @@ function ImagePreviewComponent({
                   },
                 })}
               />
-              <PlusIcon className={cx(['text-[#AAABB5] desktop:hidden'])} />
+              <Icon
+                name="plus"
+                className={cx(['text-[#AAABB5] desktop:hidden'])}
+              />
               <div className="hidden desktop:block">
-                <DownloadIcon className={cx(['text-[#AAABB5]'])} />
+                <Icon name="download" className={cx(['text-[#AAABB5]'])} />
               </div>
             </label>
           )}
@@ -539,7 +549,7 @@ function ImagePreviewComponent({
             className="absolute right-5 flex justify-center items-center desktop:hidden p-2"
           >
             <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
-              <CropIcon className="text-primary" />
+              <Icon name="crop" className="text-primary" />
             </div>
           </div>
 

@@ -22,9 +22,12 @@ import { Preview } from "@nyris/nyris-react-components";
 import classNames from "classnames";
 import { useDropzone } from "react-dropzone";
 import translations from "./translations";
+import { addAssets } from "./utils";
 
-const labeles = translations(window.nyrisSettings.language);
-
+const labels = translations(window.nyrisSettings.language);
+const assets_base_url =
+  "https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api";
+declare var psol: any;
 export enum Screen {
   Hidden = "hidden",
   Hello = "hello",
@@ -33,7 +36,7 @@ export enum Screen {
   Result = "results",
   Refine = "refine",
 }
-
+export type CadenasScriptStatus = "ready" | "loading" | "failed" | "disabled";
 export interface AppProps {
   image: HTMLCanvasElement;
   errorMessage: string;
@@ -54,6 +57,7 @@ export interface AppProps {
   onGoBack: () => void;
   loading: boolean;
   firstSearchImage: HTMLCanvasElement;
+  cadenasScriptStatus: CadenasScriptStatus;
 }
 
 const SuccessMultiple = ({
@@ -68,6 +72,7 @@ const SuccessMultiple = ({
   loading,
   onGoBack,
   firstSearchImage,
+  cadenasScriptStatus,
 }: AppProps) => {
   const noResult = results.length === 0;
 
@@ -85,12 +90,12 @@ const SuccessMultiple = ({
     <>
       <div className="nyris__screen nyris__success-multiple">
         <div className="nyris__main-heading ">
-          {noResult ? labeles["Let’s try that again"] : labeles["Success!"]}
+          {noResult ? labels["Let’s try that again"] : labels["Success!"]}
         </div>
         <div className="nyris__main-description">
           {noResult
-            ? labeles["We couldn’t find matches"]
-            : `${results.length} ${labeles["matches found"]}`}
+            ? labels["We couldn’t find matches"]
+            : `${results.length} ${labels["matches found"]}`}
         </div>
         <div className="nyris__main-content">
           <div className="nyris__success-multiple-preview">
@@ -155,14 +160,19 @@ const SuccessMultiple = ({
               {image !== firstSearchImage ? (
                 <div className="go-back-button" onClick={() => onGoBack()}>
                   <GoBack width={16} height={16} />
-                  {labeles["Back to request image"]}
+                  {labels["Back to request image"]}
                 </div>
               ) : (
                 ""
               )}
               <div className="nyris__success-multiple-result-list">
                 {results.map((r, i) => (
-                  <Result {...r} key={i} onSimilarSearch={onSimilarSearch} />
+                  <Result
+                    {...r}
+                    key={i}
+                    onSimilarSearch={onSimilarSearch}
+                    cadenasScriptStatus={cadenasScriptStatus}
+                  />
                 ))}
               </div>
             </>
@@ -190,16 +200,16 @@ const LoadingSpinner = () => {
       <div className="nyris__wait-spinner">
         <img src={spinner} width={66} height={66} />
       </div>
-      <div>{labeles["Analyzing image..."]}</div>
+      <div>{labels["Analyzing image..."]}</div>
     </div>
   );
 };
 
 const Wait = () => (
   <div className="nyris__screen nyris__wait">
-    <div className="nyris__main-heading">{labeles["Hold on"]}</div>
+    <div className="nyris__main-heading">{labels["Hold on"]}</div>
     <div className="nyris__main-description">
-      {labeles["We are working hard on finding the product"]}
+      {labels["We are working hard on finding the product"]}
     </div>
     <LoadingSpinner />
   </div>
@@ -228,7 +238,7 @@ const Fail = ({
         <p>
           <br />
           <br />
-          {labeles["Oops!"]}
+          {labels["Oops!"]}
         </p>
       </div>
       <div className="nyris__fail-content">
@@ -237,9 +247,7 @@ const Fail = ({
           htmlFor="nyris__hello-open-camera"
         >
           <span>
-            {isMobile
-              ? labeles["Click a picture"]
-              : labeles["Upload a picture"]}
+            {isMobile ? labels["Click a picture"] : labels["Upload a picture"]}
           </span>
           <img src={camera} width={16} height={16} />
         </label>
@@ -297,14 +305,14 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
               backgroundColor: window.nyrisSettings.browseGalleryButtonColor,
             }}
           >
-            {labeles["Browse gallery"]}
+            {labels["Browse gallery"]}
           </label>
           <label
             className="nyris__hello-upload"
             style={{ backgroundColor: window.nyrisSettings.primaryColor }}
             htmlFor="nyris__hello-open-camera"
           >
-            {labeles["Take a photo"]}
+            {labels["Take a photo"]}
             <img src={camera} width={16} height={16} />
           </label>
         </div>
@@ -315,7 +323,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
             style={{ backgroundColor: window.nyrisSettings.primaryColor }}
             htmlFor="nyris__hello-upload-input"
           >
-            {labeles["Upload a picture"]}
+            {labels["Upload a picture"]}
             <img src={camera} width={16} height={16} />
           </label>
 
@@ -328,7 +336,7 @@ const Hello = ({ onFile, onFileDropped }: AppProps) => {
             <img src={drop_zone} width={48} height={48} />
             <div>
               <span className="nyris__hello-drop-zone-bold-text">
-                {labeles["Drag and drop an image here"]}
+                {labels["Drag and drop an image here"]}
               </span>
             </div>
           </div>
@@ -371,6 +379,34 @@ export const App = (props: AppProps) => {
   let resultsSingle = false;
   let resultsMultiple = false;
 
+  const [cadenasScriptStatus, setCadenasScriptStatus] =
+    useState<CadenasScriptStatus>("disabled");
+
+  useEffect(() => {
+    if (window.nyrisSettings.cadenasAPIKey) {
+      setCadenasScriptStatus("loading");
+      addAssets([`${assets_base_url}/css/psol.components.min.css`]).catch(
+        (error: any) => {
+          setCadenasScriptStatus("failed");
+        }
+      );
+
+      addAssets([`${assets_base_url}/js/thirdparty.min.js`])
+        .then(() => {
+          addAssets([`${assets_base_url}/js/psol.components.min.js`])
+            .then(() => {
+              setCadenasScriptStatus("ready");
+            })
+            .catch((error: any) => {
+              setCadenasScriptStatus("failed");
+            });
+        })
+        .catch((error: any) => {
+          setCadenasScriptStatus("failed");
+        });
+    }
+  }, []);
+
   switch (showScreen) {
     case Screen.Hello:
       content = <Hello {...props} />;
@@ -380,11 +416,13 @@ export const App = (props: AppProps) => {
       break;
     case Screen.Fail:
       content = (
-        <Fail {...props} errorMessage={labeles["Something went wrong"]} />
+        <Fail {...props} errorMessage={labels["Something went wrong"]} />
       );
       break;
     case Screen.Result:
-      content = <SuccessMultiple {...props} />;
+      content = (
+        <SuccessMultiple {...props} cadenasScriptStatus={cadenasScriptStatus} />
+      );
       wide = true;
       resultsMultiple = true;
       break;

@@ -401,11 +401,15 @@ export default class NyrisAPI {
    * @param requestId The request ID to submit the feedback event to.
    * @param payload See [[FeedbackEventPayload]].
    */
-  async sendFeedback(
-    sessionId: string,
-    requestId: string,
-    payload: FeedbackEventPayload
-  ) {
+  async sendFeedback({
+    sessionId,
+    requestId,
+    payload,
+  }: {
+    sessionId?: string;
+    requestId: string;
+    payload: FeedbackEventPayload;
+  }) {
     const headers = {
       "X-Api-Key": this.apiKey,
       "Content-Type": "application/json",

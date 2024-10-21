@@ -1,28 +1,21 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Collapse, Grid, Typography, Tooltip } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import { ReactComponent as IconOpenLink }  from 'common/assets/icons/Union.svg';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { Icon } from '@nyris/nyris-react-components';
+import NoImage from '../common/assets/images/no-image.svg';
 import { useMediaQuery } from 'react-responsive';
 import { ImagePreviewCarousel } from './carousel/ImagePreviewCarousel';
-import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
-import { ReactComponent as IconShare } from 'common/assets/icons/Fill.svg';
-import { ReactComponent as IconDisLike } from 'common/assets/icons/icon_dislike.svg';
-import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
 import { AppState } from 'types';
 import { useAppSelector } from 'Store/Store';
 import { prepareImageList } from '../helpers/CommonHelper';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import NoImage from '../common/assets/images/no-image.svg';
-import { ReactComponent as Box3dIcon } from 'common/assets/icons/3d.svg';
-import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useTranslation } from 'react-i18next';
 import ProductAttribute from './ProductAttribute';
 import CadenasWebViewer from './CadenasWebViewer';
 import { makeStyles } from '@material-ui/core/styles';
 import { get } from 'lodash';
-import { ReactComponent as IconSettings } from 'common/assets/icons/settings.svg';
-import {truncateString} from "../helpers/truncateString";
+import { truncateString } from '../helpers/truncateString';
 
 const useStyles = makeStyles(theme => ({
   buttonStyle3D: {
@@ -200,7 +193,7 @@ function ProductDetailView(props: Props) {
                 }
               }}
             >
-              <IconSearchImage color={'#AAABB5'} />
+              <Icon name="search_image" color={'#AAABB5'} />
             </Button>
           )}
           {dataImageCarousel.length === 0 && (
@@ -249,7 +242,7 @@ function ProductDetailView(props: Props) {
                   setIs3dView(true);
                 }}
               >
-                <Box3dIcon width={16} height={16} color={'#AAABB5'} />
+                <Icon name="box3d" width={16} height={16} color={'#AAABB5'} />
               </div>
             )}
           {is3dView && (
@@ -268,7 +261,7 @@ function ProductDetailView(props: Props) {
                 setIs3dView(false);
               }}
             >
-              <CloseIcon width={16} height={16} color={'#FFF'} />
+              <Icon name="close" color={'#FFF'} />
             </div>
           )}
         </div>
@@ -402,7 +395,7 @@ function ProductDetailView(props: Props) {
                     </div>
                   )}
                 </div>
-  
+
                 <Grid
                   item
                   xs={12}
@@ -470,7 +463,7 @@ function ProductDetailView(props: Props) {
                           {settings.secondaryCTAButton.secondaryCTAIcon && (
                             <>
                               {!settings.secondaryCTAButton.secondaryCTAIconSource ? (
-                                <IconSettings fill={settings.secondaryCTAButton.secondaryCTAButtonTextColor || '#FFFFFF'} />
+                                <Icon name="settings" color="white" />
                               ) : (
                                 <img
                                   alt="secondary"
@@ -538,10 +531,12 @@ function ProductDetailView(props: Props) {
                           {settings.CTAButton?.CTAIcon && (
                             <>
                               {!settings.CTAButton.CTAIconSource ? (
-                                <IconOpenLink
+                                <Icon
+                                  name="link"
                                   fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'}
                                   width={16}
                                 />
+
                               ) : (
                                 <img
                                   alt="secondary"
@@ -605,94 +600,6 @@ function ProductDetailView(props: Props) {
                 </Grid>
               </Grid>
             </div>
-  
-            {settings.showFeedbackAndShare && (
-              <div
-                className="box-bottom"
-                style={{
-                  height: '48px',
-                  padding: '0px 16px 0px 16px',
-                  marginBottom: 10,
-                  marginTop: 10,
-                  display: 'flex',
-                  justifyContent: 'center',
-                }}
-              >
-                <Grid
-                  container
-                  justifyContent={
-                    settings.shareOption ? 'space-between' : 'space-around'
-                  }
-                  alignItems="center"
-                >
-                  <Grid item>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Button
-                        className="btn-item"
-                        onClick={() => {
-                          handlerFeedback('like');
-                          setFeedback('like');
-                        }}
-                      >
-                        <IconLike
-                          width={24}
-                          height={24}
-                          color={feedback === 'like' ? '#3E36DC' : '#000000'}
-                        />
-                      </Button>
-                    </div>
-                  </Grid>
-                  <Grid item>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Button
-                        className="btn-item"
-                        onClick={() => {
-                          handlerFeedback('dislike');
-                          setFeedback('dislike');
-                        }}
-                      >
-                        <IconDisLike
-                          width={24}
-                          height={24}
-                          color={feedback === 'dislike' ? '#CC1854' : '#000000'}
-                        />
-                      </Button>
-                    </div>
-                  </Grid>
-                  {settings.shareOption && (
-                    <Grid item>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Button
-                          className="btn-item"
-                          onClick={() => onHandlerModalShare()}
-                        >
-                          <IconShare width={24} height={24} color="#000000" />
-                        </Button>
-                      </div>
-                    </Grid>
-                  )}
-                  {/* <Grid item>
-                <div display={'flex'} alignItems={'center'}>
-                  <Button className="btn-item">
-                    <div
-                      className=""
-                      display={'flex'}
-                      justifyContent={'center'}
-                      alignItems={'center'}
-                    >
-                      <img
-                        src={IconSupport}
-                        alt="image_item"
-                        className="icon_support"
-                        style={{ width: '30px' }}
-                      />
-                    </div>
-                  </Button>
-                </div>
-              </Grid> */}
-                </Grid>
-              </div>
-            )}
           </div>
         )}
       </div>
