@@ -79,6 +79,10 @@ var settings = {
     CTAIconSource: '',
     CTALinkField: '',
   },
+  //field mappins
+  field: {
+    productDetails: 'keyword_1',
+  },
   language: 'en',
   // features
   showPoweredByNyris: '',
@@ -112,22 +116,6 @@ var settings = {
   secondaryCTAButtonText: 'Configure Now',
   clarityId: '',
   noSimilarSearch: false,
-
-  //field mappins
-  field: {
-    ctaLinkField: 'main_offer_link',
-    productName: 'title',
-    productDetails: 'keyword_1',
-    manufacturerNumber: 'keyword_0',
-    productTag: 'brand',
-    //WarehouseVariant
-    warehouseNumber: 'custom_id_key_2',
-    warehouseNumberValue: 'custom_id_value_2',
-    warehouseShelfNumber: 'custom_id_key_1',
-    warehouseShelfNumberValue: 'custom_id_value_1',
-    warehouseStock: 'custom_id_key_3',
-    warehouseStockValue: 'custom_id_value_3',
-  },
 };
 settings['customSearchRequest'] = null;
 settings['responseHook'] = null;
