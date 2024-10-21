@@ -45,8 +45,6 @@ function ProductDetailView(props: Props) {
   const {
     dataItem,
     handleClose,
-    handlerFeedback,
-    onHandlerModalShare,
     show3dView = false,
     onSearchImage,
   } = props;
@@ -55,7 +53,6 @@ function ProductDetailView(props: Props) {
   const { settings } = useAppSelector<AppState>((state: any) => state);
 
   const [collapseDescription, setCollapseDescription] = useState(false);
-  const [feedback, setFeedback] = useState('none');
   const [is3dView, setIs3dView] = useState(show3dView);
   const [dataImageCarousel, setDataImageCarouSel] = useState<any[]>([]);
   const [urlImage, setUrlImage] = useState<string>('');
