@@ -461,20 +461,7 @@ function ProductDetailView(props: Props) {
                             </Typography>
                           </Tooltip>
                           {settings.secondaryCTAButton.secondaryCTAIcon && (
-                            <>
-                              {!settings.secondaryCTAButton.secondaryCTAIconSource ? (
-                                <Icon name="settings" color="white" />
-                              ) : (
-                                <img
-                                  alt="secondary"
-                                  style={{
-                                    width: '16px',
-                                    objectFit: 'contain',
-                                  }}
-                                  src={settings.secondaryCTAButton.secondaryCTAIconSource}
-                                />
-                              )}
-                            </>
+                            <Icon name="settings" color="white" />
                           )}
                         </div>
                       </div>
@@ -529,25 +516,11 @@ function ProductDetailView(props: Props) {
                             </Typography>
                           </Tooltip>
                           {settings.CTAButton?.CTAIcon && (
-                            <>
-                              {!settings.CTAButton.CTAIconSource ? (
-                                <Icon
-                                  name="link"
-                                  fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'}
-                                  width={16}
-                                />
-
-                              ) : (
-                                <img
-                                  alt="secondary"
-                                  style={{
-                                    width: '16px',
-                                    objectFit: 'contain',
-                                  }}
-                                  src={settings.CTAButton.CTAIconSource}
-                                />
-                              )}
-                            </>
+                            <Icon
+                              name="link"
+                              fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'}
+                              width={16}
+                            />
                           )}
                         </div>
                       </div>

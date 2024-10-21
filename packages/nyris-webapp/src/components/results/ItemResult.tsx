@@ -416,19 +416,7 @@ function ItemResult(props: Props) {
                   </Tooltip>
                   {settings.secondaryCTAButton.secondaryCTAIcon && (
                     <div style={{ width: '16px' }}>
-                      {!settings.secondaryCTAButton.secondaryCTAIconSource ? (
-                        <Icon name="settings" color="white" />
-                      ) : (
-                        <img
-                          alt="secondary"
-                          style={{
-                            width: 16,
-                            height: 16,
-                            objectFit: 'cover',
-                          }}
-                          src={settings.secondaryCTAButton.secondaryCTAIconSource}
-                        />
-                      )}
+                      <Icon name="settings" color="white" />
                     </div>
                     )}
                 </div>
@@ -491,23 +479,11 @@ function ItemResult(props: Props) {
                   </Tooltip>
                   {settings.CTAButton?.CTAIcon && (
                     <div style={{ width: '16px' }}>
-                      {!settings.CTAButton.CTAIconSource ? (
-                        <Icon
-                          name="link"
-                          fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'}
-                          width={16}
-                        />
-                      ) : (
-                        <img
-                          alt="secondary"
-                          style={{
-                            width: 16,
-                            height: 16,
-                            objectFit: 'cover',
-                          }}
-                        src={settings.CTAButton.CTAIconSource}
+                      <Icon
+                        name="link"
+                        fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'}
+                        width={16}
                       />
-                    )}
                     </div>
                   )}
                 </div>

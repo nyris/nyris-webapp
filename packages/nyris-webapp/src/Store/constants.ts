@@ -27,15 +27,6 @@ export const defaultSettings: AppSettings = {
   secondaryTitle: '',
   theme: {},
   field: {
-    productName: '',
     productDetails: '',
-    manufacturerNumber: '',
-    productTag: '',
-    warehouseNumber: '',
-    warehouseNumberValue: '',
-    warehouseShelfNumber: '',
-    warehouseShelfNumberValue: '',
-    warehouseStock: '',
-    warehouseStockValue: '',
   },
 };

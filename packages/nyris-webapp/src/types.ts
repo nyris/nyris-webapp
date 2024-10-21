@@ -33,16 +33,7 @@ export interface Cadenas {
   catalog?: string;
 }
 export interface Field {
-  productName: string;
   productDetails: string;
-  manufacturerNumber: string;
-  productTag: string;
-  warehouseNumber: string;
-  warehouseNumberValue: string;
-  warehouseShelfNumber: string;
-  warehouseShelfNumberValue: string;
-  warehouseStock: string;
-  warehouseStockValue: string;
 }
 interface CTAButtonSettings {
   CTAButton?: boolean,
@@ -50,7 +41,6 @@ interface CTAButtonSettings {
   CTAButtonTextColor?: string,
   CTAButtonColor?: string,
   CTAIcon?: boolean,
-  CTAIconSource?: string,
   CTALinkField?: string,
 }
 
@@ -60,7 +50,6 @@ interface SecondaryCTAButton {
   secondaryCTAButtonTextColor?: string,
   secondaryCTAButtonColor?: string,
   secondaryCTAIcon?: boolean,
-  secondaryCTAIconSource?: string,
   secondaryCTALinkField?: string,
 }
 
