@@ -113,3 +113,9 @@ export interface CanvasWithId {
   canvas: HTMLCanvasElement;
   id: string;
 }
+
+declare global {
+  interface Window {
+    settings: AppSettings;
+  }
+}

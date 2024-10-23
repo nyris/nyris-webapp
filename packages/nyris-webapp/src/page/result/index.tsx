@@ -263,7 +263,7 @@ function ResultComponent(props: Props) {
       return;
     }
 
-    if (!settings.showFeedback || !showFeedback) return;
+    if (!window.settings.showFeedback || !showFeedback) return;
 
     const handleScroll = () => {
       setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
@@ -285,12 +285,7 @@ function ResultComponent(props: Props) {
       window.removeEventListener('scroll', handleScroll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    showFeedback,
-    settings.showFeedback,
-    results,
-    props.allSearchResults?.hits,
-  ]);
+  }, [showFeedback, results, props.allSearchResults?.hits]);
 
   const submitFeedback = async (data: boolean) => {
     setShowFeedbackSuccess(true);
