@@ -72,7 +72,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     } else {
       setShowFilter(false);
     }
-  }, [history.location, valueInput, visualSearch]);
+  }, [history.location, valueInput, visualSearch, requestImages]);
 
   useEffect(() => {
     if (visualSearch) {
@@ -92,7 +92,14 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visualSearch, dispatch, refine, history, isAlgoliaEnabled]);
+  }, [
+    visualSearch,
+    dispatch,
+    refine,
+    history,
+    isAlgoliaEnabled,
+    requestImages,
+  ]);
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {

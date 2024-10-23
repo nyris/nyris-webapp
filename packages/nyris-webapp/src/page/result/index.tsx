@@ -138,14 +138,13 @@ function ResultComponent(props: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestImage]);
 
-  // TODO: Handler like dislike
   const sendFeedBackAction = async (type: string) => {
     feedbackSuccessEpic(stateGlobal, type === 'like');
   };
 
-  // TODO: Search image with url or file
   const getUrlToCanvasFile = async (url: string) => {
     dispatch(updateStatusLoading(true));
+
     if (isMobile) {
       executeScroll();
       // setOpenModalImage(false);
@@ -258,8 +257,13 @@ function ResultComponent(props: Props) {
   }, [showPostFilter, isPostFilterEnabled, requestImage]);
 
   useEffect(() => {
-    if (!settings.showFeedback || results?.length === 0 || !showFeedback)
+    if (results?.length === 0 || props.allSearchResults?.hits.length === 0) {
+      setFeedbackStatus('hidden');
+      setShowFeedback(false);
       return;
+    }
+
+    if (!settings.showFeedback || !showFeedback) return;
 
     const handleScroll = () => {
       setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
@@ -281,7 +285,12 @@ function ResultComponent(props: Props) {
       window.removeEventListener('scroll', handleScroll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showFeedback, settings.showFeedback]);
+  }, [
+    showFeedback,
+    settings.showFeedback,
+    results,
+    props.allSearchResults?.hits,
+  ]);
 
   const submitFeedback = async (data: boolean) => {
     setShowFeedbackSuccess(true);
@@ -349,29 +358,6 @@ function ResultComponent(props: Props) {
                   position: 'relative',
                 }}
               >
-                {showFeedbackSuccess && (
-                  <div className={'feedback-floating'}>
-                    <div className="feedback-section">
-                      <div className="feedback-success">
-                        Thanks for your feedback!
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {feedbackStatus === 'visible' && !showFeedbackSuccess && (
-                  <div className={'feedback-floating'}>
-                    <div className="feedback-section">
-                      <Feedback
-                        submitFeedback={submitFeedback}
-                        onFeedbackClose={() => {
-                          setFeedbackStatus('submitted');
-                          dispatch(setShowFeedback(false));
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-
                 {!isMobile &&
                 firstSearchResults &&
                 requestImages[0] !== firstSearchImage &&
@@ -435,12 +421,37 @@ function ResultComponent(props: Props) {
                         requestImage={requestImage}
                         searchQuery={searchQuery}
                       />
-                      {/* <div
+                      <div
                         className="box-item-result ml-auto mr-auto"
                         style={{ position: 'absolute' }}
                       >
-                     
-                      </div> */}
+                        {showFeedbackSuccess && (
+                          <div className={'feedback-floating'}>
+                            <div className="feedback-section">
+                              <div className="feedback-success">
+                                Thanks for your feedback!
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {feedbackStatus === 'visible' &&
+                          !showFeedbackSuccess && (
+                            <div className={'feedback-floating'}>
+                              <div className="feedback-section feedback-backdrop-blur" />
+
+                              <div className="feedback-section">
+                                <Feedback
+                                  submitFeedback={submitFeedback}
+                                  onFeedbackClose={() => {
+                                    setFeedbackStatus('submitted');
+                                    dispatch(setShowFeedback(false));
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+                      </div>
                     </div>
                   </div>
                   <div

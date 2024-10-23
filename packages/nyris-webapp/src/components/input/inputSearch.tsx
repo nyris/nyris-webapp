@@ -98,7 +98,7 @@ const SearchBox = (props: any) => {
       history.push('/result');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visualSearch, isAlgoliaEnabled]);
+  }, [visualSearch, isAlgoliaEnabled, requestImages]);
 
   useEffect(() => {
     if (history.location?.pathname === '/') {
