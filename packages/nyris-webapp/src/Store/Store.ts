@@ -12,7 +12,6 @@ settings.algolia.enabled = true;
 settings.preview = true;
 settings.showFeedbackAndShare = false;
 settings.multiImageSearch = false;
-settings.showFeedback = true;
 
 if (settings.rfq?.enabled && settings.support?.enabled) {
   settings.support.enabled = false;

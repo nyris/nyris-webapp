@@ -4,13 +4,13 @@ import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import './ExperienceVisualSearch.scss';
 import { ReactComponent as ExperienceIcon } from 'common/experience-visual-icon.svg';
 import { useAppDispatch, useAppSelector } from '../../Store/Store';
-import { ReactComponent as IconSearchImage } from 'common/assets/icons/icon_search_image2.svg';
 import {
   loadingActionResults,
   updateStatusLoading,
 } from '../../Store/search/Search';
 import { useImageSearch } from 'hooks/useImageSearch';
 import { useHistory } from 'react-router-dom';
+import { Icon } from '@nyris/nyris-react-components';
 
 function ExperienceVisualSearch() {
   const dispatch = useAppDispatch();
@@ -127,7 +127,8 @@ function ExperienceVisualSearch() {
                       }}
                     />
                     <div className="box-icon-modal">
-                      <IconSearchImage
+                      <Icon
+                        name="search_image"
                         width={16}
                         height={16}
                         color={'#AAABB5'}

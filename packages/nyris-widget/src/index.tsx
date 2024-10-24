@@ -255,18 +255,39 @@ class Nyris {
     return regionWithMaxConfidence.normalizedRect;
   };
 
+  extractPreFilterFromUrl(url: string) {
+    const regex = /\/ip40_([^\/]+)\/#/;
+    const match = url.match(regex);
+    return match && match[1] ? match[1] : null;
+  }
+
   async startProcessing(isFirstSearch: boolean) {
     // this.showScreen(Screen.Wait);
     this.setFeedbackStatus("hidden");
     this.loading = true;
     this.render();
+
     try {
       await this.updateThumbnail();
+      const prefilterFromUrl = this.extractPreFilterFromUrl(
+        window.location.href
+      );
+
+      let prefilters;
+      if (prefilterFromUrl) {
+        prefilters = [
+          { key: "brand", values: [prefilterFromUrl.toLocaleUpperCase()] },
+        ];
+      }
 
       let options: ImageSearchOptions = {
         cropRect: this.selection,
       };
-      const searchResult = await this.nyrisApi.find(options, this.image);
+      const searchResult = await this.nyrisApi.find(
+        options,
+        this.image,
+        prefilters
+      );
 
       this.requestId = searchResult.id;
 

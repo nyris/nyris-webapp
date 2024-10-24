@@ -7,10 +7,10 @@ import { ToastHelper } from 'helpers/ToastHelper';
 import { isUndefined } from 'lodash';
 import { TextareaAutosize } from '@material-ui/core';
 import toast from 'react-hot-toast';
-import { ReactComponent as ErrorIcon } from 'common/assets/icons/error.svg';
 import { useMediaQuery } from 'react-responsive';
 import { useAppSelector } from '../../Store/Store';
 import useRequestStore from 'Store/requestStore';
+import { Icon } from '@nyris/nyris-react-components';
 interface Props {
   setIsRfqModalOpen: any;
   isRfqModalOpen?: any;
@@ -122,7 +122,7 @@ export default function RfqModal({
             },
             icon: (
               <div style={{ minWidth: '20px', minHeight: '20px' }}>
-                <ErrorIcon />
+                <Icon name="error" />
               </div>
             ),
           },

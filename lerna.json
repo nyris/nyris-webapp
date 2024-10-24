@@ -3,6 +3,6 @@
     "packages/*",
     "packages/vizo/*"
   ],
-  "version": "0.3.59",
+  "version": "0.3.61",
   "npmClient": "yarn"
 }

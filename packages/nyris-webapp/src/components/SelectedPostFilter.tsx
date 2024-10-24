@@ -1,12 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
-import { ReactComponent as IconClose } from 'common/assets/icons/close.svg';
 import { atom } from 'jotai';
 import { useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { useFilter } from 'hooks/useFilter';
 import { get } from 'lodash';
 import { clearPostFilter, setPostFilter } from 'Store/search/Search';
+import { Icon } from '@nyris/nyris-react-components';
 
 export type CurrentRefinementsProps = {
   className?: string;
@@ -81,7 +81,7 @@ export function SelectedPostFilter({ className }: CurrentRefinementsProps) {
                   );
                 }}
               >
-                <IconClose width={12} height={12} />
+                <Icon name="close" width={12} height={12} />
               </div>
             </div>
           );
