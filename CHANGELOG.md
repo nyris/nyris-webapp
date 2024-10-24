@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.61 - 2024-10-24
+
+### Added
+- Pre-filter and metadata CTA link for Widget
+- Field flexibility for Search Suite
+
 ## 0.3.60 - 2024-10-16
 
 ### Fix
