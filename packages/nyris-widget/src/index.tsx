@@ -20,6 +20,7 @@ import NyrisAPI, {
 import { ResultProps } from "./Result";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import packageJson from "../package.json";
+import { FeedbackStatus } from "./type";
 
 interface NyrisSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
@@ -34,6 +35,7 @@ interface NyrisSettings extends NyrisAPISettings {
   navigatePreference: string;
   cadenasAPIKey?: string;
   cadenasCatalog?: string;
+  feedback?: boolean;
 }
 const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
 
@@ -54,10 +56,13 @@ class Nyris {
     document.createElement("canvas");
   private firstSearchResults: ResultProps[] = [];
 
+  private feedbackStatus: FeedbackStatus;
+  private requestId = "";
+
   constructor(nyrisSettings: NyrisSettings) {
     this.nyrisApi = new NyrisAPI({ ...nyrisSettings });
     this.instantRedirectPatterns = nyrisSettings.instantRedirectPatterns || [];
-
+    this.feedbackStatus = "hidden";
     let mountPoint = document.getElementById("nyris-mount-point");
     if (!mountPoint) {
       console.warn("#nyris-mount-point not found. Attaching widget to body");
@@ -105,6 +110,12 @@ class Nyris {
       firstSearchImage: this.firstSearchImage,
       loading: this.loading,
       cadenasScriptStatus: "disabled",
+      submitFeedback: (data) => this.submitFeedback(data),
+      feedbackStatus: this.feedbackStatus,
+      setFeedbackStatus: (status: FeedbackStatus) =>
+        this.setFeedbackStatus(
+          this.feedbackStatus === "submitted" ? "submitted" : status
+        ),
     };
     ReactDOM.render(
       <React.StrictMode>
@@ -121,6 +132,22 @@ class Nyris {
   restart() {
     this.showScreen(Screen.Hello);
     // TODO this.dom.window.removeClass('nyris__main--wide');
+  }
+
+  setFeedbackStatus(status: FeedbackStatus) {
+    this.feedbackStatus = status;
+
+    this.render();
+  }
+
+  async submitFeedback(data: boolean) {
+    this.nyrisApi.sendFeedback({
+      requestId: this.requestId,
+      payload: {
+        event: "feedback",
+        data: { success: data },
+      },
+    });
   }
 
   async updateThumbnail() {
@@ -211,6 +238,8 @@ class Nyris {
   onGoBack = () => {
     this.results = JSON.parse(JSON.stringify(this.firstSearchResults));
     this.image = this.firstSearchImage;
+    this.setFeedbackStatus("submitted");
+
     this.render();
   };
 
@@ -234,22 +263,34 @@ class Nyris {
 
   async startProcessing(isFirstSearch: boolean) {
     // this.showScreen(Screen.Wait);
+    this.setFeedbackStatus("hidden");
     this.loading = true;
     this.render();
-    
+
     try {
       await this.updateThumbnail();
-      const prefilterFromUrl = this.extractPreFilterFromUrl(window.location.href);
-      
+      const prefilterFromUrl = this.extractPreFilterFromUrl(
+        window.location.href
+      );
+
       let prefilters;
       if (prefilterFromUrl) {
-        prefilters = [{ key: 'brand', values: [prefilterFromUrl.toLocaleUpperCase()] }]
+        prefilters = [
+          { key: "brand", values: [prefilterFromUrl.toLocaleUpperCase()] },
+        ];
       }
 
       let options: ImageSearchOptions = {
         cropRect: this.selection,
       };
-      const searchResult = await this.nyrisApi.find(options, this.image, prefilters);
+      const searchResult = await this.nyrisApi.find(
+        options,
+        this.image,
+        prefilters
+      );
+
+      this.requestId = searchResult.id;
+
       if (
         searchResult.results.length === 1 &&
         this.shouldRedirect(searchResult)
@@ -259,6 +300,14 @@ class Nyris {
         return;
       }
       this.loading = false;
+      if (window.nyrisSettings.feedback && searchResult.results.length > 0) {
+        setTimeout(() => {
+          // window.removeEventListener('scroll', handleScroll, { capture: true });
+          if (this.feedbackStatus === "hidden") {
+            this.setFeedbackStatus("visible");
+          }
+        }, 2500);
+      }
       this.renderResults(searchResult.results, isFirstSearch);
     } catch (e: any) {
       this.loading = false;

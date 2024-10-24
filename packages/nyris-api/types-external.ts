@@ -21,7 +21,8 @@ export interface WH {
 
 export interface SearchResult {
   results: OfferNyrisResult[];
-  requestId: string;
+  id: string;
+  session: string;
   categoryPredictions: CategoryPrediction[];
   codes: Code[];
   duration: number;
