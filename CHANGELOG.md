@@ -8,6 +8,11 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Pre-filter and metadata CTA link for Widget
 - Field flexibility for Search Suite
+- Feedback for search suite
+
+### Tech debts
+- Move Icons to react-components
+- Remove Cadenas codes and use nyris assets instead
 
 ## 0.3.60 - 2024-10-16
 
