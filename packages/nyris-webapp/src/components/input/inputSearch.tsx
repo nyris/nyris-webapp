@@ -1,14 +1,11 @@
 import { Button, Tooltip } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
-import IconCamera from 'common/assets/icons/camera.svg';
 import { useQuery } from 'hooks/useQuery';
 import { isEmpty } from 'lodash';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { connectSearchBox } from 'react-instantsearch-dom';
 import { useHistory } from 'react-router-dom';
-import { ReactComponent as IconFilter } from 'common/assets/icons/filter_settings.svg';
-import { ReactComponent as IconSearch } from 'common/assets/icons/icon_search.svg';
 
 import {
   reset,
@@ -25,6 +22,7 @@ import { useImageSearch } from 'hooks/useImageSearch';
 import UploadDisclaimer from 'components/UploadDisclaimer';
 import useRequestStore from 'Store/requestStore';
 import { useSearchOrRedirect } from 'hooks/useSearchOrRedirect';
+import { Icon } from '@nyris/nyris-react-components';
 
 const SearchBox = (props: any) => {
   const { refine }: any = props;
@@ -100,7 +98,7 @@ const SearchBox = (props: any) => {
       history.push('/result');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visualSearch, isAlgoliaEnabled]);
+  }, [visualSearch, isAlgoliaEnabled, requestImages]);
 
   useEffect(() => {
     if (history.location?.pathname === '/') {
@@ -221,10 +219,12 @@ const SearchBox = (props: any) => {
                             }),
                       }}
                     >
-                      <IconFilter color="white" />
+                      <Icon name="filter_settings" color="white" />
                     </div>
                   )}
-                  {!showPreFilter && <IconSearch width={16} height={16} />}
+                  {!showPreFilter && (
+                    <Icon name="search" width={16} height={16} />
+                  )}
                   {!isEmpty(preFilter) && showPreFilter && (
                     <div
                       style={{
@@ -343,7 +343,12 @@ const SearchBox = (props: any) => {
                       padding: 7,
                     }}
                   >
-                    <img src={IconCamera} alt="" width={18} height={18} />
+                    <Icon
+                      name="camera_simple"
+                      width={18}
+                      height={18}
+                      fill="#2B2C46"
+                    />
                   </IconButton>
                 </label>
               </Tooltip>

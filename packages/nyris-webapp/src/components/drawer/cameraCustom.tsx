@@ -14,16 +14,12 @@ import {
 } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 
-import { ReactComponent as IconInfo } from 'common/assets/icons/info-tooltip.svg';
-import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
-import { ReactComponent as GalleryIcon } from 'common/assets/icons/gallery.svg';
-import { ReactComponent as NextArrowIcon } from 'common/assets/icons/next-arrow.svg';
-
 import useRequestStore from 'Store/requestStore';
 import { useImageSearch } from 'hooks/useImageSearch';
 import ImageCaptureHelpModal from 'components/ImageCaptureHelpModal';
 import { createPortal } from 'react-dom';
 import { compressImage } from 'utils';
+import { Icon } from '@nyris/nyris-react-components';
 
 interface Props {
   show: boolean;
@@ -153,13 +149,13 @@ function CameraCustom(props: Props) {
                   setImageCaptureHelpModal(s => !s);
                 }}
               >
-                <IconInfo className="text-white w-4 h-4" />
+                <Icon name="info" className="text-white w-4 h-4" />
               </div>
               <div
                 className="h-[60px] w-[60px] flex justify-center items-center"
                 onClick={() => handleClose()}
               >
-                <CloseIcon className="text-white w-4 h-4" />
+                <Icon name="close" className="text-white w-4 h-4" />
               </div>
             </div>
             <div
@@ -257,7 +253,10 @@ function CameraCustom(props: Props) {
                           />
                           <label htmlFor="icon-button-file">
                             <div className="w-12 h-12 bg-[#615e669f] rounded-full border-2 border-solid border-white flex justify-center items-center">
-                              <GalleryIcon className="text-white w-4 h-4" />
+                              <Icon
+                                name="gallery"
+                                className="text-white w-4 h-4"
+                              />
                             </div>
                           </label>
                         </div>
@@ -418,7 +417,8 @@ function CameraCustom(props: Props) {
                     >
                       Multi-Image Search for better matches
                     </div>
-                    <NextArrowIcon
+                    <Icon
+                      name="next_arrow"
                       className={cx([
                         'text-[#55566B]',
                         canMultiImageSearch ? 'text-white' : 'text-[#55566B]',

@@ -13,6 +13,7 @@ import { debounce } from "lodash";
 import { ReactComponent as Logo } from "./images/logo.svg";
 import { ReactComponent as DeutscheLogo } from "./images/deutsche_logo.svg";
 import { ReactComponent as GoBack } from "./images/path.svg";
+import { ReactComponent as CloseButton } from "./images/close.svg";
 
 import "./styles/nyris.scss";
 
@@ -443,9 +444,7 @@ export const App = (props: AppProps) => {
           <div className="nyris__wrapper">
             <div className={divMainClassNames}>
               <div className="nyris__header">
-                <div className="nyris__header-icon" onClick={onClose}>
-                  <img src={close} width={16} height={16} />
-                </div>
+                <CloseButton onClick={onClose} width={24} style={{ cursor: 'pointer' }} />
               </div>
               {content}
               <div

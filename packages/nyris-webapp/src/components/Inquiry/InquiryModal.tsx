@@ -7,11 +7,10 @@ import { ToastHelper } from 'helpers/ToastHelper';
 import { isUndefined } from 'lodash';
 import { TextareaAutosize, Tooltip } from '@material-ui/core';
 import toast from 'react-hot-toast';
-import { ReactComponent as ErrorIcon } from 'common/assets/icons/error.svg';
-import { ReactComponent as InfoTooltip } from 'common/assets/icons/info-tooltip.svg';
 
 import { useAppSelector } from 'Store/Store';
 import { useMediaQuery } from 'react-responsive';
+import { Icon } from '@nyris/nyris-react-components';
 interface Props {
   requestImage: any;
   selectedRegion: any;
@@ -132,7 +131,7 @@ export default function InquiryModal({
             },
             icon: (
               <div style={{ minWidth: '20px', minHeight: '20px' }}>
-                <ErrorIcon />
+                <Icon name="error" />
               </div>
             ),
           },
@@ -269,7 +268,12 @@ export default function InquiryModal({
                   placement="top"
                   arrow={true}
                 >
-                  <InfoTooltip style={{ cursor: 'pointer' }} />
+                  <Icon
+                    name="info"
+                    style={{ cursor: 'pointer' }}
+                    width={12}
+                    height={12}
+                  />
                 </Tooltip>
               </div>
 

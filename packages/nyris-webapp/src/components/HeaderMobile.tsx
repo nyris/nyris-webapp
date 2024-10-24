@@ -11,12 +11,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { reset, setPreFilter, updateQueryText } from 'Store/search/Search';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 
-import { ReactComponent as FilterIcon } from 'common/assets/icons/filter.svg';
-import { ReactComponent as LogoutIcon } from 'common/assets/icons/logout.svg';
-import { ReactComponent as CameraSimpleIcon } from 'common/assets/icons/camera_simple.svg';
-import { ReactComponent as PreFilterIcon } from 'common/assets/icons/filter_settings.svg';
-import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
-
 import { useQuery } from 'hooks/useQuery';
 import DefaultModal from './modal/DefaultModal';
 import useRequestStore from 'Store/requestStore';
@@ -25,6 +19,7 @@ import UploadDisclaimer from './UploadDisclaimer';
 import PreFilterComponent from './pre-filter';
 import { useSearchOrRedirect } from 'hooks/useSearchOrRedirect';
 import MobilePostFilter from './MobilePostFilter';
+import { Icon } from '@nyris/nyris-react-components';
 
 interface Props {
   onToggleFilterMobile?: any;
@@ -77,7 +72,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
     } else {
       setShowFilter(false);
     }
-  }, [history.location, valueInput, visualSearch]);
+  }, [history.location, valueInput, visualSearch, requestImages]);
 
   useEffect(() => {
     if (visualSearch) {
@@ -97,7 +92,14 @@ function HeaderMobileComponent(props: Props): JSX.Element {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visualSearch, dispatch, refine, history, isAlgoliaEnabled]);
+  }, [
+    visualSearch,
+    dispatch,
+    refine,
+    history,
+    isAlgoliaEnabled,
+    requestImages,
+  ]);
 
   useEffect(() => {
     if (!isEmpty(searchQuery)) {
@@ -228,12 +230,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
             }}
             onClick={() => setShowLogoutModal(false)}
           >
-            <CloseIcon
-              width={'16px'}
-              height={'16px'}
-              fontSize={'16px'}
-              color="black"
-            />
+            <Icon name="close" color="black" />
           </div>
           <p style={{ fontSize: '36px', fontWeight: 'bold', color: '#2B2C46' }}>
             Logout
@@ -333,7 +330,12 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                 setShowLogoutModal(true);
               }}
             >
-              <LogoutIcon className="text-[#AAABB5]" />
+              <Icon
+                name="logout"
+                className="text-[#AAABB5]"
+                width={24}
+                height={24}
+              />
             </div>
           )}
         </div>
@@ -396,7 +398,9 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                         'rounded-full',
                       ])}
                     />
-                    <PreFilterIcon
+
+                    <Icon
+                      name="filter_settings"
                       className={classNames(
                         !isEmpty(preFilter) ? 'text-[#3E36DC]' : 'text-black',
                       )}
@@ -440,7 +444,7 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                     }
                   }}
                 >
-                  <CameraSimpleIcon />
+                  <Icon name="camera_simple" />
                 </div>
               </div>
             </div>
@@ -481,7 +485,8 @@ function HeaderMobileComponent(props: Props): JSX.Element {
                   alignItems: 'center',
                 }}
               >
-                <FilterIcon
+                <Icon
+                  name="filter"
                   className={classNames([
                     isPostFilterApplied
                       ? 'text-[#3E36DC]'

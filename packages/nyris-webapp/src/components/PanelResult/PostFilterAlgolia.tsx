@@ -10,9 +10,9 @@ import { useHistory } from 'react-router-dom';
 import { useAppSelector } from 'Store/Store';
 import { ExpandablePanelCustom } from './expandable-panel';
 import { getPanelAttributes, getPanelId } from './refinements';
-import { ReactComponent as CloseIcon } from 'common/assets/icons/close.svg';
 import { useTranslation } from 'react-i18next';
 import { orderBy } from 'lodash';
+import { Icon } from '@nyris/nyris-react-components';
 
 export type ExpandablePanelProps = CurrentRefinementsProvided & {
   children: React.ReactNode;
@@ -207,7 +207,7 @@ export default function PostFilterPanelAlgolia({
                 height: '32px',
               }}
             >
-              <CloseIcon color="#2B2C46" />
+              <Icon name="close" color="#2B2C46" />
             </Button>
           </div>
         )}

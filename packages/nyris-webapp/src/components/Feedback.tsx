@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import { ReactComponent as IconLike } from 'common/assets/icons/icon_like.svg';
-import { ReactComponent as IconDislike } from 'common/assets/icons/icon_dislike.svg';
-import { ReactComponent as IconClose } from 'common/assets/icons/close.svg';
+import { Icon } from '@nyris/nyris-react-components';
+import { useState } from 'react';
 
 function Feedback({
   submitFeedback,
@@ -27,7 +25,7 @@ function Feedback({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <IconDislike />
+        <Icon name="dislike" />
       </div>
       <div
         className="feedback-icon-wrapper scroll-n"
@@ -35,13 +33,13 @@ function Feedback({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <IconLike />
+        <Icon name="like" />
       </div>
       <div
         className="feedback-icon-wrapper-close"
         onClick={() => onFeedbackClose()}
       >
-        <IconClose />
+        <Icon name="close" />
       </div>
     </div>
   );

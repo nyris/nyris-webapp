@@ -1,6 +1,5 @@
 import { Button } from '@material-ui/core';
-import { ReactComponent as RemoveIcon } from 'common/assets/icons/minus.svg';
-import { ReactComponent as AddIcon } from 'common/assets/icons/add-rounded.svg';
+import { Icon } from '@nyris/nyris-react-components';
 import classNames from 'classnames';
 import { Collapse } from 'components/collapse/collapse';
 import type { MouseEventHandler } from 'react';
@@ -68,7 +67,11 @@ function ExpandablePanelComponent({
               {header || attributes[0]}
             </p>
           </div>
-          {!isMobile && <>{isOpened ? <RemoveIcon /> : <AddIcon />}</>}
+          {!isMobile && (
+            <>
+              {isOpened ? <Icon name="minus" /> : <Icon name="plus_rounded" />}
+            </>
+          )}
         </Button>
 
         <Collapse isCollapsed={!isOpened}>

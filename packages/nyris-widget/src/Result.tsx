@@ -19,6 +19,17 @@ export const Result = (r: ResultProps) => {
   const [bounding, setBounding] = useState<any>(null);
   const mountPoint = document.querySelector("#nyris-mount-point");
   const { cadenasAPIKey } = window.nyrisSettings;
+
+  const getCTAURL = () => {
+    if (!r.metadata || !r.metadata.startsWith('search?')) {
+      return r.links?.main;
+    }
+    const index = window.location.href.indexOf('/#/');
+    return index !== -1
+      ? `${window.location.href.substring(0, index + 3)}${r.metadata}`
+      : window.location.href;
+  }
+
   return (
     <div className="nyris__success-multiple-result">
       <div className="nyris__success-multiple-result-box">
@@ -94,7 +105,7 @@ export const Result = (r: ResultProps) => {
           </div>
           <a
             className="nyris__product-cta"
-            href={r.links?.main}
+            href={getCTAURL()}
             target={window.nyrisSettings.navigatePreference}
             style={{
               backgroundColor: window.nyrisSettings.primaryColor || "#3E36DC",

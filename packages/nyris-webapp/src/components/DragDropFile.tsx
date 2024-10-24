@@ -3,11 +3,11 @@ import { useDropzone } from 'react-dropzone';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { updateStatusLoading, loadingActionResults } from 'Store/search/Search';
 import { useHistory } from 'react-router-dom';
-import { ReactComponent as IconDownload } from 'common/assets/icons/IconUploadDownward.svg';
 
 import { useTranslation } from 'react-i18next';
 import Loading from './Loading';
 import { useImageSearch } from 'hooks/useImageSearch';
+import { Icon } from '@nyris/nyris-react-components';
 
 interface Props {
   acceptTypes: any;
@@ -65,7 +65,7 @@ function DragDropFile(props: Props) {
           })}
         >
           <div style={{ marginBottom: 16 }}>
-            <IconDownload width={48} height={48} />
+            <Icon name="drop" width={48} height={48} />
           </div>
           <label className="" style={{ fontSize: 14 }}>
             <span className="fw-700 text-f14" style={{ paddingRight: '4px' }}>
