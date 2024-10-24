@@ -231,7 +231,6 @@ const SuccessMultiple = ({
                     submitFeedback={handleSubmitFeedback}
                     onFeedbackClose={() => {
                       setFeedbackStatus("submitted");
-                      // dispatch(setShowFeedback(false));
                     }}
                   />
                 </div>
@@ -504,7 +503,11 @@ export const App = (props: AppProps) => {
           <div className="nyris__wrapper">
             <div className={divMainClassNames}>
               <div className="nyris__header">
-                <CloseButton onClick={onClose} width={24} style={{ cursor: 'pointer' }} />
+                <CloseButton
+                  onClick={onClose}
+                  width={24}
+                  style={{ cursor: "pointer" }}
+                />
               </div>
               {content}
               <div

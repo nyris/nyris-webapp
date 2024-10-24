@@ -4,7 +4,6 @@ import similar_search from "./images/similar_search.svg";
 import { createPortal } from "react-dom";
 import Popup3D from "./Popup3D";
 import { CadenasScriptStatus } from "./App";
-import Feedback from "./Components/Feedback";
 
 export interface ResultProps {
   metadata: string;
