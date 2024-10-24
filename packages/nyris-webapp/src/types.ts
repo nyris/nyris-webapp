@@ -33,18 +33,37 @@ export interface Cadenas {
   catalog?: string;
 }
 export interface Field {
-  ctaLinkField: string;
-  secondaryCTALinkField?: string;
-  productName: string;
   productDetails: string;
-  manufacturerNumber: string;
-  productTag: string;
-  warehouseNumber: string;
-  warehouseNumberValue: string;
-  warehouseShelfNumber: string;
-  warehouseShelfNumberValue: string;
-  warehouseStock: string;
-  warehouseStockValue: string;
+}
+interface CTAButtonSettings {
+  CTAButton?: boolean,
+  CTAButtonText?: string,
+  CTAButtonTextColor?: string,
+  CTAButtonColor?: string,
+  CTAIcon?: boolean,
+  CTALinkField?: string,
+}
+
+interface SecondaryCTAButton {
+  secondaryCTAButton?: boolean,
+  secondaryCTAButtonText?: string,
+  secondaryCTAButtonTextColor?: string,
+  secondaryCTAButtonColor?: string,
+  secondaryCTAIcon?: boolean,
+  secondaryCTALinkField?: string,
+}
+
+interface Attributes {
+  productAttributes?: boolean,
+  labelsAttributes?: boolean,
+  attributeOneLabelValue?: string,
+  attributeOneValue?: string,
+  attributeTwoLabelValue?: string,
+  attributeTwoValue?: string,
+  attributeThreeLabelValue?: string,
+  attributeThreeValue?: string,
+  attributeFourLabelValue?: string,
+  attributeFourValue?: string,
 }
 
 export interface AppSettings extends NyrisAPISettings {
@@ -55,14 +74,17 @@ export interface AppSettings extends NyrisAPISettings {
   brandName?: string;
   cadenas?: Cadenas;
   clarityId?: string;
-  CTAButtonText?: string;
+  mainTitle: string,
+  secondaryTitle: string,
+  CTAButton?: CTAButtonSettings;
+  secondaryCTAButton?: SecondaryCTAButton;
+  attributes?: Attributes;
   experienceVisualSearch?: boolean;
   experienceVisualSearchImages?: string[];
   field: Field;
   headerText?: string;
   instantRedirectPatterns: string[];
   isBrandNameTitleVisible?: boolean;
-  itemIdLabel?: string;
   language?: string;
   multiImageSearch?: boolean;
   noImageUrl?: string;
@@ -85,7 +107,6 @@ export interface AppSettings extends NyrisAPISettings {
   support?: Support;
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
-  warehouseVariant?: boolean;
 }
 
 export interface SearchSuiteSettings {
@@ -96,9 +117,6 @@ export interface SearchSuiteSettings {
   mobileFooterImageColor?: string;
   primaryColor?: string;
   secondaryColor?: string;
-  secondaryCTAButtonColor?: string;
-  CTAButtonColor?: string;
-  CTAButtonTextColor?: string;
   mainTextColor?: string;
   brandFieldBackground?: string;
   brandFieldPadding?: string;
