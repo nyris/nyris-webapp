@@ -24,7 +24,7 @@ import { FeedbackStatus } from "./type";
 
 interface NyrisSettings extends NyrisAPISettings {
   instantRedirectPatterns: string[];
-  initiatorElementId: string;
+  initiatorElementId: string | string[];
   primaryColor: string;
   cameraIconColour: string;
   browseGalleryButtonColor: string;
@@ -76,11 +76,22 @@ class Nyris {
       console.log("Nyris.widget.VERSION:", packageJson.version);
 
       document.body.addEventListener("click", (event) => {
-        // @ts-ignore
-        const isVisualSearchElement = event?.target?.closest(
-          `#${nyrisSettings.initiatorElementId}`
-        );
-
+        let isVisualSearchElement = false;
+        if (typeof nyrisSettings.initiatorElementId === "object") {
+          isVisualSearchElement = nyrisSettings.initiatorElementId.some(
+            (id) => {
+              // @ts-ignore
+              if (event?.target?.id === id && id != "") return true;
+              return false;
+            }
+          );
+        }
+        if (typeof nyrisSettings.initiatorElementId === "string") {
+          // @ts-ignore
+          isVisualSearchElement = event?.target?.closest(
+            `#${nyrisSettings.initiatorElementId}`
+          );
+        }
         if (isVisualSearchElement) {
           this.toggleNyris();
         }
@@ -283,6 +294,7 @@ class Nyris {
       let options: ImageSearchOptions = {
         cropRect: this.selection,
       };
+
       const searchResult = await this.nyrisApi.find(
         options,
         this.image,
