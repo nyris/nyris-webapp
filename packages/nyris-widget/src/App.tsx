@@ -535,7 +535,6 @@ export const App = (props: AppProps) => {
       {showVisualSearchIcon && (
         <div className="nyris__icon" onClick={onToggle} onDrop={onFile}>
           <img src={eye} width={38} height={22} />
-          <div className="nyris__icon-text">Try our visual search</div>
         </div>
       )}
     </React.Fragment>
