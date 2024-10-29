@@ -26,7 +26,5 @@ export const defaultSettings: AppSettings = {
   mainTitle: '',
   secondaryTitle: '',
   theme: {},
-  field: {
-    productDetails: '',
-  },
+  productDetails: '',
 };

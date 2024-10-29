@@ -98,13 +98,13 @@ function ProductDetailView(props: Props) {
     setDataImageCarouSel(valueKey);
   };
   const productDetails = useMemo(() => {
-    const details = get(dataItem, settings.field.productDetails);
+    const details = get(dataItem, settings.productDetails);
     try {
       return details.join(', ');
     } catch (e) {
       return details;
     }
-  }, [dataItem, settings.field.productDetails]);
+  }, [dataItem, settings.productDetails]);
 
   return (
     <div
@@ -316,7 +316,7 @@ function ProductDetailView(props: Props) {
                         <Typography
                           className="text-f16 max-line-1 fw-700"
                           style={{
-                            color: settings.theme.mainTextColor || '#2B2C46',
+                            color: '#2B2C46',
                             fontFamily: 'Source Sans 3',
                             fontSize: '16px',
                             lineHeight: '22.78px',
@@ -337,7 +337,7 @@ function ProductDetailView(props: Props) {
                         <Typography
                           className="text-f14 max-line-1 fw-400"
                           style={{
-                            color: settings.theme.mainTextColor || '#2B2C46',
+                            color: '#2B2C46',
                             width: 'fit-content',
                             marginLeft: 8,
                             fontSize: 14,
@@ -357,36 +357,36 @@ function ProductDetailView(props: Props) {
                         <ProductAttribute
                           title={settings.attributes?.attributeOneLabelValue}
                           value={get(dataItem, settings.attributes?.attributeOneValue || '')}
-                          padding={settings.theme.brandFieldPadding || '4px 8px'}
-                          backgroundColor={settings.theme.brandFieldBackground}
-                          isTitleVisible={settings.attributes?.labelsAttributes}
+                          padding={'4px 8px'}
+                          backgroundColor={'#E0E0E0'}
+                          isTitleVisible={!!settings.attributes?.attributeOneLabelValue}
                         />
                       )}
                       {!!get(dataItem, settings.attributes?.attributeTwoValue || '') && (
                         <ProductAttribute
                           title={settings.attributes?.attributeTwoLabelValue}
                           value={get(dataItem, settings.attributes?.attributeTwoValue || '')}
-                          padding={settings.theme.brandFieldPadding || '4px 8px'}
-                          backgroundColor={settings.theme.brandFieldBackground}
-                          isTitleVisible={settings.attributes?.labelsAttributes}
+                          padding={'4px 8px'}
+                          backgroundColor={'#E0E0E0'}
+                          isTitleVisible={!!settings.attributes?.attributeTwoLabelValue}
                         />
                       )}
                       {!!get(dataItem, settings.attributes?.attributeThreeValue || '') && (
                         <ProductAttribute
                           title={settings.attributes?.attributeThreeLabelValue}
                           value={get(dataItem, settings.attributes?.attributeThreeValue || '')}
-                          padding={settings.theme.brandFieldPadding || '4px 8px'}
-                          backgroundColor={settings.theme.brandFieldBackground}
-                          isTitleVisible={settings.attributes?.labelsAttributes}
+                          padding={'4px 8px'}
+                          backgroundColor={'#E0E0E0'}
+                          isTitleVisible={!!settings.attributes?.attributeThreeLabelValue}
                         />
                       )}
                       {!!get(dataItem, settings.attributes?.attributeFourValue || '') && (
                         <ProductAttribute
                           title={settings.attributes?.attributeFourLabelValue}
                           value={get(dataItem, settings.attributes?.attributeFourValue || '')}
-                          padding={settings.theme.brandFieldPadding || '4px 8px'}
-                          backgroundColor={settings.theme.brandFieldBackground}
-                          isTitleVisible={settings.attributes?.labelsAttributes}
+                          padding={'4px 8px'}
+                          backgroundColor={'#E0E0E0'}
+                          isTitleVisible={!!settings.attributes?.attributeFourLabelValue}
                         />
                       )}
                     </div>
@@ -530,7 +530,7 @@ function ProductDetailView(props: Props) {
                         className="w-100 button-hover"
                         style={{
                           backgroundColor: '#F3F3F5',
-                          color: settings.theme.mainTextColor || '#2b2c46',
+                          color: '#2b2c46',
                           display: 'flex',
                           fontSize: 14,
                           justifyContent: 'space-between',
@@ -559,7 +559,7 @@ function ProductDetailView(props: Props) {
                             padding: 5,
                             paddingLeft: 15,
                             paddingRight: 15,
-                            color: settings.theme.mainTextColor || '#2b2c46',
+                            color: '#2b2c46',
                           }}
                         >
                           {productDetails}

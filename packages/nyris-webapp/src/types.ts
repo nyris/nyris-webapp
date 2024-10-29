@@ -55,7 +55,6 @@ interface SecondaryCTAButton {
 
 interface Attributes {
   productAttributes?: boolean,
-  labelsAttributes?: boolean,
   attributeOneLabelValue?: string,
   attributeOneValue?: string,
   attributeTwoLabelValue?: string,
@@ -75,13 +74,13 @@ export interface AppSettings extends NyrisAPISettings {
   cadenas?: Cadenas;
   clarityId?: string;
   mainTitle: string,
+  productDetails: string;
   secondaryTitle: string,
   CTAButton?: CTAButtonSettings;
   secondaryCTAButton?: SecondaryCTAButton;
   attributes?: Attributes;
   experienceVisualSearch?: boolean;
   experienceVisualSearchImages?: string[];
-  field: Field;
   headerText?: string;
   instantRedirectPatterns: string[];
   isBrandNameTitleVisible?: boolean;
@@ -117,9 +116,6 @@ export interface SearchSuiteSettings {
   mobileFooterImageColor?: string;
   primaryColor?: string;
   secondaryColor?: string;
-  mainTextColor?: string;
-  brandFieldBackground?: string;
-  brandFieldPadding?: string;
 }
 
 export type AppState = {

@@ -39,19 +39,12 @@ var settings = {
     logoWidth: '',
     primaryColor: '',
     secondaryColor: '',
-    CTAButtonColor: '',
-    CTAButtonTextColor: '',
-    secondaryCTAButtonColor: '',
-    mainTextColor: '',
-    brandFieldBackground: '',
-    brandFieldPadding: '',
   },
   // Card Results
   mainTitle: '',
   secondaryTitle: '',
+  productDetails: 'keyword_1',
   attributes: {
-    productAttributes: true,
-    labelsAttributes: true,
     attributeOneLabelValue: '',
     attributeOneValue: '',
     attributeTwoLabelValue: '',
@@ -67,7 +60,6 @@ var settings = {
     secondaryCTAButtonTextColor: '',
     secondaryCTAButtonColor: '',
     secondaryCTAIcon: '',
-    secondaryCTAIconSource: '',
     secondaryCTALinkField: '',
   },
   CTAButton: {
@@ -76,12 +68,7 @@ var settings = {
     CTAButtonTextColor: '',
     CTAButtonColor: '',
     CTAIcon: '',
-    CTAIconSource: '',
     CTALinkField: '',
-  },
-  //field mappins
-  field: {
-    productDetails: 'keyword_1',
   },
   language: 'en',
   // features
@@ -108,12 +95,9 @@ var settings = {
   },
   //UI - labels
   appTitle: '',
-  brandName: '',
   headerText: '',
   preFilterTitle: '',
-  CTAButtonText: 'View More',
   simpleCardView: false,
-  secondaryCTAButtonText: 'Configure Now',
   clarityId: '',
   noSimilarSearch: false,
 };
