@@ -7,6 +7,7 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 - Multiple initiator element id for widget
+- Feedback for widget
 
 ## 0.3.61 - 2024-10-24
 
