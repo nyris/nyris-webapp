@@ -79,6 +79,7 @@ var settings = {
   experienceVisualSearchImages: [],
   simpleCardView: false,
   clarityId: '',
+  noSimilarSearch: false,
   rfq: {
     enabled: '',
     emailTemplateId: '',
@@ -99,7 +100,6 @@ var settings = {
   appTitle: '',
   headerText: '',
   preFilterTitle: '',
-  noSimilarSearch: false,
 };
 settings['customSearchRequest'] = null;
 settings['responseHook'] = null;
