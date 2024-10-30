@@ -80,6 +80,7 @@ var settings = {
   simpleCardView: false,
   clarityId: '',
   noSimilarSearch: false,
+  showFeedback: false,
   rfq: {
     enabled: '',
     emailTemplateId: '',
