@@ -77,6 +77,8 @@ var settings = {
   preFilterOption: '',
   experienceVisualSearch: false,
   experienceVisualSearchImages: [],
+  simpleCardView: false,
+  clarityId: '',
   rfq: {
     enabled: '',
     emailTemplateId: '',
@@ -97,8 +99,6 @@ var settings = {
   appTitle: '',
   headerText: '',
   preFilterTitle: '',
-  simpleCardView: false,
-  clarityId: '',
   noSimilarSearch: false,
 };
 settings['customSearchRequest'] = null;
