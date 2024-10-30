@@ -24,6 +24,8 @@ import classNames from "classnames";
 import { useDropzone } from "react-dropzone";
 import translations from "./translations";
 import { addAssets } from "./utils";
+import Feedback from "./Components/Feedback";
+import { FeedbackStatus } from "./type";
 
 const labels = translations(window.nyrisSettings.language);
 const assets_base_url =
@@ -59,6 +61,9 @@ export interface AppProps {
   loading: boolean;
   firstSearchImage: HTMLCanvasElement;
   cadenasScriptStatus: CadenasScriptStatus;
+  submitFeedback: (data: boolean) => Promise<void>;
+  feedbackStatus: FeedbackStatus;
+  setFeedbackStatus: (status: FeedbackStatus) => void;
 }
 
 const SuccessMultiple = ({
@@ -74,11 +79,24 @@ const SuccessMultiple = ({
   onGoBack,
   firstSearchImage,
   cadenasScriptStatus,
+  submitFeedback,
+  feedbackStatus,
+  setFeedbackStatus,
 }: AppProps) => {
   const noResult = results.length === 0;
 
   const [currentSelection, setCurrentSelection] = useState(selection);
   const [expand, setExpand] = useState(noResult);
+
+  const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
+  const handleSubmitFeedback = async (data: boolean) => {
+    setShowFeedbackSuccess(true);
+    setTimeout(() => {
+      setShowFeedbackSuccess(false);
+    }, 3000);
+    setFeedbackStatus("submitted");
+    submitFeedback(data).then(() => {});
+  };
 
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords) => {
@@ -86,6 +104,30 @@ const SuccessMultiple = ({
     }, 500),
     []
   );
+
+  useEffect(() => {
+    if (
+      results?.length === 0 ||
+      feedbackStatus === "submitted" ||
+      feedbackStatus === "visible" ||
+      !window.nyrisSettings.feedback
+    ) {
+      return;
+    }
+
+    const handleScroll = () => {
+      setFeedbackStatus("visible");
+    };
+
+    window.addEventListener("scroll", handleScroll, {
+      capture: true,
+      once: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [feedbackStatus, results]);
 
   return (
     <>
@@ -176,6 +218,23 @@ const SuccessMultiple = ({
                   />
                 ))}
               </div>
+              {showFeedbackSuccess && (
+                <div className="nyris__feedback-section">
+                  <div className="nyris__feedback-success">
+                    Thanks for your feedback!
+                  </div>
+                </div>
+              )}
+              {feedbackStatus === "visible" && !showFeedbackSuccess && (
+                <div className="nyris__feedback-section">
+                  <Feedback
+                    submitFeedback={handleSubmitFeedback}
+                    onFeedbackClose={() => {
+                      setFeedbackStatus("submitted");
+                    }}
+                  />
+                </div>
+              )}
             </>
           )}
         </div>
@@ -444,7 +503,11 @@ export const App = (props: AppProps) => {
           <div className="nyris__wrapper">
             <div className={divMainClassNames}>
               <div className="nyris__header">
-                <CloseButton onClick={onClose} width={24} style={{ cursor: 'pointer' }} />
+                <CloseButton
+                  onClick={onClose}
+                  width={24}
+                  style={{ cursor: "pointer" }}
+                />
               </div>
               {content}
               <div
@@ -472,7 +535,6 @@ export const App = (props: AppProps) => {
       {showVisualSearchIcon && (
         <div className="nyris__icon" onClick={onToggle} onDrop={onFile}>
           <img src={eye} width={38} height={22} />
-          <div className="nyris__icon-text">Try our visual search</div>
         </div>
       )}
     </React.Fragment>

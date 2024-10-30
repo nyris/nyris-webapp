@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.62 - 2024-10-30
+
+### Added
+- Multiple initiator element id for widget
+- Feedback for widget
+
 ## 0.3.61 - 2024-10-24
 
 ### Added

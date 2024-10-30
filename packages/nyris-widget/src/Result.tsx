@@ -17,18 +17,19 @@ export interface ResultProps {
 export const Result = (r: ResultProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [bounding, setBounding] = useState<any>(null);
+
   const mountPoint = document.querySelector("#nyris-mount-point");
   const { cadenasAPIKey } = window.nyrisSettings;
 
   const getCTAURL = () => {
-    if (!r.metadata || !r.metadata.startsWith('search?')) {
+    if (!r.metadata || !r.metadata.startsWith("search?")) {
       return r.links?.main;
     }
-    const index = window.location.href.indexOf('/#/');
+    const index = window.location.href.indexOf("/#/");
     return index !== -1
       ? `${window.location.href.substring(0, index + 3)}${r.metadata}`
       : window.location.href;
-  }
+  };
 
   return (
     <div className="nyris__success-multiple-result">
