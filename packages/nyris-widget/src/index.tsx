@@ -348,6 +348,9 @@ declare global {
   let div = document.createElement("div");
   div.id = "nyris-mount-point";
   document.body.appendChild(div);
+  if (!window.nyrisSettings.language) {
+    window.nyrisSettings.language = "en";
+  }
   const nyris = new Nyris(window.nyrisSettings);
 };
 
@@ -355,5 +358,8 @@ window.addEventListener("load", (e) => {
   let div = document.createElement("div");
   div.id = "nyris-mount-point";
   document.body.appendChild(div);
+  if (!window.nyrisSettings.language) {
+    window.nyrisSettings.language = "en";
+  }
   const nyris = new Nyris(window.nyrisSettings);
 });
