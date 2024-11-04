@@ -4,30 +4,30 @@ Embed the widget to use nyris search on your website.
 
 ## Usage
 
-```shell script
-npm install @nyris/nyris-widget
-```
-
-Embed `widget.js` in your website and provide
-a `nyrisSettings` object.
+Inside your HTML (best just before the closing ```</body>``` tag), add the following code to embed the Nyris widget script and configure widget settings:
 
 ```html
 <script>
-window.nyrisSettings = {
-    // Required
-    apiKey: '<YOUR_API_KEY>',
-
-    // Optional
-    xOptions: 'default', // See "general request options" https://docs.nyris.io/#general-request-options
-    baseUrl: '', // Use different server URL
-    jpegQuality: 0.9, // Quality of the scaled image sent to the api
-    maxWidth: 500, // Maximal size of the scaled image
-    maxHeight: 500,
-    responseFormat: 'application/offers.complete+json', // See "response type" https://docs.nyris.io/#response-type
-    instantRedirectPatterns: [ 'mysite.com' ] // If exactly one result is returned and it contains `mysite.com`,go directly to the link.
-}
+    window.nyrisSettings = {
+        apiKey: '', // nyris Api key
+        initiatorElementId: ['id-1','id-2'], // IDs of HTML elements that trigger the widget; array with a single ID or multiple IDs
+        primaryColor: '#3E36DC', // Main color of logo and buttons
+        cameraIconColour: '#2B2C46', // Color for camera button
+        browseGalleryButtonColor: '#E4E3FF', // Color for 'browse gallery' button on mobile view
+        customerLogo: '', // Url for logo, if this property is empty default logo will be used
+        logoWidth: 256, // Width for customer logo in pixels, works only with customerLogo
+        ctaButtonText: 'View more', // Text of the button on result tile to go to product
+        language: 'en', // Language. 
+        navigatePreference: '_blank' // Behaviour of click to CTA button, open in current/new tab
+        cadenasAPIKey: '', // API key provided by cadenas
+        cadenasCatalog: '', // catalog provided  by cadenas
+        feedback: false , // Enables feedback; Always a boolean value   
+    };
+    var s = document.createElement("script");
+    s.src = "https://assets.nyris.io/nyris-widget/v1/widget.js";
+    document.getElementsByTagName('head')[0].appendChild(s);
 </script>
-<script src="node_modules/@nyris/nyris-widget/dist/widget.js"></script>
+
 ```
 
 ## Building a custom version
