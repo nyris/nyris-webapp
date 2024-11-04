@@ -241,7 +241,7 @@ function ItemResult(props: Props) {
                 display: 'flex',
                 justifyContent: 'space-between',
                 flexDirection: 'column',
-                color: settings.theme.mainTextColor || '#2B2C46',
+                color: '#2B2C46',
               }}
             >
               <div
@@ -259,7 +259,7 @@ function ItemResult(props: Props) {
                     <Typography
                       className="text-f12 max-line-1 fw-700"
                       style={{
-                        color: settings.theme.mainTextColor || '#2B2C46',
+                        color: '#2B2C46',
                         marginBottom: 4,
                         marginLeft: 8,
                       }}
@@ -274,7 +274,7 @@ function ItemResult(props: Props) {
                       display: 'flex',
                       justifyContent: 'space-between',
                       flexDirection: 'row',
-                      color: settings.theme.mainTextColor || '#2B2C46',
+                      color: '#2B2C46',
                     }}
                   >
                     <Tooltip
@@ -286,7 +286,7 @@ function ItemResult(props: Props) {
                       <Typography
                         className="text-f10 max-line-1 fw-400"
                         style={{
-                          color: settings.theme.mainTextColor || '#2B2C46',
+                          color: '#2B2C46',
                           marginBottom: 8,
                           marginLeft: 8,
                         }}
@@ -314,43 +314,43 @@ function ItemResult(props: Props) {
                     flexWrap: 'wrap',
                     marginBottom: settings.CTAButton?.CTAButton || settings.secondaryCTAButton?.secondaryCTAButton ? 8 : 0,
                     gridGap: 8,
-                    color: settings.theme.mainTextColor || '#2B2C46',
+                    color: '#2B2C46',
                   }}
                 >
                   {!!get(dataItem, settings.attributes?.attributeOneValue || '') && (
                     <ProductAttribute
                       title={settings.attributes?.attributeOneLabelValue}
                       value={get(dataItem, settings.attributes?.attributeOneValue || '')}
-                      padding={settings.theme.brandFieldPadding || '4px 8px'}
-                      backgroundColor={settings.theme.brandFieldBackground}
-                      isTitleVisible={settings.attributes?.labelsAttributes}
+                      padding={'4px 8px'}
+                      backgroundColor={'#E0E0E0'}
+                      isTitleVisible={!!settings.attributes?.attributeOneLabelValue}
                     />
                   )}
                   {!!get(dataItem, settings.attributes?.attributeTwoValue || '') && (
                     <ProductAttribute
                       title={settings.attributes?.attributeTwoLabelValue}
                       value={get(dataItem, settings.attributes?.attributeTwoValue || '')}
-                      padding={settings.theme.brandFieldPadding || '4px 8px'}
-                      backgroundColor={settings.theme.brandFieldBackground}
-                      isTitleVisible={settings.attributes?.labelsAttributes}
+                      padding={'4px 8px'}
+                      backgroundColor={'#E0E0E0'}
+                      isTitleVisible={!!settings.attributes?.attributeTwoLabelValue}
                     />
                   )}
                   {!!get(dataItem, settings.attributes?.attributeThreeValue || '') && (
                     <ProductAttribute
                       title={settings.attributes?.attributeThreeLabelValue}
                       value={get(dataItem, settings.attributes?.attributeThreeValue || '')}
-                      padding={settings.theme.brandFieldPadding || '4px 8px'}
-                      backgroundColor={settings.theme.brandFieldBackground}
-                      isTitleVisible={settings.attributes?.labelsAttributes}
+                      padding={'4px 8px'}
+                      backgroundColor={'#E0E0E0'}
+                      isTitleVisible={!!settings.attributes?.attributeThreeLabelValue}
                     />
                   )}
                   {!!get(dataItem, settings.attributes?.attributeFourValue || '') && (
                     <ProductAttribute
                       title={settings.attributes?.attributeFourLabelValue}
                       value={get(dataItem, settings.attributes?.attributeFourValue || '')}
-                      padding={settings.theme.brandFieldPadding || '4px 8px'}
-                      backgroundColor={settings.theme.brandFieldBackground}
-                      isTitleVisible={settings.attributes?.labelsAttributes}
+                      padding={'4px 8px'}
+                      backgroundColor={'#E0E0E0'}
+                      isTitleVisible={!!settings.attributes?.attributeFourLabelValue}
                     />
                   )}
                 </div>
