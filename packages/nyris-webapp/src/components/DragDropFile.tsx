@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import Loading from './Loading';
 import { useImageSearch } from 'hooks/useImageSearch';
 import { Icon } from '@nyris/nyris-react-components';
+import { isCadFile } from '@nyris/nyris-api';
+import { useCadSearch } from 'hooks/useCadSearch';
 
 interface Props {
   acceptTypes: any;
@@ -21,6 +23,7 @@ function DragDropFile(props: Props) {
   const { isLoading } = props;
   const settings = useAppSelector(state => state.settings);
   const { t } = useTranslation();
+  const { cadSearch } = useCadSearch();
 
   const { singleImageSearch } = useImageSearch();
 
@@ -31,12 +34,23 @@ function DragDropFile(props: Props) {
 
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
-
-      singleImageSearch({ image: fs[0], settings, showFeedback: true }).then(
-        () => {
+      if (isCadFile(fs[0])) {
+        dispatch(updateStatusLoading(true));
+        dispatch(loadingActionResults());
+        if (history.location.pathname !== '/result') {
+          history.push('/result');
+        }
+        cadSearch({ file: fs[0], settings, newSearch: true }).then(res => {
+          console.log({ res });
           dispatch(updateStatusLoading(false));
-        },
-      );
+        });
+      } else {
+        singleImageSearch({ image: fs[0], settings, showFeedback: true }).then(
+          () => {
+            dispatch(updateStatusLoading(false));
+          },
+        );
+      }
     },
   });
 

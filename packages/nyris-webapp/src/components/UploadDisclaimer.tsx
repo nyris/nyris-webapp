@@ -67,7 +67,7 @@ function UploadDisclaimer({
                 type="file"
                 name="take-picture"
                 id="nyris__upload-photo"
-                accept="image/jpeg,image/png,image/webp"
+                accept=".stp,.step,image/jpeg,image/png,image/webp"
                 onChange={makeFileHandler(file =>
                   onContinue({ file, dontShowAgain }),
                 )}

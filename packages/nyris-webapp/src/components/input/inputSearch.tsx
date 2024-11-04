@@ -23,6 +23,8 @@ import UploadDisclaimer from 'components/UploadDisclaimer';
 import useRequestStore from 'Store/requestStore';
 import { useSearchOrRedirect } from 'hooks/useSearchOrRedirect';
 import { Icon } from '@nyris/nyris-react-components';
+import { useCadSearch } from 'hooks/useCadSearch';
+import { isCadFile } from '@nyris/nyris-api';
 
 const SearchBox = (props: any) => {
   const { refine }: any = props;
@@ -41,6 +43,7 @@ const SearchBox = (props: any) => {
   const isAlgoliaEnabled = settings.algolia?.enabled;
   const searchbar = useRef<HTMLDivElement | null>(null);
   const { singleImageSearch } = useImageSearch();
+  const { cadSearch } = useCadSearch();
   const { user } = useAuth0();
   const [showDisclaimer, setShowDisclaimer] = useState(false);
 
@@ -112,20 +115,31 @@ const SearchBox = (props: any) => {
   const searchOrRedirect = useSearchOrRedirect();
 
   const onImageUpload = async (fs: any) => {
-    dispatch(updateStatusLoading(true));
-    dispatch(loadingActionResults());
-    if (history.location.pathname !== '/result') {
-      history.push('/result');
-    }
+    if (isCadFile(fs)) {
+      dispatch(updateStatusLoading(true));
+      dispatch(loadingActionResults());
+      if (history.location.pathname !== '/result') {
+        history.push('/result');
+      }
+      cadSearch({ file: fs, settings, newSearch: true }).then(res => {
+        dispatch(updateStatusLoading(false));
+      });
+    } else {
+      dispatch(updateStatusLoading(true));
+      dispatch(loadingActionResults());
+      if (history.location.pathname !== '/result') {
+        history.push('/result');
+      }
 
-    singleImageSearch({
-      image: fs,
-      settings,
-      showFeedback: true,
-      newSearch: true,
-    }).then(() => {
-      dispatch(updateStatusLoading(false));
-    });
+      singleImageSearch({
+        image: fs,
+        settings,
+        showFeedback: true,
+        newSearch: true,
+      }).then(() => {
+        dispatch(updateStatusLoading(false));
+      });
+    }
   };
 
   const onChangeText = (event: any) => {
@@ -305,7 +319,7 @@ const SearchBox = (props: any) => {
             )}
             <div className="wrap-box-input-mobile d-flex">
               <input
-                accept="image/*"
+                accept=".stp,.step,image/*"
                 id="icon-button-file"
                 type="file"
                 style={{ display: 'none' }}
@@ -315,6 +329,7 @@ const SearchBox = (props: any) => {
                 onChange={e => {
                   if (e?.target?.files) {
                     const file = e?.target?.files[0];
+
                     onImageUpload(file);
                   }
                 }}

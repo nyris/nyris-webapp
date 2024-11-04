@@ -353,14 +353,14 @@ function ResultComponent(props: Props) {
                   position: 'relative',
                 }}
               >
-                {!isMobile &&
+                {/* {!isMobile &&
                 firstSearchResults &&
                 requestImages[0] !== firstSearchImage &&
                 !fetchingResults ? (
                   <GoBack />
                 ) : (
                   ''
-                )}
+                )} */}
 
                 {!isMobile && settings.algolia.enabled && (
                   <div className="wrap-box-refinements">
@@ -383,7 +383,7 @@ function ResultComponent(props: Props) {
                   }}
                   className="mt-4 desktop:mt-0"
                 >
-                  {isMobile &&
+                  {/* {isMobile &&
                   firstSearchResults &&
                   requestImages[0] !== firstSearchImage &&
                   !fetchingResults ? (
@@ -392,7 +392,7 @@ function ResultComponent(props: Props) {
                     </div>
                   ) : (
                     ''
-                  )}
+                  )} */}
 
                   <div
                     className={'box-item-result ml-auto mr-auto'}

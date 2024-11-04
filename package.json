@@ -10,5 +10,8 @@
   "workspaces": [
     "packages/*",
     "packages/vizo/*"
-  ]
+  ],
+  "scripts": {
+    "search-suite": "lerna run start --scope @nyris/nyris-webapp --stream"
+  }
 }
