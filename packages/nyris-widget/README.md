@@ -9,18 +9,18 @@ Inside your HTML (best just before the closing ```</body>``` tag), add the follo
 ```html
 <script>
     window.nyrisSettings = {
-        apiKey: '', // nyris Api key
+        apiKey: '', // nyris API key
         initiatorElementId: ['id-1','id-2'], // IDs of HTML elements that trigger the widget; array with a single ID or multiple IDs
-        primaryColor: '#3E36DC', // Main color of logo and buttons
+        primaryColor: '#3E36DC', // Color for the logo and buttons (other than camera  and browse gallery buttons)
         cameraIconColour: '#2B2C46', // Color for camera button
-        browseGalleryButtonColor: '#E4E3FF', // Color for 'browse gallery' button on mobile view
-        customerLogo: '', // Url for logo, if this property is empty default logo will be used
+        browseGalleryButtonColor: '#E4E3FF', // Color of 'Browse Gallery' button in mobile view
+        customerLogo: '', // URL to display customer logo
         logoWidth: 256, // Width for customer logo in pixels, works only with customerLogo
-        ctaButtonText: 'View more', // Text of the button on result tile to go to product
-        language: 'en', // Language. 
-        navigatePreference: '_blank' // Behaviour of click to CTA button, open in current/new tab
+        ctaButtonText: 'View more', // Button text on result card linking to product details web page
+        language: 'en', // Widget display language
+        navigatePreference: '_blank' // Routing behaviour of the CTA button, open in current/new tab
         cadenasAPIKey: '', // API key provided by cadenas
-        cadenasCatalog: '', // catalog provided  by cadenas
+        cadenasCatalog: '', // Catalog ID provided by Cadenas
         feedback: false , // Enables feedback; Always a boolean value   
     };
     var s = document.createElement("script");
