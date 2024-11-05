@@ -36,33 +36,33 @@ export interface Field {
   productDetails: string;
 }
 interface CTAButtonSettings {
-  CTAButton?: boolean,
-  CTAButtonText?: string,
-  CTAButtonTextColor?: string,
-  CTAButtonColor?: string,
-  CTAIcon?: boolean,
-  CTALinkField?: string,
+  CTAButton?: boolean;
+  CTAButtonText?: string;
+  CTAButtonTextColor?: string;
+  CTAButtonColor?: string;
+  CTAIcon?: boolean;
+  CTALinkField?: string;
 }
 
 interface SecondaryCTAButton {
-  secondaryCTAButton?: boolean,
-  secondaryCTAButtonText?: string,
-  secondaryCTAButtonTextColor?: string,
-  secondaryCTAButtonColor?: string,
-  secondaryCTAIcon?: boolean,
-  secondaryCTALinkField?: string,
+  secondaryCTAButton?: boolean;
+  secondaryCTAButtonText?: string;
+  secondaryCTAButtonTextColor?: string;
+  secondaryCTAButtonColor?: string;
+  secondaryCTAIcon?: boolean;
+  secondaryCTALinkField?: string;
 }
 
 interface Attributes {
-  productAttributes?: boolean,
-  attributeOneLabelValue?: string,
-  attributeOneValue?: string,
-  attributeTwoLabelValue?: string,
-  attributeTwoValue?: string,
-  attributeThreeLabelValue?: string,
-  attributeThreeValue?: string,
-  attributeFourLabelValue?: string,
-  attributeFourValue?: string,
+  productAttributes?: boolean;
+  attributeOneLabelValue?: string;
+  attributeOneValue?: string;
+  attributeTwoLabelValue?: string;
+  attributeTwoValue?: string;
+  attributeThreeLabelValue?: string;
+  attributeThreeValue?: string;
+  attributeFourLabelValue?: string;
+  attributeFourValue?: string;
 }
 
 export interface AppSettings extends NyrisAPISettings {
@@ -73,9 +73,9 @@ export interface AppSettings extends NyrisAPISettings {
   brandName?: string;
   cadenas?: Cadenas;
   clarityId?: string;
-  mainTitle: string,
+  mainTitle: string;
   productDetails: string;
-  secondaryTitle: string,
+  secondaryTitle: string;
   CTAButton?: CTAButtonSettings;
   secondaryCTAButton?: SecondaryCTAButton;
   attributes?: Attributes;
@@ -92,6 +92,7 @@ export interface AppSettings extends NyrisAPISettings {
   preFilterOption?: boolean;
   preFilterTitle?: string;
   preview: boolean;
+  cadSearch?: boolean;
   refinements?: any;
   regions: boolean;
   rfq?: Rfq;

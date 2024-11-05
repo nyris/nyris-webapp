@@ -51,6 +51,8 @@ const SearchBox = (props: any) => {
     requestImages: state.requestImages,
   }));
 
+  const isCadSearch = window.settings.cadSearch;
+
   const visualSearch = useMemo(() => requestImages.length > 0, [requestImages]);
 
   useEffect(() => {
@@ -115,7 +117,7 @@ const SearchBox = (props: any) => {
   const searchOrRedirect = useSearchOrRedirect();
 
   const onImageUpload = async (fs: any) => {
-    if (isCadFile(fs)) {
+    if (isCadFile(fs) && isCadSearch) {
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
       if (history.location.pathname !== '/result') {
@@ -319,7 +321,7 @@ const SearchBox = (props: any) => {
             )}
             <div className="wrap-box-input-mobile d-flex">
               <input
-                accept=".stp,.step,image/*"
+                accept={`${isCadSearch ? '.stp,.step,' : ''}image/*`}
                 id="icon-button-file"
                 type="file"
                 style={{ display: 'none' }}

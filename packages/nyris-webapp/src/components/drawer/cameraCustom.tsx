@@ -36,7 +36,7 @@ function CameraCustom(props: Props) {
   const settings = useAppSelector(state => state.settings);
   const history = useHistory();
   const dispatch = useAppDispatch();
-
+  const isCadSearch = window.settings.cadSearch;
   const { singleImageSearch, multiImageSearch } = useImageSearch();
 
   const { requestImages, setRequestImages, regions } = useRequestStore(
@@ -83,7 +83,7 @@ function CameraCustom(props: Props) {
   };
 
   const handlerFindImage = async (image: any) => {
-    if (isCadFile(image)) {
+    if (isCadFile(image) && isCadSearch) {
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
       if (history.location.pathname !== '/result') {
@@ -92,11 +92,6 @@ function CameraCustom(props: Props) {
       cadSearch({ file: image, settings, newSearch: true }).then((res: any) => {
         dispatch(updateStatusLoading(false));
       });
-
-      dispatch(onToggleModalItemDetail(false));
-      handleClose();
-
-      return;
     } else {
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
@@ -112,10 +107,9 @@ function CameraCustom(props: Props) {
       }).then(() => {
         dispatch(updateStatusLoading(false));
       });
-
-      dispatch(onToggleModalItemDetail(false));
-      handleClose();
     }
+    dispatch(onToggleModalItemDetail(false));
+    handleClose();
   };
 
   const handleClose = () => {
@@ -263,7 +257,9 @@ function CameraCustom(props: Props) {
                                 handlerFindImage(file);
                               }
                             }}
-                            accept=".stp,.step,image/jpeg,image/png,image/webp"
+                            accept={`${
+                              isCadSearch ? '.stp,.step,' : ''
+                            }image/jpeg,image/png,image/webp`}
                             onClick={event => {
                               // @ts-ignore
                               event.target.value = '';

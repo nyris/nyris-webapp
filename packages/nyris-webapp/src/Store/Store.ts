@@ -11,6 +11,10 @@ declare var settings: AppSettings;
 settings.algolia.enabled = true;
 settings.showFeedbackAndShare = false;
 settings.multiImageSearch = false;
+settings.preview = true;
+if (settings.cadSearch) {
+  settings.preview = false;
+}
 
 if (settings.rfq?.enabled && settings.support?.enabled) {
   settings.support.enabled = false;

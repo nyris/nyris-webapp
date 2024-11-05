@@ -26,6 +26,7 @@ function DragDropFile(props: Props) {
   const { cadSearch } = useCadSearch();
 
   const { singleImageSearch } = useImageSearch();
+  const isCadSearch = window.settings.cadSearch;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[], _, e) => {
@@ -34,14 +35,13 @@ function DragDropFile(props: Props) {
 
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
-      if (isCadFile(fs[0])) {
+      if (isCadFile(fs[0]) && isCadSearch) {
         dispatch(updateStatusLoading(true));
         dispatch(loadingActionResults());
         if (history.location.pathname !== '/result') {
           history.push('/result');
         }
         cadSearch({ file: fs[0], settings, newSearch: true }).then(res => {
-          console.log({ res });
           dispatch(updateStatusLoading(false));
         });
       } else {

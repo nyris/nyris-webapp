@@ -33,7 +33,6 @@ function ImagePreviewComponent({
   isExpanded,
   isCameraUploadEnabled = true,
 }: {
-  requestImage?: any;
   imageSelection?: any;
   filteredRegions?: any;
   showAdjustInfo?: any;

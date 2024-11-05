@@ -37,10 +37,10 @@ export const useCadSearch = () => {
       let res: any;
 
       let filters: any[] = [];
-      const canvas = document.createElement('canvas');
+      // const canvas = document.createElement('canvas');
 
       dispatch(setRequestImage(file));
-      // setRequestImages([file as unknown as HTMLCanvasElement]);
+      setRequestImages([file as unknown as HTMLCanvasElement]);
 
       try {
         res = await findCad({
