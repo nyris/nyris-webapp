@@ -104,7 +104,7 @@ export interface AppSettings extends NyrisAPISettings {
   showGroup?: boolean;
   showPoweredByNyris?: boolean;
   simpleCardView?: boolean;
-  support?: Support;
+  support: Support;
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
 }

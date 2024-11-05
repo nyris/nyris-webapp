@@ -14,6 +14,7 @@ settings.multiImageSearch = false;
 settings.preview = true;
 if (settings.cadSearch) {
   settings.preview = false;
+  settings.support.enabled = false;
 }
 
 if (settings.rfq?.enabled && settings.support?.enabled) {

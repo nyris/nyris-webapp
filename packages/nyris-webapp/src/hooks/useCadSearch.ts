@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import { findCad } from 'services/image';
 import useRequestStore from 'Store/requestStore';
 import {
-  setFirstSearchImage,
   setFirstSearchResults,
   setRequestImage,
   setSearchResults,
@@ -66,7 +65,7 @@ export const useCadSearch = () => {
         // go back
         if (newSearch) {
           dispatch(setFirstSearchResults(payload));
-          dispatch(setFirstSearchImage(file));
+          // dispatch(setFirstSearchImage(file));
           // dispatch(setFirstSearchPrefilters(preFilter));
         }
       } catch (error) {
