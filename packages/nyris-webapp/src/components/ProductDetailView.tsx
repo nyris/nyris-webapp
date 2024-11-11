@@ -42,12 +42,7 @@ interface Props {
 }
 
 function ProductDetailView(props: Props) {
-  const {
-    dataItem,
-    handleClose,
-    show3dView = false,
-    onSearchImage,
-  } = props;
+  const { dataItem, handleClose, show3dView = false, onSearchImage } = props;
   const { sku } = dataItem;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = useAppSelector<AppState>((state: any) => state);
@@ -279,7 +274,11 @@ function ProductDetailView(props: Props) {
           <div className="info-container">
             <div className="info-sku">{dataItem.sku}</div>
             <div className="info-marking">{dataItem.Bezeichnung}</div>
-            <div className="info-description">{settings.language === 'en' ? dataItem.VK_Text_Englisch : dataItem.VK_Text_Deutsch}</div>
+            <div className="info-description">
+              {settings.language === 'en'
+                ? dataItem.VK_Text_Englisch
+                : dataItem.VK_Text_Deutsch}
+            </div>
           </div>
         ) : (
           <div
@@ -353,40 +352,60 @@ function ProductDetailView(props: Props) {
                   </div>
                   {settings.attributes?.productAttributes && (
                     <div className="attribute-container">
-                      {!!get(dataItem, settings.attributes?.attributeOneValue || '') && (
+                      {settings.attributes?.attributeOneValue && (
                         <ProductAttribute
                           title={settings.attributes?.attributeOneLabelValue}
-                          value={get(dataItem, settings.attributes?.attributeOneValue || '')}
+                          value={get(
+                            dataItem,
+                            settings.attributes?.attributeOneValue || '',
+                          )}
                           padding={'4px 8px'}
                           backgroundColor={'#E0E0E0'}
-                          isTitleVisible={!!settings.attributes?.attributeOneLabelValue}
+                          isTitleVisible={
+                            !!settings.attributes?.attributeOneLabelValue
+                          }
                         />
                       )}
-                      {!!get(dataItem, settings.attributes?.attributeTwoValue || '') && (
+                      {settings.attributes?.attributeTwoValue && (
                         <ProductAttribute
                           title={settings.attributes?.attributeTwoLabelValue}
-                          value={get(dataItem, settings.attributes?.attributeTwoValue || '')}
+                          value={get(
+                            dataItem,
+                            settings.attributes?.attributeTwoValue || '',
+                          )}
                           padding={'4px 8px'}
                           backgroundColor={'#E0E0E0'}
-                          isTitleVisible={!!settings.attributes?.attributeTwoLabelValue}
+                          isTitleVisible={
+                            !!settings.attributes?.attributeTwoLabelValue
+                          }
                         />
                       )}
-                      {!!get(dataItem, settings.attributes?.attributeThreeValue || '') && (
+                      {settings.attributes?.attributeThreeValue && (
                         <ProductAttribute
                           title={settings.attributes?.attributeThreeLabelValue}
-                          value={get(dataItem, settings.attributes?.attributeThreeValue || '')}
+                          value={get(
+                            dataItem,
+                            settings.attributes?.attributeThreeValue || '',
+                          )}
                           padding={'4px 8px'}
                           backgroundColor={'#E0E0E0'}
-                          isTitleVisible={!!settings.attributes?.attributeThreeLabelValue}
+                          isTitleVisible={
+                            !!settings.attributes?.attributeThreeLabelValue
+                          }
                         />
                       )}
-                      {!!get(dataItem, settings.attributes?.attributeFourValue || '') && (
+                      {settings.attributes?.attributeFourValue && (
                         <ProductAttribute
                           title={settings.attributes?.attributeFourLabelValue}
-                          value={get(dataItem, settings.attributes?.attributeFourValue || '')}
+                          value={get(
+                            dataItem,
+                            settings.attributes?.attributeFourValue || '',
+                          )}
                           padding={'4px 8px'}
                           backgroundColor={'#E0E0E0'}
-                          isTitleVisible={!!settings.attributes?.attributeFourLabelValue}
+                          isTitleVisible={
+                            !!settings.attributes?.attributeFourLabelValue
+                          }
                         />
                       )}
                     </div>
@@ -411,7 +430,9 @@ function ProductDetailView(props: Props) {
                     {settings.secondaryCTAButton?.secondaryCTAButton && (
                       <div
                         style={{
-                          background: settings.secondaryCTAButton?.secondaryCTAButtonColor || '#2B2C46',
+                          background:
+                            settings.secondaryCTAButton
+                              ?.secondaryCTAButtonColor || '#2B2C46',
                           borderRadius: 2,
                           marginTop: 8,
                           flex: 1,
@@ -431,16 +452,31 @@ function ProductDetailView(props: Props) {
                             width: '100%',
                             padding: '0px 12px',
                             minHeight: 34,
-                            cursor: settings.secondaryCTAButton?.secondaryCTALinkField ? 'pointer' : 'normal',
+                            cursor: settings.secondaryCTAButton
+                              ?.secondaryCTALinkField
+                              ? 'pointer'
+                              : 'normal',
                           }}
                           onClick={() => {
-                            if (settings.secondaryCTAButton?.secondaryCTALinkField) {
-                              window.open(`${get(dataItem, settings.secondaryCTAButton?.secondaryCTALinkField)}`, '_blank');
+                            if (
+                              settings.secondaryCTAButton?.secondaryCTALinkField
+                            ) {
+                              window.open(
+                                `${get(
+                                  dataItem,
+                                  settings.secondaryCTAButton
+                                    ?.secondaryCTALinkField,
+                                )}`,
+                                '_blank',
+                              );
                             }
                           }}
                         >
                           <Tooltip
-                            title={settings.secondaryCTAButton?.secondaryCTAButtonText || ''}
+                            title={
+                              settings.secondaryCTAButton
+                                ?.secondaryCTAButtonText || ''
+                            }
                             placement="top"
                             arrow={true}
                           >
@@ -451,10 +487,15 @@ function ProductDetailView(props: Props) {
                                 letterSpacing: '0.55px',
                                 maxWidth: '220px',
                                 paddingRight: '4px',
-                                color: settings.secondaryCTAButton.secondaryCTAButtonTextColor || '#FFFFFF',
+                                color:
+                                  settings.secondaryCTAButton
+                                    .secondaryCTAButtonTextColor || '#FFFFFF',
                               }}
                             >
-                              {settings.secondaryCTAButton?.secondaryCTAButtonText}
+                              {
+                                settings.secondaryCTAButton
+                                  ?.secondaryCTAButtonText
+                              }
                             </Typography>
                           </Tooltip>
                           {settings.secondaryCTAButton.secondaryCTAIcon && (
@@ -466,7 +507,9 @@ function ProductDetailView(props: Props) {
                     {settings.CTAButton?.CTAButton && (
                       <div
                         style={{
-                          background: settings.CTAButton?.CTAButtonColor || settings.theme?.primaryColor,
+                          background:
+                            settings.CTAButton?.CTAButtonColor ||
+                            settings.theme?.primaryColor,
                           borderRadius: 2,
                           marginTop: 8,
                           flex: 1,
@@ -486,16 +529,31 @@ function ProductDetailView(props: Props) {
                             width: '100%',
                             padding: '0px 12px',
                             minHeight: 34,
-                            cursor: settings.CTAButton?.CTALinkField ? 'pointer' : 'normal',
+                            cursor: settings.CTAButton?.CTALinkField
+                              ? 'pointer'
+                              : 'normal',
                           }}
                           onClick={() => {
                             if (settings.CTAButton?.CTALinkField) {
-                              window.open(`${get(dataItem, settings.CTAButton?.CTALinkField)}`, '_blank');
+                              window.open(
+                                `${get(
+                                  dataItem,
+                                  settings.CTAButton?.CTALinkField,
+                                )}`,
+                                '_blank',
+                              );
                             }
                           }}
                         >
                           <Tooltip
-                            title={get(dataItem, settings.CTAButton?.CTAButtonText || '') || settings.CTAButton?.CTAButtonText || ''}
+                            title={
+                              get(
+                                dataItem,
+                                settings.CTAButton?.CTAButtonText || '',
+                              ) ||
+                              settings.CTAButton?.CTAButtonText ||
+                              ''
+                            }
                             placement="top"
                             arrow={true}
                           >
@@ -503,19 +561,29 @@ function ProductDetailView(props: Props) {
                               className="text-f16 fw-600 max-line-1"
                               align="left"
                               style={{
-                                color: settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
+                                color:
+                                  settings.CTAButton?.CTAButtonTextColor ||
+                                  '#FFFFFF',
                                 letterSpacing: '0.55px',
                                 maxWidth: '220px',
                                 paddingRight: '4px',
                               }}
                             >
-                              {get(dataItem, settings.CTAButton?.CTAButtonText || '') || settings.CTAButton?.CTAButtonText || ''}
+                              {get(
+                                dataItem,
+                                settings.CTAButton?.CTAButtonText || '',
+                              ) ||
+                                settings.CTAButton?.CTAButtonText ||
+                                ''}
                             </Typography>
                           </Tooltip>
                           {settings.CTAButton?.CTAIcon && (
                             <Icon
                               name="link"
-                              fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'}
+                              fill={
+                                settings.CTAButton?.CTAButtonTextColor ||
+                                '#FFFFFF'
+                              }
                               width={16}
                             />
                           )}
@@ -523,7 +591,7 @@ function ProductDetailView(props: Props) {
                       </div>
                     )}
                   </div>
-                  
+
                   {productDetails && (
                     <div className="w-100">
                       <Button

@@ -14,7 +14,9 @@ function ProductAttribute(props: Props) {
     title,
     value,
     padding = props.padding || '4px 16px',
-    isTitleVisible = typeof props.isTitleVisible === 'boolean' ? props.isTitleVisible : true,
+    isTitleVisible = typeof props.isTitleVisible === 'boolean'
+      ? props.isTitleVisible
+      : true,
   } = props;
 
   return (
@@ -43,13 +45,9 @@ function ProductAttribute(props: Props) {
           {title}
         </Typography>
       ) : (
-        '' 
+        ''
       )}
-      <Tooltip
-        title={value}
-        placement="top"
-        arrow={true}
-      >
+      <Tooltip title={value} placement="top" arrow={true}>
         <Typography
           style={{
             color: '#2B2C46',
@@ -59,7 +57,7 @@ function ProductAttribute(props: Props) {
           }}
           className="text-f12 fw-400"
         >
-          {value}
+          {value || '-'}
         </Typography>
       </Tooltip>
     </div>
