@@ -47,7 +47,12 @@ function ProductAttribute(props: Props) {
       ) : (
         ''
       )}
-      <Tooltip title={value} placement="top" arrow={true}>
+      <Tooltip
+        title={value}
+        placement="top"
+        arrow={true}
+        disableHoverListener={!value}
+      >
         <Typography
           style={{
             color: '#2B2C46',
