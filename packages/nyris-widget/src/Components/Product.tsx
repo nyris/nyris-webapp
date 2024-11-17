@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import link from "./images/link.svg";
-import similar_search from "./images/similar_search.svg";
-import { createPortal } from "react-dom";
-import Popup3D from "./Popup3D";
-import { CadenasScriptStatus } from "./App";
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
+
+import link from '../images/link.svg';
+import similar_search from '../images/similar_search.svg';
+
+import Popup3D from '../Popup3D';
+import { CadenasScriptStatus } from '../App';
 
 export interface ResultProps {
   metadata: string;
@@ -14,18 +16,18 @@ export interface ResultProps {
   onSimilarSearch?: any;
   cadenasScriptStatus?: CadenasScriptStatus;
 }
-export const Result = (r: ResultProps) => {
+export const ProductCard = (r: ResultProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [bounding, setBounding] = useState<any>(null);
 
-  const mountPoint = document.querySelector("#nyris-mount-point");
+  const mountPoint = document.querySelector('#nyris-mount-point');
   const { cadenasAPIKey } = window.nyrisSettings;
 
   const getCTAURL = () => {
-    if (!r.metadata || !r.metadata.startsWith("search?")) {
+    if (!r.metadata || !r.metadata.startsWith('search?')) {
       return r.links?.main;
     }
-    const index = window.location.href.indexOf("/#/");
+    const index = window.location.href.indexOf('/#/');
     return index !== -1
       ? `${window.location.href.substring(0, index + 3)}${r.metadata}`
       : window.location.href;
@@ -34,7 +36,7 @@ export const Result = (r: ResultProps) => {
   return (
     <div className="nyris__success-multiple-result">
       <div className="nyris__success-multiple-result-box">
-        <div style={{ position: "relative" }}>
+        <div style={{ position: 'relative' }}>
           {cadenasAPIKey ? (
             <div>
               <Popup3D
@@ -43,7 +45,7 @@ export const Result = (r: ResultProps) => {
               />
             </div>
           ) : (
-            ""
+            ''
           )}
           <a
             href={r.links?.main}
@@ -56,14 +58,14 @@ export const Result = (r: ResultProps) => {
             className="nyris__product-similar-search"
             onClick={() => r.onSimilarSearch(r.imageUrl)}
           >
-            <img src={similar_search} width={"16px"} height={"16px"} />
+            <img src={similar_search} width={'16px'} height={'16px'} />
           </div>
         </div>
         <div className="nyris__success-multiple-product-panel">
           <div className="nyris__product-info">
             <div
               className="nyris__product-info-title"
-              onMouseOver={(e) => {
+              onMouseOver={e => {
                 let right =
                   document.body.clientWidth -
                   (e.target as HTMLElement).getBoundingClientRect().right -
@@ -80,7 +82,7 @@ export const Result = (r: ResultProps) => {
                   setShowTooltip(true);
                 }, 300);
               }}
-              onMouseLeave={(e) => {
+              onMouseLeave={e => {
                 setBounding(null);
                 setShowTooltip(false);
               }}
@@ -100,7 +102,7 @@ export const Result = (r: ResultProps) => {
                 >
                   {r.title}
                 </div>,
-                mountPoint
+                mountPoint,
               )}
             <div className="nyris__product-info-sku">{r.sku}</div>
           </div>
@@ -109,13 +111,13 @@ export const Result = (r: ResultProps) => {
             href={getCTAURL()}
             target={window.nyrisSettings.navigatePreference}
             style={{
-              backgroundColor: window.nyrisSettings.primaryColor || "#3E36DC",
+              backgroundColor: window.nyrisSettings.primaryColor || '#3E36DC',
             }}
           >
             <div className="nyris__product-button">
               {window.nyrisSettings.ctaButtonText}
             </div>
-            {r.links?.main && <img src={link} width={"14px"} height={"14px"} />}
+            {r.links?.main && <img src={link} width={'14px'} height={'14px'} />}
           </a>
         </div>
       </div>

@@ -90,7 +90,7 @@
 
   &__main {
     @include flex-column-spread();
-    padding: 0 22px 18px 22px;
+    padding: 0 24px 18px 24px;
     overflow-y: auto;
     height: 100%;
 
@@ -101,7 +101,7 @@
         
     &-heading {
       margin-left: 8px;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       font-size: 20px;
       color: $color-heading;
       font-weight: 700;
@@ -111,17 +111,17 @@
     }
     
     &-description {
-      margin-left: 8px;
       font-size: 14px;
       color: $color-text;
       font-weight: 400;
+      background-color: #F3F3F5;
+      padding: 8px 16px 8px 16px;
     }
 
     &-content {
       @include flex-column-center();
       @include flex-filler();
       width: 100%;
-      margin: 10px 0 0;
       font-weight: 400;
       @media #{$mobile-query} {
         &--desktop {
@@ -130,6 +130,12 @@
 
         &--mobile {
           display: flex;
+
+          &.col {
+            flex-direction: row;
+            gap: 16px;
+            justify-content: space-between;
+          }
         }
       }
 
@@ -418,4 +424,6 @@
 @import 'success-single';
 @import 'wait';
 @import 'feedback';
+@import 'modal.scss';
+
 

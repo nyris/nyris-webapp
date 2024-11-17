@@ -1,0 +1,63 @@
+$black-opacity: rgba(0, 0, 0, 0.3);
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $black-opacity;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+  overflow: hidden;
+
+  &.close {
+    animation: fadeOut 0.3s ease;
+  }
+}
+
+.modal-content {
+  background: white;
+  width: 100%;
+  max-height: 70%;
+  height: 70%;
+  max-width: 450px;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  animation: slideUp 0.3s ease forwards;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+
+}
+
+@keyframes fadeIn {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  to {
+    background-color: $black-opacity;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    background-color: $black-opacity;
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(70%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

@@ -12,6 +12,7 @@ settings.algolia.enabled = true;
 settings.preview = true;
 settings.showFeedbackAndShare = false;
 settings.multiImageSearch = false;
+settings.clarityId = ''; // NYRIS-6367: Remove Clarity code from Search Suite
 
 if (settings.rfq?.enabled && settings.support?.enabled) {
   settings.support.enabled = false;

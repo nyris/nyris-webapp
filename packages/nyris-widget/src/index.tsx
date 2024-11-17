@@ -1,7 +1,7 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 
-import React from "react";
+import React, { ChangeEvent } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App, { AppProps, Screen } from "./App";
@@ -17,7 +17,7 @@ import NyrisAPI, {
   SearchResult,
   urlOrBlobToCanvas,
 } from "@nyris/nyris-api";
-import { ResultProps } from "./Result";
+import { ResultProps } from "./Components/Product";
 import { makeFileHandler } from "@nyris/nyris-react-components";
 import packageJson from "../package.json";
 import { FeedbackStatus } from "./type";
@@ -36,6 +36,8 @@ interface NyrisSettings extends NyrisAPISettings {
   cadenasAPIKey?: string;
   cadenasCatalog?: string;
   feedback?: boolean;
+  preFilterLabel?: string;
+  visualSearchFilterKey?: string;
 }
 const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
 
@@ -108,16 +110,45 @@ class Nyris {
       onClose: () => this.closeAndReset(),
       onRefine: () => this.refineSelection(),
       onToggle: () => this.toggleNyris(),
-      onAcceptCrop: (s) => this.acceptCrop(s),
-      onFile: makeFileHandler((f: any) => this.handleFile(f, true)),
-      onFileDropped: (f) => this.handleFile(f, true),
+      onAcceptCrop: (s, preFilter) => this.acceptCrop(s, preFilter),
+      onFile: (e: ChangeEvent | DragEvent, preFilter) => {
+        const changeEvent = e as ChangeEvent;
+        let file = null;
+
+        if (changeEvent && changeEvent.target) {
+          const fileInput = changeEvent.target as HTMLInputElement;
+          if (fileInput.files && fileInput.files[0]) {
+            file = fileInput.files[0];
+          }
+
+          // reset input
+          if (fileInput.value) {
+            fileInput.value = "";
+          }
+          if (file) {
+            this.handleFile(file, true, preFilter);
+          }
+        }
+
+        const dragEvent = e as DragEvent;
+        if (dragEvent) {
+          file = dragEvent.dataTransfer && dragEvent.dataTransfer.files[0];
+        }
+
+        if (file) {
+          this.handleFile(file, true, preFilter);
+        }
+      },
+      onFileDropped: (f, preFilter) => {
+        this.handleFile(f, true, preFilter);
+      },
       onGoBack: () => this.onGoBack(),
       results: this.results,
       regions: this.regions,
       selection: this.selection,
       thumbnailUrl: this.thumbImageUrl,
       showVisualSearchIcon: !window.nyrisSettings.initiatorElementId,
-      onSimilarSearch: (f) => this.handleFile(f, false),
+      onSimilarSearch: (f, preFilter) => this.handleFile(f, false, preFilter),
       firstSearchImage: this.firstSearchImage,
       loading: this.loading,
       cadenasScriptStatus: "disabled",
@@ -127,6 +158,9 @@ class Nyris {
         this.setFeedbackStatus(
           this.feedbackStatus === "submitted" ? "submitted" : status
         ),
+      getPreFilters: () => this.getPreFilters(),
+      searchFilters: (key: any, value: string) =>
+        this.searchFilters(key, value),
     };
     ReactDOM.render(
       <React.StrictMode>
@@ -171,10 +205,10 @@ class Nyris {
     ).toDataURL();
   }
 
-  async acceptCrop(s: RectCoords) {
+  async acceptCrop(s: RectCoords, preFilter?: string[]) {
     this.selection = s;
     await this.updateThumbnail();
-    await this.startProcessing(false);
+    await this.startProcessing(false, preFilter);
   }
 
   async showRefineSearch(regions: Region[]) {
@@ -200,7 +234,11 @@ class Nyris {
     }
   }
 
-  async handleFile(f: File | string, isFirstSearch: boolean) {
+  async handleFile(
+    f: File | string,
+    isFirstSearch: boolean,
+    preFilter?: string[]
+  ) {
     this.image = await urlOrBlobToCanvas(f);
     if (isFirstSearch) {
       this.firstSearchImage = this.image;
@@ -217,7 +255,42 @@ class Nyris {
       console.warn("Could not get regions", e);
     }
 
-    await this.startProcessing(isFirstSearch);
+    await this.startProcessing(isFirstSearch, preFilter);
+  }
+
+  async getPreFilters() {
+    return this.nyrisApi
+      .getFilters(1000)
+      .then((res) => {
+        const arrResult =
+          res.find(
+            (value) => value.key === window.nyrisSettings.visualSearchFilterKey
+          )?.values || [];
+
+        const newResult = arrResult.sort().reduce((a: any, c: any) => {
+          if (!c[0]) return a;
+          let k = c[0]?.toLocaleUpperCase();
+          if (a[k]) a[k].push(c);
+          else a[k] = [c];
+          return a;
+        }, {});
+
+        return newResult;
+
+        // setResultFilter(newResult);
+        // setColumns(Object.keys(newResult).length);
+      })
+      .catch((e: any) => {
+        console.log("err getDataFilterDesktop", e);
+      })
+      .finally(() => {});
+  }
+
+  async searchFilters(key: any = "", value: string) {
+    const newValue = value ? value : "";
+    return this.nyrisApi.searchFilters(key, newValue).then((res) => {
+      return { [res[0][0].toLocaleUpperCase()]: res };
+    });
   }
 
   showScreen(s: Screen) {
@@ -272,7 +345,10 @@ class Nyris {
     return match && match[1] ? match[1] : null;
   }
 
-  async startProcessing(isFirstSearch: boolean) {
+  async startProcessing(
+    isFirstSearch: boolean,
+    selectedPreFilters: string[] = []
+  ) {
     // this.showScreen(Screen.Wait);
     this.setFeedbackStatus("hidden");
     this.loading = true;
@@ -285,6 +361,19 @@ class Nyris {
       );
 
       let prefilters;
+
+      if (
+        selectedPreFilters.length > 0 &&
+        window.nyrisSettings.visualSearchFilterKey
+      ) {
+        prefilters = [
+          {
+            key: window.nyrisSettings.visualSearchFilterKey,
+            values: selectedPreFilters,
+          },
+        ];
+      }
+
       if (prefilterFromUrl) {
         prefilters = [
           { key: "brand", values: [prefilterFromUrl.toLocaleUpperCase()] },
