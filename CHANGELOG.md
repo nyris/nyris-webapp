@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.64 - 2024-11-12
+
+### Fixed
+- Show '-' when attribute value is missing
+
+## 0.3.63 - 2024-11-04
+
+### Updated
+- Search suite settings file structure
+
 ## 0.3.62 - 2024-10-30
 
 ### Added

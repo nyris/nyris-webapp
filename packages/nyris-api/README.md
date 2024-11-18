@@ -31,8 +31,8 @@ console.log(results);
 
 
 ### Search for an image
-```javascript
-findByImage(canvas: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement, options: ImageSearchOptions) : Promise<SearchResult>
+```typescript
+find(options: ImageSearchOptions, canvas: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement, filters?: Filter[], xOptions?: any) : Promise<SearchResult>
 ```
 
 The image has to be an image-like HTML object.
