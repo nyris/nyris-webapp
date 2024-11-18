@@ -5,6 +5,11 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## 0.3.64 - 2024-11-12
 
+### Removed
+- Disabled clarity
+
+## 0.3.64 - 2024-11-12
+
 ### Fixed
 - Show '-' when attribute value is missing
 
