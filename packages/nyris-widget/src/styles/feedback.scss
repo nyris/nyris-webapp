@@ -4,13 +4,15 @@
     height: 48px;
 
     position: sticky;
-    bottom: 65px;
+    bottom: 105px;
     z-index: 2;
     margin-top: 10px;
     
     @media #{$mobile-query} {
         width: 310px;
         height: 41px;
+        bottom: 86px;
+
     }
 }
 

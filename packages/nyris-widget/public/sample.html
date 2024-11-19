@@ -41,7 +41,10 @@
         navigatePreference: '_blank', // Behaviour of click to CTA button, open in current/new tab
         cadenasAPIKey: '', // API key provided by cadenas
         cadenasCatalog: '', // catalog provided  by cadenas
-        feedback: true // to enable disable feedback, value should be boolean. either true or false without any quotation
+        feedback: true, // to enable disable feedback, value should be boolean. either true or false without any quotation
+        searchCriteriaLabel: 'Select a machine',
+        searchCriteriaKey: 'keyword',
+        filter: [{label: 'Brand', field: 'brand' }, {label: 'Manufacture Id', field: 'keyword_0' }]
       };
       var s = document.createElement("script");
       s.src = "https://assets.nyris.io/nyris-widget/v1/widget.js";

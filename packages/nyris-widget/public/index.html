@@ -26,7 +26,7 @@
     
       var gNyrisApiKey=location.search.split("=")[1];
       window.nyrisSettings = {
-        apiKey: gNyrisApiKey ? gNyrisApiKey : "3lUwONjnRrwReSAARwaAcuDGKyDOr0U7",
+        apiKey: gNyrisApiKey ? gNyrisApiKey : "",
         initiatorElementId: ['nyris-visual-search-initiator', 'nyris-visual-search-initiator-2'],
         primaryColor: '#3E36DC',
         cameraIconColour: '#2B2C46',
@@ -38,8 +38,10 @@
         navigatePreference: '_blank',
         cadenasAPIKey: '',
         cadenasCatalog: 'ganter',
-        preFilterLabel: 'machine',
-        visualSearchFilterKey: 'keyword'
+        feedback: true,
+        searchCriteriaLabel: 'Select a machine',
+        searchCriteriaKey: 'keyword',
+        filter: [{label: 'Brand', field: 'brand' }, {label: 'Manufacture Id', field: 'keyword_0' }]
       };
 
       var s = document.createElement("script");
