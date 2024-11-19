@@ -12,6 +12,8 @@ settings.algolia.enabled = true;
 settings.showFeedbackAndShare = false;
 settings.multiImageSearch = false;
 settings.preview = true;
+settings.clarityId = '';
+
 if (settings.cadSearch) {
   settings.preview = false;
   settings.support.enabled = false;
