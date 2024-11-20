@@ -156,11 +156,11 @@
     margin-bottom: 80px;
 
     
-    @media #{$mobile-query} {
-      margin-bottom: 100px;
-      margin-top: 25%;
+    // @media #{$mobile-query} {
+    //   margin-bottom: 100px;
+    //   margin-top: 25%;
 
-    }
+    // }
   }
 
   &__close {
