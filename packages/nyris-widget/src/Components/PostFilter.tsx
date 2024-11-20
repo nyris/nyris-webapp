@@ -46,7 +46,7 @@ function PostFilter({
           Refine your search results
         </div>
         <div style={{ overflowY: 'auto', paddingBottom: '24px' }}>
-          {window.nyrisSettings.filter?.map((value, index) => {
+          {window.nyrisSettings.filter?.slice(0, 2).map((value, index) => {
             const filterList = allFilter?.[value.field];
             return (
               <div

@@ -102,8 +102,6 @@ export const Result = ({
   const filteredProducts = useFilteredResult(results, postFilter);
   const allFilter = useFilter(results, postFilter);
 
-  console.log({ postFilter });
-
   const selectedFilters = useMemo(() => {
     const selectedFilters: any[] = [];
     Object.keys(allFilter).forEach(key => {
