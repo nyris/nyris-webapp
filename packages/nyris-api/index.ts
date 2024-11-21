@@ -76,7 +76,7 @@ export default class NyrisAPI {
     const baseUrl = settings.baseUrl || "https://api.nyris.io";
     this.imageMatchingUrl = `${baseUrl}/find/v1.1`;
     this.imageMatchingUrlMulti = `${baseUrl}/find/v1.2`;
-    this.cadMatchingUrl = `${baseUrl}/cad/find/v0.1`;
+    this.cadMatchingUrl = `${baseUrl}/cad/find/v0.2`;
     this.imageMatchingUrlBySku = `${baseUrl}/recommend/v1/`;
     this.imageMatchingSubmitManualUrl = `${baseUrl}/find/v1/manual/`;
     this.feedbackUrl = `${baseUrl}/feedback/v1/`;
@@ -185,19 +185,43 @@ export default class NyrisAPI {
    */
   async findByCad(
     file: File,
-    options: ImageSearchOptions
+    options: ImageSearchOptions,
+    filters?: Filter[]
   ): Promise<SearchResult> {
     let fileType = file.type;
     let headers = this.getSearchRequestHeaders(fileType);
     let params = this.getParams(options);
+
+    var requestBody = new FormData();
+    // Append the file to the FormData
+    requestBody.append("file", file);
+
+    if (filters && filters.length > 0) {
+      for (let i = 0; i < filters.length; i++) {
+        requestBody.append(`filters[${i}].filterType`, filters[i].key!);
+        for (let j = 0; j < filters[i].values.length; j++) {
+          requestBody.append(
+            `filters[${i}].filterValues[${j}]`,
+            filters[i].values[j]
+          );
+        }
+      }
+    }
+
+    console.log({
+      filters,
+      data: requestBody,
+      keys: requestBody.getAll(`filters[1].filterType`),
+    });
+
     let { res }: any = await timePromise(
       this.httpClient.request<SearchResult>({
         method: "POST",
         url: this.cadMatchingUrl,
-        data: file,
         params,
         headers,
         responseType: "json",
+        data: requestBody,
       })
     );
     return res.data;

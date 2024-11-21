@@ -94,12 +94,14 @@ export const findCad = ({
   file,
   options,
   settings,
+  filters,
 }: {
   file: File;
   settings: NyrisAPISettings;
   options?: ImageSearchOptions;
+  filters?: Filter[];
 }) => {
   const nyrisApi = new NyrisAPI(settings);
 
-  return nyrisApi.findByCad(file, {});
+  return nyrisApi.findByCad(file, {}, filters);
 };

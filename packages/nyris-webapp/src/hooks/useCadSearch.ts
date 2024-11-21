@@ -1,4 +1,5 @@
 import { RectCoords } from '@nyris/nyris-api';
+import { isEmpty } from 'lodash';
 import { useCallback } from 'react';
 import { findCad } from 'services/image';
 import useRequestStore from 'Store/requestStore';
@@ -9,11 +10,12 @@ import {
   setShowFeedback,
   updateStatusLoading,
 } from 'Store/search/Search';
-import { useAppDispatch } from 'Store/Store';
+import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppSettings } from 'types';
 
 export const useCadSearch = () => {
   const dispatch = useAppDispatch();
+  const preFilter = useAppSelector(state => state.search.preFilter);
 
   const { setRequestImages } = useRequestStore(state => ({
     setRequestImages: state.setRequestImages,
@@ -35,6 +37,12 @@ export const useCadSearch = () => {
     }) => {
       let res: any;
 
+      const preFilterValues = [
+        {
+          key: settings.visualSearchFilterKey,
+          values: Object.keys(preFilter),
+        },
+      ];
       let filters: any[] = [];
       // const canvas = document.createElement('canvas');
 
@@ -45,16 +53,17 @@ export const useCadSearch = () => {
         res = await findCad({
           file,
           settings,
+          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
         });
 
-        res?.results.forEach((item: any) => {
+        res?.responseBody?.results.forEach((item: any) => {
           filters.push({
             sku: item.sku,
             score: item.score,
           });
         });
         const payload = {
-          ...res,
+          ...res?.responseBody,
           filters,
         };
         dispatch(setSearchResults(payload));
@@ -72,9 +81,9 @@ export const useCadSearch = () => {
         dispatch(updateStatusLoading(false));
       }
 
-      return res;
+      return res?.responseBody;
     },
-    [dispatch, setRequestImages],
+    [dispatch, preFilter, setRequestImages],
   );
 
   return { cadSearch };
