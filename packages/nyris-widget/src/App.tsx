@@ -58,11 +58,7 @@ const Fail = ({
     <div className="nyris__screen nyris__fail">
       <div className="nyris__main-heading">{errorMessage}</div>
       <div className="nyris__main-description">
-        <p>
-          <br />
-          <br />
-          {labels['Oops!']}
-        </p>
+        <div>{labels['Oops!']}</div>
       </div>
       <div className="nyris__fail-content">
         <label
