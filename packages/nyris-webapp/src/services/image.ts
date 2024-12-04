@@ -105,3 +105,15 @@ export const findCad = ({
 
   return nyrisApi.findByCad(file, {}, filters);
 };
+
+export const getRequestImage = ({
+  url,
+  settings,
+}: {
+  url: string;
+  settings: NyrisAPISettings;
+}) => {
+  const nyrisApi = new NyrisAPI(settings);
+
+  return nyrisApi.getCadRequestImage(url);
+};

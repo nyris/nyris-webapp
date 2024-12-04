@@ -466,7 +466,11 @@ function ImagePreviewComponent({
                     'object-cover',
                     'shadow-inner',
                   ])}
-                  src={image.toDataURL()}
+                  src={(() => {
+                    if (image?.toDataURL) {
+                      return image.toDataURL();
+                    }
+                  })()}
                   alt=""
                   onClick={() => {
                     setCurrentIndex(index);

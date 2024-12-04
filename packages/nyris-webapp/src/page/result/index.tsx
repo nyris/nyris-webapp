@@ -363,7 +363,6 @@ function ResultComponent(props: Props) {
                 {!isMobile &&
                 firstSearchResults &&
                 requestImages[0] !== firstSearchImage &&
-                !isCadSearch &&
                 !fetchingResults ? (
                   <GoBack />
                 ) : (
@@ -394,7 +393,6 @@ function ResultComponent(props: Props) {
                   {isMobile &&
                   firstSearchResults &&
                   requestImages[0] !== firstSearchImage &&
-                  !isCadSearch &&
                   !fetchingResults ? (
                     <div className="go-back-mobile-container">
                       <GoBack />
