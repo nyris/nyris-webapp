@@ -130,7 +130,7 @@ export const useCadSearch = () => {
 
       return res?.responseBody;
     },
-    [dispatch, preFilter, setRequestImages],
+    [dispatch, preFilter, setDetectedObject, setImageRegions, setRequestImages],
   );
 
   return { cadSearch };
