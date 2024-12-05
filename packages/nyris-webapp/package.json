@@ -1,14 +1,14 @@
 {
   "name": "@nyris/nyris-webapp",
-  "version": "0.3.63",
+  "version": "0.3.65",
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@emailjs/browser": "^4.3.3",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.61",
-    "@nyris/nyris-api": "^0.3.63",
-    "@nyris/nyris-react-components": "^0.3.63",
+    "@nyris/nyris-api": "^0.3.65",
+    "@nyris/nyris-react-components": "^0.3.65",
     "@reduxjs/toolkit": "^2.2.1",
     "@splidejs/react-splide": "^0.7.12",
     "@testing-library/jest-dom": "^5.17.0",

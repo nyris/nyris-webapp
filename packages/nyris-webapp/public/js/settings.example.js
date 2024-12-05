@@ -78,7 +78,6 @@ var settings = {
   experienceVisualSearch: false,
   experienceVisualSearchImages: [],
   simpleCardView: false,
-  clarityId: '',
   noSimilarSearch: false,
   showFeedback: false,
   rfq: {
