@@ -85,7 +85,7 @@ function ResultComponent(props: Props) {
   const isPostFilterEnabled = settings.postFilterOption;
   const history = useHistory();
 
-  const { singleImageSearch, multiImageSearch } = useImageSearch();
+  const { singleImageSearch } = useImageSearch();
 
   const { resetRegions, imageRegions, requestImages } = useRequestStore(
     state => ({
@@ -95,7 +95,6 @@ function ResultComponent(props: Props) {
       imageRegions: state.regions,
     }),
   );
-  const isCadSearch = window.settings.cadSearch;
 
   // useEffect(() => {
   //   if (
