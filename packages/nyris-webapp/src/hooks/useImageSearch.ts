@@ -46,12 +46,14 @@ export const useImageSearch = () => {
       showFeedback = true,
       imageRegion,
       newSearch,
+      preFilterParams,
     }: {
       image: any;
       settings: AppSettings;
       showFeedback?: boolean;
       imageRegion?: RectCoords;
       newSearch?: boolean;
+      preFilterParams?: Record<string, boolean>;
     }) => {
       let region: RectCoords | undefined = imageRegion;
       let res: any;
@@ -82,7 +84,7 @@ export const useImageSearch = () => {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
+          values: Object.keys(preFilterParams || preFilter),
         },
       ];
       let filters: any[] = [];
@@ -91,7 +93,9 @@ export const useImageSearch = () => {
         res = await find({
           image: canvasImage,
           settings,
-          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+          filters: !isEmpty(preFilterParams || preFilter)
+            ? preFilterValues
+            : undefined,
           region,
         });
 
@@ -139,16 +143,18 @@ export const useImageSearch = () => {
       settings,
       regions,
       showFeedback = true,
+      preFilterParams,
     }: {
       images: HTMLCanvasElement[];
       regions: RectCoords[];
       settings: AppSettings;
       showFeedback?: boolean;
+      preFilterParams?: Record<string, boolean>;
     }) => {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
+          values: Object.keys(preFilterParams || preFilter),
         },
       ];
       let filters: any[] = [];
@@ -158,7 +164,9 @@ export const useImageSearch = () => {
           images,
           settings,
           regions,
-          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+          filters: !isEmpty(preFilterParams || preFilter)
+            ? preFilterValues
+            : undefined,
         });
 
         res?.results.forEach((item: any) => {

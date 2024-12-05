@@ -185,39 +185,6 @@ function ResultComponent(props: Props) {
   }, [preFilter, requestImage, searchQuery, settings.alogoliaFilterField]);
 
   useEffect(() => {
-    if (
-      requestImages.length === 0 ||
-      !isAlgoliaEnabled ||
-      window.settings.cadSearch //  To-do: refactor the API call to pre-filter component
-    ) {
-      return;
-    }
-    dispatch(updateStatusLoading(true));
-    dispatch(loadingActionResults());
-
-    if (requestImages.length === 1) {
-      singleImageSearch({
-        image: requestImages[0],
-        settings,
-        imageRegion: imageRegions[0],
-      }).then(res => {
-        dispatch(updateStatusLoading(false));
-      });
-    } else {
-      multiImageSearch({
-        images: requestImages,
-        settings,
-        regions: imageRegions,
-      }).then(res => {
-        dispatch(updateStatusLoading(false));
-      });
-    }
-
-    return () => {};
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preFilter]);
-
-  useEffect(() => {
     if (!requestImage) return;
 
     const preFilterValues = Object.keys(preFilter) as string[];
@@ -336,16 +303,14 @@ function ResultComponent(props: Props) {
                   : 'calc(100vh - 148px)',
               }}
             >
-              {!isMobile &&
-                showSidePanel &&
-                (!isCadSearch || props.allSearchResults?.hits.length > 0) && (
-                  <SidePanel
-                    allSearchResults={props.allSearchResults}
-                    showAdjustInfo={showAdjustInfo}
-                    showPostFilter={showPostFilter}
-                    disjunctiveFacets={props.allSearchResults.disjunctiveFacets}
-                  />
-                )}
+              {!isMobile && showSidePanel && (
+                <SidePanel
+                  allSearchResults={props.allSearchResults}
+                  showAdjustInfo={showAdjustInfo}
+                  showPostFilter={showPostFilter}
+                  disjunctiveFacets={props.allSearchResults.disjunctiveFacets}
+                />
+              )}
 
               <div
                 className={`col-right ${

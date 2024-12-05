@@ -4,6 +4,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { getFilters, searchFilters } from 'services/filter';
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import {
+  loadingActionResults,
   setPreFilter,
   setSearchResults,
   updateStatusLoading,
@@ -17,6 +18,8 @@ import { useQuery } from 'hooks/useQuery';
 import { useTranslation } from 'react-i18next';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import { Icon } from '@nyris/nyris-react-components';
+import { useImageSearch } from 'hooks/useImageSearch';
+import useRequestStore from 'Store/requestStore';
 
 interface Props {
   handleClose?: any;
@@ -42,6 +45,15 @@ function PreFilterComponent(props: Props) {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [columns, setColumns] = useState<number>(0);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+
+  const { singleImageSearch, multiImageSearch } = useImageSearch();
+
+  const { imageRegions, requestImages } = useRequestStore(state => ({
+    requestImages: state.requestImages,
+    updateRegion: state.updateRegion,
+    resetRegions: state.resetRegions,
+    imageRegions: state.regions,
+  }));
 
   const selectedFilter = useMemo(
     () =>
@@ -123,6 +135,7 @@ function PreFilterComponent(props: Props) {
   const onHandlerSubmitData = () => {
     const preFilter = pickBy(keyFilter, value => !!value);
     dispatch(setPreFilter(preFilter));
+    handleClose();
 
     if (!settings.algolia?.enabled && (searchQuery || requestImage)) {
       let payload: any;
@@ -158,8 +171,33 @@ function PreFilterComponent(props: Props) {
         .catch((e: any) => {
           dispatch(updateStatusLoading(false));
         });
+    } else {
+      if (requestImages.length === 0) {
+        return;
+      }
+      dispatch(updateStatusLoading(true));
+      dispatch(loadingActionResults());
+
+      if (requestImages.length === 1) {
+        singleImageSearch({
+          image: requestImages[0],
+          settings,
+          imageRegion: imageRegions[0],
+          preFilterParams: preFilter,
+        }).then(res => {
+          dispatch(updateStatusLoading(false));
+        });
+      } else {
+        multiImageSearch({
+          images: requestImages,
+          settings,
+          regions: imageRegions,
+          preFilterParams: preFilter,
+        }).then(res => {
+          dispatch(updateStatusLoading(false));
+        });
+      }
     }
-    handleClose();
   };
   const { t } = useTranslation();
 
