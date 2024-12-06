@@ -3,7 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.3.64 - 2024-11-12
+## 0.3.66 - 2024-12-06
+
+### Fix
+- Image compression not occurring for experience visual search images
+
+## 0.3.65 - 2024-11-12
 
 ### Removed
 - Disabled clarity
