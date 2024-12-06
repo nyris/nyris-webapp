@@ -152,7 +152,12 @@ function ResultComponent(props: Props) {
     }
     dispatch(loadingActionResults());
 
-    singleImageSearch({ image: url, settings, showFeedback: true }).then(() => {
+    singleImageSearch({
+      image: url,
+      settings,
+      showFeedback: true,
+      compress: false,
+    }).then(() => {
       dispatch(updateStatusLoading(false));
     });
   };
@@ -189,12 +194,12 @@ function ResultComponent(props: Props) {
     }
     dispatch(updateStatusLoading(true));
     dispatch(loadingActionResults());
-
     if (requestImages.length === 1) {
       singleImageSearch({
         image: requestImages[0],
         settings,
         imageRegion: imageRegions[0],
+        compress: false,
       }).then(res => {
         dispatch(updateStatusLoading(false));
       });

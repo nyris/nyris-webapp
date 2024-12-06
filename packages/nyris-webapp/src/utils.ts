@@ -41,22 +41,34 @@ export function getThumbSizeLongestEdge(
   };
 }
 
-export const compressImage = (blobOrImage: any) => {
-  let blob: any;
+export const compressImage = async (input: string | Blob): Promise<string> => {
+  let blob: Blob;
 
-  if (typeof blobOrImage === 'string' && !blobOrImage.startsWith('https:')) {
-    const byteString = atob(blobOrImage.split(',')[1]);
-    const mimeString = blobOrImage.split(',')[0].split(':')[1].split(';')[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+  if (typeof input === 'string') {
+    if (input.startsWith('https:')) {
+      // Fetch the image from the URL and convert it to a Blob
+      const response = await fetch(input);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`);
+      }
+      blob = await response.blob();
+    } else {
+      // Convert base64 string to Blob
+      const byteString = atob(input.split(',')[1]);
+      const mimeString = input.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      blob = new Blob([ab], { type: mimeString });
     }
-    blob = new Blob([ab], { type: mimeString });
+  } else {
+    blob = input;
   }
 
   return new Promise<string>((resolve, reject) => {
-    new Compressor(blob || blobOrImage, {
+    new Compressor(blob, {
       quality: 0.91,
       maxHeight: 1024,
       maxWidth: 1024,
