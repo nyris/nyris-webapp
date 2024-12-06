@@ -46,22 +46,28 @@ export const useImageSearch = () => {
       showFeedback = true,
       imageRegion,
       newSearch,
+      compress = true,
     }: {
       image: any;
       settings: AppSettings;
       showFeedback?: boolean;
       imageRegion?: RectCoords;
       newSearch?: boolean;
+      compress?: boolean;
     }) => {
       let region: RectCoords | undefined = imageRegion;
       let res: any;
       let compressedBase64;
 
-      try {
-        compressedBase64 = await compressImage(image);
-      } catch (error) {}
+      if (compress) {
+        try {
+          compressedBase64 = await compressImage(image);
+        } catch (error) {}
+      }
 
       let canvasImage = await createImage(compressedBase64 || image);
+
+      let requestImage = await createImage(image);
 
       if (!imageRegion) {
         dispatch(setRequestImage(canvasImage));
@@ -70,7 +76,7 @@ export const useImageSearch = () => {
 
       if (regions && !imageRegion) {
         try {
-          let res = await findRegions(canvasImage, settings);
+          let res = await findRegions(requestImage, settings);
           setDetectedObject(res.regions, 0);
           dispatch(setRegions(res.regions));
           region = res.selectedRegion;
@@ -89,7 +95,7 @@ export const useImageSearch = () => {
 
       try {
         res = await find({
-          image: canvasImage,
+          image: requestImage,
           settings,
           filters: !isEmpty(preFilter) ? preFilterValues : undefined,
           region,

@@ -180,6 +180,7 @@ function ImagePreviewComponent({
         settings,
         imageRegion: r,
         showFeedback: true,
+        compress: false,
       }).then((res: any) => {
         dispatch(updateStatusLoading(false));
 
