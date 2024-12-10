@@ -8,12 +8,12 @@ import translations from '../translations';
 
 import crop from '../images/crop.svg';
 import collapse from '../images/collapse.svg';
-import trash from '../images/trash.svg';
 
 import { ReactComponent as GoBack } from '../images/path.svg';
 import { ReactComponent as Filter } from '../images/filter.svg';
 import { ReactComponent as Upload } from '../images/upload.svg';
 import { ReactComponent as Close } from '../images/close.svg';
+import { ReactComponent as Trash } from '../images/trash.svg';
 
 import { LoadingSpinner } from './Loading';
 import { ProductCard } from './Product';
@@ -199,7 +199,7 @@ export const Result = ({
               }`}
               onClick={onRestart}
             >
-              {<img src={trash} width={16} height={16} />}
+              <Trash />
             </div>
             <input
               type="file"
@@ -270,7 +270,7 @@ export const Result = ({
                         cursor: 'pointer',
                       }}
                     >
-                      <Close width={12} height={12} />
+                      <Close width={10} height={10} />
                     </div>
                   </div>
                 );
@@ -330,15 +330,20 @@ export const Result = ({
               <Upload />
             </label>
           </div>
-          {window.nyrisSettings.filter && (
+          {window.nyrisSettings.filter && !noResult && (
             <div
               className="nyris__action-wrapper"
               onClick={() => {
                 setIsModalOpen(true);
               }}
             >
-              <div className="nyris__action-wrapper-button">
-                <Filter />
+              <div className={`nyris__action-wrapper-button ${!!selectedFilters.length ? 'active' : ''}`}>
+                <Filter fill={!!selectedFilters.length ? '#FFF' : '#55566B'} />
+                {!!selectedFilters.length ? (
+                  <div className="nyris__action-wrapper-button-indicator" />
+                ) : (
+                  ''
+                )}
               </div>
             </div>
           )}

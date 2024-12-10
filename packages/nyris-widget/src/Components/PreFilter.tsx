@@ -74,7 +74,24 @@ function PreFilter({
               setSearchKey(e.target.value);
             }}
             value={searchKey}
+            placeholder={labels['Search']}
           />
+          {searchKey ? (
+            <CloseButton
+              width={12}
+              color="#2B2C46"
+              style={{
+                marginRight: 12,
+                cursor: 'pointer'
+              }}
+              onClick={() => {
+                filterSearchHandler(null);
+                setSearchKey('');
+              }}
+            />
+          ) : (
+            ''
+          )}
         </div>
 
         {selectedFilterCount > 0 && (
@@ -101,7 +118,7 @@ function PreFilter({
                 );
               })}
               <p
-                style={{ fontWeight: 'bold', color: '#000' }}
+                style={{ fontWeight: 'bold', color: '#000', margin: 0 }}
               >{`${selectedFilterCount}/${maxFilter}`}</p>
               <div
                 className="nyris__prefilter-clear"

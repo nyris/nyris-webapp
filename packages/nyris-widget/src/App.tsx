@@ -20,6 +20,7 @@ import Modal from './Components/Modal';
 import { LoadingSpinner } from './Components/Loading';
 import { Result } from './Components/Result';
 import { AppProps, CadenasScriptStatus, WidgetScreen } from './types';
+import {setPreFilter} from "@nyris/nyris-webapp/src/Store/search/Search";
 
 const labels = translations(window.nyrisSettings.language);
 const assets_base_url =
@@ -155,7 +156,7 @@ const Hello = ({
               )}
 
               <div style={{ height: '' }}>
-                {labels['Select a']} {window.nyrisSettings.searchCriteriaLabel}
+                {window.nyrisSettings.searchCriteriaLabel}
               </div>
             </div>
             <div
@@ -389,7 +390,13 @@ export const App = (props: AppProps) => {
     <React.Fragment>
       {showScreen != WidgetScreen.Hidden && (
         <>
-          <div className="nyris__background" onClick={onClose} />
+          <div
+              className="nyris__background"
+              onClick={() => {
+                  setSelectedPreFilters([]);
+                  onClose();
+              }}
+          />
           <div className="nyris__wrapper">
             <div className={divMainClassNames}>
               <div className="nyris__header">
@@ -403,7 +410,14 @@ export const App = (props: AppProps) => {
                     cursor: 'pointer',
                   }}
                 >
-                  <CloseButton onClick={onClose} width={8} color="#2B2C46" />
+                  <CloseButton
+                      onClick={() => {
+                          setSelectedPreFilters([]);
+                          onClose();
+                      }}
+                      width={8}
+                      color="#2B2C46"
+                  />
                 </div>
               </div>
               {content}
