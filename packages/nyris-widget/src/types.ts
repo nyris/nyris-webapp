@@ -47,7 +47,7 @@ export interface AppProps {
   onFile: (f: any, preFilter: string[]) => void;
   onFileDropped: (f: File, preFilter: string[]) => void;
   onAcceptCrop: (r: RectCoords, preFilter: string[]) => void;
-  onSimilarSearch: (url: string, preFilter: string[]) => void;
+  onSimilarSearch: (url: string, preFilter: string[]) => Promise<void>;
   onGoBack: () => void;
   loading: boolean;
   firstSearchImage: HTMLCanvasElement;
@@ -59,8 +59,8 @@ export interface AppProps {
   searchFilters: (key: any, value: string) => Promise<Record<string, string[]>>;
   selectedPreFilters?: any;
   setSelectedPreFilters?: any;
-  postFilter: any;
-  setPostFilter: any;
+  postFilter?: any;
+  setPostFilter?: any;
 }
 
 export interface ResultProps {

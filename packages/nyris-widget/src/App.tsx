@@ -20,7 +20,6 @@ import Modal from './Components/Modal';
 import { LoadingSpinner } from './Components/Loading';
 import { Result } from './Components/Result';
 import { AppProps, CadenasScriptStatus, WidgetScreen } from './types';
-import {setPreFilter} from "@nyris/nyris-webapp/src/Store/search/Search";
 
 const labels = translations(window.nyrisSettings.language);
 const assets_base_url =
@@ -391,11 +390,11 @@ export const App = (props: AppProps) => {
       {showScreen != WidgetScreen.Hidden && (
         <>
           <div
-              className="nyris__background"
-              onClick={() => {
-                  setSelectedPreFilters([]);
-                  onClose();
-              }}
+            className="nyris__background"
+            onClick={() => {
+              setSelectedPreFilters([]);
+              onClose();
+            }}
           />
           <div className="nyris__wrapper">
             <div className={divMainClassNames}>
@@ -411,12 +410,12 @@ export const App = (props: AppProps) => {
                   }}
                 >
                   <CloseButton
-                      onClick={() => {
-                          setSelectedPreFilters([]);
-                          onClose();
-                      }}
-                      width={8}
-                      color="#2B2C46"
+                    onClick={() => {
+                      setSelectedPreFilters([]);
+                      onClose();
+                    }}
+                    width={8}
+                    color="#2B2C46"
                   />
                 </div>
               </div>

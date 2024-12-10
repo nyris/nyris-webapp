@@ -31,7 +31,6 @@ const translations = (language: string) => {
       'View full description': 'Vollständige Beschreibung anzeigen',
       'Drag an image or click to upload':
         'Bild ziehen oder klicken zum Hochladen.',
-      'Select a': 'Select a',
     };
   }
   return {
@@ -64,7 +63,6 @@ const translations = (language: string) => {
     'Back to request image': 'Back to request image',
     'View full description': 'View full description',
     'Drag an image or click to upload': 'Drag an image or click to upload',
-    'Select a': 'Select a',
   };
 };
 

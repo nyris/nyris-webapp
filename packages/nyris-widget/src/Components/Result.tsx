@@ -207,6 +207,7 @@ export const Result = ({
               id="nyris__hello-open-camera"
               accept="image/jpeg,image/png,image/webp"
               onChange={(f: any) => {
+                setPostFilter({});
                 onFile(f, selectedPreFiltersLabel);
               }}
               style={{ display: 'none' }}
@@ -225,7 +226,13 @@ export const Result = ({
           </div>
 
           {image !== firstSearchImage && !loading && (
-            <div className="go-back-button" onClick={() => onGoBack()}>
+            <div
+              className="go-back-button"
+              onClick={() => {
+                setPostFilter({});
+                onGoBack();
+              }}
+            >
               <GoBack width={16} height={16} />
               {labels['Back to request image']}
             </div>
@@ -295,7 +302,9 @@ export const Result = ({
                     {...r}
                     key={i}
                     onSimilarSearch={(f: any) => {
-                      onSimilarSearch(f, selectedPreFiltersLabel);
+                      onSimilarSearch(f, selectedPreFiltersLabel).then(() => {
+                        setPostFilter({});
+                      });
                     }}
                     cadenasScriptStatus={cadenasScriptStatus}
                   />
@@ -337,7 +346,11 @@ export const Result = ({
                 setIsModalOpen(true);
               }}
             >
-              <div className={`nyris__action-wrapper-button ${!!selectedFilters.length ? 'active' : ''}`}>
+              <div
+                className={`nyris__action-wrapper-button ${
+                  !!selectedFilters.length ? 'active' : ''
+                }`}
+              >
                 <Filter fill={!!selectedFilters.length ? '#FFF' : '#55566B'} />
                 {!!selectedFilters.length ? (
                   <div className="nyris__action-wrapper-button-indicator" />
