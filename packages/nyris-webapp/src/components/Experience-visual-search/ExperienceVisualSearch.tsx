@@ -12,11 +12,14 @@ import { useImageSearch } from 'hooks/useImageSearch';
 import { useHistory } from 'react-router-dom';
 import { Icon } from '@nyris/nyris-react-components';
 
-function ExperienceVisualSearch() {
+function ExperienceVisualSearch({
+  experienceVisualSearchBlobs,
+}: {
+  experienceVisualSearchBlobs: Blob[];
+}) {
   const dispatch = useAppDispatch();
   const { settings } = useAppSelector(state => state);
   const [showModal, setShowModal] = useState(false);
-  const [images, setImages] = useState<string[]>([]);
   const button = useRef(null);
   let interval = useRef<NodeJS.Timeout | null>(null);
   const history = useHistory();
@@ -51,22 +54,17 @@ function ExperienceVisualSearch() {
   const modalToggle = (isOpen: boolean) => {
     setShowModal(isOpen);
     if (isOpen) {
-      const randomImages = settings?.experienceVisualSearchImages?.slice(
-        0,
-        Math.min(settings?.experienceVisualSearchImages?.length, 4),
-      );
-      setImages(randomImages || []);
       document.body.classList.add('overflow-hidden');
     } else {
       document.body.classList.remove('overflow-hidden');
     }
   };
 
-  const getUrlToCanvasFile = async (url: string) => {
+  const getUrlToCanvasFile = async (blob: string) => {
     dispatch(updateStatusLoading(true));
     dispatch(loadingActionResults());
 
-    singleImageSearch({ image: url, settings }).then(() => {
+    singleImageSearch({ image: blob, settings }).then(() => {
       dispatch(updateStatusLoading(false));
     });
     history.push('/result');
@@ -112,30 +110,46 @@ function ExperienceVisualSearch() {
                 Start your visual search by selecting an image below.
               </div>
               <div className="custom-modal-body-content experience-visual-search-images">
-                {images.map(itemImage => (
-                  <div
-                    className="experience-visual-search-image-container"
-                    onClick={() => {
-                      modalToggle(false);
-                      getUrlToCanvasFile(itemImage);
-                    }}
-                  >
+                {new Array(4).fill(1).map((val, index) => {
+                  let itemImage: any;
+
+                  if (index <= experienceVisualSearchBlobs.length - 1) {
+                    itemImage = URL.createObjectURL(
+                      experienceVisualSearchBlobs[index],
+                    );
+                  }
+                  return (
                     <div
-                      className="experience-visual-search-image"
-                      style={{
-                        backgroundImage: `url(${itemImage}?width=192&height=192)`,
+                      key={index}
+                      className="experience-visual-search-image-container"
+                      onClick={() => {
+                        if (itemImage) {
+                          modalToggle(false);
+                          getUrlToCanvasFile(itemImage);
+                        }
                       }}
-                    />
-                    <div className="box-icon-modal">
-                      <Icon
-                        name="search_image"
-                        width={16}
-                        height={16}
-                        color={'#AAABB5'}
+                    >
+                      <div
+                        className={`experience-visual-search-image ${
+                          !itemImage ? 'animate-pulse bg-gray-200' : ''
+                        }`}
+                        style={{
+                          backgroundImage: `url(${itemImage})`,
+                        }}
                       />
+                      {itemImage && (
+                        <div className="box-icon-modal">
+                          <Icon
+                            name="search_image"
+                            width={16}
+                            height={16}
+                            color={'#AAABB5'}
+                          />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>,
