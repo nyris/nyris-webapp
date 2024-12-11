@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.67 - 2024-12-11
+
+### Added
+- preload for experience visual search images
+- pre filter & post filter for widget
+- CAD search codebase for search suite
+
 ## 0.3.66 - 2024-12-06
 
 ### Fix
