@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import Loading from './Loading';
 import { useImageSearch } from 'hooks/useImageSearch';
 import { Icon } from '@nyris/nyris-react-components';
+import { isCadFile } from '@nyris/nyris-api';
+import { useCadSearch } from 'hooks/useCadSearch';
 
 interface Props {
   acceptTypes: any;
@@ -21,8 +23,10 @@ function DragDropFile(props: Props) {
   const { isLoading } = props;
   const settings = useAppSelector(state => state.settings);
   const { t } = useTranslation();
+  const { cadSearch } = useCadSearch();
 
   const { singleImageSearch } = useImageSearch();
+  const isCadSearch = window.settings.cadSearch;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: async (fs: File[], _, e) => {
@@ -31,12 +35,22 @@ function DragDropFile(props: Props) {
 
       dispatch(updateStatusLoading(true));
       dispatch(loadingActionResults());
-
-      singleImageSearch({ image: fs[0], settings, showFeedback: true }).then(
-        () => {
+      if (isCadFile(fs[0]) && isCadSearch) {
+        dispatch(updateStatusLoading(true));
+        dispatch(loadingActionResults());
+        if (history.location.pathname !== '/result') {
+          history.push('/result');
+        }
+        cadSearch({ file: fs[0], settings, newSearch: true }).then(res => {
           dispatch(updateStatusLoading(false));
-        },
-      );
+        });
+      } else {
+        singleImageSearch({ image: fs[0], settings, showFeedback: true }).then(
+          () => {
+            dispatch(updateStatusLoading(false));
+          },
+        );
+      }
     },
   });
 
@@ -81,6 +95,9 @@ function DragDropFile(props: Props) {
             className="inputFile"
             placeholder="Choose photo"
             style={{ display: 'block', cursor: 'pointer' }}
+            accept={`${
+              isCadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,' : ''
+            }image/*`}
           />
         </div>
       </div>

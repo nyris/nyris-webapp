@@ -27,4 +27,5 @@ export const defaultSettings: AppSettings = {
   secondaryTitle: '',
   theme: {},
   productDetails: '',
+  support: {},
 };

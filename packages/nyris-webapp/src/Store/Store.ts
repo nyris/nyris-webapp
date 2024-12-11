@@ -9,10 +9,11 @@ import { defaultSettings } from './constants';
 declare var settings: AppSettings;
 
 settings.algolia.enabled = true;
-settings.preview = true;
 settings.showFeedbackAndShare = false;
 settings.multiImageSearch = false;
-settings.clarityId = ''; // NYRIS-6367: Remove Clarity code from Search Suite
+settings.preview = true;
+settings.clarityId = '';
+settings.cadSearch = true;
 
 if (settings.rfq?.enabled && settings.support?.enabled) {
   settings.support.enabled = false;

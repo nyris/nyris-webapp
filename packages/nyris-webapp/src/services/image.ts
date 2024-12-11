@@ -89,3 +89,31 @@ export const findMulti = ({
 
   return nyrisApi.findMulti(options, images, regions, filters);
 };
+
+export const findCad = ({
+  file,
+  options,
+  settings,
+  filters,
+}: {
+  file: File;
+  settings: NyrisAPISettings;
+  options?: ImageSearchOptions;
+  filters?: Filter[];
+}) => {
+  const nyrisApi = new NyrisAPI(settings);
+
+  return nyrisApi.findByCad(file, {}, filters);
+};
+
+export const getRequestImage = ({
+  url,
+  settings,
+}: {
+  url: string;
+  settings: NyrisAPISettings;
+}) => {
+  const nyrisApi = new NyrisAPI(settings);
+
+  return nyrisApi.getCadRequestImage(url);
+};

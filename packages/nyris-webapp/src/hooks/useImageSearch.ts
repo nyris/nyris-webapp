@@ -46,22 +46,30 @@ export const useImageSearch = () => {
       showFeedback = true,
       imageRegion,
       newSearch,
+      compress = true,
+      preFilterParams,
     }: {
       image: any;
       settings: AppSettings;
       showFeedback?: boolean;
       imageRegion?: RectCoords;
       newSearch?: boolean;
+      compress?: boolean;
+      preFilterParams?: Record<string, boolean>;
     }) => {
       let region: RectCoords | undefined = imageRegion;
       let res: any;
       let compressedBase64;
 
-      try {
-        compressedBase64 = await compressImage(image);
-      } catch (error) {}
+      if (compress) {
+        try {
+          compressedBase64 = await compressImage(image);
+        } catch (error) {}
+      }
 
       let canvasImage = await createImage(compressedBase64 || image);
+
+      let requestImage = await createImage(image);
 
       if (!imageRegion) {
         dispatch(setRequestImage(canvasImage));
@@ -70,7 +78,7 @@ export const useImageSearch = () => {
 
       if (regions && !imageRegion) {
         try {
-          let res = await findRegions(canvasImage, settings);
+          let res = await findRegions(requestImage, settings);
           setDetectedObject(res.regions, 0);
           dispatch(setRegions(res.regions));
           region = res.selectedRegion;
@@ -82,16 +90,18 @@ export const useImageSearch = () => {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
+          values: Object.keys(preFilterParams || preFilter),
         },
       ];
       let filters: any[] = [];
 
       try {
         res = await find({
-          image: canvasImage,
+          image: requestImage,
           settings,
-          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+          filters: !isEmpty(preFilterParams || preFilter)
+            ? preFilterValues
+            : undefined,
           region,
         });
 
@@ -139,16 +149,18 @@ export const useImageSearch = () => {
       settings,
       regions,
       showFeedback = true,
+      preFilterParams,
     }: {
       images: HTMLCanvasElement[];
       regions: RectCoords[];
       settings: AppSettings;
       showFeedback?: boolean;
+      preFilterParams?: Record<string, boolean>;
     }) => {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
+          values: Object.keys(preFilterParams || preFilter),
         },
       ];
       let filters: any[] = [];
@@ -158,7 +170,9 @@ export const useImageSearch = () => {
           images,
           settings,
           regions,
-          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
+          filters: !isEmpty(preFilterParams || preFilter)
+            ? preFilterValues
+            : undefined,
         });
 
         res?.results.forEach((item: any) => {
