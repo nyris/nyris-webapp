@@ -8,7 +8,11 @@ import { connectInfiniteHits } from 'react-instantsearch-dom';
 import { useAppSelector } from 'Store/Store';
 import { AlgoliaSettings } from '../../types';
 
-function AppMD() {
+function AppMD({
+  experienceVisualSearchBlobs,
+}: {
+  experienceVisualSearchBlobs: Blob[];
+}) {
   const { settings } = useAppSelector(state => state);
   const [isLoading, setLoading] = useState<boolean>(false);
   const { apiKey, appId, indexName } = settings.algolia as AlgoliaSettings;
@@ -54,7 +58,13 @@ function AppMD() {
           isLoading={isLoading}
           onChangeLoading={onChangeLoading}
         />
-        {settings.experienceVisualSearch ? <ExperienceVisualSearch /> : ''}
+        {settings.experienceVisualSearch ? (
+          <ExperienceVisualSearch
+            experienceVisualSearchBlobs={experienceVisualSearchBlobs}
+          />
+        ) : (
+          ''
+        )}
       </div>
     </div>
   );

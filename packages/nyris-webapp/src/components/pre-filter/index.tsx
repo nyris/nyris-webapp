@@ -184,6 +184,7 @@ function PreFilterComponent(props: Props) {
           settings,
           imageRegion: imageRegions[0],
           preFilterParams: preFilter,
+          compress: false,
         }).then(res => {
           dispatch(updateStatusLoading(false));
         });

@@ -152,7 +152,12 @@ function ResultComponent(props: Props) {
     }
     dispatch(loadingActionResults());
 
-    singleImageSearch({ image: url, settings, showFeedback: true }).then(() => {
+    singleImageSearch({
+      image: url,
+      settings,
+      showFeedback: true,
+      compress: false,
+    }).then(() => {
       dispatch(updateStatusLoading(false));
     });
   };
