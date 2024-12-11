@@ -6,7 +6,7 @@ import { ReactComponent as Search } from '../images/search.svg';
 import { LoadingSpinner } from './Loading';
 import { pickBy } from 'lodash';
 
-const labels = translations(window.nyrisSettings.language);
+const translation = translations(window.nyrisSettings.language);
 const maxFilter = 10;
 
 function PreFilter({
@@ -74,7 +74,7 @@ function PreFilter({
               setSearchKey(e.target.value);
             }}
             value={searchKey}
-            placeholder={labels['Search']}
+            placeholder={translation['Search']}
           />
           {searchKey ? (
             <CloseButton
@@ -82,7 +82,7 @@ function PreFilter({
               color="#2B2C46"
               style={{
                 marginRight: 12,
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
               onClick={() => {
                 filterSearchHandler(null);
@@ -127,7 +127,7 @@ function PreFilter({
                   setKeyFilter({});
                 }}
               >
-                Clear all
+                {translation['Clear all']}
               </div>
             </div>
           </div>
@@ -174,7 +174,7 @@ function PreFilter({
                 onClose();
               }}
             >
-              Cancel
+              {translation['Cancel']}
             </div>
             <div
               className="nyris__prefilter-button-apply"
@@ -184,7 +184,7 @@ function PreFilter({
                 onClose();
               }}
             >
-              Apply
+              {translation['Apply']}
             </div>
           </div>
         )}

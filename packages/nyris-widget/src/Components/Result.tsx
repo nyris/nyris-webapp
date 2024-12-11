@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Preview } from '@nyris/nyris-react-components';
 import { RectCoords } from '@nyris/nyris-api';
 
-import { debounce, get, isUndefined } from 'lodash';
+import { debounce } from 'lodash';
 import translations from '../translations';
 
 import crop from '../images/crop.svg';
@@ -25,7 +25,7 @@ import { useFilteredResult } from '../hooks/useFilteredResult';
 import { useFilter } from '../hooks/useFilter';
 import { onFilterCheck } from '../utils';
 
-const labels = translations(window.nyrisSettings.language);
+const translation = translations(window.nyrisSettings.language);
 
 export const Result = ({
   onAcceptCrop,
@@ -124,41 +124,40 @@ export const Result = ({
         }}
       >
         <div className="nyris__main-heading ">
-          {noResult ? labels['Let’s try that again'] : labels['Success!']}
+          {noResult
+            ? translation['Let’s try that again']
+            : translation['Success!']}
         </div>
         <div className="nyris__main-description">
-          {noResult && labels['We couldn’t find matches']}
+          {noResult &&
+            selectedPreFiltersLabel.length > 0 &&
+            translation["We couldn't find matches based on <prefilters>"]({
+              prefilters: selectedPreFiltersLabel.join(', '),
+              style: 'bold',
+            })}
+          {noResult &&
+            selectedPreFiltersLabel.length === 0 &&
+            translation['We couldn’t find matches']}
+          {/* {noResult && translation['For the best results, please use']} */}
           {!noResult && (
             <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-              <div style={{ fontWeight: 'bold' }}>{results.length}</div>{' '}
+              <div style={{ fontWeight: 'bold' }}>{results.length}</div>
               <div>
                 {results.length === 1
-                  ? labels['match found']
-                  : labels['matches found']}
+                  ? translation['match found']
+                  : translation['matches found']}
               </div>
               {selectedPreFiltersLabel.length > 0 && (
                 <>
-                  <div>based on </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                    {selectedPreFiltersLabel.map((value, index) => {
-                      return (
-                        <React.Fragment key={index}>
-                          <div style={{ fontWeight: 'bold' }}>{value}</div>
-                          {index != selectedPreFiltersLabel.length - 1 && (
-                            <div
-                              style={{
-                                paddingRight: '4px',
-                                paddingLeft: '2px',
-                              }}
-                            >
-                              {index === selectedPreFiltersLabel.length - 2
-                                ? 'and'
-                                : ','}
-                            </div>
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
+                  <div>{translation['based on']}</div>
+                  <div
+                    style={{
+                      paddingRight: '4px',
+                      paddingLeft: '2px',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {selectedPreFilters.join(', ')}
                   </div>
                 </>
               )}
@@ -234,7 +233,7 @@ export const Result = ({
               }}
             >
               <GoBack width={16} height={16} />
-              {labels['Back to request image']}
+              {translation['Back to request image']}
             </div>
           )}
 
@@ -286,13 +285,13 @@ export const Result = ({
                 className="nyris__postFilter-clear"
                 onClick={() => setPostFilter({})}
               >
-                <div>Clear</div>
+                <div>{translation['Clear']}</div>
               </div>
             </div>
           )}
 
           {loading && (
-            <LoadingSpinner description={labels['Analyzing image...']} />
+            <LoadingSpinner description={translation['Analyzing image...']} />
           )}
           {!loading && (
             <>
@@ -313,7 +312,7 @@ export const Result = ({
               {showFeedbackSuccess && (
                 <div className="nyris__feedback-section">
                   <div className="nyris__feedback-success">
-                    Thanks for your feedback!
+                    {translation['Thanks for your feedback!']}
                   </div>
                 </div>
               )}

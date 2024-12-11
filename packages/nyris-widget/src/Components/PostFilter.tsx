@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 import { ReactComponent as CloseButton } from '../images/close.svg';
 import { useFilter } from '../hooks/useFilter';
-import { ResultProps } from '../types';
-import { get, isUndefined } from 'lodash';
 import { onFilterCheck } from '../utils';
+import translations from '../translations';
+
+const translation = translations(window.nyrisSettings.language);
 
 function PostFilter({
   onClose,
@@ -43,7 +44,7 @@ function PostFilter({
           <CloseButton width={12} color="#2B2C46" />
         </div>
         <div className="nyris__postFilter-heading">
-          Refine your search results
+          {translation['Refine your search results']}
         </div>
         <div style={{ overflowY: 'auto', paddingBottom: '24px' }}>
           {window.nyrisSettings.filter?.slice(0, 2).map((value, index) => {
@@ -122,7 +123,7 @@ function PostFilter({
             onClose();
           }}
         >
-          Cancel
+          {translation['Cancel']}
         </div>
         <div
           className="nyris__postFilter-button-apply"
@@ -131,7 +132,7 @@ function PostFilter({
             onClose();
           }}
         >
-          Apply
+          {translation['Apply']}
         </div>
       </div>
     </div>

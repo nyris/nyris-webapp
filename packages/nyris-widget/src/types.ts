@@ -2,6 +2,7 @@ import { Region, RectCoords, NyrisAPISettings } from '@nyris/nyris-api';
 import { FeedbackStatus } from './type';
 
 export type CadenasScriptStatus = 'ready' | 'loading' | 'failed' | 'disabled';
+export type Language = 'de' | 'en';
 
 export enum WidgetScreen {
   Hidden = 'hidden',
@@ -21,7 +22,7 @@ export interface NyrisSettings extends NyrisAPISettings {
   customerLogo: string;
   logoWidth: string;
   ctaButtonText: string;
-  language: string;
+  language: Language;
   navigatePreference: string;
   cadenasAPIKey?: string;
   cadenasCatalog?: string;
