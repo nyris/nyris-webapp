@@ -13,6 +13,7 @@ function UploadDisclaimer({
   isMobile: boolean;
 }) {
   const [dontShowAgain, setDontShowAgain] = useState(false);
+  const isCadSearch = window.settings.cadSearch;
 
   return (
     <>
@@ -67,7 +68,9 @@ function UploadDisclaimer({
                 type="file"
                 name="take-picture"
                 id="nyris__upload-photo"
-                accept="image/jpeg,image/png,image/webp"
+                accept={`${
+                  isCadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,' : ''
+                }image/jpeg,image/png,image/webp`}
                 onChange={makeFileHandler(file =>
                   onContinue({ file, dontShowAgain }),
                 )}

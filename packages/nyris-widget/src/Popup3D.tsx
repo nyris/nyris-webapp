@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { ReactComponent as Box3dIcon } from "./images/3d.svg";
 import { ReactComponent as IconClose } from "./images/close.svg";
-import { ResultProps } from "./Result";
+import { ResultProps } from "./Components/Product";
 import CadenasWebViewer from "./CadenasWebViewer";
 import link from "./images/link.svg";
 import { CadenasScriptStatus } from "./App";

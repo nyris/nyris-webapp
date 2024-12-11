@@ -6,7 +6,11 @@ import { useAppSelector } from 'Store/Store';
 import ExperienceVisualSearch from '../../components/Experience-visual-search/ExperienceVisualSearch';
 import { Icon } from '@nyris/nyris-react-components';
 
-function AppMobile(): JSX.Element {
+function AppMobile({
+  experienceVisualSearchBlobs,
+}: {
+  experienceVisualSearchBlobs: Blob[];
+}): JSX.Element {
   const { settings } = useAppSelector(state => state);
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
 
@@ -48,7 +52,13 @@ function AppMobile(): JSX.Element {
           }}
         />
       </div>
-      {settings.experienceVisualSearch ? <ExperienceVisualSearch /> : ''}
+      {settings.experienceVisualSearch ? (
+        <ExperienceVisualSearch
+          experienceVisualSearchBlobs={experienceVisualSearchBlobs}
+        />
+      ) : (
+        ''
+      )}
     </div>
   );
 }

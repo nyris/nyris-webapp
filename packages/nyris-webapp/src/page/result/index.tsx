@@ -85,7 +85,7 @@ function ResultComponent(props: Props) {
   const isPostFilterEnabled = settings.postFilterOption;
   const history = useHistory();
 
-  const { singleImageSearch, multiImageSearch } = useImageSearch();
+  const { singleImageSearch } = useImageSearch();
 
   const { resetRegions, imageRegions, requestImages } = useRequestStore(
     state => ({
@@ -187,35 +187,6 @@ function ResultComponent(props: Props) {
 
     setFilterString(filter);
   }, [preFilter, requestImage, searchQuery, settings.alogoliaFilterField]);
-
-  useEffect(() => {
-    if (requestImages.length === 0 || !isAlgoliaEnabled) {
-      return;
-    }
-    dispatch(updateStatusLoading(true));
-    dispatch(loadingActionResults());
-    if (requestImages.length === 1) {
-      singleImageSearch({
-        image: requestImages[0],
-        settings,
-        imageRegion: imageRegions[0],
-        compress: false,
-      }).then(res => {
-        dispatch(updateStatusLoading(false));
-      });
-    } else {
-      multiImageSearch({
-        images: requestImages,
-        settings,
-        regions: imageRegions,
-      }).then(res => {
-        dispatch(updateStatusLoading(false));
-      });
-    }
-
-    return () => {};
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preFilter]);
 
   useEffect(() => {
     if (!requestImage) return;

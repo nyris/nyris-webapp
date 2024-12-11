@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 import cx from 'classnames';
 
 import { Drawer } from '@material-ui/core';
@@ -20,6 +19,8 @@ import ImageCaptureHelpModal from 'components/ImageCaptureHelpModal';
 import { createPortal } from 'react-dom';
 import { compressImage } from 'utils';
 import { Icon } from '@nyris/nyris-react-components';
+import { isCadFile } from '@nyris/nyris-api';
+import { useCadSearch } from 'hooks/useCadSearch';
 
 interface Props {
   show: boolean;
@@ -35,7 +36,7 @@ function CameraCustom(props: Props) {
   const settings = useAppSelector(state => state.settings);
   const history = useHistory();
   const dispatch = useAppDispatch();
-
+  const isCadSearch = window.settings.cadSearch;
   const { singleImageSearch, multiImageSearch } = useImageSearch();
 
   const { requestImages, setRequestImages, regions } = useRequestStore(
@@ -45,6 +46,7 @@ function CameraCustom(props: Props) {
       regions: state.regions,
     }),
   );
+  const { cadSearch } = useCadSearch();
 
   const [capturedImages, setCapturedImages] = useState<HTMLCanvasElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -81,21 +83,31 @@ function CameraCustom(props: Props) {
   };
 
   const handlerFindImage = async (image: any) => {
-    dispatch(updateStatusLoading(true));
-    dispatch(loadingActionResults());
-    if (history.location.pathname !== '/result') {
-      history.push('/result');
+    if (isCadFile(image) && isCadSearch) {
+      dispatch(updateStatusLoading(true));
+      dispatch(loadingActionResults());
+      if (history.location.pathname !== '/result') {
+        history.push('/result');
+      }
+      cadSearch({ file: image, settings, newSearch: true }).then((res: any) => {
+        dispatch(updateStatusLoading(false));
+      });
+    } else {
+      dispatch(updateStatusLoading(true));
+      dispatch(loadingActionResults());
+      if (history.location.pathname !== '/result') {
+        history.push('/result');
+      }
+
+      singleImageSearch({
+        image: image,
+        settings,
+        newSearch,
+        showFeedback: true,
+      }).then(() => {
+        dispatch(updateStatusLoading(false));
+      });
     }
-
-    singleImageSearch({
-      image: image,
-      settings,
-      newSearch,
-      showFeedback: true,
-    }).then(() => {
-      dispatch(updateStatusLoading(false));
-    });
-
     dispatch(onToggleModalItemDetail(false));
     handleClose();
   };
@@ -245,7 +257,11 @@ function CameraCustom(props: Props) {
                                 handlerFindImage(file);
                               }
                             }}
-                            accept="image/jpeg,image/png,image/webp"
+                            accept={`${
+                              isCadSearch
+                                ? '.stp,.step,.stl,.obj,.glb,.gltf,'
+                                : ''
+                            }image/jpeg,image/png,image/webp`}
                             onClick={event => {
                               // @ts-ignore
                               event.target.value = '';

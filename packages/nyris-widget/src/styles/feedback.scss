@@ -4,13 +4,15 @@
     height: 48px;
 
     position: sticky;
-    bottom: 65px;
+    bottom: 105px;
     z-index: 2;
     margin-top: 10px;
     
     @media #{$mobile-query} {
         width: 310px;
         height: 41px;
+        bottom: 86px;
+
     }
 }
 
@@ -19,7 +21,7 @@
     mix-blend-mode: multiply;
     border-radius: 24px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     padding-left: 16px;
     padding-right: 6px;
@@ -29,7 +31,7 @@
         padding-right: 4px;
     }
   
-    column-gap: 22px;
+    // column-gap: 22px;
   
     flex-shrink: 0;
     color: #2B2C46;
@@ -37,7 +39,7 @@
     p{
       font-size: 14px;
       font-weight: 600;
-      width: 146px;
+      width: fit-content;
 
       @media #{$mobile-query} {
         font-size: 12px;

@@ -10,6 +10,7 @@ import {
 } from "./types-external";
 
 require("blueimp-canvas-to-blob");
+import qs from "qs";
 
 import {
   getRectAspectRatio,
@@ -51,6 +52,8 @@ export default class NyrisAPI {
   private readonly regionProposalUrl: string;
   private readonly responseFormat: string;
   private readonly imageMatchingUrlBySku: string;
+  private readonly requestImageUrl: string;
+
   private readonly imageMatchingSubmitManualUrl: string;
   private readonly responseHook?: (response: any) => any;
   private readonly feedbackUrl: string;
@@ -76,13 +79,13 @@ export default class NyrisAPI {
     const baseUrl = settings.baseUrl || "https://api.nyris.io";
     this.imageMatchingUrl = `${baseUrl}/find/v1.1`;
     this.imageMatchingUrlMulti = `${baseUrl}/find/v1.2`;
-    this.cadMatchingUrl = `${baseUrl}/cad/find/v0.1`;
+    this.cadMatchingUrl = `${baseUrl}/cad/find/v0.2`;
     this.imageMatchingUrlBySku = `${baseUrl}/recommend/v1/`;
     this.imageMatchingSubmitManualUrl = `${baseUrl}/find/v1/manual/`;
     this.feedbackUrl = `${baseUrl}/feedback/v1/`;
     this.regionProposalUrl = `${baseUrl}/find/v2/regions/`;
     this.findFilters = `${baseUrl}/find/v1/filters`;
-
+    this.requestImageUrl = `${baseUrl}/cad/image`;
     this.responseFormat = "application/offers.complete+json";
     this.maxHeight = settings.maxHeight || 1024;
     this.maxWidth = settings.maxWidth || 1024;
@@ -185,19 +188,37 @@ export default class NyrisAPI {
    */
   async findByCad(
     file: File,
-    options: ImageSearchOptions
+    options: ImageSearchOptions,
+    filters?: Filter[]
   ): Promise<SearchResult> {
     let fileType = file.type;
     let headers = this.getSearchRequestHeaders(fileType);
     let params = this.getParams(options);
+
+    var requestBody = new FormData();
+    // Append the file to the FormData
+    requestBody.append("file", file);
+
+    if (filters && filters.length > 0) {
+      for (let i = 0; i < filters.length; i++) {
+        requestBody.append(`filters[${i}].filterType`, filters[i].key!);
+        for (let j = 0; j < filters[i].values.length; j++) {
+          requestBody.append(
+            `filters[${i}].filterValues[${j}]`,
+            filters[i].values[j]
+          );
+        }
+      }
+    }
+
     let { res }: any = await timePromise(
       this.httpClient.request<SearchResult>({
         method: "POST",
         url: this.cadMatchingUrl,
-        data: file,
         params,
         headers,
         responseType: "json",
+        data: requestBody,
       })
     );
     return res.data;
@@ -451,5 +472,27 @@ export default class NyrisAPI {
     });
 
     return response.data;
+  }
+
+  /**
+   * get cad request image
+   * @param sku The SKU or ID of the item.
+   * @param mid The index ID.
+   */
+  async getCadRequestImage(url: string) {
+    const headers: any = {
+      "X-Api-Key": this.apiKey,
+    };
+
+    let r: any = await this.httpClient.get(this.requestImageUrl, {
+      headers,
+      params: { img: url },
+      paramsSerializer: (params) => qs.stringify(params, { encode: false }),
+      responseType: "blob",
+    });
+    if (this.responseHook) {
+      r = this.responseHook;
+    }
+    return r;
   }
 }
