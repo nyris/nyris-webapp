@@ -157,7 +157,7 @@ export const Result = ({
                       fontWeight: 'bold',
                     }}
                   >
-                    {selectedPreFilters.join(', ')}
+                    {selectedPreFiltersLabel?.join(', ')}
                   </div>
                 </>
               )}
