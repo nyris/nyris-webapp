@@ -1,13 +1,15 @@
+import { isUndefined } from 'lodash';
+
 export const addAssets = (urls: string[]) => {
   return Promise.all(
-    urls.map((url) => {
+    urls.map(url => {
       return new Promise<void>((resolve, reject) => {
         let element: HTMLScriptElement | HTMLLinkElement;
 
-        if (url.endsWith(".css")) {
+        if (url.endsWith('.css')) {
           // Create a link element for CSS
-          element = document.createElement("link");
-          element.rel = "stylesheet";
+          element = document.createElement('link');
+          element.rel = 'stylesheet';
           element.href = url;
 
           // Handle load and error for CSS
@@ -19,7 +21,7 @@ export const addAssets = (urls: string[]) => {
           };
         } else {
           // Create a script element for JS
-          element = document.createElement("script");
+          element = document.createElement('script');
           element.src = url;
           element.async = true;
 
@@ -35,6 +37,27 @@ export const addAssets = (urls: string[]) => {
         // Append the element to the document
         document.head.appendChild(element);
       });
-    })
+    }),
   );
+};
+
+export const onFilterCheck = (
+  payload: Record<string, string>,
+  postFilter: any,
+) => {
+  let filter: any = { ...postFilter };
+  const key = Object.keys(payload)[0];
+
+  if (!isUndefined(filter[key]) && !isUndefined(filter[key][payload[key]])) {
+    filter[key] = {
+      ...filter[key],
+      [payload[key]]: !filter[key][payload[key]],
+    };
+  } else if (!filter[key]) {
+    filter = { ...filter, [key]: { [payload[key]]: true } };
+  } else {
+    filter[key] = { ...filter[key], [payload[key]]: true };
+  }
+
+  return { ...filter };
 };

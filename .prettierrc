@@ -3,5 +3,6 @@
   "useTabs": false,
   "trailingComma": "all",
   "proseWrap": "never",
-  "arrowParens": "avoid"
+  "arrowParens": "avoid",
+  "tabWidth": 2
 }
