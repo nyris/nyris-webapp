@@ -207,7 +207,7 @@ export function canvasToJpgBlob(
 export const cadExtensions = [".stp", ".step", ".stl", ".obj", ".glb", ".gltf"];
 
 export function isCadFile(file: File) {
-  return cadExtensions.some((ex) => file.name.endsWith(ex));
+  return cadExtensions.some((ex) => file?.name?.endsWith(ex));
 }
 
 export function isImageFile(file: File) {

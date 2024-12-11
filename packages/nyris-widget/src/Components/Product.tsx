@@ -5,18 +5,14 @@ import link from '../images/link.svg';
 import similar_search from '../images/similar_search.svg';
 
 import Popup3D from '../Popup3D';
-import { CadenasScriptStatus } from '../App';
+import { CadenasScriptStatus, ResultProps } from '../types';
 
-export interface ResultProps {
-  metadata: string;
-  title: string;
-  sku: string;
-  links: Record<string, string>;
-  imageUrl: string;
+interface ProductCardProps extends ResultProps {
   onSimilarSearch?: any;
   cadenasScriptStatus?: CadenasScriptStatus;
 }
-export const ProductCard = (r: ResultProps) => {
+
+export const ProductCard = (r: ProductCardProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [bounding, setBounding] = useState<any>(null);
 

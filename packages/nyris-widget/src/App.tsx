@@ -1,80 +1,38 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import eye from "./eye.svg";
-import camera from "./images/camera.svg";
+import eye from './eye.svg';
+import camera from './images/camera.svg';
 
-import { ReactComponent as Logo } from "./images/logo.svg";
-import { ReactComponent as DeutscheLogo } from "./images/deutsche_logo.svg";
-import { ReactComponent as CloseButton } from "./images/close.svg";
-import { ReactComponent as Plus } from "./images/plus.svg";
-import { ReactComponent as Down } from "./images/chevron_down.svg";
+import { ReactComponent as Logo } from './images/logo.svg';
+import { ReactComponent as DeutscheLogo } from './images/deutsche_logo.svg';
+import { ReactComponent as CloseButton } from './images/close.svg';
+import { ReactComponent as Plus } from './images/plus.svg';
+import { ReactComponent as Down } from './images/chevron_down.svg';
 
-import "./styles/nyris.scss";
+import './styles/nyris.scss';
 
-import { RectCoords, Region } from "@nyris/nyris-api";
-import { Preview } from "@nyris/nyris-react-components";
-import classNames from "classnames";
-import { useDropzone } from "react-dropzone";
-import translations from "./translations";
-import { addAssets } from "./utils";
-import Feedback from "./Components/Feedback";
-import { FeedbackStatus } from "./type";
-import PreFilter from "./Components/PreFilter";
-import Modal from "./Components/Modal";
-import { LoadingSpinner } from "./Components/Loading";
-import { Result } from "./Components/Result";
+import classNames from 'classnames';
+import { useDropzone } from 'react-dropzone';
+import translations from './translations';
+import { addAssets } from './utils';
+import PreFilter from './Components/PreFilter';
+import Modal from './Components/Modal';
+import { LoadingSpinner } from './Components/Loading';
+import { Result } from './Components/Result';
+import { AppProps, CadenasScriptStatus, WidgetScreen } from './types';
 
 const labels = translations(window.nyrisSettings.language);
 const assets_base_url =
-  "https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api";
+  'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api';
 declare var psol: any;
-export enum Screen {
-  Hidden = "hidden",
-  Hello = "hello",
-  Wait = "wait",
-  Fail = "fail",
-  Result = "results",
-  Refine = "refine",
-}
-export type CadenasScriptStatus = "ready" | "loading" | "failed" | "disabled";
-export interface AppProps {
-  image: HTMLCanvasElement;
-  errorMessage: string;
-  showScreen: Screen;
-  thumbnailUrl: string;
-  results: any[];
-  regions: Region[];
-  selection: RectCoords;
-  showVisualSearchIcon: boolean;
-  onClose: () => void;
-  onRestart: () => void;
-  onRefine: () => void;
-  onToggle: () => void;
-  onFile: (f: any, preFilter: string[]) => void;
-  onFileDropped: (f: File, preFilter: string[]) => void;
-  onAcceptCrop: (r: RectCoords, preFilter: string[]) => void;
-  onSimilarSearch: (url: string, preFilter: string[]) => void;
-  onGoBack: () => void;
-  loading: boolean;
-  firstSearchImage: HTMLCanvasElement;
-  cadenasScriptStatus: CadenasScriptStatus;
-  submitFeedback: (data: boolean) => Promise<void>;
-  feedbackStatus: FeedbackStatus;
-  setFeedbackStatus: (status: FeedbackStatus) => void;
-  getPreFilters: () => Promise<Record<string, string[]>>;
-  searchFilters: (key: any, value: string) => Promise<Record<string, string[]>>;
-
-  selectedPreFilters?: any;
-  setSelectedPreFilters?: any;
-}
 
 const Wait = () => (
   <div className="nyris__screen nyris__wait">
-    <div className="nyris__main-heading">{labels["Hold on"]}</div>
+    <div className="nyris__main-heading">{labels['Hold on']}</div>
     <div className="nyris__main-description">
-      {labels["We are working hard on finding the product"]}
+      {labels['We are working hard on finding the product']}
     </div>
-    <LoadingSpinner description={labels["Analyzing image..."]} />
+    <LoadingSpinner description={labels['Analyzing image...']} />
   </div>
 );
 
@@ -94,17 +52,13 @@ const Fail = ({
   const acceptCrop = () =>
     onAcceptCrop(currentSelection, Object.keys(selectedPreFilters));
   // @ts-ignore
-  const showPreview = image && image.type !== "error";
+  const showPreview = image && image.type !== 'error';
 
   return (
     <div className="nyris__screen nyris__fail">
       <div className="nyris__main-heading">{errorMessage}</div>
       <div className="nyris__main-description">
-        <p>
-          <br />
-          <br />
-          {labels["Oops!"]}
-        </p>
+        <div>{labels['Oops!']}</div>
       </div>
       <div className="nyris__fail-content">
         <label
@@ -112,7 +66,7 @@ const Fail = ({
           htmlFor="nyris__hello-open-camera"
         >
           <span>
-            {isMobile ? labels["Click a picture"] : labels["Upload a picture"]}
+            {isMobile ? labels['Click a picture'] : labels['Upload a picture']}
           </span>
           <img src={camera} width={16} height={16} />
         </label>
@@ -124,7 +78,7 @@ const Fail = ({
           onChange={(f: any) => onFile(f, Object.keys(selectedPreFilters))}
           capture="environment"
           style={{
-            display: "none",
+            display: 'none',
           }}
         />
       </div>
@@ -151,7 +105,7 @@ const Hello = ({
   });
 
   const logo =
-    window.nyrisSettings.language === "en" ? (
+    window.nyrisSettings.language === 'en' ? (
       <Logo fill={window.nyrisSettings.primaryColor} width={320} height={134} />
     ) : (
       <DeutscheLogo
@@ -174,15 +128,15 @@ const Hello = ({
         )}
       </div>
       <div className="nyris__hello-wrapper">
-        {window.nyrisSettings.visualSearchFilterKey && (
+        {window.nyrisSettings.searchCriteriaKey && (
           <div
             className={`nyris__hello-prefilter-button ${
-              Object.keys(selectedPreFilters).length > 0 ? "selected" : ""
+              Object.keys(selectedPreFilters).length > 0 ? 'selected' : ''
             }`}
             onClick={() => {
               setIsModalOpen(true);
               setLoading(true);
-              getPreFilters().then((res) => {
+              getPreFilters().then(res => {
                 setPreFilter(res);
                 setLoading(false);
               });
@@ -190,27 +144,27 @@ const Hello = ({
           >
             <div
               style={{
-                display: "flex",
-                gap: "8px",
-                justifyContent: "center",
-                alignItems: "center",
+                display: 'flex',
+                gap: '8px',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
               {Object.keys(selectedPreFilters).length > 0 && (
                 <div className="nyris__hello-prefilter-selected-tag"></div>
               )}
 
-              <div style={{ height: "" }}>
-                {labels["Select a"]} {window.nyrisSettings.preFilterLabel}
+              <div style={{ height: '' }}>
+                {window.nyrisSettings.searchCriteriaLabel}
               </div>
             </div>
             <div
               style={{
-                width: "16px",
-                height: "16px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                width: '16px',
+                height: '16px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
               <Down color="#2B2C46" />
@@ -220,7 +174,7 @@ const Hello = ({
 
         <div
           className={`nyris__main-content nyris__main-content--mobile ${
-            window.nyrisSettings.visualSearchFilterKey ? "col" : ""
+            window.nyrisSettings.searchCriteriaKey ? 'col' : ''
           }`}
         >
           <label
@@ -229,21 +183,21 @@ const Hello = ({
             style={{
               color: window.nyrisSettings.primaryColor,
               backgroundColor: window.nyrisSettings.browseGalleryButtonColor,
-              width: window.nyrisSettings.visualSearchFilterKey ? "50%" : "",
+              width: window.nyrisSettings.searchCriteriaKey ? '50%' : '',
             }}
           >
-            {labels["Browse gallery"]}
+            {labels['Browse gallery']}
           </label>
           <label
             className="nyris__hello-upload"
             style={{
               backgroundColor: window.nyrisSettings.primaryColor,
-              width: window.nyrisSettings.visualSearchFilterKey ? "50%" : "",
+              width: window.nyrisSettings.searchCriteriaKey ? '50%' : '',
             }}
             htmlFor="nyris__hello-open-camera"
           >
-            {labels["Take a photo"]}
-            {!window.nyrisSettings.visualSearchFilterKey && (
+            {labels['Take a photo']}
+            {!window.nyrisSettings.searchCriteriaKey && (
               <img src={camera} width={16} height={16} />
             )}
           </label>
@@ -262,14 +216,14 @@ const Hello = ({
 
           <div
             className={`nyris__hello-drop-zone ${
-              isDragActive ? "active-drop" : ""
+              isDragActive ? 'active-drop' : ''
             }`}
             {...getRootProps()}
           >
             <Plus width={24} height={24} color="#55566B" />
             <div>
               <span className="nyris__hello-drop-zone-bold-text">
-                {labels["Drag an image or click to upload"]}
+                {labels['Drag an image or click to upload']}
               </span>
             </div>
           </div>
@@ -281,7 +235,7 @@ const Hello = ({
           id="select_file"
           className="inputFile"
           placeholder="Choose photo"
-          style={{ display: "block", cursor: "pointer" }}
+          style={{ display: 'block', cursor: 'pointer' }}
         />
         <input
           type="file"
@@ -309,23 +263,23 @@ const Hello = ({
           loading={loading}
           setSelectedPreFilters={setSelectedPreFilters}
           selectedPreFilters={selectedPreFilters}
-          searchFilters={(value) => {
+          searchFilters={value => {
             if (!value) {
-              getPreFilters().then((res) => {
+              getPreFilters().then(res => {
                 setPreFilter(res);
               });
               return;
             }
 
             searchFilters(
-              window.nyrisSettings.visualSearchFilterKey,
-              encodeURIComponent(value)
+              window.nyrisSettings.searchCriteriaKey,
+              encodeURIComponent(value),
             )
-              .then((res) => {
+              .then(res => {
                 setPreFilter(res);
               })
               .catch((e: any) => {
-                console.log("err filterSearchHandler", e);
+                console.log('err filterSearchHandler', e);
               });
           }}
         />
@@ -349,37 +303,44 @@ export const App = (props: AppProps) => {
   let resultsSingle = false;
   let resultsMultiple = false;
   const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([]);
+  const [postFilter, setPostFilter] = useState<any>({});
 
   const [cadenasScriptStatus, setCadenasScriptStatus] =
-    useState<CadenasScriptStatus>("disabled");
+    useState<CadenasScriptStatus>('disabled');
 
   useEffect(() => {
     if (window.nyrisSettings.cadenasAPIKey) {
-      setCadenasScriptStatus("loading");
+      setCadenasScriptStatus('loading');
       addAssets([`${assets_base_url}/css/psol.components.min.css`]).catch(
         (error: any) => {
-          setCadenasScriptStatus("failed");
-        }
+          setCadenasScriptStatus('failed');
+        },
       );
 
       addAssets([`${assets_base_url}/js/thirdparty.min.js`])
         .then(() => {
           addAssets([`${assets_base_url}/js/psol.components.min.js`])
             .then(() => {
-              setCadenasScriptStatus("ready");
+              setCadenasScriptStatus('ready');
             })
             .catch((error: any) => {
-              setCadenasScriptStatus("failed");
+              setCadenasScriptStatus('failed');
             });
         })
         .catch((error: any) => {
-          setCadenasScriptStatus("failed");
+          setCadenasScriptStatus('failed');
         });
     }
   }, []);
 
+  useEffect(() => {
+    if (showScreen === WidgetScreen.Hello) {
+      setPostFilter({});
+    }
+  }, [showScreen]);
+
   switch (showScreen) {
-    case Screen.Hello:
+    case WidgetScreen.Hello:
       content = (
         <Hello
           {...props}
@@ -388,26 +349,28 @@ export const App = (props: AppProps) => {
         />
       );
       break;
-    case Screen.Wait:
+    case WidgetScreen.Wait:
       content = <Wait />;
       break;
-    case Screen.Fail:
+    case WidgetScreen.Fail:
       content = (
         <Fail
           {...props}
-          errorMessage={labels["Something went wrong"]}
+          errorMessage={labels['Something went wrong']}
           setSelectedPreFilters={setSelectedPreFilters}
           selectedPreFilters={selectedPreFilters}
         />
       );
       break;
-    case Screen.Result:
+    case WidgetScreen.Result:
       content = (
         <Result
           {...props}
           cadenasScriptStatus={cadenasScriptStatus}
           setSelectedPreFilters={setSelectedPreFilters}
           selectedPreFilters={selectedPreFilters}
+          setPostFilter={setPostFilter}
+          postFilter={postFilter}
         />
       );
       wide = true;
@@ -417,30 +380,43 @@ export const App = (props: AppProps) => {
 
   const divMainClassNames = classNames({
     nyris__main: true,
-    "nyris__main--wide": wide,
+    'nyris__main--wide': wide,
     nyrisMultipleProducts: resultsMultiple,
     nyrisSingleProduct: resultsSingle,
   });
   const showPoweredByNyris = !process.env.IS_ENTERPRISE;
   return (
     <React.Fragment>
-      {showScreen != Screen.Hidden && (
+      {showScreen != WidgetScreen.Hidden && (
         <>
-          <div className="nyris__background" onClick={onClose} />
+          <div
+            className="nyris__background"
+            onClick={() => {
+              setSelectedPreFilters([]);
+              onClose();
+            }}
+          />
           <div className="nyris__wrapper">
             <div className={divMainClassNames}>
               <div className="nyris__header">
                 <div
                   style={{
-                    width: "16px",
-                    height: "16px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    cursor: "pointer",
+                    width: '16px',
+                    height: '16px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    cursor: 'pointer',
                   }}
                 >
-                  <CloseButton onClick={onClose} width={8} color="#2B2C46" />
+                  <CloseButton
+                    onClick={() => {
+                      setSelectedPreFilters([]);
+                      onClose();
+                    }}
+                    width={8}
+                    color="#2B2C46"
+                  />
                 </div>
               </div>
               {content}
@@ -448,16 +424,16 @@ export const App = (props: AppProps) => {
                 className="nyris__footer"
                 style={{
                   paddingBottom:
-                    showScreen == Screen.Result && results?.length > 0
+                    showScreen == WidgetScreen.Result && results?.length > 0
                       ? showPoweredByNyris
-                        ? "80px"
-                        : "50px"
-                      : "",
+                        ? '80px'
+                        : '50px'
+                      : '',
                 }}
               >
                 {showPoweredByNyris && (
                   <a target="_blank" href="https://nyris.io/">
-                    Powered by{" "}
+                    Powered by{' '}
                     <span className="nyris__footer-logo">nyris®</span>
                   </a>
                 )}

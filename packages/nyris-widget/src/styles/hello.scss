@@ -126,8 +126,8 @@
   &-heading {
     font-size: 32px;
     font-weight: 700;
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
   &-body {
@@ -147,7 +147,7 @@
     justify-items: center;
     background-color: #E9E9EC;
     border-radius: 16px;
-    height: 32px;
+    height: 36px;
     padding-left: 8px;
     align-items: center;
 
@@ -155,13 +155,15 @@
   }
 
   &-input {
-    width: 100%;
+    width: calc(100% - 24px);
+    
     display: flex;
     background-color: #E9E9EC;
     border-radius: 16px;
     padding: 8px;
     outline: none;
     border: none;
+    font-size: 1rem
   }
 
   &-filters-section {
@@ -171,6 +173,7 @@
     padding-bottom: 24px;
     height: 100%;
     overflow-y: auto;
+    margin-top: 12px;
   }
 
   &-filters {

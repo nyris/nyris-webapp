@@ -51,14 +51,25 @@ function ProductListComponent({
       !isSearchStalled
     ) {
       return (
-        <div style={{ marginTop: '50px', width: '100%', textAlign: 'center', marginBottom: '12px' }}>
+        <div
+          style={{
+            marginTop: '50px',
+            width: '100%',
+            textAlign: 'center',
+            marginBottom: '12px',
+          }}
+        >
           {t('No products were found matching your search criteria.')}
         </div>
       );
     }
     return productList.map((hit: any, i: number) => {
       return (
-        <div key={i} style={{ height: 'fit-content' }} className={settings.simpleCardView ? 'border' : ''}>
+        <div
+          key={i}
+          style={{ height: 'fit-content' }}
+          className={settings.simpleCardView ? 'border' : ''}
+        >
           <ItemResult
             dataItem={hit}
             indexItem={i}

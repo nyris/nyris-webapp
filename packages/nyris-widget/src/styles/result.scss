@@ -2,7 +2,7 @@
   flex-grow: 1;
 
   & .nyris__main-content {
-    padding-bottom: 18px;
+    padding-bottom: 30px;
   }
 
   &-summary {
@@ -81,7 +81,6 @@
 
   }
 
-
   &-product-panel {
     display: flex;
     padding: 8px;
@@ -107,7 +106,7 @@
     position: relative;
     width: 100%;
     border-radius: 2px;
-    background: #717380;
+    background: #2B2C46;
     margin: 16px 2px 16px 2px;
 
     &-wrapper {
@@ -136,8 +135,6 @@
     }
   }
 
-
-
   &-preview-collapse {
     box-shadow: 0 0 4px 0 #55566B;
     width: 24px;
@@ -157,14 +154,15 @@
   }
 
   &-preview-delete-expand {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
     top: 8px;
     left: 16px;
+    background-color: #fff;
     @media #{$mobile-query} {
       left: 6px;
     }
@@ -172,19 +170,26 @@
     cursor: pointer;
     &:hover {
       background-color: #E31B5D;
-    
+      svg {
+        fill: #fff;
+      }
+
+    }
+    svg {
+      fill: #55566B;
     }
   }
 
   &-preview-delete-collapse {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 36px;
+    bottom: 34px;
     left: 16px;
+    background-color: #fff;
     @media #{$mobile-query} {
       left: 6px;
     }
@@ -192,7 +197,13 @@
     cursor: pointer;
     &:hover {
       background-color: #E31B5D;
+      svg {
+        fill: #fff;
+      }
     
+    }
+    svg {
+      fill: #55566B;
     }
   }
 
@@ -215,7 +226,7 @@
   
   .go-back-button {
     align-self: flex-start;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
     background: #F3F3F5;
     padding: 8px 16px;
     border-radius: 20px;
@@ -391,5 +402,126 @@ div.psol-comp-webviewer3d-copyright-container {
     // sorry! I need to change style added as an attr inside lib
     color: #55566B !important;
     text-decoration: none;
+  }
+}
+
+.nyris__action {
+  &-section {
+    cursor: pointer;
+    width: fit-content;
+    position: sticky;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 16px;
+
+    z-index: 2;
+
+    display: inline-flex;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    border-radius: 40px;
+    // background: #E4E3FF;
+    // background-blend-mode: multiply;
+    backdrop-filter: blur(6px);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #e4e4ff99; /* Color overlay */
+      border-radius: inherit;
+      z-index: -1;
+    }
+
+
+    @media #{$mobile-query} {
+      padding: 8px;
+      gap: 8px;
+    }
+
+
+  }
+
+  &-wrapper {
+    display: flex;
+    padding: 8px;
+    align-items: center;
+    gap: 24px;
+    cursor: pointer;
+
+    border-radius: 32px;
+    background: #FFF;
+    box-shadow: 0px 0px 16px 0px rgba(170, 171, 181, 0.50);
+
+    @media #{$mobile-query} {
+      padding: 6px;
+      align-items: center;
+      gap: 20px;
+      border-radius: 27px;
+
+    }
+
+
+    &-button {
+      display: flex;
+      width: 40px;
+      height: 40px;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      cursor: pointer;
+      border-radius: 32px;
+      background: #E9E9EC;
+      position: relative;
+
+      &:hover:not(&.active) {
+        background: #E0E0E0;
+
+        svg {
+          fill: #2B2C46;
+        }
+
+      }
+
+      @media #{$mobile-query} {
+        width: 34px;
+        height: 34px;
+        gap: 6px;
+      }
+
+      &.active {
+        background-color: #3E36DC;
+      }
+
+      svg {
+        width: 18px;
+        height: 18px;
+
+        @media #{$mobile-query} {
+          width: 14px;
+          height: 14px;
+
+        }
+
+      }
+      
+      &-indicator {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        background-color: #3E36DC;
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+    }
   }
 }

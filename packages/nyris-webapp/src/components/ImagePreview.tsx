@@ -33,7 +33,6 @@ function ImagePreviewComponent({
   isExpanded,
   isCameraUploadEnabled = true,
 }: {
-  requestImage?: any;
   imageSelection?: any;
   filteredRegions?: any;
   showAdjustInfo?: any;
@@ -180,6 +179,7 @@ function ImagePreviewComponent({
         settings,
         imageRegion: r,
         showFeedback: true,
+        compress: false,
       }).then((res: any) => {
         dispatch(updateStatusLoading(false));
 
@@ -467,7 +467,11 @@ function ImagePreviewComponent({
                     'object-cover',
                     'shadow-inner',
                   ])}
-                  src={image.toDataURL()}
+                  src={(() => {
+                    if (image?.toDataURL) {
+                      return image.toDataURL();
+                    }
+                  })()}
                   alt=""
                   onClick={() => {
                     setCurrentIndex(index);

@@ -1,12 +1,12 @@
-import React, { useMemo, useState } from "react";
-import translations from "../translations";
+import React, { useMemo, useState } from 'react';
+import translations from '../translations';
 
-import { ReactComponent as CloseButton } from "../images/close.svg";
-import { ReactComponent as Search } from "../images/search.svg";
-import { LoadingSpinner } from "./Loading";
-import { pickBy } from "lodash";
+import { ReactComponent as CloseButton } from '../images/close.svg';
+import { ReactComponent as Search } from '../images/search.svg';
+import { LoadingSpinner } from './Loading';
+import { pickBy } from 'lodash';
 
-const labels = translations(window.nyrisSettings.language);
+const translation = translations(window.nyrisSettings.language);
 const maxFilter = 10;
 
 function PreFilter({
@@ -25,9 +25,9 @@ function PreFilter({
   searchFilters: (value: string) => void;
 }) {
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
-    selectedPreFilters || {}
+    selectedPreFilters || {},
   );
-  const [searchKey, setSearchKey] = useState<string>("");
+  const [searchKey, setSearchKey] = useState<string>('');
 
   const selectedFilterCount = useMemo(
     () =>
@@ -37,7 +37,7 @@ function PreFilter({
         }
         return count;
       }, 0),
-    [keyFilter]
+    [keyFilter],
   );
 
   const filterSearchHandler = async (value: any) => {
@@ -49,21 +49,21 @@ function PreFilter({
       <div className="nyris__prefilter-body">
         <div
           style={{
-            width: "16px",
-            height: "16px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: "pointer",
-            margin: "0px 12px 0px 12px",
-            alignSelf: "end",
+            width: '16px',
+            height: '16px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer',
+            margin: '0px 12px 0px 12px',
+            alignSelf: 'end',
           }}
           onClick={() => onClose()}
         >
           <CloseButton width={12} color="#2B2C46" />
         </div>
         <div className="nyris__prefilter-heading">
-          {labels["Select a"]} {window.nyrisSettings.preFilterLabel}
+          {window.nyrisSettings.searchCriteriaLabel}
         </div>
         <div className="nyris__prefilter-search">
           <Search width={16} height={16} color="#55566B" />
@@ -74,7 +74,24 @@ function PreFilter({
               setSearchKey(e.target.value);
             }}
             value={searchKey}
+            placeholder={translation['Search']}
           />
+          {searchKey ? (
+            <CloseButton
+              width={12}
+              color="#2B2C46"
+              style={{
+                marginRight: 12,
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                filterSearchHandler(null);
+                setSearchKey('');
+              }}
+            />
+          ) : (
+            ''
+          )}
         </div>
 
         {selectedFilterCount > 0 && (
@@ -91,9 +108,9 @@ function PreFilter({
                     <div>{key}</div>
                     <div
                       className="nyris__prefilter-selected-filter-remove"
-                      onClick={() =>
-                        setKeyFilter({ ...keyFilter, [key]: false })
-                      }
+                      onClick={() => {
+                        setKeyFilter({ ...keyFilter, [key]: false });
+                      }}
                     >
                       <CloseButton width={8} />
                     </div>
@@ -101,17 +118,16 @@ function PreFilter({
                 );
               })}
               <p
-                style={{ fontWeight: "bold", color: "#000" }}
+                style={{ fontWeight: 'bold', color: '#000', margin: 0 }}
               >{`${selectedFilterCount}/${maxFilter}`}</p>
               <div
                 className="nyris__prefilter-clear"
                 style={{}}
                 onClick={() => {
                   setKeyFilter({});
-                  setSelectedPreFilters({});
                 }}
               >
-                Clear all
+                {translation['Clear all']}
               </div>
             </div>
           </div>
@@ -128,7 +144,7 @@ function PreFilter({
                   return (
                     <div
                       className={`nyris__prefilter-filter-value ${
-                        keyFilter[value] ? "selected" : ""
+                        keyFilter[value] ? 'selected' : ''
                       }`}
                       key={index + value}
                       onClick={() => {
@@ -149,7 +165,7 @@ function PreFilter({
           })}
         </div>
 
-        {selectedFilterCount > 0 && !loading && (
+        {!loading && (
           <div className="nyris__prefilter-button-section">
             <div
               className="nyris__prefilter-button-cancel"
@@ -158,17 +174,17 @@ function PreFilter({
                 onClose();
               }}
             >
-              Cancel
+              {translation['Cancel']}
             </div>
             <div
               className="nyris__prefilter-button-apply"
               onClick={() => {
-                const preFilter = pickBy(keyFilter, (value) => !!value);
+                const preFilter = pickBy(keyFilter, value => !!value);
                 setSelectedPreFilters(preFilter);
                 onClose();
               }}
             >
-              Apply
+              {translation['Apply']}
             </div>
           </div>
         )}

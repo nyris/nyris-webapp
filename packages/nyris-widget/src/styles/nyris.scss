@@ -90,12 +90,11 @@
 
   &__main {
     @include flex-column-spread();
-    padding: 0 24px 18px 24px;
-    overflow-y: auto;
+    padding: 0 24px 0px 24px;
     height: 100%;
 
     @media #{$mobile-query} {
-      padding: 0px 15px 18px 15px;
+      padding: 0px 15px 0px 15px;
 
     }
         
@@ -157,11 +156,11 @@
     margin-bottom: 80px;
 
     
-    @media #{$mobile-query} {
-      margin-bottom: 100px;
-      margin-top: 25%;
+    // @media #{$mobile-query} {
+    //   margin-bottom: 100px;
+    //   margin-top: 25%;
 
-    }
+    // }
   }
 
   &__close {
@@ -380,10 +379,6 @@
     }
   }
 
-  & .nyris__main-description {
-    margin-top: -14px;
-  }
-
   & .nyris__button {
     margin: 6px;
   }
@@ -420,10 +415,12 @@
 
 @import 'hello';
 @import 'reselect';
-@import 'success-multiple';
+@import 'result';
 @import 'success-single';
 @import 'wait';
 @import 'feedback';
 @import 'modal.scss';
+@import 'post-filter.scss';
+
 
 
