@@ -13,7 +13,7 @@ settings.showFeedbackAndShare = false;
 settings.multiImageSearch = false;
 settings.preview = true;
 settings.clarityId = '';
-settings.cadSearch = false;
+settings.cadSearch = true;
 
 if (settings.rfq?.enabled && settings.support?.enabled) {
   settings.support.enabled = false;
