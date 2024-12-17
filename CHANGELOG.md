@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.68 - 2024-12-17
+
+### Added
+- enable CAD search
+
 ## 0.3.67 - 2024-12-11
 
 ### Added
