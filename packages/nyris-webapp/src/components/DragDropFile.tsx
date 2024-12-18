@@ -96,7 +96,7 @@ function DragDropFile(props: Props) {
             placeholder="Choose photo"
             style={{ display: 'block', cursor: 'pointer' }}
             accept={`${
-              isCadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,' : ''
+              isCadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,.tiff,.heic,.tif,' : ''
             }image/*`}
           />
         </div>

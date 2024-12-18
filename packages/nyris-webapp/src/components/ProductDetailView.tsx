@@ -591,8 +591,8 @@ function ProductDetailView(props: Props) {
                       </div>
                     )}
                   </div>
-
-                  {productDetails && (
+                  
+                  {settings.productDetailsAttribute?.length ? (
                     <div className="w-100">
                       <Button
                         className="w-100 button-hover"
@@ -610,31 +610,61 @@ function ProductDetailView(props: Props) {
                         onClick={() => setCollapseDescription(e => !e)}
                       >
                         {t('View details')}
-                        {collapseDescription ? (
-                          <KeyboardArrowUpIcon
-                            htmlColor={settings.theme?.secondaryColor}
-                          />
-                        ) : (
-                          <KeyboardArrowDownIcon
-                            htmlColor={settings.theme?.secondaryColor}
-                          />
-                        )}
-                      </Button>
-                      <Collapse in={collapseDescription}>
-                        <Typography
+                        <span
                           style={{
-                            fontSize: 14,
-                            padding: 5,
-                            paddingLeft: 15,
-                            paddingRight: 15,
-                            color: '#2b2c46',
+                            fontSize: 20,
                           }}
                         >
-                          {productDetails}
-                        </Typography>
-                      </Collapse>
+                          {collapseDescription ? '—' : '+'}
+                        </span>
+                      </Button>
+                      {collapseDescription ? (
+                        <div
+                          style={{
+                            background: '#E9E9EC',
+                            borderRadius: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 6,
+                            padding: '6px 15px',
+                          }}
+                        >
+                          {settings.productDetailsAttribute.map((detail) => (
+                            <div
+                              style={{
+                                height: 14,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center'
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontFamily: 'Source Sans 3',
+                                  fontSize: 12,
+                                  fontWeight: 600,
+                                  marginRight: 8,
+                                  height: 14,
+                                }}
+                              >
+                                {detail.propertyName}
+                              </span>
+                              <span
+                                style={{
+                                  fontFamily: 'Source Sans 3',
+                                  fontSize: 12,
+                                  fontWeight: 400,
+                                  height: 14,
+                                }}
+                              >
+                                {get(dataItem, detail.value)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : ('')}
                     </div>
-                  )}
+                  ) : ('')}
                 </Grid>
               </Grid>
             </div>

@@ -65,6 +65,11 @@ interface Attributes {
   attributeFourValue?: string;
 }
 
+interface ProductDetailsAttribute {
+  propertyName: string;
+  value: string;
+}
+
 export interface AppSettings extends NyrisAPISettings {
   algolia: AlgoliaSettings;
   alogoliaFilterField?: string;
@@ -75,6 +80,7 @@ export interface AppSettings extends NyrisAPISettings {
   clarityId?: string;
   mainTitle: string;
   productDetails: string;
+  productDetailsAttribute?: ProductDetailsAttribute[];
   secondaryTitle: string;
   CTAButton?: CTAButtonSettings;
   secondaryCTAButton?: SecondaryCTAButton;
