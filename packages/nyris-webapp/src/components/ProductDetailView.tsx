@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Collapse, Grid, Typography, Tooltip } from '@material-ui/core';
+import { Button, Grid, Typography, Tooltip } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { Icon } from '@nyris/nyris-react-components';
 import NoImage from '../common/assets/images/no-image.svg';
 import { useMediaQuery } from 'react-responsive';
@@ -9,7 +8,6 @@ import { ImagePreviewCarousel } from './carousel/ImagePreviewCarousel';
 import { AppState } from 'types';
 import { useAppSelector } from 'Store/Store';
 import { prepareImageList } from '../helpers/CommonHelper';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { useTranslation } from 'react-i18next';
 import ProductAttribute from './ProductAttribute';
 import CadenasWebViewer from './CadenasWebViewer';
@@ -92,14 +90,6 @@ function ProductDetailView(props: Props) {
 
     setDataImageCarouSel(valueKey);
   };
-  const productDetails = useMemo(() => {
-    const details = get(dataItem, settings.productDetails);
-    try {
-      return details.join(', ');
-    } catch (e) {
-      return details;
-    }
-  }, [dataItem, settings.productDetails]);
 
   return (
     <div
