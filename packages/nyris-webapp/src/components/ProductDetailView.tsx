@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Grid, Typography, Tooltip } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import { Icon } from '@nyris/nyris-react-components';
@@ -54,6 +54,7 @@ function ProductDetailView(props: Props) {
   >();
   const { t } = useTranslation();
   const classes = useStyles(props?.show3dView);
+  const modal = useRef<any>(null);
 
   useEffect(() => {
     if (dataItem) {
@@ -93,6 +94,7 @@ function ProductDetailView(props: Props) {
 
   return (
     <div
+      ref={modal}
       className="box-modal-default"
       style={{
         margin: isMobile ? 0 : '',
@@ -597,7 +599,15 @@ function ProductDetailView(props: Props) {
                           paddingRight: '15px',
                           textTransform: 'initial',
                         }}
-                        onClick={() => setCollapseDescription(e => !e)}
+                        onClick={(e) => {
+                          setCollapseDescription(prev => !prev);
+                          if (modal && modal.current) {
+                            setTimeout(() => {
+                              const top = (settings.productDetailsAttribute?.length || 0) * 30 + 20;
+                              modal.current.parentElement.scrollTo({ top });
+                            });
+                          }
+                        }}
                       >
                         {t('View details')}
                         <span
@@ -616,41 +626,58 @@ function ProductDetailView(props: Props) {
                             display: 'flex',
                             flexDirection: 'column',
                             gap: 6,
-                            padding: '6px 15px',
+                            padding: '6px 15px 10px',
                           }}
                         >
-                          {settings.productDetailsAttribute.map((detail) => (
-                            <div
-                              style={{
-                                height: 14,
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center'
-                              }}
-                            >
-                              <span
+                          {settings.productDetailsAttribute.map((detail) =>
+                            get(dataItem, detail.value)?.length
+                            ? (
+                              <div
                                 style={{
-                                  fontFamily: 'Source Sans 3',
-                                  fontSize: 12,
-                                  fontWeight: 600,
-                                  marginRight: 8,
                                   height: 14,
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  alignItems: 'center'
                                 }}
                               >
-                                {detail.propertyName}
-                              </span>
-                              <span
-                                style={{
-                                  fontFamily: 'Source Sans 3',
-                                  fontSize: 12,
-                                  fontWeight: 400,
-                                  height: 14,
-                                }}
-                              >
-                                {get(dataItem, detail.value)}
-                              </span>
-                            </div>
-                          ))}
+                                <span
+                                  style={{
+                                    fontFamily: 'Source Sans 3',
+                                    fontSize: 12,
+                                    fontWeight: 600,
+                                    marginRight: 8,
+                                    height: 14,
+                                  }}
+                                >
+                                  {detail.propertyName}
+                                </span>
+                                <Tooltip
+                                  title={get(dataItem, detail.value)}
+                                  placement="top"
+                                  arrow={true}
+                                  disableHoverListener={get(dataItem, detail.value)?.length < 94}
+                                >
+                                  <Typography
+                                    style={{
+                                      fontFamily: 'Source Sans 3',
+                                      fontSize: 12,
+                                      fontWeight: 400,
+                                      height: 14,
+                                      maxWidth: 490,
+                                      overflow: 'hidden',
+                                      whiteSpace: 'nowrap',
+                                      textOverflow: 'ellipsis',
+                                    }}
+                                  >
+                                    {get(dataItem, detail.value)}
+                                  </Typography>
+                                </Tooltip>
+                              </div>
+                            )
+                            : (
+                              ''
+                              )
+                          )}
                         </div>
                       ) : ('')}
                     </div>
