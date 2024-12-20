@@ -259,7 +259,7 @@ function CameraCustom(props: Props) {
                             }}
                             accept={`${
                               isCadSearch
-                                ? '.stp,.step,.stl,.obj,.glb,.gltf,.tiff,.heic,.tif,'
+                                ? '.stp,.step,.stl,.obj,.glb,.gltf,'
                                 : ''
                             }image/jpeg,image/png,image/webp`}
                             onClick={event => {

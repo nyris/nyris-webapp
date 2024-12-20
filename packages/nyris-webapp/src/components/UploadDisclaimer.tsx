@@ -69,7 +69,7 @@ function UploadDisclaimer({
                 name="take-picture"
                 id="nyris__upload-photo"
                 accept={`${
-                  isCadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,.tiff,.heic,.tif,' : ''
+                  isCadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,' : ''
                 }image/jpeg,image/png,image/webp`}
                 onChange={makeFileHandler(file =>
                   onContinue({ file, dontShowAgain }),
