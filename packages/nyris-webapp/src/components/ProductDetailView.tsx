@@ -640,22 +640,32 @@ function ProductDetailView(props: Props) {
                                   alignItems: 'center'
                                 }}
                               >
-                                <span
-                                  style={{
-                                    fontFamily: 'Source Sans 3',
-                                    fontSize: 12,
-                                    fontWeight: 600,
-                                    marginRight: 8,
-                                    height: 14,
-                                  }}
+                                <Tooltip
+                                  title={detail.propertyName}
+                                  placement="top"
+                                  arrow={true}
+                                  disableHoverListener={detail.propertyName.length < 30}
                                 >
-                                  {detail.propertyName}
-                                </span>
+                                  <span
+                                    style={{
+                                      fontFamily: 'Source Sans 3',
+                                      fontSize: 12,
+                                      fontWeight: 600,
+                                      marginRight: 8,
+                                      height: 14,
+                                    }}
+                                  >
+                                    {detail.propertyName.length < 30
+                                      ? detail.propertyName
+                                      : detail.propertyName.substring(0, 30).concat('...')
+                                    }
+                                  </span>
+                                </Tooltip>
                                 <Tooltip
                                   title={get(dataItem, detail.value)}
                                   placement="top"
                                   arrow={true}
-                                  disableHoverListener={get(dataItem, detail.value)?.length < 94}
+                                  disableHoverListener={get(dataItem, detail.value)?.length <= 60}
                                 >
                                   <Typography
                                     style={{
@@ -663,13 +673,12 @@ function ProductDetailView(props: Props) {
                                       fontSize: 12,
                                       fontWeight: 400,
                                       height: 14,
-                                      maxWidth: 490,
-                                      overflow: 'hidden',
-                                      whiteSpace: 'nowrap',
-                                      textOverflow: 'ellipsis',
                                     }}
                                   >
-                                    {get(dataItem, detail.value)}
+                                    {get(dataItem, detail.value).length <= 60
+                                      ? get(dataItem, detail.value)
+                                      : get(dataItem, detail.value).substring(0, 61).concat('...')
+                                    }
                                   </Typography>
                                 </Tooltip>
                               </div>
