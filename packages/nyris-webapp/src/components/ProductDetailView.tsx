@@ -55,6 +55,8 @@ function ProductDetailView(props: Props) {
   const { t } = useTranslation();
   const classes = useStyles(props?.show3dView);
   const modal = useRef<any>(null);
+  const extraDetailPropertyLength = isMobile ? 15 : 30;
+  const extraDetailValueLength = isMobile ? 35 : 60;
 
   useEffect(() => {
     if (dataItem) {
@@ -644,7 +646,7 @@ function ProductDetailView(props: Props) {
                                   title={detail.propertyName}
                                   placement="top"
                                   arrow={true}
-                                  disableHoverListener={detail.propertyName.length < 30}
+                                  disableHoverListener={detail.propertyName.length < extraDetailPropertyLength}
                                 >
                                   <span
                                     style={{
@@ -655,9 +657,9 @@ function ProductDetailView(props: Props) {
                                       height: 14,
                                     }}
                                   >
-                                    {detail.propertyName.length < 30
+                                    {detail.propertyName.length < extraDetailPropertyLength
                                       ? detail.propertyName
-                                      : detail.propertyName.substring(0, 30).concat('...')
+                                      : detail.propertyName.substring(0, extraDetailPropertyLength).concat('...')
                                     }
                                   </span>
                                 </Tooltip>
@@ -665,7 +667,7 @@ function ProductDetailView(props: Props) {
                                   title={get(dataItem, detail.value)}
                                   placement="top"
                                   arrow={true}
-                                  disableHoverListener={get(dataItem, detail.value)?.length <= 60}
+                                  disableHoverListener={get(dataItem, detail.value)?.length <= extraDetailValueLength}
                                 >
                                   <Typography
                                     style={{
@@ -675,9 +677,9 @@ function ProductDetailView(props: Props) {
                                       height: 14,
                                     }}
                                   >
-                                    {get(dataItem, detail.value).length <= 60
+                                    {get(dataItem, detail.value).length <= extraDetailValueLength
                                       ? get(dataItem, detail.value)
-                                      : get(dataItem, detail.value).substring(0, 61).concat('...')
+                                      : get(dataItem, detail.value).substring(0, extraDetailValueLength).concat('...')
                                     }
                                   </Typography>
                                 </Tooltip>
