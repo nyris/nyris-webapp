@@ -1,0 +1,58 @@
+{
+  "name": "@nyris/nyris-search-suite",
+  "version": "0.3.67",
+  "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
+    "@nyris/nyris-api": "^0.3.67",
+    "@nyris/nyris-react-components": "^0.3.67",
+    "@types/node": "^16.18.88",
+    "@types/react": "^18.2.65",
+    "@types/react-dom": "^18.2.21",
+    "algoliasearch": "^5.17.1",
+    "compressorjs": "^1.2.1",
+    "i18next": "^23.10.1",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.3.5",
+    "react-i18next": "^14.1.0",
+    "react-instantsearch": "^7.13.9",
+    "react-router": "^7.0.2",
+    "tailwind-merge": "^2.5.5",
+    "typescript": "^4.9.5",
+    "zustand": "^5.0.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "tailwindcss": "^3.4.10"
+  }
+}
