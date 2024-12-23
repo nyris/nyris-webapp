@@ -1,13 +1,13 @@
 {
   "name": "@nyris/vizo-webapp",
-  "version": "0.3.68",
+  "version": "0.3.69",
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@craco/craco": "^7.1.0",
     "@floating-ui/react": "^0.26.22",
-    "@nyris/nyris-api": "^0.3.68",
-    "@nyris/nyris-react-components": "^0.3.68",
+    "@nyris/nyris-api": "^0.3.69",
+    "@nyris/nyris-react-components": "^0.3.69",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
