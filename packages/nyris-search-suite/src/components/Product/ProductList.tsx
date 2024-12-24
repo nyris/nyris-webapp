@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import useResultStore from 'stores/result/resultStore';
-import Product from './product';
 import { twMerge } from 'tailwind-merge';
+import useResultStore from 'stores/result/resultStore';
+import Product from './Product';
 
 interface Props {
   allSearchResults: any;

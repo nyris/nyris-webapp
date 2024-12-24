@@ -32,6 +32,8 @@ import { ReactComponent as Call } from './icons/call.svg';
 import { ReactComponent as Error } from './icons/error.svg';
 import { ReactComponent as Camera } from './icons/camera.svg';
 import { ReactComponent as PoweredByNyris } from './icons/powered_by_nyris_colored.svg';
+import { ReactComponent as CaretLeft } from './icons/caret-left.svg';
+import { ReactComponent as CaretRight } from './icons/caret-right.svg';
 
 import { SUPPORTED_ICON } from './types';
 
@@ -69,6 +71,8 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   error: { component: Error },
   camera: { component: Camera },
   powered_by_nyris: { component: PoweredByNyris },
+  caret_left: { component: CaretLeft },
+  caret_right: { component: CaretRight },
 };
 const Icon: FC<
   {

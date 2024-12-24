@@ -11,6 +11,9 @@ import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
 import { twMerge } from 'tailwind-merge';
 import { DEFAULT_REGION } from '../constants';
+import useResultStore from 'stores/result/resultStore';
+import useFilteredRegions from 'hooks/useFilteredRegions';
+import { useNavigate } from 'react-router';
 
 function ImagePreviewComponent({
   showAdjustInfo = false,
@@ -26,31 +29,40 @@ function ImagePreviewComponent({
     useState(false);
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const settings = window.settings;
   const isMultiImageSearchEnabled = settings.multiImageSearch;
 
   const requestImages = useRequestStore(state => state.requestImages);
+  const resetRegions = useRequestStore(state => state.resetRegions);
+  const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const query = useRequestStore(state => state.query);
+
+  const regions = useRequestStore(state => state.regions);
+  const updateRegion = useRequestStore(state => state.updateRegion);
+
+  const detectedRegions = useResultStore(state => state.detectedRegions);
 
   const { singleImageSearch } = useImageSearch();
 
-  const [showCamera, setShowCamera] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(requestImages.length - 1);
-  const [isVisible, setIsVisible] = useState(true);
-  const [zIndex, setZIndex] = useState<number>(0);
+  const currentIndex = requestImages.length - 1;
+
+  const [isVisible] = useState(true);
+  const [zIndex] = useState<number>(0);
 
   const previewWrapperRef = useRef<any>(null);
 
-  const onImageRemove = () => {};
+  const filteredRegions = useFilteredRegions(
+    detectedRegions[currentIndex],
+    regions[currentIndex],
+  );
 
-  const handleExpand = () => {
-    if (isVisible) {
-      setTimeout(() => {
-        setZIndex(-1);
-      }, 300);
-    } else {
-      setZIndex(0);
+  const onImageRemove = () => {
+    resetRegions();
+    setRequestImages([]);
+    if (!query) {
+      navigate('/');
     }
-    setIsVisible(s => !s);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,14 +90,17 @@ function ImagePreviewComponent({
     [settings, singleImageSearch],
   );
 
-  const multiImageSearchOnRegionChange = useCallback(() => {}, [
-    requestImages,
-    settings,
-  ]);
+  const [editActive, setEditActive] = useState(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedOnImageSelectionChange = useCallback(
+    debounce((r: RectCoords, index?: number) => {
+      updateRegion(r, 0);
+      findItemsInSelection(r, requestImages[0]);
+    }, 50),
+    [findItemsInSelection, requestImages, updateRegion],
+  );
 
-  const [editActive, setEditActive] = useState(false);
   return (
     <>
       {/* Image preview Desktop, To-do: Remove and use same code as Image preview for Mobile */}
@@ -119,11 +134,11 @@ function ImagePreviewComponent({
         <div className="w-full bg-[#55566b] aspect-square flex just items-center">
           <Preview
             onSelectionChange={(r: RectCoords) => {
-              // debouncedOnImageSelectionChange(r, currentIndex);
+              debouncedOnImageSelectionChange(r, currentIndex);
             }}
             image={requestImages[currentIndex]}
-            selection={DEFAULT_REGION}
-            regions={[]}
+            selection={regions[currentIndex] || DEFAULT_REGION}
+            regions={filteredRegions || []}
             dotColor={'#FBD914'}
             minCropWidth={30}
             minCropHeight={30}
@@ -277,146 +292,6 @@ function ImagePreviewComponent({
             />
           </div>
         </div>
-      </div>
-
-      <div className={twMerge([!isMultiImageSearchEnabled && 'hidden'])}>
-        <div
-          className={twMerge([
-            'flex',
-            'items-center',
-            'gap-x-2',
-            'h-28',
-            'w-full',
-            'bg-primary',
-            'justify-center',
-            'relative',
-            'py-4',
-            'desktop:pt-7 desktop:pb-5',
-          ])}
-        >
-          {requestImages.map((image, index) => {
-            return (
-              <div
-                key={index}
-                className={twMerge([
-                  'rounded-md',
-                  'relative',
-                  'p-1',
-                  currentIndex === index && isVisible
-                    ? ' bg-white'
-                    : 'bg-transparent',
-                ])}
-              >
-                <img
-                  className={twMerge([
-                    'w-[70px]',
-                    'h-[70px]',
-                    'desktop:w-[52px]',
-                    'desktop:h-[52px]',
-                    'rounded-md',
-                    'object-cover',
-                    'shadow-inner',
-                  ])}
-                  src={(() => {
-                    if (image?.toDataURL) {
-                      return image.toDataURL();
-                    }
-                  })()}
-                  alt=""
-                  onClick={() => {
-                    setCurrentIndex(index);
-                    if (!isVisible) {
-                      handleExpand();
-                    }
-                  }}
-                />
-                {currentIndex === index && (
-                  <div
-                    className={twMerge([
-                      'absolute',
-                      'w-[70px]',
-                      'h-[70px]',
-                      'desktop:w-[52px]',
-                      'desktop:h-[52px]',
-                      'rounded-md',
-                      'top-1',
-                      'bg-black/15',
-                    ])}
-                    onClick={() => {
-                      setCurrentIndex(index);
-                      if (!isVisible) {
-                        handleExpand();
-                      }
-                    }}
-                  />
-                )}
-              </div>
-            );
-          })}
-          {requestImages.length < 3 && isMultiImageSearchEnabled && (
-            <label
-              className={twMerge([
-                'w-[70px]',
-                'h-[70px]',
-                'desktop:w-[52px]',
-                'desktop:h-[52px]',
-                'bg-[#55566B]/50',
-                'flex',
-                'justify-center',
-                'items-center',
-                'border',
-                'border-dashed',
-                'border-[#AAABB5]',
-                'rounded-md',
-                'cursor-pointer',
-              ])}
-              onClick={() => {
-                if (isCameraUploadEnabled) {
-                  setShowCamera(true);
-                }
-              }}
-              htmlFor={isCameraUploadEnabled ? '' : 'icon-add-image'}
-            >
-              <input
-                accept="image/*"
-                id="icon-add-image"
-                type="file"
-                style={{ display: 'none' }}
-                // {...getInputProps({
-                //   onClick: e => {
-                //     e.currentTarget.value = '';
-                //     e.stopPropagation();
-                //   },
-                // })}
-              />
-              <Icon
-                name="plus"
-                className={twMerge(['text-[#AAABB5] desktop:hidden'])}
-              />
-              <div className="hidden desktop:block">
-                <Icon name="download" className={twMerge(['text-[#AAABB5]'])} />
-              </div>
-            </label>
-          )}
-          <div
-            onClick={() => handleExpand()}
-            className="absolute right-5 flex justify-center items-center desktop:hidden p-2"
-          >
-            <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
-              <Icon name="crop" className="text-primary" />
-            </div>
-          </div>
-
-          {/* <CameraCustom
-            show={showCamera}
-            onClose={() => setShowCamera(false)}
-          /> */}
-        </div>
-        {requestImages.length < 3 && isMultiImageSearchEnabled && (
-          <p className="text-[10px] pb-4 w-full text-center bg-primary text-white -mt-[1px]">
-            Add up to three photos for a more accurate visual search.
-          </p>
-        )}
       </div>
     </>
   );

@@ -1,9 +1,8 @@
-import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import ImagePreview from './ImagePreview';
 import useRequestStore from 'stores/request/requestStore';
-import PostFilter from './PostFilter';
+import PostFilterComponent from './PostFilter/PostFilterComponent';
 
 export default function SidePanel() {
   const requestImages = useRequestStore(state => state.requestImages);
@@ -35,10 +34,8 @@ export default function SidePanel() {
       >
         {requestImages[0] && <ImagePreview />}
       </div>
-      <div className={twMerge(['mt-4', 'w-full', 'px-6'])}>
-        <PostFilter attribute="brand" />
-        <PostFilter attribute="keyword_0" />
-      </div>
+
+      <PostFilterComponent />
     </div>
   );
 }

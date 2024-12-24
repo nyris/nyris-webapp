@@ -1,3 +1,4 @@
+import { HitsPerPage } from 'components/HitsPerPage';
 import { Pagination } from 'components/Pagination';
 import ProductList from 'components/Product/ProductList';
 import SidePanel from 'components/SidePanel';
@@ -96,6 +97,15 @@ function Results() {
             </div>
           </div>
           <Pagination />
+          <HitsPerPage
+            items={[
+              { label: '10', value: 10 },
+              { label: '20', value: 20, default: true },
+              { label: '30', value: 30 },
+              { label: '40', value: 40 },
+              { label: '50', value: 50 },
+            ]}
+          />
         </div>
       </div>
     </div>
