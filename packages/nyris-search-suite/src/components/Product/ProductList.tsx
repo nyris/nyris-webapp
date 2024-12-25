@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { twMerge } from 'tailwind-merge';
 import useResultStore from 'stores/result/resultStore';
 import Product from './Product';
+import { useImageSearch } from 'hooks/useImageSearch';
+import useRequestStore from 'stores/request/requestStore';
 
 interface Props {
   allSearchResults: any;
@@ -14,18 +16,29 @@ interface Props {
 
 function ProductList({
   allSearchResults,
-  getUrlToCanvasFile,
   sendFeedBackAction,
   searchQuery,
   requestImage,
   isSearchStalled,
 }: any): JSX.Element {
   const settings = window.settings;
+  const { singleImageSearch } = useImageSearch();
+
   const productsFromAlgolia = useResultStore(
     state => state.productsFromAlgolia,
   );
 
-  console.log({ productsFromAlgolia });
+  const setQuery = useRequestStore(state => state.setQuery);
+
+  const getUrlToCanvasFile = async (url: string) => {
+    setQuery('');
+    singleImageSearch({
+      image: url,
+      settings,
+      showFeedback: true,
+      compress: false,
+    }).then(() => {});
+  };
 
   const renderItem = useMemo(() => {
     return (

@@ -1,33 +1,5 @@
 .full-height {
     height: 100vh; /* Fallback for browsers that do not support Custom Properties */
     height: calc(var(--vh, 1vh) * 100);
-}
 
-.loadingSpinCT {
-  position: absolute;
-  width: 104px;
-  height: 104px;
-
-  // background: #fff;
-  border-radius: 100%;
-  z-index: 111;
-  left: 0;
-  right: 0;
-  margin: auto;
-
-}
-
-.max-line-1 {
-  word-break: break-word;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  max-height: 33px; /* fallback */
-  -webkit-line-clamp: 1; /* number of lines to show */
-  -webkit-box-orient: vertical;
-}
-
-.psol-comp-viewbase-svgcontainer{
-  display: none !important;
-}
-
+  }

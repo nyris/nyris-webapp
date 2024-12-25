@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { isEmpty, debounce } from 'lodash';
 import { twMerge } from 'tailwind-merge';
@@ -9,6 +15,7 @@ import { Icon } from '@nyris/nyris-react-components';
 
 import useRequestStore from 'stores/request/requestStore';
 import DefaultModal from './modal/DefaultModal';
+import { useImageSearch } from 'hooks/useImageSearch';
 
 function TextSearch() {
   const settings = window.settings;
@@ -67,7 +74,23 @@ function TextSearch() {
 
     if (event.currentTarget.value === '') {
       setValueInput('');
+      setQuery('');
     }
+  };
+
+  const { singleImageSearch } = useImageSearch();
+
+  const handleUpload = (files: File[]) => {
+    setValueInput('');
+    setQuery('');
+
+    navigate('/result');
+
+    singleImageSearch({
+      image: files[0],
+      settings: window.settings,
+      showFeedback: true,
+    }).then(() => {});
   };
 
   return (
@@ -83,7 +106,6 @@ function TextSearch() {
           'p-0',
           'h-10',
           'overflow-hidden',
-          'pr-3',
           'border border-solid',
           'border-gray-300',
         ])}
@@ -177,23 +199,33 @@ function TextSearch() {
             />
           </div>
 
-          {location.pathname === '/result' && valueInput && (
+          {location.pathname === '/result' && (valueInput || query) && (
             <button
-              className="btn-clear-text"
+              className={twMerge([
+                'flex',
+                'justify-center',
+                'items-center',
+                'rounded-full',
+                'cursor-pointer',
+                'min-h-9',
+                'min-w-9',
+                'z-10',
+                'hover:bg-gray-100',
+                'mr-1',
+              ])}
               onClick={() => {
                 if (visualSearch) {
                   navigate('/result');
-
                   setValueInput('');
-
+                  setQuery('');
                   return;
                 }
+                setQuery('');
                 setValueInput('');
-
                 navigate('/');
               }}
             >
-              <Icon name="close" style={{ fontSize: 16, color: '#2B2C46' }} />
+              <Icon name="close" className="w-3 h-3 text-primary" />
             </button>
           )}
           <div className="wrap-box-input-mobile d-flex">
@@ -209,14 +241,12 @@ function TextSearch() {
               }}
               onChange={e => {
                 if (e?.target?.files) {
-                  const file = e?.target?.files[0];
-
-                  //   onImageUpload(file);
+                  handleUpload(Array.from(e.target.files));
                 }
               }}
             />
             <label
-              className="w-8 h-8 flex justify-center items-center"
+              className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full hover:bg-gray-100"
               htmlFor={showDisclaimerDisabled ? 'icon-button-file' : ''}
               onClick={e => {
                 if (!showDisclaimerDisabled) {
@@ -236,8 +266,8 @@ function TextSearch() {
               >
                 <Icon
                   name="camera_simple"
-                  width={18}
-                  height={18}
+                  width={16}
+                  height={16}
                   fill="#2B2C46"
                 />
               </span>

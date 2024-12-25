@@ -7,11 +7,14 @@ import { twMerge } from 'tailwind-merge';
 
 import { Icon } from '@nyris/nyris-react-components';
 import TextSearch from './TextSearch';
+import useRequestStore from 'stores/request/requestStore';
 
 function Header() {
   const { theme, auth0 } = window.settings;
   const { isAuthenticated, user } = useAuth0();
   let location = useLocation();
+
+  const reset = useRequestStore(state => state.reset);
 
   const showSearchBar = location?.pathname === '/result';
 
@@ -45,9 +48,7 @@ function Header() {
             to="/"
             style={{ lineHeight: 0 }}
             onClick={() => {
-              // dispatch(reset(''));
-              // dispatch(setPreFilter({}));
-              // resetRequestState();
+              reset();
             }}
           >
             <img
