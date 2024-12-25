@@ -9,11 +9,10 @@ import useRequestStore from 'stores/request/requestStore';
 
 import { AppSettings } from 'types';
 import { compressImage } from 'utils/compressImage';
-import { useConfigure, useHits, useInstantSearch } from 'react-instantsearch';
 import useUiStore from 'stores/ui/uiStore';
+import { useClearRefinements } from 'react-instantsearch';
 
 export const useImageSearch = () => {
-  const regions = useRequestStore(state => state.regions);
   const setRegions = useRequestStore(state => state.setRegions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
 
@@ -25,6 +24,9 @@ export const useImageSearch = () => {
 
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
 
+  const preFilter = useRequestStore(state => state.preFilter);
+  const { refine } = useClearRefinements();
+
   const singleImageSearch = useCallback(
     async ({
       image,
@@ -34,6 +36,7 @@ export const useImageSearch = () => {
       newSearch,
       compress = true,
       preFilterParams,
+      clearPostFilter,
     }: {
       image: any;
       settings: AppSettings;
@@ -42,6 +45,7 @@ export const useImageSearch = () => {
       newSearch?: boolean;
       compress?: boolean;
       preFilterParams?: Record<string, boolean>;
+      clearPostFilter?: boolean;
     }) => {
       setIsFindApiLoading(true);
       // setAlgoliaProducts([]);
@@ -76,30 +80,25 @@ export const useImageSearch = () => {
       const preFilterValues = [
         {
           key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilterParams || {}),
+          values: Object.keys(preFilterParams || preFilter),
         },
       ];
-      let filters: any[] = [];
 
       try {
         res = await find({
           image: requestImage,
           settings,
-          filters: !isEmpty(preFilterParams) ? preFilterValues : undefined,
+          filters: !isEmpty(preFilterParams || preFilter)
+            ? preFilterValues
+            : undefined,
           region,
         });
-        setIsFindApiLoading(false);
 
-        res?.results.forEach((item: any) => {
-          filters.push({
-            sku: item.sku,
-            score: item.score,
-          });
-        });
-        const payload = {
-          ...res,
-          filters,
-        };
+        if (clearPostFilter) {
+          refine();
+        }
+
+        setIsFindApiLoading(false);
 
         setIsFindApiLoading(true);
         setFindApiProducts(res?.results);
@@ -137,6 +136,7 @@ export const useImageSearch = () => {
       setIsFindApiLoading,
       setRegions,
       setRequestImages,
+      preFilter,
     ],
   );
 

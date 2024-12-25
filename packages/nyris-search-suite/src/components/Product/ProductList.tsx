@@ -1,26 +1,14 @@
 import { useMemo } from 'react';
-import { twMerge } from 'tailwind-merge';
 import useResultStore from 'stores/result/resultStore';
 import Product from './Product';
 import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
 
 interface Props {
-  allSearchResults: any;
-  getUrlToCanvasFile: any;
-  setLoading?: any;
-  sendFeedBackAction: any;
-  requestImage?: any;
-  searchQuery?: string;
+  sendFeedBackAction?: any;
 }
 
-function ProductList({
-  allSearchResults,
-  sendFeedBackAction,
-  searchQuery,
-  requestImage,
-  isSearchStalled,
-}: any): JSX.Element {
+function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const settings = window.settings;
   const { singleImageSearch } = useImageSearch();
 
@@ -40,6 +28,7 @@ function ProductList({
       settings,
       showFeedback: true,
       compress: false,
+      clearPostFilter: true,
     }).then(() => {});
   };
 
@@ -69,7 +58,7 @@ function ProductList({
       </div>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productsFromAlgolia, searchQuery, requestImage, isSearchStalled]);
+  }, [productsFromAlgolia]);
 
   return <>{renderItem}</>;
 }

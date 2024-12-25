@@ -1,21 +1,16 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+
 import { isEmpty, debounce } from 'lodash';
 import { twMerge } from 'tailwind-merge';
-import { useTranslation } from 'react-i18next';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useLocation, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
 import { Icon } from '@nyris/nyris-react-components';
 
-import useRequestStore from 'stores/request/requestStore';
-import DefaultModal from './modal/DefaultModal';
 import { useImageSearch } from 'hooks/useImageSearch';
+import PreFilterModal from './PreFilter/PreFilterModal';
+import useRequestStore from 'stores/request/requestStore';
 
 function TextSearch() {
   const settings = window.settings;
@@ -277,14 +272,10 @@ function TextSearch() {
         </div>
       </div>
       {showPreFilter && (
-        <DefaultModal
+        <PreFilterModal
           openModal={isOpenModalFilterDesktop}
           handleClose={() => setToggleModalFilterDesktop(false)}
-          classNameModal="wrap-filter-desktop"
-          classNameComponentChild="bg-white box-filter-desktop"
-        >
-          <div>Pre filter component</div>
-        </DefaultModal>
+        />
       )}
     </div>
   );

@@ -1,12 +1,15 @@
+import { useEffect, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
+
+import { CadenasScriptStatus } from 'types';
+
+import useResultStore from 'stores/result/resultStore';
+import useUiStore from 'stores/ui/uiStore';
+
 import { HitsPerPage } from 'components/HitsPerPage';
 import { Pagination } from 'components/Pagination';
 import ProductList from 'components/Product/ProductList';
 import SidePanel from 'components/SidePanel';
-import React, { useEffect, useState } from 'react';
-import useResultStore from 'stores/result/resultStore';
-import useUiStore from 'stores/ui/uiStore';
-import { twMerge } from 'tailwind-merge';
-import { CadenasScriptStatus } from 'types';
 
 import { addAssets } from 'utils/addAssets';
 

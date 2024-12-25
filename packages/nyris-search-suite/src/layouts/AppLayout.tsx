@@ -54,6 +54,7 @@ function AppLayout(): JSX.Element {
   }, []);
 
   const query = useRequestStore(state => state.query);
+
   const algoliaFilter = useRequestStore(state => state.algoliaFilter);
 
   const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
@@ -84,7 +85,11 @@ function AppLayout(): JSX.Element {
       <Header />
       <Configure
         query={query}
-        filters={algoliaFilter}
+        filters={
+          !query && !algoliaFilter.includes('score=1')
+            ? undefined
+            : algoliaFilter
+        }
         // facets={['brand', 'keyword_0']}
         hitsPerPage={20}
       />
