@@ -29,9 +29,12 @@ function ProductList({
   );
 
   const setQuery = useRequestStore(state => state.setQuery);
+  const setValueInput = useRequestStore(state => state.setValueInput);
 
   const getUrlToCanvasFile = async (url: string) => {
     setQuery('');
+    setValueInput('');
+
     singleImageSearch({
       image: url,
       settings,

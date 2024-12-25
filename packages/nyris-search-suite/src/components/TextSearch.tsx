@@ -32,10 +32,11 @@ function TextSearch() {
   const requestImages = useRequestStore(state => state.requestImages);
   const setQuery = useRequestStore(state => state.setQuery);
   const query = useRequestStore(state => state.query);
+  const valueInput = useRequestStore(state => state.valueInput);
+  const setValueInput = useRequestStore(state => state.setValueInput);
 
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] =
     useState<boolean>(false);
-  const [valueInput, setValueInput] = useState<string>('');
   const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   const showPreFilter = useMemo(() => {

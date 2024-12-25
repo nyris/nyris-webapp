@@ -16,10 +16,12 @@ export interface RequestImageAction {
 
 export interface QueryState {
   query?: string;
+  valueInput?: string;
 }
 
 export interface QueryAction {
   setQuery: (query: string) => void;
+  setValueInput: (value: string) => void;
 }
 
 export interface LoadingState {

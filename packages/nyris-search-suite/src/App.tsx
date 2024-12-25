@@ -15,6 +15,7 @@ function App() {
     <AuthProvider>
       <InstantSearch
         initialUiState={{ searchState: { query: 'test' } }}
+        future={{ preserveSharedStateOnUnmount: true }}
         searchClient={{
           ...algoliaClient,
           search(requests) {
