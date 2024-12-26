@@ -2,9 +2,9 @@ import { useState, memo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { createPortal } from 'react-dom';
 
-import './ExperienceVisualSearch.scss';
-
 import { useImageSearch } from 'hooks/useImageSearch';
+
+import '../../styles/experienceVisualSearch.scss';
 
 import { Icon } from '@nyris/nyris-react-components';
 

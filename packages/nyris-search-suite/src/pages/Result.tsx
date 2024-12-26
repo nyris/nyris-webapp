@@ -13,12 +13,19 @@ import SidePanel from 'components/SidePanel';
 import Loading from 'components/Loading';
 
 import { addAssets } from 'utils/addAssets';
+import Feedback from 'components/Feedback';
+import { feedbackSuccessEpic } from 'services/Feedback';
 
 const assets_base_url =
   'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api';
 
 function Results() {
   const cadenas = window.settings.cadenas;
+
+  const [feedbackStatus, setFeedbackStatus] = useState<
+    'hidden' | 'submitted' | 'visible'
+  >();
+  const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
 
   const [cadenasScriptStatus, setCadenasScriptStatus] =
     useState<CadenasScriptStatus>('disabled');
@@ -32,6 +39,10 @@ function Results() {
 
   const isAlgoliaLoading = useUiStore(state => state.isAlgoliaLoading);
   const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
+  const setShowFeedback = useUiStore(state => state.setShowFeedback);
+  const showFeedback = useUiStore(state => state.showFeedback);
+
+  const requestId = useResultStore(state => state.requestId);
 
   useEffect(() => {
     if (cadenas?.cadenasAPIKey) {
@@ -57,6 +68,52 @@ function Results() {
         });
     }
   }, [cadenas?.cadenasAPIKey]);
+
+  const submitFeedback = async (data: boolean) => {
+    setShowFeedbackSuccess(true);
+    setTimeout(() => {
+      setShowFeedbackSuccess(false);
+    }, 3000);
+    setFeedbackStatus('submitted');
+    setShowFeedback(false);
+    feedbackSuccessEpic(requestId, data);
+  };
+
+  useEffect(() => {
+    if (isAlgoliaLoading || isFindApiLoading) {
+      setFeedbackStatus('hidden');
+      return;
+    }
+
+    if (!window.settings.showFeedback || !showFeedback) return;
+
+    const handleScroll = () => {
+      setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
+      setShowFeedback(false);
+    };
+
+    setTimeout(() => {
+      window.removeEventListener('scroll', handleScroll, { capture: true });
+      setFeedbackStatus(s => (s === 'submitted' ? 'submitted' : 'visible'));
+      setShowFeedback(false);
+    }, 3000);
+
+    window.addEventListener('scroll', handleScroll, {
+      capture: true,
+      once: true,
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    showFeedback,
+    productsFromFindApi,
+    productsFromAlgolia,
+    isAlgoliaLoading,
+    isFindApiLoading,
+  ]);
 
   return (
     <>
@@ -101,8 +158,36 @@ function Results() {
                   'mx-4',
                 ])}
               >
-                <div className="max-w-[840px] w-full">
+                <div className="max-w-[840px] w-full relative">
                   <ProductList />
+
+                  {showFeedbackSuccess && (
+                    <div className={'feedback-floating'}>
+                      <div className="feedback-section">
+                        <div className="feedback-success">
+                          Thanks for your feedback!
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {feedbackStatus === 'visible' &&
+                    !showFeedbackSuccess &&
+                    productsFromAlgolia.length > 0 && (
+                      <div className={'feedback-floating'}>
+                        <div className="feedback-section feedback-backdrop-blur" />
+
+                        <div className="feedback-section">
+                          <Feedback
+                            submitFeedback={submitFeedback}
+                            onFeedbackClose={() => {
+                              setFeedbackStatus('submitted');
+                              setShowFeedback(false);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>

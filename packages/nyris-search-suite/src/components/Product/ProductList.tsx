@@ -4,6 +4,7 @@ import Product from './Product';
 import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
+import Feedback from 'components/Feedback';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -74,6 +75,20 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
             />
           );
         })}
+
+        {/* <div className={'feedback-floating'}>
+          <div className="feedback-section feedback-backdrop-blur" />
+
+          <div className="feedback-section">
+            <Feedback
+              submitFeedback={() => {}}
+              onFeedbackClose={() => {
+                // setFeedbackStatus('submitted');
+                // setShowFeedback(false);
+              }}
+            />
+          </div>
+        </div> */}
       </div>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps

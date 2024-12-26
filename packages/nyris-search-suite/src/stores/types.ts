@@ -69,3 +69,21 @@ export interface MiscState {
 export interface MiscAction {
   setMetaFilter: (filter: string) => void;
 }
+
+export interface FeedbackState {
+  showFeedback: boolean;
+}
+
+export interface FeedbackAction {
+  setShowFeedback: (show: boolean) => void;
+}
+
+export interface SessionState {
+  requestId: string;
+  sessionId: string;
+}
+
+export interface SessionAction {
+  setSessionId: (sessionId: string) => void;
+  setRequestId: (requestId: string) => void;
+}

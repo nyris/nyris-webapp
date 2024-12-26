@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { RectCoords } from '@nyris/nyris-api';
-import { isEmpty } from 'lodash';
+import { isEmpty, set } from 'lodash';
 
 import { createImage, find, findRegions } from 'services/visualSearch';
 
@@ -21,8 +21,11 @@ export const useImageSearch = () => {
   const setDetectedRegions = useResultStore(state => state.setDetectedRegions);
 
   const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
+  const setShowFeedback = useUiStore(state => state.setShowFeedback);
 
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
+  const setSessionId = useResultStore(state => state.setSessionId);
+  const setRequestId = useResultStore(state => state.setRequestId);
 
   const preFilter = useRequestStore(state => state.preFilter);
   const metaFilter = useRequestStore(state => state.metaFilter);
@@ -108,6 +111,8 @@ export const useImageSearch = () => {
         }
 
         setFindApiProducts(res?.results);
+        setSessionId(res?.session);
+        setRequestId(res?.id);
 
         const nonEmptyFilter: any[] = ['sku:DOES_NOT_EXIST<score=1> '];
         const filterSkus: any = res?.results
@@ -122,7 +127,7 @@ export const useImageSearch = () => {
         setIsFindApiLoading(false);
 
         if (showFeedback) {
-          // dispatch(setShowFeedback(true));
+          setShowFeedback(true);
         }
         // go back
         // if (!firstSearchResults || newSearch) {
@@ -146,6 +151,7 @@ export const useImageSearch = () => {
       setFindApiProducts,
       setAlgoliaFilter,
       refine,
+      setShowFeedback,
     ],
   );
 
