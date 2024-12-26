@@ -1,4 +1,3 @@
-import React from 'react';
 import { useHitsPerPage, UseHitsPerPageProps } from 'react-instantsearch';
 
 export const HitsPerPage = (props: UseHitsPerPageProps) => {

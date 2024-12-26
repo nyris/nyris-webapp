@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { useDropzone } from 'react-dropzone';
 import { twMerge } from 'tailwind-merge';
 import { useTranslation } from 'react-i18next';
 

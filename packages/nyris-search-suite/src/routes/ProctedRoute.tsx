@@ -1,4 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import EmailVerification from 'components/EmailVerification';
 import { useEffect, ReactElement } from 'react';
 
 export default function ProtectedRoute({
@@ -29,7 +30,7 @@ export default function ProtectedRoute({
   }
 
   if (!isLoading && isAuthenticated && !user?.email_verified) {
-    return <div></div>;
+    return <EmailVerification />;
   }
 
   return <div></div>;

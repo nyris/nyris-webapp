@@ -1,4 +1,3 @@
-import React from 'react';
 import { usePagination, UsePaginationProps } from 'react-instantsearch';
 import { Icon } from '@nyris/nyris-react-components';
 

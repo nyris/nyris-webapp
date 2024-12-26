@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Icon } from '@nyris/nyris-react-components';
 
 import '../styles/mobileCameraCTA.scss';
