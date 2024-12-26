@@ -40,15 +40,13 @@ function DragDropFile(props: Props) {
     <label
       htmlFor="select_file"
       className={
-        'flex flex-col items-center justify-center h-full mt-8 px-4 pb-6 bg-[#fafafa]'
+        'flex flex-col items-center justify-center mt-8 px-4 bg-[#fafafa]'
       }
     >
       {isLoading && <Loading />}
 
       <div
-        className={
-          'relative flex flex-col items-center justify-center w-full h-[80%]'
-        }
+        className={'relative flex flex-col items-center justify-center w-full'}
         {...dragProps}
       >
         <div

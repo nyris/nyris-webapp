@@ -296,20 +296,24 @@ function Product(props: Props) {
                     : 'normal',
                 }}
                 onClick={() => {
-                  // if (settings.secondaryCTAButton?.secondaryCTALinkField) {
-                  //   feedbackConversionEpic(state, indexItem, dataItem.sku);
-                  //   window.open(
-                  //     `${get(
-                  //       dataItem,
-                  //       settings.secondaryCTAButton?.secondaryCTALinkField,
-                  //     )}`,
-                  //     '_blank',
-                  //   );
-                  // }
+                  if (settings.secondaryCTAButton?.secondaryCTALinkField) {
+                    // feedbackConversionEpic(state, indexItem, dataItem.sku);
+                    window.open(
+                      `${get(
+                        dataItem,
+                        settings.secondaryCTAButton?.secondaryCTALinkField,
+                      )}`,
+                      '_blank',
+                    );
+                  }
                 }}
               >
                 <div
-                  className="max-line-1"
+                  className={`max-line-1 ${
+                    settings.secondaryCTAButton.secondaryCTALinkField
+                      ? 'desktop:136px'
+                      : '164px'
+                  }`}
                   style={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -320,7 +324,6 @@ function Product(props: Props) {
                     color:
                       settings.secondaryCTAButton.secondaryCTAButtonTextColor ||
                       '#FFFFFF',
-                    maxWidth: '164x',
                     paddingRight: '8px',
                   }}
                 >
@@ -362,17 +365,19 @@ function Product(props: Props) {
                     : 'normal',
                 }}
                 onClick={() => {
-                  // if (settings.CTAButton?.CTALinkField) {
-                  //   feedbackConversionEpic(state, indexItem, dataItem.sku);
-                  //   window.open(
-                  //     `${get(dataItem, settings.CTAButton?.CTALinkField)}`,
-                  //     '_blank',
-                  //   );
-                  // }
+                  if (settings.CTAButton?.CTALinkField) {
+                    // feedbackConversionEpic(state, indexItem, dataItem.sku);
+                    window.open(
+                      `${get(dataItem, settings.CTAButton?.CTALinkField)}`,
+                      '_blank',
+                    );
+                  }
                 }}
               >
                 <div
-                  className="max-line-1"
+                  className={`max-line-1 ${
+                    settings.CTAButton.CTALinkField ? 'desktop:136px' : '164px'
+                  }`}
                   style={{
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -381,7 +386,6 @@ function Product(props: Props) {
                     fontSize: '12px',
                     letterSpacing: '0.27px',
                     wordBreak: 'break-all',
-                    maxWidth: '164x',
                     paddingRight: '8px',
                   }}
                 >

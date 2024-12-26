@@ -32,6 +32,7 @@ export const ICONS = {
   settings: 'settings',
   share: 'share',
   trash: 'trash',
+  experience_visual_search: 'experience_visual_search',
 } as const;
 
 export type SUPPORTED_ICON = keyof typeof ICONS;

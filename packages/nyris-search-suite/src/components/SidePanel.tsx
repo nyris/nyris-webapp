@@ -6,6 +6,11 @@ import PostFilterComponent from './PostFilter/PostFilterComponent';
 
 export default function SidePanel() {
   const requestImages = useRequestStore(state => state.requestImages);
+  const showPostFilter = window.settings?.postFilterOption;
+
+  if (!showPostFilter && requestImages.length === 0) {
+    return <></>;
+  }
 
   return (
     <div
@@ -34,8 +39,7 @@ export default function SidePanel() {
       >
         {requestImages[0] && <ImagePreview />}
       </div>
-
-      <PostFilterComponent />
+      {showPostFilter && <PostFilterComponent />}
     </div>
   );
 }

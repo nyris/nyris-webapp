@@ -29,7 +29,7 @@ i18n.use(initReactI18next).init({
 
 function AppLayout(): JSX.Element {
   const { isAuthenticated } = useAuth0();
-  const { auth0, alogoliaFilterField } = window.settings;
+  const { auth0, alogoliaFilterField, showPoweredByNyris } = window.settings;
 
   const showLayout = !auth0.enabled || (auth0.enabled && isAuthenticated);
 
@@ -103,7 +103,7 @@ function AppLayout(): JSX.Element {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Outlet />
       </div>
-      <Footer />
+      {showPoweredByNyris && <Footer />}
     </div>
   );
 }

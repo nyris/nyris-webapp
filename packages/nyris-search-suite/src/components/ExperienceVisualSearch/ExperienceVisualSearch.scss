@@ -1,0 +1,196 @@
+body.overflow-hidden {
+  overflow: hidden;
+}
+
+.experience-visual-button {
+  background-color: #3E36DC;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 25px;
+  cursor: pointer;
+  margin: 32px auto 0;
+  &:hover,
+  &.hover {
+    width: 197px;
+    border-radius: 25px;
+    transition: .5s;
+    span {
+      width: 149px;
+      display: inline;
+      margin-right: 8px;
+      overflow: hidden;
+      white-space: nowrap;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 16px;
+      text-align: center;
+      &:before {
+        color: #fff;
+        content: 'Experience Visual Search';
+      }
+    }
+  }
+}
+
+.custom-modal {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background-color: rgba(22, 22, 22, 0.5);
+  z-index: 9999;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  &-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #F3F3F5;
+    padding: 32px 16px;
+    .close-icon {
+      top: 8px;
+      right: 8px;
+      position: absolute;
+    }
+    &-title {
+      font-family: 'Source Sans 3', sans-serif;;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 24px;
+      text-align: left;
+
+    }
+    &-content {
+      &.experience-visual-search-images {
+        margin: 32px auto;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 16px;
+        width: 376px;
+        .experience-visual-search-image-container {
+          width: 180px;
+          height: 180px;
+          overflow: hidden;
+          border-radius: 4px;
+          position: relative;
+          cursor: pointer;
+          .experience-visual-search-image {
+            width: 180px;
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            transform: scale(1);
+            &:hover {
+              transition: all 0.3s;
+              transform: scale(1.1);
+            }
+          }
+          .box-icon-modal {
+            bottom: 6px;
+            right: 6px;
+            position: absolute;
+            border-radius: 100%;
+            background-color: #F3F3F5;
+            overflow: hidden;
+            z-index: 11;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 900px) {
+  .custom-modal {
+    &-body {
+      width: 900px;
+      max-width: 900px;
+      height: 380px;
+      border-radius: 4px;
+      &-title,
+      &-subtitle {
+        margin-left: 24px;
+      }
+      &-content {
+        &.experience-visual-search-images {
+          width: 770px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 776px) and (max-width: 899px) {
+  .custom-modal {
+    &-body {
+      width: 600px;
+      max-width: 600px;
+      height: 600px;
+      padding: 32px;
+      border-radius: 4px;
+    }
+  }
+}
+
+@media only screen and (max-width: 776px) {
+  .experience-visual-button {
+    width: 197px;
+    span {
+      width: 149px;
+      display: inline;
+      margin-right: 8px;
+      overflow: hidden;
+      white-space: nowrap;
+      font-family: 'Source Sans 3', sans-serif;;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 16px;
+      text-align: center;
+      &:before {
+        color: #fff;
+        content: 'Experience Visual Search';
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 408px) {
+  .custom-modal {
+    &-body {
+      padding: 32px 8px;
+      &-content {
+        &.experience-visual-search-images {
+          width: 300px;
+          gap: 8px;
+          .experience-visual-search-image-container {
+            width: 145px;
+            height: 145px;
+            .experience-visual-search-image {
+              width: 145px;
+              height: 145px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

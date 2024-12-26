@@ -34,6 +34,7 @@ import { ReactComponent as Camera } from './icons/camera.svg';
 import { ReactComponent as PoweredByNyris } from './icons/powered_by_nyris_colored.svg';
 import { ReactComponent as CaretLeft } from './icons/caret-left.svg';
 import { ReactComponent as CaretRight } from './icons/caret-right.svg';
+import { ReactComponent as ExperienceVisualSearch } from './icons/experience_visual_search.svg';
 
 import { SUPPORTED_ICON } from './types';
 
@@ -73,6 +74,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   powered_by_nyris: { component: PoweredByNyris },
   caret_left: { component: CaretLeft },
   caret_right: { component: CaretRight },
+  experience_visual_search: { component: ExperienceVisualSearch },
 };
 const Icon: FC<
   {
