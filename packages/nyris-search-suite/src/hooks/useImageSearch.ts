@@ -25,6 +25,8 @@ export const useImageSearch = () => {
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
 
   const preFilter = useRequestStore(state => state.preFilter);
+  const metaFilter = useRequestStore(state => state.metaFilter);
+
   const { refine } = useClearRefinements();
 
   const singleImageSearch = useCallback(
@@ -90,6 +92,13 @@ export const useImageSearch = () => {
           settings,
           filters: !isEmpty(preFilterParams || preFilter)
             ? preFilterValues
+            : metaFilter
+            ? [
+                {
+                  key: settings.visualSearchFilterKey,
+                  values: [metaFilter],
+                },
+              ]
             : undefined,
           region,
         });
@@ -128,13 +137,15 @@ export const useImageSearch = () => {
       return res;
     },
     [
-      setAlgoliaFilter,
-      setDetectedRegions,
-      setFindApiProducts,
       setIsFindApiLoading,
-      setRegions,
-      setRequestImages,
       preFilter,
+      setRequestImages,
+      setDetectedRegions,
+      setRegions,
+      metaFilter,
+      setFindApiProducts,
+      setAlgoliaFilter,
+      refine,
     ],
   );
 

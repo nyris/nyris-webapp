@@ -29,7 +29,7 @@ i18n.use(initReactI18next).init({
 
 function AppLayout(): JSX.Element {
   const { isAuthenticated } = useAuth0();
-  const { auth0 } = window.settings;
+  const { auth0, alogoliaFilterField } = window.settings;
 
   const showLayout = !auth0.enabled || (auth0.enabled && isAuthenticated);
 
@@ -56,6 +56,7 @@ function AppLayout(): JSX.Element {
   const query = useRequestStore(state => state.query);
 
   const algoliaFilter = useRequestStore(state => state.algoliaFilter);
+  const metaFilter = useRequestStore(state => state.metaFilter);
 
   const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
   const setIsAlgoliaLoading = useUiStore(state => state.setIsAlgoliaLoading);
@@ -88,7 +89,13 @@ function AppLayout(): JSX.Element {
         filters={
           !query && !algoliaFilter.includes('score=1')
             ? undefined
-            : algoliaFilter
+            : `${algoliaFilter}${
+                metaFilter
+                  ? `${
+                      algoliaFilter ? 'AND ' : ''
+                    }${alogoliaFilterField}:'${metaFilter}'`
+                  : ''
+              }`
         }
         // facets={['brand', 'keyword_0']}
         hitsPerPage={20}

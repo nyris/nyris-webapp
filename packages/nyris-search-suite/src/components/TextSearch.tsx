@@ -29,12 +29,19 @@ function TextSearch() {
   const query = useRequestStore(state => state.query);
   const valueInput = useRequestStore(state => state.valueInput);
   const setValueInput = useRequestStore(state => state.setValueInput);
+  const setMetaFilter = useRequestStore(state => state.setMetaFilter);
 
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] =
     useState<boolean>(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   const showPreFilter = useMemo(() => {
+    if (settings.shouldUseUserMetadata && user) {
+      if (user['/user_metadata'].value) {
+        setMetaFilter(user['/user_metadata'].value);
+      }
+    }
+
     if (settings.shouldUseUserMetadata && user) {
       if (settings.preFilterOption && !user['/user_metadata'].value) {
         return true;
@@ -43,7 +50,12 @@ function TextSearch() {
     }
 
     return settings.preFilterOption;
-  }, [settings.preFilterOption, settings.shouldUseUserMetadata, user]);
+  }, [
+    setMetaFilter,
+    settings.preFilterOption,
+    settings.shouldUseUserMetadata,
+    user,
+  ]);
 
   const showDisclaimerDisabled = useMemo(() => {
     const disclaimer = localStorage.getItem('upload-disclaimer-webapp');

@@ -61,3 +61,11 @@ export interface FilterAction {
   setPreFilter: (query: Record<string, boolean>) => void;
   setAlgoliaFilter: (query: string) => void;
 }
+
+export interface MiscState {
+  metaFilter: string;
+}
+
+export interface MiscAction {
+  setMetaFilter: (filter: string) => void;
+}
