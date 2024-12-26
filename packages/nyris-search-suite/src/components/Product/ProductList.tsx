@@ -3,6 +3,7 @@ import useResultStore from 'stores/result/resultStore';
 import Product from './Product';
 import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
+import useUiStore from 'stores/ui/uiStore';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -15,8 +16,13 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const productsFromAlgolia = useResultStore(
     state => state.productsFromAlgolia,
   );
+  const productsFromFindApi = useResultStore(
+    state => state.productsFromFindApi,
+  );
+  const isAlgoliaLoading = useUiStore(state => state.isAlgoliaLoading);
 
   const setQuery = useRequestStore(state => state.setQuery);
+
   const setValueInput = useRequestStore(state => state.setValueInput);
 
   const getUrlToCanvasFile = async (url: string) => {
@@ -32,14 +38,25 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     }).then(() => {});
   };
 
+  const products = useMemo(() => {
+    if (productsFromAlgolia.length === 0 && isAlgoliaLoading) {
+      return productsFromFindApi;
+    }
+    return productsFromAlgolia;
+  }, [productsFromAlgolia, productsFromFindApi, isAlgoliaLoading]);
+
   const renderItem = useMemo(() => {
     return (
-      <div className="grid grid-cols-[repeat(auto-fit,_minmax(190px,_0px))] gap-6 justify-center max-w-[100%] mx-auto">
-        {productsFromAlgolia.map((hit: any, i: number) => {
+      <div
+        className={`grid grid-cols-[repeat(auto-fit,_minmax(190px,_0px))] gap-6 ${
+          productsFromAlgolia.length > 3 ? 'justify-center' : 'justify-start'
+        }  max-w-[100%] mx-auto`}
+      >
+        {products.map((product: any, i: number) => {
           return (
             <Product
               key={i}
-              dataItem={hit}
+              dataItem={product}
               indexItem={i}
               isHover={false}
               onSearchImage={(url: string) => {
@@ -48,9 +65,11 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
               handlerFeedback={(value: string) => {
                 sendFeedBackAction(value);
               }}
-              isGroupItem={settings.showGroup ? hit?.isGroup : false}
+              isGroupItem={settings.showGroup ? product?.isGroup : false}
               main_image_link={
-                hit['image(main_similarity)'] || hit['main_image_link']
+                productsFromFindApi[i]?.image ||
+                product['image(main_similarity)'] ||
+                product['main_image_link']
               }
             />
           );

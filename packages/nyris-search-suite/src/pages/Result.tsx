@@ -10,6 +10,7 @@ import { HitsPerPage } from 'components/HitsPerPage';
 import { Pagination } from 'components/Pagination';
 import ProductList from 'components/Product/ProductList';
 import SidePanel from 'components/SidePanel';
+import Loading from 'components/Loading';
 
 import { addAssets } from 'utils/addAssets';
 
@@ -58,60 +59,67 @@ function Results() {
   }, [cadenas?.cadenasAPIKey]);
 
   return (
-    <div className="h-full">
-      <div
-        className={twMerge(['flex', 'justify-between', 'relative', 'h-full'])}
-      >
-        <SidePanel />
+    <>
+      {isFindApiLoading && (
+        <div className="box-wrap-loading" style={{ zIndex: 99999999 }}>
+          <Loading />
+        </div>
+      )}
+      <div className="h-full">
         <div
-          className={twMerge([
-            'pt-10',
-            'overflow-hidden',
-            'overflow-y-auto',
-            'flex',
-            'flex-col',
-            'relative',
-            'w-full',
-            'mr-auto',
-            'ml-auto',
-          ])}
+          className={twMerge(['flex', 'justify-between', 'relative', 'h-full'])}
         >
+          <SidePanel />
           <div
             className={twMerge([
+              'pt-10',
+              'overflow-hidden',
+              'overflow-y-auto',
               'flex',
               'flex-col',
-              'flex-grow',
-              'mt-4',
-              'desktop:mt-0',
+              'relative',
+              'w-full',
+              'mr-auto',
+              'ml-auto',
             ])}
           >
             <div
               className={twMerge([
-                'h-full',
-                'relative',
                 'flex',
-                'justify-center',
-                'mx-4',
+                'flex-col',
+                'flex-grow',
+                'mt-4',
+                'desktop:mt-0',
               ])}
             >
-              <div className="max-w-[840px] w-full">
-                <ProductList />
+              <div
+                className={twMerge([
+                  'h-full',
+                  'relative',
+                  'flex',
+                  'justify-center',
+                  'mx-4',
+                ])}
+              >
+                <div className="max-w-[840px] w-full">
+                  <ProductList />
+                </div>
               </div>
             </div>
+            <Pagination />
+            <HitsPerPage
+              items={[
+                { label: '10', value: 10 },
+                { label: '20', value: 20, default: true },
+                { label: '30', value: 30 },
+                { label: '40', value: 40 },
+                { label: '50', value: 50 },
+              ]}
+            />
           </div>
-          <Pagination />
-          <HitsPerPage
-            items={[
-              { label: '10', value: 10 },
-              { label: '20', value: 20, default: true },
-              { label: '30', value: 30 },
-              { label: '40', value: 40 },
-              { label: '50', value: 50 },
-            ]}
-          />
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

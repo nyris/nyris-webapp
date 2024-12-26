@@ -98,9 +98,6 @@ export const useImageSearch = () => {
           refine();
         }
 
-        setIsFindApiLoading(false);
-
-        setIsFindApiLoading(true);
         setFindApiProducts(res?.results);
 
         const nonEmptyFilter: any[] = ['sku:DOES_NOT_EXIST<score=1> '];
@@ -113,6 +110,7 @@ export const useImageSearch = () => {
         const filterSkusString = [...nonEmptyFilter, ...filterSkus].join('OR ');
 
         setAlgoliaFilter(filterSkusString);
+        setIsFindApiLoading(false);
 
         if (showFeedback) {
           // dispatch(setShowFeedback(true));
