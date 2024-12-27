@@ -15,6 +15,9 @@ import Loading from 'components/Loading';
 import { addAssets } from 'utils/addAssets';
 import Feedback from 'components/Feedback';
 import { feedbackSuccessEpic } from 'services/Feedback';
+import useRequestStore from 'stores/request/requestStore';
+import RfqBanner from 'components/rfq/RfqBanner';
+import InquiryBanner from 'components/Inquiry/InquiryBanner';
 
 const assets_base_url =
   'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api';
@@ -43,6 +46,10 @@ function Results() {
   const showFeedback = useUiStore(state => state.showFeedback);
 
   const requestId = useResultStore(state => state.requestId);
+
+  const requestImages = useRequestStore(state => state.requestImages);
+  const query = useRequestStore(state => state.query);
+  const regions = useRequestStore(state => state.regions);
 
   useEffect(() => {
     if (cadenas?.cadenasAPIKey) {
@@ -188,10 +195,41 @@ function Results() {
                         </div>
                       </div>
                     )}
+
+                  <Pagination />
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexGrow: 1,
+                    }}
+                  >
+                    {requestImages.length > 0 &&
+                      !isAlgoliaLoading &&
+                      !isFindApiLoading &&
+                      window.settings.rfq &&
+                      window.settings.rfq.enabled && (
+                        <RfqBanner
+                          requestImage={requestImages[0]}
+                          selectedRegion={regions[0]}
+                        />
+                      )}
+                    {!isAlgoliaLoading &&
+                      !isFindApiLoading &&
+                      window.settings.support &&
+                      window.settings.support.enabled &&
+                      (query || requestImages[0]) && (
+                        <InquiryBanner
+                          requestImage={requestImages[0]}
+                          selectedRegion={regions[0]}
+                          query={query}
+                        />
+                      )}
+                  </div>
                 </div>
               </div>
             </div>
-            <Pagination />
+
             <HitsPerPage
               items={[
                 { label: '10', value: 10 },

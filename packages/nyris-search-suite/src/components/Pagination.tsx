@@ -8,7 +8,7 @@ export const Pagination = (props: UsePaginationProps) => {
   const nextPageIndex = currentRefinement + 1;
 
   return (
-    <div className="h-12 justify-center items-start inline-flex my-6">
+    <div className="h-12 justify-center items-start inline-flex my-6 w-full">
       <div className="w-12 h-12 p-3.5 justify-center items-center flex">
         <div
           className="w-5 h-5 relative flex-col justify-start items-start flex cursor-pointer"

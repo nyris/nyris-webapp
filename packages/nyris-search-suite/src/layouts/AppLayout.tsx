@@ -17,6 +17,7 @@ import { Configure, useHits, useInstantSearch } from 'react-instantsearch';
 import useRequestStore from 'stores/request/requestStore';
 import useResultStore from 'stores/result/resultStore';
 import useUiStore from 'stores/ui/uiStore';
+import { Toaster } from 'components/Toaster';
 
 i18n.use(initReactI18next).init({
   resources: translations,
@@ -83,6 +84,9 @@ function AppLayout(): JSX.Element {
 
   return (
     <div className="full-height flex flex-col">
+      <div>
+        <Toaster />
+      </div>
       <Header />
       <Configure
         query={query}
