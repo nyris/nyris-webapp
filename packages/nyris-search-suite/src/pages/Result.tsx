@@ -52,7 +52,9 @@ function Results() {
   const regions = useRequestStore(state => state.regions);
 
   useEffect(() => {
-    if (cadenas?.cadenasAPIKey) {
+    document.title = 'Search results';
+
+    if (cadenas?.cadenasAPIKey && cadenas?.cadenas3dWebView) {
       setCadenasScriptStatus('loading');
       addAssets([`${assets_base_url}/css/psol.components.min.css`]).catch(
         (error: any) => {
@@ -74,7 +76,7 @@ function Results() {
           setCadenasScriptStatus('failed');
         });
     }
-  }, [cadenas?.cadenasAPIKey]);
+  }, [cadenas?.cadenas3dWebView, cadenas?.cadenasAPIKey]);
 
   const submitFeedback = async (data: boolean) => {
     setShowFeedbackSuccess(true);
@@ -166,7 +168,7 @@ function Results() {
                 ])}
               >
                 <div className="max-w-[840px] w-full relative">
-                  <ProductList />
+                  <ProductList cadenasScriptStatus={cadenasScriptStatus} />
 
                   {showFeedbackSuccess && (
                     <div className={'feedback-floating'}>

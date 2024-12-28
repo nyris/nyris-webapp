@@ -1,12 +1,13 @@
 export const ICONS = {
+  arrow_down: 'arrow_down',
   avatar: 'avatar',
   back: 'back',
   box3d: 'box3d',
   call: 'call',
   camera_simple: 'camera_simple',
+  camera: 'camera',
   caret_left: 'caret_left',
   caret_right: 'caret_right',
-  camera: 'camera',
   close: 'close',
   collapse: 'collapse',
   crop: 'crop',
@@ -15,6 +16,7 @@ export const ICONS = {
   drop: 'drop',
   email: 'email',
   error: 'error',
+  experience_visual_search: 'experience_visual_search',
   filter_settings: 'filter_settings',
   filter: 'filter',
   gallery: 'gallery',
@@ -32,7 +34,6 @@ export const ICONS = {
   settings: 'settings',
   share: 'share',
   trash: 'trash',
-  experience_visual_search: 'experience_visual_search',
 } as const;
 
 export type SUPPORTED_ICON = keyof typeof ICONS;

@@ -19,24 +19,26 @@ AccordionItem.displayName = 'AccordionItem';
 
 const AccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> & {
-    isExpanded?: boolean;
-  }
->(({ className, children, isExpanded, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> & {}
+>(({ className, children, ...props }, ref) => {
   return (
     <div className="flex">
       <AccordionPrimitive.Trigger
         ref={ref}
         className={cn(
-          'flex flex-1 items-center justify-between py-4 text-sm font-medium transition-all text-left [&[data-state=open]>svg]:rotate-180',
+          'group flex flex-1 items-center justify-between py-4 text-sm font-medium transition-all text-left',
           className,
         )}
         {...props}
       >
         {children}
         <Icon
-          name={isExpanded ? 'minus' : 'plus'}
-          className="h-2.5 w-2.5 shrink-0 text-muted-foreground"
+          name="minus"
+          className="h-2.5 w-2.5 shrink-0 text-muted-foreground block group-data-[state=closed]:hidden"
+        />
+        <Icon
+          name="plus"
+          className="h-2.5 w-2.5 shrink-0 text-muted-foreground block group-data-[state=open]:hidden"
         />
       </AccordionPrimitive.Trigger>
     </div>

@@ -53,10 +53,7 @@ function PostFilterComponent() {
         value={accordionValues}
       >
         <AccordionItem value={'expand'}>
-          <AccordionTrigger
-            isExpanded={isExpanded}
-            className="text-xs font-normal w-full h-8 items-center justify-end gap-2 border-b border-solid border-[#e0e0e0]"
-          >
+          <AccordionTrigger className="text-xs font-normal w-full h-8 items-center justify-end gap-2 border-b border-solid border-[#e0e0e0]">
             {isExpanded ? 'Collapse all' : 'Expand all'}
           </AccordionTrigger>
         </AccordionItem>
@@ -78,7 +75,6 @@ function PostFilterComponent() {
                   attribute={refinement.attribute}
                   label={refinement.header}
                   searchable={refinement.searchable}
-                  isExpanded={accordionValues.includes(refinement.attribute)}
                 />
               </div>
             );

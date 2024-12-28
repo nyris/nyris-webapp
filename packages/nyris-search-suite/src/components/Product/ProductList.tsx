@@ -4,13 +4,17 @@ import Product from './Product';
 import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
-import Feedback from 'components/Feedback';
+import { CadenasScriptStatus } from 'types';
 
 interface Props {
   sendFeedBackAction?: any;
+  cadenasScriptStatus?: CadenasScriptStatus;
 }
 
-function ProductList({ sendFeedBackAction }: Props): JSX.Element {
+function ProductList({
+  sendFeedBackAction,
+  cadenasScriptStatus,
+}: Props): JSX.Element {
   const settings = window.settings;
   const { singleImageSearch } = useImageSearch();
 
@@ -72,27 +76,14 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
                 product['image(main_similarity)'] ||
                 product['main_image_link']
               }
+              cadenasScriptStatus={cadenasScriptStatus}
             />
           );
         })}
-
-        {/* <div className={'feedback-floating'}>
-          <div className="feedback-section feedback-backdrop-blur" />
-
-          <div className="feedback-section">
-            <Feedback
-              submitFeedback={() => {}}
-              onFeedbackClose={() => {
-                // setFeedbackStatus('submitted');
-                // setShowFeedback(false);
-              }}
-            />
-          </div>
-        </div> */}
       </div>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productsFromAlgolia]);
+  }, [productsFromAlgolia, cadenasScriptStatus]);
 
   return <>{renderItem}</>;
 }

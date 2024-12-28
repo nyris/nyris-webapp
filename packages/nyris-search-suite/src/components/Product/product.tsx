@@ -9,6 +9,12 @@ import { truncateString } from 'utils/truncateString';
 
 import '../../styles/product.scss';
 import { twMerge } from 'tailwind-merge';
+import { Dialog, DialogContent } from 'components/modal/dialog';
+import ProductDetailView from './ProductDetailView';
+import { DialogTitle } from '@radix-ui/react-dialog';
+import { CadenasScriptStatus } from 'types';
+
+import NoImage from '../../common/assets/images/no-image.svg';
 
 interface Props {
   dataItem: any;
@@ -22,6 +28,7 @@ interface Props {
   isGroupItem?: boolean;
   handlerCloseGroup?: any;
   main_image_link?: any;
+  cadenasScriptStatus?: CadenasScriptStatus;
 }
 
 function Product(props: Props) {
@@ -29,12 +36,9 @@ function Product(props: Props) {
     dataItem,
     isHover = false,
     onSearchImage,
-    handlerGroupItem,
     handlerFeedback,
-    isGroupItem,
-    handlerCloseGroup,
     main_image_link,
-    indexItem,
+    cadenasScriptStatus,
   } = props;
   const [urlImage, setUrlImage] = useState<string>('');
   const settings = window.settings;
@@ -44,21 +48,12 @@ function Product(props: Props) {
   >();
 
   const { t } = useTranslation();
-  const { collap } = dataItem;
 
   useEffect(() => {
     if (main_image_link) {
       handlerCheckUrlImage(main_image_link);
     }
   }, [main_image_link]);
-
-  const handlerShowGroup = () => {
-    handlerGroupItem(dataItem, indexItem);
-  };
-
-  const handlerHideGroup = () => {
-    handlerCloseGroup(dataItem, indexItem);
-  };
 
   const handlerCheckUrlImage = (url: any, timeout?: number) => {
     timeout = timeout || 5000;
@@ -81,332 +76,398 @@ function Product(props: Props) {
     img.src = url;
   };
 
-  return (
-    <div className="wrap-main-item-result w-fit border border-solid border-[#E0E0E0]">
-      <div className="relative h-fit">
-        {!isHover && main_image_link && !settings.noSimilarSearch && (
-          <div
-            className="box-icon-modal"
-            onClick={() => {
-              if (urlImage.length > 1) {
-                onSearchImage(main_image_link);
-              }
-            }}
-          >
-            <Icon
-              name="search_image"
-              width={16}
-              height={16}
-              color={'#AAABB5'}
-            />
-          </div>
-        )}
-        {settings.cadenas?.cadenas3dWebView && (
-          <div
-            className="box-icon-modal-3d"
-            onClick={() => {
-              setOpenDetailedView('3d');
-            }}
-          >
-            <Icon name="box3d" width={16} height={16} color={'#AAABB5'} />
-          </div>
-        )}
+  const handlerToggleModal = (item: any) => {
+    setOpenDetailedView('image');
+  };
 
-        <div
-          className={twMerge([
-            'text-center',
-            'bg-white',
-            'h-[168px]',
-            'z-10',
-            'relative',
-          ])}
+  return (
+    <>
+      <Dialog
+        open={openDetailedView === '3d' || openDetailedView === 'image'}
+        onOpenChange={(e: any) => {
+          setOpenDetailedView(undefined);
+        }}
+      >
+        <DialogContent
+          closeButton={false}
+          className="flex flex-col min-h-[468px] min-w-[330px] w-[600px] m-0 desktop:m-auto bg-white rounded-xl p-0"
         >
+          <DialogTitle className="h-0 w-0 hidden">Product Details</DialogTitle>
+
+          <ProductDetailView
+            dataItem={dataItem}
+            handleClose={() => {
+              setOpenDetailedView(undefined);
+            }}
+            handlerFeedback={handlerFeedback}
+            show3dView={openDetailedView === '3d'}
+            onSearchImage={(url: string) => {
+              onSearchImage(url);
+            }}
+            cadenasScriptStatus={cadenasScriptStatus}
+          />
+        </DialogContent>
+      </Dialog>
+      <div className="wrap-main-item-result w-fit border border-solid border-[#E0E0E0]">
+        <div className="relative h-fit">
+          {!isHover && main_image_link && !settings.noSimilarSearch && (
+            <div
+              className="box-icon-modal"
+              onClick={() => {
+                if (urlImage.length > 1) {
+                  onSearchImage(main_image_link);
+                }
+              }}
+            >
+              <Icon
+                name="search_image"
+                width={16}
+                height={16}
+                color={'#AAABB5'}
+              />
+            </div>
+          )}
+          {settings.cadenas?.cadenas3dWebView && (
+            <div
+              className="box-icon-modal-3d"
+              onClick={() => {
+                setOpenDetailedView('3d');
+              }}
+            >
+              <Icon name="box3d" width={16} height={16} color={'#AAABB5'} />
+            </div>
+          )}
+
           <div
             className={twMerge([
-              'w-full',
-              'h-full',
-              'cursor-pointer',
-              'flex',
-              'justify-center',
-              'items-center',
+              'text-center',
+              'bg-white',
+              'h-[168px]',
+              'z-10',
+              'relative',
             ])}
-            onClick={(e: any) => {
-              e.preventDefault();
-            }}
           >
-            <img
-              src={main_image_link}
-              key={main_image_link}
-              alt="image_item"
-              className="img-style product-image"
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        className={twMerge([
-          'pl-2',
-          'pr-2',
-          'pb-3',
-          'justify-between',
-          'flex',
-          'flex-col',
-          'bg-[#FAFAFA]',
-          'flex-grow',
-          'z-10',
-          'pt-2',
-        ])}
-      >
-        <div
-          className="relative h-fit text-primary flex flex-col justify-between "
-          style={{ color: '#FFFFFF' }}
-        >
-          <div>
-            <div className="max-h-[38px] h-fit">
-              {dataItem[settings.mainTitle] && (
-                <div className="text-xs font-bold text-primary mb-1 ml-2 max-line-1">
-                  {truncateString(dataItem[settings.mainTitle], 45)}
-                </div>
-              )}
-              {dataItem[settings.secondaryTitle] && (
-                <div
-                  className={twMerge([
-                    'flex',
-                    'justify-between',
-                    'flex-row',
-                    'text-primary',
-                  ])}
-                >
-                  <div className="text-[10px] font-normal max-line-1 text-primary mb-2 ml-2">
-                    {truncateString(dataItem[settings.secondaryTitle], 40)}
-                  </div>
-                </div>
-              )}
-            </div>
-            {settings.attributes?.productAttributes &&
-              (settings.attributes?.attributeOneValue ||
-                settings.attributes?.attributeTwoValue ||
-                settings.attributes?.attributeThreeValue ||
-                settings.attributes?.attributeFourValue) && (
-                <div
-                  className="attribute-container"
+            <div
+              className={twMerge([
+                'w-full',
+                'h-full',
+                'cursor-pointer',
+                'flex',
+                'justify-center',
+                'items-center',
+              ])}
+              onClick={(e: any) => {
+                e.preventDefault();
+                handlerToggleModal(dataItem);
+              }}
+            >
+              {main_image_link && (
+                <img
+                  src={main_image_link}
+                  key={main_image_link}
+                  alt="image_item"
+                  className="img-style product-image"
                   style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    marginBottom:
-                      settings.CTAButton?.CTAButton ||
-                      settings.secondaryCTAButton?.secondaryCTAButton
-                        ? 8
-                        : 0,
-                    gridGap: 8,
-                    color: '#2B2C46',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
                   }}
-                >
-                  {settings.attributes?.attributeOneValue && (
-                    <ProductAttribute
-                      title={settings.attributes?.attributeOneLabelValue}
-                      value={get(
-                        dataItem,
-                        settings.attributes?.attributeOneValue || '',
-                      )}
-                      padding={'4px 8px'}
-                      backgroundColor={'#E0E0E0'}
-                      isTitleVisible={
-                        !!settings.attributes?.attributeOneLabelValue
-                      }
-                    />
-                  )}
-                  {settings.attributes?.attributeTwoValue && (
-                    <ProductAttribute
-                      title={settings.attributes?.attributeTwoLabelValue}
-                      value={get(
-                        dataItem,
-                        settings.attributes?.attributeTwoValue || '',
-                      )}
-                      padding={'4px 8px'}
-                      backgroundColor={'#E0E0E0'}
-                      isTitleVisible={
-                        !!settings.attributes?.attributeTwoLabelValue
-                      }
-                    />
-                  )}
-                  {settings.attributes?.attributeThreeValue && (
-                    <ProductAttribute
-                      title={settings.attributes?.attributeThreeLabelValue}
-                      value={get(
-                        dataItem,
-                        settings.attributes?.attributeThreeValue || '',
-                      )}
-                      padding={'4px 8px'}
-                      backgroundColor={'#E0E0E0'}
-                      isTitleVisible={
-                        !!settings.attributes?.attributeThreeLabelValue
-                      }
-                    />
-                  )}
+                />
+              )}
 
-                  {settings.attributes?.attributeFourValue && (
-                    <ProductAttribute
-                      title={settings.attributes?.attributeFourLabelValue}
-                      value={get(
-                        dataItem,
-                        settings.attributes?.attributeFourValue || '',
-                      )}
-                      padding={'4px 8px'}
-                      backgroundColor={'#E0E0E0'}
-                      isTitleVisible={
-                        !!settings.attributes?.attributeFourLabelValue
-                      }
-                    />
-                  )}
-                </div>
+              {!main_image_link && (
+                <img
+                  src={NoImage}
+                  alt="image_item"
+                  style={{ width: '70%', height: '50%' }}
+                />
               )}
+            </div>
           </div>
         </div>
-        <div>
-          {settings.secondaryCTAButton?.secondaryCTAButton && (
+        {settings.simpleCardView && (
+          <div className="info-container-card">
+            <div className="info-sku">{dataItem.sku}</div>
+            <span className="info-marking">{dataItem.Bezeichnung}</span>
+            <div className="info-description">
+              {settings.language === 'en'
+                ? dataItem.VK_Text_Englisch
+                : dataItem.VK_Text_Deutsch}
+            </div>
+          </div>
+        )}
+
+        {!settings.simpleCardView && (
+          <div
+            className={twMerge([
+              'pl-2',
+              'pr-2',
+              'pb-3',
+              'justify-between',
+              'flex',
+              'flex-col',
+              'bg-[#FAFAFA]',
+              'flex-grow',
+              'z-10',
+              'pt-2',
+            ])}
+          >
             <div
-              style={{
-                boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
-                minHeight: 28,
-                background:
-                  settings.secondaryCTAButton?.secondaryCTAButtonColor ||
-                  '#2B2C46',
-                borderRadius: 2,
-                padding: '0px 8px',
-                marginBottom: settings.CTAButton?.CTAButton ? 8 : 0,
-                display: 'flex',
-                justifyItems: 'center',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
+              className="relative h-fit text-primary flex flex-col justify-between "
+              style={{ color: '#FFFFFF' }}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: '100%',
-                  padding: 0,
-                  cursor: settings.secondaryCTAButton.secondaryCTALinkField
-                    ? 'pointer'
-                    : 'normal',
-                }}
-                onClick={() => {
-                  if (settings.secondaryCTAButton?.secondaryCTALinkField) {
-                    // feedbackConversionEpic(state, indexItem, dataItem.sku);
-                    window.open(
-                      `${get(
-                        dataItem,
-                        settings.secondaryCTAButton?.secondaryCTALinkField,
-                      )}`,
-                      '_blank',
-                    );
-                  }
-                }}
-              >
-                <div
-                  className={`max-line-1 ${
-                    settings.secondaryCTAButton.secondaryCTALinkField
-                      ? 'desktop:136px'
-                      : '164px'
-                  }`}
-                  style={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    fontWeight: 600,
-                    fontSize: '12px',
-                    letterSpacing: '0.27px',
-                    wordBreak: 'break-all',
-                    color:
-                      settings.secondaryCTAButton.secondaryCTAButtonTextColor ||
-                      '#FFFFFF',
-                    paddingRight: '8px',
-                  }}
-                >
-                  {settings.secondaryCTAButton?.secondaryCTAButtonText}
+              <div>
+                <div className="max-h-[38px] h-fit">
+                  {dataItem[settings.mainTitle] && (
+                    <div className="text-xs font-bold text-primary mb-1 ml-2 max-line-1">
+                      {truncateString(dataItem[settings.mainTitle], 45)}
+                    </div>
+                  )}
+                  {dataItem[settings.secondaryTitle] && (
+                    <div
+                      className={twMerge([
+                        'flex',
+                        'justify-between',
+                        'flex-row',
+                        'text-primary',
+                      ])}
+                    >
+                      <div className="text-[10px] font-normal max-line-1 text-primary mb-2 ml-2">
+                        {truncateString(dataItem[settings.secondaryTitle], 40)}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {settings.secondaryCTAButton.secondaryCTAIcon && (
-                  <div style={{ width: '16px' }}>
-                    <Icon name="settings" color="white" />
-                  </div>
-                )}
+                {settings.attributes?.productAttributes &&
+                  (settings.attributes?.attributeOneValue ||
+                    settings.attributes?.attributeTwoValue ||
+                    settings.attributes?.attributeThreeValue ||
+                    settings.attributes?.attributeFourValue) && (
+                    <div
+                      className="attribute-container"
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                        flexWrap: 'wrap',
+                        marginBottom:
+                          settings.CTAButton?.CTAButton ||
+                          settings.secondaryCTAButton?.secondaryCTAButton
+                            ? 8
+                            : 0,
+                        gridGap: 8,
+                        color: '#2B2C46',
+                      }}
+                    >
+                      {settings.attributes?.attributeOneValue && (
+                        <ProductAttribute
+                          title={settings.attributes?.attributeOneLabelValue}
+                          value={get(
+                            dataItem,
+                            settings.attributes?.attributeOneValue || '',
+                          )}
+                          padding={'4px 8px'}
+                          backgroundColor={'#E0E0E0'}
+                          isTitleVisible={
+                            !!settings.attributes?.attributeOneLabelValue
+                          }
+                        />
+                      )}
+                      {settings.attributes?.attributeTwoValue && (
+                        <ProductAttribute
+                          title={settings.attributes?.attributeTwoLabelValue}
+                          value={get(
+                            dataItem,
+                            settings.attributes?.attributeTwoValue || '',
+                          )}
+                          padding={'4px 8px'}
+                          backgroundColor={'#E0E0E0'}
+                          isTitleVisible={
+                            !!settings.attributes?.attributeTwoLabelValue
+                          }
+                        />
+                      )}
+                      {settings.attributes?.attributeThreeValue && (
+                        <ProductAttribute
+                          title={settings.attributes?.attributeThreeLabelValue}
+                          value={get(
+                            dataItem,
+                            settings.attributes?.attributeThreeValue || '',
+                          )}
+                          padding={'4px 8px'}
+                          backgroundColor={'#E0E0E0'}
+                          isTitleVisible={
+                            !!settings.attributes?.attributeThreeLabelValue
+                          }
+                        />
+                      )}
+
+                      {settings.attributes?.attributeFourValue && (
+                        <ProductAttribute
+                          title={settings.attributes?.attributeFourLabelValue}
+                          value={get(
+                            dataItem,
+                            settings.attributes?.attributeFourValue || '',
+                          )}
+                          padding={'4px 8px'}
+                          backgroundColor={'#E0E0E0'}
+                          isTitleVisible={
+                            !!settings.attributes?.attributeFourLabelValue
+                          }
+                        />
+                      )}
+                    </div>
+                  )}
               </div>
             </div>
-          )}
-          {settings.CTAButton?.CTAButton && (
-            <div
-              style={{
-                boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
-                minHeight: 28,
-                background:
-                  settings.CTAButton?.CTAButtonColor ||
-                  settings.theme?.primaryColor,
-                borderRadius: 2,
-                padding: '0px 8px',
-                display: 'flex',
-                justifyItems: 'center',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: '100%',
-                  padding: 0,
-                  cursor: settings.CTAButton?.CTALinkField
-                    ? 'pointer'
-                    : 'normal',
-                }}
-                onClick={() => {
-                  if (settings.CTAButton?.CTALinkField) {
-                    // feedbackConversionEpic(state, indexItem, dataItem.sku);
-                    window.open(
-                      `${get(dataItem, settings.CTAButton?.CTALinkField)}`,
-                      '_blank',
-                    );
-                  }
-                }}
-              >
+            <div>
+              {settings.secondaryCTAButton?.secondaryCTAButton && (
                 <div
-                  className={`max-line-1 ${
-                    settings.CTAButton.CTALinkField ? 'desktop:136px' : '164px'
-                  }`}
                   style={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    fontWeight: 600,
-                    color: settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
-                    fontSize: '12px',
-                    letterSpacing: '0.27px',
-                    wordBreak: 'break-all',
-                    paddingRight: '8px',
+                    boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                    minHeight: 28,
+                    background:
+                      settings.secondaryCTAButton?.secondaryCTAButtonColor ||
+                      '#2B2C46',
+                    borderRadius: 2,
+                    padding: '0px 8px',
+                    marginBottom: settings.CTAButton?.CTAButton ? 8 : 0,
+                    display: 'flex',
+                    justifyItems: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                   }}
                 >
-                  {get(dataItem, settings.CTAButton?.CTAButtonText || '') ||
-                    settings.CTAButton?.CTAButtonText}
-                </div>
-                {settings.CTAButton?.CTAIcon && (
-                  <div style={{ width: '16px' }}>
-                    <Icon
-                      name="link"
-                      fill={settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'}
-                      width={16}
-                    />
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%',
+                      padding: 0,
+                      cursor: settings.secondaryCTAButton.secondaryCTALinkField
+                        ? 'pointer'
+                        : 'normal',
+                    }}
+                    onClick={() => {
+                      if (settings.secondaryCTAButton?.secondaryCTALinkField) {
+                        // feedbackConversionEpic(state, indexItem, dataItem.sku);
+                        window.open(
+                          `${get(
+                            dataItem,
+                            settings.secondaryCTAButton?.secondaryCTALinkField,
+                          )}`,
+                          '_blank',
+                        );
+                      }
+                    }}
+                  >
+                    <div
+                      className={`max-line-1 ${
+                        settings.secondaryCTAButton.secondaryCTALinkField
+                          ? 'desktop:136px'
+                          : '164px'
+                      }`}
+                      style={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontWeight: 600,
+                        fontSize: '12px',
+                        letterSpacing: '0.27px',
+                        wordBreak: 'break-all',
+                        color:
+                          settings.secondaryCTAButton
+                            .secondaryCTAButtonTextColor || '#FFFFFF',
+                        paddingRight: '8px',
+                      }}
+                    >
+                      {settings.secondaryCTAButton?.secondaryCTAButtonText}
+                    </div>
+                    {settings.secondaryCTAButton.secondaryCTAIcon && (
+                      <div style={{ width: '16px' }}>
+                        <Icon name="settings" color="white" />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
+              {settings.CTAButton?.CTAButton && (
+                <div
+                  style={{
+                    boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                    minHeight: 28,
+                    background:
+                      settings.CTAButton?.CTAButtonColor ||
+                      settings.theme?.primaryColor,
+                    borderRadius: 2,
+                    padding: '0px 8px',
+                    display: 'flex',
+                    justifyItems: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%',
+                      padding: 0,
+                      cursor: settings.CTAButton?.CTALinkField
+                        ? 'pointer'
+                        : 'normal',
+                    }}
+                    onClick={() => {
+                      if (settings.CTAButton?.CTALinkField) {
+                        // feedbackConversionEpic(state, indexItem, dataItem.sku);
+                        window.open(
+                          `${get(dataItem, settings.CTAButton?.CTALinkField)}`,
+                          '_blank',
+                        );
+                      }
+                    }}
+                  >
+                    <div
+                      className={`max-line-1 ${
+                        settings.CTAButton.CTALinkField
+                          ? 'desktop:136px'
+                          : '164px'
+                      }`}
+                      style={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontWeight: 600,
+                        color:
+                          settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
+                        fontSize: '12px',
+                        letterSpacing: '0.27px',
+                        wordBreak: 'break-all',
+                        paddingRight: '8px',
+                      }}
+                    >
+                      {get(dataItem, settings.CTAButton?.CTAButtonText || '') ||
+                        settings.CTAButton?.CTAButtonText}
+                    </div>
+                    {settings.CTAButton?.CTAIcon && (
+                      <div style={{ width: '16px' }}>
+                        <Icon
+                          name="link"
+                          fill={
+                            settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'
+                          }
+                          width={16}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    </div>
+    </>
   );
 }
 

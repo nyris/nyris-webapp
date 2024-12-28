@@ -21,6 +21,8 @@ function Home() {
   };
 
   useEffect(() => {
+    document.title = settings.appTitle || '';
+
     const fetchAllImages = async () => {
       if (experienceVisualSearch && experienceVisualSearchImages?.length) {
         const randomImages = experienceVisualSearchImages?.slice(
@@ -45,7 +47,7 @@ function Home() {
     };
 
     fetchAllImages();
-  }, [experienceVisualSearch, experienceVisualSearchImages]);
+  }, [experienceVisualSearch, experienceVisualSearchImages, settings.appTitle]);
 
   return (
     <>

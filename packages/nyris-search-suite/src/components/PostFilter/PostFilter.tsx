@@ -13,12 +13,10 @@ function PostFilter({
   attribute,
   label,
   searchable,
-  isExpanded,
 }: {
   attribute: string;
   label: string;
   searchable: boolean;
-  isExpanded: boolean;
 }) {
   const {
     items,
@@ -37,10 +35,7 @@ function PostFilter({
   return (
     <>
       <AccordionItem value={attribute}>
-        <AccordionTrigger
-          isExpanded={isExpanded}
-          className="text-sm font-semibold w-full h-8 items-center"
-        >
+        <AccordionTrigger className="text-sm font-semibold w-full h-8 items-center">
           {label}
         </AccordionTrigger>
         <AccordionContent>
