@@ -322,8 +322,10 @@ const SearchBox = (props: any) => {
             <div className="wrap-box-input-mobile d-flex">
               <input
                 accept={`${
-                  isCadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,' : ''
-                }image/*`}
+                  isCadSearch
+                    ? '.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,image/*'
+                    : ''
+                }`}
                 id="icon-button-file"
                 type="file"
                 style={{ display: 'none' }}
