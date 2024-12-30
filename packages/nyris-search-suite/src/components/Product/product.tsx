@@ -80,6 +80,19 @@ function Product(props: Props) {
     setOpenDetailedView('image');
   };
 
+  useEffect(() => {
+    if (openDetailedView === '3d' || openDetailedView === 'image') {
+      // Pushing the change to the end of the call stack
+      const timer = setTimeout(() => {
+        document.body.style.pointerEvents = '';
+      }, 0);
+
+      return () => clearTimeout(timer);
+    } else {
+      document.body.style.pointerEvents = 'auto';
+    }
+  }, [openDetailedView]);
+
   return (
     <>
       <Dialog
@@ -87,10 +100,20 @@ function Product(props: Props) {
         onOpenChange={(e: any) => {
           setOpenDetailedView(undefined);
         }}
+        modal={true}
       >
         <DialogContent
           closeButton={false}
           className="flex flex-col min-h-[468px] min-w-[330px] w-[600px] m-0 desktop:m-auto bg-white rounded-xl p-0"
+          onPointerDownOutside={e => {
+            const hasDataAttribute = (e.target as HTMLElement)?.hasAttribute(
+              'data-modal-overlay',
+            );
+            if (hasDataAttribute) {
+              setOpenDetailedView(undefined);
+            }
+            e.preventDefault();
+          }}
         >
           <DialogTitle className="h-0 w-0 hidden">Product Details</DialogTitle>
 
@@ -104,7 +127,6 @@ function Product(props: Props) {
             onSearchImage={(url: string) => {
               onSearchImage(url);
             }}
-            cadenasScriptStatus={cadenasScriptStatus}
           />
         </DialogContent>
       </Dialog>

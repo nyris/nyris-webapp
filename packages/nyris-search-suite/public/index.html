@@ -21,12 +21,44 @@
     <script>
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
+
+      function checkScriptsLoaded() {
+        window.dispatchEvent(new Event('cadenasScriptsLoaded'));
+       
+      }
     </script>
   
   </head>
   <body>
-
+    <script>
+      if (window.settings?.cadenas?.cadenas3dWebView) {
+        // Create and append the stylesheet link
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api/css/psol.components.min.css';
+        document.head.appendChild(link);
   
+        // Create and append the first script
+        const script1 = document.createElement('script');
+        script1.type = 'text/javascript';
+        script1.src = 'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api/js/thirdparty.min.js';
+        script1.defer = true;
+        script1.onload = () => {
+          // Create and append the second script after the first script has loaded
+          const script2 = document.createElement('script');
+          script2.type = 'text/javascript';
+          script2.src = 'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api/js/psol.components.min.js';
+          script2.defer = true;
+          script2.onload = () => {
+            window.psolComponents = true;
+            checkScriptsLoaded();
+          };
+          document.body.appendChild(script2);
+        };
+        document.body.appendChild(script1);
+      }
+    </script>
+
 
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>

@@ -5,6 +5,7 @@ import { Icon } from '@nyris/nyris-react-components';
 
 import CadenasLoading from './CadenasLoading';
 import { CadenasScriptStatus } from 'types';
+import useUiStore from 'stores/ui/uiStore';
 
 declare const psol: any;
 
@@ -21,22 +22,21 @@ function CadenasWebViewer({
   sku,
   setStatus3dView,
   status3dView,
-  cadenasScriptStatus,
 }: {
   status3dView: string | undefined;
   sku: string;
   is3dView: boolean;
   setStatus3dView: any;
-  cadenasScriptStatus?: CadenasScriptStatus;
 }) {
-  const [mident, setMident] = useState('');
+  const [midentState, setMident] = useState('');
   const { settings } = window;
+  const isCadenasLoaded = useUiStore(state => state.isCadenasLoaded);
 
   useEffect(() => {
-    if (cadenasScriptStatus === 'loading') {
+    if (!isCadenasLoaded && !psol) {
       setStatus3dView('loading');
     }
-    if (cadenasScriptStatus !== 'ready') {
+    if (!isCadenasLoaded && !psol) {
       return;
     }
     // prepare 3d viewer settings.
@@ -125,7 +125,7 @@ function CadenasWebViewer({
             });
         });
       });
-  }, [sku, setStatus3dView, settings, cadenasScriptStatus]);
+  }, [sku, setStatus3dView, settings, isCadenasLoaded]);
 
   const showWebViewer = !is3dView || status3dView !== 'loaded';
 
@@ -169,7 +169,7 @@ function CadenasWebViewer({
             }}
             onClick={() => {
               new psol.components.DownloadDialog({
-                mident: mident,
+                mident: midentState,
               }).show();
             }}
           >

@@ -28,7 +28,6 @@ interface Props {
   onHandlerModalShare?: any;
   show3dView?: boolean;
   onSearchImage?: any;
-  cadenasScriptStatus?: CadenasScriptStatus;
 }
 
 function ProductDetailView(props: Props) {
@@ -104,14 +103,13 @@ function ProductDetailView(props: Props) {
             sku={sku}
             status3dView={status3dView}
             setStatus3dView={setStatus3dView}
-            cadenasScriptStatus={props.cadenasScriptStatus}
           />
         )}
         <div
           className={`box-carosel ${
             dataImageCarousel.length === 0 ? 'flex justify-center' : ''
           } ${
-            is3dView ? 'w-0 h-0 opacity-0' : 'w-full'
+            is3dView ? 'w-0 h-0 opacity-0 hidden' : 'w-full'
           } transition-opacity duration-300 pt-4`}
           style={{ height: is3dView ? '0px' : 'h-[368px] desktop:h-[60%]' }}
         >

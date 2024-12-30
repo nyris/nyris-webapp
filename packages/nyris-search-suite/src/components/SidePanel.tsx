@@ -11,7 +11,6 @@ export default function SidePanel() {
   if (!showPostFilter && requestImages.length === 0) {
     return <></>;
   }
-
   return (
     <div
       className={twMerge([
@@ -39,7 +38,11 @@ export default function SidePanel() {
       >
         {requestImages[0] && <ImagePreview />}
       </div>
-      {showPostFilter && <PostFilterComponent />}
+      {showPostFilter && (
+        <PostFilterComponent
+          className={requestImages.length === 0 ? 'mt-9' : ''}
+        />
+      )}
     </div>
   );
 }

@@ -1,14 +1,28 @@
-import { usePagination, UsePaginationProps } from 'react-instantsearch';
+import { usePagination } from 'react-instantsearch';
 import { Icon } from '@nyris/nyris-react-components';
+import { twMerge } from 'tailwind-merge';
 
-export const Pagination = (props: UsePaginationProps) => {
+export const Pagination = ({
+  isLoading,
+  className,
+}: {
+  isLoading: boolean;
+  className?: string;
+}) => {
   const { pages, currentRefinement, isFirstPage, isLastPage, refine } =
-    usePagination(props);
+    usePagination();
   const previousPageIndex = currentRefinement - 1;
   const nextPageIndex = currentRefinement + 1;
 
   return (
-    <div className="h-12 justify-center items-start inline-flex my-6 w-full">
+    <div
+      className={twMerge(
+        `h-12 justify-center items-start inline-flex my-6 w-full ${
+          isLoading ? 'opacity-0' : ''
+        }`,
+        className,
+      )}
+    >
       <div className="w-12 h-12 p-3.5 justify-center items-center flex">
         <div
           className="w-5 h-5 relative flex-col justify-start items-start flex cursor-pointer"

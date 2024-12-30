@@ -5,18 +5,16 @@ import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
 import { CadenasScriptStatus } from 'types';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   sendFeedBackAction?: any;
-  cadenasScriptStatus?: CadenasScriptStatus;
 }
 
-function ProductList({
-  sendFeedBackAction,
-  cadenasScriptStatus,
-}: Props): JSX.Element {
+function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const settings = window.settings;
   const { singleImageSearch } = useImageSearch();
+  const { t } = useTranslation();
 
   const productsFromAlgolia = useResultStore(
     state => state.productsFromAlgolia,
@@ -25,8 +23,10 @@ function ProductList({
     state => state.productsFromFindApi,
   );
   const isAlgoliaLoading = useUiStore(state => state.isAlgoliaLoading);
+  const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
 
   const setQuery = useRequestStore(state => state.setQuery);
+  const query = useRequestStore(state => state.query);
 
   const setValueInput = useRequestStore(state => state.setValueInput);
 
@@ -44,18 +44,16 @@ function ProductList({
   };
 
   const products = useMemo(() => {
-    if (productsFromAlgolia.length === 0 && isAlgoliaLoading) {
+    if (productsFromAlgolia.length === 0 && isAlgoliaLoading && !query) {
       return productsFromFindApi;
     }
     return productsFromAlgolia;
-  }, [productsFromAlgolia, productsFromFindApi, isAlgoliaLoading]);
+  }, [productsFromAlgolia, productsFromFindApi, isAlgoliaLoading, query]);
 
   const renderItem = useMemo(() => {
     return (
       <div
-        className={`grid grid-cols-[repeat(auto-fit,_minmax(190px,_0px))] gap-6 ${
-          productsFromAlgolia.length > 3 ? 'justify-center' : 'justify-start'
-        }  max-w-[100%] mx-auto`}
+        className={`grid grid-cols-[repeat(auto-fit,_minmax(190px,_0px))] gap-6 justify-center max-w-[100%] mx-auto`}
       >
         {products.map((product: any, i: number) => {
           return (
@@ -76,14 +74,33 @@ function ProductList({
                 product['image(main_similarity)'] ||
                 product['main_image_link']
               }
-              cadenasScriptStatus={cadenasScriptStatus}
             />
           );
         })}
+        {/* To keep products in same starting position, To-do: better solution */}
+        {productsFromAlgolia.length <= 3 &&
+          new Array(3).fill(0).map((_, i) => {
+            return (
+              <div
+                key={i + 'dummy'}
+                className="wrap-main-item-result opacity-0 h-0"
+              ></div>
+            );
+          })}
       </div>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productsFromAlgolia, cadenasScriptStatus]);
+  }, [productsFromAlgolia]);
+
+  if (products.length === 0 && !isAlgoliaLoading && !isFindApiLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="text-center text-[#AAABB5]">
+          {t('No products were found matching your search criteria.')}
+        </div>
+      </div>
+    );
+  }
 
   return <>{renderItem}</>;
 }

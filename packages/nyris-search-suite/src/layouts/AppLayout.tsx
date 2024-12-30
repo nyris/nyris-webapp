@@ -39,6 +39,19 @@ function AppLayout(): JSX.Element {
   // Then we set the value in the --vh custom property to the root of the document
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 
+  const query = useRequestStore(state => state.query);
+
+  const algoliaFilter = useRequestStore(state => state.algoliaFilter);
+  const metaFilter = useRequestStore(state => state.metaFilter);
+
+  const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
+  const setIsAlgoliaLoading = useUiStore(state => state.setIsAlgoliaLoading);
+
+  const setIsCadenasLoaded = useUiStore(state => state.setIsCadenasLoaded);
+
+  const { status } = useInstantSearch();
+  const { items } = useHits();
+
   useEffect(() => {
     console.log('App version:', packageJson.version);
 
@@ -49,21 +62,17 @@ function AppLayout(): JSX.Element {
 
     window.addEventListener('resize', handleResize);
 
+    const handleScriptsLoaded = () => {
+      setIsCadenasLoaded(true);
+    };
+
+    window.addEventListener('cadenasScriptsLoaded', handleScriptsLoaded);
+
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('cadenasScriptsLoaded', handleScriptsLoaded);
     };
   }, []);
-
-  const query = useRequestStore(state => state.query);
-
-  const algoliaFilter = useRequestStore(state => state.algoliaFilter);
-  const metaFilter = useRequestStore(state => state.metaFilter);
-
-  const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
-  const setIsAlgoliaLoading = useUiStore(state => state.setIsAlgoliaLoading);
-
-  const { status } = useInstantSearch();
-  const { items } = useHits();
 
   useEffect(() => {
     setAlgoliaProducts(items);

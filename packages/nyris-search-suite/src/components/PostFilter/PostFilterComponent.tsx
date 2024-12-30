@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import PostFilter from './PostFilter';
 import { twMerge } from 'tailwind-merge';
 
-function PostFilterComponent() {
+function PostFilterComponent({ className }: { className?: string }) {
   const [accordionValues, setAccordionValues] = useState([
     ...window.settings.refinements?.map(
       (refinement: any) => refinement.attribute,
@@ -29,6 +29,7 @@ function PostFilterComponent() {
         'flex',
         'flex-col',
         'gap-4',
+        className,
       ])}
     >
       <Accordion

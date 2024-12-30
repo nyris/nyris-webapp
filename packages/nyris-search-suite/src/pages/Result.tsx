@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { CadenasScriptStatus } from 'types';
-
 import useResultStore from 'stores/result/resultStore';
 import useUiStore from 'stores/ui/uiStore';
 
@@ -12,15 +10,11 @@ import ProductList from 'components/Product/ProductList';
 import SidePanel from 'components/SidePanel';
 import Loading from 'components/Loading';
 
-import { addAssets } from 'utils/addAssets';
 import Feedback from 'components/Feedback';
 import { feedbackSuccessEpic } from 'services/Feedback';
 import useRequestStore from 'stores/request/requestStore';
 import RfqBanner from 'components/rfq/RfqBanner';
 import InquiryBanner from 'components/Inquiry/InquiryBanner';
-
-const assets_base_url =
-  'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api';
 
 function Results() {
   const cadenas = window.settings.cadenas;
@@ -29,9 +23,6 @@ function Results() {
     'hidden' | 'submitted' | 'visible'
   >();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
-
-  const [cadenasScriptStatus, setCadenasScriptStatus] =
-    useState<CadenasScriptStatus>('disabled');
 
   const productsFromFindApi = useResultStore(
     state => state.productsFromFindApi,
@@ -53,29 +44,6 @@ function Results() {
 
   useEffect(() => {
     document.title = 'Search results';
-
-    if (cadenas?.cadenasAPIKey && cadenas?.cadenas3dWebView) {
-      setCadenasScriptStatus('loading');
-      addAssets([`${assets_base_url}/css/psol.components.min.css`]).catch(
-        (error: any) => {
-          setCadenasScriptStatus('failed');
-        },
-      );
-
-      addAssets([`${assets_base_url}/js/thirdparty.min.js`])
-        .then(() => {
-          addAssets([`${assets_base_url}/js/psol.components.min.js`])
-            .then(() => {
-              setCadenasScriptStatus('ready');
-            })
-            .catch((error: any) => {
-              setCadenasScriptStatus('failed');
-            });
-        })
-        .catch((error: any) => {
-          setCadenasScriptStatus('failed');
-        });
-    }
   }, [cadenas?.cadenas3dWebView, cadenas?.cadenasAPIKey]);
 
   const submitFeedback = async (data: boolean) => {
@@ -167,8 +135,8 @@ function Results() {
                   'mx-4',
                 ])}
               >
-                <div className="max-w-[840px] w-full relative">
-                  <ProductList cadenasScriptStatus={cadenasScriptStatus} />
+                <div className="max-w-[840px] w-full relative flex flex-col justify-between">
+                  <ProductList />
 
                   {showFeedbackSuccess && (
                     <div className={'feedback-floating'}>
@@ -197,36 +165,43 @@ function Results() {
                         </div>
                       </div>
                     )}
-
-                  <Pagination />
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexGrow: 1,
-                    }}
-                  >
-                    {requestImages.length > 0 &&
-                      !isAlgoliaLoading &&
-                      !isFindApiLoading &&
-                      window.settings.rfq &&
-                      window.settings.rfq.enabled && (
-                        <RfqBanner
-                          requestImage={requestImages[0]}
-                          selectedRegion={regions[0]}
-                        />
-                      )}
-                    {!isAlgoliaLoading &&
-                      !isFindApiLoading &&
-                      window.settings.support &&
-                      window.settings.support.enabled &&
-                      (query || requestImages[0]) && (
-                        <InquiryBanner
-                          requestImage={requestImages[0]}
-                          selectedRegion={regions[0]}
-                          query={query}
-                        />
-                      )}
+                  <div>
+                    <Pagination
+                      isLoading={isFindApiLoading || isAlgoliaLoading}
+                      className={
+                        productsFromAlgolia.length === 0 && !isAlgoliaLoading
+                          ? 'opacity-0'
+                          : ''
+                      }
+                    />
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexGrow: 1,
+                      }}
+                    >
+                      {requestImages.length > 0 &&
+                        !isAlgoliaLoading &&
+                        !isFindApiLoading &&
+                        window.settings.rfq &&
+                        window.settings.rfq.enabled && (
+                          <RfqBanner
+                            requestImage={requestImages[0]}
+                            selectedRegion={regions[0]}
+                          />
+                        )}
+                      {!isAlgoliaLoading &&
+                        !isFindApiLoading &&
+                        window.settings.support &&
+                        window.settings.support.enabled &&
+                        (query || requestImages[0]) && (
+                          <InquiryBanner
+                            requestImage={requestImages[0]}
+                            selectedRegion={regions[0]}
+                            query={query}
+                          />
+                        )}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -8,6 +8,8 @@ const loadingSlice: StateCreator<LoadingState & LoadingAction> = set => ({
     set(state => ({ isAlgoliaLoading: isLoading })),
   setIsFindApiLoading: (isLoading: boolean) =>
     set(state => ({ isFindApiLoading: isLoading })),
+  setIsCadenasLoaded: (isLoading: boolean) =>
+    set(state => ({ isCadenasLoaded: isLoading })),
 });
 
 export default loadingSlice;

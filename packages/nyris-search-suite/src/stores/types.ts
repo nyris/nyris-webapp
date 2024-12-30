@@ -27,11 +27,13 @@ export interface QueryAction {
 export interface LoadingState {
   isFindApiLoading: boolean;
   isAlgoliaLoading: boolean;
+  isCadenasLoaded: boolean;
 }
 
 export interface LoadingAction {
   setIsFindApiLoading: (isLoading: boolean) => void;
   setIsAlgoliaLoading: (isLoading: boolean) => void;
+  setIsCadenasLoaded: (isLoading: boolean) => void;
 }
 
 export interface ProductsState {

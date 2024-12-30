@@ -21,6 +21,7 @@ const DialogOverlay = React.forwardRef<
       'fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className,
     )}
+    data-modal-overlay={true}
     {...props}
   />
 ));
@@ -33,7 +34,10 @@ const DialogContent = React.forwardRef<
   }
 >(({ className, children, closeButton = true, ...props }, ref) => (
   <DialogPortal>
-    <DialogOverlay className="bg-[#00000080]" />
+    <DialogOverlay
+      className="bg-[#00000080]"
+      onClick={e => e.stopPropagation()}
+    />
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
@@ -41,6 +45,7 @@ const DialogContent = React.forwardRef<
         className,
       )}
       {...props}
+      onClick={e => e.stopPropagation()}
     >
       {children}
       {closeButton && (
