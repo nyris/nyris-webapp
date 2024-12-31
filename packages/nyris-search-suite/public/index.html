@@ -17,7 +17,10 @@
     <meta name="theme-color" content="#ffffff"/>
     <title>Spare parts search</title>
     <script src="js/settings.js"></script>
-
+    <script>
+        document.documentElement.style.setProperty('--primary-color', window.settings.theme.primaryColor);
+        document.documentElement.style.setProperty('--secondary-color', window.settings.theme.secondaryColor);
+    </script>
     <script>
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);

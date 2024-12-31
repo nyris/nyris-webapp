@@ -106,6 +106,9 @@ function Home() {
             experienceVisualSearchBlobs={experienceVisualSearchBlobs}
           />
         )}
+        <div className="flex md:hidden w-full">
+          <TextSearch className="flex md:hidden fixed bottom-12 w-full px-2 gap-2" />
+        </div>
       </div>
     </>
   );

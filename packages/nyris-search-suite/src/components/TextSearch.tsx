@@ -12,7 +12,7 @@ import { useImageSearch } from 'hooks/useImageSearch';
 import PreFilterModal from './PreFilter/PreFilterModal';
 import useRequestStore from 'stores/request/requestStore';
 
-function TextSearch() {
+function TextSearch({ className }: { className?: string }) {
   const settings = window.settings;
   const user = useAuth0().user;
 
@@ -102,20 +102,24 @@ function TextSearch() {
   };
 
   return (
-    <div className="w-[426px] h-10">
+    <div className={twMerge('w-[426px] h-10', className)}>
       <div
         className={twMerge([
+          'bg-white',
+          'desktop:bg-gray-200',
+          'desktop:border border-solid',
+          'desktop:border-gray-300',
+          'desktop:focus-within:bg-white',
+          'desktop:focus-within:shadow-[0px_0px_6px_rgba(202,202,209,1)]',
+          'shadow-[0px_0px_16px_0px_rgba(170,171,181,0.50)]',
+          'desktop:shadow-none',
           'flex',
-          'justify-between',
-          'bg-gray-200',
-          'focus-within:bg-white',
-          'focus-within:shadow-[0px_0px_6px_rgba(202,202,209,1)]',
-          'rounded-3xl',
-          'p-0',
           'h-10',
+          'justify-between',
           'overflow-hidden',
-          'border border-solid',
-          'border-gray-300',
+          'p-0',
+          'rounded-3xl',
+          'w-full',
         ])}
       >
         <div className="flex justify-center items-center w-full">
@@ -136,7 +140,7 @@ function TextSearch() {
                 'h-full',
                 'justify-center',
                 'items-center',
-                'border-r',
+                'desktop:border-r',
                 'border-solid',
                 'border-[#CACAD1]',
               ])}
@@ -149,18 +153,22 @@ function TextSearch() {
             >
               {showPreFilter && (
                 <div
-                  className="p-[9px] flex rounded-full"
-                  style={{
-                    ...(!isEmpty(preFilter)
-                      ? {
-                          backgroundColor: `${settings.theme?.primaryColor}`,
-                        }
-                      : {
-                          backgroundColor: '#2B2C46',
-                        }),
-                  }}
+                  className={twMerge(
+                    `p-[9px] flex rounded-full bg-[#f3f3f5]`,
+                    !isEmpty(preFilter)
+                      ? 'desktop:bg-theme-primary'
+                      : 'desktop:bg-[#2B2C46]',
+                  )}
                 >
-                  <Icon name="filter_settings" color="white" />
+                  <Icon
+                    name="filter_settings"
+                    className={twMerge(
+                      !isEmpty(preFilter)
+                        ? 'fill-theme-primary'
+                        : 'fill-[#2B2C46]',
+                      `desktop:fill-white`,
+                    )}
+                  />
                 </div>
               )}
               {!showPreFilter && <Icon name="search" width={16} height={16} />}
@@ -199,7 +207,7 @@ function TextSearch() {
                 fontSize: 14,
                 color: '#2B2C46',
               }}
-              className="peer bg-gray-200 focus:bg-white pl-1.5 outline-none"
+              className="peer desktop:bg-gray-200 focus:bg-white pl-1.5 outline-none"
               placeholder={t('Search')}
               value={valueInput || query}
               onChange={onChangeText}
@@ -236,7 +244,11 @@ function TextSearch() {
               <Icon name="close" className="w-3 h-3 text-primary" />
             </button>
           )}
-          <div className="wrap-box-input-mobile d-flex">
+          <div
+            className={twMerge([
+              location.pathname !== '/result' && 'hidden desktop:flex',
+            ])}
+          >
             <input
               accept={`${
                 settings.cadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,' : ''
