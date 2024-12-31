@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { RectCoords } from '@nyris/nyris-api';
 import { isEmpty } from 'lodash';
 import { useCallback } from 'react';
@@ -61,15 +63,34 @@ export const useImageSearch = () => {
       let res: any;
       let compressedBase64;
 
+      let blob = image;
+
+      if (['.heic', '.heif'].some(ex => image?.name?.endsWith(ex))) {
+        const blobTemp = new Blob([image], { type: 'image/heif' });
+        const buffer = new Uint8Array(await blobTemp.arrayBuffer());
+
+        try {
+          const convert = await import('heic-convert/browser');
+
+          let outputBuffer = await convert.default({
+            buffer: buffer, // the HEIC file buffer
+            format: 'JPEG', // output format
+          });
+          blob = new Blob([outputBuffer], { type: 'image/jpeg' });
+        } catch (error) {
+          console.log('HEIC conversion error:', error);
+        }
+      }
+
       if (compress) {
         try {
-          compressedBase64 = await compressImage(image);
+          compressedBase64 = await compressImage(blob);
         } catch (error) {}
       }
 
-      let canvasImage = await createImage(compressedBase64 || image);
+      let canvasImage = await createImage(compressedBase64 || blob);
 
-      let requestImage = await createImage(image);
+      let requestImage = await createImage(blob);
 
       if (!imageRegion) {
         dispatch(setRequestImage(canvasImage));
@@ -84,7 +105,9 @@ export const useImageSearch = () => {
           region = res.selectedRegion;
           dispatch(setSelectedRegion(region));
           setImageRegions([region]);
-        } catch (error) {}
+        } catch (error) {
+          console.log('Error finding regions', error);
+        }
       }
 
       const preFilterValues = [
