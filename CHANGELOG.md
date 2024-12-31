@@ -3,12 +3,6 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.3.70 - 2024-12-31
-
-### Added
-- Added .heic support
-- View details attributes
-
 ## 0.3.69 - 2024-12-20
 
 ### Added

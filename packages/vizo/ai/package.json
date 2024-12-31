@@ -1,6 +1,6 @@
 {
   "name": "@nyris/vizo-ai",
-  "version": "0.3.70",
+  "version": "0.3.69",
   "private": true,
   "description": "AI model for Vizo webapp",
   "main": "index.ts",
