@@ -257,11 +257,9 @@ function CameraCustom(props: Props) {
                                 handlerFindImage(file);
                               }
                             }}
-                            accept={`${
-                              isCadSearch
-                                ? '.stp,.step,.stl,.obj,.glb,.gltf,'
-                                : ''
-                            }image/jpeg,image/png,image/webp`}
+                            accept={
+                              '.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,image/jpeg,image/png,image/webp'
+                            }
                             onClick={event => {
                               // @ts-ignore
                               event.target.value = '';

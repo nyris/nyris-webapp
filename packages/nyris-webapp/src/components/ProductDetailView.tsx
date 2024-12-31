@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Collapse, Grid, Typography, Tooltip } from '@material-ui/core';
+import React, { useEffect, useRef, useState } from 'react';
+import { Button, Grid, Typography, Tooltip } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { Icon } from '@nyris/nyris-react-components';
 import NoImage from '../common/assets/images/no-image.svg';
 import { useMediaQuery } from 'react-responsive';
@@ -9,7 +8,6 @@ import { ImagePreviewCarousel } from './carousel/ImagePreviewCarousel';
 import { AppState } from 'types';
 import { useAppSelector } from 'Store/Store';
 import { prepareImageList } from '../helpers/CommonHelper';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { useTranslation } from 'react-i18next';
 import ProductAttribute from './ProductAttribute';
 import CadenasWebViewer from './CadenasWebViewer';
@@ -56,6 +54,9 @@ function ProductDetailView(props: Props) {
   >();
   const { t } = useTranslation();
   const classes = useStyles(props?.show3dView);
+  const modal = useRef<any>(null);
+  const extraDetailPropertyLength = isMobile ? 15 : 30;
+  const extraDetailValueLength = isMobile ? 35 : 60;
 
   useEffect(() => {
     if (dataItem) {
@@ -92,17 +93,10 @@ function ProductDetailView(props: Props) {
 
     setDataImageCarouSel(valueKey);
   };
-  const productDetails = useMemo(() => {
-    const details = get(dataItem, settings.productDetails);
-    try {
-      return details.join(', ');
-    } catch (e) {
-      return details;
-    }
-  }, [dataItem, settings.productDetails]);
 
   return (
     <div
+      ref={modal}
       className="box-modal-default"
       style={{
         margin: isMobile ? 0 : '',
@@ -591,8 +585,8 @@ function ProductDetailView(props: Props) {
                       </div>
                     )}
                   </div>
-
-                  {productDetails && (
+                  
+                  {settings.productDetailsAttribute?.length ? (
                     <div className="w-100">
                       <Button
                         className="w-100 button-hover"
@@ -607,34 +601,98 @@ function ProductDetailView(props: Props) {
                           paddingRight: '15px',
                           textTransform: 'initial',
                         }}
-                        onClick={() => setCollapseDescription(e => !e)}
+                        onClick={(e) => {
+                          setCollapseDescription(prev => !prev);
+                          if (modal && modal.current) {
+                            setTimeout(() => {
+                              const top = (settings.productDetailsAttribute?.length || 0) * 30 + 20;
+                              modal.current.parentElement.scrollTo({ top });
+                            });
+                          }
+                        }}
                       >
                         {t('View details')}
-                        {collapseDescription ? (
-                          <KeyboardArrowUpIcon
-                            htmlColor={settings.theme?.secondaryColor}
-                          />
-                        ) : (
-                          <KeyboardArrowDownIcon
-                            htmlColor={settings.theme?.secondaryColor}
-                          />
-                        )}
-                      </Button>
-                      <Collapse in={collapseDescription}>
-                        <Typography
+                        <span
                           style={{
-                            fontSize: 14,
-                            padding: 5,
-                            paddingLeft: 15,
-                            paddingRight: 15,
-                            color: '#2b2c46',
+                            fontSize: 20,
                           }}
                         >
-                          {productDetails}
-                        </Typography>
-                      </Collapse>
+                          {collapseDescription ? '—' : '+'}
+                        </span>
+                      </Button>
+                      {collapseDescription ? (
+                        <div
+                          style={{
+                            background: '#E9E9EC',
+                            borderRadius: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 6,
+                            padding: '6px 15px 10px',
+                          }}
+                        >
+                          {settings.productDetailsAttribute.map((detail) =>
+                            get(dataItem, detail.value)?.length
+                            ? (
+                              <div
+                                style={{
+                                  height: 14,
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  alignItems: 'center'
+                                }}
+                              >
+                                <Tooltip
+                                  title={detail.propertyName}
+                                  placement="top"
+                                  arrow={true}
+                                  disableHoverListener={detail.propertyName.length < extraDetailPropertyLength}
+                                >
+                                  <span
+                                    style={{
+                                      fontFamily: 'Source Sans 3',
+                                      fontSize: 12,
+                                      fontWeight: 600,
+                                      marginRight: 8,
+                                      height: 14,
+                                    }}
+                                  >
+                                    {detail.propertyName.length < extraDetailPropertyLength
+                                      ? detail.propertyName
+                                      : detail.propertyName.substring(0, extraDetailPropertyLength).concat('...')
+                                    }
+                                  </span>
+                                </Tooltip>
+                                <Tooltip
+                                  title={get(dataItem, detail.value)}
+                                  placement="top"
+                                  arrow={true}
+                                  disableHoverListener={get(dataItem, detail.value)?.length <= extraDetailValueLength}
+                                >
+                                  <Typography
+                                    style={{
+                                      fontFamily: 'Source Sans 3',
+                                      fontSize: 12,
+                                      fontWeight: 400,
+                                      height: 14,
+                                    }}
+                                  >
+                                    {get(dataItem, detail.value).length <= extraDetailValueLength
+                                      ? get(dataItem, detail.value)
+                                      : get(dataItem, detail.value).substring(0, extraDetailValueLength).concat('...')
+                                    }
+                                  </Typography>
+                                </Tooltip>
+                              </div>
+                            )
+                            : (
+                              ''
+                              )
+                          )}
+                        </div>
+                      ) : ('')}
                     </div>
-                  )}
+                  ) : ('')}
                 </Grid>
               </Grid>
             </div>
