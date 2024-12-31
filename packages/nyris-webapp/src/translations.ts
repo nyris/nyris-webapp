@@ -14,7 +14,7 @@ export const translations = {
       'Items per page': 'Items per page',
       'Search with an image': 'Search with an image',
       'Clear text search': 'Clear text search',
-      'View details': 'View details description',
+      'View details': 'View details',
       'Clear image search': 'Clear image search ',
       'Add or change pre-filter': 'Add or change pre-filter',
       'Expand all': 'Expand all',
