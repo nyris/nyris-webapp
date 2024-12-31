@@ -20,7 +20,6 @@ import {
 import { useAppDispatch, useAppSelector } from 'Store/Store';
 import { AppSettings } from 'types';
 import { compressImage } from 'utils';
-import convert from 'heic-convert/browser';
 
 export const useImageSearch = () => {
   const dispatch = useAppDispatch();
@@ -71,7 +70,10 @@ export const useImageSearch = () => {
         const buffer = new Uint8Array(await blobTemp.arrayBuffer());
 
         try {
-          let outputBuffer = await convert({
+          const convert = await import('heic-convert/browser');
+          console.log({ convert });
+
+          let outputBuffer = await convert.default({
             buffer: buffer, // the HEIC file buffer
             format: 'JPEG', // output format
           });

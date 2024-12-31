@@ -3132,11 +3132,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/heic-convert@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@types/heic-convert/-/heic-convert-2.1.0.tgz#d19c7c655abb46321d7a0bc24387d47ac1d1661b"
-  integrity sha512-Cf5Sdc2Gm2pfZ0uN1zjj35wcf3mF1lJCMIzws5OdJynrdMJRTIRUGa5LegbVg0hatzOPkH2uAf2JRjPYgl9apg==
-
 "@types/history@^4.7.11":
   version "4.7.11"
   resolved "https://registry.npmjs.org/@types/history/-/history-4.7.11.tgz"
