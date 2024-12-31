@@ -71,7 +71,6 @@ export const useImageSearch = () => {
 
         try {
           const convert = await import('heic-convert/browser');
-          console.log({ convert });
 
           let outputBuffer = await convert.default({
             buffer: buffer, // the HEIC file buffer

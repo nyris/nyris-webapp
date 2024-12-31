@@ -11,11 +11,11 @@ build:
       - npm-packages
     expire_in: 30 days
   script:
+    - export CI=false
     - curl -o- -L https://yarnpkg.com/install.sh | bash
     - export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
     - mkdir npm-packages
     - yarn install --frozen-lockfile
-    - unset CI
     - npx lerna run build
     - (cd packages/nyris-react-components && npm pack && mv nyris-nyris-react-components-*.tgz ../../npm-packages/)
     - (cd packages/nyris-api && npm pack && mv nyris-nyris-api-*.tgz ../../npm-packages/)
