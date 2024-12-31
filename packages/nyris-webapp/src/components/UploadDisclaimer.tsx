@@ -13,7 +13,6 @@ function UploadDisclaimer({
   isMobile: boolean;
 }) {
   const [dontShowAgain, setDontShowAgain] = useState(false);
-  const isCadSearch = window.settings.cadSearch;
 
   return (
     <>
