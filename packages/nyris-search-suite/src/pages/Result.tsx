@@ -167,7 +167,7 @@ function Results() {
                   'desktop:mx-4',
                 ])}
               >
-                <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20">
+                <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20 desktop:mb-0">
                   <ProductList />
 
                   {showFeedbackSuccess && (
@@ -234,7 +234,7 @@ function Results() {
                           />
                         )}
                     </div>
-                    <Footer className="bg-[#fafafa]" />
+                    <Footer className="bg-[#fafafa] desktop:hidden" />
                   </div>
                 </div>
               </div>

@@ -102,7 +102,14 @@ function TextSearch({ className }: { className?: string }) {
   };
 
   return (
-    <div className={twMerge('w-[426px] h-10', className)}>
+    <div
+      className={twMerge(
+        'w-[426px]',
+        'h-12',
+        location.pathname === '/result' && 'desktop:h-10',
+        className,
+      )}
+    >
       <div
         className={twMerge([
           'bg-white',
@@ -114,7 +121,7 @@ function TextSearch({ className }: { className?: string }) {
           'shadow-[0px_0px_16px_0px_rgba(170,171,181,0.50)]',
           'desktop:shadow-none',
           'flex',
-          'h-10',
+          'h-full',
           'justify-between',
           'overflow-hidden',
           'p-0',
@@ -136,7 +143,11 @@ function TextSearch({ className }: { className?: string }) {
             <div
               className={twMerge([
                 'flex',
-                'min-w-[40px]',
+                'py-2',
+                'px-2',
+                'desktop:py-1',
+                'desktop:pl-1',
+                'pr-2',
                 'h-full',
                 'justify-center',
                 'items-center',
@@ -154,7 +165,9 @@ function TextSearch({ className }: { className?: string }) {
               {showPreFilter && (
                 <div
                   className={twMerge(
-                    `p-[9px] flex rounded-full bg-[#f3f3f5]`,
+                    'p-2 desktop:p-3',
+                    location.pathname === '/result' && 'desktop:p-2',
+                    `flex rounded-full bg-[#f3f3f5]`,
                     !isEmpty(preFilter)
                       ? 'desktop:bg-theme-primary'
                       : 'desktop:bg-[#2B2C46]',
@@ -223,11 +236,12 @@ function TextSearch({ className }: { className?: string }) {
                 'items-center',
                 'rounded-full',
                 'cursor-pointer',
-                'min-h-9',
-                'min-w-9',
+                'min-w-10 min-h-10',
                 'z-10',
                 'hover:bg-gray-100',
-                'mr-1',
+                'mr-2',
+                location.pathname === '/result' &&
+                  'desktop:min-w-8 desktop:min-h-8',
               ])}
               onClick={() => {
                 if (visualSearch) {
@@ -266,7 +280,11 @@ function TextSearch({ className }: { className?: string }) {
               }}
             />
             <label
-              className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full hover:bg-gray-100"
+              className={twMerge(
+                'mr-2 desktop:mr-1',
+                'w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-100 desktop:bg-transparent hover:bg-gray-100',
+                location.pathname === '/result' && 'desktop:w-8 desktop:h-8',
+              )}
               htmlFor={showDisclaimerDisabled ? 'icon-button-file' : ''}
               onClick={e => {
                 if (!showDisclaimerDisabled) {
@@ -274,23 +292,12 @@ function TextSearch({ className }: { className?: string }) {
                 }
               }}
             >
-              <span
-                color="primary"
-                aria-label="upload picture"
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: '100%',
-                  padding: 7,
-                }}
-              >
-                <Icon
-                  name="camera_simple"
-                  width={16}
-                  height={16}
-                  fill="#2B2C46"
-                />
-              </span>
+              <Icon
+                name="camera_simple"
+                width={16}
+                height={16}
+                fill="#2B2C46"
+              />
             </label>
           </div>
         </div>
