@@ -1,20 +1,16 @@
-import React, { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { get } from 'lodash';
 
 import { Icon } from '@nyris/nyris-react-components';
 
-import { useTranslation } from 'react-i18next';
 import ProductAttribute from './ProductAttribute';
 import { truncateString } from 'utils/truncateString';
 
 import '../../styles/product.scss';
 import { twMerge } from 'tailwind-merge';
-import { Dialog, DialogContent } from 'components/modal/dialog';
-import ProductDetailView from './ProductDetailView';
-import { DialogTitle } from '@radix-ui/react-dialog';
-import { CadenasScriptStatus } from 'types';
 
 import NoImage from '../../common/assets/images/no-image.svg';
+import ProductDetailViewModal from './ProductDetailViewModal';
 
 interface Props {
   dataItem: any;
@@ -28,7 +24,6 @@ interface Props {
   isGroupItem?: boolean;
   handlerCloseGroup?: any;
   main_image_link?: any;
-  cadenasScriptStatus?: CadenasScriptStatus;
 }
 
 function Product(props: Props) {
@@ -38,7 +33,6 @@ function Product(props: Props) {
     onSearchImage,
     handlerFeedback,
     main_image_link,
-    cadenasScriptStatus,
   } = props;
   const [urlImage, setUrlImage] = useState<string>('');
   const settings = window.settings;
@@ -46,8 +40,6 @@ function Product(props: Props) {
   const [openDetailedView, setOpenDetailedView] = useState<
     '3d' | 'image' | undefined
   >();
-
-  const { t } = useTranslation();
 
   useEffect(() => {
     if (main_image_link) {
@@ -80,57 +72,17 @@ function Product(props: Props) {
     setOpenDetailedView('image');
   };
 
-  useEffect(() => {
-    if (openDetailedView === '3d' || openDetailedView === 'image') {
-      // Pushing the change to the end of the call stack
-      const timer = setTimeout(() => {
-        document.body.style.pointerEvents = '';
-      }, 0);
-
-      return () => clearTimeout(timer);
-    } else {
-      document.body.style.pointerEvents = 'auto';
-    }
-  }, [openDetailedView]);
-
   return (
     <>
-      <Dialog
-        open={openDetailedView === '3d' || openDetailedView === 'image'}
-        onOpenChange={(e: any) => {
-          setOpenDetailedView(undefined);
-        }}
-        modal={true}
-      >
-        <DialogContent
-          closeButton={false}
-          className="flex flex-col min-h-[468px] min-w-[330px] w-[600px] m-0 desktop:m-auto bg-white rounded-xl p-0"
-          onPointerDownOutside={e => {
-            const hasDataAttribute = (e.target as HTMLElement)?.hasAttribute(
-              'data-modal-overlay',
-            );
-            if (hasDataAttribute) {
-              setOpenDetailedView(undefined);
-            }
-            e.preventDefault();
-          }}
-        >
-          <DialogTitle className="h-0 w-0 hidden">Product Details</DialogTitle>
-
-          <ProductDetailView
-            dataItem={dataItem}
-            handleClose={() => {
-              setOpenDetailedView(undefined);
-            }}
-            handlerFeedback={handlerFeedback}
-            show3dView={openDetailedView === '3d'}
-            onSearchImage={(url: string) => {
-              onSearchImage(url);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-      <div className="wrap-main-item-result w-fit border border-solid border-[#E0E0E0]">
+      <ProductDetailViewModal
+        dataItem={dataItem}
+        handlerFeedback={handlerFeedback}
+        onSearchImage={onSearchImage}
+        openDetailedView={openDetailedView}
+        setOpenDetailedView={setOpenDetailedView}
+        main_image_link={main_image_link}
+      />
+      <div className="wrap-main-item-result max-w-[190px] w-[180px] desktop:w-[190px] border border-solid border-[#E0E0E0] scroll-pt-5">
         <div className="relative h-fit">
           {!isHover && main_image_link && !settings.noSimilarSearch && (
             <div

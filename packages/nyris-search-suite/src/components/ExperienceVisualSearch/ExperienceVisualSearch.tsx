@@ -1,6 +1,5 @@
 import { useState, memo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
-import { createPortal } from 'react-dom';
 
 import { useImageSearch } from 'hooks/useImageSearch';
 
@@ -10,50 +9,16 @@ import { Icon } from '@nyris/nyris-react-components';
 
 function ExperienceVisualSearch({
   experienceVisualSearchBlobs,
+  onOpenChange,
 }: {
   experienceVisualSearchBlobs: Blob[];
+  onOpenChange: (e: any) => void;
 }) {
   const { settings } = window;
-  const [showModal, setShowModal] = useState(false);
-  const button = useRef(null);
-  let interval = useRef<NodeJS.Timeout | null>(null);
+
   const navigate = useNavigate();
 
   const { singleImageSearch } = useImageSearch();
-
-  useEffect(() => {
-    if (document.body.getBoundingClientRect().width >= 776) {
-      if (!showModal) {
-        interval.current = setInterval(() => {
-          if (button?.current) {
-            (button.current as HTMLElement).classList.toggle('hover');
-          }
-        }, 3000);
-      } else if (interval?.current) {
-        clearInterval(interval?.current);
-        if (
-          button?.current &&
-          !(button.current as HTMLElement).classList.contains('hover')
-        ) {
-          (button.current as HTMLElement).classList.toggle('hover');
-        }
-      }
-      return () => {
-        if (interval?.current) {
-          clearInterval(interval?.current);
-        }
-      };
-    }
-  }, [showModal]);
-
-  const modalToggle = (isOpen: boolean) => {
-    setShowModal(isOpen);
-    if (isOpen) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
-    }
-  };
 
   const initiateVisualSearch = async (blob: string) => {
     singleImageSearch({ image: blob, settings }).then(() => {});
@@ -61,92 +26,66 @@ function ExperienceVisualSearch({
   };
 
   return (
-    <>
-      <div
-        ref={button}
-        className="experience-visual-button"
-        onClick={() => modalToggle(true)}
-      >
-        <span />
-        <Icon name="experience_visual_search" />
+    <div
+      className="custom-modal-body h-full w-full"
+      onClick={e => {
+        e.stopPropagation();
+      }}
+    >
+      <Icon
+        name="close"
+        style={{ fontSize: 24, color: '#55566B' }}
+        className="close-icon cursor-pointer"
+        onClick={e => {
+          e.stopPropagation();
+          onOpenChange(false);
+        }}
+      />
+      <div className="custom-modal-body-title">Experience Visual Search</div>
+      <div className="custom-modal-body-subtitle">
+        Start your visual search by selecting an image below.
       </div>
-      {showModal &&
-        createPortal(
-          <div
-            className="custom-modal"
-            onClick={e => {
-              e.stopPropagation();
-              modalToggle(false);
-            }}
-          >
+      <div className="custom-modal-body-content experience-visual-search-images">
+        {new Array(4).fill(1).map((val, index) => {
+          let itemImage: any;
+
+          if (index <= experienceVisualSearchBlobs.length - 1) {
+            itemImage = URL.createObjectURL(experienceVisualSearchBlobs[index]);
+          }
+          return (
             <div
-              className="custom-modal-body"
-              onClick={e => {
-                e.stopPropagation();
+              key={index}
+              className="experience-visual-search-image-container"
+              onClick={() => {
+                if (itemImage) {
+                  onOpenChange(false);
+                  initiateVisualSearch(itemImage);
+                }
               }}
             >
-              <Icon
-                name="close"
-                style={{ fontSize: 24, color: '#55566B' }}
-                className="close-icon cursor-pointer"
-                onClick={e => {
-                  e.stopPropagation();
-                  modalToggle(false);
+              <div
+                className={`experience-visual-search-image ${
+                  !itemImage ? 'animate-pulse bg-gray-200' : ''
+                }`}
+                style={{
+                  backgroundImage: `url(${itemImage})`,
                 }}
               />
-              <div className="custom-modal-body-title">
-                Experience Visual Search
-              </div>
-              <div className="custom-modal-body-subtitle">
-                Start your visual search by selecting an image below.
-              </div>
-              <div className="custom-modal-body-content experience-visual-search-images">
-                {new Array(4).fill(1).map((val, index) => {
-                  let itemImage: any;
-
-                  if (index <= experienceVisualSearchBlobs.length - 1) {
-                    itemImage = URL.createObjectURL(
-                      experienceVisualSearchBlobs[index],
-                    );
-                  }
-                  return (
-                    <div
-                      key={index}
-                      className="experience-visual-search-image-container"
-                      onClick={() => {
-                        if (itemImage) {
-                          modalToggle(false);
-                          initiateVisualSearch(itemImage);
-                        }
-                      }}
-                    >
-                      <div
-                        className={`experience-visual-search-image ${
-                          !itemImage ? 'animate-pulse bg-gray-200' : ''
-                        }`}
-                        style={{
-                          backgroundImage: `url(${itemImage})`,
-                        }}
-                      />
-                      {itemImage && (
-                        <div className="box-icon-modal">
-                          <Icon
-                            name="search_image"
-                            width={16}
-                            height={16}
-                            color={'#AAABB5'}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+              {itemImage && (
+                <div className="box-icon-modal">
+                  <Icon
+                    name="search_image"
+                    width={16}
+                    height={16}
+                    color={'#AAABB5'}
+                  />
+                </div>
+              )}
             </div>
-          </div>,
-          document.body,
-        )}
-    </>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 

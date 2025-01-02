@@ -2,7 +2,7 @@ import { Icon } from '@nyris/nyris-react-components';
 
 import '../styles/mobileCameraCTA.scss';
 
-function MobileCameraCTA() {
+function MobileCameraCTA({ setOpenModalCamera }: { setOpenModalCamera: any }) {
   return (
     <div className="take-photo">
       <div
@@ -14,7 +14,7 @@ function MobileCameraCTA() {
         <div
           className="outer"
           onClick={() => {
-            // setOpenModalCamera(!isOpenModalCamera);
+            setOpenModalCamera((s: any) => !s);
           }}
         >
           <div className="inner">

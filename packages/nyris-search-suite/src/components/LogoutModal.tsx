@@ -1,6 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Icon } from '@nyris/nyris-react-components';
-import { Dialog, DialogContent } from './modal/dialog';
+import { Dialog, DialogContent } from './Modal/Dialog';
 
 function LogoutModal({
   setShowLogoutModal,

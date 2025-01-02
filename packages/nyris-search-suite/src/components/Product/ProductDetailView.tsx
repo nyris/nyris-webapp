@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Icon } from '@nyris/nyris-react-components';
 
-import { ImagePreviewCarousel } from '../carousel/ImagePreviewCarousel';
+import { ImagePreviewCarousel } from '../Carousel/ImagePreviewCarousel';
 import { prepareImageList } from 'utils/prepareImageList';
 import { truncateString } from 'utils/truncateString';
 import CadenasWebViewer from '../Cadenas/CadenasWebViewer';
@@ -19,7 +19,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from 'components/ui/accordion';
-import { CadenasScriptStatus } from 'types';
 
 interface Props {
   dataItem?: any;
@@ -96,7 +95,7 @@ function ProductDetailView(props: Props) {
         </button>
       </div>
 
-      <div className="relative desktop:h-[456px]">
+      <div className="relative h-[368px] desktop:h-[456px]">
         {settings.cadenas?.cadenas3dWebView && (
           <CadenasWebViewer
             is3dView={is3dView}

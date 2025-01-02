@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import useResultStore from 'stores/result/resultStore';
@@ -13,11 +13,17 @@ import Loading from 'components/Loading';
 import Feedback from 'components/Feedback';
 import { feedbackSuccessEpic } from 'services/Feedback';
 import useRequestStore from 'stores/request/requestStore';
-import RfqBanner from 'components/rfq/RfqBanner';
+import RfqBanner from 'components/Rfq/RfqBanner';
 import InquiryBanner from 'components/Inquiry/InquiryBanner';
+import TextSearch from 'components/TextSearch';
+import { Icon } from '@nyris/nyris-react-components';
+import PostFilterDrawer from 'components/PostFilter/PostFilterDrawer';
+import ImagePreview from 'components/ImagePreview';
+import Footer from 'components/Footer';
 
 function Results() {
-  const cadenas = window.settings.cadenas;
+  const settings = window.settings;
+  const cadenas = settings.cadenas;
 
   const [feedbackStatus, setFeedbackStatus] = useState<
     'hidden' | 'submitted' | 'visible'
@@ -41,6 +47,10 @@ function Results() {
   const requestImages = useRequestStore(state => state.requestImages);
   const query = useRequestStore(state => state.query);
   const regions = useRequestStore(state => state.regions);
+
+  const [showPostFilter, setShowPostFilter] = useState(false);
+
+  const isShowFilter = query || requestImages[0];
 
   useEffect(() => {
     document.title = 'Search results';
@@ -92,6 +102,14 @@ function Results() {
     isFindApiLoading,
   ]);
 
+  const disablePostFilter = useMemo(() => {
+    return settings.postFilterOption && productsFromAlgolia.length > 0
+      ? false
+      : true;
+  }, [settings, productsFromAlgolia]);
+
+  const isPostFilterApplied = true;
+
   return (
     <>
       {isFindApiLoading && (
@@ -101,14 +119,27 @@ function Results() {
       )}
       <div className="h-full">
         <div
-          className={twMerge(['flex', 'justify-between', 'relative', 'h-full'])}
+          className={twMerge([
+            'flex',
+            'flex-col',
+            'desktop:flex-row',
+            'justify-between',
+            'relative',
+            'h-full',
+            'overflow-y-auto',
+          ])}
         >
-          <SidePanel />
+          <SidePanel className="hidden desktop:flex" />
+
+          <div className="block desktop:hidden mb-4 desktop:mb-0">
+            {requestImages[0] && <ImagePreview />}
+          </div>
           <div
             className={twMerge([
-              'pt-10',
-              'overflow-hidden',
-              'overflow-y-auto',
+              requestImages[0] ? 'pt-0' : 'pt-3',
+              'desktop:pt-10',
+              'desktop:overflow-hidden',
+              'desktop:overflow-y-auto',
               'flex',
               'flex-col',
               'relative',
@@ -122,7 +153,6 @@ function Results() {
                 'flex',
                 'flex-col',
                 'flex-grow',
-                'mt-4',
                 'desktop:mt-0',
               ])}
             >
@@ -132,10 +162,12 @@ function Results() {
                   'relative',
                   'flex',
                   'justify-center',
-                  'mx-4',
+                  'mx-0.5',
+                  'mobile-md:mx-2',
+                  'desktop:mx-4',
                 ])}
               >
-                <div className="max-w-[840px] w-full relative flex flex-col justify-between">
+                <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20">
                   <ProductList />
 
                   {showFeedbackSuccess && (
@@ -202,6 +234,7 @@ function Results() {
                           />
                         )}
                     </div>
+                    <Footer className="bg-[#fafafa]" />
                   </div>
                 </div>
               </div>
@@ -219,6 +252,95 @@ function Results() {
           </div>
         </div>
       </div>
+
+      <div className="flex desktop:hidden w-full fixed bottom-4 z-50 px-3 gap-2">
+        <TextSearch className="flex desktop:hidden w-full gap-2" />
+        {isShowFilter && settings.postFilterOption && (
+          <div
+            style={{
+              position: 'relative',
+              width: '48px',
+              height: '48px',
+              padding: ' 8px',
+              flexShrink: 0,
+              borderRadius: '32px',
+              background: '#FAFAFA',
+              boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
+            }}
+            onClick={() => {
+              if (disablePostFilter && !isPostFilterApplied) return;
+              setShowPostFilter(true);
+
+              // setPreFilterDropdown(false);
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                background: `${
+                  disablePostFilter
+                    ? '#F3F3F5'
+                    : isPostFilterApplied
+                    ? '#F0EFFF'
+                    : '#F3F3F5'
+                }`,
+                borderRadius: '40px',
+                width: '32px',
+                height: '32px',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Icon
+                name="filter"
+                className={twMerge([
+                  isPostFilterApplied
+                    ? 'text-[#3E36DC]'
+                    : disablePostFilter
+                    ? 'text-[#E0E0E0]'
+                    : 'text-[#2B2C46]',
+                ])}
+              />
+            </div>
+
+            {isPostFilterApplied && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '8px',
+                  left: '35px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  background: 'white',
+                  width: '10px',
+                  height: '10px',
+                  borderRadius: '100%',
+                }}
+              >
+                <div
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '100%',
+                  }}
+                  className={twMerge([
+                    isPostFilterApplied
+                      ? 'bg-[#3E36DC]'
+                      : disablePostFilter
+                      ? 'bg-[#E0E0E0]'
+                      : 'bg-[#2B2C46]',
+                  ])}
+                ></div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      <PostFilterDrawer
+        openModal={showPostFilter}
+        handleClose={() => setShowPostFilter(false)}
+      />
     </>
   );
 }

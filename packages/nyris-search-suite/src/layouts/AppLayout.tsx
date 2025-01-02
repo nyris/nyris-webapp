@@ -1,5 +1,5 @@
 import { memo, useEffect } from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -33,7 +33,7 @@ function AppLayout(): JSX.Element {
   const { auth0, alogoliaFilterField, showPoweredByNyris } = window.settings;
 
   const showLayout = !auth0.enabled || (auth0.enabled && isAuthenticated);
-
+  const location = useLocation();
   // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
   let vh = window.innerHeight * 0.01;
   // Then we set the value in the --vh custom property to the root of the document
@@ -116,7 +116,13 @@ function AppLayout(): JSX.Element {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Outlet />
       </div>
-      {showPoweredByNyris && <Footer />}
+      {showPoweredByNyris && (
+        <Footer
+          className={
+            location.pathname === '/result' ? 'hidden desktop:flex' : 'flex'
+          }
+        />
+      )}
     </div>
   );
 }

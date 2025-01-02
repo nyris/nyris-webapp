@@ -162,14 +162,14 @@ const PreFilterComponent = (props: Props) => {
           <CloseIcon />
         </div>
       </div>
-      <div className="flex justify-between items-center mt-4 mb-6 ml-4">
+      <div className="flex justify-between items-center mt-4 mb-6 ml-4 mr-4">
         <div className="bg-[#f3f3f5] rounded-3xl h-10 w-full desktop:w-fit flex justify-items-center">
           <div className="ml-3 mr-3 flex justify-center items-center">
             <Icon name="search" width={18} height={18} className="max-w-fit" />
           </div>
 
           <input
-            className="border-none  bg-transparent outline-none w-[400px] desktop:w-[500px] h-full"
+            className="border-none  bg-transparent outline-none w-full desktop:w-[500px] h-full"
             placeholder={t('Search')}
             onChange={(e: any) => {
               filterSearchHandler(e.target.value);
@@ -177,20 +177,22 @@ const PreFilterComponent = (props: Props) => {
             }}
             value={searchKey}
           />
-          <div
-            className="w-10 h-10 rounded-[50%] flex justify-center items-center cursor-pointer"
-            onClick={() => {
-              setSearchKey('');
-              filterSearchHandler('');
-            }}
-          >
-            <Icon name="close" className="w-4 h-4 text-primary" />
-          </div>
+          {searchKey && (
+            <div
+              className="w-10 h-10 rounded-[50%] flex justify-center items-center cursor-pointer"
+              onClick={() => {
+                setSearchKey('');
+                filterSearchHandler('');
+              }}
+            >
+              <Icon name="close" className="w-4 h-4 text-primary" />
+            </div>
+          )}
         </div>
       </div>
 
       {!isEmpty(keyFilter) && selectedFilter > 0 && (
-        <div className="pt-2.5 flex justify-between bg-[#FAFAFA] ml-4">
+        <div className="py-2.5 flex justify-between bg-[#FAFAFA] ml-4 mb-1 desktop:mb-0">
           <div className="flex flex-wrap gap-2 items-baseline text-xs mb-1">
             {Object.keys(keyFilter).map((key, index) => {
               if (!keyFilter[key])
@@ -241,10 +243,11 @@ const PreFilterComponent = (props: Props) => {
           'px-6',
           'w-full',
           `${
-            'columns-1 h-full mb-0 desktop:columns-' +
+            'h-full mb-0 desktop:columns-' +
             (columns <= 4 ? columns : 4) +
             ' desktop:h-full desktop:p-6 desktop:bg-[#FAFAFA]'
           }`,
+          'pb-8 desktop:pb-0',
         ])}
       >
         {Object.entries(resultFilter)
@@ -300,7 +303,7 @@ const PreFilterComponent = (props: Props) => {
         )}
         {isEmpty(resultFilter) && !isLoading && <div>No result found</div>}
       </div>
-      <div className="footer h-16 mt-auto hidden desktop:flex">
+      <div className="footer h-16 mt-auto flex">
         <div
           style={{
             backgroundColor: settings.theme.secondaryColor,
@@ -315,27 +318,6 @@ const PreFilterComponent = (props: Props) => {
             backgroundColor: settings.theme.primaryColor,
           }}
           className="button-right w-1/2  text-white rounded-none justify-start text-none pl-4 pt-4 pb-8 cursor-pointer"
-          onClick={() => onHandlerSubmitData()}
-        >
-          {t('Apply')}
-        </div>
-      </div>
-
-      <div className="footer h-16 mt-auto fixed bottom-0 left-0 w-full flex desktop:hidden">
-        <div
-          style={{
-            backgroundColor: settings.theme.secondaryColor,
-          }}
-          className="button-left w-1/2  text-white rounded-none justify-start text-none cursor-pointer"
-          onClick={() => handleClose()}
-        >
-          {t('Cancel')}
-        </div>
-        <div
-          style={{
-            backgroundColor: settings.theme.primaryColor,
-          }}
-          className="button-right w-1/2  text-white rounded-none justify-start text-none cursor-pointer"
           onClick={() => onHandlerSubmitData()}
         >
           {t('Apply')}

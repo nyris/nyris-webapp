@@ -5,7 +5,7 @@ import emailjs from '@emailjs/browser';
 import toast from 'react-hot-toast';
 
 import { AutosizeTextarea } from 'components/AutosizeTextArea';
-import { Dialog, DialogContent } from 'components/modal/dialog';
+import { Dialog, DialogContent } from 'components/Modal/Dialog';
 import { getCroppedCanvas } from 'utils/misc';
 import { ToastHelper } from 'helpers/ToastHelper';
 import useRequestStore from 'stores/request/requestStore';

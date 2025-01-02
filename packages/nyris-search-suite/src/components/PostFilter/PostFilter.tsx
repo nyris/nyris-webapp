@@ -1,7 +1,5 @@
-import React from 'react';
 import { useRefinementList } from 'react-instantsearch';
 import {
-  Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,

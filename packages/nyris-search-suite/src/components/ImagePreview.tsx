@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useCallback, useRef, useState } from 'react';
 
-import { debounce } from 'lodash';
+import { debounce, throttle } from 'lodash';
 
 import { RectCoords } from '@nyris/nyris-api';
 import { Icon, Preview } from '@nyris/nyris-react-components';
@@ -14,6 +14,7 @@ import { DEFAULT_REGION } from '../constants';
 import useResultStore from 'stores/result/resultStore';
 import useFilteredRegions from 'hooks/useFilteredRegions';
 import { useNavigate } from 'react-router';
+import { useMediaQuery } from 'react-responsive';
 
 function ImagePreviewComponent({
   showAdjustInfo = false,
@@ -44,6 +45,7 @@ function ImagePreviewComponent({
   const detectedRegions = useResultStore(state => state.detectedRegions);
 
   const { singleImageSearch } = useImageSearch();
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const currentIndex = requestImages.length - 1;
 
@@ -207,7 +209,7 @@ function ImagePreviewComponent({
             editActive ? 'bg-[#55566b] ' : ''
           } flex just items-center`}
         >
-          {/* <Preview
+          <Preview
             onSelectionChange={(r: RectCoords) => {
               debouncedOnImageSelectionChange(r, currentIndex);
             }}
@@ -232,7 +234,7 @@ function ImagePreviewComponent({
             }}
             showGrip={editActive}
             draggable={editActive ? true : false}
-          /> */}
+          />
         </div>
         {(showAdjustInfoBasedOnConfidence || showAdjustInfo) && (
           <div

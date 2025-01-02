@@ -5,7 +5,8 @@ import { twMerge } from 'tailwind-merge';
 import DragDropFile from 'components/DragDropFile';
 import MobileCameraCTA from 'components/MobileCameraCTA';
 import TextSearch from 'components/TextSearch';
-import ExperienceVisualSearch from 'components/ExperienceVisualSearch/ExperienceVisualSearch';
+import CustomCamera from 'components/CustomCameraDrawer';
+import ExperienceVisualSearchTrigger from 'components/ExperienceVisualSearch/ExperienceVisualSearchTrigger';
 
 function Home() {
   const settings = window.settings;
@@ -13,6 +14,7 @@ function Home() {
 
   const [experienceVisualSearchBlobs, setExperienceVisualSearchBlobs] =
     useState<Blob[]>([]);
+  const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
 
   const fetchImage = async (url: string) => {
     const response = await fetch(url, { cache: 'force-cache' });
@@ -83,7 +85,7 @@ function Home() {
         <div className="max-w-[512px] relative w-full">
           <DragDropFile />
           {settings.experienceVisualSearch && (
-            <ExperienceVisualSearch
+            <ExperienceVisualSearchTrigger
               experienceVisualSearchBlobs={experienceVisualSearchBlobs}
             />
           )}
@@ -91,22 +93,21 @@ function Home() {
       </div>
 
       <div className="flex flex-col desktop:hidden justify-center items-center w-full h-full bg-white">
-        <MobileCameraCTA />
+        <MobileCameraCTA setOpenModalCamera={setOpenModalCamera} />
         <div className="box-screenshot-camera">
-          {/* todo-search-suite */}
-          {/* <CameraCustom
+          <CustomCamera
             show={isOpenModalCamera}
             onClose={() => {
-              setOpenModalCamera(!isOpenModalCamera);
+              setOpenModalCamera(s => !s);
             }}
-          /> */}
+          />
         </div>
         {settings.experienceVisualSearch && (
-          <ExperienceVisualSearch
+          <ExperienceVisualSearchTrigger
             experienceVisualSearchBlobs={experienceVisualSearchBlobs}
           />
         )}
-        <div className="flex md:hidden w-full">
+        <div className="flex desktop:hidden w-full">
           <TextSearch className="flex md:hidden fixed bottom-12 w-full px-2 gap-2" />
         </div>
       </div>

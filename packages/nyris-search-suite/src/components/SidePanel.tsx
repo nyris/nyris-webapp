@@ -4,7 +4,7 @@ import ImagePreview from './ImagePreview';
 import useRequestStore from 'stores/request/requestStore';
 import PostFilterComponent from './PostFilter/PostFilterComponent';
 
-export default function SidePanel() {
+export default function SidePanel({ className }: { className?: string }) {
   const requestImages = useRequestStore(state => state.requestImages);
   const showPostFilter = window.settings?.postFilterOption;
 
@@ -13,17 +13,20 @@ export default function SidePanel() {
   }
   return (
     <div
-      className={twMerge([
-        'max-w-[320px]',
-        'w-full',
-        'shadow-[3px_-2px_3px_-3px_#d3d4d8]',
-        'overflow-x-hidden',
-        'overflow-y-auto',
-        'bg-white',
-        'relative',
-        'flex',
-        'flex-col',
-      ])}
+      className={twMerge(
+        [
+          'max-w-[320px]',
+          'w-full',
+          'shadow-[3px_-2px_3px_-3px_#d3d4d8]',
+          'overflow-x-hidden',
+          'overflow-y-auto',
+          'bg-white',
+          'relative',
+          'flex',
+          'flex-col',
+        ],
+        className,
+      )}
     >
       <div
         className={twMerge([

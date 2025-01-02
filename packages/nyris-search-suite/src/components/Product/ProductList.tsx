@@ -6,6 +6,7 @@ import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
 import { CadenasScriptStatus } from 'types';
 import { useTranslation } from 'react-i18next';
+import { twMerge } from 'tailwind-merge';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -53,7 +54,10 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const renderItem = useMemo(() => {
     return (
       <div
-        className={`grid grid-cols-[repeat(auto-fit,_minmax(190px,_0px))] gap-6 justify-center max-w-[100%] mx-auto`}
+        className={twMerge([
+          'grid grid-cols-[repeat(auto-fit,_minmax(180px,_0px))] desktop:grid-cols-[repeat(auto-fit,_minmax(190px,_0px))]',
+          'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
+        ])}
       >
         {products.map((product: any, i: number) => {
           return (
@@ -83,7 +87,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
             return (
               <div
                 key={i + 'dummy'}
-                className="wrap-main-item-result opacity-0 h-0"
+                className="wrap-main-item-result max-w-[190px] w-[180px] desktop:w-[190px] opacity-0 h-0"
               ></div>
             );
           })}

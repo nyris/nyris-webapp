@@ -35,6 +35,24 @@ function PostFilterComponent({ className }: { className?: string }) {
       <Accordion
         type="multiple"
         onValueChange={val => {
+          if (
+            val.length === window.settings.refinements.length &&
+            !val.includes('expand') &&
+            !accordionValues.includes('expand')
+          ) {
+            setAccordionValues([...val, 'expand']);
+            return;
+          }
+
+          if (
+            val.length === 1 &&
+            val.includes('expand') &&
+            accordionValues.length >= 1
+          ) {
+            setAccordionValues([]);
+            return;
+          }
+
           if (!val.includes('expand') && accordionValues.includes('expand')) {
             setAccordionValues([]);
           } else if (

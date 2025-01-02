@@ -8,7 +8,7 @@ import { Icon } from '@nyris/nyris-react-components';
 import useRequestStore from 'stores/request/requestStore';
 import { getCroppedCanvas } from 'utils/misc';
 import { ToastHelper } from 'helpers/ToastHelper';
-import { Dialog, DialogContent } from 'components/modal/dialog';
+import { Dialog, DialogContent } from 'components/Modal/Dialog';
 import { AutosizeTextarea } from 'components/AutosizeTextArea';
 
 interface Props {
