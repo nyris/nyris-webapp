@@ -1,9 +1,9 @@
 // @ts-nocheck
+
 import { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 
 import { useImageSearch } from 'hooks/useImageSearch';
-import { createPortal } from 'react-dom';
 import { Icon } from '@nyris/nyris-react-components';
 import { twMerge } from 'tailwind-merge';
 import { useNavigate } from 'react-router';
@@ -16,6 +16,8 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from './Drawer/Drawer';
+import { useCadSearch } from 'hooks/useCadSearch';
+import { isCadFile } from '@nyris/nyris-api';
 
 interface Props {
   show: boolean;
@@ -31,8 +33,8 @@ function CustomCamera(props: Props) {
   const webcamRef: any = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const isCadSearch = window.settings.cadSearch;
   const { singleImageSearch } = useImageSearch();
+  const { cadSearch } = useCadSearch();
 
   const requestImages = useRequestStore(state => state.requestImages);
 
@@ -48,6 +50,14 @@ function CustomCamera(props: Props) {
   const handlerFindImage = async (image: any) => {
     if (location.pathname !== '/result') {
       navigate('/result');
+    }
+
+    if (isCadFile(image)) {
+      cadSearch({ file: image, settings, newSearch: true }).then(
+        (res: any) => {},
+      );
+
+      return;
     }
 
     singleImageSearch({
@@ -186,26 +196,25 @@ function CustomCamera(props: Props) {
                       >
                         <div>
                           <input
-                            id="icon-button-file"
+                            style={{}}
                             type="file"
-                            style={{ display: 'none' }}
+                            name="file"
+                            id="select_file"
+                            className="absolute z-[-1] opacity-0"
+                            placeholder="Choose photo"
+                            accept={'.stp,.step,.stl,.obj,.glb,.gltf,image/*'}
                             onChange={(fs: any) => {
                               const file = fs.target?.files[0];
                               if (!file) return;
 
                               handlerFindImage(file);
                             }}
-                            accept={`${
-                              isCadSearch
-                                ? '.stp,.step,.stl,.obj,.glb,.gltf,'
-                                : ''
-                            }image/jpeg,image/png,image/webp`}
                             onClick={event => {
                               // @ts-ignore
                               event.target.value = '';
                             }}
                           />
-                          <label htmlFor="icon-button-file">
+                          <label htmlFor="select_file">
                             <div className="w-12 h-12 bg-[#615e669f] rounded-full border-2 border-solid border-white flex justify-center items-center">
                               <Icon
                                 name="gallery"

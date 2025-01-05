@@ -4,7 +4,6 @@ import Product from './Product';
 import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
-import { CadenasScriptStatus } from 'types';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
 
@@ -59,7 +58,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
           'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
         ])}
       >
-        {products.map((product: any, i: number) => {
+        {products?.map((product: any, i: number) => {
           return (
             <Product
               key={i}
@@ -82,7 +81,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
           );
         })}
         {/* To keep products in same starting position, To-do: better solution */}
-        {productsFromAlgolia.length <= 3 &&
+        {productsFromAlgolia?.length <= 3 &&
           new Array(3).fill(0).map((_, i) => {
             return (
               <div
@@ -96,7 +95,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productsFromAlgolia]);
 
-  if (products.length === 0 && !isAlgoliaLoading && !isFindApiLoading) {
+  if (products?.length === 0 && !isAlgoliaLoading && !isFindApiLoading) {
     return (
       <div className="flex justify-center items-center h-full">
         <div className="text-center text-[#AAABB5]">

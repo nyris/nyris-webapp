@@ -8,6 +8,8 @@ import Loading from './Loading';
 import { useImageSearch } from 'hooks/useImageSearch';
 import useDragAndDrop from 'hooks/useDragAndDrop';
 import { useNavigate } from 'react-router';
+import { useCadSearch } from 'hooks/useCadSearch';
+import { isCadFile } from '@nyris/nyris-api';
 
 interface Props {
   onChangeLoading?: any;
@@ -16,14 +18,24 @@ interface Props {
 
 function DragDropFile(props: Props) {
   const { isLoading } = props;
-  const isCadSearch = window.settings.cadSearch;
   let navigate = useNavigate();
 
   const { t } = useTranslation();
   const { singleImageSearch } = useImageSearch();
+  const { cadSearch } = useCadSearch();
 
   const handleUpload = (files: File[]) => {
     navigate('/result');
+
+    if (isCadFile(files[0])) {
+      cadSearch({
+        file: files[0],
+        settings: window.settings,
+        newSearch: true,
+      }).then(res => {});
+
+      return;
+    }
 
     singleImageSearch({
       image: files[0],
@@ -78,9 +90,7 @@ function DragDropFile(props: Props) {
             id="select_file"
             className="absolute z-[-1] opacity-0"
             placeholder="Choose photo"
-            accept={`${
-              isCadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,' : ''
-            }image/*`}
+            accept={'.stp,.step,.stl,.obj,.glb,.gltf,image/*'}
           />
         </div>
       </div>

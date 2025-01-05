@@ -11,6 +11,8 @@ import { Icon } from '@nyris/nyris-react-components';
 import { useImageSearch } from 'hooks/useImageSearch';
 import PreFilterModal from './PreFilter/PreFilterModal';
 import useRequestStore from 'stores/request/requestStore';
+import { useCadSearch } from 'hooks/useCadSearch';
+import { isCadFile } from '@nyris/nyris-api';
 
 function TextSearch({ className }: { className?: string }) {
   const settings = window.settings;
@@ -87,12 +89,19 @@ function TextSearch({ className }: { className?: string }) {
   };
 
   const { singleImageSearch } = useImageSearch();
+  const { cadSearch } = useCadSearch();
 
   const handleUpload = (files: File[]) => {
     setValueInput('');
     setQuery('');
 
     navigate('/result');
+
+    if (isCadFile(files[0])) {
+      cadSearch({ file: files[0], settings, newSearch: true }).then(res => {});
+
+      return;
+    }
 
     singleImageSearch({
       image: files[0],
@@ -264,9 +273,7 @@ function TextSearch({ className }: { className?: string }) {
             ])}
           >
             <input
-              accept={`${
-                settings.cadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,' : ''
-              }image/*`}
+              accept={'.stp,.step,.stl,.obj,.glb,.gltf,image/*'}
               id="icon-button-file"
               type="file"
               style={{ display: 'none' }}

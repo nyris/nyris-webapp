@@ -1,6 +1,6 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { RectCoords } from '@nyris/nyris-api';
-import { isEmpty, set } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { createImage, find, findRegions } from 'services/visualSearch';
 
@@ -149,6 +149,8 @@ export const useImageSearch = () => {
       setRegions,
       metaFilter,
       setFindApiProducts,
+      setSessionId,
+      setRequestId,
       setAlgoliaFilter,
       refine,
       setShowFeedback,
