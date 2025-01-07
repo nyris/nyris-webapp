@@ -10,6 +10,7 @@ import useRequestStore from 'stores/request/requestStore';
 import { useState } from 'react';
 import LogoutModal from './LogoutModal';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import useResultStore from 'stores/result/resultStore';
 
 function Header() {
   const { theme, auth0 } = window.settings;
@@ -17,6 +18,7 @@ function Header() {
   let location = useLocation();
 
   const reset = useRequestStore(state => state.reset);
+  const resetResultStore = useResultStore(state => state.reset);
 
   const showSearchBar = location?.pathname === '/result';
 
@@ -52,6 +54,7 @@ function Header() {
           style={{ lineHeight: 0 }}
           onClick={() => {
             reset();
+            resetResultStore();
           }}
         >
           <img

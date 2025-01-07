@@ -10,6 +10,7 @@ import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
 import { truncateString } from 'utils/truncateString';
 import { twMerge } from 'tailwind-merge';
+import Tooltip from 'components/Tooltip/TooltipComponent';
 
 interface Props {
   handleClose?: any;
@@ -260,23 +261,29 @@ const PreFilterComponent = (props: Props) => {
 
                   {value.map((item: any, index: any) => {
                     return (
-                      <div
-                        key={index}
-                        aria-label={item}
-                        className={`cursor-pointer text-xs min-h-5 w-full max-w-fit overflow-hidden text-ellipsis whitespace-nowrap flex items-center ${
-                          keyFilter[item] ? 'bg-[#e9e9ec]' : ''
-                        } rounded-lg px-2`}
-                        onClick={() => {
-                          if (selectedFilter < maxFilter) {
-                            setKeyFilter({
-                              ...keyFilter,
-                              [item]: !keyFilter[item],
-                            });
-                          }
-                        }}
+                      <Tooltip
+                        key={item}
+                        content={item}
+                        disabled={item.length < 35}
                       >
-                        {truncateString(item, 35)}
-                      </div>
+                        <div
+                          key={index + '-' + index}
+                          aria-label={item}
+                          className={`cursor-pointer text-xs min-h-5 w-full max-w-fit overflow-hidden text-ellipsis whitespace-nowrap flex items-center ${
+                            keyFilter[item] ? 'bg-[#e9e9ec]' : ''
+                          } rounded-lg px-2`}
+                          onClick={() => {
+                            if (selectedFilter < maxFilter) {
+                              setKeyFilter({
+                                ...keyFilter,
+                                [item]: !keyFilter[item],
+                              });
+                            }
+                          }}
+                        >
+                          {truncateString(item, 35)}
+                        </div>
+                      </Tooltip>
                     );
                   })}
                 </div>

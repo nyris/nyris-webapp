@@ -3,11 +3,13 @@ import { RectCoords, Region } from '@nyris/nyris-api';
 export interface RequestImageState {
   requestImages: HTMLCanvasElement[];
   regions: RectCoords[];
+  firstSearchImage: HTMLCanvasElement | undefined;
 }
 
 export interface RequestImageAction {
   addRequestImage: (image: HTMLCanvasElement) => void;
   setRequestImages: (images: HTMLCanvasElement[]) => void;
+  setFirstSearchImage: (image: HTMLCanvasElement) => void;
   updateRegion: (r: RectCoords, index: number) => void;
   setRegions: (r: RectCoords[]) => void;
   removeImage: (index: number) => void;
@@ -39,11 +41,13 @@ export interface LoadingAction {
 export interface ProductsState {
   productsFromFindApi: any[];
   productsFromAlgolia: any[];
+  firstSearchResults: any[];
 }
 
 export interface ProductsAction {
   setFindApiProducts: (products: any[]) => void;
   setAlgoliaProducts: (products: any[]) => void;
+  setFirstSearchResults: (products: any[]) => void;
 }
 
 export interface DetectedRegionsState {
@@ -57,10 +61,12 @@ export interface DetectedRegionsAction {
 export interface FilterState {
   preFilter: Record<string, boolean>;
   algoliaFilter: string;
+  firstSearchPreFilter: Record<string, boolean>;
 }
 
 export interface FilterAction {
   setPreFilter: (query: Record<string, boolean>) => void;
+  setFirstSearchPreFilter: (query: Record<string, boolean>) => void;
   setAlgoliaFilter: (query: string) => void;
 }
 

@@ -1,29 +1,25 @@
-import React, { useEffect } from 'react';
-import { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
-import { debounce, throttle } from 'lodash';
-
-import { RectCoords } from '@nyris/nyris-api';
-import { Icon, Preview } from '@nyris/nyris-react-components';
+import { debounce } from 'lodash';
+import { twMerge } from 'tailwind-merge';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
-import { useImageSearch } from 'hooks/useImageSearch';
-import useRequestStore from 'stores/request/requestStore';
-import { twMerge } from 'tailwind-merge';
+import { Icon, Preview } from '@nyris/nyris-react-components';
+import { RectCoords } from '@nyris/nyris-api';
+
 import { DEFAULT_REGION } from '../constants';
-import useResultStore from 'stores/result/resultStore';
+import { useImageSearch } from 'hooks/useImageSearch';
 import useFilteredRegions from 'hooks/useFilteredRegions';
-import { useNavigate } from 'react-router';
-import { useMediaQuery } from 'react-responsive';
+import useRequestStore from 'stores/request/requestStore';
+import useResultStore from 'stores/result/resultStore';
 
 function ImagePreviewComponent({
   showAdjustInfo = false,
-  isCameraUploadEnabled = true,
 }: {
   imageSelection?: any;
   filteredRegions?: any;
   showAdjustInfo?: any;
-  isCameraUploadEnabled?: boolean;
   isExpanded?: boolean;
 }) {
   const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
@@ -38,14 +34,14 @@ function ImagePreviewComponent({
   const resetRegions = useRequestStore(state => state.resetRegions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const query = useRequestStore(state => state.query);
-
   const regions = useRequestStore(state => state.regions);
   const updateRegion = useRequestStore(state => state.updateRegion);
+  const resetRequestStore = useRequestStore(state => state.reset);
 
   const detectedRegions = useResultStore(state => state.detectedRegions);
+  const resetResultStore = useResultStore(state => state.reset);
 
   const { singleImageSearch } = useImageSearch();
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const currentIndex = requestImages.length - 1;
 
@@ -64,6 +60,8 @@ function ImagePreviewComponent({
     setRequestImages([]);
     if (!query) {
       navigate('/');
+      resetResultStore();
+      resetRequestStore();
     }
   };
 

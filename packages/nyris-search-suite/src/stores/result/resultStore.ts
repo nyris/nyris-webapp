@@ -5,12 +5,18 @@ import sessionSlice from './session/session.slice';
 
 type ResultStore = ReturnType<typeof productsSlice> &
   ReturnType<typeof detectedRegionsSlice> &
-  ReturnType<typeof sessionSlice>;
+  ReturnType<typeof sessionSlice> & { reset: () => void };
 
-const useResultStore = create<ResultStore>()((...a) => ({
-  ...productsSlice(...a),
-  ...detectedRegionsSlice(...a),
-  ...sessionSlice(...a),
+const useResultStore = create<ResultStore>()((set, ...rest) => ({
+  ...productsSlice(set, ...rest),
+  ...detectedRegionsSlice(set, ...rest),
+  ...sessionSlice(set, ...rest),
+
+  reset: () => {
+    set(productsSlice(set, ...rest));
+    set(detectedRegionsSlice(set, ...rest));
+    set(sessionSlice(set, ...rest));
+  },
 }));
 
 export default useResultStore;

@@ -12,6 +12,8 @@ const requestImageSlice: StateCreator<
 
   setRequestImages: images => set(state => ({ requestImages: images })),
 
+  setFirstSearchImage: image => set(state => ({ firstSearchImage: image })),
+
   removeImage: index => {
     const images = get().requestImages;
     let updatedImages = [...images];

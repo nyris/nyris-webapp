@@ -1,9 +1,9 @@
-import { useRefinementList } from 'react-instantsearch';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '../ui/accordion';
+} from 'components/Accordion';
+import { useRefinementList } from 'react-instantsearch';
 
 // import { Icon } from '@nyris/nyris-react-components';
 

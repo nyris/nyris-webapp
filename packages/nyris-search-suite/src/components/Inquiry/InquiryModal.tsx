@@ -10,6 +10,7 @@ import { getCroppedCanvas } from 'utils/misc';
 import { ToastHelper } from 'helpers/ToastHelper';
 import { Dialog, DialogContent } from 'components/Modal/Dialog';
 import { AutosizeTextarea } from 'components/AutosizeTextArea';
+import Tooltip from 'components/Tooltip/TooltipComponent';
 
 interface Props {
   requestImage: any;
@@ -259,12 +260,18 @@ export default function InquiryModal({
                   >
                     Machine
                   </p>
-                  <Icon
-                    name="info"
-                    style={{ cursor: 'pointer' }}
-                    width={12}
-                    height={12}
-                  />
+                  <Tooltip
+                    content={
+                      'Please select a pre-filter before search request to refine and yield accurate results.'
+                    }
+                  >
+                    <Icon
+                      name="info"
+                      style={{ cursor: 'pointer' }}
+                      width={12}
+                      height={12}
+                    />
+                  </Tooltip>
                 </div>
 
                 <div

@@ -18,7 +18,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from 'components/ui/accordion';
+} from 'components/Accordion';
+import Tooltip from 'components/Tooltip/TooltipComponent';
 
 interface Props {
   dataItem?: any;
@@ -193,17 +194,23 @@ function ProductDetailView(props: Props) {
                 <div className="gap-1.5 flex flex-wrap w-full">
                   <div className="w-full">
                     {settings.mainTitle && (
-                      <p className="text-base font-bold max-line-1  text-[#2B2C46] font-source-sans-3 leading-[22.78px] ml-2">
-                        {truncateString(dataItem[settings.mainTitle], 45)}
-                      </p>
+                      <Tooltip content={dataItem[settings.mainTitle]}>
+                        <p className="text-base font-bold max-line-1 text-[#2B2C46] font-source-sans-3 leading-[22.78px] ml-2 w-fit">
+                          {truncateString(dataItem[settings.mainTitle], 45)}
+                        </p>
+                      </Tooltip>
                     )}
                     {settings.secondaryTitle && (
-                      <p className="text-f14 max-line-1 fw-400 text-[#2B2C46] ml-2 text-base">
-                        {truncateString(
-                          dataItem[settings.secondaryTitle],
-                          isMobile ? 45 : 70,
-                        )}
-                      </p>
+                      <Tooltip
+                        content={dataItem[settings.secondaryTitle] || ''}
+                      >
+                        <p className="text-f14 max-line-1 fw-400 text-[#2B2C46] ml-2 text-base w-fit">
+                          {truncateString(
+                            dataItem[settings.secondaryTitle],
+                            isMobile ? 45 : 70,
+                          )}
+                        </p>
+                      </Tooltip>
                     )}
                   </div>
                   {settings.attributes?.productAttributes && (
@@ -298,19 +305,26 @@ function ProductDetailView(props: Props) {
                             }
                           }}
                         >
-                          <p
-                            className="text-f16 fw-600 max-line-1 text-white pr-1.5"
-                            style={{
-                              color:
-                                settings.secondaryCTAButton
-                                  ?.secondaryCTAButtonTextColor || '#FFFFFF',
-                            }}
-                          >
-                            {
+                          <Tooltip
+                            content={
                               settings.secondaryCTAButton
-                                ?.secondaryCTAButtonText
+                                ?.secondaryCTAButtonText || ''
                             }
-                          </p>
+                          >
+                            <p
+                              className="text-f16 fw-600 max-line-1 text-white pr-1.5"
+                              style={{
+                                color:
+                                  settings.secondaryCTAButton
+                                    ?.secondaryCTAButtonTextColor || '#FFFFFF',
+                              }}
+                            >
+                              {
+                                settings.secondaryCTAButton
+                                  ?.secondaryCTAButtonText
+                              }
+                            </p>
+                          </Tooltip>
                           {settings.secondaryCTAButton.secondaryCTAIcon && (
                             <Icon name="settings" color="white" />
                           )}
@@ -340,21 +354,32 @@ function ProductDetailView(props: Props) {
                             }
                           }}
                         >
-                          <p
-                            className="text-f16 fw-600 max-line-1 text-white pr-1.5"
-                            style={{
-                              color:
-                                settings.CTAButton?.CTAButtonTextColor ||
-                                '#FFFFFF',
-                            }}
-                          >
-                            {get(
-                              dataItem,
-                              settings.CTAButton?.CTAButtonText || '',
-                            ) ||
+                          <Tooltip
+                            content={
+                              get(
+                                dataItem,
+                                settings.CTAButton?.CTAButtonText || '',
+                              ) ||
                               settings.CTAButton?.CTAButtonText ||
-                              ''}
-                          </p>
+                              ''
+                            }
+                          >
+                            <p
+                              className="text-f16 fw-600 max-line-1 text-white pr-1.5"
+                              style={{
+                                color:
+                                  settings.CTAButton?.CTAButtonTextColor ||
+                                  '#FFFFFF',
+                              }}
+                            >
+                              {get(
+                                dataItem,
+                                settings.CTAButton?.CTAButtonText || '',
+                              ) ||
+                                settings.CTAButton?.CTAButtonText ||
+                                ''}
+                            </p>
+                          </Tooltip>
                           {settings.CTAButton?.CTAIcon && (
                             <Icon
                               name="link"

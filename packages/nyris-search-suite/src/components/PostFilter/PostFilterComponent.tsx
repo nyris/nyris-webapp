@@ -2,10 +2,11 @@ import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
-} from 'components/ui/accordion';
+} from 'components/Accordion';
 import React, { useState } from 'react';
 import PostFilter from './PostFilter';
 import { twMerge } from 'tailwind-merge';
+import { useTranslation } from 'react-i18next';
 
 function PostFilterComponent({ className }: { className?: string }) {
   const [accordionValues, setAccordionValues] = useState([
@@ -19,6 +20,8 @@ function PostFilterComponent({ className }: { className?: string }) {
     () => accordionValues.includes('expand'),
     [accordionValues],
   );
+
+  const { t } = useTranslation();
 
   return (
     <div
@@ -73,7 +76,7 @@ function PostFilterComponent({ className }: { className?: string }) {
       >
         <AccordionItem value={'expand'}>
           <AccordionTrigger className="text-xs font-normal w-full h-8 items-center justify-end gap-2 border-b border-solid border-[#e0e0e0]">
-            {isExpanded ? 'Collapse all' : 'Expand all'}
+            {isExpanded ? t('Collapse all') : t('Expand all')}
           </AccordionTrigger>
         </AccordionItem>
         {window.settings.refinements.map(

@@ -1,3 +1,4 @@
+import Tooltip from 'components/Tooltip/TooltipComponent';
 import React from 'react';
 
 interface Props {
@@ -47,17 +48,19 @@ function ProductAttribute(props: Props) {
         ''
       )}
 
-      <div
-        style={{
-          color: '#2B2C46',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-        }}
-        className="text-xs font-normal"
-      >
-        {value || '-'}
-      </div>
+      <Tooltip content={value} disabled={!value} sideOffset={10}>
+        <div
+          style={{
+            color: '#2B2C46',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+          className="text-xs font-normal"
+        >
+          {value || '-'}
+        </div>
+      </Tooltip>
     </div>
   );
 }

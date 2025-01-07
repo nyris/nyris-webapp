@@ -20,6 +20,9 @@ import { Icon } from '@nyris/nyris-react-components';
 import PostFilterDrawer from 'components/PostFilter/PostFilterDrawer';
 import ImagePreview from 'components/ImagePreview';
 import Footer from 'components/Footer';
+import CurrentRefinements from 'components/CurrentRefinements';
+import { GoBackButton } from 'components/GoBackButton';
+import { useCurrentRefinements } from 'react-instantsearch';
 
 function Results() {
   const settings = window.settings;
@@ -51,6 +54,8 @@ function Results() {
   const [showPostFilter, setShowPostFilter] = useState(false);
 
   const isShowFilter = query || requestImages[0];
+
+  const { items } = useCurrentRefinements();
 
   useEffect(() => {
     document.title = 'Search results';
@@ -108,7 +113,7 @@ function Results() {
       : true;
   }, [settings, productsFromAlgolia]);
 
-  const isPostFilterApplied = true;
+  const isPostFilterApplied = items.length > 0;
 
   return (
     <>
@@ -146,6 +151,7 @@ function Results() {
               'w-full',
               'mr-auto',
               'ml-auto',
+              'h-full',
             ])}
           >
             <div
@@ -168,7 +174,16 @@ function Results() {
                 ])}
               >
                 <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20 desktop:mb-0">
-                  <ProductList />
+                  <div
+                    className={twMerge(
+                      'grid grid-cols-[repeat(auto-fit,_minmax(180px,_0px))] desktop:grid-cols-[repeat(auto-fit,_minmax(190px,_0px))]',
+                      'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
+                    )}
+                  >
+                    <GoBackButton className="col-span-full mb-2 desktop:mb-0" />
+                    <CurrentRefinements className="col-span-full" />
+                    <ProductList />
+                  </div>
 
                   {showFeedbackSuccess && (
                     <div className={'feedback-floating'}>

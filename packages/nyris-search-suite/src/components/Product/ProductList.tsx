@@ -27,6 +27,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
 
   const setQuery = useRequestStore(state => state.setQuery);
   const query = useRequestStore(state => state.query);
+  const requestImages = useRequestStore(state => state.requestImages);
 
   const setValueInput = useRequestStore(state => state.setValueInput);
 
@@ -52,12 +53,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
 
   const renderItem = useMemo(() => {
     return (
-      <div
-        className={twMerge([
-          'grid grid-cols-[repeat(auto-fit,_minmax(180px,_0px))] desktop:grid-cols-[repeat(auto-fit,_minmax(190px,_0px))]',
-          'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
-        ])}
-      >
+      <div className={twMerge(['contents'])}>
         {products?.map((product: any, i: number) => {
           return (
             <Product
@@ -95,9 +91,25 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productsFromAlgolia]);
 
+  if (
+    products?.length === 0 &&
+    !isAlgoliaLoading &&
+    !isFindApiLoading &&
+    !query &&
+    !requestImages[0]
+  ) {
+    return (
+      <div className="flex justify-center items-center h-full col-span-full">
+        <div className="text-center text-[#AAABB5]">
+          {t('Please upload an image or enter a keyword to search.')}
+        </div>
+      </div>
+    );
+  }
+
   if (products?.length === 0 && !isAlgoliaLoading && !isFindApiLoading) {
     return (
-      <div className="flex justify-center items-center h-full">
+      <div className="flex justify-center items-center h-full col-span-full">
         <div className="text-center text-[#AAABB5]">
           {t('No products were found matching your search criteria.')}
         </div>

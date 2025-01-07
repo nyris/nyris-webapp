@@ -15,20 +15,27 @@ import { useClearRefinements } from 'react-instantsearch';
 export const useImageSearch = () => {
   const setRegions = useRequestStore(state => state.setRegions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
-
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
-
-  const setDetectedRegions = useResultStore(state => state.setDetectedRegions);
+  const preFilter = useRequestStore(state => state.preFilter);
+  const setFirstSearchImage = useRequestStore(
+    state => state.setFirstSearchImage,
+  );
+  const metaFilter = useRequestStore(state => state.metaFilter);
+  const setFirstSearchPreFilter = useRequestStore(
+    state => state.setFirstSearchPreFilter,
+  );
 
   const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
   const setShowFeedback = useUiStore(state => state.setShowFeedback);
 
+  const setDetectedRegions = useResultStore(state => state.setDetectedRegions);
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
   const setSessionId = useResultStore(state => state.setSessionId);
   const setRequestId = useResultStore(state => state.setRequestId);
-
-  const preFilter = useRequestStore(state => state.preFilter);
-  const metaFilter = useRequestStore(state => state.metaFilter);
+  const firstSearchResults = useResultStore(state => state.firstSearchResults);
+  const setFirstSearchResults = useResultStore(
+    state => state.setFirstSearchResults,
+  );
 
   const { refine } = useClearRefinements();
 
@@ -130,11 +137,11 @@ export const useImageSearch = () => {
           setShowFeedback(true);
         }
         // go back
-        // if (!firstSearchResults || newSearch) {
-        //   dispatch(setFirstSearchResults(payload));
-        //   dispatch(setFirstSearchImage(canvasImage));
-        //   dispatch(setFirstSearchPrefilters(preFilter));
-        // }
+        if (firstSearchResults.length === 0 || newSearch) {
+          setFirstSearchResults(res?.results);
+          setFirstSearchImage(canvasImage);
+          setFirstSearchPreFilter(preFilter);
+        }
       } catch (error) {
         setIsFindApiLoading(false);
       }
@@ -152,8 +159,12 @@ export const useImageSearch = () => {
       setSessionId,
       setRequestId,
       setAlgoliaFilter,
+      firstSearchResults.length,
       refine,
       setShowFeedback,
+      setFirstSearchResults,
+      setFirstSearchImage,
+      setFirstSearchPreFilter,
     ],
   );
 

@@ -11,6 +11,7 @@ import { twMerge } from 'tailwind-merge';
 
 import NoImage from '../../common/assets/images/no-image.svg';
 import ProductDetailViewModal from './ProductDetailViewModal';
+import Tooltip from 'components/Tooltip/TooltipComponent';
 
 interface Props {
   dataItem: any;
@@ -163,11 +164,24 @@ function Product(props: Props) {
           <div className="info-container-card">
             <div className="info-sku">{dataItem.sku}</div>
             <span className="info-marking">{dataItem.Bezeichnung}</span>
-            <div className="info-description">
-              {settings.language === 'en'
-                ? dataItem.VK_Text_Englisch
-                : dataItem.VK_Text_Deutsch}
-            </div>
+            <Tooltip
+              content={
+                settings.language === 'en'
+                  ? dataItem.VK_Text_Englisch
+                  : dataItem.VK_Text_Deutsch
+              }
+              disabled={
+                settings.language === 'en'
+                  ? dataItem.VK_Text_Englisch?.length < 76
+                  : dataItem.VK_Text_Deutsch?.length < 76
+              }
+            >
+              <div className="info-description">
+                {settings.language === 'en'
+                  ? dataItem.VK_Text_Englisch
+                  : dataItem.VK_Text_Deutsch}
+              </div>
+            </Tooltip>
           </div>
         )}
 
@@ -193,9 +207,11 @@ function Product(props: Props) {
               <div>
                 <div className="max-h-[38px] h-fit">
                   {dataItem[settings.mainTitle] && (
-                    <div className="text-xs font-bold text-primary mb-1 ml-2 max-line-1">
-                      {truncateString(dataItem[settings.mainTitle], 45)}
-                    </div>
+                    <Tooltip content={dataItem[settings.mainTitle] || ''}>
+                      <div className="text-xs font-bold text-primary mb-1 ml-2 max-line-1 w-fit">
+                        {truncateString(dataItem[settings.mainTitle], 45)}
+                      </div>
+                    </Tooltip>
                   )}
                   {dataItem[settings.secondaryTitle] && (
                     <div
@@ -206,9 +222,20 @@ function Product(props: Props) {
                         'text-primary',
                       ])}
                     >
-                      <div className="text-[10px] font-normal max-line-1 text-primary mb-2 ml-2">
-                        {truncateString(dataItem[settings.secondaryTitle], 40)}
-                      </div>
+                      <Tooltip
+                        content={dataItem[settings.secondaryTitle]}
+                        disabled={
+                          dataItem[settings.secondaryTitle]?.length < 19 ||
+                          !dataItem[settings.secondaryTitle]
+                        }
+                      >
+                        <div className="text-[10px] font-normal max-line-1 text-primary mb-2 ml-2">
+                          {truncateString(
+                            dataItem[settings.secondaryTitle],
+                            40,
+                          )}
+                        </div>
+                      </Tooltip>
                     </div>
                   )}
                 </div>
@@ -336,27 +363,34 @@ function Product(props: Props) {
                       }
                     }}
                   >
-                    <div
-                      className={`max-line-1 ${
-                        settings.secondaryCTAButton.secondaryCTALinkField
-                          ? 'desktop:136px'
-                          : '164px'
-                      }`}
-                      style={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        fontWeight: 600,
-                        fontSize: '12px',
-                        letterSpacing: '0.27px',
-                        wordBreak: 'break-all',
-                        color:
-                          settings.secondaryCTAButton
-                            .secondaryCTAButtonTextColor || '#FFFFFF',
-                        paddingRight: '8px',
-                      }}
+                    <Tooltip
+                      content={
+                        settings.secondaryCTAButton?.secondaryCTAButtonText ||
+                        ''
+                      }
                     >
-                      {settings.secondaryCTAButton?.secondaryCTAButtonText}
-                    </div>
+                      <div
+                        className={`max-line-1 ${
+                          settings.secondaryCTAButton.secondaryCTALinkField
+                            ? 'desktop:136px'
+                            : '164px'
+                        }`}
+                        style={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          fontWeight: 600,
+                          fontSize: '12px',
+                          letterSpacing: '0.27px',
+                          wordBreak: 'break-all',
+                          color:
+                            settings.secondaryCTAButton
+                              .secondaryCTAButtonTextColor || '#FFFFFF',
+                          paddingRight: '8px',
+                        }}
+                      >
+                        {settings.secondaryCTAButton?.secondaryCTAButtonText}
+                      </div>
+                    </Tooltip>
                     {settings.secondaryCTAButton.secondaryCTAIcon && (
                       <div style={{ width: '16px' }}>
                         <Icon name="settings" color="white" />
@@ -402,27 +436,40 @@ function Product(props: Props) {
                       }
                     }}
                   >
-                    <div
-                      className={`max-line-1 ${
-                        settings.CTAButton.CTALinkField
-                          ? 'desktop:136px'
-                          : '164px'
-                      }`}
-                      style={{
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        fontWeight: 600,
-                        color:
-                          settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
-                        fontSize: '12px',
-                        letterSpacing: '0.27px',
-                        wordBreak: 'break-all',
-                        paddingRight: '8px',
-                      }}
+                    <Tooltip
+                      content={
+                        get(
+                          dataItem,
+                          settings.CTAButton?.CTAButtonText || '',
+                        ) ||
+                        settings.CTAButton?.CTAButtonText ||
+                        ''
+                      }
                     >
-                      {get(dataItem, settings.CTAButton?.CTAButtonText || '') ||
-                        settings.CTAButton?.CTAButtonText}
-                    </div>
+                      <div
+                        className={`max-line-1 ${
+                          settings.CTAButton.CTALinkField
+                            ? 'desktop:136px'
+                            : '164px'
+                        }`}
+                        style={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          fontWeight: 600,
+                          color:
+                            settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
+                          fontSize: '12px',
+                          letterSpacing: '0.27px',
+                          wordBreak: 'break-all',
+                          paddingRight: '8px',
+                        }}
+                      >
+                        {get(
+                          dataItem,
+                          settings.CTAButton?.CTAButtonText || '',
+                        ) || settings.CTAButton?.CTAButtonText}
+                      </div>
+                    </Tooltip>
                     {settings.CTAButton?.CTAIcon && (
                       <div style={{ width: '16px' }}>
                         <Icon

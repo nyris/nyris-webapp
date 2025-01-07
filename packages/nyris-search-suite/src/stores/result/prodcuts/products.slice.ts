@@ -8,6 +8,8 @@ const productsSlice: StateCreator<ProductsState & ProductsAction> = set => ({
     set(state => ({ productsFromAlgolia: products })),
   setFindApiProducts: products =>
     set(state => ({ productsFromFindApi: products })),
+  setFirstSearchResults: products =>
+    set(state => ({ firstSearchResults: products })),
 });
 
 export default productsSlice;

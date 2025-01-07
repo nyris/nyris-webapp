@@ -53,6 +53,7 @@ function AppLayout(): JSX.Element {
   const { items } = useHits();
 
   useEffect(() => {
+    i18n.changeLanguage(window.settings.language);
     console.log('App version:', packageJson.version);
 
     const handleResize = () => {
@@ -72,10 +73,12 @@ function AppLayout(): JSX.Element {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('cadenasScriptsLoaded', handleScriptsLoaded);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setAlgoliaProducts(items);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   useEffect(() => {
@@ -85,6 +88,7 @@ function AppLayout(): JSX.Element {
       setIsAlgoliaLoading(false);
     }
     return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   if (!showLayout) {

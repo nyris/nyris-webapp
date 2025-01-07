@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { isEmpty, debounce } from 'lodash';
 import { twMerge } from 'tailwind-merge';
@@ -7,12 +7,13 @@ import { useLocation, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import { Icon } from '@nyris/nyris-react-components';
+import { isCadFile } from '@nyris/nyris-api';
 
+import { useCadSearch } from 'hooks/useCadSearch';
 import { useImageSearch } from 'hooks/useImageSearch';
 import PreFilterModal from './PreFilter/PreFilterModal';
 import useRequestStore from 'stores/request/requestStore';
-import { useCadSearch } from 'hooks/useCadSearch';
-import { isCadFile } from '@nyris/nyris-api';
+import Tooltip from './Tooltip/TooltipComponent';
 
 function TextSearch({ className }: { className?: string }) {
   const settings = window.settings;
@@ -172,34 +173,44 @@ function TextSearch({ className }: { className?: string }) {
               }
             >
               {showPreFilter && (
-                <div
-                  className={twMerge(
-                    'p-2 desktop:p-3',
-                    location.pathname === '/result' && 'desktop:p-2',
-                    `flex rounded-full bg-[#f3f3f5]`,
+                <Tooltip
+                  content={
                     !isEmpty(preFilter)
-                      ? 'desktop:bg-theme-primary'
-                      : 'desktop:bg-[#2B2C46]',
-                  )}
+                      ? Object.keys(preFilter).join(', ')
+                      : t('Add or change pre-filter')
+                  }
                 >
-                  <Icon
-                    name="filter_settings"
+                  <div
                     className={twMerge(
+                      'p-2 desktop:p-3',
+                      location.pathname === '/result' && 'desktop:p-2',
+                      `flex rounded-full bg-[#f3f3f5]`,
                       !isEmpty(preFilter)
-                        ? 'fill-theme-primary'
-                        : 'fill-[#2B2C46]',
-                      `desktop:fill-white`,
+                        ? 'desktop:bg-theme-primary'
+                        : 'desktop:bg-[#2B2C46]',
                     )}
-                  />
-                </div>
+                  >
+                    <Icon
+                      name="filter_settings"
+                      className={twMerge(
+                        !isEmpty(preFilter)
+                          ? 'fill-theme-primary'
+                          : 'fill-[#2B2C46]',
+                        `desktop:fill-white`,
+                      )}
+                    />
+                  </div>
+                </Tooltip>
               )}
               {!showPreFilter && <Icon name="search" width={16} height={16} />}
               {!isEmpty(preFilter) && showPreFilter && (
                 <div
+                  className={twMerge(
+                    'top-2 left-8 desktop:left-8 desktop:top-[1px]',
+                    location.pathname === '/result' && 'desktop:left-[26px] ',
+                  )}
                   style={{
                     position: 'absolute',
-                    top: '1px',
-                    left: '26px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -238,34 +249,36 @@ function TextSearch({ className }: { className?: string }) {
           </div>
 
           {location.pathname === '/result' && (valueInput || query) && (
-            <button
-              className={twMerge([
-                'flex',
-                'justify-center',
-                'items-center',
-                'rounded-full',
-                'cursor-pointer',
-                'min-w-10 min-h-10',
-                'z-10',
-                'hover:bg-gray-100',
-                'mr-2',
-                location.pathname === '/result' &&
-                  'desktop:min-w-8 desktop:min-h-8',
-              ])}
-              onClick={() => {
-                if (visualSearch) {
-                  navigate('/result');
-                  setValueInput('');
+            <Tooltip content={t('Clear text search')}>
+              <button
+                className={twMerge([
+                  'flex',
+                  'justify-center',
+                  'items-center',
+                  'rounded-full',
+                  'cursor-pointer',
+                  'min-w-10 min-h-10',
+                  'z-10',
+                  'hover:bg-gray-100',
+                  'mr-2',
+                  location.pathname === '/result' &&
+                    'desktop:min-w-8 desktop:min-h-8',
+                ])}
+                onClick={() => {
+                  if (visualSearch) {
+                    navigate('/result');
+                    setValueInput('');
+                    setQuery('');
+                    return;
+                  }
                   setQuery('');
-                  return;
-                }
-                setQuery('');
-                setValueInput('');
-                navigate('/');
-              }}
-            >
-              <Icon name="close" className="w-3 h-3 text-primary" />
-            </button>
+                  setValueInput('');
+                  navigate('/');
+                }}
+              >
+                <Icon name="close" className="w-3 h-3 text-primary" />
+              </button>
+            </Tooltip>
           )}
           <div
             className={twMerge([
@@ -286,26 +299,28 @@ function TextSearch({ className }: { className?: string }) {
                 }
               }}
             />
-            <label
-              className={twMerge(
-                'mr-2 desktop:mr-1',
-                'w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-100 desktop:bg-transparent hover:bg-gray-100',
-                location.pathname === '/result' && 'desktop:w-8 desktop:h-8',
-              )}
-              htmlFor={showDisclaimerDisabled ? 'icon-button-file' : ''}
-              onClick={e => {
-                if (!showDisclaimerDisabled) {
-                  setShowDisclaimer(true);
-                }
-              }}
-            >
-              <Icon
-                name="camera_simple"
-                width={16}
-                height={16}
-                fill="#2B2C46"
-              />
-            </label>
+            <Tooltip content={t('Search with an image')}>
+              <label
+                className={twMerge(
+                  'mr-2 desktop:mr-1',
+                  'w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-100 desktop:bg-transparent hover:bg-gray-100',
+                  location.pathname === '/result' && 'desktop:w-8 desktop:h-8',
+                )}
+                htmlFor={showDisclaimerDisabled ? 'icon-button-file' : ''}
+                onClick={e => {
+                  if (!showDisclaimerDisabled) {
+                    setShowDisclaimer(true);
+                  }
+                }}
+              >
+                <Icon
+                  name="camera_simple"
+                  width={16}
+                  height={16}
+                  fill="#2B2C46"
+                />
+              </label>
+            </Tooltip>
           </div>
         </div>
       </div>
