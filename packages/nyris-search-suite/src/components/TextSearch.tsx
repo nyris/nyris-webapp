@@ -314,10 +314,16 @@ function TextSearch({
                   'w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-100 desktop:bg-transparent hover:bg-gray-100',
                   location.pathname === '/result' && 'desktop:w-8 desktop:h-8',
                 )}
-                htmlFor={showDisclaimerDisabled ? 'icon-button-file' : ''}
+                htmlFor={
+                  showDisclaimerDisabled && !onCameraClick
+                    ? 'icon-button-file'
+                    : ''
+                }
                 onClick={e => {
                   if (!showDisclaimerDisabled) {
                     setShowDisclaimer(true);
+                  } else if (onCameraClick) {
+                    onCameraClick();
                   }
                 }}
               >

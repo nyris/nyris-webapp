@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import CloseIcon from '@material-ui/icons/Close';
 import { getFilters, searchFilters } from 'services/filter';
 
 import { isEmpty, pickBy } from 'lodash';
-import { Skeleton } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '@nyris/nyris-react-components';
 import { useImageSearch } from 'hooks/useImageSearch';
@@ -11,6 +9,7 @@ import useRequestStore from 'stores/request/requestStore';
 import { truncateString } from 'utils/truncateString';
 import { twMerge } from 'tailwind-merge';
 import Tooltip from 'components/Tooltip/TooltipComponent';
+import { Skeleton } from 'components/Skeleton';
 
 interface Props {
   handleClose?: any;
@@ -55,11 +54,6 @@ const PreFilterComponent = (props: Props) => {
     getDataFilterDesktop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // useEffect(() => {
-  //   filterSearchHandler(searchKey);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [searchKey]);
 
   const getDataFilterDesktop = async () => {
     setLoading(true);
@@ -160,7 +154,7 @@ const PreFilterComponent = (props: Props) => {
           onClick={handleClose}
           className="w-8 h-8 flex justify-center items-center cursor-pointer mr-2"
         >
-          <CloseIcon />
+          <Icon name="close" />
         </div>
       </div>
       <div className="flex justify-between items-center mt-4 mb-6 ml-4 mr-4">
@@ -290,18 +284,19 @@ const PreFilterComponent = (props: Props) => {
               </div>
             );
           })}
+
         {isLoading && (
           <div className={`columns-1 desktop:columns-4`}>
             {Array(12)
               .fill('')
               .map((_, index) => {
                 return (
-                  <div key={index} className="mb-1">
-                    <Skeleton animation={'pulse'} height={30} width={60} />
+                  <div key={index} className="mb-4 flex flex-col gap-3 w-full">
+                    <Skeleton className="h-[20px] w-[60px]" />
                     {Array(6)
                       .fill('')
                       .map((_, index) => (
-                        <Skeleton key={index} animation={'pulse'} height={30} />
+                        <Skeleton key={index} className="h-[20px] w-full" />
                       ))}
                   </div>
                 );

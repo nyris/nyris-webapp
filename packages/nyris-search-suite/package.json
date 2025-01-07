@@ -1,5 +1,5 @@
 {
-  "name": "@nyris/nyris-search-suite",
+  "name": "@nyris/nyris-webapp",
   "version": "0.3.67",
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
