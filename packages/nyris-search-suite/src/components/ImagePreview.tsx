@@ -159,6 +159,7 @@ function ImagePreviewComponent({
               borderRadius: '16px',
               zIndex: 1000,
               height: 'fit-content',
+              alignItems: 'center',
             }}
           >
             <Icon name="info" color="white" width={12} height={12} />

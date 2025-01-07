@@ -23,6 +23,7 @@ import Footer from 'components/Footer';
 import CurrentRefinements from 'components/CurrentRefinements';
 import { GoBackButton } from 'components/GoBackButton';
 import { useCurrentRefinements } from 'react-instantsearch';
+import CustomCamera from 'components/CustomCameraDrawer';
 
 function Results() {
   const settings = window.settings;
@@ -52,6 +53,7 @@ function Results() {
   const regions = useRequestStore(state => state.regions);
 
   const [showPostFilter, setShowPostFilter] = useState(false);
+  const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
 
   const isShowFilter = query || requestImages[0];
 
@@ -269,7 +271,10 @@ function Results() {
       </div>
 
       <div className="flex desktop:hidden w-full fixed bottom-4 z-50 px-3 gap-2">
-        <TextSearch className="flex desktop:hidden w-full gap-2" />
+        <TextSearch
+          className="flex desktop:hidden w-full gap-2"
+          onCameraClick={() => setOpenModalCamera(true)}
+        />
         {isShowFilter && settings.postFilterOption && (
           <div
             style={{
@@ -355,6 +360,12 @@ function Results() {
       <PostFilterDrawer
         openModal={showPostFilter}
         handleClose={() => setShowPostFilter(false)}
+      />
+      <CustomCamera
+        show={isOpenModalCamera}
+        onClose={() => {
+          setOpenModalCamera(s => !s);
+        }}
       />
     </>
   );

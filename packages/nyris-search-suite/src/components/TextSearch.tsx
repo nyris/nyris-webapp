@@ -14,8 +14,15 @@ import { useImageSearch } from 'hooks/useImageSearch';
 import PreFilterModal from './PreFilter/PreFilterModal';
 import useRequestStore from 'stores/request/requestStore';
 import Tooltip from './Tooltip/TooltipComponent';
+import UploadDisclaimer from './UploadDisclaimer';
 
-function TextSearch({ className }: { className?: string }) {
+function TextSearch({
+  className,
+  onCameraClick,
+}: {
+  className?: string;
+  onCameraClick?: () => void;
+}) {
   const settings = window.settings;
   const user = useAuth0().user;
 
@@ -61,7 +68,7 @@ function TextSearch({ className }: { className?: string }) {
   ]);
 
   const showDisclaimerDisabled = useMemo(() => {
-    const disclaimer = localStorage.getItem('upload-disclaimer-webapp');
+    const disclaimer = localStorage.getItem('upload-disclaimer-suite');
     if (requestImages.length === 0) return true;
     if (!disclaimer) return false;
     return disclaimer === 'dont-show';
@@ -108,6 +115,7 @@ function TextSearch({ className }: { className?: string }) {
       image: files[0],
       settings: window.settings,
       showFeedback: true,
+      newSearch: true,
     }).then(() => {});
   };
 
@@ -328,6 +336,35 @@ function TextSearch({ className }: { className?: string }) {
         <PreFilterModal
           openModal={isOpenModalFilterDesktop}
           handleClose={() => setToggleModalFilterDesktop(false)}
+        />
+      )}
+
+      {showDisclaimer && (
+        <UploadDisclaimer
+          onClose={() => {
+            setShowDisclaimer(false);
+          }}
+          onContinue={({
+            file,
+            dontShowAgain,
+          }: {
+            file: any;
+            dontShowAgain: any;
+          }) => {
+            if (dontShowAgain) {
+              localStorage.setItem('upload-disclaimer-suite', 'dont-show');
+            }
+
+            if (onCameraClick) {
+              onCameraClick();
+            } else {
+              if (file) {
+                handleUpload(Array(file));
+              }
+            }
+
+            setShowDisclaimer(false);
+          }}
         />
       )}
     </div>

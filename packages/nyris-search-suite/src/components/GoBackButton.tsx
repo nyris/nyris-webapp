@@ -6,6 +6,7 @@ import { Icon } from '@nyris/nyris-react-components';
 import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
 import { twMerge } from 'tailwind-merge';
+import useUiStore from 'stores/ui/uiStore';
 
 export const GoBackButton = ({ className }: { className?: string }) => {
   const firstSearchResults = useResultStore(state => state.firstSearchResults);
@@ -20,6 +21,8 @@ export const GoBackButton = ({ className }: { className?: string }) => {
     state => state.firstSearchPreFilter,
   );
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+
+  const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
 
   const { refine: clearPostFilters } = useClearRefinements();
 
@@ -47,7 +50,11 @@ export const GoBackButton = ({ className }: { className?: string }) => {
     clearPostFilters();
   };
 
-  if (firstSearchResults.length === 0 || requestImages[0] === firstSearchImage)
+  if (
+    firstSearchResults.length === 0 ||
+    requestImages[0] === firstSearchImage ||
+    isFindApiLoading
+  )
     return <></>;
 
   return (
