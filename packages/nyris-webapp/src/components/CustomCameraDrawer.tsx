@@ -202,7 +202,9 @@ function CustomCamera(props: Props) {
                             id="select_file"
                             className="absolute z-[-1] opacity-0"
                             placeholder="Choose photo"
-                            accept={'.stp,.step,.stl,.obj,.glb,.gltf,image/*'}
+                            accept={
+                              '.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,image/*'
+                            }
                             onChange={(fs: any) => {
                               const file = fs.target?.files[0];
                               if (!file) return;

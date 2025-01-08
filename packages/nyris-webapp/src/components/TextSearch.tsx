@@ -294,7 +294,7 @@ function TextSearch({
             ])}
           >
             <input
-              accept={'.stp,.step,.stl,.obj,.glb,.gltf,image/*'}
+              accept={'.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,image/*'}
               id="icon-button-file"
               type="file"
               style={{ display: 'none' }}

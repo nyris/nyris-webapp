@@ -12,7 +12,6 @@ function UploadDisclaimer({
   onContinue: any;
 }) {
   const [dontShowAgain, setDontShowAgain] = useState(false);
-  const isCadSearch = window.settings.cadSearch;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   return (
@@ -68,9 +67,9 @@ function UploadDisclaimer({
                 type="file"
                 name="take-picture"
                 id="nyris__upload-photo"
-                accept={`${
-                  isCadSearch ? '.stp,.step,.stl,.obj,.glb,.gltf,' : ''
-                }image/jpeg,image/png,image/webp`}
+                accept={
+                  '.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,image/jpeg,image/png,image/webp'
+                }
                 onChange={makeFileHandler(file =>
                   onContinue({ file, dontShowAgain }),
                 )}

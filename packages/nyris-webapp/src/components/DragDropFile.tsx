@@ -90,7 +90,7 @@ function DragDropFile(props: Props) {
             id="select_file"
             className="absolute z-[-1] opacity-0"
             placeholder="Choose photo"
-            accept={'.stp,.step,.stl,.obj,.glb,.gltf,image/*'}
+            accept={'.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,image/*'}
           />
         </div>
       </div>
