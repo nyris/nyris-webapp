@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { get } from 'lodash';
 import { useMediaQuery } from 'react-responsive';
 import { useTranslation } from 'react-i18next';
@@ -44,6 +44,9 @@ function ProductDetailView(props: Props) {
   >();
   const { t } = useTranslation();
 
+  const extraDetailPropertyLength = isMobile ? 15 : 30;
+  const extraDetailValueLength = isMobile ? 35 : 60;
+
   useEffect(() => {
     if (dataItem) {
       checkDataItemResult(dataItem);
@@ -79,14 +82,6 @@ function ProductDetailView(props: Props) {
 
     setDataImageCarouSel(valueKey);
   };
-  const productDetails = useMemo(() => {
-    const details = get(dataItem, settings.productDetails);
-    try {
-      return details.join(', ');
-    } catch (e) {
-      return details;
-    }
-  }, [dataItem, settings.productDetails]);
 
   return (
     <div>
@@ -395,17 +390,86 @@ function ProductDetailView(props: Props) {
                     )}
                   </div>
                 </div>
-                {productDetails && (
+                {settings.productDetailsAttribute?.length && (
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="view-details">
                       <AccordionTrigger className="w-full button-hover bg-[#F3F3F5] text-[#2b2c46] flex justify-between mt-3 px-4 text-base normal-case">
                         {t('View details')}
                       </AccordionTrigger>
-                      <AccordionContent>
-                        <div>
-                          <p className="text-base p-1.5 text-[#2b2c46]">
-                            {productDetails}
-                          </p>
+                      <AccordionContent className="pb-0">
+                        <div
+                          style={{
+                            background: '#E9E9EC',
+                            borderRadius: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 6,
+                            padding: '6px 15px 10px',
+                          }}
+                        >
+                          {settings.productDetailsAttribute.map(detail =>
+                            get(dataItem, detail.value)?.length ? (
+                              <div
+                                style={{
+                                  height: 14,
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <Tooltip
+                                  content={detail.propertyName}
+                                  disabled={
+                                    detail.propertyName.length <
+                                    extraDetailPropertyLength
+                                  }
+                                >
+                                  <span
+                                    style={{
+                                      fontSize: 12,
+                                      fontWeight: 600,
+                                      marginRight: 8,
+                                      height: 14,
+                                    }}
+                                  >
+                                    {detail.propertyName.length <
+                                    extraDetailPropertyLength
+                                      ? detail.propertyName
+                                      : detail.propertyName
+                                          .substring(
+                                            0,
+                                            extraDetailPropertyLength,
+                                          )
+                                          .concat('...')}
+                                  </span>
+                                </Tooltip>
+                                <Tooltip
+                                  content={get(dataItem, detail.value)}
+                                  disabled={
+                                    get(dataItem, detail.value)?.length <=
+                                    extraDetailValueLength
+                                  }
+                                >
+                                  <div
+                                    style={{
+                                      fontSize: 12,
+                                      fontWeight: 400,
+                                      height: 14,
+                                    }}
+                                  >
+                                    {get(dataItem, detail.value).length <=
+                                    extraDetailValueLength
+                                      ? get(dataItem, detail.value)
+                                      : get(dataItem, detail.value)
+                                          .substring(0, extraDetailValueLength)
+                                          .concat('...')}
+                                  </div>
+                                </Tooltip>
+                              </div>
+                            ) : (
+                              ''
+                            ),
+                          )}
                         </div>
                       </AccordionContent>
                     </AccordionItem>

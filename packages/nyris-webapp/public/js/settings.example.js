@@ -71,6 +71,13 @@ var settings = {
     CTALinkField: '',
   },
   language: 'en',
+  // productDetailsAttribute
+  productDetailsAttribute: [
+    {
+      propertyName: '',
+      value: '',
+    },
+  ],
   // features
   showPoweredByNyris: '',
   postFilterOption: '',
