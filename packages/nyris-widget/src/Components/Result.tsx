@@ -338,27 +338,31 @@ export const Result = ({
               <Upload />
             </label>
           </div>
-          {window.nyrisSettings.filter && !noResult && (
-            <div
-              className="nyris__action-wrapper"
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-            >
+          {window.nyrisSettings.filter &&
+            window.nyrisSettings.filter?.length > 0 &&
+            !noResult && (
               <div
-                className={`nyris__action-wrapper-button ${
-                  !!selectedFilters.length ? 'active' : ''
-                }`}
+                className="nyris__action-wrapper"
+                onClick={() => {
+                  setIsModalOpen(true);
+                }}
               >
-                <Filter fill={!!selectedFilters.length ? '#FFF' : '#55566B'} />
-                {!!selectedFilters.length ? (
-                  <div className="nyris__action-wrapper-button-indicator" />
-                ) : (
-                  ''
-                )}
+                <div
+                  className={`nyris__action-wrapper-button ${
+                    !!selectedFilters.length ? 'active' : ''
+                  }`}
+                >
+                  <Filter
+                    fill={!!selectedFilters.length ? '#FFF' : '#55566B'}
+                  />
+                  {!!selectedFilters.length ? (
+                    <div className="nyris__action-wrapper-button-indicator" />
+                  ) : (
+                    ''
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
 
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>

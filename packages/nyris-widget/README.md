@@ -22,6 +22,9 @@ Inside your HTML (best just before the closing ```</body>``` tag), add the follo
         cadenasAPIKey: '', // API key provided by cadenas
         cadenasCatalog: '', // Catalog ID provided by Cadenas
         feedback: false , // Enables feedback; Always a boolean value   
+        searchCriteriaLabel: 'Select a machine', // Define the text for search criteria pop-up
+        searchCriteriaKey: '', // Define the attribute where filter values are stored
+        filter: [] // Define attributes and labels for search Refinements e.g. [{label: 'Brand', field: 'brand' }]
     };
     var s = document.createElement("script");
     s.src = "https://assets.nyris.io/nyris-widget/v1/widget.js";
