@@ -2,7 +2,7 @@ import React from 'react';
 import { Language } from './types';
 
 const translations = (language: Language) => {
-  const dictionaries: Record<'de' | 'en', any> = {
+  const dictionaries: Record<'de' | 'en' | 'fr', any> = {
     de: {
       Search: 'Suche',
       'Analyzing image...': 'Bild wird analysiert...',
@@ -48,6 +48,48 @@ const translations = (language: Language) => {
       Apply: 'Anwenden',
     },
     en: {
+      Search: 'Search',
+      'Analyzing image...': 'Analyzing image...',
+      'Hold on': 'Hold on',
+      'We are working hard on finding the product':
+        'We are working hard on finding the product',
+      'Success!': 'Success!',
+      'matches found': 'matches found',
+      'match found': 'match found',
+      'View more': 'View more',
+      'Something went wrong': 'Something went wrong',
+      'Oops!':
+        'Oops! We encountered an issue during the search. Please ensure your image meets the guidelines and try again',
+      'Upload a picture': 'Upload a picture',
+      'Drag and drop an image here': 'Drag and drop an image here',
+      'Browse gallery': 'Browse gallery',
+      'Take a photo': 'Take a photo',
+      'Test Visual Search Widget': 'Test Visual Search Widget',
+      'Enter your api key and submit': 'Enter your api key and submit',
+      'API key': 'API key',
+      'Your API key here': 'Your API key here',
+      Submit: 'Submit',
+      'Open visual search': 'Open visual search',
+      'Let’s try that again': 'Let’s try that again',
+      'We couldn’t find matches': 'We couldn’t find matches this time.',
+      'For the best results, please use':
+        'For the best results, please use a sharp, well-lit, and centered photo with a clean background, and give it another go!',
+      'Click a picture': 'Click a picture',
+      'Back to request image': 'Back to request image',
+      'View full description': 'View full description',
+      'Drag an image or click to upload': 'Drag an image or click to upload',
+      "We couldn't find matches based on <prefilters>":
+        "We couldn't find matches based on <prefilters>.",
+      'based on': 'based on',
+      'Refine your search results': 'Refine your search results',
+      'Are these results useful?': 'Are these results useful?',
+      'Thanks for your feedback!': 'Thanks for your feedback!',
+      Clear: 'clear',
+      'Clear all': 'clear all',
+      Cancel: 'Cancel',
+      Apply: 'Apply',
+    },
+    fr: {
       Search: 'Search',
       'Analyzing image...': 'Analyzing image...',
       'Hold on': 'Hold on',

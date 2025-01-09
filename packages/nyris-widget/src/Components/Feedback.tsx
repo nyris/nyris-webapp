@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { Icon } from '@nyris/nyris-react-components';
 import translations from '../translations';
 
-const translation = translations(window.nyrisSettings.language);
-
 function Feedback({
   submitFeedback,
   onFeedbackClose,
+  labels,
 }: {
   submitFeedback: any;
   onFeedbackClose: any;
+  labels: any;
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -21,7 +21,7 @@ function Feedback({
         transition: 'background-color 0.3s ease',
       }}
     >
-      <p className="">{translation['Are these results useful?']}</p>
+      <p className="">{labels['Are these results useful?']}</p>
       <div
         className="nyris__feedback-icon-wrapper"
         onClick={() => submitFeedback(false)}
