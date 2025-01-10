@@ -32,6 +32,18 @@ export const translations = {
       Cancel: 'Cancel',
       Apply: 'Apply',
       'Back to request image': 'Back to request image',
+      'Please select a search criteria before search request to refine and yield accurate results.':
+        'Please select a search criteria before search request to refine and yield accurate results.',
+      'Search criteria is not selected':
+        'Search criteria is not selected',
+      Inquiry: 'Inquiry',
+      'Call us': 'Call us',
+      'Submit and Inquiry': 'Submit and Inquiry',
+      'Submit your image for inquiry': 'Submit your image for inquiry',
+      'Your email (required)': 'Your email (required)',
+      'Please enter a valid email.': 'Please enter a valid email.',
+      'Additional information': 'Additional information',
+      Send: 'Send',
     },
   },
   de: {
@@ -68,6 +80,18 @@ export const translations = {
       Cancel: 'Abbrechen',
       Apply: 'Anwenden',
       'Back to request image': 'Zurück zur Bildanfrage',
+      'Please select a search criteria before search request to refine and yield accurate results.':
+        'Bitte wählen Sie vor der Suchanfrage ein Suchkriterium aus, um die Suche zu verfeinern und genaue Ergebnisse zu erhalten.',
+      'Search criteria is not selected':
+        'Suchkriterien sind nicht ausgewählt',
+      Inquiry: 'Anfrage',
+      'Call us': 'Rufen Sie uns an',
+      'Submit and Inquiry': 'Einreichen und anfragen',
+      'Submit your image for inquiry': 'Senden Sie Ihr Bild für eine Anfrage',
+      'Your email (required)': 'Ihre E-Mail (erforderlich)',
+      'Please enter a valid email.': 'Bitte geben Sie eine gültige E-Mailadresse an',
+      'Additional information': 'Zusätzliche Informationen',
+      Send: 'Senden',
     },
   },
   pt: {
@@ -97,12 +121,24 @@ export const translations = {
         'Nenhum produto foi encontrado com estes critérios ',
       'Please upload an image or enter a keyword to search.':
         'Faça o upload de uma imagem ou busque via texto',
-      'No matches found': 'No matches found',
-      'No matches found for your request': 'No matches found for your request',
-      'Clear all': 'Clear all',
-      Cancel: 'Cancel',
-      Apply: 'Apply',
+      'No matches found': 'Não foram encontradas correspondências',
+      'No matches found for your request': 'Não foram encontradas correspondências para o seu pedido',
+      'Clear all': 'Limpar tudo',
+      Cancel: 'Cancelar',
+      Apply: 'Aplicar',
       'Back to request image': 'Retroceder para imagem inicial',
+      'Please select a search criteria before search request to refine and yield accurate results.':
+        'Selecione um critérios de pesquisa antes da solicitação de pesquisa para refinar e produzir resultados precisos.',
+      'Search criteria is not selected':
+        'Os critérios de pesquisa não estão selecionados',
+      Inquiry: 'Inquérito',
+      'Call us': 'Contactar-nos',
+      'Submit and Inquiry': 'Enviar e consultar',
+      'Submit your image for inquiry': 'Envie sua imagem para consulta',
+      'Your email (required)': 'Seu e-mail (obrigatório)',
+      'Please enter a valid email.': 'Introduza um e-mail válido.',
+      'Additional information': 'Informações adicionais',
+      Send: 'Enviar',
     },
   },
 };

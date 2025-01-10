@@ -21,6 +21,7 @@ export interface Support {
   emailInquiry?: boolean;
   supportNumber?: string;
   emailTemplateId?: string;
+  prefilterFieldName?: string;
 }
 
 export interface Rfq {
