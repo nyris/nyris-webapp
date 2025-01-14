@@ -40,6 +40,8 @@ export const translations = {
       'Select a Filter': 'Select a Filter',
       'Get personalised help from our team of product experts.':
         'Get personalised help from our team of product experts.',
+      'Adjust the selection frame for better results':
+        'Adjust the selection frame for better results',
     },
   },
   de: {
@@ -84,6 +86,8 @@ export const translations = {
       'Get personalised help from our team of product experts.':
         'Holen Sie sich persönliche Hilfe von unserem Team von Produktexperten.',
       'No matches found': 'Keine Treffer gefunden',
+      'Adjust the selection frame for better results':
+        'Anpassen des Rahmens für bessere Ergebnisse',
     },
   },
   pt: {
@@ -128,6 +132,8 @@ export const translations = {
       'Select a Filter': 'Selecione um filtro',
       'Get personalised help from our team of product experts.':
         'Obtenha ajuda personalizada de nossa equipe de especialistas em produtos.',
+      'Adjust the selection frame for better results':
+        'Ajuste a caixa de busca para melhores resultados',
     },
   },
 };
