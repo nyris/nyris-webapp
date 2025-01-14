@@ -265,7 +265,7 @@ export default function InquiryModal({
                 </p>
                 <Tooltip
                   title={
-                    t('Please select a pre-filter before search request to refine and yield accurate results.')
+                    t('Please select a search criteria before search request to refine and yield accurate results.')
                   }
                   placement="top"
                   arrow={true}
