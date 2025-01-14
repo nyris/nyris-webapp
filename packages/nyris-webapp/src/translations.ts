@@ -32,6 +32,14 @@ export const translations = {
       Cancel: 'Cancel',
       Apply: 'Apply',
       'Back to request image': 'Back to request image',
+      'Experience Visual Search': 'Experience Visual Search',
+      'Start your visual search by selecting an image below.':
+        'Start your visual search by selecting an image below.',
+      'Are these results useful?': 'Are these results useful?',
+      'Thank you for your feedback': 'Thank you for your feedback',
+      'Select a Filter': 'Select a Filter',
+      'Get personalised help from our team of product experts.':
+        'Get personalised help from our team of product experts.',
     },
   },
   de: {
@@ -49,11 +57,11 @@ export const translations = {
       'Items per page': 'Artikel pro Seite',
       'Search with an image': 'Bildsuche',
       'Clear text search': 'Suchtext löschen',
-      'View details': 'Details anzeigen',
+      'View details': 'Anzeige der Details',
       'Clear image search': 'Bildsuche zurück setzen',
       'Add or change pre-filter': 'Vorfilter hinzufügen oder ändern',
       'Expand all': 'Alles anzeigen',
-      'Collapse all': 'Alles einklappen',
+      'Collapse all': 'Alle ausblenden',
       Brand: 'Marke',
       'Product name': 'Produktname',
       loading: 'Lädt',
@@ -61,13 +69,21 @@ export const translations = {
         'Keine Produkte entsprechen Ihren Suchkriterien.',
       'Please upload an image or enter a keyword to search.':
         'Für die Suche bitte Bild hochladen oder Stichwort eingeben.',
-      'No matches found': 'Keine Treffer für Ihre Anfrage gefunden',
       'No matches found for your request':
         'Keine Treffer für Ihre Anfrage gefunden',
       'Clear all': 'Alles löschen',
       Cancel: 'Abbrechen',
       Apply: 'Anwenden',
       'Back to request image': 'Zurück zur Bildanfrage',
+      'Experience Visual Search': 'Erleben Sie die visuelle Suche',
+      'Start your visual search by selecting an image below.':
+        'Beginnen Sie Ihre visuelle Suche und wählen eines der  Bilder aus.',
+      'Are these results useful?': 'Sind diese Ergebnisse nützlich?',
+      'Thank you for your feedback': 'Vielen Dank für Ihr Feedback',
+      'Select a Filter': 'Filter wählen',
+      'Get personalised help from our team of product experts.':
+        'Holen Sie sich persönliche Hilfe von unserem Team von Produktexperten.',
+      'No matches found': 'Keine Treffer gefunden',
     },
   },
   pt: {
@@ -97,12 +113,21 @@ export const translations = {
         'Nenhum produto foi encontrado com estes critérios ',
       'Please upload an image or enter a keyword to search.':
         'Faça o upload de uma imagem ou busque via texto',
-      'No matches found': 'No matches found',
-      'No matches found for your request': 'No matches found for your request',
+      'No matches found':
+        'Não foram encontrados resultados para sua solicitação',
+      'No matches found for your request':
+        'Não foram encontrados resultados para sua solicitação',
       'Clear all': 'Clear all',
       Cancel: 'Cancel',
       Apply: 'Apply',
       'Back to request image': 'Retroceder para imagem inicial',
+      'Experience Visual Search': 'Experience Visual Search',
+      'Start your visual search by selecting an image below.':
+        'Start your visual search by selecting an image below.',
+      'Thank you for your feedback': 'Obrigado pelo seu feedback',
+      'Select a Filter': 'Selecione um filtro',
+      'Get personalised help from our team of product experts.':
+        'Obtenha ajuda personalizada de nossa equipe de especialistas em produtos.',
     },
   },
 };
