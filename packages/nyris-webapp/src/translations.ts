@@ -32,6 +32,18 @@ export const translations = {
       Cancel: 'Cancel',
       Apply: 'Apply',
       'Back to request image': 'Back to request image',
+      'Please select a search criteria before search request to refine and yield accurate results.':
+        'Please select a search criteria before search request to refine and yield accurate results.',
+      'Search criteria is not selected':
+        'Search criteria is not selected',
+      Inquiry: 'Inquiry',
+      'Call us': 'Call us',
+      'Submit your inquiry': 'Submit your inquiry',
+      'Submit your image for inquiry': 'Submit your image for inquiry',
+      'Your email (required)': 'Your email (required)',
+      'Please enter a valid email.': 'Please enter a valid email.',
+      'Additional information': 'Additional information',
+      Send: 'Send',
       'Experience Visual Search': 'Experience Visual Search',
       'Start your visual search by selecting an image below.':
         'Start your visual search by selecting an image below.',
@@ -47,18 +59,6 @@ export const translations = {
         'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?',
       "Don't show this again": "Don't show this again",
       Continue: 'Continue',
-      'Please select a search criteria before search request to refine and yield accurate results.':
-        'Please select a search criteria before search request to refine and yield accurate results.',
-      'Search criteria is not selected':
-        'Search criteria is not selected',
-      Inquiry: 'Inquiry',
-      'Call us': 'Call us',
-      'Submit your inquiry': 'Submit your inquiry',
-      'Submit your image for inquiry': 'Submit your image for inquiry',
-      'Your email (required)': 'Your email (required)',
-      'Please enter a valid email.': 'Please enter a valid email.',
-      'Additional information': 'Additional information',
-      Send: 'Send',
     },
   },
   de: {
@@ -94,6 +94,18 @@ export const translations = {
       Cancel: 'Abbrechen',
       Apply: 'Anwenden',
       'Back to request image': 'Zurück zur Bildanfrage',
+      'Please select a search criteria before search request to refine and yield accurate results.':
+        'Bitte wählen Sie vor der Suchanfrage ein Suchkriterium aus, um die Suche zu verfeinern und genaue Ergebnisse zu erhalten.',
+      'Search criteria is not selected':
+        'Suchkriterien sind nicht ausgewählt',
+      Inquiry: 'Anfrage',
+      'Call us': 'Rufen Sie uns an',
+      'Submit your inquiry': 'Senden Sie Ihre Anfrage',
+      'Submit your image for inquiry': 'Senden Sie Ihr Bild für eine Anfrage',
+      'Your email (required)': 'Ihre E-Mail (erforderlich)',
+      'Please enter a valid email.': 'Bitte geben Sie eine gültige E-Mailadresse an',
+      'Additional information': 'Zusätzliche Informationen',
+      Send: 'Senden',
       'Experience Visual Search': 'Erleben Sie die visuelle Suche',
       'Start your visual search by selecting an image below.':
         'Beginnen Sie Ihre visuelle Suche und wählen eines der  Bilder aus.',
@@ -110,18 +122,6 @@ export const translations = {
         'Durch das Hochladen eines neuen Bildes werden Ihre aktuellen Suchparameter, Texte und Ergebnisse überschrieben. Möchten Sie wirklich fortfahren?',
       "Don't show this again": 'Nicht mehr anzeigen',
       Continue: 'Fortfahren',
-      'Please select a search criteria before search request to refine and yield accurate results.':
-        'Bitte wählen Sie vor der Suchanfrage ein Suchkriterium aus, um die Suche zu verfeinern und genaue Ergebnisse zu erhalten.',
-      'Search criteria is not selected':
-          'Suchkriterien sind nicht ausgewählt',
-      Inquiry: 'Anfrage',
-      'Call us': 'Rufen Sie uns an',
-      'Submit your inquiry': 'Senden Sie Ihre Anfrage',
-      'Submit your image for inquiry': 'Senden Sie Ihr Bild für eine Anfrage',
-      'Your email (required)': 'Ihre E-Mail (erforderlich)',
-      'Please enter a valid email.': 'Bitte geben Sie eine gültige E-Mailadresse an',
-      'Additional information': 'Zusätzliche Informationen',
-      Send: 'Senden',
     },
   },
   pt: {
@@ -148,7 +148,7 @@ export const translations = {
       Brand: 'Marca',
       loading: 'Carregando',
       'No products were found matching your search criteria.':
-        'Nenhum produto foi encontrado com estes critérios ',
+        'Nenhum produto foi encontrado com estes critérios.',
       'Please upload an image or enter a keyword to search.':
         'Faça o upload de uma imagem ou busque via texto',
       'No matches found':
@@ -159,6 +159,18 @@ export const translations = {
       Cancel: 'Cancelar',
       Apply: 'Aplicar',
       'Back to request image': 'Retroceder para imagem inicial',
+      'Please select a search criteria before search request to refine and yield accurate results.':
+        'Selecione um critérios de pesquisa antes da solicitação de pesquisa para refinar e produzir resultados precisos.',
+      'Search criteria is not selected':
+        'Os critérios de pesquisa não estão selecionados',
+      Inquiry: 'Inquérito',
+      'Call us': 'Contactar-nos',
+      'Submit your inquiry': 'Enviar o seu pedido',
+      'Submit your image for inquiry': 'Envie sua imagem para consulta',
+      'Your email (required)': 'Seu e-mail (obrigatório)',
+      'Please enter a valid email.': 'Introduza um e-mail válido.',
+      'Additional information': 'Informações adicionais',
+      Send: 'Enviar',
       'Experience Visual Search': 'Experience Visual Search',
       'Start your visual search by selecting an image below.':
         'Start your visual search by selecting an image below.',
@@ -173,18 +185,6 @@ export const translations = {
         'Carregar uma nova imagem substituirá seus parâmetros de pesquisa, texto e resultados atuais. Tem certeza de que deseja prosseguir?',
       "Don't show this again": 'Não mostrar isso novamente',
       Continue: 'Continuar',
-      'Please select a search criteria before search request to refine and yield accurate results.':
-          'Selecione um critérios de pesquisa antes da solicitação de pesquisa para refinar e produzir resultados precisos.',
-      'Search criteria is not selected':
-          'Os critérios de pesquisa não estão selecionados',
-      Inquiry: 'Inquérito',
-      'Call us': 'Contactar-nos',
-      'Submit your inquiry': 'Enviar o seu pedido',
-      'Submit your image for inquiry': 'Envie sua imagem para consulta',
-      'Your email (required)': 'Seu e-mail (obrigatório)',
-      'Please enter a valid email.': 'Introduza um e-mail válido.',
-      'Additional information': 'Informações adicionais',
-      Send: 'Enviar',
     },
   },
 };
