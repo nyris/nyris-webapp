@@ -22,7 +22,7 @@ function PostFilterDrawer({
     <Drawer open={openModal} onOpenChange={handleClose}>
       <DrawerContent className="bg-white p-0 m-auto overflow-y-hidden pt-2.5 h-full outline-none rounded-none">
         <DrawerHeader className="h-0 w-0 hidden">
-          <DrawerTitle>Select a Filter</DrawerTitle>
+          <DrawerTitle>{t('Select a Filter')}</DrawerTitle>
         </DrawerHeader>
 
         <div

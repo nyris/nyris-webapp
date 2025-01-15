@@ -4,7 +4,6 @@ import { twMerge } from 'tailwind-merge';
 import { Icon } from '@nyris/nyris-react-components';
 
 import CadenasLoading from './CadenasLoading';
-import { CadenasScriptStatus } from 'types';
 import useUiStore from 'stores/ui/uiStore';
 
 declare const psol: any;

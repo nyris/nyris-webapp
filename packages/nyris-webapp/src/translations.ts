@@ -32,6 +32,32 @@ export const translations = {
       Cancel: 'Cancel',
       Apply: 'Apply',
       'Back to request image': 'Back to request image',
+      'Please select a search criteria before search request to refine and yield accurate results.':
+        'Please select a search criteria before search request to refine and yield accurate results.',
+      'Search criteria is not selected': 'Search criteria is not selected',
+      Inquiry: 'Inquiry',
+      'Call us': 'Call us',
+      'Submit your inquiry': 'Submit your inquiry',
+      'Submit your image for inquiry': 'Submit your image for inquiry',
+      'Your email (required)': 'Your email (required)',
+      'Please enter a valid email.': 'Please enter a valid email.',
+      'Additional information': 'Additional information',
+      Send: 'Send',
+      'Experience Visual Search': 'Experience Visual Search',
+      'Start your visual search by selecting an image below.':
+        'Start your visual search by selecting an image below.',
+      'Are these results useful?': 'Are these results useful?',
+      'Thank you for your feedback': 'Thank you for your feedback',
+      'Select a Filter': 'Select a Filter',
+      'Get personalised help from our team of product experts.':
+        'Get personalised help from our team of product experts.',
+      'Adjust the selection frame for better results':
+        'Adjust the selection frame for better results',
+      'Replace Current Data?': 'Replace Current Data?',
+      'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?':
+        'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?',
+      "Don't show this again": "Don't show this again",
+      Continue: 'Continue',
     },
   },
   de: {
@@ -49,11 +75,11 @@ export const translations = {
       'Items per page': 'Artikel pro Seite',
       'Search with an image': 'Bildsuche',
       'Clear text search': 'Suchtext löschen',
-      'View details': 'Details anzeigen',
+      'View details': 'Anzeige der Details',
       'Clear image search': 'Bildsuche zurück setzen',
       'Add or change pre-filter': 'Vorfilter hinzufügen oder ändern',
       'Expand all': 'Alles anzeigen',
-      'Collapse all': 'Alles einklappen',
+      'Collapse all': 'Alle ausblenden',
       Brand: 'Marke',
       'Product name': 'Produktname',
       loading: 'Lädt',
@@ -61,13 +87,40 @@ export const translations = {
         'Keine Produkte entsprechen Ihren Suchkriterien.',
       'Please upload an image or enter a keyword to search.':
         'Für die Suche bitte Bild hochladen oder Stichwort eingeben.',
-      'No matches found': 'Keine Treffer für Ihre Anfrage gefunden',
       'No matches found for your request':
         'Keine Treffer für Ihre Anfrage gefunden',
       'Clear all': 'Alles löschen',
       Cancel: 'Abbrechen',
       Apply: 'Anwenden',
       'Back to request image': 'Zurück zur Bildanfrage',
+      'Please select a search criteria before search request to refine and yield accurate results.':
+        'Bitte wählen Sie vor der Suchanfrage ein Suchkriterium aus, um die Suche zu verfeinern und genaue Ergebnisse zu erhalten.',
+      'Search criteria is not selected': 'Suchkriterien sind nicht ausgewählt',
+      Inquiry: 'Anfrage',
+      'Call us': 'Rufen Sie uns an',
+      'Submit your inquiry': 'Senden Sie Ihre Anfrage',
+      'Submit your image for inquiry': 'Senden Sie Ihr Bild für eine Anfrage',
+      'Your email (required)': 'Ihre E-Mail (erforderlich)',
+      'Please enter a valid email.':
+        'Bitte geben Sie eine gültige E-Mailadresse an',
+      'Additional information': 'Zusätzliche Informationen',
+      Send: 'Senden',
+      'Experience Visual Search': 'Erleben Sie die visuelle Suche',
+      'Start your visual search by selecting an image below.':
+        'Beginnen Sie Ihre visuelle Suche und wählen eines der  Bilder aus.',
+      'Are these results useful?': 'Sind diese Ergebnisse nützlich?',
+      'Thank you for your feedback': 'Vielen Dank für Ihr Feedback',
+      'Select a Filter': 'Filter wählen',
+      'Get personalised help from our team of product experts.':
+        'Holen Sie sich persönliche Hilfe von unserem Team von Produktexperten.',
+      'No matches found': 'Keine Treffer gefunden',
+      'Adjust the selection frame for better results':
+        'Anpassen des Rahmens für bessere Ergebnisse',
+      'Replace Current Data?': 'Aktuelle Daten ersetzen?',
+      'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?':
+        'Durch das Hochladen eines neuen Bildes werden Ihre aktuellen Suchparameter, Texte und Ergebnisse überschrieben. Möchten Sie wirklich fortfahren?',
+      "Don't show this again": 'Nicht mehr anzeigen',
+      Continue: 'Fortfahren',
     },
   },
   pt: {
@@ -94,15 +147,43 @@ export const translations = {
       Brand: 'Marca',
       loading: 'Carregando',
       'No products were found matching your search criteria.':
-        'Nenhum produto foi encontrado com estes critérios ',
+        'Nenhum produto foi encontrado com estes critérios.',
       'Please upload an image or enter a keyword to search.':
         'Faça o upload de uma imagem ou busque via texto',
-      'No matches found': 'No matches found',
-      'No matches found for your request': 'No matches found for your request',
-      'Clear all': 'Clear all',
-      Cancel: 'Cancel',
-      Apply: 'Apply',
+      'No matches found':
+        'Não foram encontrados resultados para sua solicitação',
+      'No matches found for your request':
+        'Não foram encontrados resultados para sua solicitação',
+      'Clear all': 'Limpar tudo',
+      Cancel: 'Cancelar',
+      Apply: 'Aplicar',
       'Back to request image': 'Retroceder para imagem inicial',
+      'Please select a search criteria before search request to refine and yield accurate results.':
+        'Selecione um critérios de pesquisa antes da solicitação de pesquisa para refinar e produzir resultados precisos.',
+      'Search criteria is not selected':
+        'Os critérios de pesquisa não estão selecionados',
+      Inquiry: 'Inquérito',
+      'Call us': 'Contactar-nos',
+      'Submit your inquiry': 'Enviar o seu pedido',
+      'Submit your image for inquiry': 'Envie sua imagem para consulta',
+      'Your email (required)': 'Seu e-mail (obrigatório)',
+      'Please enter a valid email.': 'Introduza um e-mail válido.',
+      'Additional information': 'Informações adicionais',
+      Send: 'Enviar',
+      'Experience Visual Search': 'Experience Visual Search',
+      'Start your visual search by selecting an image below.':
+        'Start your visual search by selecting an image below.',
+      'Thank you for your feedback': 'Obrigado pelo seu feedback',
+      'Select a Filter': 'Selecione um filtro',
+      'Get personalised help from our team of product experts.':
+        'Obtenha ajuda personalizada de nossa equipe de especialistas em produtos.',
+      'Adjust the selection frame for better results':
+        'Ajuste a caixa de busca para melhores resultados',
+      'Replace Current Data?': 'Substituir os dados atuais?',
+      'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?':
+        'Carregar uma nova imagem substituirá seus parâmetros de pesquisa, texto e resultados atuais. Tem certeza de que deseja prosseguir?',
+      "Don't show this again": 'Não mostrar isso novamente',
+      Continue: 'Continuar',
     },
   },
 };

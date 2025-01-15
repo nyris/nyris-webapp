@@ -1,4 +1,4 @@
-import { useState, memo, useEffect, useRef } from 'react';
+import { memo } from 'react';
 import { useNavigate } from 'react-router';
 
 import { useImageSearch } from 'hooks/useImageSearch';

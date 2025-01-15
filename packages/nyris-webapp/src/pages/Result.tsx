@@ -24,6 +24,7 @@ import CurrentRefinements from 'components/CurrentRefinements';
 import { GoBackButton } from 'components/GoBackButton';
 import { useCurrentRefinements } from 'react-instantsearch';
 import CustomCamera from 'components/CustomCameraDrawer';
+import { useTranslation } from 'react-i18next';
 
 function Results() {
   const settings = window.settings;
@@ -58,6 +59,8 @@ function Results() {
   const isShowFilter = query || requestImages[0];
 
   const { items } = useCurrentRefinements();
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     document.title = 'Search results';
@@ -191,7 +194,7 @@ function Results() {
                     <div className={'feedback-floating'}>
                       <div className="feedback-section">
                         <div className="feedback-success">
-                          Thanks for your feedback!
+                          {t('Thank you for your feedback')}
                         </div>
                       </div>
                     </div>

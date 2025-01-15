@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Icon } from '@nyris/nyris-react-components';
 
@@ -13,6 +14,8 @@ function Feedback({
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
+  const { t } = useTranslation();
+
   return (
     <div
       className={`feedback-wrapper`}
@@ -21,7 +24,7 @@ function Feedback({
         transition: 'background-color 0.3s ease',
       }}
     >
-      <p className="desktop:w-[146px]">Are these results useful?</p>
+      <p className="desktop:w-[146px]">{t('Are these results useful?')}</p>
       <div
         className="feedback-icon-wrapper"
         onClick={() => submitFeedback(false)}

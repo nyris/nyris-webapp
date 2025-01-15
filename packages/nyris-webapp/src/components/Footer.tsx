@@ -1,10 +1,7 @@
-import { useLocation } from 'react-router';
 import { Icon } from '@nyris/nyris-react-components';
 import { twMerge } from 'tailwind-merge';
 
 export default function Footer({ className }: { className?: string }) {
-  const location = useLocation();
-
   return (
     <div
       className={twMerge(

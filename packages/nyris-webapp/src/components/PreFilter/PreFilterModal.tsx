@@ -8,6 +8,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from 'components/Drawer/Drawer';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   openModal: boolean;
@@ -18,6 +19,7 @@ function PreFilterModal(props: Props): JSX.Element {
   const { openModal = false, handleClose } = props;
 
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+  const { t } = useTranslation();
 
   if (!isMobile) {
     return (
@@ -26,7 +28,9 @@ function PreFilterModal(props: Props): JSX.Element {
           className="bg-white p-0 max-w-[1500px] w-[90%] max-h-[95vh] h-[80%] m-auto overflow-y-hidden rounded-lg pt-2.5"
           closeButton={false}
         >
-          <DialogTitle className="h-0 w-0 hidden">Select a Filter</DialogTitle>
+          <DialogTitle className="h-0 w-0 hidden">
+            {t('Select a Filter')}
+          </DialogTitle>
           <PreFilterComponent handleClose={handleClose} />
         </DialogContent>
       </Dialog>
@@ -37,7 +41,7 @@ function PreFilterModal(props: Props): JSX.Element {
     <Drawer open={openModal} onOpenChange={handleClose}>
       <DrawerContent className="bg-white p-0 m-auto overflow-y-hidden pt-2.5 h-full outline-none rounded-none">
         <DrawerHeader className="h-0 w-0 hidden">
-          <DrawerTitle>Select a Filter</DrawerTitle>
+          <DrawerTitle>{t('Select a Filter')}</DrawerTitle>
         </DrawerHeader>
         <PreFilterComponent handleClose={handleClose} />
       </DrawerContent>
