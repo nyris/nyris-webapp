@@ -294,6 +294,7 @@ function ImagePreviewComponent({
               borderRadius: '16px',
               zIndex: 1000,
               height: 'fit-content',
+              alignItems: 'center',
             }}
           >
             <Icon name="info" color="white" width={12} height={12} />
@@ -306,7 +307,7 @@ function ImagePreviewComponent({
             >
               {showAdjustInfo
                 ? t('Crop the image for better results')
-                : 'Crop the image for better results'}
+                : t('Adjust the selection frame for better results')}
             </p>
           </div>
         )}
@@ -396,7 +397,7 @@ function ImagePreviewComponent({
             >
               {showAdjustInfo
                 ? t('Crop the image for better results')
-                : 'Crop the image for better results'}
+                : t('Adjust the selection frame for better results')}
             </p>
           </div>
         )}

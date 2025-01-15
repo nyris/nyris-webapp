@@ -400,7 +400,7 @@ function ResultComponent(props: Props) {
                           <div className={'feedback-floating'}>
                             <div className="feedback-section">
                               <div className="feedback-success">
-                                Thanks for your feedback!
+                                {t('Thank you for your feedback')}
                               </div>
                             </div>
                           </div>
