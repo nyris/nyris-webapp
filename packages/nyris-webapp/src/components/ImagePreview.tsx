@@ -172,7 +172,7 @@ function ImagePreviewComponent({
             >
               {showAdjustInfo
                 ? t('Crop the image for better results')
-                : 'Crop the image for better results'}
+                : t('Adjust the selection frame for better results')}
             </p>
           </div>
         )}
@@ -262,7 +262,7 @@ function ImagePreviewComponent({
             >
               {showAdjustInfo
                 ? t('Crop the image for better results')
-                : 'Crop the image for better results'}
+                : t('Adjust the selection frame for better results')}
             </p>
           </div>
         )}

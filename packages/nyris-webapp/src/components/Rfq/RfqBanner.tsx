@@ -1,6 +1,7 @@
 import { getCroppedCanvas } from 'utils/misc';
 import RfqModal from './RfqModal';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 function RfqBanner({
   requestImage,
@@ -13,6 +14,9 @@ function RfqBanner({
   const [rfqStatus, setRfqStatus] = useState<'inactive' | 'loading' | 'sent'>(
     'inactive',
   );
+
+  const { t } = useTranslation();
+
   return (
     <>
       {isRfqModalOpen && (
@@ -68,9 +72,9 @@ function RfqBanner({
                   fontWeight: 'bold',
                 }}
               >
-                <p className="desktop:hidden">No matches found?</p>
+                <p className="desktop:hidden">{`${t('No matches found')}?`}</p>
                 <p className="hidden desktop:block">
-                  No matches found for your request?
+                  `${t('No matches found for your request')}?`
                 </p>
               </div>
               <div
@@ -82,7 +86,7 @@ function RfqBanner({
                   fontWeight: 'normal',
                 }}
               >
-                Get personalised help from our team of product experts.
+                {t('Get personalised help from our team of product experts.')}
               </div>
             </div>
             <button

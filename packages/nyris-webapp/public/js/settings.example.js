@@ -97,6 +97,7 @@ var settings = {
     emailTemplateId: '',
     supportNumber: '',
     description: '',
+    prefilterFieldName: '',
   },
   cadenas: {
     catalog: '',

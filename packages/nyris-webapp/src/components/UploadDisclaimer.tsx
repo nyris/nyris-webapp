@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 
 import { Icon, makeFileHandler } from '@nyris/nyris-react-components';
 import { useMediaQuery } from 'react-responsive';
+import { useTranslation } from 'react-i18next';
 
 function UploadDisclaimer({
   onClose,
@@ -14,6 +15,8 @@ function UploadDisclaimer({
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
+  const { t } = useTranslation();
+
   return (
     <>
       {createPortal(
@@ -21,7 +24,9 @@ function UploadDisclaimer({
           <div className="bg-white w-80">
             <div className="p-4">
               <div className="flex justify-between items-center">
-                <div className="font-bold text-xl">Replace Current Data?</div>
+                <div className="font-bold text-xl">
+                  {t('Replace Current Data?')}
+                </div>
                 <Icon
                   name="close"
                   className="cursor-pointer"
@@ -31,8 +36,9 @@ function UploadDisclaimer({
                 />
               </div>
               <p className="text-sm mt-4">
-                Uploading a new image will overwrite your current search
-                parameters, text, and results. Are you sure you want to proceed?
+                {t(
+                  `Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?`,
+                )}
               </p>
               <div className="mt-4 gap-x-2 flex">
                 <input
@@ -42,7 +48,7 @@ function UploadDisclaimer({
                     setDontShowAgain(e.target.checked);
                   }}
                 />
-                Don't show this again
+                {t(`Don't show this again`)}
               </div>
             </div>
             <div className="flex">
@@ -50,7 +56,7 @@ function UploadDisclaimer({
                 className="w-1/2 h-16 p-4 text-start text-sm text-white bg-[#2B2C46]"
                 onClick={() => onClose()}
               >
-                Cancel
+                {t(`Cancel`)}
               </button>
               <label
                 className="w-1/2 h-16 p-4 text-start text-sm text-white bg-[#E31B5D] cursor-pointer"
@@ -61,7 +67,7 @@ function UploadDisclaimer({
                   }
                 }}
               >
-                Continue
+                {t(`Continue`)}
               </label>
               <input
                 type="file"

@@ -12,6 +12,7 @@ import { Dialog, DialogContent } from 'components/Modal/Dialog';
 import { AutosizeTextarea } from 'components/AutosizeTextArea';
 import Tooltip from 'components/Tooltip/TooltipComponent';
 
+import { useTranslation } from 'react-i18next';
 interface Props {
   requestImage: any;
   selectedRegion: any;
@@ -57,6 +58,7 @@ export default function InquiryModal({
     },
     [setInformation],
   );
+  const { t } = useTranslation();
 
   useEffect(() => emailjs.init('SMGihPnuEGcYLm0V4'), []);
   useEffect(() => {
@@ -165,8 +167,8 @@ export default function InquiryModal({
               }}
             >
               {requestImage
-                ? 'Submit your image for inquiry'
-                : 'Submit your inquiry'}
+                ? t('Submit your image for inquiry')
+                : t('Submit your inquiry')}
             </p>
             <div
               onClick={() => setIsInquiryModalOpen(false)}
@@ -219,7 +221,7 @@ export default function InquiryModal({
                   marginBottom: '8px',
                 }}
               >
-                Your email (required)
+                {t('Your email (required)')}
               </p>
               <input
                 value={email}
@@ -238,7 +240,7 @@ export default function InquiryModal({
                 <p
                   style={{ color: 'red', fontSize: '12px', paddingTop: '8px' }}
                 >
-                  Please enter a valid email.
+                  {t('Please enter a valid email.')}
                 </p>
               )}
             </div>
@@ -261,9 +263,9 @@ export default function InquiryModal({
                     Machine
                   </p>
                   <Tooltip
-                    content={
-                      'Please select a pre-filter before search request to refine and yield accurate results.'
-                    }
+                    content={t(
+                      'Please select a search criteria before search request to refine and yield accurate results.',
+                    )}
                   >
                     <Icon
                       name="info"
@@ -285,7 +287,8 @@ export default function InquiryModal({
                     backgroundColor: '#fff',
                   }}
                 >
-                  {preFilterValues.join(', ') || 'Pre-filter is not selected'}
+                  {preFilterValues.join(', ') ||
+                    t('Search criteria is not selected')}
                 </div>
               </div>
             )}
