@@ -42,6 +42,11 @@ export const translations = {
         'Get personalised help from our team of product experts.',
       'Adjust the selection frame for better results':
         'Adjust the selection frame for better results',
+      'Replace Current Data?': 'Replace Current Data?',
+      'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?':
+        'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?',
+      "Don't show this again": "Don't show this again",
+      Continue: 'Continue',
     },
   },
   de: {
@@ -88,6 +93,11 @@ export const translations = {
       'No matches found': 'Keine Treffer gefunden',
       'Adjust the selection frame for better results':
         'Anpassen des Rahmens für bessere Ergebnisse',
+      'Replace Current Data?': 'Aktuelle Daten ersetzen?',
+      'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?':
+        'Durch das Hochladen eines neuen Bildes werden Ihre aktuellen Suchparameter, Texte und Ergebnisse überschrieben. Möchten Sie wirklich fortfahren?',
+      "Don't show this again": 'Nicht mehr anzeigen',
+      Continue: 'Fortfahren',
     },
   },
   pt: {
@@ -121,9 +131,9 @@ export const translations = {
         'Não foram encontrados resultados para sua solicitação',
       'No matches found for your request':
         'Não foram encontrados resultados para sua solicitação',
-      'Clear all': 'Clear all',
-      Cancel: 'Cancel',
-      Apply: 'Apply',
+      'Clear all': 'Limpar tudo',
+      Cancel: 'Cancelar',
+      Apply: 'Aplicar',
       'Back to request image': 'Retroceder para imagem inicial',
       'Experience Visual Search': 'Experience Visual Search',
       'Start your visual search by selecting an image below.':
@@ -134,6 +144,11 @@ export const translations = {
         'Obtenha ajuda personalizada de nossa equipe de especialistas em produtos.',
       'Adjust the selection frame for better results':
         'Ajuste a caixa de busca para melhores resultados',
+      'Replace Current Data?': 'Substituir os dados atuais?',
+      'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?':
+        'Carregar uma nova imagem substituirá seus parâmetros de pesquisa, texto e resultados atuais. Tem certeza de que deseja prosseguir?',
+      "Don't show this again": 'Não mostrar isso novamente',
+      Continue: 'Continuar',
     },
   },
 };
