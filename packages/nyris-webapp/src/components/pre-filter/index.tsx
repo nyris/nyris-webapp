@@ -456,7 +456,7 @@ function PreFilterComponent(props: Props) {
           </div>
         )}
         {isEmpty(resultFilter) && !isLoading && (
-          <Typography>No result found</Typography>
+          <Typography>{t('No result found')}</Typography>
         )}
       </div>
       {!isMobile && (
