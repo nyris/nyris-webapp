@@ -155,7 +155,7 @@ function InquiryBanner({
                       justifyContent: 'space-between',
                     }}
                   >
-                    <p>Inquiry</p>
+                    <p>{t('Inquiry')}</p>
                     <Icon name="email" color="#fff" width={16} height={12} />
                   </div>
                 </div>
@@ -190,7 +190,7 @@ function InquiryBanner({
                       justifyContent: 'space-between',
                     }}
                   >
-                    <p> Call us</p>
+                    <p> {t('Call us')}</p>
                     <Icon name="call" color="#fff" width={16} height={16} />
                   </div>
                 </a>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { getCroppedCanvas } from 'helpers/getCroppedCanvas';
 import { useMediaQuery } from 'react-responsive';
+import { useTranslation } from 'react-i18next';
 
 function RfqBanner({
   requestImage,
@@ -16,7 +17,7 @@ function RfqBanner({
   selectedRegion: any;
 }) {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-
+  const { t } = useTranslation();
   return (
     <div
       style={{
@@ -66,8 +67,8 @@ function RfqBanner({
               }}
             >
               {isMobile
-                ? 'No matches found?'
-                : 'No matches found for your request?'}
+                ? `${t('No matches found')}?`
+                : `${t('No matches found for your request')}?`}
             </div>
             <div
               style={{
@@ -78,7 +79,7 @@ function RfqBanner({
                 fontWeight: 'normal',
               }}
             >
-              Get personalised help from our team of product experts.
+              {t('Get personalised help from our team of product experts.')}
             </div>
           </div>
           <button

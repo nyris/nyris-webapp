@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import { useAppSelector } from 'Store/Store';
 import { useMediaQuery } from 'react-responsive';
 import { Icon } from '@nyris/nyris-react-components';
+import { useTranslation } from 'react-i18next';
 interface Props {
   requestImage: any;
   selectedRegion: any;
@@ -60,6 +61,7 @@ export default function InquiryModal({
     },
     [setInformation],
   );
+  const { t } = useTranslation();
 
   useEffect(() => emailjs.init('SMGihPnuEGcYLm0V4'), []);
   useEffect(() => {
@@ -173,8 +175,8 @@ export default function InquiryModal({
             }}
           >
             {requestImage
-              ? 'Submit your image for inquiry'
-              : 'Submit your inquiry'}
+              ? t('Submit your image for inquiry')
+              : t('Submit your inquiry')}
           </p>
           <div
             onClick={() => setIsInquiryModalOpen(false)}
@@ -223,7 +225,7 @@ export default function InquiryModal({
                 marginBottom: '8px',
               }}
             >
-              Your email (required)
+              {t('Your email (required)')}
             </p>
             <input
               value={email}
@@ -239,7 +241,7 @@ export default function InquiryModal({
             />
             {!emailValid && !isUndefined(emailValid) && (
               <p style={{ color: 'red', fontSize: '12px', paddingTop: '8px' }}>
-                Please enter a valid email.
+                {t('Please enter a valid email.')}
               </p>
             )}
           </div>
@@ -259,21 +261,23 @@ export default function InquiryModal({
                     color: '#2B2C46',
                   }}
                 >
-                  Machine
+                  {settings.support.prefilterFieldName}
                 </p>
                 <Tooltip
                   title={
-                    'Please select a pre-filter before search request to refine and yield accurate results.'
+                    t('Please select a search criteria before search request to refine and yield accurate results.')
                   }
                   placement="top"
                   arrow={true}
                 >
-                  <Icon
-                    name="info"
-                    style={{ cursor: 'pointer' }}
-                    width={12}
-                    height={12}
-                  />
+                  <div>
+                    <Icon
+                      name="info"
+                      style={{ cursor: 'pointer' }}
+                      width={12}
+                      height={12}
+                    />
+                  </div>
                 </Tooltip>
               </div>
 
@@ -288,7 +292,7 @@ export default function InquiryModal({
                   backgroundColor: '#fff',
                 }}
               >
-                {preFilterValues.join(', ') || 'Pre-filter is not selected'}
+                {preFilterValues.join(', ') || t('Search criteria is not selected')}
               </div>
             </div>
           )}
@@ -303,7 +307,7 @@ export default function InquiryModal({
                 color: '#2B2C46',
               }}
             >
-              <p>Additional information</p>
+              <p>{t('Additional information')}</p>
               <p>{`${information.length}/150`}</p>
             </div>
             <TextareaAutosize
@@ -337,7 +341,7 @@ export default function InquiryModal({
             }}
             onClick={() => setIsInquiryModalOpen(false)}
           >
-            Cancel
+            {t('Cancel')}
           </button>
           <button
             style={{
@@ -357,7 +361,7 @@ export default function InquiryModal({
             disabled={!emailValid}
             onClick={handleInquiry}
           >
-            Send
+            {t('Send')}
           </button>
         </div>
       </div>
