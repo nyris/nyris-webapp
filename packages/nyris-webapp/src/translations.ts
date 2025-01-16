@@ -34,8 +34,7 @@ export const translations = {
       'Back to request image': 'Back to request image',
       'Please select a search criteria before search request to refine and yield accurate results.':
         'Please select a search criteria before search request to refine and yield accurate results.',
-      'Search criteria is not selected':
-        'Search criteria is not selected',
+      'Search criteria is not selected': 'Search criteria is not selected',
       Inquiry: 'Inquiry',
       'Call us': 'Call us',
       'Submit your inquiry': 'Submit your inquiry',
@@ -59,6 +58,7 @@ export const translations = {
         'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?',
       "Don't show this again": "Don't show this again",
       Continue: 'Continue',
+      'Request sent successfully': 'Request sent successfully',
     },
   },
   de: {
@@ -96,14 +96,14 @@ export const translations = {
       'Back to request image': 'Zurück zur Bildanfrage',
       'Please select a search criteria before search request to refine and yield accurate results.':
         'Bitte wählen Sie vor der Suchanfrage ein Suchkriterium aus, um die Suche zu verfeinern und genaue Ergebnisse zu erhalten.',
-      'Search criteria is not selected':
-        'Suchkriterien sind nicht ausgewählt',
+      'Search criteria is not selected': 'Suchkriterien sind nicht ausgewählt',
       Inquiry: 'Anfrage',
       'Call us': 'Rufen Sie uns an',
       'Submit your inquiry': 'Senden Sie Ihre Anfrage',
       'Submit your image for inquiry': 'Senden Sie Ihr Bild für eine Anfrage',
       'Your email (required)': 'Ihre E-Mail (erforderlich)',
-      'Please enter a valid email.': 'Bitte geben Sie eine gültige E-Mailadresse an',
+      'Please enter a valid email.':
+        'Bitte geben Sie eine gültige E-Mailadresse an',
       'Additional information': 'Zusätzliche Informationen',
       Send: 'Senden',
       'Experience Visual Search': 'Erleben Sie die visuelle Suche',
@@ -122,6 +122,7 @@ export const translations = {
         'Durch das Hochladen eines neuen Bildes werden Ihre aktuellen Suchparameter, Texte und Ergebnisse überschrieben. Möchten Sie wirklich fortfahren?',
       "Don't show this again": 'Nicht mehr anzeigen',
       Continue: 'Fortfahren',
+      'Request sent successfully': 'Anfrage erfolgreich gesendet',
     },
   },
   pt: {
@@ -171,9 +172,9 @@ export const translations = {
       'Please enter a valid email.': 'Introduza um e-mail válido.',
       'Additional information': 'Informações adicionais',
       Send: 'Enviar',
-      'Experience Visual Search': 'Experience Visual Search',
+      'Experience Visual Search': 'Experimente a pesquisa visual',
       'Start your visual search by selecting an image below.':
-        'Start your visual search by selecting an image below.',
+        'Comece sua busca visual selecionando uma imagem abaixo.',
       'Thank you for your feedback': 'Obrigado pelo seu feedback',
       'Select a Filter': 'Selecione um filtro',
       'Get personalised help from our team of product experts.':
@@ -185,6 +186,8 @@ export const translations = {
         'Carregar uma nova imagem substituirá seus parâmetros de pesquisa, texto e resultados atuais. Tem certeza de que deseja prosseguir?',
       "Don't show this again": 'Não mostrar isso novamente',
       Continue: 'Continuar',
+      'Request sent successfully': 'Solicitação enviada com sucesso',
+      'Are these results useful?': 'Esses resultados são úteis?',
     },
   },
 };

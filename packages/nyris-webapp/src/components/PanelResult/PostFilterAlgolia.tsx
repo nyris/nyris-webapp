@@ -252,7 +252,7 @@ export default function PostFilterPanelAlgolia({
             }}
             onClick={handlerApplyfillter}
           >
-            Cancel
+            {t('Cancel')}
           </div>
           <div
             className="text-white"
@@ -268,7 +268,7 @@ export default function PostFilterPanelAlgolia({
             }}
             onClick={handlerApplyfillter}
           >
-            Apply filters
+            {t('Apply')}
           </div>
         </div>
       )}

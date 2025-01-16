@@ -88,7 +88,7 @@ export default function InquiryModal({
             ? preFilterValues.join(', ')
             : '<not specified>',
         });
-        ToastHelper.success('Request sent successfully');
+        ToastHelper.success(t('Request sent successfully'));
       } catch (error) {
         toast(
           t => {
@@ -264,9 +264,9 @@ export default function InquiryModal({
                   {settings.support.prefilterFieldName}
                 </p>
                 <Tooltip
-                  title={
-                    t('Please select a search criteria before search request to refine and yield accurate results.')
-                  }
+                  title={t(
+                    'Please select a search criteria before search request to refine and yield accurate results.',
+                  )}
                   placement="top"
                   arrow={true}
                 >
@@ -292,7 +292,8 @@ export default function InquiryModal({
                   backgroundColor: '#fff',
                 }}
               >
-                {preFilterValues.join(', ') || t('Search criteria is not selected')}
+                {preFilterValues.join(', ') ||
+                  t('Search criteria is not selected')}
               </div>
             </div>
           )}
