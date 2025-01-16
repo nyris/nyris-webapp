@@ -11,6 +11,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useAppSelector } from '../../Store/Store';
 import useRequestStore from 'Store/requestStore';
 import { Icon } from '@nyris/nyris-react-components';
+import { useTranslation } from 'react-i18next';
 interface Props {
   setIsRfqModalOpen: any;
   isRfqModalOpen?: any;
@@ -79,7 +80,7 @@ export default function RfqModal({
           request_image: croppedImage?.toDataURL(),
         });
         setRfqStatus('sent');
-        ToastHelper.success('Request sent successfully');
+        ToastHelper.success(t('Request sent successfully'));
       } catch (error) {
         setRfqStatus('inactive');
 
@@ -131,6 +132,8 @@ export default function RfqModal({
       setIsRfqModalOpen(false);
     }
   };
+
+  const { t } = useTranslation();
 
   return (
     <DefaultModal
@@ -263,7 +266,7 @@ export default function RfqModal({
             }}
             onClick={() => setIsRfqModalOpen(false)}
           >
-            Cancel
+            {t('Cancel')}
           </button>
           <button
             style={{
@@ -281,7 +284,7 @@ export default function RfqModal({
             disabled={!emailValid}
             onClick={handleRfq}
           >
-            Send
+            {t('Send')}
           </button>
         </div>
       </div>
