@@ -289,7 +289,7 @@ export default function PostFilterPanel({
             }}
             onClick={handlerApplyfillter}
           >
-            Cancel
+            {t('Cancel')}
           </div>
           <div
             className="text-white"
@@ -305,7 +305,7 @@ export default function PostFilterPanel({
             }}
             onClick={handlerApplyfillter}
           >
-            Apply filters
+            {t('Apply')}
           </div>
         </div>
       )}
