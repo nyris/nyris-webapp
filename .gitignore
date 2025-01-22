@@ -18,6 +18,9 @@
 /packages/vizo/ai/dist
 packages/vizo/ai/dist
 /packages/nyris-webapp/public/js/settings.js
+/packages/nyris-search-suite/build
+/packages/nyris-search-suite/public/js/settings.js
+
 *.tgz
 
 # misc

@@ -1,37 +1,34 @@
-import { RectCoords } from '@nyris/nyris-api';
-import { isEmpty } from 'lodash';
 import { useCallback } from 'react';
-import { findCad, findRegions, getRequestImage } from 'services/image';
-import useRequestStore from 'Store/requestStore';
-import useResultStore from 'Store/resultStore';
-import {
-  setFirstSearchImage,
-  setFirstSearchPrefilters,
-  setFirstSearchResults,
-  setRegions,
-  setRequestImage,
-  setSearchResults,
-  setSelectedRegion,
-  setShowFeedback,
-  updateStatusLoading,
-} from 'Store/search/Search';
-import { useAppDispatch, useAppSelector } from 'Store/Store';
+import { isEmpty } from 'lodash';
+import { useClearRefinements } from 'react-instantsearch';
+
+import { RectCoords } from '@nyris/nyris-api';
+
+import { findCad, findRegions, getRequestImage } from 'services/visualSearch';
+
+import useResultStore from 'stores/result/resultStore';
+import useRequestStore from 'stores/request/requestStore';
+import useUiStore from 'stores/ui/uiStore';
+
 import { AppSettings } from 'types';
 
 export const useCadSearch = () => {
-  const dispatch = useAppDispatch();
-  const preFilter = useAppSelector(state => state.search.preFilter);
+  const preFilter = useRequestStore(state => state.preFilter);
 
-  const { setRequestImages, setImageRegions } = useRequestStore(state => ({
-    setRequestImages: state.setRequestImages,
-    setImageRegions: state.setRegions,
-    requestImages: state.requestImages,
-    regions: state.regions,
-  }));
+  const setRegions = useRequestStore(state => state.setRegions);
+  const setRequestImages = useRequestStore(state => state.setRequestImages);
 
-  const { setDetectedObject } = useResultStore(state => ({
-    setDetectedObject: state.setDetectedObject,
-  }));
+  const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
+  const setShowFeedback = useUiStore(state => state.setShowFeedback);
+
+  const setDetectedRegions = useResultStore(state => state.setDetectedRegions);
+  const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
+  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+
+  const setSessionId = useResultStore(state => state.setSessionId);
+  const setRequestId = useResultStore(state => state.setRequestId);
+
+  const { refine } = useClearRefinements();
 
   const cadSearch = useCallback(
     async ({
@@ -40,13 +37,17 @@ export const useCadSearch = () => {
       showFeedback = true,
       imageRegion,
       newSearch,
+      clearPostFilter,
     }: {
       file: File;
       settings: AppSettings;
       showFeedback?: boolean;
       imageRegion?: RectCoords;
       newSearch?: boolean;
+      clearPostFilter?: boolean;
     }) => {
+      setIsFindApiLoading(true);
+
       let res: any;
 
       const preFilterValues = [
@@ -55,11 +56,6 @@ export const useCadSearch = () => {
           values: Object.keys(preFilter),
         },
       ];
-      let filters: any[] = [];
-      // const canvas = document.createElement('canvas');
-
-      // dispatch(setRequestImage(file));
-      // setRequestImages([file as unknown as HTMLCanvasElement]);
 
       try {
         res = await findCad({
@@ -68,17 +64,27 @@ export const useCadSearch = () => {
           filters: !isEmpty(preFilter) ? preFilterValues : undefined,
         });
 
-        res?.responseBody?.results.forEach((item: any) => {
-          filters.push({
-            sku: item.sku,
-            score: item.score,
-          });
-        });
-        const payload = {
-          ...res?.responseBody,
-          filters,
-        };
-        dispatch(setSearchResults(payload));
+        if (clearPostFilter) {
+          refine();
+        }
+
+        const responseBody = res?.responseBody;
+
+        setFindApiProducts(responseBody?.results);
+        setSessionId(responseBody?.session);
+        setRequestId(responseBody?.id);
+
+        const nonEmptyFilter: any[] = ['sku:DOES_NOT_EXIST<score=1> '];
+        const filterSkus: any = responseBody?.results
+          ? responseBody?.results
+              .slice()
+              .reverse()
+              .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}> `)
+          : '';
+        const filterSkusString = [...nonEmptyFilter, ...filterSkus].join('OR ');
+
+        setAlgoliaFilter(filterSkusString);
+        setIsFindApiLoading(false);
 
         const queryParams = res?.requestUrl.split('?')[1];
 
@@ -97,19 +103,16 @@ export const useCadSearch = () => {
 
         blobToCanvas(blob)
           .then(async canvas => {
-            dispatch(setRequestImage(canvas));
             setRequestImages([canvas]);
-            dispatch(setFirstSearchImage(canvas));
+            // dispatch(setFirstSearchImage(canvas));
 
             try {
               let region: RectCoords | undefined = imageRegion;
 
               let res = await findRegions(canvas, settings);
-              setDetectedObject(res.regions, 0);
-              dispatch(setRegions(res.regions));
+              setDetectedRegions(res.regions, 0);
               region = res.selectedRegion;
-              dispatch(setSelectedRegion(region));
-              setImageRegions([region]);
+              setRegions([region]);
             } catch (error) {}
           })
           .catch(error => {
@@ -117,20 +120,32 @@ export const useCadSearch = () => {
           });
 
         if (showFeedback) {
-          dispatch(setShowFeedback(true));
+          setShowFeedback(true);
         }
         // go back
         if (newSearch) {
-          dispatch(setFirstSearchResults(payload));
-          dispatch(setFirstSearchPrefilters(preFilter));
+          // dispatch(setFirstSearchResults(payload));
+          // dispatch(setFirstSearchPrefilters(preFilter));
         }
       } catch (error) {
-        dispatch(updateStatusLoading(false));
+        setIsFindApiLoading(false);
       }
 
       return res?.responseBody;
     },
-    [dispatch, preFilter, setDetectedObject, setImageRegions, setRequestImages],
+    [
+      preFilter,
+      refine,
+      setAlgoliaFilter,
+      setDetectedRegions,
+      setFindApiProducts,
+      setIsFindApiLoading,
+      setRegions,
+      setRequestId,
+      setRequestImages,
+      setSessionId,
+      setShowFeedback,
+    ],
   );
 
   return { cadSearch };

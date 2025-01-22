@@ -1,5 +1,6 @@
 // tailwind.config.js
 module.exports = {
+  darkMode: ['class'],
   mode: 'jit',
   content: ['./src/**/*.{js,jsx,ts,tsx}', './index.html'],
   theme: {
@@ -10,14 +11,20 @@ module.exports = {
       },
       keyframes: {
         slideUp: {
-          '0%': { transform: 'translateY(100%)' },
-          '100%': { transform: 'translateY(0)' },
+          '0%': {
+            transform: 'translateY(100%)',
+          },
+          '100%': {
+            transform: 'translateY(0)',
+          },
         },
         slideDown: {
           '0%': {
             transform: 'translateY(0)',
           },
-          '100%': { transform: 'translateY(100%)' },
+          '100%': {
+            transform: 'translateY(100%)',
+          },
         },
         loadingTextColor: {
           '0%, 100%': {
@@ -33,21 +40,43 @@ module.exports = {
             opacity: 0.4,
           },
         },
+        'accordion-down': {
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+        },
+        'accordion-up': {
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
+        },
       },
-
       animation: {
         slideUp: 'slideUp 0.3s linear',
         slideDown: 'slideDown 0.3s linear',
         loadingTextColor:
           'loadingTextColor 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
       },
       colors: {
         primary: '#2B2C46',
         secondary: '#3E36DC',
+        theme: {
+          primary: 'var(--primary-color)',
+          secondary: 'var(--secondary-color)',
+        },
       },
     },
     screens: {
       desktop: '777px',
+      'mobile-md': '400px',
     },
   },
   plugins: [],

@@ -1,77 +1,51 @@
-import PostFilterPanel from './PanelResult/PostFilter';
-import PostFilterPanelAlgolia from './PanelResult/PostFilterAlgolia';
-
-import { useAppSelector } from 'Store/Store';
+import { twMerge } from 'tailwind-merge';
 
 import ImagePreview from './ImagePreview';
+import useRequestStore from 'stores/request/requestStore';
+import PostFilterComponent from './PostFilter/PostFilterComponent';
 
-function SidePanel({
-  showAdjustInfo,
-  showPostFilter,
-  disjunctiveFacets,
-}: {
-  showAdjustInfo: any;
-  showPostFilter: any;
-  allSearchResults: any;
-  disjunctiveFacets: any;
-}) {
-  const stateGlobal = useAppSelector(state => state);
-  const { search, settings } = stateGlobal;
+export default function SidePanel({ className }: { className?: string }) {
+  const requestImages = useRequestStore(state => state.requestImages);
+  const showPostFilter = window.settings?.postFilterOption;
 
-  const { requestImage } = search;
-
+  if (!showPostFilter && requestImages.length === 0) {
+    return <></>;
+  }
   return (
     <div
-      className={`wrap-main-col-left`}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-      }}
+      className={twMerge(
+        [
+          'max-w-[320px]',
+          'w-full',
+          'shadow-[3px_-2px_3px_-3px_#d3d4d8]',
+          'overflow-x-hidden',
+          'overflow-y-auto',
+          'bg-white',
+          'relative',
+          'flex',
+          'flex-col',
+        ],
+        className,
+      )}
     >
-      <div>
-        {settings.preview && requestImage && (
-          <div className="col-left">
-            <div className="box-preview">
-              <div
-                className="preview-item"
-                style={{
-                  backgroundColor: 'white',
-                  width: '100%',
-                }}
-              >
-                <div
-                  style={{
-                    width: '100%',
-                  }}
-                >
-                  <ImagePreview
-                    showAdjustInfo={showAdjustInfo}
-                    isExpanded={true}
-                    isCameraUploadEnabled={false}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showPostFilter && (
-          <div
-            className="col-left__bottom"
-            style={{
-              marginTop: requestImage ? '16px' : '48px',
-            }}
-          >
-            {settings.algolia.enabled && (
-              <PostFilterPanelAlgolia disjunctiveFacets={disjunctiveFacets} />
-            )}
-            {!settings.algolia.enabled && <PostFilterPanel />}
-          </div>
-        )}
+      <div
+        className={twMerge([
+          'w-full',
+          'h-fit',
+          'min-h-auto',
+          'relative',
+          'flex',
+          'justify-center',
+          'items-center',
+        ])}
+      >
+        {requestImages[0] && <ImagePreview />}
       </div>
+      {showPostFilter && (
+        <PostFilterComponent
+          className={requestImages.length === 0 ? 'mt-9' : ''}
+        />
+      )}
     </div>
   );
 }
-
-export default SidePanel;

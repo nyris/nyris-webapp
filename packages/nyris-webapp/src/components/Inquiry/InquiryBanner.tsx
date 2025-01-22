@@ -1,10 +1,9 @@
-import { getCroppedCanvas } from 'helpers/getCroppedCanvas';
 import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import InquiryModal from './InquiryModal';
-import { useAppSelector } from 'Store/Store';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '@nyris/nyris-react-components';
+import InquiryModal from './InquiryModal';
+import { getCroppedCanvas } from 'utils/misc';
 
 function InquiryBanner({
   requestImage,
@@ -25,10 +24,8 @@ function InquiryBanner({
     setInquiryStatus('inactive');
   }, [selectedRegion, query]);
 
-  const { description, emailInquiry, supportNumber } =
-    useAppSelector(state => state.settings.support) || {};
-  const { secondaryColor } =
-    useAppSelector(state => state.settings.theme) || {};
+  const { description, emailInquiry, supportNumber } = window.settings.support;
+  const { secondaryColor } = window.settings.theme;
 
   const { t } = useTranslation();
 

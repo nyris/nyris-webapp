@@ -1,6 +1,9 @@
-import { Icon } from '@nyris/nyris-react-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { Icon } from '@nyris/nyris-react-components';
+
+import '../styles/feedback.scss';
 
 function Feedback({
   submitFeedback,
@@ -31,7 +34,7 @@ function Feedback({
         <Icon name="dislike" />
       </div>
       <div
-        className="feedback-icon-wrapper scroll-n"
+        className="feedback-icon-wrapper"
         onClick={() => submitFeedback(true)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}

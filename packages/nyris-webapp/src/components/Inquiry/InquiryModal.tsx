@@ -1,16 +1,17 @@
-import DefaultModal from 'components/modal/DefaultModal';
 import React, { useEffect, useState } from 'react';
-import CloseIcon from '@material-ui/icons/Close';
-import { getCroppedCanvas } from 'helpers/getCroppedCanvas';
 import emailjs from '@emailjs/browser';
-import { ToastHelper } from 'helpers/ToastHelper';
 import { isUndefined } from 'lodash';
-import { TextareaAutosize, Tooltip } from '@material-ui/core';
 import toast from 'react-hot-toast';
 
-import { useAppSelector } from 'Store/Store';
-import { useMediaQuery } from 'react-responsive';
 import { Icon } from '@nyris/nyris-react-components';
+
+import useRequestStore from 'stores/request/requestStore';
+import { getCroppedCanvas } from 'utils/misc';
+import { ToastHelper } from 'helpers/ToastHelper';
+import { Dialog, DialogContent } from 'components/Modal/Dialog';
+import { AutosizeTextarea } from 'components/AutosizeTextArea';
+import Tooltip from 'components/Tooltip/TooltipComponent';
+
 import { useTranslation } from 'react-i18next';
 interface Props {
   requestImage: any;
@@ -41,17 +42,13 @@ export default function InquiryModal({
   setIsInquiryModalOpen,
   isInquiryModalOpen,
 }: Props) {
-  const stateGlobal = useAppSelector(state => state);
-  const {
-    search: { preFilter },
-    settings,
-  } = stateGlobal;
+  const settings = window.settings;
+  const preFilter = useRequestStore(state => state.preFilter);
 
   const preFilterValues = Object.keys(preFilter) as string[];
 
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState<boolean | undefined>(undefined);
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const [information, setInformation] = useState('');
 
@@ -144,228 +141,229 @@ export default function InquiryModal({
   };
 
   return (
-    <DefaultModal
-      openModal={isInquiryModalOpen}
-      rounded={false}
-      handleClose={(e: any) => {
+    <Dialog
+      open={isInquiryModalOpen}
+      onOpenChange={(e: any) => {
         setIsInquiryModalOpen(false);
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          width: !isMobile ? '378px' : '360px',
-          flexDirection: 'column',
-          backgroundColor: '#F3F3F5',
-        }}
+      <DialogContent
+        closeButton={false}
+        className="w-[360px] desktop:w-[378px] flex flex-col bg-white p-0"
       >
-        <div
-          style={{
-            padding: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <p
-            style={{
-              color: '#2B2C46',
-              fontSize: !isMobile ? '20px' : '18px',
-              fontWeight: 'bold',
-            }}
-          >
-            {requestImage
-              ? t('Submit your image for inquiry')
-              : t('Submit your inquiry')}
-          </p>
-          <div
-            onClick={() => setIsInquiryModalOpen(false)}
-            style={{ display: 'flex', padding: '1px' }}
-          >
-            <CloseIcon
-              style={{
-                fontSize: 16,
-                color: 'black',
-                cursor: 'pointer',
-              }}
-            />
-          </div>
-        </div>
-        {requestImage && (
+        <div>
           <div
             style={{
               padding: '16px',
-              backgroundColor: '#F3F3F5',
               display: 'flex',
-              justifyContent: 'center',
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}
           >
-            <img
-              src={getCroppedCanvas(requestImage, selectedRegion)?.toDataURL()}
-              alt="request_image"
-              style={{ maxHeight: '200px' }}
-            />
-          </div>
-        )}
-
-        <div
-          style={{
-            padding: '16px 16px 16px 16px',
-            backgroundColor: '#F3F3F5',
-            display: 'flex',
-            flexDirection: 'column',
-            rowGap: '16px',
-          }}
-        >
-          <div>
             <p
               style={{
-                fontSize: '12px',
                 color: '#2B2C46',
-                marginBottom: '8px',
+                fontWeight: 'bold',
               }}
             >
-              {t('Your email (required)')}
+              {requestImage
+                ? t('Submit your image for inquiry')
+                : t('Submit your inquiry')}
             </p>
-            <input
-              value={email}
-              onChange={e => setEmail(e.currentTarget.value.trim())}
-              style={{
-                width: '100%',
-                border: 'none',
-                height: '32px',
-                padding: '8px 16px 8px 16px',
-                fontSize: '13px',
-                color: ' #2B2C46',
-              }}
-            />
-            {!emailValid && !isUndefined(emailValid) && (
-              <p style={{ color: 'red', fontSize: '12px', paddingTop: '8px' }}>
-                {t('Please enter a valid email.')}
-              </p>
-            )}
+            <div
+              onClick={() => setIsInquiryModalOpen(false)}
+              style={{ display: 'flex', padding: '1px' }}
+            >
+              <Icon
+                name="close"
+                style={{
+                  fontSize: 16,
+                  color: 'black',
+                  cursor: 'pointer',
+                }}
+              />
+            </div>
           </div>
-          {settings.preFilterOption && (
-            <div>
-              <div
-                style={{
-                  display: 'flex',
-                  columnGap: '4px',
-                  alignItems: 'center',
-                  marginBottom: '8px',
-                }}
-              >
-                <p
-                  style={{
-                    fontSize: '12px',
-                    color: '#2B2C46',
-                  }}
-                >
-                  {settings.support.prefilterFieldName}
-                </p>
-                <Tooltip
-                  title={t(
-                    'Please select a search criteria before search request to refine and yield accurate results.',
-                  )}
-                  placement="top"
-                  arrow={true}
-                >
-                  <div>
-                    <Icon
-                      name="info"
-                      style={{ cursor: 'pointer' }}
-                      width={12}
-                      height={12}
-                    />
-                  </div>
-                </Tooltip>
-              </div>
-
-              <div
-                style={{
-                  width: '100%',
-                  border: 'none',
-                  padding: '8px 16px 8px 16px',
-                  fontSize: '13px',
-                  color: '#2B2C46',
-                  minHeight: '32px',
-                  backgroundColor: '#fff',
-                }}
-              >
-                {preFilterValues.join(', ') ||
-                  t('Search criteria is not selected')}
-              </div>
+          {requestImage && (
+            <div
+              style={{
+                padding: '16px',
+                backgroundColor: '#F3F3F5',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <img
+                src={getCroppedCanvas(
+                  requestImage,
+                  selectedRegion,
+                )?.toDataURL()}
+                alt="request_image"
+                style={{ maxHeight: '200px' }}
+              />
             </div>
           )}
 
-          <div>
-            <div
-              style={{
-                marginBottom: '8px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '12px',
-                color: '#2B2C46',
-              }}
-            >
-              <p>{t('Additional information')}</p>
-              <p>{`${information.length}/150`}</p>
+          <div
+            style={{
+              padding: '16px 16px 16px 16px',
+              backgroundColor: '#F3F3F5',
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: '16px',
+            }}
+          >
+            <div>
+              <p
+                style={{
+                  fontSize: '12px',
+                  color: '#2B2C46',
+                  marginBottom: '8px',
+                }}
+              >
+                {t('Your email (required)')}
+              </p>
+              <input
+                value={email}
+                onChange={e => setEmail(e.currentTarget.value.trim())}
+                style={{
+                  width: '100%',
+                  border: 'none',
+                  height: '32px',
+                  padding: '8px 16px 8px 16px',
+                  fontSize: '13px',
+                  color: ' #2B2C46',
+                }}
+                className="outline-none"
+              />
+              {!emailValid && !isUndefined(emailValid) && (
+                <p
+                  style={{ color: 'red', fontSize: '12px', paddingTop: '8px' }}
+                >
+                  {t('Please enter a valid email.')}
+                </p>
+              )}
             </div>
-            <TextareaAutosize
-              value={information}
-              onChange={e => setFormattedContent(e.currentTarget.value)}
+            {settings.preFilterOption && (
+              <div>
+                <div
+                  style={{
+                    display: 'flex',
+                    columnGap: '4px',
+                    alignItems: 'center',
+                    marginBottom: '8px',
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: '12px',
+                      color: '#2B2C46',
+                    }}
+                  >
+                    {settings.support.prefilterFieldName}
+                  </p>
+                  <Tooltip
+                    content={t(
+                      'Please select a search criteria before search request to refine and yield accurate results.',
+                    )}
+                  >
+                    <div>
+                      <Icon
+                        name="info"
+                        style={{ cursor: 'pointer' }}
+                        width={12}
+                        height={12}
+                      />
+                    </div>
+                  </Tooltip>
+                </div>
+
+                <div
+                  style={{
+                    width: '100%',
+                    border: 'none',
+                    padding: '8px 16px 8px 16px',
+                    fontSize: '13px',
+                    color: '#2B2C46',
+                    minHeight: '32px',
+                    backgroundColor: '#fff',
+                  }}
+                >
+                  {preFilterValues.join(', ') ||
+                    t('Search criteria is not selected')}
+                </div>
+              </div>
+            )}
+
+            <div>
+              <div
+                style={{
+                  marginBottom: '8px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontSize: '12px',
+                  color: '#2B2C46',
+                }}
+              >
+                <p>Additional information</p>
+                <p>{`${information.length}/150`}</p>
+              </div>
+              <AutosizeTextarea
+                value={information}
+                onChange={e => setFormattedContent(e.currentTarget.value)}
+                style={{
+                  width: '100%',
+                  border: 'none',
+                  maxWidth: '346px',
+                  minHeight: '40px',
+                  padding: '8px 16px 8px 16px',
+                  fontSize: '13px',
+                  color: ' #2B2C46',
+                }}
+              />
+            </div>
+          </div>
+          <div style={{ display: 'flex' }}>
+            <button
               style={{
-                width: '100%',
+                height: '66px',
+                display: 'flex',
+                alignItems: 'center',
+                width: '50%',
+                backgroundColor: '#2B2C46',
+                color: 'white',
+                fontSize: '14px',
+                paddingLeft: '16px',
                 border: 'none',
-                maxWidth: '346px',
-                minHeight: '40px',
-                padding: '8px 16px 8px 16px',
-                fontSize: '13px',
-                color: ' #2B2C46',
+                cursor: 'pointer',
               }}
-            />
+              onClick={() => setIsInquiryModalOpen(false)}
+            >
+              {t('Cancel')}
+            </button>
+            <button
+              style={{
+                height: '66px',
+                display: 'flex',
+                alignItems: 'center',
+                width: '50%',
+                backgroundColor: emailValid
+                  ? settings.theme?.primaryColor
+                  : '#E9E9EC',
+                color: emailValid ? '#fff' : '#AAABB5',
+                fontSize: '14px',
+                paddingLeft: '16px',
+                border: 'none',
+                cursor: emailValid ? 'pointer' : 'normal',
+              }}
+              disabled={!emailValid}
+              onClick={handleInquiry}
+            >
+              {t('Send')}
+            </button>
           </div>
         </div>
-        <div style={{ display: 'flex' }}>
-          <button
-            style={{
-              height: '66px',
-              display: 'flex',
-              alignItems: 'center',
-              width: '50%',
-              backgroundColor: '#2B2C46',
-              color: 'white',
-              fontSize: '14px',
-              paddingLeft: '16px',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-            onClick={() => setIsInquiryModalOpen(false)}
-          >
-            {t('Cancel')}
-          </button>
-          <button
-            style={{
-              height: '66px',
-              display: 'flex',
-              alignItems: 'center',
-              width: '50%',
-              backgroundColor: emailValid
-                ? settings.theme?.primaryColor
-                : '#E9E9EC',
-              color: emailValid ? '#fff' : '#AAABB5',
-              fontSize: '14px',
-              paddingLeft: '16px',
-              border: 'none',
-              cursor: emailValid ? 'pointer' : 'normal',
-            }}
-            disabled={!emailValid}
-            onClick={handleInquiry}
-          >
-            {t('Send')}
-          </button>
-        </div>
-      </div>
-    </DefaultModal>
+      </DialogContent>
+    </Dialog>
   );
 }

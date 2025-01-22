@@ -2,19 +2,21 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { Icon, makeFileHandler } from '@nyris/nyris-react-components';
+import { useMediaQuery } from 'react-responsive';
 import { useTranslation } from 'react-i18next';
 
 function UploadDisclaimer({
   onClose,
   onContinue,
-  isMobile,
 }: {
   onClose: any;
   onContinue: any;
-  isMobile: boolean;
 }) {
   const [dontShowAgain, setDontShowAgain] = useState(false);
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
+
   const { t } = useTranslation();
+
   return (
     <>
       {createPortal(

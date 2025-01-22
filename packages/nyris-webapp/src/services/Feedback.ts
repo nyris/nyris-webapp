@@ -3,14 +3,12 @@ import NyrisAPI, {
   NyrisAPISettings,
   RectCoords,
 } from '@nyris/nyris-api';
-import { RootState } from '../Store/Store';
 
 export const feedbackSuccessEpic = async (
-  state: RootState,
+  requestId: string,
   success: boolean,
 ) => {
-  const { search, settings } = state;
-  const requestId = search.requestId;
+  const settings = window.settings;
 
   return await sendFeedbackByApi(settings, undefined, requestId, {
     event: 'feedback',
@@ -19,35 +17,37 @@ export const feedbackSuccessEpic = async (
 };
 
 export const feedbackClickEpic = async (
-  state: RootState,
+  requestId: string,
+  sessionId: string,
   position: number,
   id?: string,
 ) => {
-  const { search, settings } = state;
-  return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
+  const settings = window.settings;
+  return await sendFeedbackByApi(settings, sessionId, requestId, {
     event: 'click',
     data: { positions: [position], ...(id ? { product_ids: [id] } : {}) },
   });
 };
 
 export const feedbackConversionEpic = async (
-  state: RootState,
+  requestId: string,
+  sessionId: string,
   position: number,
   id?: string,
 ) => {
-  const { search, settings } = state;
-  return await sendFeedbackByApi(settings, search.sessionId, search.requestId, {
+  const settings = window.settings;
+  return await sendFeedbackByApi(settings, sessionId, requestId, {
     event: 'conversion',
     data: { positions: [position], ...(id ? { product_ids: [id] } : {}) },
   });
 };
 
 export const feedbackRegionEpic = async (
-  state: RootState,
+  requestId: string,
+  sessionId: string,
   region: RectCoords,
 ) => {
-  const { settings, search } = state;
-  const { sessionId, requestId } = search;
+  const settings = window.settings;
   const { x1, x2, y1, y2 } = region;
   const payload: FeedbackEventPayload = {
     event: 'region',

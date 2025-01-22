@@ -1,6 +1,4 @@
-import { Button } from '@material-ui/core';
-import React from 'react';
-import CloseIcon from '@material-ui/icons/Close';
+import { Icon } from '@nyris/nyris-react-components';
 import { visualSearchHelp } from '../constants';
 
 interface Props {
@@ -20,12 +18,12 @@ function ImageCaptureHelpModal({ handleClose }: Props) {
           width: '100%',
         }}
       >
-        <Button
+        <button
           onClick={handleClose}
           style={{ paddingTop: '8px', paddingRight: '8px' }}
         >
-          <CloseIcon fontSize={'small'} />
-        </Button>
+          <Icon name="close" />
+        </button>
       </div>
       <div>
         <p

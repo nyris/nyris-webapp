@@ -1,105 +1,100 @@
 import { memo } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { useAppDispatch, useAppSelector } from 'Store/Store';
-import { updateStatusLoading, loadingActionResults } from 'Store/search/Search';
-import { useHistory } from 'react-router-dom';
-
+import { twMerge } from 'tailwind-merge';
 import { useTranslation } from 'react-i18next';
+
+import { Icon } from '@nyris/nyris-react-components';
+
 import Loading from './Loading';
 import { useImageSearch } from 'hooks/useImageSearch';
-import { Icon } from '@nyris/nyris-react-components';
-import { isCadFile } from '@nyris/nyris-api';
+import useDragAndDrop from 'hooks/useDragAndDrop';
+import { useNavigate } from 'react-router';
 import { useCadSearch } from 'hooks/useCadSearch';
+import { isCadFile } from '@nyris/nyris-api';
 
 interface Props {
-  acceptTypes: any;
   onChangeLoading?: any;
   isLoading?: boolean;
 }
 
 function DragDropFile(props: Props) {
-  const history = useHistory();
-  const dispatch = useAppDispatch();
   const { isLoading } = props;
-  const settings = useAppSelector(state => state.settings);
+  let navigate = useNavigate();
+
   const { t } = useTranslation();
+  const { singleImageSearch } = useImageSearch();
   const { cadSearch } = useCadSearch();
 
-  const { singleImageSearch } = useImageSearch();
-  const isCadSearch = window.settings.cadSearch;
+  const handleUpload = (files: File[]) => {
+    navigate('/result');
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: async (fs: File[], _, e) => {
-      e.stopPropagation();
-      history.push('/result');
+    if (isCadFile(files[0])) {
+      cadSearch({
+        file: files[0],
+        settings: window.settings,
+        newSearch: true,
+      }).then(res => {});
 
-      dispatch(updateStatusLoading(true));
-      dispatch(loadingActionResults());
-      if (isCadFile(fs[0]) && isCadSearch) {
-        dispatch(updateStatusLoading(true));
-        dispatch(loadingActionResults());
-        if (history.location.pathname !== '/result') {
-          history.push('/result');
-        }
-        cadSearch({ file: fs[0], settings, newSearch: true }).then(res => {
-          dispatch(updateStatusLoading(false));
-        });
-      } else {
-        singleImageSearch({ image: fs[0], settings, showFeedback: true }).then(
-          () => {
-            dispatch(updateStatusLoading(false));
-          },
-        );
-      }
-    },
+      return;
+    }
+
+    singleImageSearch({
+      image: files[0],
+      settings: window.settings,
+      showFeedback: true,
+    }).then(() => {});
+  };
+
+  const { isDragging, dragProps } = useDragAndDrop({
+    onDropCallback: handleUpload,
   });
 
   return (
-    <div
-      className={`box-content-main`}
-      style={{ marginTop: 32, paddingTop: 0, display: 'flex' }}
+    <label
+      htmlFor="select_file"
+      className={
+        'flex flex-col items-center justify-center mt-8 px-4 bg-[#fafafa]'
+      }
     >
       {isLoading && <Loading />}
 
       <div
-        className={`box-border-none`}
-        style={{ position: 'relative' }}
-        {...getRootProps({
-          onClick: e => {
-            e.stopPropagation();
-          },
-        })}
+        className={'relative flex flex-col items-center justify-center w-full'}
+        {...dragProps}
       >
         <div
-          className={`box-content-drop ${isDragActive ? 'drag-active' : ''}`}
-          {...getRootProps({
-            onClick: e => {
-              e.stopPropagation();
-            },
-          })}
+          className={twMerge([
+            'flex flex-col items-center w-full cursor-pointer pb-4 pt-4 rounded-[60px]',
+            'text-[#cacad1] hover:text-primary',
+            'border-2 border-dashed border-transparent hover:border-[#e0e0e0]',
+            isDragging && 'text-primary border-[#e0e0e0]',
+          ])}
         >
           <div style={{ marginBottom: 16 }}>
             <Icon name="drop" width={48} height={48} />
           </div>
-          <label className="" style={{ fontSize: 14 }}>
-            <span className="fw-700 text-f14" style={{ paddingRight: '4px' }}>
-              {t('Drag and drop')}
-            </span>
+          <div className="" style={{ fontSize: 14 }}>
+            <span className="font-bold text-sm pr-1">{t('Drag and drop')}</span>
             {t('an image here')}
-          </label>
+          </div>
           <input
-            {...getInputProps()}
+            onChange={e => {
+              e.stopPropagation();
+              if (e.target.files) {
+                handleUpload(Array.from(e.target.files));
+                e.target.value = '';
+              }
+            }}
+            style={{}}
             type="file"
             name="file"
             id="select_file"
-            className="inputFile"
+            className="absolute z-[-1] opacity-0"
             placeholder="Choose photo"
-            style={{ display: 'block', cursor: 'pointer' }}
             accept={'.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,image/*'}
           />
         </div>
       </div>
-    </div>
+    </label>
   );
 }
 

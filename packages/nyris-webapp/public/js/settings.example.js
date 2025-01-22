@@ -76,7 +76,7 @@ var settings = {
     {
       propertyName: '',
       value: '',
-    }
+    },
   ],
   // features
   showPoweredByNyris: '',

@@ -1,45 +1,82 @@
-import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMediaQuery } from 'react-responsive';
-import { CurrentRefinementsProvided } from 'react-instantsearch-core';
-import {
-  setPreFilter,
-  setRequestImage,
-  setSearchResults,
-  clearPostFilter,
-} from '../Store/search/Search';
-import { connectCurrentRefinements } from 'react-instantsearch-dom';
-import { useAppDispatch, useAppSelector } from '../Store/Store';
-import useRequestStore from 'Store/requestStore';
+import { useClearRefinements } from 'react-instantsearch';
+
 import { Icon } from '@nyris/nyris-react-components';
 
-const GoBackButton = ({ items, refine }: CurrentRefinementsProvided) => {
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
-  const dispatch = useAppDispatch();
-  const stateGlobal = useAppSelector(state => state);
-  const { search } = stateGlobal;
-  const { firstSearchResults, firstSearchImage, firstSearchPrefilters } =
-    search;
-  const clearPostFilters = useCallback(() => refine(items), [refine, items]);
+import useResultStore from 'stores/result/resultStore';
+import useRequestStore from 'stores/request/requestStore';
+import { twMerge } from 'tailwind-merge';
+import useUiStore from 'stores/ui/uiStore';
+
+export const GoBackButton = ({ className }: { className?: string }) => {
+  const firstSearchResults = useResultStore(state => state.firstSearchResults);
+  const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
+
+  const requestImages = useRequestStore(state => state.requestImages);
+  const setPreFilter = useRequestStore(state => state.setPreFilter);
+  const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const resetRegions = useRequestStore(state => state.resetRegions);
+  const firstSearchImage = useRequestStore(state => state.firstSearchImage);
+  const firstSearchPreFilter = useRequestStore(
+    state => state.firstSearchPreFilter,
+  );
+  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+
+  const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
+
+  const { refine: clearPostFilters } = useClearRefinements();
+
   const { t } = useTranslation();
 
-  const { setRequestImages, resetRegions } = useRequestStore(state => ({
-    setRequestImages: state.setRequestImages,
-    resetRegions: state.resetRegions,
-  }));
   const onGoBack = () => {
-    dispatch(setSearchResults(firstSearchResults));
-    dispatch(setRequestImage(firstSearchImage));
-    setRequestImages([firstSearchImage]);
-    dispatch(setPreFilter(firstSearchPrefilters));
-    dispatch(clearPostFilter());
+    setFindApiProducts(firstSearchResults);
+    if (firstSearchImage) {
+      setRequestImages([firstSearchImage]);
+    }
+
+    const nonEmptyFilter: any[] = ['sku:DOES_NOT_EXIST<score=1> '];
+    const filterSkus: any = firstSearchResults
+      ? firstSearchResults
+          .slice()
+          .reverse()
+          .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}> `)
+      : '';
+    const filterSkusString = [...nonEmptyFilter, ...filterSkus].join('OR ');
+
+    setAlgoliaFilter(filterSkusString);
+
+    setPreFilter(firstSearchPreFilter);
     resetRegions();
     clearPostFilters();
   };
 
+  if (
+    firstSearchResults.length === 0 ||
+    requestImages[0] === firstSearchImage ||
+    isFindApiLoading
+  )
+    return <></>;
+
   return (
     <div
-      className={`go-back-button ${isMobile ? 'mobile-view' : ''}`}
+      className={twMerge([
+        'p-2',
+        'rounded-2xl',
+        'w-max',
+        'flex',
+        'flex-row',
+        'gap-2',
+        'items-center',
+        'cursor-pointer',
+        'font-source-sans-3',
+        'text-xs',
+        'font-normal',
+        'leading-4',
+        'hover:bg-[#F3F3F5]',
+        'bg-[#F3F3F5]',
+        'desktop:bg-transparent',
+        className,
+      ])}
       onClick={() => onGoBack()}
     >
       <Icon name="back" />
@@ -47,5 +84,3 @@ const GoBackButton = ({ items, refine }: CurrentRefinementsProvided) => {
     </div>
   );
 };
-
-export const GoBack = connectCurrentRefinements<any>(GoBackButton);

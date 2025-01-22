@@ -1,18 +1,19 @@
-import React from 'react';
+import { useMediaQuery } from 'react-responsive';
+
+import { Icon } from '@nyris/nyris-react-components';
+
 import toast, {
   resolveValue,
   ToastBar,
   Toaster as ReactHotToaster,
 } from 'react-hot-toast';
-import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import { useMediaQuery } from 'react-responsive';
 
 export const Toaster = () => {
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   return (
     <ReactHotToaster
-      containerStyle={!isMobile ? { top: 60 } : { bottom: 80 }}
+      containerClassName="bottom-[80px] desktop:bottom-auto desktop:top-[60px]"
       position={isMobile ? 'bottom-center' : 'top-right'}
     >
       {t => (
@@ -41,8 +42,9 @@ export const Toaster = () => {
                 </span>
                 {t.type !== 'loading' && (
                   <span style={{ display: 'flex', alignItems: 'center' }}>
-                    <CloseOutlinedIcon
-                      fontSize="small"
+                    <Icon
+                      className="w-3 h-3"
+                      name="close"
                       style={{ cursor: 'pointer', marginLeft: 10 }}
                       onClick={() => toast.dismiss(t.id)}
                     />

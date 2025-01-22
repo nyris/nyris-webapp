@@ -1,45 +1,43 @@
-// @ts-nocheck
-
+import { useCallback } from 'react';
 import { RectCoords } from '@nyris/nyris-api';
 import { isEmpty } from 'lodash';
-import { useCallback } from 'react';
-import { createImage, find, findMulti, findRegions } from 'services/image';
-import useRequestStore from 'Store/requestStore';
-import useResultStore from 'Store/resultStore';
-import {
-  setFirstSearchImage,
-  setFirstSearchPrefilters,
-  setFirstSearchResults,
-  setRegions,
-  setRequestImage,
-  setSearchResults,
-  setSelectedRegion,
-  setShowFeedback,
-  updateStatusLoading,
-} from 'Store/search/Search';
-import { useAppDispatch, useAppSelector } from 'Store/Store';
+
+import { createImage, find, findRegions } from 'services/visualSearch';
+
+import useResultStore from 'stores/result/resultStore';
+import useRequestStore from 'stores/request/requestStore';
+
 import { AppSettings } from 'types';
-import { compressImage } from 'utils';
+import { compressImage } from 'utils/compressImage';
+import useUiStore from 'stores/ui/uiStore';
+import { useClearRefinements } from 'react-instantsearch';
 
 export const useImageSearch = () => {
-  const dispatch = useAppDispatch();
-
-  const preFilter = useAppSelector(state => state.search.preFilter);
-  const firstSearchResults = useAppSelector(
-    state => state.search.firstSearchResults,
+  const setRegions = useRequestStore(state => state.setRegions);
+  const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+  const preFilter = useRequestStore(state => state.preFilter);
+  const setFirstSearchImage = useRequestStore(
+    state => state.setFirstSearchImage,
   );
-  const regions = useAppSelector(state => state.settings.regions);
+  const metaFilter = useRequestStore(state => state.metaFilter);
+  const setFirstSearchPreFilter = useRequestStore(
+    state => state.setFirstSearchPreFilter,
+  );
 
-  const { setRequestImages, setImageRegions } = useRequestStore(state => ({
-    setRequestImages: state.setRequestImages,
-    setImageRegions: state.setRegions,
-    requestImages: state.requestImages,
-    regions: state.regions,
-  }));
+  const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
+  const setShowFeedback = useUiStore(state => state.setShowFeedback);
 
-  const { setDetectedObject } = useResultStore(state => ({
-    setDetectedObject: state.setDetectedObject,
-  }));
+  const setDetectedRegions = useResultStore(state => state.setDetectedRegions);
+  const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
+  const setSessionId = useResultStore(state => state.setSessionId);
+  const setRequestId = useResultStore(state => state.setRequestId);
+  const firstSearchResults = useResultStore(state => state.firstSearchResults);
+  const setFirstSearchResults = useResultStore(
+    state => state.setFirstSearchResults,
+  );
+
+  const { refine } = useClearRefinements();
 
   const singleImageSearch = useCallback(
     async ({
@@ -50,6 +48,7 @@ export const useImageSearch = () => {
       newSearch,
       compress = true,
       preFilterParams,
+      clearPostFilter,
     }: {
       image: any;
       settings: AppSettings;
@@ -58,7 +57,11 @@ export const useImageSearch = () => {
       newSearch?: boolean;
       compress?: boolean;
       preFilterParams?: Record<string, boolean>;
+      clearPostFilter?: boolean;
     }) => {
+      setIsFindApiLoading(true);
+      // setAlgoliaProducts([]);
+
       let region: RectCoords | undefined = imageRegion;
       let res: any;
       let compressedBase64;
@@ -73,8 +76,9 @@ export const useImageSearch = () => {
           const convert = await import('heic-convert/browser');
 
           let outputBuffer = await convert.default({
+            // @ts-ignore
             buffer: buffer, // the HEIC file buffer
-            format: 'JPEG', // output format
+            format: 'JPEG',
           });
           blob = new Blob([outputBuffer], { type: 'image/jpeg' });
         } catch (error) {
@@ -93,21 +97,16 @@ export const useImageSearch = () => {
       let requestImage = await createImage(blob);
 
       if (!imageRegion) {
-        dispatch(setRequestImage(canvasImage));
         setRequestImages([canvasImage]);
       }
 
-      if (regions && !imageRegion) {
+      if (!imageRegion) {
         try {
           let res = await findRegions(requestImage, settings);
-          setDetectedObject(res.regions, 0);
-          dispatch(setRegions(res.regions));
+          setDetectedRegions(res.regions, 0);
           region = res.selectedRegion;
-          dispatch(setSelectedRegion(region));
-          setImageRegions([region]);
-        } catch (error) {
-          console.log('Error finding regions', error);
-        }
+          setRegions([region]);
+        } catch (error) {}
       }
 
       const preFilterValues = [
@@ -116,7 +115,6 @@ export const useImageSearch = () => {
           values: Object.keys(preFilterParams || preFilter),
         },
       ];
-      let filters: any[] = [];
 
       try {
         res = await find({
@@ -124,103 +122,71 @@ export const useImageSearch = () => {
           settings,
           filters: !isEmpty(preFilterParams || preFilter)
             ? preFilterValues
+            : metaFilter
+            ? [
+                {
+                  key: settings.visualSearchFilterKey,
+                  values: [metaFilter],
+                },
+              ]
             : undefined,
           region,
         });
 
-        res?.results.forEach((item: any) => {
-          filters.push({
-            sku: item.sku,
-            score: item.score,
-          });
-        });
-        const payload = {
-          ...res,
-          filters,
-        };
-        dispatch(setSearchResults(payload));
+        if (clearPostFilter) {
+          refine();
+        }
+
+        setFindApiProducts(res?.results);
+        setSessionId(res?.session);
+        setRequestId(res?.id);
+
+        const nonEmptyFilter: any[] = ['sku:DOES_NOT_EXIST<score=1> '];
+        const filterSkus: any = res?.results
+          ? res?.results
+              .slice()
+              .reverse()
+              .map((f: any, i: number) => `sku:'${f.sku}'<score=${i}> `)
+          : '';
+        const filterSkusString = [...nonEmptyFilter, ...filterSkus].join('OR ');
+
+        setAlgoliaFilter(filterSkusString);
+        setIsFindApiLoading(false);
 
         if (showFeedback) {
-          dispatch(setShowFeedback(true));
+          setShowFeedback(true);
         }
         // go back
-        if (!firstSearchResults || newSearch) {
-          dispatch(setFirstSearchResults(payload));
-          dispatch(setFirstSearchImage(canvasImage));
-          dispatch(setFirstSearchPrefilters(preFilter));
+        if (firstSearchResults.length === 0 || newSearch) {
+          setFirstSearchResults(res?.results);
+          setFirstSearchImage(canvasImage);
+          setFirstSearchPreFilter(preFilter);
         }
       } catch (error) {
-        dispatch(updateStatusLoading(false));
+        setIsFindApiLoading(false);
       }
 
       return res;
     },
     [
-      dispatch,
-      firstSearchResults,
+      setIsFindApiLoading,
       preFilter,
-      regions,
-      setDetectedObject,
-      setImageRegions,
       setRequestImages,
+      setDetectedRegions,
+      setRegions,
+      metaFilter,
+      setFindApiProducts,
+      setSessionId,
+      setRequestId,
+      setAlgoliaFilter,
+      firstSearchResults.length,
+      refine,
+      setShowFeedback,
+      setFirstSearchResults,
+      setFirstSearchImage,
+      setFirstSearchPreFilter,
     ],
   );
 
-  const multiImageSearch = useCallback(
-    async ({
-      images,
-      settings,
-      regions,
-      showFeedback = true,
-      preFilterParams,
-    }: {
-      images: HTMLCanvasElement[];
-      regions: RectCoords[];
-      settings: AppSettings;
-      showFeedback?: boolean;
-      preFilterParams?: Record<string, boolean>;
-    }) => {
-      const preFilterValues = [
-        {
-          key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilterParams || preFilter),
-        },
-      ];
-      let filters: any[] = [];
-      let res: any;
-      try {
-        const res = await findMulti({
-          images,
-          settings,
-          regions,
-          filters: !isEmpty(preFilterParams || preFilter)
-            ? preFilterValues
-            : undefined,
-        });
-
-        res?.results.forEach((item: any) => {
-          filters.push({
-            sku: item.sku,
-            score: item.score,
-          });
-        });
-        const payload = {
-          ...res,
-          filters,
-        };
-        dispatch(setSearchResults(payload));
-
-        if (showFeedback) {
-          dispatch(setShowFeedback(true));
-        }
-      } catch (error) {
-        dispatch(updateStatusLoading(false));
-      }
-
-      return res;
-    },
-    [dispatch, preFilter],
-  );
-
-  return { singleImageSearch, multiImageSearch };
+  return { singleImageSearch };
 };
