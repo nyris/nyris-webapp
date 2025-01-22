@@ -24,7 +24,7 @@ function Tooltip({
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent sideOffset={sideOffset}>
           <TooltipArrow />
-          <p className="text-white">{content}</p>
+          <p className="text-white max-w-[350px]">{content}</p>
         </TooltipContent>
       </RadixTooltip>
     </TooltipProvider>

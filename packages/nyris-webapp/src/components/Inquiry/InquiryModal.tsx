@@ -85,7 +85,7 @@ export default function InquiryModal({
             ? preFilterValues.join(', ')
             : '<not specified>',
         });
-        ToastHelper.success('Request sent successfully');
+        ToastHelper.success(t('Request sent successfully'));
       } catch (error) {
         toast(
           t => {
@@ -260,19 +260,21 @@ export default function InquiryModal({
                       color: '#2B2C46',
                     }}
                   >
-                    Machine
+                    {settings.support.prefilterFieldName}
                   </p>
                   <Tooltip
                     content={t(
                       'Please select a search criteria before search request to refine and yield accurate results.',
                     )}
                   >
-                    <Icon
-                      name="info"
-                      style={{ cursor: 'pointer' }}
-                      width={12}
-                      height={12}
-                    />
+                    <div>
+                      <Icon
+                        name="info"
+                        style={{ cursor: 'pointer' }}
+                        width={12}
+                        height={12}
+                      />
+                    </div>
                   </Tooltip>
                 </div>
 
@@ -337,7 +339,7 @@ export default function InquiryModal({
               }}
               onClick={() => setIsInquiryModalOpen(false)}
             >
-              Cancel
+              {t('Cancel')}
             </button>
             <button
               style={{
@@ -357,7 +359,7 @@ export default function InquiryModal({
               disabled={!emailValid}
               onClick={handleInquiry}
             >
-              Send
+              {t('Send')}
             </button>
           </div>
         </div>

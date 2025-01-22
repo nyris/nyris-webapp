@@ -58,6 +58,8 @@ export const translations = {
         'Uploading a new image will overwrite your current search parameters, text, and results. Are you sure you want to proceed?',
       "Don't show this again": "Don't show this again",
       Continue: 'Continue',
+      'Request sent successfully': 'Request sent successfully',
+      'No result found': 'No result found',
     },
   },
   de: {
@@ -121,6 +123,8 @@ export const translations = {
         'Durch das Hochladen eines neuen Bildes werden Ihre aktuellen Suchparameter, Texte und Ergebnisse überschrieben. Möchten Sie wirklich fortfahren?',
       "Don't show this again": 'Nicht mehr anzeigen',
       Continue: 'Fortfahren',
+      'Request sent successfully': 'Anfrage erfolgreich gesendet',
+      'No result found': 'Keine Ergebnisse',
     },
   },
   pt: {
@@ -170,9 +174,9 @@ export const translations = {
       'Please enter a valid email.': 'Introduza um e-mail válido.',
       'Additional information': 'Informações adicionais',
       Send: 'Enviar',
-      'Experience Visual Search': 'Experience Visual Search',
+      'Experience Visual Search': 'Experimente a pesquisa visual',
       'Start your visual search by selecting an image below.':
-        'Start your visual search by selecting an image below.',
+        'Comece sua busca visual selecionando uma imagem abaixo.',
       'Thank you for your feedback': 'Obrigado pelo seu feedback',
       'Select a Filter': 'Selecione um filtro',
       'Get personalised help from our team of product experts.':
@@ -184,6 +188,9 @@ export const translations = {
         'Carregar uma nova imagem substituirá seus parâmetros de pesquisa, texto e resultados atuais. Tem certeza de que deseja prosseguir?',
       "Don't show this again": 'Não mostrar isso novamente',
       Continue: 'Continuar',
+      'Request sent successfully': 'Solicitação enviada com sucesso',
+      'Are these results useful?': 'Esses resultados são úteis?',
+      'No result found': 'Nenhum resultado',
     },
   },
 };

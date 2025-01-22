@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.71 - 2024-12-31
+
+### Added
+- Added some translations
+- prefilterFieldName setting for Inquiry modal 
+
 ## 0.3.70 - 2024-12-31
 
 ### Added

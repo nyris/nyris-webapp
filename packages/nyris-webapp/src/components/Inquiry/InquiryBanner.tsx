@@ -185,10 +185,17 @@ function InquiryBanner({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
+                      gap: '5px',
                     }}
                   >
                     <p> {t('Call us')}</p>
-                    <Icon name="call" color="#fff" width={16} height={16} />
+                    <Icon
+                      name="call"
+                      color="#fff"
+                      width={16}
+                      height={16}
+                      className="min-w-4"
+                    />
                   </div>
                 </a>
               )}

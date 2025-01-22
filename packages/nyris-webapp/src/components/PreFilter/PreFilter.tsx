@@ -303,7 +303,9 @@ const PreFilterComponent = (props: Props) => {
               })}
           </div>
         )}
-        {isEmpty(resultFilter) && !isLoading && <div>No result found</div>}
+        {isEmpty(resultFilter) && !isLoading && (
+          <div>{t('No result found')}</div>
+        )}
       </div>
       <div className="footer h-16 mt-auto flex">
         <div

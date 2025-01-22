@@ -10,6 +10,7 @@ import { getCroppedCanvas } from 'utils/misc';
 import { ToastHelper } from 'helpers/ToastHelper';
 import useRequestStore from 'stores/request/requestStore';
 
+import { useTranslation } from 'react-i18next';
 interface Props {
   setIsRfqModalOpen: any;
   isRfqModalOpen?: any;
@@ -75,7 +76,7 @@ export default function RfqModal({
           request_image: croppedImage?.toDataURL(),
         });
         setRfqStatus('sent');
-        ToastHelper.success('Request sent successfully');
+        ToastHelper.success(t('Request sent successfully'));
       } catch (error) {
         setRfqStatus('inactive');
 
@@ -127,6 +128,8 @@ export default function RfqModal({
       setIsRfqModalOpen(false);
     }
   };
+
+  const { t } = useTranslation();
 
   return (
     <Dialog open={isRfqModalOpen} onOpenChange={() => setIsRfqModalOpen(false)}>
@@ -254,7 +257,7 @@ export default function RfqModal({
               }}
               onClick={() => setIsRfqModalOpen(false)}
             >
-              Cancel
+              {t('Cancel')}
             </button>
             <button
               style={{
@@ -272,7 +275,7 @@ export default function RfqModal({
               disabled={!emailValid}
               onClick={handleRfq}
             >
-              Send
+              {t('Send')}
             </button>
           </div>
         </div>

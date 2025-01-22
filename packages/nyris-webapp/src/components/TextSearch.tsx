@@ -210,7 +210,11 @@ function TextSearch({
                   </div>
                 </Tooltip>
               )}
-              {!showPreFilter && <Icon name="search" width={16} height={16} />}
+              {!showPreFilter && (
+                <div className="p-2 hidden desktop:block">
+                  <Icon name="search" width={16} height={16} />
+                </div>
+              )}
               {!isEmpty(preFilter) && showPreFilter && (
                 <div
                   className={twMerge(
