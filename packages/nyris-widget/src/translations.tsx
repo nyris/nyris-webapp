@@ -121,7 +121,7 @@ const translations = (language: Language) => {
       'View full description': 'Voir la description complète',
       'Drag an image or click to upload': 'Faites glisser une image ou cliquez pour la télécharger',
       "We couldn't find matches based on <prefilters>":
-        "Nous n'avons pas trouvé de correspondance basée sur <préfiltres>.",
+        "Nous n'avons pas trouvé de correspondance basée sur <prefilters>.",
       'based on': 'sur la base de',
       'Refine your search results': 'Affiner les résultats de votre recherche',
       'Are these results useful?': 'Ces résultats sont-ils utiles ?',

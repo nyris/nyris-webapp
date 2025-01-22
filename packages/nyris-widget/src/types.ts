@@ -62,7 +62,7 @@ export interface AppProps {
   setSelectedPreFilters?: any;
   postFilter?: any;
   setPostFilter?: any;
-  labels: any;
+  labels?: any;
 }
 
 export interface ResultProps {

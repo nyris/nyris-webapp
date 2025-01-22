@@ -8,7 +8,7 @@ import { ReactComponent as DeutscheLogo } from './images/deutsche_logo.svg';
 import { ReactComponent as CloseButton } from './images/close.svg';
 import { ReactComponent as Plus } from './images/plus.svg';
 import { ReactComponent as Down } from './images/chevron_down.svg';
-import { ReactComponent as Chevron } from './images/chevron_down.svg';
+import { ReactComponent as Triangle } from './images/triangle_down.svg';
 
 import './styles/nyris.scss';
 
@@ -41,7 +41,7 @@ const languages = [
   }
 ]
 
-const Wait = (labels: any) => (
+const Wait = ({ labels }: any) => (
   <div className="nyris__screen nyris__wait">
     <div className="nyris__main-heading">{labels['Hold on']}</div>
     <div className="nyris__main-description">
@@ -371,7 +371,7 @@ export const App = (props: AppProps) => {
       );
       break;
     case WidgetScreen.Wait:
-      content = <Wait labels={labels}/>;
+      content = <Wait labels={labels} />;
       break;
     case WidgetScreen.Fail:
       content = (
@@ -416,6 +416,7 @@ export const App = (props: AppProps) => {
             onClick={() => {
               setSelectedPreFilters([]);
               onClose();
+              setIsLanguagesOpen(false);
             }}
           />
           <div className="nyris__wrapper">
@@ -423,7 +424,7 @@ export const App = (props: AppProps) => {
               <div className="nyris__header">
                 <div
                   style={{
-                    width: '80px',
+                    width: '100px',
                     height: '16px',
                     display: 'flex',
                     justifyContent: 'center',
@@ -441,9 +442,9 @@ export const App = (props: AppProps) => {
                     >
                       {language.toUpperCase()}
                       {isLanguagesOpen ? (
-                        <Chevron style={{ transform: 'rotate(180deg)'}} />
+                        <Triangle style={{ transform: 'rotate(180deg)'}} />
                       ) : (
-                        <Chevron />
+                        <Triangle />
                       )}
                     </div>
                     {isLanguagesOpen ? (
@@ -468,6 +469,7 @@ export const App = (props: AppProps) => {
                     onClick={() => {
                       setSelectedPreFilters([]);
                       onClose();
+                      setIsLanguagesOpen(false);
                     }}
                     width={8}
                     color="#2B2C46"
