@@ -16,8 +16,6 @@ function Feedback({
 
   const { t } = useTranslation();
 
-  const { t } = useTranslation();
-
   return (
     <div
       className={`feedback-wrapper`}
