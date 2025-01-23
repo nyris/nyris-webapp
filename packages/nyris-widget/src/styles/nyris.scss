@@ -102,10 +102,8 @@
           font-family: 'Source Sans 3', sans-serif;
           font-size: 12px;
           font-weight: 600;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: center;
+          padding: 4px 8px;
+          box-sizing: border-box;
           &:hover {
             background-color: #E9E9EC;
             color: #3E36DC;

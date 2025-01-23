@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import eye from './eye.svg';
 import camera from './images/camera.svg';
@@ -323,6 +323,7 @@ export const App = (props: AppProps) => {
   const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([]);
   const [postFilter, setPostFilter] = useState<any>({});
   const [isLanguagesOpen, setIsLanguagesOpen] = useState(false);
+  const languageDropdownRef = useRef<HTMLDivElement>(null);
   const labels = translations(language);
 
   const [cadenasScriptStatus, setCadenasScriptStatus] =
@@ -358,6 +359,22 @@ export const App = (props: AppProps) => {
       setPostFilter({});
     }
   }, [showScreen]);
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (
+        !languageDropdownRef?.current?.contains(event.target as Node) &&
+        !languageDropdownRef?.current?.contains(event.target as Node)
+      ) {
+        setIsLanguagesOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, []);
 
   switch (showScreen) {
     case WidgetScreen.Hello:
@@ -435,6 +452,7 @@ export const App = (props: AppProps) => {
                 >
                   <div
                     className="nyris__header-language"
+                    ref={languageDropdownRef}
                   >
                     <div
                       className={`nyris__header-language-label ${isLanguagesOpen ? 'open' : ''}`}
