@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { RectCoords } from '@nyris/nyris-api';
 import { isEmpty } from 'lodash';
-
+import { decode } from 'tiff';
 import { createImage, find, findRegions } from 'services/visualSearch';
 
 import useResultStore from 'stores/result/resultStore';
@@ -38,6 +38,58 @@ export const useImageSearch = () => {
   );
 
   const { refine } = useClearRefinements();
+
+  const tiffToJpg = async (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+
+      const reader = new FileReader();
+
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        if (event.target?.result) {
+          try {
+            const tiffArray = new Uint8Array(event.target.result as ArrayBuffer);
+            const tiffImages = decode(tiffArray);
+            const firstImage = tiffImages[0];
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            if (!ctx) {
+              reject(new Error('Failed to get canvas context.'));
+              return;
+            }
+
+            canvas.width = firstImage.width;
+            canvas.height = firstImage.height;
+
+            const imageData = new ImageData(
+              new Uint8ClampedArray(firstImage.data),
+              firstImage.width,
+              firstImage.height
+            );
+            ctx.putImageData(imageData, 0, 0);
+
+            canvas.toBlob((blob) => {
+              if (blob) {
+                resolve(blob);
+              } else {
+                reject(new Error('Failed to convert TIFF to JPG.'));
+              }
+            }, 'image/jpeg');
+          } catch (error) {
+            reject(new Error('Error decoding TIFF file.'));
+          }
+        } else {
+          reject(new Error('FileReader failed to load file.'));
+        }
+      };
+
+      reader.onerror = () => reject(new Error('Error reading TIFF file.'));
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
+
 
   const singleImageSearch = useCallback(
     async ({
@@ -84,6 +136,10 @@ export const useImageSearch = () => {
         } catch (error) {
           console.log('HEIC conversion error:', error);
         }
+      }
+
+      if (image.type === 'image/tiff' && image.name.endsWith('.tiff')) {
+        blob = await tiffToJpg(image);
       }
 
       if (compress) {
