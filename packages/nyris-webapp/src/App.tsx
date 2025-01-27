@@ -18,9 +18,9 @@ function App() {
         future={{ preserveSharedStateOnUnmount: true }}
         searchClient={{
           ...algoliaClient,
-          search(requests) {
+          search(requests: any) {
             if (
-              requests?.every(({ params }) => !params.query && !params.filters)
+              requests?.every(({ params }: any) => !params.query && !params.filters)
             ) {
               return Promise.resolve({
                 results: requests.map(() => ({
