@@ -3,8 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import eye from './eye.svg';
 import camera from './images/camera.svg';
 
-import { ReactComponent as Logo } from './images/logo.svg';
-import { ReactComponent as DeutscheLogo } from './images/deutsche_logo.svg';
+import { ReactComponent as Logo } from './images/widget_logo.svg';
 import { ReactComponent as CloseButton } from './images/close.svg';
 import { ReactComponent as Plus } from './images/plus.svg';
 import { ReactComponent as Down } from './images/chevron_down.svg';
@@ -120,17 +119,6 @@ const Hello = ({
     },
   });
 
-  const logo =
-    window.nyrisSettings.language === 'en' ? (
-      <Logo fill={window.nyrisSettings.primaryColor} width={320} height={134} />
-    ) : (
-      <DeutscheLogo
-        fill={window.nyrisSettings.primaryColor}
-        width={329}
-        height={134}
-      />
-    );
-
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
@@ -140,7 +128,7 @@ const Hello = ({
             width={window.nyrisSettings.logoWidth || 320}
           />
         ) : (
-          logo
+          <Logo fill={window.nyrisSettings.primaryColor} width={232} height={110} />
         )}
       </div>
       <div className="nyris__hello-wrapper">
