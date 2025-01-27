@@ -3,20 +3,19 @@ import React, { useEffect, useState } from 'react';
 import { ReactComponent as CloseButton } from '../images/close.svg';
 import { useFilter } from '../hooks/useFilter';
 import { onFilterCheck } from '../utils';
-import translations from '../translations';
-
-const translation = translations(window.nyrisSettings.language);
 
 function PostFilter({
   onClose,
   postFilter,
   setPostFilter,
   results,
+  labels,
 }: {
   onClose: () => void;
   postFilter: any;
   setPostFilter: any;
   results: any;
+  labels: any;
 }) {
   const [checkedFilters, setCheckedFilters] = useState<any>({});
   const allFilter = useFilter(results, checkedFilters);
@@ -44,7 +43,7 @@ function PostFilter({
           <CloseButton width={12} color="#2B2C46" />
         </div>
         <div className="nyris__postFilter-heading">
-          {translation['Refine your search results']}
+          {labels['Refine your search results']}
         </div>
         <div style={{ overflowY: 'auto', paddingBottom: '24px' }}>
           {window.nyrisSettings.filter?.slice(0, 2).map((value, index) => {
@@ -123,7 +122,7 @@ function PostFilter({
             onClose();
           }}
         >
-          {translation['Cancel']}
+          {labels['Cancel']}
         </div>
         <div
           className="nyris__postFilter-button-apply"
@@ -132,7 +131,7 @@ function PostFilter({
             onClose();
           }}
         >
-          {translation['Apply']}
+          {labels['Apply']}
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { Region, RectCoords, NyrisAPISettings } from '@nyris/nyris-api';
 import { FeedbackStatus } from './type';
 
 export type CadenasScriptStatus = 'ready' | 'loading' | 'failed' | 'disabled';
-export type Language = 'de' | 'en';
+export type Language = 'de' | 'en' | 'fr';
 
 export enum WidgetScreen {
   Hidden = 'hidden',
@@ -62,6 +62,7 @@ export interface AppProps {
   setSelectedPreFilters?: any;
   postFilter?: any;
   setPostFilter?: any;
+  labels?: any;
 }
 
 export interface ResultProps {

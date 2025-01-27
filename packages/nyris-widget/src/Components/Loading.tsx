@@ -1,8 +1,5 @@
 import React from "react";
 import spinner from "../images/spinner.svg";
-import translations from "../translations";
-
-const labels = translations(window.nyrisSettings.language);
 
 export const LoadingSpinner = ({ description }: { description?: string }) => {
   return (

@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import eye from './eye.svg';
 import camera from './images/camera.svg';
 
-import { ReactComponent as Logo } from './images/logo.svg';
-import { ReactComponent as DeutscheLogo } from './images/deutsche_logo.svg';
+import { ReactComponent as Logo } from './images/widget_logo.svg';
 import { ReactComponent as CloseButton } from './images/close.svg';
 import { ReactComponent as Plus } from './images/plus.svg';
 import { ReactComponent as Down } from './images/chevron_down.svg';
+import { ReactComponent as Triangle } from './images/triangle_down.svg';
 
 import './styles/nyris.scss';
 
@@ -19,14 +19,28 @@ import PreFilter from './Components/PreFilter';
 import Modal from './Components/Modal';
 import { LoadingSpinner } from './Components/Loading';
 import { Result } from './Components/Result';
-import { AppProps, CadenasScriptStatus, WidgetScreen } from './types';
+import { AppProps, CadenasScriptStatus, Language, WidgetScreen } from './types';
 
-const labels = translations(window.nyrisSettings.language);
 const assets_base_url =
   'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api';
 declare var psol: any;
 
-const Wait = () => (
+const languages = [
+  {
+    label: 'Deutsch (DE)',
+    value: 'de',
+  },
+  {
+    label: 'English (EN)',
+    value: 'en',
+  },
+  {
+    label: 'Français (FR)',
+    value: 'fr',
+  }
+]
+
+const Wait = ({ labels }: any) => (
   <div className="nyris__screen nyris__wait">
     <div className="nyris__main-heading">{labels['Hold on']}</div>
     <div className="nyris__main-description">
@@ -37,7 +51,6 @@ const Wait = () => (
 );
 
 const Fail = ({
-  errorMessage,
   onRestart,
   onAcceptCrop,
   image,
@@ -45,6 +58,7 @@ const Fail = ({
   selection,
   onFile,
   selectedPreFilters,
+  labels,
 }: AppProps) => {
   const [currentSelection, setCurrentSelection] = useState(selection);
   const isMobile = document.body.clientWidth < 512;
@@ -56,7 +70,7 @@ const Fail = ({
 
   return (
     <div className="nyris__screen nyris__fail">
-      <div className="nyris__main-heading">{errorMessage}</div>
+      <div className="nyris__main-heading">{labels['Something went wrong']}</div>
       <div className="nyris__main-description">
         <div>{labels['Oops!']}</div>
       </div>
@@ -93,6 +107,7 @@ const Hello = ({
   searchFilters,
   selectedPreFilters,
   setSelectedPreFilters,
+  labels,
 }: AppProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [preFilter, setPreFilter] = useState({});
@@ -104,17 +119,6 @@ const Hello = ({
     },
   });
 
-  const logo =
-    window.nyrisSettings.language === 'en' ? (
-      <Logo fill={window.nyrisSettings.primaryColor} width={320} height={134} />
-    ) : (
-      <DeutscheLogo
-        fill={window.nyrisSettings.primaryColor}
-        width={329}
-        height={134}
-      />
-    );
-
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
@@ -124,7 +128,7 @@ const Hello = ({
             width={window.nyrisSettings.logoWidth || 320}
           />
         ) : (
-          logo
+          <Logo fill={window.nyrisSettings.primaryColor} width={232} height={110} />
         )}
       </div>
       <div className="nyris__hello-wrapper">
@@ -256,6 +260,7 @@ const Hello = ({
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <PreFilter
+          labels={labels}
           onClose={() => {
             setIsModalOpen(false);
           }}
@@ -302,8 +307,12 @@ export const App = (props: AppProps) => {
   let wide = false;
   let resultsSingle = false;
   let resultsMultiple = false;
+  const [language, setLanguage] = useState(window.nyrisSettings.language);
   const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([]);
   const [postFilter, setPostFilter] = useState<any>({});
+  const [isLanguagesOpen, setIsLanguagesOpen] = useState(false);
+  const languageDropdownRef = useRef<HTMLDivElement>(null);
+  const labels = translations(language);
 
   const [cadenasScriptStatus, setCadenasScriptStatus] =
     useState<CadenasScriptStatus>('disabled');
@@ -339,6 +348,22 @@ export const App = (props: AppProps) => {
     }
   }, [showScreen]);
 
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (
+        !languageDropdownRef?.current?.contains(event.target as Node) &&
+        !languageDropdownRef?.current?.contains(event.target as Node)
+      ) {
+        setIsLanguagesOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, []);
+
   switch (showScreen) {
     case WidgetScreen.Hello:
       content = (
@@ -346,19 +371,20 @@ export const App = (props: AppProps) => {
           {...props}
           setSelectedPreFilters={setSelectedPreFilters}
           selectedPreFilters={selectedPreFilters}
+          labels={labels}
         />
       );
       break;
     case WidgetScreen.Wait:
-      content = <Wait />;
+      content = <Wait labels={labels} />;
       break;
     case WidgetScreen.Fail:
       content = (
         <Fail
           {...props}
-          errorMessage={labels['Something went wrong']}
           setSelectedPreFilters={setSelectedPreFilters}
           selectedPreFilters={selectedPreFilters}
+          labels={labels}
         />
       );
       break;
@@ -371,6 +397,7 @@ export const App = (props: AppProps) => {
           selectedPreFilters={selectedPreFilters}
           setPostFilter={setPostFilter}
           postFilter={postFilter}
+          labels={labels}
         />
       );
       wide = true;
@@ -394,6 +421,7 @@ export const App = (props: AppProps) => {
             onClick={() => {
               setSelectedPreFilters([]);
               onClose();
+              setIsLanguagesOpen(false);
             }}
           />
           <div className="nyris__wrapper">
@@ -401,18 +429,53 @@ export const App = (props: AppProps) => {
               <div className="nyris__header">
                 <div
                   style={{
-                    width: '16px',
+                    width: '100px',
                     height: '16px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                     cursor: 'pointer',
+                    marginTop: 8,
                   }}
                 >
+                  <div
+                    className="nyris__header-language"
+                    ref={languageDropdownRef}
+                  >
+                    <div
+                      className={`nyris__header-language-label ${isLanguagesOpen ? 'open' : ''}`}
+                      onClick={() => setIsLanguagesOpen((prev) => !prev)}
+                    >
+                      {language.toUpperCase()}
+                      {isLanguagesOpen ? (
+                        <Triangle style={{ transform: 'rotate(180deg)'}} />
+                      ) : (
+                        <Triangle />
+                      )}
+                    </div>
+                    {isLanguagesOpen ? (
+                      <div className="nyris__header-language-list">
+                        {languages.map((languageItem) => (
+                          <div
+                            className="nyris__header-language-list-item"
+                            onClick={() => {
+                              setLanguage(languageItem.value as Language);
+                              setIsLanguagesOpen(false);
+                            }}
+                          >
+                            {languageItem.label}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                  </div>
                   <CloseButton
                     onClick={() => {
                       setSelectedPreFilters([]);
                       onClose();
+                      setIsLanguagesOpen(false);
                     }}
                     width={8}
                     color="#2B2C46"
