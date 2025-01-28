@@ -1,0 +1,44 @@
+.web-camera-modal {
+  height: 100%;
+  &-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+  }
+  &-video {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transform: scale(1);
+  }
+  &-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    column-gap: 2rem;
+    position: absolute;
+    bottom: 6rem;
+    &-gallery {
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #fff;
+      border: 2px solid #fff;
+      background-color: #615e669f;
+    }
+    &-photo {
+      width: 70px;
+      border-radius: 50%;
+      border: 1px solid #fff;
+      background: transparent;
+      padding: .125rem;
+      height: 70px;
+    }
+  }
+}

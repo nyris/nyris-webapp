@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import eye from './eye.svg';
 import camera from './images/camera.svg';
@@ -20,6 +20,7 @@ import Modal from './Components/Modal';
 import { LoadingSpinner } from './Components/Loading';
 import { Result } from './Components/Result';
 import { AppProps, CadenasScriptStatus, Language, WidgetScreen } from './types';
+import { WebCameraModal } from './Components/WebCameraModal';
 
 const assets_base_url =
   'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api';
@@ -112,6 +113,7 @@ const Hello = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [preFilter, setPreFilter] = useState({});
   const [loading, setLoading] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (fs: File[]) => {
@@ -192,20 +194,30 @@ const Hello = ({
           >
             {labels['Browse gallery']}
           </label>
-          <label
+          <div
             className="nyris__hello-upload"
             style={{
               backgroundColor: window.nyrisSettings.primaryColor,
               width: window.nyrisSettings.searchCriteriaKey ? '50%' : '',
             }}
-            htmlFor="nyris__hello-open-camera"
+            onClick={() => setIsCameraOpen(true)}
           >
             {labels['Take a photo']}
             {!window.nyrisSettings.searchCriteriaKey && (
-              <img src={camera} width={16} height={16} />
+              <img src={camera} width={16} height={16} alt="camera icon" />
             )}
-          </label>
+          </div>
         </div>
+
+        <Modal isOpen={isCameraOpen} onClose={() => setIsCameraOpen(false)}>
+          <WebCameraModal
+            handlerFindImage={(f: any) => {
+              setIsCameraOpen(false);
+              onFile(f, Object.keys(selectedPreFilters));
+            }}
+            onClose={() => setIsCameraOpen(false)}
+          />
+        </Modal>
 
         <div className="nyris__main-content nyris__main-content--desktop">
           {/* <label
