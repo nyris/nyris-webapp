@@ -4,7 +4,12 @@ import { Icon } from '@nyris/nyris-react-components';
 import { ReactComponent as CloseButton } from '../images/close.svg';
 import '../styles/web-camera-modal.scss';
 
-export const WebCameraModal = (props: any) => {
+interface IWebCameraModal {
+  handlerFindImage: (f: any) => void;
+  onClose: () => void;
+}
+
+export const WebCameraModal = (props: IWebCameraModal) => {
   const webcamRef = useRef<Webcam>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const capture = () => {

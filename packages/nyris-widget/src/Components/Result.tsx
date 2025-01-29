@@ -332,14 +332,19 @@ export const Result = ({
         <div className="nyris__action-section">
           <div className="nyris__action-wrapper">
             <div
-              className="nyris__action-wrapper-button"
-              // htmlFor="nyris__hello-open-camera"
+              className="nyris__action-wrapper-button mobile"
             >
               <Camera
                 className="nyris__action-wrapper-button-camera"
                 onClick={() => setIsCameraOpen(true)}
               />
             </div>
+            <label
+              className="nyris__action-wrapper-button desktop"
+              htmlFor="nyris__hello-open-camera"
+            >
+              <Camera className="nyris__action-wrapper-button-camera" />
+            </label>
           </div>
           {window.nyrisSettings.filter &&
             window.nyrisSettings.filter?.length > 0 &&
