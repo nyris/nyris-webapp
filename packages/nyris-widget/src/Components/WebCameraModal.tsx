@@ -48,6 +48,11 @@ export const WebCameraModal = (props: IWebCameraModal) => {
         screenshotFormat="image/jpeg"
         width="100%"
         className="web-camera-modal-video"
+        videoConstraints={{
+          width: 1080,
+          aspectRatio: 1.11111,
+          facingMode: 'environment',
+        }}
       />
       <div className="web-camera-modal-actions">
         <input
