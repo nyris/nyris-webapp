@@ -378,7 +378,11 @@ export const Result = ({
             labels={labels}
           />
         </Modal>
-        <Modal isOpen={isCameraOpen} onClose={() => setIsCameraOpen(false)}>
+        <Modal
+          isOpen={isCameraOpen}
+          onClose={() => setIsCameraOpen(false)}
+          className="web-camera"
+        >
           <WebCameraModal
             handlerFindImage={(f: any) => {
               setIsCameraOpen(false);

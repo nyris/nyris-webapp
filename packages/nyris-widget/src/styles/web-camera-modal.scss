@@ -1,15 +1,32 @@
 .web-camera-modal {
   height: 100%;
-  &-close {
+  background-color: rgb(43, 44, 70);
+  padding-left: .5rem;
+  padding-right: .5rem;
+  input[type=file] {
     position: absolute;
-    top: 24px;
-    right: 24px;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+  }
+  &-header {
+    height: 60px;
+    width: 100%;
+    &-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+    }
   }
   &-video {
-    height: 100%;
+    height: calc(100% - 120px);
     width: 100%;
     object-fit: cover;
     transform: scale(1);
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 60px;
   }
   &-actions {
     width: 100%;
@@ -40,5 +57,9 @@
       padding: .125rem;
       height: 70px;
     }
+  }
+  &-footer {
+    height: 60px;
+    width: 100%;
   }
 }

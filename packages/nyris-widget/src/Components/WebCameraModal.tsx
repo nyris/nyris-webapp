@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import Webcam from 'react-webcam';
 import { Icon } from '@nyris/nyris-react-components';
 import { ReactComponent as CloseButton } from '../images/close.svg';
-import '../styles/WebCameraModal.scss';
+import '../styles/web-camera-modal.scss';
 
 export const WebCameraModal = (props: any) => {
   const webcamRef = useRef<Webcam>(null);
@@ -19,7 +19,6 @@ export const WebCameraModal = (props: any) => {
           const dataTransfer = new DataTransfer();
           dataTransfer.items.add(file);
           if (inputRef.current) {
-            console.log('here');
             inputRef.current.files = dataTransfer.files;
             const changeEvent = new Event("change", { bubbles: true });
             inputRef.current.dispatchEvent(changeEvent);
@@ -30,18 +29,20 @@ export const WebCameraModal = (props: any) => {
 
   return (
     <div className="web-camera-modal">
+      <div className="web-camera-modal-header">
+        <CloseButton
+          className="web-camera-modal-header-close"
+          width={16}
+          color="#fff"
+          onClick={() => props.onClose()}
+        />
+      </div>
       <Webcam
         audio={false}
         ref={webcamRef}
         screenshotFormat="image/jpeg"
         width="100%"
         className="web-camera-modal-video"
-      />
-      <CloseButton
-        className="web-camera-modal-close"
-        width={16}
-        color="#fff"
-        onClick={() => props.onClose()}
       />
       <div className="web-camera-modal-actions">
         <input
