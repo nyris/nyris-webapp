@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.72 - 2025-01-30
+
+### Hotifx
+- Made heic check case-insensitive
+
+## 0.3.72 - 2025-01-16
+
+### Added
+- Translation for RFQ/support flow
+
 ## 0.3.71 - 2024-12-31
 
 ### Added

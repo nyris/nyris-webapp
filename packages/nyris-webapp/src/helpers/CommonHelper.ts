@@ -32,3 +32,20 @@ export const prepareImageList = (dataItem: any) => {
   }
   return valueKey;
 };
+
+export const isHEIC = (file: File) => {
+  if (!file) return false;
+  if (!file.name) return false;
+  // Check extension (case insensitive)
+  const ext =
+    file.name.toLowerCase().endsWith('.heic') ||
+    file.name.toLowerCase().endsWith('.heif');
+
+  // Check MIME type
+  const mime =
+    file.type === 'image/heic' ||
+    file.type === 'image/heif' ||
+    file.type === 'image/heic-sequence';
+
+  return ext || mime;
+};

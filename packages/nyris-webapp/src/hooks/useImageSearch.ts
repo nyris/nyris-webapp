@@ -2,8 +2,10 @@
 
 import { RectCoords } from '@nyris/nyris-api';
 import { isEmpty } from 'lodash';
+
 import { useCallback } from 'react';
 import { createImage, find, findMulti, findRegions } from 'services/image';
+import { isHEIC } from 'helpers/CommonHelper';
 import useRequestStore from 'Store/requestStore';
 import useResultStore from 'Store/resultStore';
 import {
@@ -65,7 +67,7 @@ export const useImageSearch = () => {
 
       let blob = image;
 
-      if (['.heic', '.heif'].some(ex => image?.name?.endsWith(ex))) {
+      if (isHEIC(image)) {
         const blobTemp = new Blob([image], { type: 'image/heif' });
         const buffer = new Uint8Array(await blobTemp.arrayBuffer());
 
