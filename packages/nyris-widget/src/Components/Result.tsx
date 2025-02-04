@@ -10,7 +10,7 @@ import collapse from '../images/collapse.svg';
 
 import { ReactComponent as GoBack } from '../images/path.svg';
 import { ReactComponent as Filter } from '../images/filter.svg';
-import { ReactComponent as Upload } from '../images/upload.svg';
+import { ReactComponent as Camera } from '../images/camera.svg';
 import { ReactComponent as Close } from '../images/close.svg';
 import { ReactComponent as Trash } from '../images/trash.svg';
 
@@ -23,6 +23,7 @@ import { AppProps } from '../types';
 import { useFilteredResult } from '../hooks/useFilteredResult';
 import { useFilter } from '../hooks/useFilter';
 import { onFilterCheck } from '../utils';
+import { WebCameraModal } from './WebCameraModal';
 
 export const Result = ({
   onAcceptCrop,
@@ -47,7 +48,7 @@ export const Result = ({
 }: AppProps) => {
   const noResult = results.length === 0;
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [currentSelection, setCurrentSelection] = useState(selection);
   const [expand, setExpand] = useState(noResult);
 
@@ -330,11 +331,19 @@ export const Result = ({
         </div>
         <div className="nyris__action-section">
           <div className="nyris__action-wrapper">
+            <div
+              className="nyris__action-wrapper-button mobile"
+            >
+              <Camera
+                className="nyris__action-wrapper-button-camera"
+                onClick={() => setIsCameraOpen(true)}
+              />
+            </div>
             <label
-              className="nyris__action-wrapper-button"
+              className="nyris__action-wrapper-button desktop"
               htmlFor="nyris__hello-open-camera"
             >
-              <Upload />
+              <Camera className="nyris__action-wrapper-button-camera" />
             </label>
           </div>
           {window.nyrisSettings.filter &&
@@ -372,6 +381,19 @@ export const Result = ({
             setPostFilter={setPostFilter}
             results={results}
             labels={labels}
+          />
+        </Modal>
+        <Modal
+          isOpen={isCameraOpen}
+          onClose={() => setIsCameraOpen(false)}
+          className="web-camera"
+        >
+          <WebCameraModal
+            handlerFindImage={(f: any) => {
+              setIsCameraOpen(false);
+              onFile(f, Object.keys(selectedPreFilters));
+            }}
+            onClose={() => setIsCameraOpen(false)}
           />
         </Modal>
       </div>

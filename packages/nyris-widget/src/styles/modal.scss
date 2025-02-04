@@ -32,6 +32,11 @@ $black-opacity: rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
+  &.web-camera {
+    max-height: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
 
 }
 
