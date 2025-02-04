@@ -1,6 +1,6 @@
 {
   "name": "@nyris/nyris-api",
-  "version": "0.3.72",
+  "version": "0.3.73",
   "homepage": "https://github.com/nyris/nyris-webapp",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

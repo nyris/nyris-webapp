@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { RectCoords } from '@nyris/nyris-api';
 import { isEmpty } from 'lodash';
+
 import { decode } from 'tiff';
 import { createImage, find, findRegions } from 'services/visualSearch';
 
@@ -11,6 +12,7 @@ import { AppSettings } from 'types';
 import { compressImage } from 'utils/compressImage';
 import useUiStore from 'stores/ui/uiStore';
 import { useClearRefinements } from 'react-instantsearch';
+import { isHEIC } from 'utils/misc';
 
 export const useImageSearch = () => {
   const setRegions = useRequestStore(state => state.setRegions);
@@ -41,13 +43,14 @@ export const useImageSearch = () => {
 
   const tiffToJpg = async (file: File): Promise<Blob> => {
     return new Promise((resolve, reject) => {
-
       const reader = new FileReader();
 
       reader.onload = (event: ProgressEvent<FileReader>) => {
         if (event.target?.result) {
           try {
-            const tiffArray = new Uint8Array(event.target.result as ArrayBuffer);
+            const tiffArray = new Uint8Array(
+              event.target.result as ArrayBuffer,
+            );
             const tiffImages = decode(tiffArray);
             const firstImage = tiffImages[0];
             const { width, height, data } = firstImage;
@@ -77,11 +80,11 @@ export const useImageSearch = () => {
             const imageData = new ImageData(
               new Uint8ClampedArray(firstImageData),
               width,
-              height
+              height,
             );
             ctx.putImageData(imageData, 0, 0);
 
-            canvas.toBlob((blob) => {
+            canvas.toBlob(blob => {
               if (blob) {
                 resolve(blob);
               } else {
@@ -101,8 +104,6 @@ export const useImageSearch = () => {
       reader.readAsArrayBuffer(file);
     });
   };
-
-
 
   const singleImageSearch = useCallback(
     async ({
@@ -133,7 +134,7 @@ export const useImageSearch = () => {
 
       let blob = image;
 
-      if (['.heic', '.heif'].some(ex => image?.name?.endsWith(ex))) {
+      if (isHEIC(image)) {
         const blobTemp = new Blob([image], { type: 'image/heif' });
         const buffer = new Uint8Array(await blobTemp.arrayBuffer());
 
