@@ -17,7 +17,6 @@ import NyrisAPI, {
   SearchResult,
   urlOrBlobToCanvas,
 } from '@nyris/nyris-api';
-import { makeFileHandler } from '@nyris/nyris-react-components';
 import packageJson from '../package.json';
 import { FeedbackStatus } from './type';
 import { AppProps, NyrisSettings, ResultProps, WidgetScreen } from './types';

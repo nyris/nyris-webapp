@@ -489,6 +489,19 @@ div.psol-comp-webviewer3d-copyright-container {
         }
 
       }
+      
+      &.desktop {
+        @media #{$mobile-query} {
+          display: none;
+        }
+      }
+      
+      &.mobile {
+        display: none;
+        @media #{$mobile-query} {
+          display: flex;
+        }
+      }
 
       @media #{$mobile-query} {
         width: 34px;
@@ -505,7 +518,7 @@ div.psol-comp-webviewer3d-copyright-container {
         height: 18px;
 
         @media #{$mobile-query} {
-          width: 14px;
+          width: 16px;
           height: 14px;
 
         }
