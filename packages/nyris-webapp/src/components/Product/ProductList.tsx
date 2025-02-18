@@ -6,6 +6,7 @@ import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
+import { useCurrentRefinements } from 'react-instantsearch';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -15,6 +16,8 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const settings = window.settings;
   const { singleImageSearch } = useImageSearch();
   const { t } = useTranslation();
+
+  const { items } = useCurrentRefinements();
 
   const productsFromAlgolia = useResultStore(
     state => state.productsFromAlgolia,
@@ -68,11 +71,15 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
                 sendFeedBackAction(value);
               }}
               isGroupItem={settings.showGroup ? product?.isGroup : false}
-              main_image_link={
-                productsFromFindApi[i]?.image ||
-                product['image(main_similarity)'] ||
-                product['main_image_link']
-              }
+              main_image_link={(() => {
+                if (query || items.length !== 0) {
+                  return product['image(main_similarity)']
+                    ? product['image(main_similarity)']
+                    : product['main_image_link'];
+                } else {
+                  return productsFromFindApi[i]?.image;
+                }
+              })()}
             />
           );
         })}

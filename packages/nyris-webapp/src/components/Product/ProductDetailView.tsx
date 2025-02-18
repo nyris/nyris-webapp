@@ -151,7 +151,7 @@ function ProductDetailView(props: Props) {
                   setIs3dView(true);
                 }}
               >
-                <Icon name="box3d" width={16} height={16} color={'#AAABB5'} />
+                <Icon name="box3d" width={16} height={16} color={'black'} />
               </div>
             )}
           {is3dView && (

@@ -109,7 +109,7 @@ function Product(props: Props) {
                 setOpenDetailedView('3d');
               }}
             >
-              <Icon name="box3d" width={16} height={16} color={'#AAABB5'} />
+              <Icon name="box3d" width={16} height={16} color={'black'} />
             </div>
           )}
 

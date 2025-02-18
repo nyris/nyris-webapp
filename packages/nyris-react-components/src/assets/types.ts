@@ -1,5 +1,6 @@
 export const ICONS = {
   arrow_down: 'arrow_down',
+  auto_focus: 'auto_focus',
   avatar: 'avatar',
   back: 'back',
   box3d: 'box3d',
@@ -24,6 +25,7 @@ export const ICONS = {
   like: 'like',
   link: 'link',
   logout: 'logout',
+  machine_view: 'machine_view',
   minus: 'minus',
   next_arrow: 'next_arrow',
   plus_rounded: 'plus_rounded',
@@ -33,7 +35,9 @@ export const ICONS = {
   search: 'search',
   settings: 'settings',
   share: 'share',
+  spare: 'spare',
   trash: 'trash',
+  wear: 'wear',
 } as const;
 
 export type SUPPORTED_ICON = keyof typeof ICONS;

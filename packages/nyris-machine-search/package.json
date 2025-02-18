@@ -1,0 +1,80 @@
+{
+  "name": "@nyris/nyris-machine-search",
+  "version": "0.3.72",
+  "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
+    "@emailjs/browser": "^4.3.3",
+    "@nyris/nyris-api": "^0.3.72",
+    "@nyris/nyris-react-components": "^0.3.72",
+    "@radix-ui/react-accordion": "^1.2.2",
+    "@radix-ui/react-dialog": "^1.1.4",
+    "@radix-ui/react-popover": "^1.1.4",
+    "@radix-ui/react-radio-group": "^1.2.2",
+    "@radix-ui/react-slot": "^1.1.1",
+    "@radix-ui/react-tooltip": "^1.1.6",
+    "@react-three/drei": "^9.121.3",
+    "@react-three/fiber": "^8.17.12",
+    "@shadcn/ui": "^0.0.4",
+    "@splidejs/react-splide": "^0.7.12",
+    "@types/heic-convert": "^2.1.0",
+    "@types/node": "^16.18.88",
+    "@types/react": "^18.2.65",
+    "@types/react-dom": "^18.2.21",
+    "algoliasearch": "^5.17.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "compressorjs": "^1.2.1",
+    "heic-convert": "^2.1.0",
+    "i18next": "^23.10.1",
+    "lodash": "^4.17.21",
+    "lucide-react": "^0.469.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.3.5",
+    "react-hot-toast": "^2.4.1",
+    "react-i18next": "^14.1.0",
+    "react-instantsearch": "^7.13.9",
+    "react-responsive": "^10.0.0",
+    "react-router": "^7.0.2",
+    "react-webcam": "^7.2.0",
+    "tailwind-merge": "^2.5.5",
+    "tailwindcss-animate": "^1.0.7",
+    "three": "^0.172.0",
+    "typescript": "^4.9.5",
+    "vaul": "^1.1.2",
+    "zustand": "^5.0.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "tailwindcss": "^3.4.10"
+  }
+}
