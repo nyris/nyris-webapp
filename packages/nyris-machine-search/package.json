@@ -1,6 +1,7 @@
 {
   "name": "@nyris/nyris-machine-search",
-  "version": "0.3.72",
+  "version": "0.3.73",
+  "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@emailjs/browser": "^4.3.3",
