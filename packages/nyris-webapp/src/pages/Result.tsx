@@ -183,6 +183,7 @@ function Results() {
                     className={twMerge(
                       'grid grid-cols-[repeat(auto-fit,_minmax(180px,_0px))] desktop:grid-cols-[repeat(auto-fit,_minmax(190px,_0px))]',
                       'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
+                      'w-full',
                     )}
                   >
                     <GoBackButton className="col-span-full mb-2 desktop:mb-0" />
