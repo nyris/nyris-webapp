@@ -1,0 +1,328 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Source Sans 3", "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2B2C46
+}
+
+/* Source Sans 3 fonts  */
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("./common/assets/fonts/source-sans-3/SourceSans3-Light.ttf");
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("./common/assets/fonts/source-sans-3/SourceSans3-Regular.ttf");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("./common/assets/fonts/source-sans-3/SourceSans3-Medium.ttf");
+  font-style: medium;
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("./common/assets/fonts/source-sans-3/SourceSans3-SemiBold.ttf");
+  font-style: medium;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("./common/assets/fonts/source-sans-3/SourceSans3-Bold.ttf");
+  font-style: medium;
+  font-weight: 700;
+  font-display: swap;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Source Sans 3', sans-serif !important;
+}
+
+a,
+abbr,
+acronym,
+address,
+applet,
+article,
+aside,
+audio,
+b,
+big,
+blockquote,
+body,
+canvas,
+caption,
+center,
+cite,
+code,
+dd,
+del,
+details,
+dfn,
+div,
+dl,
+dt,
+em,
+embed,
+fieldset,
+figcaption,
+figure,
+footer,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+header,
+hgroup,
+html,
+i,
+iframe,
+img,
+ins,
+kbd,
+label,
+legend,
+li,
+mark,
+menu,
+nav,
+object,
+ol,
+output,
+p,
+pre,
+q,
+ruby,
+s,
+samp,
+section,
+small,
+span,
+strike,
+strong,
+sub,
+summary,
+sup,
+table,
+tbody,
+td,
+tfoot,
+th,
+thead,
+time,
+tr,
+tt,
+u,
+ul,
+var,
+video {
+  font: inherit;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  /* vertical-align: baseline */
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:after,
+blockquote:before,
+q:after,
+q:before {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  color: #2B2C46;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a,
+b,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong {
+  font-weight: 700;
+}
+
+body {
+  background: #fafafa;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1;
+}
+
+h1,
+h2 {
+  line-height: 1.618;
+  color: #031f2b;
+}
+
+h1 {
+  font-size: 25px;
+  margin: 0 auto 25px;
+}
+
+h1.entry-title a {
+  color: #031f2b;
+  font-size: 25px;
+}
+
+h2 {
+  font-size: 16px;
+  margin: 15px auto 25px;
+}
+
+h2.entry-title a {
+  color: #031f2b;
+  font-size: 25px;
+}
+
+h1 p,
+h2 p {
+  margin-bottom: 0;
+}
+
+@media only screen and (min-width: 530px) and (max-width: 750px) {
+  h1 br,
+  h2 br {
+    display: none;
+  }
+}
+
+h3 {
+  color: #031f2b;
+  font-size: 17px;
+  line-height: 1.5;
+  margin: 22px auto 16px;
+}
+
+h4 {
+  font-size: 15px;
+  margin: 22px auto 12px;
+}
+
+h5 {
+  font-size: 13px;
+  margin: 22px auto 10px;
+}
+
+h6 {
+  font-size: 11px;
+  margin: 22px auto 8px;
+}
+
+p a {
+  text-decoration: underline;
+}
+
+em {
+  font-style: italic;
+}
+
+iframe,
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  text-decoration: none;
+  color: rgba(3, 31, 43, 0.54);
+}
+
+a:hover {
+  cursor: pointer;
+  color: rgba(3, 31, 43, 0.7);
+}
+
+ol,
+ul {
+  list-style: none;
+  padding-left: 20px;
+}
+
+ol li,
+ul li {
+  list-style: disc;
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+
+/* Css Common all page */
+.d-flex {
+  display: flex !important;
+}
+.justify-center {
+  justify-content: center;
+}
+.flex-end {
+  align-items: flex-end;
+}
+.flex-center {
+  align-items: center;
+}

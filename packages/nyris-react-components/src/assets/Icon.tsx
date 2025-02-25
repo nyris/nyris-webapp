@@ -36,6 +36,10 @@ import { ReactComponent as CaretLeft } from './icons/caret-left.svg';
 import { ReactComponent as CaretRight } from './icons/caret-right.svg';
 import { ReactComponent as ExperienceVisualSearch } from './icons/experience_visual_search.svg';
 import { ReactComponent as ArrowDown } from './icons/arrow_down.svg';
+import { ReactComponent as MachineView } from './icons/machine_view.svg';
+import { ReactComponent as AutoFocus } from './icons/auto_focus.svg';
+import { ReactComponent as Wear } from './icons/wear.svg';
+import { ReactComponent as Spare } from './icons/spare.svg';
 
 import { SUPPORTED_ICON } from './types';
 
@@ -43,6 +47,7 @@ type IconConfig = { component: FC<SVGAttributes<SVGElement>> };
 
 export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   arrow_down: { component: ArrowDown },
+  auto_focus: { component: AutoFocus },
   avatar: { component: Avatar },
   back: { component: Back },
   box3d: { component: Box3d },
@@ -67,6 +72,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   like: { component: Like },
   link: { component: Link },
   logout: { component: Logout },
+  machine_view: { component: MachineView },
   minus: { component: Minus },
   next_arrow: { component: NextArrow },
   plus_rounded: { component: PlusRounded },
@@ -76,7 +82,9 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   search: { component: Search },
   settings: { component: Settings },
   share: { component: Share },
+  spare: { component: Spare },
   trash: { component: Trash },
+  wear: { component: Wear },
 };
 const Icon: FC<
   {
