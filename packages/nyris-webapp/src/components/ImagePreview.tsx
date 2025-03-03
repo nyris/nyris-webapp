@@ -58,11 +58,10 @@ function ImagePreviewComponent({
   const onImageRemove = () => {
     resetRegions();
     setRequestImages([]);
-    if (!query) {
-      navigate('/');
-      resetResultStore();
-      resetRequestStore();
-    }
+
+    navigate('/');
+    resetResultStore();
+    resetRequestStore();
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

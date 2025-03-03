@@ -309,6 +309,7 @@ function TextSearch({
                 if (e?.target?.files) {
                   handleUpload(Array.from(e.target.files));
                 }
+                e.target.value = '';
               }}
             />
             <Tooltip content={t('Search with an image')}>

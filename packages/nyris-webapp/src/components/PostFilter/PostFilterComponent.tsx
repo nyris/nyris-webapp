@@ -4,9 +4,10 @@ import {
   AccordionTrigger,
 } from 'components/Accordion';
 import React, { useState } from 'react';
-import PostFilter from './PostFilter';
-import { twMerge } from 'tailwind-merge';
 import { useTranslation } from 'react-i18next';
+import { twMerge } from 'tailwind-merge';
+import PostFilter from './PostFilter';
+import useResultStore from 'stores/result/resultStore';
 
 function PostFilterComponent({ className }: { className?: string }) {
   const [accordionValues, setAccordionValues] = useState([
@@ -22,6 +23,12 @@ function PostFilterComponent({ className }: { className?: string }) {
   );
 
   const { t } = useTranslation();
+
+  const productsFromAlgolia = useResultStore(
+    state => state.productsFromAlgolia,
+  );
+
+  if (productsFromAlgolia.length === 0) return <></>;
 
   return (
     <div
