@@ -1,12 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import translations from '../translations';
 
 import { ReactComponent as CloseButton } from '../images/close.svg';
 import { ReactComponent as Search } from '../images/search.svg';
 import { LoadingSpinner } from './Loading';
 import { pickBy } from 'lodash';
 
-const translation = translations(window.nyrisSettings.language);
 const maxFilter = 10;
 
 function PreFilter({
@@ -16,6 +14,7 @@ function PreFilter({
   selectedPreFilters,
   setSelectedPreFilters,
   searchFilters,
+  labels,
 }: {
   onClose: () => void;
   preFilter: Record<string, string[]>;
@@ -23,6 +22,7 @@ function PreFilter({
   setSelectedPreFilters: any;
   selectedPreFilters: any;
   searchFilters: (value: string) => void;
+  labels: any;
 }) {
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     selectedPreFilters || {},
@@ -74,7 +74,7 @@ function PreFilter({
               setSearchKey(e.target.value);
             }}
             value={searchKey}
-            placeholder={translation['Search']}
+            placeholder={labels['Search']}
           />
           {searchKey ? (
             <CloseButton
@@ -127,7 +127,7 @@ function PreFilter({
                   setKeyFilter({});
                 }}
               >
-                {translation['Clear all']}
+                {labels['Clear all']}
               </div>
             </div>
           </div>
@@ -174,7 +174,7 @@ function PreFilter({
                 onClose();
               }}
             >
-              {translation['Cancel']}
+              {labels['Cancel']}
             </div>
             <div
               className="nyris__prefilter-button-apply"
@@ -184,7 +184,7 @@ function PreFilter({
                 onClose();
               }}
             >
-              {translation['Apply']}
+              {labels['Apply']}
             </div>
           </div>
         )}

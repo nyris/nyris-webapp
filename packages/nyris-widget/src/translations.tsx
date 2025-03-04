@@ -2,7 +2,7 @@ import React from 'react';
 import { Language } from './types';
 
 const translations = (language: Language) => {
-  const dictionaries: Record<'de' | 'en', any> = {
+  const dictionaries: Record<'de' | 'en' | 'fr', any> = {
     de: {
       Search: 'Suche',
       'Analyzing image...': 'Bild wird analysiert...',
@@ -88,6 +88,48 @@ const translations = (language: Language) => {
       'Clear all': 'clear all',
       Cancel: 'Cancel',
       Apply: 'Apply',
+    },
+    fr: {
+      Search: 'Recherche',
+      'Analyzing image...': 'Analyse de l\'image...',
+      'Hold on': 'Attendez',
+      'We are working hard on finding the product':
+        'Nous travaillons d\'arrache-pied pour trouver le produit',
+      'Success!': 'Succès!',
+      'matches found': 'correspondances trouvées',
+      'match found': 'correspondance trouvée',
+      'View more': 'Voir plus',
+      'Something went wrong': 'Quelque chose n\'a pas fonctionné',
+      'Oops!':
+        'Oups ! Nous avons rencontré un problème lors de la recherche. Veuillez vous assurer que votre image est conforme aux lignes directrices et réessayez.',
+      'Upload a picture': 'Télécharger une image',
+      'Drag and drop an image here': 'Glisser-déposer une image ici',
+      'Browse gallery': 'Parcourir la galerie',
+      'Take a photo': 'Prendre une photo',
+      'Test Visual Search Widget': 'Test du widget de recherche visuelle',
+      'Enter your api key and submit': 'Saisissez votre clé api et validez',
+      'API key': 'Clé API',
+      'Your API key here': 'Votre clé API ici',
+      Submit: 'Soumettre',
+      'Open visual search': 'Recherche visuelle ouverte',
+      'Let’s try that again': 'Essayons encore une fois',
+      'We couldn’t find matches': 'Nous n\'avons pas trouvé de correspondance cette fois-ci.',
+      'For the best results, please use':
+        'Pour obtenir les meilleurs résultats, utilisez une photo nette, bien éclairée et centrée, avec un arrière-plan propre, et recommencez !',
+      'Click a picture': 'Cliquez sur une image',
+      'Back to request image': 'Retour à la demande d\'image',
+      'View full description': 'Voir la description complète',
+      'Drag an image or click to upload': 'Faites glisser une image ou cliquez pour la télécharger',
+      "We couldn't find matches based on <prefilters>":
+        "Nous n'avons pas trouvé de correspondance basée sur <prefilters>.",
+      'based on': 'sur la base de',
+      'Refine your search results': 'Affiner les résultats de votre recherche',
+      'Are these results useful?': 'Ces résultats sont-ils utiles ?',
+      'Thanks for your feedback!': 'Merci pour vos commentaires !',
+      Clear: 'clair',
+      'Clear all': 'tout effacer',
+      Cancel: 'Annuler',
+      Apply: 'Appliquer',
     },
   };
 

@@ -4,14 +4,13 @@ import { Preview } from '@nyris/nyris-react-components';
 import { RectCoords } from '@nyris/nyris-api';
 
 import { debounce } from 'lodash';
-import translations from '../translations';
 
 import crop from '../images/crop.svg';
 import collapse from '../images/collapse.svg';
 
 import { ReactComponent as GoBack } from '../images/path.svg';
 import { ReactComponent as Filter } from '../images/filter.svg';
-import { ReactComponent as Upload } from '../images/upload.svg';
+import { ReactComponent as Camera } from '../images/camera.svg';
 import { ReactComponent as Close } from '../images/close.svg';
 import { ReactComponent as Trash } from '../images/trash.svg';
 
@@ -24,8 +23,7 @@ import { AppProps } from '../types';
 import { useFilteredResult } from '../hooks/useFilteredResult';
 import { useFilter } from '../hooks/useFilter';
 import { onFilterCheck } from '../utils';
-
-const translation = translations(window.nyrisSettings.language);
+import { WebCameraModal } from './WebCameraModal';
 
 export const Result = ({
   onAcceptCrop,
@@ -46,10 +44,11 @@ export const Result = ({
   selectedPreFilters,
   postFilter,
   setPostFilter,
+  labels,
 }: AppProps) => {
   const noResult = results.length === 0;
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [currentSelection, setCurrentSelection] = useState(selection);
   const [expand, setExpand] = useState(noResult);
 
@@ -121,35 +120,35 @@ export const Result = ({
         className="nyris__screen nyris__success-multiple"
         style={{
           overflowY: isModalOpen ? 'hidden' : 'unset',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <div className="nyris__main-heading ">
-          {noResult
-            ? translation['Let’s try that again']
-            : translation['Success!']}
+          {noResult ? labels['Let’s try that again'] : labels['Success!']}
         </div>
         <div className="nyris__main-description">
           {noResult &&
             selectedPreFiltersLabel.length > 0 &&
-            translation["We couldn't find matches based on <prefilters>"]({
+            labels["We couldn't find matches based on <prefilters>"]({
               prefilters: selectedPreFiltersLabel.join(', '),
               style: 'bold',
             })}
           {noResult &&
             selectedPreFiltersLabel.length === 0 &&
-            translation['We couldn’t find matches']}
+            labels['We couldn’t find matches']}
           {/* {noResult && translation['For the best results, please use']} */}
           {!noResult && (
             <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
               <div style={{ fontWeight: 'bold' }}>{results.length}</div>
               <div>
                 {results.length === 1
-                  ? translation['match found']
-                  : translation['matches found']}
+                  ? labels['match found']
+                  : labels['matches found']}
               </div>
               {selectedPreFiltersLabel.length > 0 && (
                 <>
-                  <div>{translation['based on']}</div>
+                  <div>{labels['based on']}</div>
                   <div
                     style={{
                       paddingRight: '4px',
@@ -233,7 +232,7 @@ export const Result = ({
               }}
             >
               <GoBack width={16} height={16} />
-              {translation['Back to request image']}
+              {labels['Back to request image']}
             </div>
           )}
 
@@ -285,13 +284,13 @@ export const Result = ({
                 className="nyris__postFilter-clear"
                 onClick={() => setPostFilter({})}
               >
-                <div>{translation['Clear']}</div>
+                <div>{labels['Clear']}</div>
               </div>
             </div>
           )}
 
           {loading && (
-            <LoadingSpinner description={translation['Analyzing image...']} />
+            <LoadingSpinner description={labels['Analyzing image...']} />
           )}
           {!loading && (
             <>
@@ -312,13 +311,14 @@ export const Result = ({
               {showFeedbackSuccess && (
                 <div className="nyris__feedback-section">
                   <div className="nyris__feedback-success">
-                    {translation['Thanks for your feedback!']}
+                    {labels['Thanks for your feedback!']}
                   </div>
                 </div>
               )}
               {feedbackStatus === 'visible' && !showFeedbackSuccess && (
                 <div className="nyris__feedback-section">
                   <Feedback
+                    labels={labels}
                     submitFeedback={handleSubmitFeedback}
                     onFeedbackClose={() => {
                       setFeedbackStatus('submitted');
@@ -331,11 +331,17 @@ export const Result = ({
         </div>
         <div className="nyris__action-section">
           <div className="nyris__action-wrapper">
+            <div className="nyris__action-wrapper-button mobile">
+              <Camera
+                className="nyris__action-wrapper-button-camera"
+                onClick={() => setIsCameraOpen(true)}
+              />
+            </div>
             <label
-              className="nyris__action-wrapper-button"
+              className="nyris__action-wrapper-button desktop"
               htmlFor="nyris__hello-open-camera"
             >
-              <Upload />
+              <Camera className="nyris__action-wrapper-button-camera" />
             </label>
           </div>
           {window.nyrisSettings.filter &&
@@ -372,6 +378,20 @@ export const Result = ({
             // allFilter={allFilter}
             setPostFilter={setPostFilter}
             results={results}
+            labels={labels}
+          />
+        </Modal>
+        <Modal
+          isOpen={isCameraOpen}
+          onClose={() => setIsCameraOpen(false)}
+          className="web-camera"
+        >
+          <WebCameraModal
+            handlerFindImage={(f: any) => {
+              setIsCameraOpen(false);
+              onFile(f, Object.keys(selectedPreFilters));
+            }}
+            onClose={() => setIsCameraOpen(false)}
           />
         </Modal>
       </div>

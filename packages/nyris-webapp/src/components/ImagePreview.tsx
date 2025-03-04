@@ -1,179 +1,72 @@
-import { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
-import cx from 'classnames';
-
-import { RectCoords } from '@nyris/nyris-api';
-import { Icon, Preview } from '@nyris/nyris-react-components';
-import { DEFAULT_REGION } from '../constants';
+import { debounce } from 'lodash';
+import { twMerge } from 'tailwind-merge';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector } from 'Store/Store';
 
-import { useQuery } from 'hooks/useQuery';
-import {
-  loadingActionResults,
-  reset,
-  setSearchResults,
-  updateResultChangePosition,
-  updateStatusLoading,
-} from 'Store/search/Search';
-import { useHistory } from 'react-router-dom';
-import { createImage, find } from 'services/image';
-import { debounce, isEmpty, isUndefined } from 'lodash';
-import useRequestStore from 'Store/requestStore';
-import CameraCustom from './drawer/cameraCustom';
-import useFilteredRegions from 'hooks/useFilteredRegions';
-import useResultStore from 'Store/resultStore';
-import { useDropzone } from 'react-dropzone';
+import { Icon, Preview } from '@nyris/nyris-react-components';
+import { RectCoords } from '@nyris/nyris-api';
+
+import { DEFAULT_REGION } from '../constants';
 import { useImageSearch } from 'hooks/useImageSearch';
-import { compressImage } from 'utils';
-import React from 'react';
+import useFilteredRegions from 'hooks/useFilteredRegions';
+import useRequestStore from 'stores/request/requestStore';
+import useResultStore from 'stores/result/resultStore';
 
 function ImagePreviewComponent({
   showAdjustInfo = false,
-  isExpanded,
-  isCameraUploadEnabled = true,
 }: {
   imageSelection?: any;
   filteredRegions?: any;
   showAdjustInfo?: any;
-  isCameraUploadEnabled?: boolean;
   isExpanded?: boolean;
 }) {
   const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
     useState(false);
 
   const { t } = useTranslation();
-  const settings = useAppSelector(state => state.settings);
-  const preFilter = useAppSelector(state => state.search.preFilter);
-  const isAlgoliaEnabled = settings.algolia?.enabled;
+  const navigate = useNavigate();
+  const settings = window.settings;
   const isMultiImageSearchEnabled = settings.multiImageSearch;
 
-  const query = useQuery();
-  const dispatch = useAppDispatch();
-  const history = useHistory();
+  const requestImages = useRequestStore(state => state.requestImages);
+  const resetRegions = useRequestStore(state => state.resetRegions);
+  const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const query = useRequestStore(state => state.query);
+  const regions = useRequestStore(state => state.regions);
+  const updateRegion = useRequestStore(state => state.updateRegion);
+  const resetRequestStore = useRequestStore(state => state.reset);
 
-  const {
-    setRequestImages,
-    resetRegions,
-    requestImages,
-    addRequestImage,
-    regions,
-    updateRegion,
-    imageRegions,
-  } = useRequestStore(state => ({
-    requestImages: state.requestImages,
-    regions: state.regions,
-    addRequestImage: state.addRequestImage,
-    updateRegion: state.updateRegion,
-    imageRegions: state.regions,
-    resetRegions: state.resetRegions,
-    setRequestImages: state.setRequestImages,
-  }));
+  const detectedRegions = useResultStore(state => state.detectedRegions);
+  const resetResultStore = useResultStore(state => state.reset);
 
-  const { detectedObject } = useResultStore(state => ({
-    detectedObject: state.detectedObject,
-  }));
+  const { singleImageSearch } = useImageSearch();
 
-  const { multiImageSearch, singleImageSearch } = useImageSearch();
+  const currentIndex = requestImages.length - 1;
 
-  const [showCamera, setShowCamera] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(requestImages.length - 1);
-  const [isVisible, setIsVisible] = useState(true);
-  const [zIndex, setZIndex] = useState<number>(0);
+  const [isVisible] = useState(true);
+  const [zIndex] = useState<number>(0);
 
   const previewWrapperRef = useRef<any>(null);
 
-  const searchQuery = query.get('query') || '';
-
-  const onImageRemove = () => {
-    dispatch(reset(''));
-    resetRegions();
-    setRequestImages([]);
-    if (!searchQuery) {
-      history.push('/');
-    }
-
-    if (!isAlgoliaEnabled) {
-      let payload: any;
-      let filters: any[] = [];
-      const preFilterValues = [
-        {
-          key: settings.visualSearchFilterKey,
-          values: Object.keys(preFilter),
-        },
-      ];
-      if (searchQuery || requestImages.length > 0) {
-        dispatch(updateStatusLoading(true));
-        find({
-          settings,
-          filters: !isEmpty(preFilter) ? preFilterValues : undefined,
-          text: searchQuery,
-        })
-          .then((res: any) => {
-            res?.results.forEach((item: any) => {
-              filters.push({
-                sku: item.sku,
-                score: item.score,
-              });
-            });
-            payload = {
-              ...res,
-              filters,
-            };
-
-            dispatch(setSearchResults(payload));
-            dispatch(updateStatusLoading(false));
-          })
-          .catch((e: any) => {
-            dispatch(updateStatusLoading(false));
-          });
-      } else {
-        dispatch(setSearchResults([]));
-      }
-    }
-  };
-
-  const handleExpand = () => {
-    if (isVisible) {
-      setTimeout(() => {
-        setZIndex(-1);
-      }, 300);
-    } else {
-      setZIndex(0);
-    }
-    setIsVisible(s => !s);
-  };
-
   const filteredRegions = useFilteredRegions(
-    detectedObject[currentIndex],
+    detectedRegions[currentIndex],
     regions[currentIndex],
   );
 
-  const { getInputProps } = useDropzone({
-    onDrop: async (fs: File[]) => {
-      if (!fs[0]) return;
+  const onImageRemove = () => {
+    resetRegions();
+    setRequestImages([]);
 
-      dispatch(updateStatusLoading(true));
-      dispatch(loadingActionResults());
-
-      const compressedBase64 = await compressImage(fs[0]);
-      let image = await createImage(compressedBase64);
-
-      multiImageSearch({
-        images: [...requestImages, image],
-        regions: regions,
-        settings,
-      }).then(() => {
-        dispatch(updateStatusLoading(false));
-      });
-      addRequestImage(image);
-    },
-  });
+    navigate('/');
+    resetResultStore();
+    resetRequestStore();
+  };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const findItemsInSelection = useCallback(
     debounce(async (r: RectCoords, image: HTMLCanvasElement) => {
-      dispatch(updateStatusLoading(true));
       singleImageSearch({
         image: image,
         settings,
@@ -181,9 +74,6 @@ function ImagePreviewComponent({
         showFeedback: true,
         compress: false,
       }).then((res: any) => {
-        dispatch(updateStatusLoading(false));
-
-        dispatch(updateResultChangePosition(res));
         const highConfidence = res.results.find(
           (data: { score: number }) => data.score >= 0.65,
         );
@@ -196,52 +86,26 @@ function ImagePreviewComponent({
       });
       return;
     }, 250),
-    [dispatch, settings, singleImageSearch],
+    [settings, singleImageSearch],
   );
 
-  const multiImageSearchOnRegionChange = useCallback(
-    (r: RectCoords, index: number) => {
-      dispatch(updateStatusLoading(true));
-      dispatch(loadingActionResults());
-      let modifiedRegions = [...imageRegions];
-      modifiedRegions[index] = r;
-      multiImageSearch({
-        images: requestImages,
-        regions: modifiedRegions,
-        settings,
-      }).then(() => {
-        dispatch(updateStatusLoading(false));
-      });
-    },
-    [dispatch, imageRegions, multiImageSearch, requestImages, settings],
-  );
+  const [editActive, setEditActive] = useState(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords, index?: number) => {
-      if (requestImages.length > 1 && !isUndefined(index)) {
-        updateRegion(r, index);
-        multiImageSearchOnRegionChange(r, index);
-      } else {
-        updateRegion(r, 0);
-        findItemsInSelection(r, requestImages[0]);
-      }
+      updateRegion(r, 0);
+      findItemsInSelection(r, requestImages[0]);
     }, 50),
-    [
-      findItemsInSelection,
-      multiImageSearchOnRegionChange,
-      requestImages,
-      updateRegion,
-    ],
+    [findItemsInSelection, requestImages, updateRegion],
   );
 
-  const [editActive, setEditActive] = useState(false);
   return (
     <>
       {/* Image preview Desktop, To-do: Remove and use same code as Image preview for Mobile */}
       <div
         ref={previewWrapperRef}
-        className={cx([
+        className={twMerge([
           'bg-primary',
           'justify-center',
           isVisible ? (!isMultiImageSearchEnabled ? 'py-5' : 'pt-6') : '',
@@ -327,7 +191,7 @@ function ImagePreviewComponent({
       </div>
       {/* Image preview Mobile*/}
       <div
-        className={cx([
+        className={twMerge([
           'bg-primary',
           'justify-center',
           'p-5',
@@ -349,7 +213,7 @@ function ImagePreviewComponent({
             }}
             image={requestImages[currentIndex]}
             selection={regions[currentIndex] || DEFAULT_REGION}
-            regions={filteredRegions || []}
+            regions={[]}
             minWidth={Math.min(
               80 *
                 (requestImages[currentIndex]?.width /
@@ -428,146 +292,6 @@ function ImagePreviewComponent({
             />
           </div>
         </div>
-      </div>
-
-      <div className={cx([!isMultiImageSearchEnabled && 'hidden'])}>
-        <div
-          className={cx([
-            'flex',
-            'items-center',
-            'gap-x-2',
-            'h-28',
-            'w-full',
-            'bg-primary',
-            'justify-center',
-            'relative',
-            'py-4',
-            'desktop:pt-7 desktop:pb-5',
-          ])}
-        >
-          {requestImages.map((image, index) => {
-            return (
-              <div
-                key={index}
-                className={cx([
-                  'rounded-md',
-                  'relative',
-                  'p-1',
-                  currentIndex === index && isVisible
-                    ? ' bg-white'
-                    : 'bg-transparent',
-                ])}
-              >
-                <img
-                  className={cx([
-                    'w-[70px]',
-                    'h-[70px]',
-                    'desktop:w-[52px]',
-                    'desktop:h-[52px]',
-                    'rounded-md',
-                    'object-cover',
-                    'shadow-inner',
-                  ])}
-                  src={(() => {
-                    if (image?.toDataURL) {
-                      return image.toDataURL();
-                    }
-                  })()}
-                  alt=""
-                  onClick={() => {
-                    setCurrentIndex(index);
-                    if (!isVisible) {
-                      handleExpand();
-                    }
-                  }}
-                />
-                {currentIndex === index && (
-                  <div
-                    className={cx([
-                      'absolute',
-                      'w-[70px]',
-                      'h-[70px]',
-                      'desktop:w-[52px]',
-                      'desktop:h-[52px]',
-                      'rounded-md',
-                      'top-1',
-                      'bg-black/15',
-                    ])}
-                    onClick={() => {
-                      setCurrentIndex(index);
-                      if (!isVisible) {
-                        handleExpand();
-                      }
-                    }}
-                  />
-                )}
-              </div>
-            );
-          })}
-          {requestImages.length < 3 && isMultiImageSearchEnabled && (
-            <label
-              className={cx([
-                'w-[70px]',
-                'h-[70px]',
-                'desktop:w-[52px]',
-                'desktop:h-[52px]',
-                'bg-[#55566B]/50',
-                'flex',
-                'justify-center',
-                'items-center',
-                'border',
-                'border-dashed',
-                'border-[#AAABB5]',
-                'rounded-md',
-                'cursor-pointer',
-              ])}
-              onClick={() => {
-                if (isCameraUploadEnabled) {
-                  setShowCamera(true);
-                }
-              }}
-              htmlFor={isCameraUploadEnabled ? '' : 'icon-add-image'}
-            >
-              <input
-                accept="image/*"
-                id="icon-add-image"
-                type="file"
-                style={{ display: 'none' }}
-                {...getInputProps({
-                  onClick: e => {
-                    e.currentTarget.value = '';
-                    e.stopPropagation();
-                  },
-                })}
-              />
-              <Icon
-                name="plus"
-                className={cx(['text-[#AAABB5] desktop:hidden'])}
-              />
-              <div className="hidden desktop:block">
-                <Icon name="download" className={cx(['text-[#AAABB5]'])} />
-              </div>
-            </label>
-          )}
-          <div
-            onClick={() => handleExpand()}
-            className="absolute right-5 flex justify-center items-center desktop:hidden p-2"
-          >
-            <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
-              <Icon name="crop" className="text-primary" />
-            </div>
-          </div>
-
-          <CameraCustom
-            show={showCamera}
-            onClose={() => setShowCamera(false)}
-          />
-        </div>
-        {requestImages.length < 3 && isMultiImageSearchEnabled && (
-          <p className="text-[10px] pb-4 w-full text-center bg-primary text-white -mt-[1px]">
-            Add up to three photos for a more accurate visual search.
-          </p>
-        )}
       </div>
     </>
   );

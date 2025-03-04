@@ -1,5 +1,4 @@
 import { NyrisAPISettings } from '@nyris/nyris-api';
-import { SearchState } from 'Store/search/types';
 
 export interface AlgoliaSettings {
   apiKey: string;
@@ -70,28 +69,24 @@ interface ProductDetailsAttribute {
   propertyName: string;
   value: string;
 }
-
 export interface AppSettings extends NyrisAPISettings {
   algolia: AlgoliaSettings;
   alogoliaFilterField?: string;
   appTitle?: string;
+  attributes?: Attributes;
   auth0: Auth0Settings;
   brandName?: string;
   cadenas?: Cadenas;
+  cadSearch?: boolean;
   clarityId?: string;
-  mainTitle: string;
-  productDetails: string;
-  productDetailsAttribute?: ProductDetailsAttribute[];
-  secondaryTitle: string;
   CTAButton?: CTAButtonSettings;
-  secondaryCTAButton?: SecondaryCTAButton;
-  attributes?: Attributes;
   experienceVisualSearch?: boolean;
   experienceVisualSearchImages?: string[];
   headerText?: string;
   instantRedirectPatterns: string[];
   isBrandNameTitleVisible?: boolean;
   language?: string;
+  mainTitle: string;
   multiImageSearch?: boolean;
   noImageUrl?: string;
   noSimilarSearch?: boolean;
@@ -99,11 +94,14 @@ export interface AppSettings extends NyrisAPISettings {
   preFilterOption?: boolean;
   preFilterTitle?: string;
   preview: boolean;
-  cadSearch?: boolean;
+  productDetails: string;
+  productDetailsAttribute?: ProductDetailsAttribute[];
   refinements?: any;
   regions: boolean;
   rfq?: Rfq;
+  secondaryCTAButton?: SecondaryCTAButton;
   secondaryCTAButtonText?: string;
+  secondaryTitle: string;
   shareOption?: boolean;
   shouldUseUserMetadata?: boolean;
   showFeedback?: boolean;
@@ -125,12 +123,6 @@ export interface SearchSuiteSettings {
   primaryColor?: string;
   secondaryColor?: string;
 }
-
-export type AppState = {
-  search: SearchState;
-  settings: AppSettings;
-};
-
 export interface CanvasWithId {
   canvas: HTMLCanvasElement;
   id: string;
@@ -141,3 +133,5 @@ declare global {
     settings: AppSettings;
   }
 }
+
+export type CadenasScriptStatus = 'ready' | 'loading' | 'failed' | 'disabled';
