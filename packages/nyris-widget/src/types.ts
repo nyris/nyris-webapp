@@ -63,6 +63,7 @@ export interface AppProps {
   postFilter?: any;
   setPostFilter?: any;
   labels?: any;
+  language?: any;
 }
 
 export interface ResultProps {

@@ -1,13 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 
 import eye from './eye.svg';
 import camera from './images/camera.svg';
 
-import { ReactComponent as Logo } from './images/widget_logo.svg';
 import { ReactComponent as CloseButton } from './images/close.svg';
 import { ReactComponent as Plus } from './images/plus.svg';
 import { ReactComponent as Down } from './images/chevron_down.svg';
 import { ReactComponent as Triangle } from './images/triangle_down.svg';
+import { ReactComponent as FrenchLogo} from './images/French.svg';
+import { ReactComponent as DeutscheLogo } from './images/deutsche_logo.svg';
+import { ReactComponent as Logo } from './images/logo.svg';
+import { ReactComponent as DanishLogo } from './images/Danish.svg';
+import { ReactComponent as DutchLogo } from './images/Dutch.svg';
+import { ReactComponent as ItalianLogo } from './images/Italian.svg';
+import { ReactComponent as NorwegianLogo } from './images/Norwegian.svg';
+import { ReactComponent as RussianLogo } from './images/Russian.svg';
+import { ReactComponent as SpanishLogo } from './images/Spanish.svg';
+import { ReactComponent as SwedishLogo } from './images/Swedish.svg';
 
 import './styles/nyris.scss';
 
@@ -109,6 +118,7 @@ const Hello = ({
   selectedPreFilters,
   setSelectedPreFilters,
   labels,
+  language,
 }: AppProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [preFilter, setPreFilter] = useState({});
@@ -121,6 +131,22 @@ const Hello = ({
     },
   });
 
+  const logos: Record<string, any> = {
+    en: <Logo fill={window.nyrisSettings.primaryColor} />,
+    fr: <FrenchLogo fill={window.nyrisSettings.primaryColor} />,
+    de: <DeutscheLogo fill={window.nyrisSettings.primaryColor} />,
+    dn: <DanishLogo fill={window.nyrisSettings.primaryColor} />,
+    dt: <DutchLogo fill={window.nyrisSettings.primaryColor} />,
+    it: <ItalianLogo fill={window.nyrisSettings.primaryColor} />,
+    no: <NorwegianLogo fill={window.nyrisSettings.primaryColor} />,
+    ru: <RussianLogo fill={window.nyrisSettings.primaryColor} />,
+    sp: <SpanishLogo fill={window.nyrisSettings.primaryColor} />,
+    sw: <SwedishLogo fill={window.nyrisSettings.primaryColor} />,
+  };
+
+  const logoElement = useMemo(() => logos[language] || logos[window.nyrisSettings.language], [language]);
+
+
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
@@ -130,7 +156,7 @@ const Hello = ({
             width={window.nyrisSettings.logoWidth || 320}
           />
         ) : (
-          <Logo fill={window.nyrisSettings.primaryColor} width={232} height={110} />
+          logoElement
         )}
       </div>
       <div className="nyris__hello-wrapper">
@@ -388,6 +414,7 @@ export const App = (props: AppProps) => {
           setSelectedPreFilters={setSelectedPreFilters}
           selectedPreFilters={selectedPreFilters}
           labels={labels}
+          language={language}
         />
       );
       break;
