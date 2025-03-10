@@ -14,6 +14,7 @@ import { ReactComponent as DanishLogo } from './images/Danish.svg';
 import { ReactComponent as DutchLogo } from './images/Dutch.svg';
 import { ReactComponent as ItalianLogo } from './images/Italian.svg';
 import { ReactComponent as NorwegianLogo } from './images/Norwegian.svg';
+import { ReactComponent as PolishLogo } from './images/Polish.svg';
 import { ReactComponent as RussianLogo } from './images/Russian.svg';
 import { ReactComponent as SpanishLogo } from './images/Spanish.svg';
 import { ReactComponent as SwedishLogo } from './images/Swedish.svg';
@@ -47,7 +48,39 @@ const languages = [
   {
     label: 'Français (FR)',
     value: 'fr',
-  }
+  },
+  {
+    label: 'Polski (PL)',
+    value: 'pl',
+  },
+  {
+    label: 'Italiano (IT)',
+    value: 'it',
+  },
+  {
+    label: 'Dansk (DA)',
+    value: 'da',
+  },
+  {
+    label: 'Svenska (SE)',
+    value: 'se',
+  },
+  {
+    label: 'Español (ES)',
+    value: 'es',
+  },
+  {
+    label: 'Nederlands (NL)',
+    value: 'nl',
+  },
+  {
+    label: 'Norsk (NO)',
+    value: 'no',
+  },
+  {
+    label: 'Руский (RU)',
+    value: 'ru'
+  },
 ]
 
 const Wait = ({ labels }: any) => (
@@ -135,13 +168,14 @@ const Hello = ({
     en: <Logo fill={window.nyrisSettings.primaryColor} />,
     fr: <FrenchLogo fill={window.nyrisSettings.primaryColor} />,
     de: <DeutscheLogo fill={window.nyrisSettings.primaryColor} />,
-    dn: <DanishLogo fill={window.nyrisSettings.primaryColor} />,
-    dt: <DutchLogo fill={window.nyrisSettings.primaryColor} />,
+    da: <DanishLogo fill={window.nyrisSettings.primaryColor} />,
+    nl: <DutchLogo fill={window.nyrisSettings.primaryColor} />,
     it: <ItalianLogo fill={window.nyrisSettings.primaryColor} />,
     no: <NorwegianLogo fill={window.nyrisSettings.primaryColor} />,
-    ru: <RussianLogo fill={window.nyrisSettings.primaryColor} />,
-    sp: <SpanishLogo fill={window.nyrisSettings.primaryColor} />,
-    sw: <SwedishLogo fill={window.nyrisSettings.primaryColor} />,
+    pl: <PolishLogo fill={window.nyrisSettings.primaryColor} width={380}/>,
+    es: <SpanishLogo fill={window.nyrisSettings.primaryColor} />,
+    se: <SwedishLogo fill={window.nyrisSettings.primaryColor} />,
+    ru: <RussianLogo fill={window.nyrisSettings.primaryColor} width={380} />,
   };
 
   const logoElement = useMemo(() => logos[language] || logos[window.nyrisSettings.language], [language]);
