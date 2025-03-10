@@ -25,6 +25,9 @@ function DragDropFile(props: Props) {
   const { cadSearch } = useCadSearch();
 
   const handleUpload = (files: File[]) => {
+    const file = files?.[0];
+    if (!file) return;
+
     navigate('/result');
 
     if (isCadFile(files[0])) {
@@ -90,7 +93,7 @@ function DragDropFile(props: Props) {
             id="select_file"
             className="absolute z-[-1] opacity-0"
             placeholder="Choose photo"
-            accept={'.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,image/*'}
+            accept={'.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,.pdf,image/*'}
           />
         </div>
       </div>
