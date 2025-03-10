@@ -506,7 +506,7 @@ export const App = (props: AppProps) => {
                     showScreen == WidgetScreen.Result && results?.length > 0
                       ? showPoweredByNyris
                         ? '80px'
-                        : '50px'
+                        : '0'
                       : '',
                 }}
               >
