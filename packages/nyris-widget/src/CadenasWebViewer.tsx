@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ReactComponent as DownloadIcon } from './images/download.svg';
 import CadenasLoading from './CadenasLoading';
-import { CadenasScriptStatus } from './App';
+import { CadenasScriptStatus } from './types';
 
 declare const psol: any;
 
