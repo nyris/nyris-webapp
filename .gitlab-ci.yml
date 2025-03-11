@@ -48,6 +48,6 @@ publish to github:
     - chmod 600 $SSH_KEY
     - export GIT_SSH_COMMAND='ssh -i $SSH_KEY'
     - git remote add github git@github.com:nyris/nyris-webapp.git
-    - git gc
+    - git fetch --unshallow
     - git push --follow-tags --no-thin github HEAD:refs/heads/$CI_COMMIT_REF_NAME
 

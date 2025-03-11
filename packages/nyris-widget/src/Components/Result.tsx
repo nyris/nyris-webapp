@@ -120,12 +120,12 @@ export const Result = ({
         className="nyris__screen nyris__success-multiple"
         style={{
           overflowY: isModalOpen ? 'hidden' : 'unset',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <div className="nyris__main-heading ">
-          {noResult
-            ? labels['Let’s try that again']
-            : labels['Success!']}
+          {noResult ? labels['Let’s try that again'] : labels['Success!']}
         </div>
         <div className="nyris__main-description">
           {noResult &&
@@ -331,9 +331,7 @@ export const Result = ({
         </div>
         <div className="nyris__action-section">
           <div className="nyris__action-wrapper">
-            <div
-              className="nyris__action-wrapper-button mobile"
-            >
+            <div className="nyris__action-wrapper-button mobile">
               <Camera
                 className="nyris__action-wrapper-button-camera"
                 onClick={() => setIsCameraOpen(true)}
