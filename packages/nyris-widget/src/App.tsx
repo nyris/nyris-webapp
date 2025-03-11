@@ -383,7 +383,7 @@ export const App = (props: AppProps) => {
   let wide = false;
   let resultsSingle = false;
   let resultsMultiple = false;
-  const [language, setLanguage] = useState(window.nyrisSettings.language);
+  const [language, setLanguage] = useState<any>(window.nyrisSettings.language.toLowerCase());
   const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([]);
   const [postFilter, setPostFilter] = useState<any>({});
   const [isLanguagesOpen, setIsLanguagesOpen] = useState(false);
