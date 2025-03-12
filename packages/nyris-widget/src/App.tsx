@@ -166,16 +166,16 @@ const Hello = ({
 
   const logos: Record<string, any> = {
     en: <Logo fill={window.nyrisSettings.primaryColor} />,
-    fr: <FrenchLogo fill={window.nyrisSettings.primaryColor} />,
+    fr: <FrenchLogo style={{ color: window.nyrisSettings.primaryColor}}  />,
     de: <DeutscheLogo fill={window.nyrisSettings.primaryColor} />,
-    da: <DanishLogo fill={window.nyrisSettings.primaryColor} />,
-    nl: <DutchLogo fill={window.nyrisSettings.primaryColor} />,
-    it: <ItalianLogo fill={window.nyrisSettings.primaryColor} />,
-    no: <NorwegianLogo fill={window.nyrisSettings.primaryColor} />,
-    pl: <PolishLogo fill={window.nyrisSettings.primaryColor} width={380}/>,
-    es: <SpanishLogo fill={window.nyrisSettings.primaryColor} />,
-    se: <SwedishLogo fill={window.nyrisSettings.primaryColor} />,
-    ru: <RussianLogo fill={window.nyrisSettings.primaryColor} width={380} />,
+    da: <DanishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    nl: <DutchLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    it: <ItalianLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    no: <NorwegianLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    pl: <PolishLogo style={{ color: window.nyrisSettings.primaryColor}} width={380}/>,
+    es: <SpanishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    se: <SwedishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    ru: <RussianLogo style={{ color: window.nyrisSettings.primaryColor}} width={380} />,
   };
 
   const logoElement = useMemo(() => logos[language] || logos[window.nyrisSettings.language], [language]);
@@ -521,6 +521,7 @@ export const App = (props: AppProps) => {
                   >
                     <div
                       className={`nyris__header-language-label ${isLanguagesOpen ? 'open' : ''}`}
+                      style={{ '--border-color': window.nyrisSettings.primaryColor } as React.CSSProperties}
                       onClick={() => setIsLanguagesOpen((prev) => !prev)}
                     >
                       {language.toUpperCase()}
@@ -531,7 +532,10 @@ export const App = (props: AppProps) => {
                       )}
                     </div>
                     {isLanguagesOpen ? (
-                      <div className="nyris__header-language-list">
+                      <div
+                          className="nyris__header-language-list"
+                          style={{ '--hover-color': window.nyrisSettings.primaryColor } as React.CSSProperties}
+                      >
                         {languages.map((languageItem) => (
                           <div
                             className="nyris__header-language-list-item"
