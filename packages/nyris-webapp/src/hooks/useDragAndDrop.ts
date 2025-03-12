@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 
 interface UseDragAndDropOptions {
-  onDropCallback?: (files: File[]) => void;
+  onDropCallback?: (file: File) => void;
 }
 
 interface UseDragAndDropReturn {
@@ -12,6 +12,23 @@ interface UseDragAndDropReturn {
     onDrop: (event: React.DragEvent) => void;
   };
 }
+
+const getImageFromUrl = async (
+  url: string,
+  onDownload: (file: File) => void,
+) => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const file = new File([blob], 'image.png', { type: blob.type });
+    // URL.createObjectURL(file);
+    if (onDownload) {
+      onDownload(file);
+    }
+  } catch (err) {
+    console.error('Failed to fetch image:', err);
+  }
+};
 
 const useDragAndDrop = ({
   onDropCallback,
@@ -29,13 +46,21 @@ const useDragAndDrop = ({
   }, []);
 
   const onDrop = useCallback(
-    (event: React.DragEvent) => {
+    async (event: React.DragEvent) => {
       event.preventDefault();
       setIsDragging(false);
 
-      const droppedFiles = Array.from(event.dataTransfer.files);
+      const url =
+        event.dataTransfer.getData('text/uri-list') ||
+        event.dataTransfer.getData('text/plain');
+
+      if (url && url.startsWith('http') && onDropCallback) {
+        getImageFromUrl(url, onDropCallback);
+        return;
+      }
+
       if (onDropCallback) {
-        onDropCallback(droppedFiles);
+        onDropCallback(event.dataTransfer.files[0]);
       }
     },
     [onDropCallback],

@@ -119,7 +119,7 @@ export const Result = ({
       <div
         className="nyris__screen nyris__success-multiple"
         style={{
-          overflowY: isModalOpen ? 'hidden' : 'unset',
+          overflowY: 'hidden',
           display: 'flex',
           flexDirection: 'column',
         }}
