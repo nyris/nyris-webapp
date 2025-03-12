@@ -140,7 +140,7 @@ function Product(props: Props) {
                 <img
                   src={main_image_link}
                   key={main_image_link}
-                  alt="image_item"
+                  alt=""
                   className="img-style product-image"
                   style={{
                     width: '100%',
