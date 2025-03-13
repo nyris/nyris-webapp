@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 
 import eye from './eye.svg';
-import camera from './images/camera.svg';
-
+import { ReactComponent as Camera } from './images/camera.svg';
 import { ReactComponent as CloseButton } from './images/close.svg';
 import { ReactComponent as Plus } from './images/plus.svg';
 import { ReactComponent as Down } from './images/chevron_down.svg';
@@ -125,7 +124,7 @@ const Fail = ({
           <span>
             {isMobile ? labels['Click a picture'] : labels['Upload a picture']}
           </span>
-          <img src={camera} width={16} height={16} />
+          <Camera width={16} height={16} />
         </label>
         <input
           type="file"
@@ -264,7 +263,7 @@ const Hello = ({
           >
             {labels['Take a photo']}
             {!window.nyrisSettings.searchCriteriaKey && (
-              <img src={camera} width={16} height={16} alt="camera icon" />
+              <Camera width={16} height={16} />
             )}
           </div>
         </div>
