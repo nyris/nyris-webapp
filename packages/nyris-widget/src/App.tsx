@@ -165,7 +165,7 @@ const Hello = ({
 
   const logos: Record<string, any> = {
     en: <Logo fill={window.nyrisSettings.primaryColor} />,
-    fr: <FrenchLogo style={{ color: window.nyrisSettings.primaryColor}}  />,
+    fr: <FrenchLogo style={{ color: window.nyrisSettings.primaryColor}} width={380} />,
     de: <DeutscheLogo fill={window.nyrisSettings.primaryColor} />,
     da: <DanishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
     nl: <DutchLogo style={{ color: window.nyrisSettings.primaryColor}} />,
