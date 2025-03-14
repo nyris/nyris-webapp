@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 
 import eye from './eye.svg';
-import camera from './images/camera.svg';
-
+import { ReactComponent as Camera } from './images/camera.svg';
 import { ReactComponent as CloseButton } from './images/close.svg';
 import { ReactComponent as Plus } from './images/plus.svg';
 import { ReactComponent as Down } from './images/chevron_down.svg';
@@ -125,7 +124,7 @@ const Fail = ({
           <span>
             {isMobile ? labels['Click a picture'] : labels['Upload a picture']}
           </span>
-          <img src={camera} width={16} height={16} />
+          <Camera width={16} height={16} />
         </label>
         <input
           type="file"
@@ -166,16 +165,16 @@ const Hello = ({
 
   const logos: Record<string, any> = {
     en: <Logo fill={window.nyrisSettings.primaryColor} />,
-    fr: <FrenchLogo fill={window.nyrisSettings.primaryColor} />,
+    fr: <FrenchLogo style={{ color: window.nyrisSettings.primaryColor}}  />,
     de: <DeutscheLogo fill={window.nyrisSettings.primaryColor} />,
-    da: <DanishLogo fill={window.nyrisSettings.primaryColor} />,
-    nl: <DutchLogo fill={window.nyrisSettings.primaryColor} />,
-    it: <ItalianLogo fill={window.nyrisSettings.primaryColor} />,
-    no: <NorwegianLogo fill={window.nyrisSettings.primaryColor} />,
-    pl: <PolishLogo fill={window.nyrisSettings.primaryColor} width={380}/>,
-    es: <SpanishLogo fill={window.nyrisSettings.primaryColor} />,
-    se: <SwedishLogo fill={window.nyrisSettings.primaryColor} />,
-    ru: <RussianLogo fill={window.nyrisSettings.primaryColor} width={380} />,
+    da: <DanishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    nl: <DutchLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    it: <ItalianLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    no: <NorwegianLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    pl: <PolishLogo style={{ color: window.nyrisSettings.primaryColor}} width={380}/>,
+    es: <SpanishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    se: <SwedishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    ru: <RussianLogo style={{ color: window.nyrisSettings.primaryColor}} width={380} />,
   };
 
   const logoElement = useMemo(() => logos[language] || logos[window.nyrisSettings.language], [language]);
@@ -264,7 +263,7 @@ const Hello = ({
           >
             {labels['Take a photo']}
             {!window.nyrisSettings.searchCriteriaKey && (
-              <img src={camera} width={16} height={16} alt="camera icon" />
+              <Camera width={16} height={16} />
             )}
           </div>
         </div>
@@ -521,6 +520,7 @@ export const App = (props: AppProps) => {
                   >
                     <div
                       className={`nyris__header-language-label ${isLanguagesOpen ? 'open' : ''}`}
+                      style={{ '--border-color': window.nyrisSettings.primaryColor } as React.CSSProperties}
                       onClick={() => setIsLanguagesOpen((prev) => !prev)}
                     >
                       {language.toUpperCase()}
@@ -531,7 +531,10 @@ export const App = (props: AppProps) => {
                       )}
                     </div>
                     {isLanguagesOpen ? (
-                      <div className="nyris__header-language-list">
+                      <div
+                          className="nyris__header-language-list"
+                          style={{ '--hover-color': window.nyrisSettings.primaryColor } as React.CSSProperties}
+                      >
                         {languages.map((languageItem) => (
                           <div
                             className="nyris__header-language-list-item"
@@ -566,7 +569,7 @@ export const App = (props: AppProps) => {
                   paddingBottom:
                     showScreen == WidgetScreen.Result && results?.length > 0
                       ? showPoweredByNyris
-                        ? '80px'
+                        ? '30px'
                         : '0'
                       : '',
                 }}
