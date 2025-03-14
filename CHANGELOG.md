@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.76 - 2025-03-14
+
+- Rename of css classname for popup in Widget
+- Fix logos colours
+
 ## 0.3.75 - 2025-03-12
 
 ### Added
