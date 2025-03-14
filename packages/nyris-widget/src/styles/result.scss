@@ -59,6 +59,7 @@
     justify-content: space-between;
     overflow: scroll;
     padding-bottom: 180px;
+    align-content: flex-start;
     @media #{$desktop-query} {
       padding-top: 0;
       row-gap: 18px;
