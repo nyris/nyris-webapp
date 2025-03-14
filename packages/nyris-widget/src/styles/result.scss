@@ -4,6 +4,10 @@
 
   & .nyris__main-content {
     padding-bottom: 30px;
+    height: calc(100% - 80px);
+    &.w-feedback {
+      height: calc(100% - 30px);
+    }
   }
 
   &-summary {

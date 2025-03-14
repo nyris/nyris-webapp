@@ -569,7 +569,7 @@ export const App = (props: AppProps) => {
                   paddingBottom:
                     showScreen == WidgetScreen.Result && results?.length > 0
                       ? showPoweredByNyris
-                        ? '80px'
+                        ? '30px'
                         : '0'
                       : '',
                 }}

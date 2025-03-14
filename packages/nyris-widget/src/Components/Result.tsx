@@ -163,7 +163,9 @@ export const Result = ({
             </div>
           )}
         </div>
-        <div className="nyris__main-content">
+        <div
+          className={`nyris__main-content ${feedbackStatus === 'visible' ? 'w-feedback' : ''}`}
+        >
           <div className="nyris__success-multiple-preview">
             <div className="nyris__success-multiple-preview-wrapper">
               <Preview
@@ -294,7 +296,10 @@ export const Result = ({
           )}
           {!loading && (
             <>
-              <div className="nyris__success-multiple-result-list">
+              <div
+                className="nyris__success-multiple-result-list"
+                style={{ paddingBottom: feedbackStatus === 'visible' ? 180 : 100 }}
+              >
                 {filteredProducts.map((r, i) => (
                   <ProductCard
                     {...r}
