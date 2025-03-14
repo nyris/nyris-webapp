@@ -1,6 +1,6 @@
 $black-opacity: rgba(0, 0, 0, 0.3);
 
-.modal-backdrop {
+.nyris-modal-backdrop {
   position: absolute;
   top: 0;
   left: 0;
@@ -37,7 +37,6 @@ $black-opacity: rgba(0, 0, 0, 0.3);
     height: 100%;
     border-radius: 0;
   }
-
 }
 
 @keyframes fadeIn {
