@@ -84,7 +84,7 @@
         border: 2px solid transparent;
         &.open {
           color: #CACAD1;
-          border-color: #3E36DC;
+          border-color: var(--border-color);
         }
         svg {
           margin-left: 8px;
@@ -93,7 +93,7 @@
       &-list {
         position: absolute;
         top: 36px;
-        width: 100px;
+        width: 120px;
         left: 0;
         background-color: #fff;
         z-index: 9;
@@ -107,7 +107,7 @@
           box-sizing: border-box;
           &:hover {
             background-color: #E9E9EC;
-            color: #3E36DC;
+            color: var(--hover-color);
           }
         }
       }
