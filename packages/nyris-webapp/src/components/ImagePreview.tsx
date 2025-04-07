@@ -96,7 +96,7 @@ function ImagePreviewComponent({
     debounce((r: RectCoords, index?: number) => {
       updateRegion(r, 0);
       findItemsInSelection(r, requestImages[0]);
-    }, 50),
+    }, 1500),
     [findItemsInSelection, requestImages, updateRegion],
   );
 
