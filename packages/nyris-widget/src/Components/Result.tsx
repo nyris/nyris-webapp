@@ -119,13 +119,13 @@ export const Result = ({
       <div
         className="nyris__screen nyris__success-multiple"
         style={{
-          overflowY: isModalOpen ? 'hidden' : 'unset',
+          overflowY: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <div className="nyris__main-heading ">
-          {noResult
-            ? labels['Let’s try that again']
-            : labels['Success!']}
+          {noResult ? labels['Let’s try that again'] : labels['Success!']}
         </div>
         <div className="nyris__main-description">
           {noResult &&
@@ -163,7 +163,9 @@ export const Result = ({
             </div>
           )}
         </div>
-        <div className="nyris__main-content">
+        <div
+          className={`nyris__main-content ${feedbackStatus === 'visible' ? 'w-feedback' : ''}`}
+        >
           <div className="nyris__success-multiple-preview">
             <div className="nyris__success-multiple-preview-wrapper">
               <Preview
@@ -294,7 +296,10 @@ export const Result = ({
           )}
           {!loading && (
             <>
-              <div className="nyris__success-multiple-result-list">
+              <div
+                className="nyris__success-multiple-result-list"
+                style={{ paddingBottom: feedbackStatus === 'visible' ? 180 : 100 }}
+              >
                 {filteredProducts.map((r, i) => (
                   <ProductCard
                     {...r}
@@ -331,9 +336,7 @@ export const Result = ({
         </div>
         <div className="nyris__action-section">
           <div className="nyris__action-wrapper">
-            <div
-              className="nyris__action-wrapper-button mobile"
-            >
+            <div className="nyris__action-wrapper-button mobile">
               <Camera
                 className="nyris__action-wrapper-button-camera"
                 onClick={() => setIsCameraOpen(true)}

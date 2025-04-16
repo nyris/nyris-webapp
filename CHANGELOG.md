@@ -3,7 +3,27 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.3.72 - 2025-01-30
+## 0.3.76 - 2025-03-14
+
+- Rename of css classname for popup in Widget
+- Fix logos colours
+
+## 0.3.75 - 2025-03-12
+
+### Added
+- Default logos for languages in Widget
+- More languages for Widget
+- Fixed position of searched image preview for Widget
+- Added support for downloading images via drag and drop from an image URL
+
+## 0.3.74 - 2025-03-04
+
+### Added
+- Search suite - Algolia decoupling
+- Search suite - Removed Redux & introduced zustand
+- Widget - language & logo change
+
+## 0.3.73 - 2025-01-30
 
 ### Hotifx
 - Made heic check case-insensitive

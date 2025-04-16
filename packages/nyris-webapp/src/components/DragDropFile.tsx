@@ -24,15 +24,12 @@ function DragDropFile(props: Props) {
   const { singleImageSearch } = useImageSearch();
   const { cadSearch } = useCadSearch();
 
-  const handleUpload = (files: File[]) => {
-    const file = files?.[0];
-    if (!file) return;
-
+  const handleUpload = (file: File) => {
     navigate('/result');
 
-    if (isCadFile(files[0])) {
+    if (isCadFile(file)) {
       cadSearch({
-        file: files[0],
+        file: file,
         settings: window.settings,
         newSearch: true,
       }).then(res => {});
@@ -41,7 +38,7 @@ function DragDropFile(props: Props) {
     }
 
     singleImageSearch({
-      image: files[0],
+      image: file,
       settings: window.settings,
       showFeedback: true,
     }).then(() => {});
@@ -81,9 +78,10 @@ function DragDropFile(props: Props) {
           </div>
           <input
             onChange={e => {
+              console.log({ e });
               e.stopPropagation();
-              if (e.target.files) {
-                handleUpload(Array.from(e.target.files));
+              if (e.target.files && e.target.files[0]) {
+                handleUpload(e.target.files[0]);
                 e.target.value = '';
               }
             }}

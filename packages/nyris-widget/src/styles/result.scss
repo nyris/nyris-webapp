@@ -1,8 +1,13 @@
 .nyris__success-multiple {
-  flex-grow: 1;
+  overflow: hidden;
+  height: calc(100vh - 50px);
 
   & .nyris__main-content {
     padding-bottom: 30px;
+    height: calc(100% - 80px);
+    &.w-feedback {
+      height: calc(100% - 30px);
+    }
   }
 
   &-summary {
@@ -15,7 +20,7 @@
     padding: 0 4px;
     border-radius: 5px;
 
-    
+
   }
 
   &-thumb {
@@ -56,6 +61,9 @@
     align-self: stretch;
     flex-grow: 1;
     justify-content: space-between;
+    overflow: auto;
+    padding-bottom: 180px;
+    align-content: flex-start;
     @media #{$desktop-query} {
       padding-top: 0;
       row-gap: 18px;
@@ -110,12 +118,12 @@
     margin: 16px 2px 16px 2px;
 
     &-wrapper {
-     display: flex;
-     justify-content: center;
+      display: flex;
+      justify-content: center;
     }
   }
 
- 
+
 
   &-preview-expand {
     box-shadow: 0 0 4px 0 #55566B;
@@ -200,7 +208,7 @@
       svg {
         fill: #fff;
       }
-    
+
     }
     svg {
       fill: #55566B;
@@ -223,7 +231,7 @@
     box-shadow: 0 0 8px 0 rgba(85, 86, 107, 0.60);
     z-index: 2;
   }
-  
+
   .go-back-button {
     align-self: flex-start;
     margin-bottom: 16px;
@@ -324,7 +332,7 @@
     }
 
   }
-  
+
   &-popur-3d {
     position: absolute;
     display: flex;
@@ -339,8 +347,8 @@
     bottom: 8px;
     cursor: pointer;
     z-index: 1;
-    
-  
+
+
   }
 
   &-similar-search {
@@ -489,13 +497,13 @@ div.psol-comp-webviewer3d-copyright-container {
         }
 
       }
-      
+
       &.desktop {
         @media #{$mobile-query} {
           display: none;
         }
       }
-      
+
       &.mobile {
         display: none;
         @media #{$mobile-query} {
@@ -524,7 +532,7 @@ div.psol-comp-webviewer3d-copyright-container {
         }
 
       }
-      
+
       &-indicator {
         width: 7px;
         height: 7px;

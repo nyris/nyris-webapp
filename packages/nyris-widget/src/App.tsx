@@ -1,13 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 
 import eye from './eye.svg';
-import camera from './images/camera.svg';
-
-import { ReactComponent as Logo } from './images/widget_logo.svg';
+import { ReactComponent as Camera } from './images/camera.svg';
 import { ReactComponent as CloseButton } from './images/close.svg';
 import { ReactComponent as Plus } from './images/plus.svg';
 import { ReactComponent as Down } from './images/chevron_down.svg';
 import { ReactComponent as Triangle } from './images/triangle_down.svg';
+import { ReactComponent as FrenchLogo} from './images/French.svg';
+import { ReactComponent as DeutscheLogo } from './images/deutsche_logo.svg';
+import { ReactComponent as Logo } from './images/logo.svg';
+import { ReactComponent as DanishLogo } from './images/Danish.svg';
+import { ReactComponent as DutchLogo } from './images/Dutch.svg';
+import { ReactComponent as ItalianLogo } from './images/Italian.svg';
+import { ReactComponent as NorwegianLogo } from './images/Norwegian.svg';
+import { ReactComponent as PolishLogo } from './images/Polish.svg';
+import { ReactComponent as RussianLogo } from './images/Russian.svg';
+import { ReactComponent as SpanishLogo } from './images/Spanish.svg';
+import { ReactComponent as SwedishLogo } from './images/Swedish.svg';
 
 import './styles/nyris.scss';
 
@@ -38,7 +47,39 @@ const languages = [
   {
     label: 'Français (FR)',
     value: 'fr',
-  }
+  },
+  {
+    label: 'Polski (PL)',
+    value: 'pl',
+  },
+  {
+    label: 'Italiano (IT)',
+    value: 'it',
+  },
+  {
+    label: 'Dansk (DA)',
+    value: 'da',
+  },
+  {
+    label: 'Svenska (SE)',
+    value: 'se',
+  },
+  {
+    label: 'Español (ES)',
+    value: 'es',
+  },
+  {
+    label: 'Nederlands (NL)',
+    value: 'nl',
+  },
+  {
+    label: 'Norsk (NO)',
+    value: 'no',
+  },
+  {
+    label: 'Руский (RU)',
+    value: 'ru'
+  },
 ]
 
 const Wait = ({ labels }: any) => (
@@ -83,7 +124,7 @@ const Fail = ({
           <span>
             {isMobile ? labels['Click a picture'] : labels['Upload a picture']}
           </span>
-          <img src={camera} width={16} height={16} />
+          <Camera width={16} height={16} />
         </label>
         <input
           type="file"
@@ -109,6 +150,7 @@ const Hello = ({
   selectedPreFilters,
   setSelectedPreFilters,
   labels,
+  language,
 }: AppProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [preFilter, setPreFilter] = useState({});
@@ -121,6 +163,23 @@ const Hello = ({
     },
   });
 
+  const logos: Record<string, any> = {
+    en: <Logo fill={window.nyrisSettings.primaryColor} />,
+    fr: <FrenchLogo style={{ color: window.nyrisSettings.primaryColor}} width={380} />,
+    de: <DeutscheLogo fill={window.nyrisSettings.primaryColor} />,
+    da: <DanishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    nl: <DutchLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    it: <ItalianLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    no: <NorwegianLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    pl: <PolishLogo style={{ color: window.nyrisSettings.primaryColor}} width={380}/>,
+    es: <SpanishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    se: <SwedishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
+    ru: <RussianLogo style={{ color: window.nyrisSettings.primaryColor}} width={380} />,
+  };
+
+  const logoElement = useMemo(() => logos[language] || logos[window.nyrisSettings.language], [language]);
+
+
   return (
     <div className="nyris__screen nyris__hello">
       <div className="nyris__logo">
@@ -130,7 +189,7 @@ const Hello = ({
             width={window.nyrisSettings.logoWidth || 320}
           />
         ) : (
-          <Logo fill={window.nyrisSettings.primaryColor} width={232} height={110} />
+          logoElement
         )}
       </div>
       <div className="nyris__hello-wrapper">
@@ -204,7 +263,7 @@ const Hello = ({
           >
             {labels['Take a photo']}
             {!window.nyrisSettings.searchCriteriaKey && (
-              <img src={camera} width={16} height={16} alt="camera icon" />
+              <Camera width={16} height={16} />
             )}
           </div>
         </div>
@@ -323,7 +382,7 @@ export const App = (props: AppProps) => {
   let wide = false;
   let resultsSingle = false;
   let resultsMultiple = false;
-  const [language, setLanguage] = useState(window.nyrisSettings.language);
+  const [language, setLanguage] = useState<any>(window.nyrisSettings.language.toLowerCase());
   const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([]);
   const [postFilter, setPostFilter] = useState<any>({});
   const [isLanguagesOpen, setIsLanguagesOpen] = useState(false);
@@ -388,6 +447,7 @@ export const App = (props: AppProps) => {
           setSelectedPreFilters={setSelectedPreFilters}
           selectedPreFilters={selectedPreFilters}
           labels={labels}
+          language={language}
         />
       );
       break;
@@ -460,6 +520,7 @@ export const App = (props: AppProps) => {
                   >
                     <div
                       className={`nyris__header-language-label ${isLanguagesOpen ? 'open' : ''}`}
+                      style={{ '--border-color': window.nyrisSettings.primaryColor } as React.CSSProperties}
                       onClick={() => setIsLanguagesOpen((prev) => !prev)}
                     >
                       {language.toUpperCase()}
@@ -470,7 +531,10 @@ export const App = (props: AppProps) => {
                       )}
                     </div>
                     {isLanguagesOpen ? (
-                      <div className="nyris__header-language-list">
+                      <div
+                          className="nyris__header-language-list"
+                          style={{ '--hover-color': window.nyrisSettings.primaryColor } as React.CSSProperties}
+                      >
                         {languages.map((languageItem) => (
                           <div
                             className="nyris__header-language-list-item"
@@ -505,8 +569,8 @@ export const App = (props: AppProps) => {
                   paddingBottom:
                     showScreen == WidgetScreen.Result && results?.length > 0
                       ? showPoweredByNyris
-                        ? '80px'
-                        : '50px'
+                        ? '30px'
+                        : '0'
                       : '',
                 }}
               >
