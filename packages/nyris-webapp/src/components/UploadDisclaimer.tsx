@@ -74,7 +74,7 @@ function UploadDisclaimer({
                 name="take-picture"
                 id="nyris__upload-photo"
                 accept={
-                  '.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,image/jpeg,image/png,image/webp'
+                  '.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,.pdf,image/*'
                 }
                 onChange={makeFileHandler(file =>
                   onContinue({ file, dontShowAgain }),

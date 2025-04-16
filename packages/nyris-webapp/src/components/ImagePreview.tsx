@@ -85,7 +85,7 @@ function ImagePreviewComponent({
         }, 2000);
       });
       return;
-    }, 250),
+    }, 1500),
     [settings, singleImageSearch],
   );
 
@@ -96,7 +96,7 @@ function ImagePreviewComponent({
     debounce((r: RectCoords, index?: number) => {
       updateRegion(r, 0);
       findItemsInSelection(r, requestImages[0]);
-    }, 50),
+    }, 0),
     [findItemsInSelection, requestImages, updateRegion],
   );
 
@@ -133,6 +133,8 @@ function ImagePreviewComponent({
         <div className="w-full bg-[#55566b] aspect-square flex just items-center">
           <Preview
             onSelectionChange={(r: RectCoords) => {
+              // console.log('rendering', r, currentIndex);
+
               debouncedOnImageSelectionChange(r, currentIndex);
             }}
             image={requestImages[currentIndex]}
@@ -209,6 +211,8 @@ function ImagePreviewComponent({
         >
           <Preview
             onSelectionChange={(r: RectCoords) => {
+              console.log('rendering', r, currentIndex);
+
               debouncedOnImageSelectionChange(r, currentIndex);
             }}
             image={requestImages[currentIndex]}

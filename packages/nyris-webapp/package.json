@@ -25,6 +25,7 @@
     "i18next": "^23.10.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.469.0",
+    "pdfjs-dist": "^4.10.38",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.3.5",
