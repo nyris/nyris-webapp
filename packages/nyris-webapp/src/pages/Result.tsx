@@ -25,6 +25,7 @@ import { GoBackButton } from 'components/GoBackButton';
 import { useCurrentRefinements } from 'react-instantsearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import { useTranslation } from 'react-i18next';
+import { useImageSearch } from 'hooks/useImageSearch';
 
 function Results() {
   const settings = window.settings;
@@ -46,6 +47,7 @@ function Results() {
   const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
   const setShowFeedback = useUiStore(state => state.setShowFeedback);
   const showFeedback = useUiStore(state => state.showFeedback);
+  const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
 
   const requestId = useResultStore(state => state.requestId);
 
@@ -65,6 +67,44 @@ function Results() {
   useEffect(() => {
     document.title = 'Search results';
   }, [cadenas?.cadenas3dWebView, cadenas?.cadenasAPIKey]);
+  const { singleImageSearch } = useImageSearch();
+
+  const getImageFromUrl = async (
+    url: string,
+    onDownload: (file: File) => void,
+  ) => {
+    setIsFindApiLoading(true);
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const file = new File([blob], 'image.png', { type: blob.type });
+      // URL.createObjectURL(file);
+
+      if (onDownload && response.ok) {
+        onDownload(file);
+      } else {
+        setIsFindApiLoading(false);
+      }
+    } catch (err) {
+      setIsFindApiLoading(false);
+
+      console.error('Failed to fetch image:', err);
+    }
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const imageUrl = urlParams.get('imageUrl');
+    if (!imageUrl) return;
+    getImageFromUrl(imageUrl, file => {
+      singleImageSearch({
+        image: file,
+        settings: window.settings,
+        showFeedback: true,
+      }).then(() => {});
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const submitFeedback = async (data: boolean) => {
     setShowFeedbackSuccess(true);
@@ -243,8 +283,7 @@ function Results() {
                             selectedRegion={regions[0]}
                           />
                         )}
-                      {!isAlgoliaLoading &&
-                        !isFindApiLoading &&
+                      {!isFindApiLoading &&
                         window.settings.support &&
                         window.settings.support.enabled &&
                         (query || requestImages[0]) && (
