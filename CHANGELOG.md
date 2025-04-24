@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.77 - 2025-04-24
+
+- PDF support
+- get image url from query param
+
 ## 0.3.76 - 2025-03-14
 
 - Rename of css classname for popup in Widget
