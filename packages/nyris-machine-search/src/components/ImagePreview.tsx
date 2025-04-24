@@ -83,7 +83,7 @@ function ImagePreviewComponent({
         }
         setTimeout(() => {
           setShowAdjustInfoBasedOnConfidence(false);
-        }, 2000);
+        }, 1500);
       });
       return;
     }, 250),

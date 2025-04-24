@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Layer, Stage, Image, Circle, Rect, Path } from "react-konva";
-import { RectCoords, Region, getThumbSizeLongestEdge } from "@nyris/nyris-api";
-import Konva from "konva";
-import { NodeGroup } from "react-move";
+import React, { useEffect, useRef, useState } from 'react';
+import { Layer, Stage, Image, Circle, Rect, Path } from 'react-konva';
+import { RectCoords, Region, getThumbSizeLongestEdge } from '@nyris/nyris-api';
+import Konva from 'konva';
+import { NodeGroup } from 'react-move';
 
-type PreviewElem = "tl" | "tr" | "bl" | "br" | "rect";
+type PreviewElem = 'tl' | 'tr' | 'bl' | 'br' | 'rect';
 interface IRegion extends Region {
   show?: boolean;
 }
@@ -63,24 +63,24 @@ interface PreviewState {
 
 const getCursor = (state: PreviewState) => {
   if (state.tlHover) {
-    return "nw-resize";
+    return 'nw-resize';
   }
   if (state.trHover) {
-    return "ne-resize";
+    return 'ne-resize';
   }
   if (state.blHover) {
-    return "sw-resize";
+    return 'sw-resize';
   }
   if (state.brHover) {
-    return "se-resize";
+    return 'se-resize';
   }
   if (state.rectHover) {
-    return "move";
+    return 'move';
   }
   if (state.dotHover) {
-    return "pointer";
+    return 'pointer';
   }
-  return "default";
+  return 'default';
 };
 
 const gripStrokeWidth = 3.5;
@@ -91,38 +91,38 @@ const calcNewRect = (
   newX: number,
   newY: number,
   elemWidth: number,
-  elemHeight: number
+  elemHeight: number,
 ) => {
   switch (elem) {
-    case "rect":
+    case 'rect':
       return {
         x1: newX,
         y1: newY,
         x2: newX + elemWidth,
         y2: newY + elemHeight,
       };
-    case "tl":
+    case 'tl':
       return {
         x1: newX,
         y1: newY,
         x2,
         y2,
       };
-    case "tr":
+    case 'tr':
       return {
         x2: newX,
         y1: newY,
         x1,
         y2,
       };
-    case "bl":
+    case 'bl':
       return {
         x1: newX,
         y2: newY,
         x2,
         y1,
       };
-    case "br":
+    case 'br':
       return {
         x2: newX,
         y2: newY,
@@ -137,7 +137,7 @@ function scaleToPreviewPixels(
   height: number,
   { x1, x2, y1, y2 }: RectCoords,
   minWidth?: number,
-  minHeight?: number
+  minHeight?: number,
 ) {
   const cover = {
     x1: Math.max(x1 * width, gripStrokeWidth),
@@ -205,7 +205,7 @@ const Preview = ({
 
   const [initialMaxWidth, setInitialMaxWidth] = useState(initialMaxWidthProps);
   const [initialMaxHeight, setInitialMaxHeight] = useState(
-    initialMaxHeightProps
+    initialMaxHeightProps,
   );
   let gripSize = 20;
   let gripPadding = gripSize;
@@ -289,11 +289,11 @@ const Preview = ({
     }
 
     if (resize) {
-      window.addEventListener("resize", handleResize);
+      window.addEventListener('resize', handleResize);
     }
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -301,7 +301,7 @@ const Preview = ({
     dimensions.width,
     dimensions.height,
     image.width,
-    image.height
+    image.height,
   );
   const width = Math.max(minWidth, w);
   const height = Math.max(minHeight, h);
@@ -311,7 +311,7 @@ const Preview = ({
     height,
     imageSelection,
     minCropWidth,
-    minCropHeight
+    minCropHeight,
   );
   let [minX, minY] = [minCropWidth, minCropHeight];
 
@@ -340,7 +340,7 @@ const Preview = ({
     return {
       x: Math.min(
         Math.max(x, x1 + minX),
-        width + bound - (gripStrokeWidth + gripOffset)
+        width + bound - (gripStrokeWidth + gripOffset),
       ),
       y: Math.max(yNew, bound + gripStrokeWidth + gripOffset),
     };
@@ -355,7 +355,7 @@ const Preview = ({
       x: Math.max(xNew, bound + gripStrokeWidth + gripOffset),
       y: Math.min(
         Math.max(y, y1 + minY),
-        height + bound - (gripStrokeWidth + gripOffset)
+        height + bound - (gripStrokeWidth + gripOffset),
       ),
     };
   };
@@ -364,11 +364,11 @@ const Preview = ({
     return {
       x: Math.min(
         Math.max(x, x1 + minX),
-        width + bound - (gripStrokeWidth + gripOffset)
+        width + bound - (gripStrokeWidth + gripOffset),
       ),
       y: Math.min(
         Math.max(y, y1 + minY),
-        height + bound - (gripStrokeWidth + gripOffset)
+        height + bound - (gripStrokeWidth + gripOffset),
       ),
     };
   };
@@ -408,7 +408,7 @@ const Preview = ({
 
   const handleDragMove = (
     elem: PreviewElem,
-    evt: Konva.KonvaEventObject<DragEvent>
+    evt: Konva.KonvaEventObject<DragEvent>,
   ) => {
     if (evt.target instanceof Konva.Stage) {
       return;
@@ -419,25 +419,25 @@ const Preview = ({
     let gripOffsetX = gripOffset;
     let gripOffsetY = gripOffset;
 
-    if (elem === "tl") {
+    if (elem === 'tl') {
       gripOffsetX = gripOffsetX * -1;
       gripOffsetY = gripOffsetY * -1;
     }
-    if (elem === "tr") {
+    if (elem === 'tr') {
       gripOffsetX = gripOffsetX * 1;
       gripOffsetY = gripOffsetY * -1;
     }
-    if (elem === "bl") {
+    if (elem === 'bl') {
       gripOffsetX = gripOffsetX * -1;
       gripOffsetY = gripOffsetY * 1;
     }
-    if (elem === "br") {
+    if (elem === 'br') {
       gripOffsetX = gripOffsetX * 1;
       gripOffsetY = gripOffsetY * 1;
     }
 
-    const modifiedX = newX + (elem !== "rect" ? gripPadding + gripOffsetX : 0);
-    const modifiedY = newY + (elem !== "rect" ? gripPadding + gripOffsetY : 0);
+    const modifiedX = newX + (elem !== 'rect' ? gripPadding + gripOffsetX : 0);
+    const modifiedY = newY + (elem !== 'rect' ? gripPadding + gripOffsetY : 0);
 
     const newRect = calcNewRect(
       { x1, x2, y1, y2 },
@@ -445,7 +445,7 @@ const Preview = ({
       modifiedX,
       modifiedY,
       elemWidth,
-      elemHeight
+      elemHeight,
     );
     let newState = {
       x1: newRect.x1 / width,
@@ -463,7 +463,7 @@ const Preview = ({
     if (!selectionRef.current) {
       return;
     }
-    let a = new Konva.Animation((frame) => {
+    let a = new Konva.Animation(frame => {
       if (!frame) {
         return;
       }
@@ -480,14 +480,18 @@ const Preview = ({
     };
   }, [selectionRef]);
 
-  const handleDragMoveRect = handleDragMove.bind(null, "rect");
-  const handleDragMoveTl = handleDragMove.bind(null, "tl");
-  const handleDragMoveTr = handleDragMove.bind(null, "tr");
-  const handleDragMoveBl = handleDragMove.bind(null, "bl");
-  const handleDragMoveBr = handleDragMove.bind(null, "br");
+  const handleDragMoveRect = handleDragMove.bind(null, 'rect');
+  const handleDragMoveTl = handleDragMove.bind(null, 'tl');
+  const handleDragMoveTr = handleDragMove.bind(null, 'tr');
+  const handleDragMoveBl = handleDragMove.bind(null, 'bl');
+  const handleDragMoveBr = handleDragMove.bind(null, 'br');
 
   const notifySelection = (r: RectCoords) => {
     setImageSelection(r);
+
+    if (onSelectionChange) {
+      onSelectionChange(r);
+    }
   };
 
   const objectSelection = (r: RectCoords) => {
@@ -547,7 +551,7 @@ const Preview = ({
     let topRight = 0;
     let bottomLeft = 0;
     let bottomRight = 0;
-    if (typeof cornerRadius === "number" && rounded) {
+    if (typeof cornerRadius === 'number' && rounded) {
       topLeft =
         topRight =
         bottomLeft =
@@ -567,7 +571,7 @@ const Preview = ({
       topRight,
       (Math.PI * 3) / 2,
       0,
-      false
+      false,
     );
     ctx.lineTo(maxWidth, maxHeight - bottomRight);
     ctx.arc(
@@ -576,7 +580,7 @@ const Preview = ({
       bottomRight,
       0,
       Math.PI / 2,
-      false
+      false,
     );
     ctx.lineTo(bottomLeft, maxHeight);
     ctx.arc(
@@ -585,7 +589,7 @@ const Preview = ({
       bottomLeft,
       Math.PI / 2,
       Math.PI,
-      false
+      false,
     );
     ctx.lineTo(0, topLeft);
     ctx.arc(topLeft, topLeft, topLeft, Math.PI, (Math.PI * 3) / 2, false);
@@ -618,11 +622,11 @@ const Preview = ({
       setDimensions({
         width: Math.min(
           currentWidth + easing * widthDiff,
-          maxSizeRef.current.maxWidth
+          maxSizeRef.current.maxWidth,
         ),
         height: Math.min(
           currentHeight + easing * heightDiff,
-          maxSizeRef.current.maxHeight
+          maxSizeRef.current.maxHeight,
         ),
       });
 
@@ -679,7 +683,7 @@ const Preview = ({
   }, [shrinkAnimation]);
 
   return (
-    <div ref={divRef} style={{ width: "100%", ...style }}>
+    <div ref={divRef} style={{ width: '100%', ...style }}>
       <Stage
         width={width}
         height={height}
@@ -687,9 +691,9 @@ const Preview = ({
           cursor: getCursor(state),
           width: width,
           height: height,
-          margin: "auto",
+          margin: 'auto',
         }}
-        ref={(ref) => {
+        ref={ref => {
           stageRef.current = ref;
         }}
         onClick={() => {
@@ -722,9 +726,9 @@ const Preview = ({
                 dragBoundFunc={handleDragBoundRect}
                 onDragEnd={() => {
                   if (draggable) setState({ rectHover: true });
-                  if (onSelectionChange) {
-                    onSelectionChange(imageSelection);
-                  }
+                  // if (onSelectionChange) {
+                  //   onSelectionChange(imageSelection);
+                  // }
                 }}
                 onMouseOver={() => {
                   if (draggable) setState({ rectHover: true });
@@ -787,13 +791,13 @@ const Preview = ({
                 {/* top left */}
                 <Path
                   data="M2 18V10C2 5.58172 5.58172 2 10 2H18"
-                  stroke={"white"}
+                  stroke={'white'}
                   strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   opacity={1}
                   x={x1 - 3}
                   y={y1 - 3}
-                  shadowColor={"#000000"}
+                  shadowColor={'#000000'}
                   shadowBlur={4}
                   shadowOffset={{ x: 0, y: 0 }}
                   shadowOpacity={0.25}
@@ -807,9 +811,9 @@ const Preview = ({
                   onMouseOut={() => setState({ tlHover: false })}
                   onDragEnd={() => {
                     setState({ tlHover: false });
-                    if (onSelectionChange) {
-                      onSelectionChange(imageSelection);
-                    }
+                    // if (onSelectionChange) {
+                    //   onSelectionChange(imageSelection);
+                    // }
                   }}
                   opacity={1}
                   width={gripSize + gripPadding}
@@ -820,14 +824,14 @@ const Preview = ({
                 {/* top right */}
                 <Path
                   data="M2 2L10 2C14.4183 2 18 5.58172 18 10L18 18"
-                  stroke={"white"}
+                  stroke={'white'}
                   strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   opacity={1}
                   x={x2 + 3}
                   y={y1 - 3}
                   offsetX={gripSize}
-                  shadowColor={"#000000"}
+                  shadowColor={'#000000'}
                   shadowBlur={4}
                   shadowOffset={{ x: 0, y: 0 }}
                   shadowOpacity={0.25}
@@ -841,9 +845,9 @@ const Preview = ({
                   onMouseOut={() => setState({ trHover: false })}
                   onDragEnd={() => {
                     setState({ trHover: false });
-                    if (onSelectionChange) {
-                      onSelectionChange(imageSelection);
-                    }
+                    // if (onSelectionChange) {
+                    //   onSelectionChange(imageSelection);
+                    // }
                   }}
                   opacity={1}
                   width={gripSize + gripPadding}
@@ -855,14 +859,14 @@ const Preview = ({
                 {/* bottom left */}
                 <Path
                   data="M18 18L10 18C5.58172 18 2 14.4183 2 10L2 2"
-                  stroke={"white"}
+                  stroke={'white'}
                   strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   opacity={1}
                   x={x1 - 3}
                   y={y2 + 3}
                   offsetY={gripSize}
-                  shadowColor={"#000000"}
+                  shadowColor={'#000000'}
                   shadowBlur={4}
                   shadowOffset={{ x: 0, y: 0 }}
                   shadowOpacity={0.25}
@@ -876,9 +880,9 @@ const Preview = ({
                   onMouseOut={() => setState({ blHover: false })}
                   onDragEnd={() => {
                     setState({ blHover: false });
-                    if (onSelectionChange) {
-                      onSelectionChange(imageSelection);
-                    }
+                    // if (onSelectionChange) {
+                    //   onSelectionChange(imageSelection);
+                    // }
                   }}
                   opacity={1}
                   width={gripSize + gripPadding}
@@ -890,7 +894,7 @@ const Preview = ({
                 {/* bottom right */}
                 <Path
                   data="M18 2L18 10C18 14.4183 14.4183 18 10 18L2 18"
-                  stroke={"white"}
+                  stroke={'white'}
                   strokeWidth={gripStrokeWidth}
                   lineCap="round"
                   x={x2 + 3}
@@ -898,7 +902,7 @@ const Preview = ({
                   opacity={1}
                   offsetY={gripSize}
                   offsetX={gripSize}
-                  shadowColor={"#000000"}
+                  shadowColor={'#000000'}
                   shadowBlur={4}
                   shadowOffset={{ x: 0, y: 0 }}
                   shadowOpacity={0.25}
@@ -917,9 +921,9 @@ const Preview = ({
                   }}
                   onDragEnd={() => {
                     setState({ brHover: false });
-                    if (onSelectionChange) {
-                      onSelectionChange(imageSelection);
-                    }
+                    // if (onSelectionChange) {
+                    //   onSelectionChange(imageSelection);
+                    // }
                   }}
                   x={x2 - gripPadding - gripOffset}
                   y={y2 - gripPadding - gripOffset}
@@ -933,7 +937,7 @@ const Preview = ({
 
             <NodeGroup
               data={dots}
-              keyAccessor={(r) => r.key}
+              keyAccessor={r => r.key}
               start={(d, i) => ({ opacity: 0, x: -100, y: d.y })}
               enter={(d, i) => ({
                 opacity: [1],
@@ -942,7 +946,7 @@ const Preview = ({
                 timing: { delay: i * 100, duration: 300 },
               })}
             >
-              {(ds) => (
+              {ds => (
                 <Layer key="dots">
                   {ds.map(({ key, data, state: position }) => (
                     <Circle

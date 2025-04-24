@@ -85,7 +85,7 @@ function ImagePreviewComponent({
         }, 2000);
       });
       return;
-    }, 250),
+    }, 1500),
     [settings, singleImageSearch],
   );
 
@@ -96,7 +96,7 @@ function ImagePreviewComponent({
     debounce((r: RectCoords, index?: number) => {
       updateRegion(r, 0);
       findItemsInSelection(r, requestImages[0]);
-    }, 50),
+    }, 0),
     [findItemsInSelection, requestImages, updateRegion],
   );
 

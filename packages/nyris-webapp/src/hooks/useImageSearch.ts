@@ -14,6 +14,19 @@ import useUiStore from 'stores/ui/uiStore';
 import { useClearRefinements } from 'react-instantsearch';
 import { isHEIC } from 'utils/misc';
 
+import * as pdfjsLib from 'pdfjs-dist';
+import { GlobalWorkerOptions } from 'pdfjs-dist';
+
+// @ts-ignore
+import * as pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs';
+
+GlobalWorkerOptions.workerSrc = new URL(
+  pdfjsWorker,
+  import.meta.url,
+).toString();
+
+console.log({ GlobalWorkerOptions });
+
 export const useImageSearch = () => {
   const setRegions = useRequestStore(state => state.setRegions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
@@ -105,6 +118,56 @@ export const useImageSearch = () => {
     });
   };
 
+  const pdfToImage = async (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onload = async () => {
+        if (!reader.result) {
+          reject(new Error('FileReader failed to load file.'));
+          return;
+        }
+
+        try {
+          const loadingTask = pdfjsLib.getDocument(
+            new Uint8Array(reader.result as ArrayBuffer),
+          );
+          const pdf = await loadingTask.promise;
+          const page = await pdf.getPage(1); // Get first page
+
+          const scale = 2; // Adjust for better resolution
+          const viewport = page.getViewport({ scale });
+
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          if (!context) {
+            reject(new Error('Failed to get canvas context.'));
+            return;
+          }
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({ canvasContext: context, viewport }).promise;
+
+          canvas.toBlob(blob => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error('Failed to convert PDF to image.'));
+            }
+          }, 'image/png');
+        } catch (error) {
+          console.log({ error });
+
+          reject(new Error('Error processing PDF file.'));
+        }
+      };
+
+      reader.onerror = () => reject(new Error('Error reading PDF file.'));
+    });
+  };
+
   const singleImageSearch = useCallback(
     async ({
       image,
@@ -131,8 +194,11 @@ export const useImageSearch = () => {
       let region: RectCoords | undefined = imageRegion;
       let res: any;
       let compressedBase64;
-
       let blob = image;
+
+      if (image.type === 'application/pdf') {
+        blob = await pdfToImage(image);
+      }
 
       if (isHEIC(image)) {
         const blobTemp = new Blob([image], { type: 'image/heif' });

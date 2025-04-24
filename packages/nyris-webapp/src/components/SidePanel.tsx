@@ -15,7 +15,7 @@ export default function SidePanel({ className }: { className?: string }) {
     <div
       className={twMerge(
         [
-          'max-w-[320px]',
+          'max-w-[325px]',
           'w-full',
           'shadow-[3px_-2px_3px_-3px_#d3d4d8]',
           'overflow-x-hidden',
@@ -37,6 +37,7 @@ export default function SidePanel({ className }: { className?: string }) {
           'flex',
           'justify-center',
           'items-center',
+          'min-w-[325px]',
         ])}
       >
         {requestImages[0] && <ImagePreview />}

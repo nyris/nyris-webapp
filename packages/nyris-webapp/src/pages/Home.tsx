@@ -7,10 +7,12 @@ import MobileCameraCTA from 'components/MobileCameraCTA';
 import TextSearch from 'components/TextSearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import ExperienceVisualSearchTrigger from 'components/ExperienceVisualSearch/ExperienceVisualSearchTrigger';
+import { useNavigate } from 'react-router';
 
 function Home() {
   const settings = window.settings;
   const { experienceVisualSearch, experienceVisualSearchImages } = settings;
+  const navigate = useNavigate();
 
   const [experienceVisualSearchBlobs, setExperienceVisualSearchBlobs] =
     useState<Blob[]>([]);
@@ -50,6 +52,16 @@ function Home() {
 
     fetchAllImages();
   }, [experienceVisualSearch, experienceVisualSearchImages, settings.appTitle]);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const imageUrl = urlParams.get('imageUrl');
+    if (imageUrl) {
+      const queryParams = urlParams.toString();
+      navigate(`/result?${queryParams}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
