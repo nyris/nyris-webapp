@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.78 - 2025-04-25
+
+### Added
+- improve image preview performance
+
 ## 0.3.77 - 2025-04-24
 
 ### Added

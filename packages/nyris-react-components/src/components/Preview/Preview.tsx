@@ -3,6 +3,7 @@ import { Layer, Stage, Image, Circle, Rect, Path } from 'react-konva';
 import { RectCoords, Region, getThumbSizeLongestEdge } from '@nyris/nyris-api';
 import Konva from 'konva';
 import { NodeGroup } from 'react-move';
+import useFilteredRegions from '../../hooks/useFilteredRegions';
 
 type PreviewElem = 'tl' | 'tr' | 'bl' | 'br' | 'rect';
 interface IRegion extends Region {
@@ -529,7 +530,18 @@ const Preview = ({
     return null;
   }
 
-  const dots = regions.map((region, i) => {
+  const filteredRegions: IRegion[] = useFilteredRegions({
+    regions,
+    imageSelection,
+    gripSize,
+    gripStrokeWidth,
+    height,
+    width,
+    minX,
+    minY,
+  });
+
+  const dots = filteredRegions.map((region, i) => {
     let { x1, x2, y1, y2 } = region.normalizedRect;
     let x = width * ((x2 - x1) / 2 + x1);
     let y = height * ((y2 - y1) / 2 + y1);
