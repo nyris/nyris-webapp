@@ -133,8 +133,6 @@ function ImagePreviewComponent({
         <div className="w-full bg-[#55566b] aspect-square flex just items-center">
           <Preview
             onSelectionChange={(r: RectCoords) => {
-              // console.log('rendering', r, currentIndex);
-
               debouncedOnImageSelectionChange(r, currentIndex);
             }}
             image={requestImages[currentIndex]}
@@ -211,8 +209,6 @@ function ImagePreviewComponent({
         >
           <Preview
             onSelectionChange={(r: RectCoords) => {
-              console.log('rendering', r, currentIndex);
-
               debouncedOnImageSelectionChange(r, currentIndex);
             }}
             image={requestImages[currentIndex]}
