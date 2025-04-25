@@ -10,7 +10,6 @@ import { RectCoords } from '@nyris/nyris-api';
 
 import { DEFAULT_REGION } from '../constants';
 import { useImageSearch } from 'hooks/useImageSearch';
-import useFilteredRegions from 'hooks/useFilteredRegions';
 import useRequestStore from 'stores/request/requestStore';
 import useResultStore from 'stores/result/resultStore';
 
@@ -33,7 +32,6 @@ function ImagePreviewComponent({
   const requestImages = useRequestStore(state => state.requestImages);
   const resetRegions = useRequestStore(state => state.resetRegions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
-  const query = useRequestStore(state => state.query);
   const regions = useRequestStore(state => state.regions);
   const updateRegion = useRequestStore(state => state.updateRegion);
   const resetRequestStore = useRequestStore(state => state.reset);
@@ -50,11 +48,6 @@ function ImagePreviewComponent({
 
   const previewWrapperRef = useRef<any>(null);
 
-  const filteredRegions = useFilteredRegions(
-    detectedRegions[currentIndex],
-    regions[currentIndex],
-  );
-
   const onImageRemove = () => {
     resetRegions();
     setRequestImages([]);
@@ -67,6 +60,8 @@ function ImagePreviewComponent({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const findItemsInSelection = useCallback(
     debounce(async (r: RectCoords, image: HTMLCanvasElement) => {
+      updateRegion(r, 0);
+
       singleImageSearch({
         image: image,
         settings,
@@ -94,7 +89,6 @@ function ImagePreviewComponent({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
     debounce((r: RectCoords, index?: number) => {
-      updateRegion(r, 0);
       findItemsInSelection(r, requestImages[0]);
     }, 0),
     [findItemsInSelection, requestImages, updateRegion],
@@ -137,7 +131,7 @@ function ImagePreviewComponent({
             }}
             image={requestImages[currentIndex]}
             selection={regions[currentIndex] || DEFAULT_REGION}
-            regions={filteredRegions || []}
+            regions={detectedRegions[currentIndex] || []}
             dotColor={'#FBD914'}
             minCropWidth={30}
             minCropHeight={30}
@@ -213,7 +207,7 @@ function ImagePreviewComponent({
             }}
             image={requestImages[currentIndex]}
             selection={regions[currentIndex] || DEFAULT_REGION}
-            regions={[]}
+            regions={detectedRegions[currentIndex] || []}
             minWidth={Math.min(
               80 *
                 (requestImages[currentIndex]?.width /

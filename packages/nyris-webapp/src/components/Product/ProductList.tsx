@@ -71,15 +71,11 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
                 sendFeedBackAction(value);
               }}
               isGroupItem={settings.showGroup ? product?.isGroup : false}
-              main_image_link={(() => {
-                if (query || items.length !== 0) {
-                  return product['image(main_similarity)']
-                    ? product['image(main_similarity)']
-                    : product['main_image_link'];
-                } else {
-                  return productsFromFindApi[i]?.image;
-                }
-              })()}
+              main_image_link={
+                product['image(main_similarity)']
+                  ? product['image(main_similarity)']
+                  : product['main_image_link']
+              }
             />
           );
         })}
