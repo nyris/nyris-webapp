@@ -54,23 +54,32 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       clearPostFilter: true,
     }).then(() => {});
   };
-
+  const isAlgoliaEnabled = window.settings?.algolia?.enabled;
   const products = useMemo(() => {
     const filter = Object.values(specificationFilter || {})[0];
 
     if (filter) {
-      return filterProducts(filter, productsFromAlgolia);
+      return filterProducts(
+        filter,
+        isAlgoliaEnabled ? productsFromAlgolia : productsFromFindApi,
+      );
     }
+
+    if (!isAlgoliaEnabled) {
+      return productsFromFindApi;
+    }
+
     if (productsFromAlgolia.length === 0 && isAlgoliaLoading && !query) {
       return productsFromFindApi;
     }
     return productsFromAlgolia;
   }, [
+    specificationFilter,
+    isAlgoliaEnabled,
     productsFromAlgolia,
-    productsFromFindApi,
     isAlgoliaLoading,
     query,
-    specificationFilter,
+    productsFromFindApi,
   ]);
 
   const renderItem = useMemo(() => {
@@ -91,7 +100,9 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
               }}
               isGroupItem={settings.showGroup ? product?.isGroup : false}
               main_image_link={
-                product['image(main_similarity)']
+                !isAlgoliaEnabled
+                  ? product['image']
+                  : product['image(main_similarity)']
                   ? product['image(main_similarity)']
                   : product['main_image_link']
               }

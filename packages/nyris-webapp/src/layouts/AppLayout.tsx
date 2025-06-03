@@ -101,22 +101,25 @@ function AppLayout(): JSX.Element {
         <Toaster />
       </div>
       <Header />
-      <Configure
-        query={query}
-        filters={
-          !query && !algoliaFilter.includes('score=1')
-            ? undefined
-            : `${algoliaFilter}${
-                metaFilter
-                  ? `${
-                      algoliaFilter ? 'AND ' : ''
-                    }${alogoliaFilterField}:'${metaFilter}'`
-                  : ''
-              }`
-        }
-        // facets={['brand', 'keyword_0']}
-        hitsPerPage={20}
-      />
+      {window.settings?.algolia.enabled && (
+        <Configure
+          query={query}
+          filters={
+            !query && !algoliaFilter.includes('score=1')
+              ? undefined
+              : `${algoliaFilter}${
+                  metaFilter
+                    ? `${
+                        algoliaFilter ? 'AND ' : ''
+                      }${alogoliaFilterField}:'${metaFilter}'`
+                    : ''
+                }`
+          }
+          // facets={['brand', 'keyword_0']}
+          hitsPerPage={20}
+        />
+      )}
+
       <div className="flex-1 flex flex-col overflow-hidden">
         <Outlet />
       </div>

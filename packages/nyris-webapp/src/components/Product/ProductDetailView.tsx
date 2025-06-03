@@ -51,7 +51,9 @@ function ProductDetailView(props: Props) {
     if (dataItem) {
       checkDataItemResult(dataItem);
       handlerCheckUrlImage(
-        dataItem['image(main_similarity)'] || dataItem['main_image_link'],
+        dataItem['image(main_similarity)'] ||
+          dataItem['main_image_link'] ||
+          dataItem['image'],
       );
     }
   }, [dataItem]);
