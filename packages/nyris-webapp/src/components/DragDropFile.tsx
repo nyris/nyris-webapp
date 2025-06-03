@@ -78,7 +78,6 @@ function DragDropFile(props: Props) {
           </div>
           <input
             onChange={e => {
-              console.log({ e });
               e.stopPropagation();
               if (e.target.files && e.target.files[0]) {
                 handleUpload(e.target.files[0]);

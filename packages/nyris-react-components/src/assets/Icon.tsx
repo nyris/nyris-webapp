@@ -40,6 +40,7 @@ import { ReactComponent as MachineView } from './icons/machine_view.svg';
 import { ReactComponent as AutoFocus } from './icons/auto_focus.svg';
 import { ReactComponent as Wear } from './icons/wear.svg';
 import { ReactComponent as Spare } from './icons/spare.svg';
+import { ReactComponent as Copy } from './icons/copy.svg';
 
 import { SUPPORTED_ICON } from './types';
 
@@ -58,6 +59,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   caret_right: { component: CaretRight },
   close: { component: Close },
   collapse: { component: Collapse },
+  copy: { component: Copy },
   crop: { component: Crop },
   dislike: { component: DisLike },
   download: { component: Download },

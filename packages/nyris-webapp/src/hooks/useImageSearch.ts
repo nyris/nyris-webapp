@@ -25,11 +25,13 @@ GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
-console.log({ GlobalWorkerOptions });
-
 export const useImageSearch = () => {
   const setRegions = useRequestStore(state => state.setRegions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const setSpecificationFilter = useRequestStore(
+    state => state.setSpecificationFilter,
+  );
+
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const preFilter = useRequestStore(state => state.preFilter);
   const setFirstSearchImage = useRequestStore(
@@ -44,7 +46,13 @@ export const useImageSearch = () => {
   const setShowFeedback = useUiStore(state => state.setShowFeedback);
 
   const setDetectedRegions = useResultStore(state => state.setDetectedRegions);
+  const setFirstRequestImageAnalysis = useResultStore(
+    state => state.setFirstRequestImageAnalysis,
+  );
+
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
+  const setImageAnalysis = useResultStore(state => state.setImageAnalysis);
+
   const setSessionId = useResultStore(state => state.setSessionId);
   const setRequestId = useResultStore(state => state.setRequestId);
   const firstSearchResults = useResultStore(state => state.firstSearchResults);
@@ -234,6 +242,7 @@ export const useImageSearch = () => {
 
       if (!imageRegion) {
         setRequestImages([canvasImage]);
+        setSpecificationFilter({});
       }
 
       if (!imageRegion) {
@@ -274,6 +283,7 @@ export const useImageSearch = () => {
         }
 
         setFindApiProducts(res?.results);
+        setImageAnalysis(res?.image_analysis);
         setSessionId(res?.session);
         setRequestId(res?.id);
 
@@ -297,6 +307,7 @@ export const useImageSearch = () => {
           setFirstSearchResults(res?.results);
           setFirstSearchImage(canvasImage);
           setFirstSearchPreFilter(preFilter);
+          setFirstRequestImageAnalysis(res?.image_analysis);
         }
       } catch (error) {
         setIsFindApiLoading(false);
@@ -308,10 +319,12 @@ export const useImageSearch = () => {
       setIsFindApiLoading,
       preFilter,
       setRequestImages,
+      setSpecificationFilter,
       setDetectedRegions,
       setRegions,
       metaFilter,
       setFindApiProducts,
+      setImageAnalysis,
       setSessionId,
       setRequestId,
       setAlgoliaFilter,
@@ -321,6 +334,7 @@ export const useImageSearch = () => {
       setFirstSearchResults,
       setFirstSearchImage,
       setFirstSearchPreFilter,
+      setFirstRequestImageAnalysis,
     ],
   );
 

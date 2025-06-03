@@ -11,6 +11,7 @@ export const ICONS = {
   caret_right: 'caret_right',
   close: 'close',
   collapse: 'collapse',
+  copy: 'copy',
   crop: 'crop',
   dislike: 'dislike',
   download: 'download',

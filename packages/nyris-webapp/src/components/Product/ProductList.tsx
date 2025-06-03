@@ -7,6 +7,7 @@ import useUiStore from 'stores/ui/uiStore';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
 import { useCurrentRefinements } from 'react-instantsearch';
+import { filterProducts } from 'utils/specificationFilter';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -33,6 +34,13 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const requestImages = useRequestStore(state => state.requestImages);
 
   const setValueInput = useRequestStore(state => state.setValueInput);
+  const specificationFilter = useRequestStore(
+    state => state.specificationFilter,
+  );
+
+  const specificationFilteredProducts = useResultStore(
+    state => state.specificationFilteredProducts,
+  );
 
   const getUrlToCanvasFile = async (url: string) => {
     setQuery('');
@@ -48,11 +56,22 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   };
 
   const products = useMemo(() => {
+    const filter = Object.values(specificationFilter || {})[0];
+
+    if (filter) {
+      return filterProducts(filter, productsFromAlgolia);
+    }
     if (productsFromAlgolia.length === 0 && isAlgoliaLoading && !query) {
       return productsFromFindApi;
     }
     return productsFromAlgolia;
-  }, [productsFromAlgolia, productsFromFindApi, isAlgoliaLoading, query]);
+  }, [
+    productsFromAlgolia,
+    productsFromFindApi,
+    isAlgoliaLoading,
+    query,
+    specificationFilter,
+  ]);
 
   const renderItem = useMemo(() => {
     return (
@@ -92,7 +111,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       </div>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productsFromAlgolia]);
+  }, [products]);
 
   if (
     products?.length === 0 &&

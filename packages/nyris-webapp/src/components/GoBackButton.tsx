@@ -11,6 +11,10 @@ import useUiStore from 'stores/ui/uiStore';
 export const GoBackButton = ({ className }: { className?: string }) => {
   const firstSearchResults = useResultStore(state => state.firstSearchResults);
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
+  const setImageAnalysis = useResultStore(state => state.setImageAnalysis);
+  const firstRequestImageAnalysis = useResultStore(
+    state => state.firstRequestImageAnalysis,
+  );
 
   const requestImages = useRequestStore(state => state.requestImages);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
@@ -32,6 +36,9 @@ export const GoBackButton = ({ className }: { className?: string }) => {
     setFindApiProducts(firstSearchResults);
     if (firstSearchImage) {
       setRequestImages([firstSearchImage]);
+    }
+    if (firstRequestImageAnalysis) {
+      setImageAnalysis(firstRequestImageAnalysis);
     }
 
     const nonEmptyFilter: any[] = ['sku:DOES_NOT_EXIST<score=1> '];
