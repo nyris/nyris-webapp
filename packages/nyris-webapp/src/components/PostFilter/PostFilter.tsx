@@ -1,11 +1,12 @@
+import { useState } from 'react';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from 'components/Accordion';
 import { useRefinementList } from 'react-instantsearch';
-
-// import { Icon } from '@nyris/nyris-react-components';
+import { Icon } from '@nyris/nyris-react-components';
+import { useTranslation } from 'react-i18next';
 
 function PostFilter({
   attribute,
@@ -16,19 +17,24 @@ function PostFilter({
   label: string;
   searchable: boolean;
 }) {
+  const [itemsLimit, setItemsLimit] = useState(10);
   const {
     items,
     refine,
-    // searchForItems,
-    // canToggleShowMore,
-    // isShowingMore,
-    // toggleShowMore,
+    searchForItems,
   } = useRefinementList({
     attribute: attribute,
     operator: 'or',
     showMore: false,
-    sortBy: ['name:desc'],
+    sortBy: ['name:asc'],
+    limit: itemsLimit,
   });
+
+  const { t } = useTranslation();
+
+  const onShowMore = () => {
+    setItemsLimit((prev) => prev + 10);
+  };
 
   return (
     <>
@@ -36,6 +42,38 @@ function PostFilter({
         <AccordionTrigger className="text-sm font-semibold w-full h-8 items-center">
           {label}
         </AccordionTrigger>
+        <div
+          style={{
+            position: 'relative'
+          }}
+        >
+          <input
+            name="postfilter-search"
+            type="search"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            maxLength={512}
+            onChange={event => searchForItems(event.currentTarget.value)}
+            className="w-full h-8 rounded-2xl bg-[#F3F3F5] pl-8 pr-2 outline-none"
+            style={{
+              fontSize: 14,
+            }}
+            placeholder={`${t('Search')} ${label}`}
+          />
+          <Icon name="search" className="absolute top-2 left-2" />
+        </div>
+        {!items.length && (
+          <div
+            style={{
+              fontSize: 14,
+              paddingTop: 16,
+            }}
+          >
+            No filters found
+          </div>
+        )}
         <AccordionContent>
           <div className="flex flex-col gap-4 mt-4">
             {items.map(item => (
@@ -54,27 +92,20 @@ function PostFilter({
                 </label>
               </div>
             ))}
+            {items.length === itemsLimit && (
+              <button
+                className="hover:bg-[#E9E9EC] rounded-[4px] p-2"
+                style={{
+                  fontSize: 14
+                }}
+                onClick={onShowMore}
+              >
+                Show more
+              </button>
+            )}
           </div>
         </AccordionContent>
       </AccordionItem>
-
-      {/* <div className="relative my-4">
-        <input
-          type="search"
-          autoComplete="off"
-          autoCorrect="off"
-          autoCapitalize="off"
-          spellCheck={false}
-          maxLength={512}
-          onChange={event => searchForItems(event.currentTarget.value)}
-          className="w-full h-8 rounded-2xl bg-[#F3F3F5] pl-8 outline-none"
-        ></input>
-        <Icon name="search" className="absolute top-2 left-2" />
-      </div> */}
-
-      {/* <button onClick={toggleShowMore} disabled={!canToggleShowMore}>
-        {isShowingMore ? 'Show less' : 'Show more'}
-      </button> */}
     </>
   );
 }
