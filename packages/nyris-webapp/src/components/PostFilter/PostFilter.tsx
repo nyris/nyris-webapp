@@ -75,7 +75,7 @@ function PostFilter({
           </div>
         )}
         <AccordionContent>
-          <div className="flex flex-col gap-4 mt-4">
+          <div className="flex flex-col gap-4 mt-4 ml-2">
             {items.map(item => (
               <div key={item.label}>
                 <label className="flex items-center w-fit cursor-pointer">
