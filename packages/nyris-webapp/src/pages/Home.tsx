@@ -82,7 +82,7 @@ function Home() {
             <div
               className={twMerge([
                 'absolute',
-                window.settings.algolia.enabled && 'bottom-[49px]',
+                'bottom-[49px]',
                 'text-primary',
                 'font-bold',
               ])}
@@ -90,11 +90,10 @@ function Home() {
               <h1 className="text-[25px]">{settings.headerText}</h1>
             </div>
           )}
-          {window.settings.algolia.enabled && (
-            <div className="w-[427px]">
-              <TextSearch />
-            </div>
-          )}
+
+          <div className="w-[427px]">
+            <TextSearch />
+          </div>
         </div>
         <div className="max-w-[512px] relative w-full">
           <DragDropFile />
@@ -121,11 +120,10 @@ function Home() {
             experienceVisualSearchBlobs={experienceVisualSearchBlobs}
           />
         )}
-        {window.settings.algolia.enabled && (
-          <div className="flex desktop:hidden w-full">
-            <TextSearch className="flex md:hidden fixed bottom-12 w-full px-2 gap-2" />
-          </div>
-        )}
+
+        <div className="flex desktop:hidden w-full">
+          <TextSearch className="flex md:hidden fixed bottom-12 w-full px-2 gap-2" />
+        </div>
       </div>
     </>
   );

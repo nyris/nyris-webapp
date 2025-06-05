@@ -69,14 +69,17 @@ export default function SidePanel({ className }: { className?: string }) {
       {(imageAnalysis?.imageDescription ||
         Object.keys(imageAnalysis?.specification || {}).length > 0) && (
         <div className="self-stretch p-4 bg-[#f3f3f5] rounded inline-flex flex-col justify-start items-start gap-1.5 mt-4 mx-4 ">
-          <div className="self-stretch flex flex-col justify-start items-start">
-            <div className="justify-start text-black text-base font-semibold">
-              Image description
+          {imageAnalysis?.imageDescription !== 'No description available' && (
+            <div className="self-stretch flex flex-col justify-start items-start">
+              <div className="justify-start text-black text-base font-semibold">
+                Image description
+              </div>
+              <div className="self-stretch justify-start text-black text-xs font-normal">
+                {imageAnalysis?.imageDescription || ''}
+              </div>
             </div>
-            <div className="self-stretch justify-start text-black text-xs font-normal">
-              {imageAnalysis?.imageDescription || ''}
-            </div>
-          </div>
+          )}
+
           <div className="justify-start text-black text-base font-semibold mt-2">
             Identified Attributes
           </div>

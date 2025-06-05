@@ -41,6 +41,8 @@ function TextSearch({
   const setValueInput = useRequestStore(state => state.setValueInput);
   const setMetaFilter = useRequestStore(state => state.setMetaFilter);
 
+  const regions = useRequestStore(state => state.regions);
+
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] =
     useState<boolean>(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
@@ -76,14 +78,27 @@ function TextSearch({
   }, [showDisclaimer, requestImages]);
 
   const visualSearch = useMemo(() => requestImages.length > 0, [requestImages]);
+  const { singleImageSearch } = useImageSearch();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
       setQuery(value);
+      if (requestImages.length === 0 && value === '') {
+        navigate('/');
+        return;
+      }
+      singleImageSearch({
+        image: requestImages[0],
+        imageRegion: regions[0],
+        text: value,
+        settings,
+        showFeedback: false,
+        newSearch: false,
+      });
       navigate('/result');
     }, 350),
-    [requestImages, preFilter],
+    [requestImages, preFilter, regions],
   );
 
   const onChangeText = (event: any) => {
@@ -96,7 +111,6 @@ function TextSearch({
     }
   };
 
-  const { singleImageSearch } = useImageSearch();
   const { cadSearch } = useCadSearch();
 
   const handleUpload = (files: File[]) => {
@@ -281,6 +295,16 @@ function TextSearch({
                     navigate('/result');
                     setValueInput('');
                     setQuery('');
+                    if (!window.settings?.algolia.enabled) {
+                      singleImageSearch({
+                        image: requestImages[0],
+                        imageRegion: regions[0],
+                        text: '',
+                        settings,
+                        showFeedback: false,
+                        newSearch: false,
+                      });
+                    }
                     return;
                   }
                   setQuery('');

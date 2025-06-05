@@ -191,14 +191,18 @@ function Results() {
               Object.keys(imageAnalysis?.specification || {}).length > 0) && (
               <div className="p-2">
                 <div className="self-stretch p-4 bg-[#f3f3f5] rounded flex justify-start flex-col items-start gap-2 flex-wrap content-start w-full">
-                  <div className="self-stretch flex flex-col justify-start items-start">
-                    <div className="justify-start text-black text-base font-semibold">
-                      Image description
+                  {imageAnalysis?.imageDescription !==
+                    'No description available' && (
+                    <div className="self-stretch flex flex-col justify-start items-start">
+                      <div className="justify-start text-black text-base font-semibold">
+                        Image description
+                      </div>
+                      <div className="self-stretch justify-start text-black text-sm font-normal">
+                        {imageAnalysis?.imageDescription || ''}
+                      </div>
                     </div>
-                    <div className="self-stretch justify-start text-black text-sm font-normal">
-                      {imageAnalysis?.imageDescription || ''}
-                    </div>
-                  </div>
+                  )}
+
                   <div className="justify-start text-[#2b2c46] text-base font-semibold mt-1">
                     Identified Attributes
                   </div>

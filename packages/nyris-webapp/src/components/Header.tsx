@@ -67,19 +67,18 @@ function Header() {
             }}
           />
         </NavLink>
-        {window.settings?.algolia.enabled && (
-          <div
-            className={twMerge(['hidden', showSearchBar && 'desktop:block'])}
-            style={{
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-            }}
-          >
-            <TextSearch />
-          </div>
-        )}
+
+        <div
+          className={twMerge(['hidden', showSearchBar && 'desktop:block'])}
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <TextSearch />
+        </div>
 
         {auth0.enabled && isAuthenticated && (
           <>
