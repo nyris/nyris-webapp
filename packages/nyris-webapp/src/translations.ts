@@ -60,6 +60,7 @@ export const translations = {
       Continue: 'Continue',
       'Request sent successfully': 'Request sent successfully',
       'No result found': 'No result found',
+      'Load More': 'Load More',
     },
   },
   de: {
@@ -125,6 +126,7 @@ export const translations = {
       Continue: 'Fortfahren',
       'Request sent successfully': 'Anfrage erfolgreich gesendet',
       'No result found': 'Keine Ergebnisse',
+      'Load More': 'Mehr laden',
     },
   },
   pt: {
@@ -191,6 +193,7 @@ export const translations = {
       'Request sent successfully': 'Solicitação enviada com sucesso',
       'Are these results useful?': 'Esses resultados são úteis?',
       'No result found': 'Nenhum resultado',
+      'Load More': 'Carregar mais',
     },
   },
 };
