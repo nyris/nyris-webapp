@@ -74,6 +74,16 @@
       column-gap: 4px;
       padding: 0 0 0 0;
     }
+    .nyris__inquiry-container {
+      width: 100%;
+      background-color: rgb(243, 243, 245);
+      padding: 16px;
+      &-image {
+        background-color: #fff;
+        max-height: 120px;
+        max-width: 120px;
+      }
+    }
   }
 
   &-result {

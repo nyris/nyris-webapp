@@ -24,6 +24,7 @@ import { useFilteredResult } from '../hooks/useFilteredResult';
 import { useFilter } from '../hooks/useFilter';
 import { onFilterCheck } from '../utils';
 import { WebCameraModal } from './WebCameraModal';
+import Inquiry from './Inquiry';
 
 export const Result = ({
   onAcceptCrop,
@@ -312,6 +313,7 @@ export const Result = ({
                     cadenasScriptStatus={cadenasScriptStatus}
                   />
                 ))}
+                <Inquiry imageSource={image} />
               </div>
               {showFeedbackSuccess && (
                 <div className="nyris__feedback-section">
