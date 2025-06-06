@@ -161,7 +161,7 @@ function Product(props: Props) {
           </div>
         </div>
         {settings.simpleCardView && (
-          <div className="info-container-card">
+          <div className={`info-container-card ${settings.CTAButton?.CTAButton ? 'w-cta' : ''}`}>
             <div className="info-sku">{dataItem.sku}</div>
             <span className="info-marking">{dataItem.Bezeichnung}</span>
             <Tooltip

@@ -101,7 +101,10 @@
     z-index: 40;
     display: flex;
     padding: 8px;
-    height: 168px;
+    height: 140px;
+    &.w-cta {
+      height: 168px;
+    }
     .info-sku {
       font-size: 16px;
       font-weight: 700;
