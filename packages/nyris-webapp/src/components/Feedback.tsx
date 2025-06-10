@@ -24,7 +24,7 @@ function Feedback({
         transition: 'background-color 0.3s ease',
       }}
     >
-      <p className="desktop:w-[146px]">{t('Are these results useful?')}</p>
+      <p className="desktop:w-[190px]">{t('Are these results useful?')}</p>
       <div
         className="feedback-icon-wrapper"
         onClick={() => submitFeedback(false)}

@@ -161,7 +161,7 @@ function Product(props: Props) {
           </div>
         </div>
         {settings.simpleCardView && (
-          <div className="info-container-card">
+          <div className={`info-container-card ${settings.CTAButton?.CTAButton ? 'w-cta' : ''}`}>
             <div className="info-sku">{dataItem.sku}</div>
             <span className="info-marking">{dataItem.Bezeichnung}</span>
             <Tooltip
@@ -182,6 +182,92 @@ function Product(props: Props) {
                   : dataItem.VK_Text_Deutsch}
               </div>
             </Tooltip>
+            {settings.CTAButton?.CTAButton && (
+              <div
+                style={{
+                  boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                  minHeight: 28,
+                  background:
+                    settings.CTAButton?.CTAButtonColor ||
+                    settings.theme?.primaryColor,
+                  borderRadius: 2,
+                  padding: '0px 8px',
+                  display: 'flex',
+                  justifyItems: 'center',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginTop: 'auto',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: '100%',
+                    padding: 0,
+                    cursor: settings.CTAButton?.CTALinkField
+                      ? 'pointer'
+                      : 'normal',
+                  }}
+                  onClick={() => {
+                    if (settings.CTAButton?.CTALinkField) {
+                      // feedbackConversionEpic(state, indexItem, dataItem.sku);
+                      window.open(
+                        `${get(dataItem, settings.CTAButton?.CTALinkField)}`,
+                        '_blank',
+                      );
+                    }
+                  }}
+                >
+                  <Tooltip
+                    content={
+                      get(
+                        dataItem,
+                        settings.CTAButton?.CTAButtonText || '',
+                      ) ||
+                      settings.CTAButton?.CTAButtonText ||
+                      ''
+                    }
+                  >
+                    <div
+                      className={`max-line-1 ${
+                        settings.CTAButton.CTALinkField
+                          ? 'desktop:136px'
+                          : '164px'
+                      }`}
+                      style={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontWeight: 600,
+                        color:
+                          settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
+                        fontSize: '12px',
+                        letterSpacing: '0.27px',
+                        wordBreak: 'break-all',
+                        paddingRight: '8px',
+                      }}
+                    >
+                      {get(
+                        dataItem,
+                        settings.CTAButton?.CTAButtonText || '',
+                      ) || settings.CTAButton?.CTAButtonText}
+                    </div>
+                  </Tooltip>
+                  {settings.CTAButton?.CTAIcon && (
+                    <div style={{ width: '16px' }}>
+                      <Icon
+                        name="link"
+                        fill={
+                          settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'
+                        }
+                        width={16}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
