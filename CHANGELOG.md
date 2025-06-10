@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.79 - 2025-06-20
+
+### Added
+- CTA button for Simple Card View
+- Post filters: load more, search and alphabetical order
+
 ## 0.3.78 - 2025-04-25
 
 ### Added
@@ -17,6 +23,7 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## 0.3.76 - 2025-03-14
 
+### Added
 - Rename of css classname for popup in Widget
 - Fix logos colours
 
