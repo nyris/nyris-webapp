@@ -84,7 +84,7 @@ function PostFilter({
               paddingTop: 16,
             }}
           >
-            No filters found
+            {t('No filters found')}
           </div>
         )}
         <AccordionContent>
