@@ -49,6 +49,7 @@ export const Result = ({
 }: AppProps) => {
   const noResult = results.length === 0;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [currentSelection, setCurrentSelection] = useState(selection);
   const [expand, setExpand] = useState(noResult);
@@ -313,7 +314,21 @@ export const Result = ({
                     cadenasScriptStatus={cadenasScriptStatus}
                   />
                 ))}
-                <Inquiry imageSource={image} />
+                <div className="nyris__inquiry-container">
+                  <img
+                    src={image.toDataURL('image/png')}
+                    alt="searched image"
+                    className="nyris__inquiry-container-image"
+                  />
+                  <div className="inyris__nquiry-container-banner">
+                    <button
+                      type="button"
+                      onClick={() => setIsInquiryModalOpen(true)}
+                    >
+                      Inquiry
+                    </button>
+                  </div>
+                </div>
               </div>
               {showFeedbackSuccess && (
                 <div className="nyris__feedback-section">
@@ -321,6 +336,14 @@ export const Result = ({
                     {labels['Thanks for your feedback!']}
                   </div>
                 </div>
+              )}
+              {isInquiryModalOpen && (
+                <Inquiry
+                  imageSource={image}
+                  isPopupOpened={isInquiryModalOpen}
+                  labels={labels}
+                  onClose={() => setIsInquiryModalOpen(false)}
+                />
               )}
               {feedbackStatus === 'visible' && !showFeedbackSuccess && (
                 <div className="nyris__feedback-section">

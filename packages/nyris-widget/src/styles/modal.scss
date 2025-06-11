@@ -37,6 +37,10 @@ $black-opacity: rgba(0, 0, 0, 0.3);
     height: 100%;
     border-radius: 0;
   }
+  &.inquiry-modal {
+    max-width: 378px;
+    border-radius: 0;
+  }
 }
 
 @keyframes fadeIn {
