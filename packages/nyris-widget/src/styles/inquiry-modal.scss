@@ -19,9 +19,13 @@
   &-input {
     width: 346px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
     margin: 8px auto;
+    font-weight: 700;
     input, textarea {
+      width: 346px;
       background-color: #fff;
       border: 0;
       margin-top: 8px;

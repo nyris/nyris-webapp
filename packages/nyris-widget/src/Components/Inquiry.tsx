@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
 import '../styles/inquiry-modal.scss';
+import { Icon } from '@nyris/nyris-react-components';
 
 interface IInquiry {
   imageSource: any;
   isPopupOpened: boolean;
   labels: any;
   onClose: () => void;
+  prefilters: string[];
 }
 
-const Inquiry = ({ imageSource, isPopupOpened, labels, onClose }: IInquiry) => {
-  const [email, setEmail] = useState<string>('')
+const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: IInquiry) => {
+  const [email, setEmail] = useState<string>('');
+  const [additionalInfo, setAdditionalInfo] = useState<string>('');
   return (
     <Modal
       isOpen={isPopupOpened}
@@ -22,11 +25,24 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose }: IInquiry) => {
       >
         {labels['Submit your image for inquiry']}
       </div>
+      <Icon
+        name="close"
+        style={{
+          position: 'absolute',
+          top: 8,
+          right: 8,
+        }}
+        onClick={() => onClose()}
+      />
       <img
         src={imageSource.toDataURL('image/png')}
         alt="searched image"
         className="inquiry-modal-image"
       />
+      <div className="inquiry-modal-input">
+        Pre-filter applied
+        <div></div>
+      </div>
       <div className="inquiry-modal-input">
         Email
         <input
@@ -37,7 +53,12 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose }: IInquiry) => {
       </div>
       <div className="inquiry-modal-input">
         Additional information
-        <textarea />
+        <span>{additionalInfo.length}/150</span>
+        <textarea
+          maxLength={150}
+          value={additionalInfo}
+          onChange={(e) => setAdditionalInfo(e.target.value)}
+        />
       </div>
       <div className="inquiry-modal-buttons">
         <button

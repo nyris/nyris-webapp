@@ -47,6 +47,7 @@ const translations = (language: Language) => {
       Cancel: 'Abbrechen',
       Apply: 'Anwenden',
       'Submit your image for inquiry': 'Senden Sie Ihr Bild zur Anfrage',
+      'Inquiry': 'Anfrage',
     },
     en: {
       Search: 'Search',
@@ -90,6 +91,7 @@ const translations = (language: Language) => {
       Cancel: 'Cancel',
       Apply: 'Apply',
       'Submit your image for inquiry': 'Submit your image for inquiry',
+      'Inquiry': 'Inquiry',
     },
     fr: {
       Search: 'Recherche',
@@ -133,6 +135,7 @@ const translations = (language: Language) => {
       Cancel: 'Annuler',
       Apply: 'Appliquer',
       'Submit your image for inquiry': 'Soumettez votre image pour demande de renseignements',
+      'Inquiry': 'Enquête',
     },
     pl: {
       Search: 'Wyszukiwanie',
@@ -176,6 +179,7 @@ const translations = (language: Language) => {
       Cancel: 'Anuluj',
       Apply: 'Zastosuj',
       'Submit your image for inquiry': 'Prześlij swój obraz do zapytania',
+      'Inquiry': 'Zapytanie',
     },
     it: {
       Search: 'Cerca',
@@ -219,6 +223,7 @@ const translations = (language: Language) => {
       Cancel: 'Cancella',
       Apply: 'Applica',
       'Submit your image for inquiry': 'Invia la tua immagine per la richiesta',
+      'Inquiry': 'Richiesta di informazioni',
     },
     se: {
       Search: 'Sök',
@@ -262,6 +267,7 @@ const translations = (language: Language) => {
       Cancel: 'Avbryt',
       Apply: 'Tillämpa',
       'Submit your image for inquiry': 'Skicka in din bild för förfrågan',
+      'Inquiry': 'Förfrågan',
     },
     es: {
       Search: 'Buscar',
@@ -305,6 +311,7 @@ const translations = (language: Language) => {
       Cancel: 'Cancelar',
       Apply: 'Solicitar',
       'Submit your image for inquiry': 'Envíe su imagen para consulta',
+      'Inquiry': 'Consulta',
     },
     da: {
       Search: 'Søg',
@@ -348,6 +355,7 @@ const translations = (language: Language) => {
       Cancel: 'Annuller',
       Apply: 'Anvend',
       'Submit your image for inquiry': 'Send dit billede til forespørgsel',
+      'Inquiry': 'Forespørgsel',
     },
     nl: {
       Search: 'Zoek',
@@ -391,6 +399,7 @@ const translations = (language: Language) => {
       Cancel: 'Annuleer',
       Apply: 'Toepassen',
       'Submit your image for inquiry': 'Dien uw afbeelding in voor een aanvraag',
+      'Inquiry': 'Navraag',
     },
     no: {
       Search: 'Søk',
@@ -434,6 +443,7 @@ const translations = (language: Language) => {
       Cancel: 'Avbryt',
       Apply: 'Søke',
       'Submit your image for inquiry': 'Send inn bildet ditt for forespørsel',
+      'Inquiry': 'Forespørsel',
     },
     ru: {
       Search: 'Поиск',
@@ -477,6 +487,7 @@ const translations = (language: Language) => {
       Cancel: 'Отменить',
       Apply: 'Применить',
       'Submit your image for inquiry': 'Отправьте свое изображение для запроса',
+      'Inquiry': 'Запрос',
     }
   };
 

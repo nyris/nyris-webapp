@@ -25,6 +25,7 @@ import { useFilter } from '../hooks/useFilter';
 import { onFilterCheck } from '../utils';
 import { WebCameraModal } from './WebCameraModal';
 import Inquiry from './Inquiry';
+import { Icon } from '@nyris/nyris-react-components';
 
 export const Result = ({
   onAcceptCrop,
@@ -320,12 +321,20 @@ export const Result = ({
                     alt="searched image"
                     className="nyris__inquiry-container-image"
                   />
-                  <div className="inyris__nquiry-container-banner">
+                  <div className="nyris__inquiry-container-banner">
+                    <div className="nyris__inquiry-container-banner-header">
+                      No matches found for your request?
+                    </div>
+                    <div className="nyris__inquiry-container-banner-text">
+                      Get personalised help from our team of product experts.
+                    </div>
                     <button
+                      className="nyris__inquiry-container-banner-button"
                       type="button"
                       onClick={() => setIsInquiryModalOpen(true)}
                     >
-                      Inquiry
+                      {labels['Inquiry']}
+                      <Icon name="email" color="#fff" width={16} height={12} />
                     </button>
                   </div>
                 </div>

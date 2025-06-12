@@ -82,6 +82,33 @@
         background-color: #fff;
         max-height: 120px;
         max-width: 120px;
+        margin: auto;
+      }
+      &-banner {
+        &-header {
+          font-weight: 700;
+          font-size: 14px;
+          margin-left: 16px;
+        }
+        &-text {
+          font-size: 14px;
+          line-height: 16px;
+          margin: 8px 16px;
+        }
+        &-button {
+          width: 170px;
+          font-size: 13px;
+          cursor: pointer;
+          border-radius: 2px;
+          color: #fff;
+          background-color: rgb(43 44 70);
+          border: 0;
+          padding: 8px 16px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
       }
     }
   }
