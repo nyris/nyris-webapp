@@ -323,10 +323,10 @@ export const Result = ({
                   />
                   <div className="nyris__inquiry-container-banner">
                     <div className="nyris__inquiry-container-banner-header">
-                      No matches found for your request?
+                      {labels['No results found for your query?']}
                     </div>
                     <div className="nyris__inquiry-container-banner-text">
-                      Get personalised help from our team of product experts.
+                      {labels['Share it with the team']}
                     </div>
                     <button
                       className="nyris__inquiry-container-banner-button"

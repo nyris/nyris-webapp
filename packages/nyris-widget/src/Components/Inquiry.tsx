@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import Modal from './Modal';
 import '../styles/inquiry-modal.scss';
 import { Icon } from '@nyris/nyris-react-components';
@@ -14,6 +15,18 @@ interface IInquiry {
 const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: IInquiry) => {
   const [email, setEmail] = useState<string>('');
   const [additionalInfo, setAdditionalInfo] = useState<string>('');
+
+  const onSend = async () => {
+    await emailjs.send('service_zfsxshi', 'template_rxsi7w9', {
+      email_id: email.trim(),
+      information_text: additionalInfo ? additionalInfo : '<not specified>',
+      request_image: imageSource?.toDataURL(),
+      prefilter_values: prefilters?.length
+        ? prefilters.join(', ')
+        : '<not specified>',
+    });
+  };
+
   return (
     <Modal
       isOpen={isPopupOpened}
@@ -39,28 +52,45 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
         alt="searched image"
         className="inquiry-modal-image"
       />
-      <div className="inquiry-modal-input">
-        Pre-filter applied
-        {prefilters.map(prefilter => (
-          <div className="inquiry-modal-input-prefilters">{prefilter}</div>
-        ))}
-      </div>
-      <div className="inquiry-modal-input">
-        Email
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="inquiry-modal-input">
-        Additional information
-        <span>{additionalInfo.length}/150</span>
-        <textarea
-          maxLength={150}
-          value={additionalInfo}
-          onChange={(e) => setAdditionalInfo(e.target.value)}
-        />
+      <div className="inquiry-modal-info">
+        <div className="inquiry-modal-input">
+          {labels['Search criteria']}
+          <div className="inquiry-modal-input-prefilters-container">
+            {prefilters.map(prefilter => (
+              <div
+                className="inquiry-modal-input-prefilters"
+                style={{
+                  color: window.nyrisSettings.primaryColor || '#3E36DC',
+                  backgroundColor: window.nyrisSettings.browseGalleryButtonColor || '#E4E3FF'
+                }}
+              >
+                {prefilter}
+              </div>
+            ))}
+          </div>
+          {!prefilters.length && (
+            <span className="no-prefilters">
+              {labels['Search criteria is not selected']}
+            </span>
+          )}
+        </div>
+        <div className="inquiry-modal-input">
+          {labels['Your email']}
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="inquiry-modal-input">
+          {labels['Additional information']}
+          <span>{additionalInfo.length}/150</span>
+          <textarea
+            maxLength={150}
+            value={additionalInfo}
+            onChange={(e) => setAdditionalInfo(e.target.value)}
+          />
+        </div>
       </div>
       <div className="inquiry-modal-buttons">
         <button
@@ -70,7 +100,8 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
           {labels['Cancel']}
         </button>
         <button
-          className="inquiry-modal-buttons-apply"
+          className={`inquiry-modal-buttons-apply ${email ? 'active' : ''}`}
+          onClick={() => onSend()}
         >
           {labels['Apply']}
         </button>
