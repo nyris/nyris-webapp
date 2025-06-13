@@ -3,6 +3,8 @@
   display: flex;
   flex-direction: column;
   background-color: #F3F3F5;
+  max-height: 82%;
+  height: 82%;
   &-header {
     width: 346px;
     font-weight: 700;
@@ -32,6 +34,10 @@
     }
     input {
       height: 32px;
+    }
+    textarea {
+      resize: none;
+      height: 66px;
     }
   }
   &-buttons {

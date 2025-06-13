@@ -352,6 +352,7 @@ export const Result = ({
                   isPopupOpened={isInquiryModalOpen}
                   labels={labels}
                   onClose={() => setIsInquiryModalOpen(false)}
+                  prefilters={Object.keys(selectedPreFilters)}
                 />
               )}
               {feedbackStatus === 'visible' && !showFeedbackSuccess && (

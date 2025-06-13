@@ -41,7 +41,9 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
       />
       <div className="inquiry-modal-input">
         Pre-filter applied
-        <div></div>
+        {prefilters.map(prefilter => (
+          <div className="inquiry-modal-input-prefilters">{prefilter}</div>
+        ))}
       </div>
       <div className="inquiry-modal-input">
         Email
