@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import emailjs from '@emailjs/browser';
 import Modal from './Modal';
 import '../styles/inquiry-modal.scss';
@@ -12,19 +12,32 @@ interface IInquiry {
   prefilters: string[];
 }
 
+// eslint-disable-next-line
+const emailRegex = /.+\@.+\..+$/;
+
 const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: IInquiry) => {
   const [email, setEmail] = useState<string>('');
   const [additionalInfo, setAdditionalInfo] = useState<string>('');
+  const [emailValid, setEmailValid] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (email)
+       setEmailValid(emailRegex.test(email));
+  }, [email]);
+
+  useEffect(() => emailjs.init('SMGihPnuEGcYLm0V4'), []);
 
   const onSend = async () => {
-    await emailjs.send('service_zfsxshi', 'template_rxsi7w9', {
-      email_id: email.trim(),
-      information_text: additionalInfo ? additionalInfo : '<not specified>',
-      request_image: imageSource?.toDataURL(),
-      prefilter_values: prefilters?.length
-        ? prefilters.join(', ')
-        : '<not specified>',
-    });
+    await emailjs
+      .send('service_zfsxshi', 'template_rxsi7w9', {
+        email_id: email.trim(),
+        information_text: additionalInfo ? additionalInfo : '<not specified>',
+        request_image: imageSource?.toDataURL(),
+        prefilter_values: prefilters?.length
+          ? prefilters.join(', ')
+          : '<not specified>',
+      })
+      .finally(() => onClose());
   };
 
   return (
@@ -100,7 +113,7 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
           {labels['Cancel']}
         </button>
         <button
-          className={`inquiry-modal-buttons-apply ${email ? 'active' : ''}`}
+          className={`inquiry-modal-buttons-apply ${emailValid ? 'active' : ''}`}
           onClick={() => onSend()}
         >
           {labels['Apply']}
