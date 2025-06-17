@@ -15,6 +15,7 @@
   &-info {
     overflow-y: auto;
     padding-bottom: 78px;
+    margin: 0 16px;
   }
   &-image {
     border-radius: 8px;
@@ -49,6 +50,10 @@
       resize: none;
       height: 66px;
       padding: 8px;
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 16px;
       &:active,
       &:focus {
         border: 0;

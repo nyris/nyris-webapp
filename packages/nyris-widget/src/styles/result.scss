@@ -78,6 +78,7 @@
       width: 100%;
       background-color: rgb(243, 243, 245);
       padding: 16px;
+      display: flex;
       &-image {
         background-color: #fff;
         max-height: 120px;
@@ -88,12 +89,11 @@
         &-header {
           font-weight: 700;
           font-size: 14px;
-          margin-left: 16px;
         }
         &-text {
           font-size: 14px;
           line-height: 16px;
-          margin: 8px 16px;
+          margin: 8px 0;
         }
         &-button {
           width: 170px;

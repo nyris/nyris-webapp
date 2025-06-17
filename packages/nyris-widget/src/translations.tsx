@@ -54,6 +54,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'Suchkriterien sind nicht ausgewählt',
       'No results found for your query?': 'Keine Ergebnisse gefunden?',
       'Share it with the team': 'Teile es mit dem Team',
+      'Send': 'Senden',
     },
     en: {
       Search: 'Search',
@@ -104,6 +105,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'Search criteria is not selected',
       'No results found for your query?': 'No results found for your query?',
       'Share it with the team': 'Share it with the team',
+      'Send': 'Send',
     },
     fr: {
       Search: 'Recherche',
@@ -154,6 +156,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'Les critères de recherche ne sont pas sélectionnés',
       'No results found for your query?': 'Aucun résultat trouvé ?',
       'Share it with the team': 'Partagez-le avec l’équipe',
+      'Send': 'Envoyer',
     },
     pl: {
       Search: 'Wyszukiwanie',
@@ -204,6 +207,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'Kryteria wyszukiwania nie zostały wybrane',
       'No results found for your query?': 'Nie znaleziono wyników?',
       'Share it with the team': 'Udostępnij to zespołowi',
+      'Send': 'Wyślij',
     },
     it: {
       Search: 'Cerca',
@@ -254,6 +258,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'I criteri di ricerca non sono selezionati',
       'No results found for your query?': 'Nessun risultato trovato?',
       'Share it with the team': 'Condividilo con il team',
+      'Send': 'Invia',
     },
     se: {
       Search: 'Sök',
@@ -304,6 +309,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'Sökkriterierna är inte valda',
       'No results found for your query?': 'Inga resultat hittades?',
       'Share it with the team': 'Dela det med teamet',
+      'Send': 'Skicka',
     },
     es: {
       Search: 'Buscar',
@@ -354,6 +360,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'Criterios de búsqueda no seleccionados',
       'No results found for your query?': '¿No se encontraron resultados?',
       'Share it with the team': 'Compártelo con el equipo',
+      'Send': 'Enviar',
     },
     da: {
       Search: 'Søg',
@@ -404,6 +411,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'Søgekriterier er ikke valgt',
       'No results found for your query?': 'Ingen resultater fundet?',
       'Share it with the team': 'Del det med teamet',
+      'Send': 'Send',
     },
     nl: {
       Search: 'Zoek',
@@ -454,6 +462,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'Zoekcriteria niet geselecteerd',
       'No results found for your query?': 'Geen resultaten gevonden?',
       'Share it with the team': 'Deel het met het team',
+      'Send': 'Verzenden',
     },
     no: {
       Search: 'Søk',
@@ -504,6 +513,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'Søkekriterier er ikke valgt',
       'No results found for your query?': 'Fant ingen resultater?',
       'Share it with the team': 'Del det med teamet',
+      'Send': 'Send',
     },
     ru: {
       Search: 'Поиск',
@@ -554,6 +564,7 @@ const translations = (language: Language) => {
       'Search criteria is not selected': 'Критерии поиска не выбраны',
       'No results found for your query?': 'Результатов не найдено?',
       'Share it with the team': 'Поделитесь с командой',
+      'Send': 'Отправить',
     }
   };
 

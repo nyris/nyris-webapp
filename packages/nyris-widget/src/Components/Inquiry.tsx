@@ -60,12 +60,12 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
         }}
         onClick={() => onClose()}
       />
-      <img
-        src={imageSource.toDataURL('image/png')}
-        alt="searched image"
-        className="inquiry-modal-image"
-      />
       <div className="inquiry-modal-info">
+        <img
+          src={imageSource.toDataURL('image/png')}
+          alt="searched image"
+          className="inquiry-modal-image"
+        />
         <div className="inquiry-modal-input">
           {labels['Search criteria']}
           <div className="inquiry-modal-input-prefilters-container">
@@ -116,7 +116,7 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
           className={`inquiry-modal-buttons-apply ${emailValid ? 'active' : ''}`}
           onClick={() => onSend()}
         >
-          {labels['Apply']}
+          {labels['Send']}
         </button>
       </div>
     </Modal>
