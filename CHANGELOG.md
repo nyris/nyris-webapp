@@ -3,7 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.3.79 - 2025-06-20
+## 0.3.80 - 2025-06-17
+
+### Added
+- removed sorting from post filter
+
+## 0.3.79 - 2025-06-10
 
 ### Added
 - CTA button for Simple Card View
