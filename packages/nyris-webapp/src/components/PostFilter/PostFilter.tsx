@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   AccordionContent,
   AccordionItem,
@@ -18,16 +18,11 @@ function PostFilter({
   searchable: boolean;
 }) {
   const [itemsLimit, setItemsLimit] = useState(10);
-  const [searchInput, setSearchInput] = useState<string>('')
-  const {
-    items,
-    refine,
-    searchForItems,
-  } = useRefinementList({
+  const [searchInput, setSearchInput] = useState<string>('');
+  const { items, refine, searchForItems } = useRefinementList({
     attribute: attribute,
     operator: 'or',
     showMore: false,
-    sortBy: ['name:asc'],
     limit: itemsLimit,
   });
 
@@ -35,10 +30,11 @@ function PostFilter({
 
   useEffect(() => {
     searchForItems(searchInput);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchInput]);
 
   const onShowMore = () => {
-    setItemsLimit((prev) => prev + 10);
+    setItemsLimit(prev => prev + 10);
   };
 
   return (
@@ -49,7 +45,7 @@ function PostFilter({
         </AccordionTrigger>
         <div
           style={{
-            position: 'relative'
+            position: 'relative',
           }}
         >
           <input
@@ -109,7 +105,7 @@ function PostFilter({
               <button
                 className="hover:bg-[#E9E9EC] rounded-[4px] p-2"
                 style={{
-                  fontSize: 14
+                  fontSize: 14,
                 }}
                 onClick={onShowMore}
               >
