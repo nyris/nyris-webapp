@@ -6,7 +6,6 @@ import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
-import { useCurrentRefinements } from 'react-instantsearch';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -16,8 +15,6 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const settings = window.settings;
   const { singleImageSearch } = useImageSearch();
   const { t } = useTranslation();
-
-  const { items } = useCurrentRefinements();
 
   const productsFromAlgolia = useResultStore(
     state => state.productsFromAlgolia,
