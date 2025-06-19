@@ -301,7 +301,7 @@ export const Result = ({
             <>
               <div
                 className="nyris__success-multiple-result-list"
-                style={{ paddingBottom: feedbackStatus === 'visible' ? 180 : 100 }}
+                style={{ paddingBottom: feedbackStatus === 'visible' ? 300 : 280 }}
               >
                 {filteredProducts.map((r, i) => (
                   <ProductCard

@@ -4,7 +4,7 @@
   flex-direction: column;
   background-color: #F3F3F5;
   max-height: 87%;
-  height: 87%;
+  height: auto;
   &-header {
     width: 346px;
     font-weight: 700;
@@ -14,13 +14,15 @@
   }
   &-info {
     overflow-y: auto;
-    padding: 0 16px 78px 16px;
+    padding: 0 16px 26px 16px;
   }
   &-image {
     border-radius: 8px;
-    max-width: 346px;
+    width: 346px;
+    max-height: 188px;
     margin: 16px auto;
     background-color: #fff;
+    object-fit: contain;
   }
   &-input {
     width: 346px;
@@ -46,8 +48,8 @@
       }
     }
     textarea {
-      resize: none;
-      height: 66px;
+      resize: vertical;
+      max-height: 66px;
       padding: 8px;
       font-family: 'Source Sans 3', sans-serif;
       font-weight: 400;
@@ -79,24 +81,29 @@
     .full {
       color: #E31B5D;
     }
+    &-required {
+      font-weight: 400;
+      margin-left: 8px;
+      margin-right: auto;
+    }
   }
   &-buttons {
     width: 100%;
-    height: 66px;
     display: flex;
     flex-direction: row;
-    position: fixed;
-    bottom: 0;
     &-cancel {
+      height: 66px;
       flex: 1;
       background-color: #2B2C46;
       color: #fff;
       border: 0;
+      cursor: pointer;
     }
     &-apply {
+      height: 66px;
       flex: 1;
       color: #aaabb5;
-      background-color: #e9e9ec;
+      background-color: #f3f3f5;
       border: 0;
       &.active {
         background-color: #3E36DC;

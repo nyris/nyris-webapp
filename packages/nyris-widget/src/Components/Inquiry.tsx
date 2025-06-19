@@ -55,6 +55,7 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
         name="close"
         style={{
           position: 'absolute',
+          cursor: 'pointer',
           top: 8,
           right: 8,
         }}
@@ -89,6 +90,7 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
         </div>
         <div className="inquiry-modal-input">
           {labels['Your email']}
+          <span className="inquiry-modal-input-required">(required)</span>
           <input
             type="email"
             value={email}
