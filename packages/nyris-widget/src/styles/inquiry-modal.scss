@@ -14,8 +14,7 @@
   }
   &-info {
     overflow-y: auto;
-    padding-bottom: 78px;
-    margin: 0 16px;
+    padding: 0 16px 78px 16px;
   }
   &-image {
     border-radius: 8px;
@@ -76,6 +75,9 @@
     .no-prefilters {
       width: 100%;
       font-weight: 400;
+    }
+    .full {
+      color: #E31B5D;
     }
   }
   &-buttons {

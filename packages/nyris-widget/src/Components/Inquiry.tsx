@@ -97,7 +97,7 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
         </div>
         <div className="inquiry-modal-input">
           {labels['Additional information']}
-          <span>{additionalInfo.length}/150</span>
+          <span className={`${additionalInfo.length === 150 ? 'full' : ''}`}>{additionalInfo.length}/150</span>
           <textarea
             maxLength={150}
             value={additionalInfo}
