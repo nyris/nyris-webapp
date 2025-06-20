@@ -301,7 +301,7 @@ export const Result = ({
             <>
               <div
                 className="nyris__success-multiple-result-list"
-                style={{ paddingBottom: feedbackStatus === 'visible' ? 300 : 280 }}
+                // style={{ paddingBottom: feedbackStatus === 'visible' ? 300 : 280 }}
               >
                 {filteredProducts.map((r, i) => (
                   <ProductCard
@@ -338,6 +338,17 @@ export const Result = ({
                     </button>
                   </div>
                 </div>
+              </div>
+              {/* invisible element to compensate space taken by list of prefilters */}
+              <div
+                style={{
+                  paddingRight: '4px',
+                  paddingLeft: '2px',
+                  fontWeight: 'bold',
+                  opacity: 0,
+                }}
+              >
+                {selectedPreFiltersLabel?.join(', ')}
               </div>
               {showFeedbackSuccess && (
                 <div className="nyris__feedback-section">

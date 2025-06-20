@@ -4,9 +4,9 @@
 
   & .nyris__main-content {
     padding-bottom: 30px;
-    height: calc(100% - 80px);
+    // height: calc(100% - 80px);
     &.w-feedback {
-      height: calc(100% - 30px);
+      // height: calc(100% - 30px);
     }
   }
 
@@ -456,7 +456,7 @@ div.psol-comp-webviewer3d-copyright-container {
   &-section {
     cursor: pointer;
     width: fit-content;
-    position: sticky;
+    position: absolute;
     left: 50%;
     transform: translateX(-50%);
     bottom: 16px;
