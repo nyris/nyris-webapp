@@ -55,6 +55,7 @@
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "lodash": "^4.17.21",
+    "react-hot-toast": "^2.5.2",
     "react-webcam": "^7.2.0"
   },
   "scripts": {

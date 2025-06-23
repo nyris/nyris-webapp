@@ -72,7 +72,6 @@
     @media #{$mobile-query} {
       row-gap: 12px;
       column-gap: 4px;
-      padding: 0 0 0 0;
     }
     .nyris__inquiry-container {
       width: 100%;
@@ -87,6 +86,7 @@
         margin: auto;
       }
       &-banner {
+        margin-left: 16px;
         &-header {
           font-weight: 700;
           font-size: 14px;
@@ -97,7 +97,7 @@
           margin: 8px 0;
         }
         &-button {
-          width: 170px;
+          max-width: 170px;
           font-size: 13px;
           cursor: pointer;
           border-radius: 2px;
@@ -110,6 +110,9 @@
           flex-direction: row;
           justify-content: space-between;
           align-items: center;
+          svg {
+            margin-left: 16px;
+          }
         }
       }
     }

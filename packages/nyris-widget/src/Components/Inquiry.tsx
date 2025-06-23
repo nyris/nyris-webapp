@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import emailjs from '@emailjs/browser';
+import toast from 'react-hot-toast';
 import Modal from './Modal';
 import '../styles/inquiry-modal.scss';
 import { Icon } from '@nyris/nyris-react-components';
+import { ToastHelper } from './ToastNotification';
 
 interface IInquiry {
   imageSource: any;
@@ -28,16 +30,20 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
   useEffect(() => emailjs.init('SMGihPnuEGcYLm0V4'), []);
 
   const onSend = async () => {
-    await emailjs
-      .send('service_zfsxshi', 'template_rxsi7w9', {
-        email_id: email.trim(),
-        information_text: additionalInfo ? additionalInfo : '<not specified>',
-        request_image: imageSource?.toDataURL(),
-        prefilter_values: prefilters?.length
-          ? prefilters.join(', ')
-          : '<not specified>',
-      })
-      .finally(() => onClose());
+    if (window.nyrisSettings.emailTemplateId) {
+      await emailjs
+        .send('service_zfsxshi', window.nyrisSettings.emailTemplateId, {
+          email_id: email.trim(),
+          information_text: additionalInfo ? additionalInfo : '<not specified>',
+          request_image: imageSource?.toDataURL(),
+          prefilter_values: prefilters?.length
+            ? prefilters.join(', ')
+            : '<not specified>',
+        })
+        .then(() => ToastHelper.success(labels['Request sent successfully']))
+        .catch(() => ToastHelper.error(labels['Request not sent, please try again']))
+        .finally(() => onClose());
+    }
   };
 
   return (

@@ -315,29 +315,31 @@ export const Result = ({
                     cadenasScriptStatus={cadenasScriptStatus}
                   />
                 ))}
-                <div className="nyris__inquiry-container">
-                  <img
-                    src={image.toDataURL('image/png')}
-                    alt="searched image"
-                    className="nyris__inquiry-container-image"
-                  />
-                  <div className="nyris__inquiry-container-banner">
-                    <div className="nyris__inquiry-container-banner-header">
-                      {labels['No results found for your query?']}
+                {window.nyrisSettings.emailTemplateId && (
+                  <div className="nyris__inquiry-container">
+                    <img
+                      src={image.toDataURL('image/png')}
+                      alt="searched image"
+                      className="nyris__inquiry-container-image"
+                    />
+                    <div className="nyris__inquiry-container-banner">
+                      <div className="nyris__inquiry-container-banner-header">
+                        {labels['No results found for your query?']}
+                      </div>
+                      <div className="nyris__inquiry-container-banner-text">
+                        {labels['Share it with the team']}
+                      </div>
+                      <button
+                        className="nyris__inquiry-container-banner-button"
+                        type="button"
+                        onClick={() => setIsInquiryModalOpen(true)}
+                      >
+                        {labels['Inquiry']}
+                        <Icon name="email" color="#fff" width={16} height={12} />
+                      </button>
                     </div>
-                    <div className="nyris__inquiry-container-banner-text">
-                      {labels['Share it with the team']}
-                    </div>
-                    <button
-                      className="nyris__inquiry-container-banner-button"
-                      type="button"
-                      onClick={() => setIsInquiryModalOpen(true)}
-                    >
-                      {labels['Inquiry']}
-                      <Icon name="email" color="#fff" width={16} height={12} />
-                    </button>
                   </div>
-                </div>
+                )}
               </div>
               {/* invisible element to compensate space taken by list of prefilters */}
               <div
