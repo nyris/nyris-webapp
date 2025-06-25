@@ -56,7 +56,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Teile es mit dem Team',
       'Send': 'Senden',
       'Request sent successfully': 'Anfrage erfolgreich gesendet',
-      'Request not sent, please try again.': 'Anfrage nicht gesendet, bitte versuchen Sie es erneut.'
+      'Request not sent, please try again': 'Anfrage nicht gesendet, bitte versuchen Sie es erneut.'
     },
     en: {
       Search: 'Search',
@@ -109,7 +109,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Share it with the team',
       'Send': 'Send',
       'Request sent successfully': 'Request sent successfully',
-      'Request not sent, please try again.': 'Request not sent, please try again.'
+      'Request not sent, please try again': 'Request not sent, please try again.'
     },
     fr: {
       Search: 'Recherche',
@@ -162,7 +162,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Partagez-le avec l’équipe',
       'Send': 'Envoyer',
       'Request sent successfully': 'Demande envoyée avec succès',
-      'Request not sent, please try again.': 'Demande non envoyée, veuillez réessayer.'
+      'Request not sent, please try again': 'Demande non envoyée, veuillez réessayer.'
     },
     pl: {
       Search: 'Wyszukiwanie',
@@ -215,7 +215,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Udostępnij to zespołowi',
       'Send': 'Wyślij',
       'Request sent successfully': 'Żądanie zostało pomyślnie wysłane',
-      'Request not sent, please try again.': 'Żądanie nie zostało wysłane. Spróbuj ponownie.'
+      'Request not sent, please try again': 'Żądanie nie zostało wysłane. Spróbuj ponownie.'
     },
     it: {
       Search: 'Cerca',
@@ -268,7 +268,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Condividilo con il team',
       'Send': 'Invia',
       'Request sent successfully': 'Richiesta inviata con successo.',
-      'Request not sent, please try again.': 'Richiesta non inviata, riprova.'
+      'Request not sent, please try again': 'Richiesta non inviata, riprova.'
     },
     se: {
       Search: 'Sök',
@@ -321,7 +321,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Dela det med teamet',
       'Send': 'Skicka',
       'Request sent successfully': 'Begäran har skickats.',
-      'Request not sent, please try again.': 'Förfrågan har inte skickats, försök igen.'
+      'Request not sent, please try again': 'Förfrågan har inte skickats, försök igen.'
     },
     es: {
       Search: 'Buscar',
@@ -374,7 +374,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Compártelo con el equipo',
       'Send': 'Enviar',
       'Request sent successfully': 'Solicitud enviada exitosamente.',
-      'Request not sent, please try again.': 'Solicitud no enviada, por favor inténtelo nuevamente.'
+      'Request not sent, please try again': 'Solicitud no enviada, por favor inténtelo nuevamente.'
     },
     da: {
       Search: 'Søg',
@@ -427,7 +427,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Del det med teamet',
       'Send': 'Send',
       'Request sent successfully': 'Anmodningen blev sendt.',
-      'Request not sent, please try again.': 'Anmodningen er ikke sendt, prøv venligst igen.'
+      'Request not sent, please try again': 'Anmodningen er ikke sendt, prøv venligst igen.'
     },
     nl: {
       Search: 'Zoek',
@@ -480,7 +480,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Deel het met het team',
       'Send': 'Verzenden',
       'Request sent successfully': 'Aanvraag succesvol verzonden.',
-      'Request not sent, please try again.': 'Verzoek niet verzonden, probeer het opnieuw.'
+      'Request not sent, please try again': 'Verzoek niet verzonden, probeer het opnieuw.'
     },
     no: {
       Search: 'Søk',
@@ -533,7 +533,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Del det med teamet',
       'Send': 'Send',
       'Request sent successfully': 'Forespørselen ble sendt.',
-      'Request not sent, please try again.': 'Forespørsel ikke sendt, vennligst prøv igjen.'
+      'Request not sent, please try again': 'Forespørsel ikke sendt, vennligst prøv igjen.'
     },
     ru: {
       Search: 'Поиск',
@@ -586,7 +586,7 @@ const translations = (language: Language) => {
       'Share it with the team': 'Поделитесь с командой',
       'Send': 'Отправить',
       'Request sent successfully': 'Запрос успешно отправлен.',
-      'Request not sent, please try again.': 'Запрос не отправлен, попробуйте еще раз.'
+      'Request not sent, please try again': 'Запрос не отправлен, попробуйте еще раз.'
     }
   };
 
