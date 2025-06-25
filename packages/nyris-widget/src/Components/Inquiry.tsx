@@ -73,27 +73,29 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
           alt="searched image"
           className="inquiry-modal-image"
         />
-        <div className="inquiry-modal-input">
-          {labels['Search criteria']}
-          <div className="inquiry-modal-input-prefilters-container">
-            {prefilters.map(prefilter => (
-              <div
-                className="inquiry-modal-input-prefilters"
-                style={{
-                  color: window.nyrisSettings.primaryColor || '#3E36DC',
-                  backgroundColor: window.nyrisSettings.browseGalleryButtonColor || '#E4E3FF'
-                }}
-              >
-                {prefilter}
-              </div>
-            ))}
-          </div>
-          {!prefilters.length && (
-            <span className="no-prefilters">
+        {window.nyrisSettings.searchCriteriaKey && (
+          <div className="inquiry-modal-input">
+            {labels['Search criteria']}
+            <div className="inquiry-modal-input-prefilters-container">
+              {prefilters.map(prefilter => (
+                <div
+                  className="inquiry-modal-input-prefilters"
+                  style={{
+                    color: window.nyrisSettings.primaryColor || '#3E36DC',
+                    backgroundColor: window.nyrisSettings.browseGalleryButtonColor || '#E4E3FF'
+                  }}
+                >
+                  {prefilter}
+                </div>
+              ))}
+            </div>
+            {!prefilters.length && (
+              <span className="no-prefilters">
               {labels['Search criteria is not selected']}
             </span>
-          )}
-        </div>
+            )}
+          </div>
+        )}
         <div className="inquiry-modal-input">
           {labels['Your email']}
           <span className="inquiry-modal-input-required">(required)</span>

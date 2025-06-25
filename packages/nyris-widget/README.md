@@ -25,6 +25,7 @@ Inside your HTML (best just before the closing ```</body>``` tag), add the follo
         searchCriteriaLabel: 'Select a machine', // Define the text for search criteria pop-up
         searchCriteriaKey: '', // Define the attribute where filter values are stored
         filter: [] // Define attributes and labels for search Refinements e.g. [{label: 'Brand', field: 'brand' }]
+        emailTemplateId: '', // emailjs template id for sending inquiry support email
     };
     var s = document.createElement("script");
     s.src = "https://assets.nyris.io/nyris-widget/v1/widget.js";
