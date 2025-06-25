@@ -30,6 +30,7 @@ export interface NyrisSettings extends NyrisAPISettings {
   searchCriteriaLabel?: string;
   searchCriteriaKey?: string;
   filter?: { label: string; field: string }[];
+  emailTemplateId?: string;
 }
 
 export interface AppProps {

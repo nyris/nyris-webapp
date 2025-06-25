@@ -24,6 +24,8 @@ import { useFilteredResult } from '../hooks/useFilteredResult';
 import { useFilter } from '../hooks/useFilter';
 import { onFilterCheck } from '../utils';
 import { WebCameraModal } from './WebCameraModal';
+import Inquiry from './Inquiry';
+import { Icon } from '@nyris/nyris-react-components';
 
 export const Result = ({
   onAcceptCrop,
@@ -48,6 +50,7 @@ export const Result = ({
 }: AppProps) => {
   const noResult = results.length === 0;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [currentSelection, setCurrentSelection] = useState(selection);
   const [expand, setExpand] = useState(noResult);
@@ -127,7 +130,7 @@ export const Result = ({
         <div className="nyris__main-heading ">
           {noResult ? labels['Let’s try that again'] : labels['Success!']}
         </div>
-        <div className="nyris__main-description">
+        <div className={`nyris__main-description ${noResult ? 'no-results' : ''}`}>
           {noResult &&
             selectedPreFiltersLabel.length > 0 &&
             labels["We couldn't find matches based on <prefilters>"]({
@@ -298,7 +301,7 @@ export const Result = ({
             <>
               <div
                 className="nyris__success-multiple-result-list"
-                style={{ paddingBottom: feedbackStatus === 'visible' ? 180 : 100 }}
+                // style={{ paddingBottom: feedbackStatus === 'visible' ? 300 : 280 }}
               >
                 {filteredProducts.map((r, i) => (
                   <ProductCard
@@ -312,6 +315,42 @@ export const Result = ({
                     cadenasScriptStatus={cadenasScriptStatus}
                   />
                 ))}
+                {window.nyrisSettings.emailTemplateId && (
+                  <div className="nyris__inquiry-container">
+                    <img
+                      src={image.toDataURL('image/png')}
+                      alt="searched image"
+                      className="nyris__inquiry-container-image"
+                    />
+                    <div className="nyris__inquiry-container-banner">
+                      <div className="nyris__inquiry-container-banner-header">
+                        {labels['No results found for your query?']}
+                      </div>
+                      <div className="nyris__inquiry-container-banner-text">
+                        {labels['Share it with the team']}
+                      </div>
+                      <button
+                        className="nyris__inquiry-container-banner-button"
+                        type="button"
+                        onClick={() => setIsInquiryModalOpen(true)}
+                      >
+                        {labels['Inquiry']}
+                        <Icon name="email" color="#fff" width={16} height={12} />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              {/* invisible element to compensate space taken by list of prefilters */}
+              <div
+                style={{
+                  paddingRight: '4px',
+                  paddingLeft: '2px',
+                  fontWeight: 'bold',
+                  opacity: 0,
+                }}
+              >
+                {selectedPreFiltersLabel?.join(', ')}
               </div>
               {showFeedbackSuccess && (
                 <div className="nyris__feedback-section">
@@ -319,6 +358,15 @@ export const Result = ({
                     {labels['Thanks for your feedback!']}
                   </div>
                 </div>
+              )}
+              {isInquiryModalOpen && (
+                <Inquiry
+                  imageSource={image}
+                  isPopupOpened={isInquiryModalOpen}
+                  labels={labels}
+                  onClose={() => setIsInquiryModalOpen(false)}
+                  prefilters={Object.keys(selectedPreFilters)}
+                />
               )}
               {feedbackStatus === 'visible' && !showFeedbackSuccess && (
                 <div className="nyris__feedback-section">
