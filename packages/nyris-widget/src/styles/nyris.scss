@@ -165,6 +165,9 @@
       font-weight: 400;
       background-color: #F3F3F5;
       padding: 8px 16px 8px 16px;
+      &.no-results {
+        background-color: #FFE5EF;
+      }
     }
 
     &-content {

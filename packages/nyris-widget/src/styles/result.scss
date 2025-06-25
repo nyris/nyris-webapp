@@ -4,9 +4,9 @@
 
   & .nyris__main-content {
     padding-bottom: 30px;
-    height: calc(100% - 80px);
+    // height: calc(100% - 80px);
     &.w-feedback {
-      height: calc(100% - 30px);
+      // height: calc(100% - 30px);
     }
   }
 
@@ -72,7 +72,49 @@
     @media #{$mobile-query} {
       row-gap: 12px;
       column-gap: 4px;
-      padding: 0 0 0 0;
+    }
+    .nyris__inquiry-container {
+      width: 100%;
+      background-color: rgb(243, 243, 245);
+      padding: 16px;
+      display: flex;
+      border-radius: 4px;
+      &-image {
+        background-color: #fff;
+        max-height: 150px;
+        max-width: 150px;
+        margin: auto;
+      }
+      &-banner {
+        margin-left: 16px;
+        &-header {
+          font-weight: 700;
+          font-size: 14px;
+        }
+        &-text {
+          font-size: 14px;
+          line-height: 16px;
+          margin: 8px 0;
+        }
+        &-button {
+          max-width: 170px;
+          font-size: 13px;
+          cursor: pointer;
+          border-radius: 2px;
+          color: #fff;
+          background-color: rgb(43 44 70);
+          border: 0;
+          padding: 8px 16px;
+          margin-top: 16px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          svg {
+            margin-left: 16px;
+          }
+        }
+      }
     }
   }
 
@@ -417,7 +459,7 @@ div.psol-comp-webviewer3d-copyright-container {
   &-section {
     cursor: pointer;
     width: fit-content;
-    position: sticky;
+    position: absolute;
     left: 50%;
     transform: translateX(-50%);
     bottom: 16px;
