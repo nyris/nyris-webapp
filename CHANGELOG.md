@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.81 - 2025-06-25
+
+### Added
+- inquiry for widget
+
 ## 0.3.80 - 2025-06-17
 
 ### Added
