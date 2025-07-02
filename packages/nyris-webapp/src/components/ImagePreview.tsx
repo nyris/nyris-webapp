@@ -109,7 +109,7 @@ function ImagePreviewComponent({
           'relative',
           'hidden',
           'desktop:flex',
-          'rounded',
+          // 'rounded',
         ])}
         // style={{
         //   height: '100%',
@@ -125,7 +125,13 @@ function ImagePreviewComponent({
           zIndex: zIndex,
         }}
       >
-        <div className="w-[243px] bg-[#55566b] aspect-square flex just items-center">
+        <div
+          className={twMerge([
+            // 'w-[243px]',
+            'w-full',
+            'bg-[#55566b] aspect-square flex just items-center',
+          ])}
+        >
           <Preview
             onSelectionChange={(r: RectCoords) => {
               debouncedOnImageSelectionChange(r, currentIndex);

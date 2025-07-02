@@ -50,7 +50,7 @@ export default function SidePanel({ className }: { className?: string }) {
     >
       <div
         className={twMerge([
-          // 'w-full',
+          'w-full',
           'h-fit',
           'min-h-auto',
           'relative',
@@ -58,9 +58,9 @@ export default function SidePanel({ className }: { className?: string }) {
           'justify-center',
           'items-center',
           'min-w-[283px]',
-          'mx-4',
-          'mt-4',
-          'rounded',
+          // 'mx-4',
+          // 'mt-4',
+          // 'rounded',
         ])}
       >
         {requestImages[0] && <ImagePreview />}

@@ -1,32 +1,32 @@
-import Compressor from "compressorjs";
+import Compressor from 'compressorjs';
 
-import { ChatOpenAI } from "@langchain/openai";
-import Groq from "groq-sdk";
+import { ChatOpenAI } from '@langchain/openai';
+import Groq from 'groq-sdk';
 
 import {
   ChatPromptTemplate,
   MessagesPlaceholder,
-} from "@langchain/core/prompts";
-import { convertToOpenAIFunction } from "@langchain/core/utils/function_calling";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { AIMessage, BaseMessage, HumanMessage } from "@langchain/core/messages";
+} from '@langchain/core/prompts';
+import { convertToOpenAIFunction } from '@langchain/core/utils/function_calling';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { AIMessage, BaseMessage, HumanMessage } from '@langchain/core/messages';
 
-import { AgentExecutor, createOpenAIFunctionsAgent } from "langchain/agents";
-import { formatToOpenAIFunctionMessages } from "langchain/agents/format_scratchpad";
-import { OpenAIFunctionsAgentOutputParser } from "langchain/agents/openai/output_parser";
+import { AgentExecutor, createOpenAIFunctionsAgent } from 'langchain/agents';
+import { formatToOpenAIFunctionMessages } from 'langchain/agents/format_scratchpad';
+import { OpenAIFunctionsAgentOutputParser } from 'langchain/agents/openai/output_parser';
 import {
   getImageAnalysisTool,
   getImageAssesmentTool,
   getOCRTool,
-} from "./tools";
-import { storeImage } from "./utils/indexDb";
-import { ImageAssessmentDataType, OcrAssessmentDataType, TOOL } from "./types";
+} from './tools';
+import { storeImage } from './utils/indexDb';
+import { ImageAssessmentDataType, OcrAssessmentDataType, TOOL } from './types';
 
-const MEMORY_KEY = "chat_history";
-const REQUEST_IMAGE_KEY = "request-image-key";
+const MEMORY_KEY = 'chat_history';
+const REQUEST_IMAGE_KEY = 'request-image-key';
 
 // const model = 'gpt-3.5-turbo-0125'
-const modelName = "gpt-4o";
+const modelName = 'gpt-4o';
 
 export class VizoAgent {
   chatHistory: BaseMessage[] = [];
@@ -88,10 +88,10 @@ export class VizoAgent {
     ];
 
     const memoryPrompt = ChatPromptTemplate.fromMessages([
-      ["system", "{system}"],
+      ['system', '{system}'],
       new MessagesPlaceholder(MEMORY_KEY),
-      ["user", "{input}"],
-      new MessagesPlaceholder("agent_scratchpad"),
+      ['user', '{input}'],
+      new MessagesPlaceholder('agent_scratchpad'),
     ]);
 
     const modelWithFunctions = model.bind({
@@ -100,9 +100,9 @@ export class VizoAgent {
 
     const agentWithMemory = RunnableSequence.from([
       {
-        input: (i) => i.input,
-        agent_scratchpad: (i) => formatToOpenAIFunctionMessages(i.steps),
-        chat_history: (i) => i.chat_history,
+        input: i => i.input,
+        agent_scratchpad: i => formatToOpenAIFunctionMessages(i.steps),
+        chat_history: i => i.chat_history,
       },
       memoryPrompt,
       modelWithFunctions,
@@ -115,7 +115,7 @@ export class VizoAgent {
       verbose: false,
       returnIntermediateSteps: true,
       maxIterations: 3,
-      earlyStoppingMethod: "force",
+      earlyStoppingMethod: 'force',
     });
 
     const agent = await createOpenAIFunctionsAgent({
@@ -131,7 +131,7 @@ export class VizoAgent {
       verbose: false,
       returnIntermediateSteps: true,
       maxIterations: 3,
-      earlyStoppingMethod: "force",
+      earlyStoppingMethod: 'force',
       callbacks: [],
     });
   }
@@ -140,13 +140,13 @@ export class VizoAgent {
     return this.groq.chat.completions.create({
       messages: [
         {
-          role: "system",
+          role: 'system',
           content: `You are a powerful spare parts finding assistant. Your task is to clean the provided OCR text without referencing the List of products. Focus only on the OCR text, keeping the information relevant for identifying a spare part.
              Relevant information includes part numbers, model numbers, brand names, and specific part descriptions (e.g., dimensions, specifications). Discard any irrelevant text such as dates, general text not related to the part, and extraneous symbols.
             Don't use any tools and don't add json tag or any other information that is not asked.`,
         },
         {
-          role: "user",
+          role: 'user',
           content: `
           List of OCR: ${JSON.stringify(ocr)}
           
@@ -164,7 +164,7 @@ export class VizoAgent {
       ],
 
       // The language model which will generate the completion.
-      model: "llama3-70b-8192",
+      model: 'llama3-70b-8192',
       // model: "llama3-8b-8192",
 
       temperature: 0,
@@ -177,7 +177,7 @@ export class VizoAgent {
       top_p: 1,
       stop: null,
       stream: false,
-      response_format: { type: "json_object" },
+      response_format: { type: 'json_object' },
     });
   }
 
@@ -189,14 +189,14 @@ export class VizoAgent {
       res.intermediateSteps.forEach((step: any) => {
         if (step.action.tool === TOOL.OCR_DETECTION) {
           try {
-            ocr = JSON.parse(step.observation || "");
+            ocr = JSON.parse(step.observation || '');
           } catch (error) {
             console.log({ error });
           }
         }
         if (step.action.tool === TOOL.IMAGE_ASSESSMENT) {
           try {
-            imageAssessment = JSON.parse(step.observation || "");
+            imageAssessment = JSON.parse(step.observation || '');
           } catch (error) {}
         }
       });
@@ -219,8 +219,8 @@ export class VizoAgent {
 
     this.chatHistory.push(
       new HumanMessage(
-        `Run OCR detection. If OCR is not detected fot the image run image assessment and return result. The image path is ${REQUEST_IMAGE_KEY}`
-      )
+        `Run OCR detection. If OCR is not detected fot the image run image assessment and return result. The image path is ${REQUEST_IMAGE_KEY}`,
+      ),
     );
     this.chatHistory.push(new AIMessage(result.output));
 
@@ -234,7 +234,7 @@ export class VizoAgent {
     const result = await this.agentExecutor.invoke({
       system: `You are very powerful assistant.The request image path is ${REQUEST_IMAGE_KEY}. 
        Only run image analysis, image assessment or ocr detection if the query is related to the image. Otherwise use this product list ${JSON.stringify(
-         this.results
+         this.results,
        )} to find products or refine result.
       If asked to do product search or refine products or refine result always 
       Return the result as an object with the following format and JSON.parsable. Don't add a json tag.
@@ -256,11 +256,11 @@ export class VizoAgent {
   }
 
   async getFilters() {
-    let input = "";
-    let system = "";
+    let input = '';
+    let system = '';
 
     input = `${JSON.stringify(
-      this.results
+      this.results,
     )}. Return top 10 strings from the list of products based on the number of times that string appears in the product list. Ignore availability, score. Return the result in JSON parsable list of string format without any other information.`;
 
     system = `You are very powerful assistant.The request image path is ${REQUEST_IMAGE_KEY}. Don't add json tag or any other information that is not asked. `;
@@ -279,7 +279,7 @@ export class VizoAgent {
   }
 
   async refineResult(ocr: string[]) {
-    let input = "";
+    let input = '';
     let system = `You are a powerful spare parts finding assistant.  
                   Your task is to clean the provided OCR text without referencing the List of products. 
                   Focus only on the OCR text, keeping the information relevant for identifying a spare part. 
@@ -316,7 +316,7 @@ export class VizoAgent {
   }
 
   async refineResultGroq(ocr: string[]) {
-    let input = "";
+    let input = '';
 
     input = `
     List of OCR: ${JSON.stringify(ocr)}
@@ -333,7 +333,7 @@ export class VizoAgent {
     Products matched with ocrContent should be at the top.`;
 
     const chatCompletion = await this.getGroqChatCompletion(ocr);
-    const output = chatCompletion.choices[0]?.message?.content || "";
+    const output = chatCompletion.choices[0]?.message?.content || '';
 
     this.chatHistory.push(new HumanMessage(input));
 
@@ -350,15 +350,15 @@ export class VizoAgent {
         maxWidth: 500,
         strict: true,
         convertSize: 1 * 1024 * 1024,
-        success: (compressedResult) => {
+        success: compressedResult => {
           const reader = new FileReader();
           reader.onloadend = () => {
             storeImage(reader.result as string, REQUEST_IMAGE_KEY);
           };
           reader.readAsDataURL(compressedResult);
         },
-        error: (err) => {
-          console.error("Compression error:", err);
+        error: err => {
+          console.error('Compression error:', err);
         },
       });
     }

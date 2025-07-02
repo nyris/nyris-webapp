@@ -88,14 +88,18 @@ function TextSearch({
         navigate('/');
         return;
       }
-      singleImageSearch({
-        image: requestImages[0],
-        imageRegion: regions[0],
-        text: value,
-        settings,
-        showFeedback: false,
-        newSearch: false,
-      });
+
+      if (!window.settings?.algolia.enabled) {
+        singleImageSearch({
+          image: requestImages[0],
+          imageRegion: regions[0],
+          text: value,
+          settings,
+          showFeedback: false,
+          newSearch: false,
+        });
+      }
+
       navigate('/result');
     }, 350),
     [requestImages, preFilter, regions],
