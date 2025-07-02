@@ -173,7 +173,6 @@
     padding-bottom: 24px;
     height: 100%;
     overflow-y: auto;
-    margin-top: 12px;
   }
 
   &-filters {
@@ -239,7 +238,7 @@
     padding-left: 8px;
     background-color: #E4E3FF;
     color: $color-primary;
-    border-radius: 18px;
+    border-radius: 4px;
   }
 
   &-selected-filter-remove {
@@ -267,7 +266,7 @@
     cursor: pointer;
     background: #FAFAFA;
     padding: 4px 8px 4px 8px;
-    border-radius: 16px;
+    border-radius: 4px;
 
     &:hover{
       background-color: #FFE5EF;
@@ -287,10 +286,10 @@
     width: 50%;
     background-color: rgb(43, 44, 70);
     color: rgb(255, 255, 255);
-    border-radius: 0px;
     padding: 16px 32px 0px 16px;
     text-transform: none;   
-    cursor: pointer; 
+    cursor: pointer;
+    border-radius: 0 0 0 4px;
   }
 
   
@@ -298,11 +297,10 @@
     width: 50%;
     background-color: rgb(51, 44, 183);
     color: rgb(255, 255, 255);
-    border-radius: 0px;
-    padding: 16px 32px 0px 16px;
+    padding: 16px 32px 0 16px;
     text-transform: none;  
-    cursor: pointer; 
-  
+    cursor: pointer;
+    border-radius: 0 0 4px 0;
   }
   
 }

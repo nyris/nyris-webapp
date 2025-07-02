@@ -18,8 +18,6 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const { singleImageSearch } = useImageSearch();
   const { t } = useTranslation();
 
-  const { items } = useCurrentRefinements();
-
   const productsFromAlgolia = useResultStore(
     state => state.productsFromAlgolia,
   );

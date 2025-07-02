@@ -30,6 +30,7 @@ import { LoadingSpinner } from './Components/Loading';
 import { Result } from './Components/Result';
 import { AppProps, CadenasScriptStatus, Language, WidgetScreen } from './types';
 import { WebCameraModal } from './Components/WebCameraModal';
+import { Toaster } from 'react-hot-toast';
 
 const assets_base_url =
   'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api';
@@ -563,6 +564,7 @@ export const App = (props: AppProps) => {
                 </div>
               </div>
               {content}
+              <Toaster position="top-right" />
               <div
                 className="nyris__footer"
                 style={{

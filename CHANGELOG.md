@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.81 - 2025-06-25
+
+### Added
+- inquiry for widget
+
+## 0.3.80 - 2025-06-17
+
+### Added
+- removed sorting from post filter
+
+## 0.3.79 - 2025-06-10
+
+### Added
+- CTA button for Simple Card View
+- Post filters: load more, search and alphabetical order
+
+## 0.3.78 - 2025-04-25
+
+### Added
+- improve image preview performance
+
 ## 0.3.77 - 2025-04-24
 
 ### Added
@@ -12,6 +33,7 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## 0.3.76 - 2025-03-14
 
+### Added
 - Rename of css classname for popup in Widget
 - Fix logos colours
 
