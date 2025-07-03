@@ -18,6 +18,7 @@ import useRequestStore from 'stores/request/requestStore';
 import useResultStore from 'stores/result/resultStore';
 import useUiStore from 'stores/ui/uiStore';
 import { Toaster } from 'components/Toaster';
+import { getUserLocation } from 'helpers/getGeoLocation';
 
 i18n.use(initReactI18next).init({
   resources: translations,
@@ -51,7 +52,13 @@ function AppLayout(): JSX.Element {
 
   const { status } = useInstantSearch();
   const { items } = useHits();
-
+  const getLocation = async () => {
+    try {
+      await getUserLocation();
+    } catch (error) {
+      console.error('Error getting user location:', error);
+    }
+  };
   useEffect(() => {
     i18n.changeLanguage(window.settings.language);
     console.log('App version:', packageJson.version);
@@ -60,7 +67,7 @@ function AppLayout(): JSX.Element {
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     };
-
+    getLocation();
     window.addEventListener('resize', handleResize);
 
     const handleScriptsLoaded = () => {
