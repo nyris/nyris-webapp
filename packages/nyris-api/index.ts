@@ -160,8 +160,8 @@ export default class NyrisAPI {
   private getParams(options: ImageSearchOptions) {
     let params: any = options.geoLocation
       ? {
-          lat: options.geoLocation.lat.toString(),
-          lon: options.geoLocation.lon.toString(),
+          latitude: options.geoLocation.latitude.toString(),
+          longitude: options.geoLocation.longitude.toString(),
           dist: options.geoLocation.dist?.toString(),
         }
       : {};
@@ -244,9 +244,9 @@ export default class NyrisAPI {
       headers['X-Options'] = xOptions;
     }
 
-    if (options.geoLocation?.lat && options.geoLocation?.lon) {
-      requestBody.append('lat', options.geoLocation.lat.toString());
-      requestBody.append('lon', options.geoLocation.lon.toString());
+    if (options.geoLocation?.latitude && options.geoLocation?.longitude) {
+      requestBody.append('latitude', options.geoLocation.latitude.toString());
+      requestBody.append('longitude', options.geoLocation.longitude.toString());
     }
     if (canvas && options.text) {
       requestBody.append('text', options.text);

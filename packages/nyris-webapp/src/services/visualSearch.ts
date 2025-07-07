@@ -69,11 +69,11 @@ export const find = async ({
   let options: ImageSearchOptions = text ? { text } : {};
 
   try {
-    const { lat, lon } = await getUserLocation();
-    console.log('User location:', lat, lon);
+    const { latitude, longitude } = await getUserLocation();
+    console.log('User location:', latitude, longitude);
     options.geoLocation = {
-      lat,
-      lon,
+      latitude,
+      longitude,
     };
   } catch (error) {}
 

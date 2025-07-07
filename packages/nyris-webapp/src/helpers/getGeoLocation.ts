@@ -1,4 +1,4 @@
-export const getUserLocation = (): Promise<{ lat: number; lon: number }> => {
+export const getUserLocation = (): Promise<{ latitude: number; longitude: number }> => {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
       return reject(new Error('Geolocation is not supported.'));
@@ -7,8 +7,8 @@ export const getUserLocation = (): Promise<{ lat: number; lon: number }> => {
     navigator.geolocation.getCurrentPosition(
       position => {
         resolve({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
         });
       },
       error => {
