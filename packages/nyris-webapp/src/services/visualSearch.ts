@@ -68,14 +68,16 @@ export const find = async ({
   const nyrisApi = new NyrisAPI(settings);
   let options: ImageSearchOptions = text ? { text } : {};
 
-  try {
-    const { latitude, longitude } = await getUserLocation();
-    console.log('User location:', latitude, longitude);
-    options.geoLocation = {
-      latitude,
-      longitude,
-    };
-  } catch (error) {}
+  if (window.settings?.geoLocation) {
+    try {
+      const { latitude, longitude } = await getUserLocation();
+      console.log('User location:', latitude, longitude);
+      options.geoLocation = {
+        latitude,
+        longitude,
+      };
+    } catch (error) {}
+  }
 
   if (region) {
     options = { ...options, cropRect: region };

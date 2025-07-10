@@ -103,3 +103,40 @@
 .psol-comp-viewbase-svgcontainer{
     display: none !important;
   }
+
+.custom-modal {
+  position: absolute;
+  z-index: 99999;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #16161680;
+  &-body {
+    padding: 32px;
+    background: #F3F3F5;
+    &.geolocation {
+      width: 400px;
+      height: 200px;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 16px;
+      letter-spacing: 0.16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      button {
+        border: 2px solid #3E36DC;
+        border-radius: 4px;
+        padding: 8px 32px;
+        align-self: flex-end;
+      }
+    }
+  }
+}

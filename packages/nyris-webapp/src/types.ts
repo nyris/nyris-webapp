@@ -111,6 +111,8 @@ export interface AppSettings extends NyrisAPISettings {
   simpleCardView?: boolean;
   support: Support;
   theme: SearchSuiteSettings;
+  geoLocation?: boolean;
+  geoLocationMessage?: string;
   visualSearchFilterKey?: string;
 }
 
