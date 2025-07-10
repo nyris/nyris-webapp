@@ -37,7 +37,10 @@ const LocationInfoPopup = () => {
         >
           <div
             className="custom-modal-body geolocation"
-            onClick={(e) => e.preventDefault()}
+            onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }}
           >
               <div>{window.settings.geoLocationMessage}</div>
             <button type="button" onClick={closePopup}>OK</button>
