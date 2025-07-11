@@ -62,6 +62,8 @@ export const translations = {
       'No result found': 'No result found',
       'Load More': 'Load More',
       'No filters found': 'No filters found',
+      'Please allow location access.': 'Please allow location access.',
+      'I understand': 'I understand',
     },
   },
   de: {
@@ -129,6 +131,8 @@ export const translations = {
       'No result found': 'Keine Ergebnisse',
       'Load More': 'Mehr laden',
       'No filters found': 'Kein Filter gefunden',
+      'Please allow location access.': 'Bitte erlauben Sie den Standortzugriff.',
+      'I understand': 'Ich verstehe',
     },
   },
   pt: {
@@ -197,6 +201,8 @@ export const translations = {
       'No result found': 'Nenhum resultado',
       'Load More': 'Carregar mais',
       'No filters found': 'Nenhum filtro encontrado',
+      'Please allow location access.': 'Por favor, permita o acesso à localização.',
+      'I understand': 'Compreendo',
     },
   },
 };

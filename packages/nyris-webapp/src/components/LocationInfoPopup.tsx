@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 
 const LocationInfoPopup = () => {
   const [showPopup, setShowPopup] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const shown = sessionStorage.getItem('locationNoticeShown');
@@ -42,8 +44,9 @@ const LocationInfoPopup = () => {
                 e.stopPropagation();
             }}
           >
+              <div className="geolocation-title">{t('Please allow location access.')}</div>
               <div>{window.settings.geoLocationMessage}</div>
-            <button type="button" onClick={closePopup}>OK</button>
+            <button type="button" onClick={closePopup}>{t('I understand')}</button>
           </div>
         </div>,
         document.body

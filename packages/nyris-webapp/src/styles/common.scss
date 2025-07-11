@@ -131,11 +131,21 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: flex-start;
+      .geolocation-title {
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 24px;
+        letter-spacing: 0;
+      }
       button {
         border: 2px solid #3E36DC;
         border-radius: 4px;
         padding: 8px 32px;
         align-self: flex-end;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 18px;
+        letter-spacing: 0.16px;
       }
     }
   }
