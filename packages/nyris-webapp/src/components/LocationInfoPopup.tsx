@@ -44,7 +44,7 @@ const LocationInfoPopup = () => {
                 e.stopPropagation();
             }}
           >
-              <div className="geolocation-title">{t('Please allow location access.')}</div>
+              <div className="geolocation-title">{t('Please enable location services when prompted.')}</div>
               <div>{window.settings.geoLocationMessage}</div>
             <button type="button" onClick={closePopup}>{t('I understand')}</button>
           </div>
