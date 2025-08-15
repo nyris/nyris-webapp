@@ -29,7 +29,7 @@ export interface SearchResult {
 }
 
 export interface ImageSearchOptions {
-  geoLocation?: { lat: number; lon: number; dist: number };
+  geoLocation?: { latitude: number; longitude: number; dist?: number };
   cropRect?: RectCoords;
   text?: string;
 }
@@ -57,21 +57,21 @@ export interface ClickData {
 }
 
 interface SuccessEventPayload {
-  event: "feedback";
+  event: 'feedback';
   data: FeedbackData;
 }
 
 interface RegionEventPayload {
-  event: "region";
+  event: 'region';
   data: RegionData;
 }
 interface ClickEventPayload {
-  event: "click";
+  event: 'click';
   data: ClickData;
 }
 
 interface ConversionEventPayload {
-  event: "conversion";
+  event: 'conversion';
   data: ClickData;
 }
 

@@ -8,10 +8,11 @@ import TextSearch from 'components/TextSearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import ExperienceVisualSearchTrigger from 'components/ExperienceVisualSearch/ExperienceVisualSearchTrigger';
 import { useNavigate } from 'react-router';
+import LocationInfoPopup from "../components/LocationInfoPopup";
 
 function Home() {
   const settings = window.settings;
-  const { experienceVisualSearch, experienceVisualSearchImages } = settings;
+  const { experienceVisualSearch, experienceVisualSearchImages, geoLocation } = settings;
   const navigate = useNavigate();
 
   const [experienceVisualSearchBlobs, setExperienceVisualSearchBlobs] =
@@ -77,6 +78,7 @@ function Home() {
           'bg-[#fafafa]',
         ])}
       >
+        {geoLocation && <LocationInfoPopup />}
         <div className="relative flex flex-col items-center justify-center w-full">
           {settings.headerText && (
             <div
