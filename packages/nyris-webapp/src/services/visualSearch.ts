@@ -8,6 +8,7 @@ import NyrisAPI, {
 import { isEqual } from 'lodash';
 
 import { DEFAULT_REGION } from '../constants';
+import { getUserLocation } from 'helpers/getGeoLocation';
 
 export interface Filter {
   key?: string;
@@ -51,7 +52,7 @@ export const findRegions = async (
   };
 };
 
-export const find = ({
+export const find = async ({
   image,
   settings,
   region,
@@ -66,6 +67,17 @@ export const find = ({
 }) => {
   const nyrisApi = new NyrisAPI(settings);
   let options: ImageSearchOptions = text ? { text } : {};
+
+  if (window.settings?.geoLocation) {
+    try {
+      const { latitude, longitude } = await getUserLocation();
+      console.log('User location:', latitude, longitude);
+      options.geoLocation = {
+        latitude,
+        longitude,
+      };
+    } catch (error) {}
+  }
 
   if (region) {
     options = { ...options, cropRect: region };

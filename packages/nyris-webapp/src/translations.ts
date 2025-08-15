@@ -62,6 +62,8 @@ export const translations = {
       'No result found': 'No result found',
       'Load More': 'Load More',
       'No filters found': 'No filters found',
+      'Please enable location services when prompted.': 'Please enable location services when prompted.',
+      'I understand': 'I understand',
     },
   },
   de: {
@@ -129,6 +131,8 @@ export const translations = {
       'No result found': 'Keine Ergebnisse',
       'Load More': 'Mehr laden',
       'No filters found': 'Kein Filter gefunden',
+      'Please enable location services when prompted.': 'Bitte aktivieren Sie die Ortungsdienste, wenn Sie dazu aufgefordert werden.',
+      'I understand': 'Ich verstehe',
     },
   },
   pt: {
@@ -197,6 +201,8 @@ export const translations = {
       'No result found': 'Nenhum resultado',
       'Load More': 'Carregar mais',
       'No filters found': 'Nenhum filtro encontrado',
+      'Please enable location services when prompted.': 'Por favor, ative os serviços de localização quando solicitado',
+      'I understand': 'Compreendo',
     },
   },
 };
