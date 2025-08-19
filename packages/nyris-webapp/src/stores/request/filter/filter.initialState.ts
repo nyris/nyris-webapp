@@ -4,4 +4,5 @@ export const initialState: FilterState = {
   algoliaFilter: '',
   preFilter: {},
   firstSearchPreFilter: {},
+  specificationFilter: {},
 };

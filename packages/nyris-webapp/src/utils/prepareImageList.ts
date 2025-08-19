@@ -21,7 +21,11 @@ export const prepareImageList = (dataItem: any) => {
         }
       }
     } else {
-      if (key === 'image(main_similarity)' || key === 'main_image_link') {
+      if (
+        key === 'image(main_similarity)' ||
+        key === 'main_image_link' ||
+        key === 'images'
+      ) {
         if (newObject[key]) {
           valueKey.push({
             url: newObject[key],

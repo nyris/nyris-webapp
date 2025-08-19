@@ -6,6 +6,8 @@ import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
+import { useCurrentRefinements } from 'react-instantsearch';
+import { filterProducts } from 'utils/specificationFilter';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -30,6 +32,13 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const requestImages = useRequestStore(state => state.requestImages);
 
   const setValueInput = useRequestStore(state => state.setValueInput);
+  const specificationFilter = useRequestStore(
+    state => state.specificationFilter,
+  );
+
+  const specificationFilteredProducts = useResultStore(
+    state => state.specificationFilteredProducts,
+  );
 
   const getUrlToCanvasFile = async (url: string) => {
     setQuery('');
@@ -43,13 +52,33 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       clearPostFilter: true,
     }).then(() => {});
   };
-
+  const isAlgoliaEnabled = window.settings?.algolia?.enabled;
   const products = useMemo(() => {
+    const filter = Object.values(specificationFilter || {})[0];
+
+    if (filter) {
+      return filterProducts(
+        filter,
+        isAlgoliaEnabled ? productsFromAlgolia : productsFromFindApi,
+      );
+    }
+
+    if (!isAlgoliaEnabled) {
+      return productsFromFindApi;
+    }
+
     if (productsFromAlgolia.length === 0 && isAlgoliaLoading && !query) {
       return productsFromFindApi;
     }
     return productsFromAlgolia;
-  }, [productsFromAlgolia, productsFromFindApi, isAlgoliaLoading, query]);
+  }, [
+    specificationFilter,
+    isAlgoliaEnabled,
+    productsFromAlgolia,
+    isAlgoliaLoading,
+    query,
+    productsFromFindApi,
+  ]);
 
   const renderItem = useMemo(() => {
     return (
@@ -69,7 +98,9 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
               }}
               isGroupItem={settings.showGroup ? product?.isGroup : false}
               main_image_link={
-                product['image(main_similarity)']
+                !isAlgoliaEnabled
+                  ? product['image']
+                  : product['image(main_similarity)']
                   ? product['image(main_similarity)']
                   : product['main_image_link']
               }
@@ -89,7 +120,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       </div>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productsFromAlgolia]);
+  }, [products]);
 
   if (
     products?.length === 0 &&

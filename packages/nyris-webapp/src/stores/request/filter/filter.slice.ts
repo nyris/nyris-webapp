@@ -8,6 +8,8 @@ const filterSlice: StateCreator<FilterState & FilterAction> = set => ({
   setPreFilter: filter => set(state => ({ preFilter: filter })),
   setFirstSearchPreFilter: filter =>
     set(state => ({ firstSearchPreFilter: filter })),
+  setSpecificationFilter: filter =>
+    set(state => ({ specificationFilter: filter })),
 });
 
 export default filterSlice;
