@@ -98,7 +98,15 @@ function Results() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const imageUrl = urlParams.get('imageUrl');
+    const imageUrlParam = urlParams.get('imageUrl');
+    let imageUrl = null;
+    if (imageUrlParam) {
+      try {
+        imageUrl = atob(imageUrlParam);
+      } catch {
+        imageUrl = imageUrlParam;
+      }
+    }
     if (!imageUrl) return;
     getImageFromUrl(imageUrl, file => {
       singleImageSearch({

@@ -87,6 +87,8 @@ var settings = {
   simpleCardView: false,
   noSimilarSearch: false,
   showFeedback: false,
+  geoLocation: false,
+  geoLocationMessage: '',
   rfq: {
     enabled: '',
     emailTemplateId: '',
