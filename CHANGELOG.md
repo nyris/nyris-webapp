@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.3.81 - 2025-08-15
+## 0.3.82 - 2025-08-15
 
 ### Added
 - Geo Location for webapp
