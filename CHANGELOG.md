@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.83 - 2025-09-23
+
+### Updated
+- Removed animation border of Preview
+- Change cursor on resize regions
+
 ## 0.3.82 - 2025-08-15
 
 ### Added
