@@ -64,16 +64,16 @@ interface PreviewState {
 
 const getCursor = (state: PreviewState) => {
   if (state.tlHover) {
-    return 'nw-resize';
+    return 'nwse-resize';
   }
   if (state.trHover) {
-    return 'ne-resize';
+    return 'nesw-resize';
   }
   if (state.blHover) {
-    return 'sw-resize';
+    return 'nesw-resize';
   }
   if (state.brHover) {
-    return 'se-resize';
+    return 'nwse-resize';
   }
   if (state.rectHover) {
     return 'move';
@@ -457,29 +457,6 @@ const Preview = ({
 
     notifySelection(newState);
   };
-
-  // animate selection
-  useEffect(() => {
-    let speed = 40;
-    if (!selectionRef.current) {
-      return;
-    }
-    let a = new Konva.Animation(frame => {
-      if (!frame) {
-        return;
-      }
-      if (!selectionRef.current) {
-        return;
-      }
-      let angleDiff = (frame.time * speed) / 1000;
-      selectionRef.current.dashOffset(-angleDiff);
-    }, selectionRef.current.getLayer());
-    a.start();
-
-    return () => {
-      a && a.stop();
-    };
-  }, [selectionRef]);
 
   const handleDragMoveRect = handleDragMove.bind(null, 'rect');
   const handleDragMoveTl = handleDragMove.bind(null, 'tl');
