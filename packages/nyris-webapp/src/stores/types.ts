@@ -42,12 +42,31 @@ export interface ProductsState {
   productsFromFindApi: any[];
   productsFromAlgolia: any[];
   firstSearchResults: any[];
+  imageAnalysis: {
+    imageDescription: string;
+    optimizedSearchQuery: string;
+    specification: Record<string, string>;
+  };
+  firstRequestImageAnalysis: {
+    imageDescription: string;
+    optimizedSearchQuery: string;
+    specification: Record<string, string>;
+  };
+
+  specificationFilteredProducts: any[];
 }
 
 export interface ProductsAction {
   setFindApiProducts: (products: any[]) => void;
   setAlgoliaProducts: (products: any[]) => void;
   setFirstSearchResults: (products: any[]) => void;
+  setImageAnalysis: (analysis: any) => void;
+  setFirstRequestImageAnalysis: (analysis: {
+    imageDescription: string;
+    optimizedSearchQuery: string;
+    specification: Record<string, string>;
+  }) => void;
+  setSpecificationFilteredProducts: (products: any[]) => void;
 }
 
 export interface DetectedRegionsState {
@@ -62,12 +81,14 @@ export interface FilterState {
   preFilter: Record<string, boolean>;
   algoliaFilter: string;
   firstSearchPreFilter: Record<string, boolean>;
+  specificationFilter: Record<string, string>;
 }
 
 export interface FilterAction {
   setPreFilter: (query: Record<string, boolean>) => void;
   setFirstSearchPreFilter: (query: Record<string, boolean>) => void;
   setAlgoliaFilter: (query: string) => void;
+  setSpecificationFilter: (query: Record<string, string>) => void;
 }
 
 export interface MiscState {

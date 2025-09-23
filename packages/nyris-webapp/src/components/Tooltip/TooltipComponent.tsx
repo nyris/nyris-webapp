@@ -12,14 +12,16 @@ function Tooltip({
   children,
   disabled,
   sideOffset,
+  delayDuration = 80,
 }: {
   content: string;
   children: React.ReactNode;
   disabled?: boolean;
   sideOffset?: number;
+  delayDuration?: number;
 }) {
   return (
-    <TooltipProvider delayDuration={80}>
+    <TooltipProvider delayDuration={delayDuration}>
       <RadixTooltip open={disabled ? false : undefined}>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent sideOffset={sideOffset}>

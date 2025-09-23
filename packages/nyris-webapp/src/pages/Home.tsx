@@ -92,6 +92,7 @@ function Home() {
               <h1 className="text-[25px]">{settings.headerText}</h1>
             </div>
           )}
+
           <div className="w-[427px]">
             <TextSearch />
           </div>
@@ -121,6 +122,7 @@ function Home() {
             experienceVisualSearchBlobs={experienceVisualSearchBlobs}
           />
         )}
+
         <div className="flex desktop:hidden w-full">
           <TextSearch className="flex md:hidden fixed bottom-12 w-full px-2 gap-2" />
         </div>

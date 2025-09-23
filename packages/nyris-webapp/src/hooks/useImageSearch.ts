@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { RectCoords } from '@nyris/nyris-api';
-import { isEmpty } from 'lodash';
+import { isEmpty, isUndefined } from 'lodash';
 
 import { decode } from 'tiff';
 import { createImage, find, findRegions } from 'services/visualSearch';
@@ -25,11 +25,15 @@ GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
-console.log({ GlobalWorkerOptions });
-
 export const useImageSearch = () => {
   const setRegions = useRequestStore(state => state.setRegions);
+  const query = useRequestStore(state => state.query);
+
   const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const setSpecificationFilter = useRequestStore(
+    state => state.setSpecificationFilter,
+  );
+
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const preFilter = useRequestStore(state => state.preFilter);
   const setFirstSearchImage = useRequestStore(
@@ -44,7 +48,13 @@ export const useImageSearch = () => {
   const setShowFeedback = useUiStore(state => state.setShowFeedback);
 
   const setDetectedRegions = useResultStore(state => state.setDetectedRegions);
+  const setFirstRequestImageAnalysis = useResultStore(
+    state => state.setFirstRequestImageAnalysis,
+  );
+
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
+  const setImageAnalysis = useResultStore(state => state.setImageAnalysis);
+
   const setSessionId = useResultStore(state => state.setSessionId);
   const setRequestId = useResultStore(state => state.setRequestId);
   const firstSearchResults = useResultStore(state => state.firstSearchResults);
@@ -178,8 +188,9 @@ export const useImageSearch = () => {
       compress = true,
       preFilterParams,
       clearPostFilter,
+      text,
     }: {
-      image: any;
+      image?: any;
       settings: AppSettings;
       showFeedback?: boolean;
       imageRegion?: RectCoords;
@@ -187,6 +198,7 @@ export const useImageSearch = () => {
       compress?: boolean;
       preFilterParams?: Record<string, boolean>;
       clearPostFilter?: boolean;
+      text?: string;
     }) => {
       setIsFindApiLoading(true);
       // setAlgoliaProducts([]);
@@ -195,54 +207,59 @@ export const useImageSearch = () => {
       let res: any;
       let compressedBase64;
       let blob = image;
+      let requestImage: HTMLCanvasElement | undefined;
+      let canvasImage: any;
 
-      if (image.type === 'application/pdf') {
-        blob = await pdfToImage(image);
-      }
-
-      if (isHEIC(image)) {
-        const blobTemp = new Blob([image], { type: 'image/heif' });
-        const buffer = new Uint8Array(await blobTemp.arrayBuffer());
-
-        try {
-          const convert = await import('heic-convert/browser');
-
-          let outputBuffer = await convert.default({
-            // @ts-ignore
-            buffer: buffer, // the HEIC file buffer
-            format: 'JPEG',
-          });
-          blob = new Blob([outputBuffer], { type: 'image/jpeg' });
-        } catch (error) {
-          console.log('HEIC conversion error:', error);
+      if (image) {
+        if (image.type === 'application/pdf') {
+          blob = await pdfToImage(image);
         }
-      }
 
-      if (image.type === 'image/tiff' && image.name.endsWith('.tiff')) {
-        blob = await tiffToJpg(image);
-      }
+        if (isHEIC(image)) {
+          const blobTemp = new Blob([image], { type: 'image/heif' });
+          const buffer = new Uint8Array(await blobTemp.arrayBuffer());
 
-      if (compress) {
-        try {
-          compressedBase64 = await compressImage(blob);
-        } catch (error) {}
-      }
+          try {
+            const convert = await import('heic-convert/browser');
 
-      let canvasImage = await createImage(compressedBase64 || blob);
+            let outputBuffer = await convert.default({
+              // @ts-ignore
+              buffer: buffer, // the HEIC file buffer
+              format: 'JPEG',
+            });
+            blob = new Blob([outputBuffer], { type: 'image/jpeg' });
+          } catch (error) {
+            console.log('HEIC conversion error:', error);
+          }
+        }
 
-      let requestImage = await createImage(blob);
+        if (image.type === 'image/tiff' && image.name.endsWith('.tiff')) {
+          blob = await tiffToJpg(image);
+        }
 
-      if (!imageRegion) {
-        setRequestImages([canvasImage]);
-      }
+        if (compress) {
+          try {
+            compressedBase64 = await compressImage(blob);
+          } catch (error) {}
+        }
 
-      if (!imageRegion) {
-        try {
-          let res = await findRegions(requestImage, settings);
-          setDetectedRegions(res.regions, 0);
-          region = res.selectedRegion;
-          setRegions([region]);
-        } catch (error) {}
+        canvasImage = await createImage(compressedBase64 || blob);
+
+        requestImage = await createImage(blob);
+
+        if (!imageRegion) {
+          setRequestImages([canvasImage]);
+          setSpecificationFilter({});
+        }
+
+        if (!imageRegion) {
+          try {
+            let res = await findRegions(requestImage, settings);
+            setDetectedRegions(res.regions, 0);
+            region = res.selectedRegion;
+            setRegions([region]);
+          } catch (error) {}
+        }
       }
 
       const preFilterValues = [
@@ -267,6 +284,11 @@ export const useImageSearch = () => {
               ]
             : undefined,
           region,
+          text: !window.settings.algolia.enabled
+            ? isUndefined(text)
+              ? query
+              : text
+            : undefined,
         });
 
         if (clearPostFilter) {
@@ -274,6 +296,7 @@ export const useImageSearch = () => {
         }
 
         setFindApiProducts(res?.results);
+        setImageAnalysis(res?.image_analysis);
         setSessionId(res?.session);
         setRequestId(res?.id);
 
@@ -297,6 +320,7 @@ export const useImageSearch = () => {
           setFirstSearchResults(res?.results);
           setFirstSearchImage(canvasImage);
           setFirstSearchPreFilter(preFilter);
+          setFirstRequestImageAnalysis(res?.image_analysis);
         }
       } catch (error) {
         setIsFindApiLoading(false);
@@ -308,10 +332,12 @@ export const useImageSearch = () => {
       setIsFindApiLoading,
       preFilter,
       setRequestImages,
+      setSpecificationFilter,
       setDetectedRegions,
       setRegions,
       metaFilter,
       setFindApiProducts,
+      setImageAnalysis,
       setSessionId,
       setRequestId,
       setAlgoliaFilter,
@@ -321,6 +347,8 @@ export const useImageSearch = () => {
       setFirstSearchResults,
       setFirstSearchImage,
       setFirstSearchPreFilter,
+      setFirstRequestImageAnalysis,
+      query,
     ],
   );
 

@@ -67,6 +67,7 @@ function Header() {
             }}
           />
         </NavLink>
+
         <div
           className={twMerge(['hidden', showSearchBar && 'desktop:block'])}
           style={{
