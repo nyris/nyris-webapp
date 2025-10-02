@@ -113,6 +113,7 @@ const PreFilterComponent = (props: Props) => {
 
   const onHandlerSubmitData = () => {
     const preFilter = pickBy(keyFilter, value => !!value);
+    console.log(preFilter);
     setPreFilter(preFilter);
 
     const preFilterValues = Object.keys(preFilter) as string[];

@@ -116,3 +116,13 @@ export interface SessionAction {
   setSessionId: (sessionId: string) => void;
   setRequestId: (requestId: string) => void;
 }
+
+export interface SpecificationState {
+  specifications: any[];
+  nameplate: any;
+}
+
+export interface SpecificationAction {
+  setSpecifications: (specifications: any[]) => void;
+  setNameplate: (nameplate: any[]) => void;
+}

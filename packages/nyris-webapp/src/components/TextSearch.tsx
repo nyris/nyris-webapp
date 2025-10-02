@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
-import { isEmpty, debounce } from 'lodash';
+import { isEmpty, debounce, clone } from 'lodash';
 import { twMerge } from 'tailwind-merge';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useLocation, useNavigate } from 'react-router';
@@ -15,6 +15,7 @@ import PreFilterModal from './PreFilter/PreFilterModal';
 import useRequestStore from 'stores/request/requestStore';
 import Tooltip from './Tooltip/TooltipComponent';
 import UploadDisclaimer from './UploadDisclaimer';
+import { getFilters } from '../services/filter';
 
 function TextSearch({
   className,
@@ -33,6 +34,8 @@ function TextSearch({
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [resultFilter, setResultFilter] = useState<any>([]);
+
   const preFilter = useRequestStore(state => state.preFilter);
   const requestImages = useRequestStore(state => state.requestImages);
   const setQuery = useRequestStore(state => state.setQuery);
@@ -42,6 +45,10 @@ function TextSearch({
   const setMetaFilter = useRequestStore(state => state.setMetaFilter);
 
   const regions = useRequestStore(state => state.regions);
+  const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const setSpecifications = useRequestStore(state => state.setSpecifications);
+  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+  const setPreFilter = useRequestStore(state => state.setPreFilter);
 
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] =
     useState<boolean>(false);
@@ -116,12 +123,24 @@ function TextSearch({
   };
 
   const { cadSearch } = useCadSearch();
+  
+  const getPreFilters = async () => {
+    const dataResultFilter = getFilters(1000, settings)
+      .then(res => {
+        setResultFilter(res);
+      })
+      .catch((e: any) => {
+        console.log('err getDataFilterDesktop', e);
+      });
+  }
+
+  useEffect(() => {
+    getPreFilters()
+  }, []);
 
   const handleUpload = (files: File[]) => {
     setValueInput('');
     setQuery('');
-
-    navigate('/result');
 
     if (isCadFile(files[0])) {
       cadSearch({ file: files[0], settings, newSearch: true }).then(res => {});
@@ -134,7 +153,18 @@ function TextSearch({
       settings: window.settings,
       showFeedback: true,
       newSearch: true,
-    }).then(() => {});
+    }).then((singleImageResp) => {
+      const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
+      const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
+      if (specificationPrefilter && hasPrefilter.length) {
+        setSpecifications(clone(singleImageResp.image_analysis.specification));
+        setRequestImages([]);
+        setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
+        setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+      } else {
+        navigate('/result');
+      }
+    });
   };
 
   return (
@@ -356,6 +386,7 @@ function TextSearch({
                 }
                 onClick={e => {
                   if (!showDisclaimerDisabled) {
+                    // disclaimer
                     setShowDisclaimer(true);
                   } else if (onCameraClick) {
                     onCameraClick();
