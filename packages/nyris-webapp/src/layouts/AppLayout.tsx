@@ -48,6 +48,8 @@ function AppLayout(): JSX.Element {
   const setIsAlgoliaLoading = useUiStore(state => state.setIsAlgoliaLoading);
 
   const setIsCadenasLoaded = useUiStore(state => state.setIsCadenasLoaded);
+  const specifications = useRequestStore(state => state.specifications);
+  const requestImages = useRequestStore(state => state.requestImages);
 
   const { status } = useInstantSearch();
   const { items } = useHits();
@@ -104,15 +106,17 @@ function AppLayout(): JSX.Element {
         <Configure
           query={query}
           filters={
-            !query && !algoliaFilter.includes('score=1')
-              ? undefined
-              : `${algoliaFilter}${
-                  metaFilter
-                    ? `${
-                        algoliaFilter ? 'AND ' : ''
-                      }${alogoliaFilterField}:'${metaFilter}'`
-                    : ''
-                }`
+            specifications && !requestImages.length
+              ? `${alogoliaFilterField}:'${specifications.prefilter_value}'`
+              : !query && !algoliaFilter.includes('score=1')
+                  ? undefined
+                  : `${algoliaFilter}${
+                      metaFilter
+                        ? `${
+                            algoliaFilter ? 'AND ' : ''
+                          }${alogoliaFilterField}:'${metaFilter}'`
+                        : ''
+                    }`
           }
           // facets={['brand', 'keyword_0']}
           hitsPerPage={20}

@@ -118,11 +118,11 @@ export interface SessionAction {
 }
 
 export interface SpecificationState {
-  specifications: any[];
+  specifications: any;
   nameplate: any;
 }
 
 export interface SpecificationAction {
-  setSpecifications: (specifications: any[]) => void;
+  setSpecifications: (specifications: any) => void;
   setNameplate: (nameplate: any[]) => void;
 }

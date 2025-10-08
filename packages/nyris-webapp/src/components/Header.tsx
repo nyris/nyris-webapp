@@ -19,6 +19,7 @@ function Header() {
 
   const reset = useRequestStore(state => state.reset);
   const resetResultStore = useResultStore(state => state.reset);
+  const setSpecifications = useRequestStore(state => state.setSpecifications);
 
   const showSearchBar = location?.pathname === '/result';
 
@@ -55,6 +56,7 @@ function Header() {
           onClick={() => {
             reset();
             resetResultStore();
+            setSpecifications(null);
           }}
         >
           <img

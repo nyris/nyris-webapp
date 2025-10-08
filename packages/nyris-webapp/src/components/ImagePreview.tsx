@@ -35,6 +35,7 @@ function ImagePreviewComponent({
   const regions = useRequestStore(state => state.regions);
   const updateRegion = useRequestStore(state => state.updateRegion);
   const resetRequestStore = useRequestStore(state => state.reset);
+  const setSpecifications = useRequestStore(state => state.setSpecifications);
 
   const detectedRegions = useResultStore(state => state.detectedRegions);
   const resetResultStore = useResultStore(state => state.reset);
@@ -55,6 +56,7 @@ function ImagePreviewComponent({
     navigate('/');
     resetResultStore();
     resetRequestStore();
+    setSpecifications(null);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

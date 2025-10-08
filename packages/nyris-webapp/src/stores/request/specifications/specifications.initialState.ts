@@ -1,6 +1,6 @@
 import { SpecificationState } from 'stores/types';
 
 export const initialState: SpecificationState = {
-  specifications: [],
+  specifications: null,
   nameplate: null,
 };

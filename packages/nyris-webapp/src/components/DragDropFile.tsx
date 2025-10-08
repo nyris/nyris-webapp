@@ -10,6 +10,7 @@ import useDragAndDrop from 'hooks/useDragAndDrop';
 import { useNavigate } from 'react-router';
 import { useCadSearch } from 'hooks/useCadSearch';
 import { isCadFile } from '@nyris/nyris-api';
+import Hint from './Hint';
 
 interface Props {
   onChangeLoading?: any;
@@ -63,19 +64,18 @@ function DragDropFile(props: Props) {
       >
         <div
           className={twMerge([
-            'flex flex-col items-center w-full cursor-pointer pb-4 pt-4 rounded-[60px]',
+            'flex flex-col items-center w-full cursor-pointer pb-4 pt-4 rounded-[12px]',
             'text-[#cacad1] hover:text-primary',
+            'hover:bg-[#F0EFFF]',
             'border-2 border-dashed border-transparent hover:border-[#e0e0e0]',
             isDragging && 'text-primary border-[#e0e0e0]',
           ])}
         >
-          <div style={{ marginBottom: 16 }}>
-            <Icon name="drop" width={48} height={48} />
-          </div>
           <div className="" style={{ fontSize: 14 }}>
             <span className="font-bold text-sm pr-1">{t('Drag and drop')}</span>
             {t('an image here')}
           </div>
+          <Hint />
           <input
             onChange={e => {
               e.stopPropagation();

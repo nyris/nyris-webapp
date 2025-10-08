@@ -43,6 +43,7 @@ function TextSearch({
   const valueInput = useRequestStore(state => state.valueInput);
   const setValueInput = useRequestStore(state => state.setValueInput);
   const setMetaFilter = useRequestStore(state => state.setMetaFilter);
+  const specifications = useRequestStore(state => state.specifications);
 
   const regions = useRequestStore(state => state.regions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
@@ -91,7 +92,7 @@ function TextSearch({
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
       setQuery(value);
-      if (requestImages.length === 0 && value === '') {
+      if (requestImages.length === 0 && value === '' && !specifications) {
         navigate('/');
         return;
       }
@@ -116,7 +117,7 @@ function TextSearch({
     setValueInput(event.currentTarget.value);
     searchOrRedirect(event.currentTarget.value);
 
-    if (event.currentTarget.value === '') {
+    if (event.currentTarget.value === '' && !specifications) {
       setValueInput('');
       setQuery('');
     }
@@ -161,6 +162,7 @@ function TextSearch({
         setRequestImages([]);
         setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
         setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+        navigate('/result');
       } else {
         navigate('/result');
       }
@@ -341,6 +343,7 @@ function TextSearch({
                     }
                     return;
                   }
+                  setSpecifications(null);
                   setQuery('');
                   setValueInput('');
                   navigate('/');
