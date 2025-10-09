@@ -119,10 +119,10 @@ export interface SessionAction {
 
 export interface SpecificationState {
   specifications: any;
-  nameplate: any;
+  showNotification: boolean;
 }
 
 export interface SpecificationAction {
   setSpecifications: (specifications: any) => void;
-  setNameplate: (nameplate: any[]) => void;
+  setShowNotification: (show: boolean) => void;
 }

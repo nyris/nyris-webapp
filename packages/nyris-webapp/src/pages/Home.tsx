@@ -9,7 +9,7 @@ import CustomCamera from 'components/CustomCameraDrawer';
 import ExperienceVisualSearchTrigger from 'components/ExperienceVisualSearch/ExperienceVisualSearchTrigger';
 import { useNavigate } from 'react-router';
 import LocationInfoPopup from "../components/LocationInfoPopup";
-
+import Hint from '../components/Hint';
 function Home() {
   const settings = window.settings;
   const { experienceVisualSearch, experienceVisualSearchImages, geoLocation } = settings;
@@ -97,7 +97,7 @@ function Home() {
             <TextSearch />
           </div>
         </div>
-        <div className="max-w-[512px] relative w-full">
+        <div className="max-w-[532px] relative w-full">
           <DragDropFile />
           {settings.experienceVisualSearch && (
             <ExperienceVisualSearchTrigger
@@ -117,6 +117,16 @@ function Home() {
             }}
           />
         </div>
+        <div
+          style={{
+            fontWeight: 700,
+            fontSize: 24,
+            margin: 16,
+          }}
+        >
+          Snap & Search
+        </div>
+        <Hint />
         {settings.experienceVisualSearch && (
           <ExperienceVisualSearchTrigger
             experienceVisualSearchBlobs={experienceVisualSearchBlobs}

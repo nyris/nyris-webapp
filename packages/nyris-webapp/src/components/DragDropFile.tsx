@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import {memo, useEffect, useState} from 'react';
 import { twMerge } from 'tailwind-merge';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +11,9 @@ import { useNavigate } from 'react-router';
 import { useCadSearch } from 'hooks/useCadSearch';
 import { isCadFile } from '@nyris/nyris-api';
 import Hint from './Hint';
+import { clone } from 'lodash';
+import useRequestStore from '../stores/request/requestStore';
+import { getFilters } from '../services/filter';
 
 interface Props {
   onChangeLoading?: any;
@@ -25,8 +28,29 @@ function DragDropFile(props: Props) {
   const { singleImageSearch } = useImageSearch();
   const { cadSearch } = useCadSearch();
 
+  const [resultFilter, setResultFilter] = useState<any>([]);
+
+  const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const setSpecifications = useRequestStore(state => state.setSpecifications);
+  const setShowNotification = useRequestStore(state => state.setShowNotification);
+  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+  const setPreFilter = useRequestStore(state => state.setPreFilter);
+
+  const getPreFilters = async () => {
+    const dataResultFilter = getFilters(1000, window.settings)
+      .then(res => {
+        setResultFilter(res);
+      })
+      .catch((e: any) => {
+        console.log('err getDataFilterDesktop', e);
+      });
+  }
+
+  useEffect(() => {
+    getPreFilters()
+  }, []);
+
   const handleUpload = (file: File) => {
-    navigate('/result');
 
     if (isCadFile(file)) {
       cadSearch({
@@ -42,7 +66,26 @@ function DragDropFile(props: Props) {
       image: file,
       settings: window.settings,
       showFeedback: true,
-    }).then(() => {});
+    }).then((singleImageResp) => {
+      const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
+      const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
+      if (specificationPrefilter && hasPrefilter.length) {
+        setSpecifications(clone(singleImageResp.image_analysis.specification));
+        setRequestImages([]);
+        setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
+        setAlgoliaFilter(`${window.settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+
+        navigate('/result');
+
+        setShowNotification(true);
+        setTimeout(() => {
+          // setShowNotification(false);
+        }, 5000);
+
+      } else {
+        navigate('/result');
+      }
+    });
   };
 
   const { isDragging, dragProps } = useDragAndDrop({
@@ -53,7 +96,7 @@ function DragDropFile(props: Props) {
     <label
       htmlFor="select_file"
       className={
-        'flex flex-col items-center justify-center mt-8 px-4 bg-[#fafafa]'
+        'flex flex-col items-center justify-center mt-8 bg-[#fafafa] drag-n-drop-label'
       }
     >
       {isLoading && <Loading />}
@@ -64,9 +107,9 @@ function DragDropFile(props: Props) {
       >
         <div
           className={twMerge([
+            'drag-n-drop-inner',
             'flex flex-col items-center w-full cursor-pointer pb-4 pt-4 rounded-[12px]',
             'text-[#cacad1] hover:text-primary',
-            'hover:bg-[#F0EFFF]',
             'border-2 border-dashed border-transparent hover:border-[#e0e0e0]',
             isDragging && 'text-primary border-[#e0e0e0]',
           ])}

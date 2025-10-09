@@ -56,6 +56,8 @@ function Results() {
     state => state.specificationFilter,
   );
   const requestImages = useRequestStore(state => state.requestImages);
+  const showNotification = useRequestStore(state => state.showNotification);
+  const specifications = useRequestStore(state => state.specifications);
   const query = useRequestStore(state => state.query);
   const regions = useRequestStore(state => state.regions);
 
@@ -504,6 +506,29 @@ function Results() {
           </div>
         )}
       </div>
+      {showNotification && (
+        <div
+          style={{
+            position: 'absolute',
+            backgroundColor: '#E4E3FF',
+            border: '1px solid #3E36DC',
+            fontSize: 13,
+            borderRadius: 24,
+            color: '#545987',
+            padding: '8px 16px',
+            height: 32,
+            bottom: 132,
+            margin: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+        >
+          We successfully identify search criteria:&nbsp;<b>{specifications.prefilter_value}</b>
+        </div>
+      )}
       <PostFilterDrawer
         openModal={showPostFilter}
         handleClose={() => setShowPostFilter(false)}

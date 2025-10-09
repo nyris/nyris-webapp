@@ -48,6 +48,7 @@ function TextSearch({
   const regions = useRequestStore(state => state.regions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
+  const setShowNotification = useRequestStore(state => state.setShowNotification);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
 
@@ -162,7 +163,14 @@ function TextSearch({
         setRequestImages([]);
         setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
         setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+
         navigate('/result');
+
+        setShowNotification(true);
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 5000);
+        
       } else {
         navigate('/result');
       }
