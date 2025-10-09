@@ -107,8 +107,7 @@ function ProductDetailView(props: Props) {
             dataImageCarousel.length === 0 ? 'flex justify-center' : ''
           } ${
             is3dView ? 'w-0 h-0 opacity-0 hidden' : 'w-full'
-          } transition-opacity duration-300 pt-4`}
-          style={{ height: is3dView ? '0px' : 'h-[368px] desktop:h-[60%]' }}
+          } transition-opacity duration-300 pt-4 ${is3dView ? '0px' : 'h-[368px] desktop:h-[100%]'}`}
         >
           {dataImageCarousel.length > 0 && (
             <ImagePreviewCarousel
@@ -170,9 +169,7 @@ function ProductDetailView(props: Props) {
       </div>
 
       <div
-        className={`overflow-y-auto max-h-[90svh] px-4 pb-4  ${
-          settings.simpleCardView ? 'bg-[#FaFafa]' : 'bg-[#f3f3f5]'
-        } mt-1`}
+        className={`overflow-y-auto max-h-[90svh] px-4 pb-4 'bg-[#fff] mt-1`}
       >
         {settings.simpleCardView ? (
           <div className="info-container">
@@ -187,7 +184,7 @@ function ProductDetailView(props: Props) {
         ) : (
           <div className="box-content flex flex-col bg-[#F3F3F5] mt-4">
             <div className="box-top">
-              <div className="bg-[#F3F3F5] flex flex-col justify-between">
+              <div className="bg-[#fff] flex flex-col justify-between">
                 <div className="gap-1.5 flex flex-wrap w-full">
                   <div className="w-full">
                     {settings.mainTitle && (

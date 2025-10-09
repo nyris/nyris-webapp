@@ -79,7 +79,7 @@ function DragDropFile(props: Props) {
 
         setShowNotification(true);
         setTimeout(() => {
-          // setShowNotification(false);
+          setShowNotification(false);
         }, 5000);
 
       } else {
