@@ -6,6 +6,7 @@ const filterSlice: StateCreator<SpecificationState & SpecificationAction> = set 
   ...initialState,
   setSpecifications: specifications => set(state => ({ specifications })),
   setShowNotification: showNotification => set(state => ({ showNotification })),
+  setShowLoading: showLoading => set(state => ({ showLoading })),
 
 });
 

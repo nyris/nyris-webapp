@@ -523,6 +523,7 @@ function Results() {
             alignItems: 'center',
             justifyContent: 'center',
             left: '50%',
+            zIndex: 999,
             transform: 'translateX(-50%)',
           }}
         >

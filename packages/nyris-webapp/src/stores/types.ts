@@ -120,9 +120,11 @@ export interface SessionAction {
 export interface SpecificationState {
   specifications: any;
   showNotification: boolean;
+  showLoading: boolean;
 }
 
 export interface SpecificationAction {
   setSpecifications: (specifications: any) => void;
   setShowNotification: (show: boolean) => void;
+  setShowLoading: (show: boolean) => void;
 }

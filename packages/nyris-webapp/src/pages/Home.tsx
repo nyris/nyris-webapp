@@ -10,6 +10,8 @@ import ExperienceVisualSearchTrigger from 'components/ExperienceVisualSearch/Exp
 import { useNavigate } from 'react-router';
 import LocationInfoPopup from "../components/LocationInfoPopup";
 import Hint from '../components/Hint';
+import Loading from '../components/Loading';
+import useRequestStore from '../stores/request/requestStore';
 function Home() {
   const settings = window.settings;
   const { experienceVisualSearch, experienceVisualSearchImages, geoLocation } = settings;
@@ -18,6 +20,7 @@ function Home() {
   const [experienceVisualSearchBlobs, setExperienceVisualSearchBlobs] =
     useState<Blob[]>([]);
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
+  const showLoading = useRequestStore(store => store.showLoading);
 
   const fetchImage = async (url: string) => {
     const response = await fetch(url, { cache: 'force-cache' });
@@ -66,6 +69,11 @@ function Home() {
 
   return (
     <>
+      {showLoading && (
+        <div className="box-wrap-loading" style={{ zIndex: 99999999 }}>
+          <Loading />
+        </div>
+      )}
       <div
         className={twMerge([
           'relative',
