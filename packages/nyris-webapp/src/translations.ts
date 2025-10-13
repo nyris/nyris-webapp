@@ -65,6 +65,7 @@ export const translations = {
       'Please enable location services when prompted.':
         'Please enable location services when prompted.',
       'I understand': 'I understand',
+      'We have successfully defined the search criteria': 'We have successfully defined the search criteria',
     },
   },
   de: {
@@ -135,6 +136,7 @@ export const translations = {
       'Please enable location services when prompted.':
         'Bitte erlauben Sie den Zugriff auf Ihren Standort.',
       'I understand': 'Weiter',
+      'We have successfully defined the search criteria': 'Wir haben die Suchkriterien erfolgreich definiert'
     },
   },
   pt: {
@@ -206,6 +208,7 @@ export const translations = {
       'Please enable location services when prompted.':
         'Por favor, ative os serviços de localização quando solicitado',
       'I understand': 'Compreendo',
+      'We have successfully defined the search criteria': 'Definimos com sucesso os critérios de pesquisa',
     },
   },
 };

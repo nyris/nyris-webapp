@@ -527,7 +527,7 @@ function Results() {
             transform: 'translateX(-50%)',
           }}
         >
-          We successfully identify search criteria:&nbsp;<b>{specifications.prefilter_value}</b>
+          {t('We have successfully defined the search criteria')}:&nbsp;<b>{specifications.prefilter_value}</b>
         </div>
       )}
       <PostFilterDrawer
