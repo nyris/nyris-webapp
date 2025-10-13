@@ -66,6 +66,10 @@ export const translations = {
         'Please enable location services when prompted.',
       'I understand': 'I understand',
       'We have successfully defined the search criteria': 'We have successfully defined the search criteria',
+      'Type plates': 'Type plates',
+      'Parts': 'Parts',
+      'Labels': 'Labels',
+      'Barcodes': 'Barcodes',
     },
   },
   de: {
@@ -136,7 +140,11 @@ export const translations = {
       'Please enable location services when prompted.':
         'Bitte erlauben Sie den Zugriff auf Ihren Standort.',
       'I understand': 'Weiter',
-      'We have successfully defined the search criteria': 'Wir haben die Suchkriterien erfolgreich definiert'
+      'We have successfully defined the search criteria': 'Wir haben die Suchkriterien erfolgreich definiert',
+      'Type plates': 'Typenschilder',
+      'Parts': 'Teile',
+      'Labels': 'Etiketten',
+      'Barcodes': 'Barcodes',
     },
   },
   pt: {
@@ -209,6 +217,10 @@ export const translations = {
         'Por favor, ative os serviços de localização quando solicitado',
       'I understand': 'Compreendo',
       'We have successfully defined the search criteria': 'Definimos com sucesso os critérios de pesquisa',
+      'Type plates': 'Placa de identificação',
+      'Parts': 'Peças',
+      'Labels': 'Etiquetas',
+      'Barcodes': 'Códigos de barras',
     },
   },
 };

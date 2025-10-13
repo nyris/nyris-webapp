@@ -1,91 +1,98 @@
 import React from 'react';
 import { Icon } from '@nyris/nyris-react-components';
+import { useTranslation } from 'react-i18next';
 
-const Hint = () => (
-  <div
-    style={{
-      width: 240,
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginTop: 16,
-      fontSize: 9,
-      fontWeight: 700,
-    }}
-  >
+const Hint = () => {
+  const { t } = useTranslation();
+  return (
     <div
       style={{
+        width: 'max-content',
+        minWidth: 240,
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 16,
+        fontSize: 9,
+        fontWeight: 700,
+        whiteSpace: 'nowrap',
+        gap: 16,
       }}
     >
-      <Icon
-        name="typeplate"
-        width={24}
-        height={24}
+      <div
         style={{
-          marginBottom: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          flex: 1,
         }}
-      />
-      Type plates
-    </div>
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        flex: 1,
-      }}
-    >
-      <Icon
-        name="part"
-        width={24}
-        height={24}
+      >
+        <Icon
+          name="typeplate"
+          width={24}
+          height={24}
+          style={{
+            marginBottom: 8,
+          }}
+        />
+        {t('Type plates')}
+      </div>
+      <div
         style={{
-          marginBottom: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          flex: 1,
         }}
-      />
-      Parts
-    </div>
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        flex: 1,
-      }}
-    >
-      <Icon
-        name="label"
-        width={24}
-        height={24}
+      >
+        <Icon
+          name="part"
+          width={24}
+          height={24}
+          style={{
+            marginBottom: 8,
+          }}
+        />
+        {t('Parts')}
+      </div>
+      <div
         style={{
-          marginBottom: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          flex: 1,
         }}
-      />
-      Labels
-    </div>
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        flex: 1,
-      }}
-    >
-      <Icon
-        name="barcode"
-        width={24}
-        height={24}
+      >
+        <Icon
+          name="label"
+          width={24}
+          height={24}
+          style={{
+            marginBottom: 8,
+          }}
+        />
+        {t('Labels')}
+      </div>
+      <div
         style={{
-          marginBottom: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          flex: 1,
         }}
-      />
-      Barcodes
+      >
+        <Icon
+          name="barcode"
+          width={24}
+          height={24}
+          style={{
+            marginBottom: 8,
+          }}
+        />
+        {t('Barcodes')}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Hint;
