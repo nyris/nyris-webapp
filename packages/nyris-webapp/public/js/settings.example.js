@@ -89,6 +89,7 @@ var settings = {
   showFeedback: false,
   geoLocation: false,
   geoLocationMessage: '',
+  showImageDetails: false,
   rfq: {
     enabled: '',
     emailTemplateId: '',

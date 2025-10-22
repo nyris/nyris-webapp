@@ -66,7 +66,7 @@ export default function SidePanel({ className }: { className?: string }) {
         {requestImages[0] && <ImagePreview />}
       </div>
 
-      {(imageAnalysis?.imageDescription ||
+      {window.settings.showImageDetails && (imageAnalysis?.imageDescription ||
         Object.keys(imageAnalysis?.specification || {}).length > 0) && (
         <div className="self-stretch p-4 bg-[#f3f3f5] rounded inline-flex flex-col justify-start items-start gap-1.5 mt-4 mx-4 ">
           {imageAnalysis?.imageDescription !== 'No description available' && (

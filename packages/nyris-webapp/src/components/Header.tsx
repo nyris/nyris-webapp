@@ -11,11 +11,17 @@ import { useState } from 'react';
 import LogoutModal from './LogoutModal';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import useResultStore from 'stores/result/resultStore';
+import { useTranslation } from 'react-i18next';
+import {useMediaQuery} from "react-responsive";
 
 function Header() {
   const { theme, auth0 } = window.settings;
   const { isAuthenticated, user, logout } = useAuth0();
   let location = useLocation();
+  const showNotification = useRequestStore(state => state.showNotification);
+  const specifications = useRequestStore(state => state.specifications);
+  const { t } = useTranslation();
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const reset = useRequestStore(state => state.reset);
   const resetResultStore = useResultStore(state => state.reset);
@@ -70,16 +76,43 @@ function Header() {
           />
         </NavLink>
 
-        <div
-          className={twMerge(['hidden', showSearchBar && 'desktop:block'])}
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
-        >
-          <TextSearch />
+        <div>
+          {showNotification && (
+            <div
+              style={{
+                position: 'fixed',
+                backgroundColor: '#E4E3FF',
+                border: '1px solid #3E36DC',
+                fontSize: 13,
+                borderRadius: 24,
+                color: '#545987',
+                padding: '8px 16px',
+                margin: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 999999,
+                transform: !isMobile ? 'translateX(-40%)' : 'translateX(-50%)',
+                top: !isMobile ? 54 : 'unset',
+                bottom: isMobile ? 144 : 'unset',
+                maxWidth: 510,
+                left: !isMobile ? '40%' : '50%',
+              }}
+            >
+              {t('We have successfully defined the search criteria', { prefilter_value: specifications.prefilter_value })}
+            </div>
+          )}
+          <div
+            className={twMerge(['hidden', showSearchBar && 'desktop:block'])}
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            <TextSearch />
+          </div>
         </div>
 
         {auth0.enabled && isAuthenticated && (

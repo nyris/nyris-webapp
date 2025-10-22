@@ -20,6 +20,7 @@ const PreFilterComponent = (props: Props) => {
   const { handleClose } = props;
   const { settings } = window;
   const [resultFilter, setResultFilter] = useState<any>([]);
+  const [showNotMatchedError, setShowNotMatchedError] = useState(false);
 
   const [searchKey, setSearchKey] = useState<string>('');
 
@@ -34,6 +35,7 @@ const PreFilterComponent = (props: Props) => {
 
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+  const specification = useRequestStore(state => state.specifications);
 
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
@@ -72,6 +74,14 @@ const PreFilterComponent = (props: Props) => {
         }, {});
         setResultFilter(newResult);
         setColumns(Object.keys(newResult).length);
+
+        const hasPrefilter = res.filter((filter: any) => filter.values.includes(specification?.prefilter_value || ''));
+        if (isEmpty(keyFilter)) {
+          setShowNotMatchedError(specification?.prefilter_value ? !hasPrefilter?.length : false);
+        } else {
+          setShowNotMatchedError(false);
+        }
+        
       })
       .catch((e: any) => {
         console.log('err getDataFilterDesktop', e);
@@ -185,6 +195,21 @@ const PreFilterComponent = (props: Props) => {
           )}
         </div>
       </div>
+      {showNotMatchedError && (
+        <div
+          style={{
+            marginLeft: 16,
+            marginBottom: 8,
+            marginRight: 8,
+            padding: '8px 16px',
+            backgroundColor: '#FF8800',
+            borderRadius: 8,
+            maxWidth: 'max-content'
+          }}
+        >
+          {t('Nameplate not matching', { prefilter_value: specification?.prefilter_value, preFilterTitle: settings.preFilterTitle })}
+        </div>
+      )}
 
       {!isEmpty(keyFilter) && selectedFilter > 0 && (
         <div className="py-2.5 flex justify-between bg-[#FAFAFA] ml-4 mb-1 desktop:mb-0">

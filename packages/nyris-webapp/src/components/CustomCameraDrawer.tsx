@@ -18,6 +18,9 @@ import {
 } from './Drawer/Drawer';
 import { useCadSearch } from 'hooks/useCadSearch';
 import { isCadFile } from '@nyris/nyris-api';
+import { clone } from 'lodash';
+import { getFilters } from '../services/filter';
+import PreFilterModal from "./PreFilter/PreFilterModal";
 
 interface Props {
   show: boolean;
@@ -37,15 +40,37 @@ function CustomCamera(props: Props) {
   const { cadSearch } = useCadSearch();
 
   const requestImages = useRequestStore(state => state.requestImages);
+  const setSpecifications = useRequestStore(state => state.setSpecifications);
+  const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const setShowNotification = useRequestStore(state => state.setShowNotification);
+  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+  const setPreFilter = useRequestStore(state => state.setPreFilter);
+  const setShowLoading = useRequestStore(state => state.setShowLoading);
 
+  const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] = useState(false);
   const [capturedImages, setCapturedImages] = useState<HTMLCanvasElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageCaptureHelpModal, setImageCaptureHelpModal] = useState(false);
+  const [resultFilter, setResultFilter] = useState<any>([]);
 
   const videoConstraints = {
     width: 1080,
     aspectRatio: 1.11111,
   };
+
+  const getPreFilters = async () => {
+    const dataResultFilter = getFilters(1000, settings)
+      .then(res => {
+        setResultFilter(res);
+      })
+      .catch((e: any) => {
+        console.log('err getDataFilterDesktop', e);
+      });
+  }
+
+  useEffect(() => {
+    getPreFilters()
+  }, []);
 
   const handlerFindImage = async (image: any) => {
     if (location.pathname !== '/result') {
@@ -65,8 +90,36 @@ function CustomCamera(props: Props) {
       settings,
       newSearch,
       showFeedback: true,
-    }).then(() => {});
-    handleClose();
+    }).then((singleImageResp) => {
+      const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
+      const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
+      if (specificationPrefilter) {
+        setSpecifications(clone(singleImageResp.image_analysis.specification));
+        setRequestImages([]);
+        if (hasPrefilter.length) {
+          setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
+          setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+
+          setShowLoading(false);
+          handleClose();
+
+          setShowNotification(true);
+          setTimeout(() => {
+            setShowNotification(false);
+          }, 5000);
+        }
+        if (!hasPrefilter.length && window.settings.preFilterOption) {
+          setPreFilter({});
+          setAlgoliaFilter('');
+          setToggleModalFilterDesktop(true);
+          setShowLoading(false);
+        }
+      } else {
+        setShowLoading(false);
+        handleClose();
+      }
+    });
+    
   };
 
   const handleClose = () => {
@@ -85,6 +138,12 @@ function CustomCamera(props: Props) {
 
   return (
     <>
+      {window.settings.preFilterOption && (
+        <PreFilterModal
+          openModal={isOpenModalFilterDesktop}
+          handleClose={() => setToggleModalFilterDesktop(false)}
+        />
+      )}
       <Drawer
         open={imageCaptureHelpModal}
         onOpenChange={setImageCaptureHelpModal}

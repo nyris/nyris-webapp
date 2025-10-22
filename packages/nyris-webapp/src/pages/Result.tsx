@@ -56,7 +56,6 @@ function Results() {
     state => state.specificationFilter,
   );
   const requestImages = useRequestStore(state => state.requestImages);
-  const showNotification = useRequestStore(state => state.showNotification);
   const specifications = useRequestStore(state => state.specifications);
   const query = useRequestStore(state => state.query);
   const regions = useRequestStore(state => state.regions);
@@ -197,7 +196,7 @@ function Results() {
 
           <div className="block desktop:hidden mb-4 desktop:mb-0">
             {requestImages[0] && <ImagePreview />}
-            {(imageAnalysis?.imageDescription ||
+            {window.settings.showImageDetails && (imageAnalysis?.imageDescription ||
               Object.keys(imageAnalysis?.specification || {}).length > 0) && (
               <div className="p-2">
                 <div className="self-stretch p-4 bg-[#f3f3f5] rounded flex justify-start flex-col items-start gap-2 flex-wrap content-start w-full">
@@ -506,30 +505,6 @@ function Results() {
           </div>
         )}
       </div>
-      {showNotification && (
-        <div
-          style={{
-            position: 'absolute',
-            backgroundColor: '#E4E3FF',
-            border: '1px solid #3E36DC',
-            fontSize: 13,
-            borderRadius: 24,
-            color: '#545987',
-            padding: '8px 16px',
-            height: 32,
-            bottom: 132,
-            margin: 'auto',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            left: '50%',
-            zIndex: 999,
-            transform: 'translateX(-50%)',
-          }}
-        >
-          {t('We have successfully defined the search criteria')}:&nbsp;<b>{specifications.prefilter_value}</b>
-        </div>
-      )}
       <PostFilterDrawer
         openModal={showPostFilter}
         handleClose={() => setShowPostFilter(false)}

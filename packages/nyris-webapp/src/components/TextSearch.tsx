@@ -161,20 +161,28 @@ function TextSearch({
     }).then((singleImageResp) => {
       const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
       const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
-      if (specificationPrefilter && hasPrefilter.length) {
+      if (specificationPrefilter) {
         setSpecifications(clone(singleImageResp.image_analysis.specification));
         setRequestImages([]);
-        setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
-        setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+        if (hasPrefilter.length) {
+          setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
+          setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
 
-        setShowLoading(false);
-        navigate('/result');
+          setShowLoading(false);
+          navigate('/result');
 
-        setShowNotification(true);
-        setTimeout(() => {
-          setShowNotification(false);
-        }, 5000);
-        
+          setShowNotification(true);
+          setTimeout(() => {
+            setShowNotification(false);
+          }, 5000);
+        }
+        if (!hasPrefilter.length && showPreFilter) {
+          navigate('/');
+          setPreFilter({});
+          setAlgoliaFilter('');
+          setToggleModalFilterDesktop(true);
+          setShowLoading(false);
+        }
       } else {
         setShowLoading(false);
         navigate('/result');
