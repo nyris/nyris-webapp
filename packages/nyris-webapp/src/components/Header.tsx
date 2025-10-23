@@ -49,8 +49,9 @@ function Header() {
     >
       <div
         className={twMerge([
+          'w-full',
           'flex',
-          'justify-between',
+          'justify-center',
           'items-center',
           'relative',
           'h-full',
@@ -58,7 +59,7 @@ function Header() {
       >
         <NavLink
           to="/"
-          style={{ lineHeight: 0 }}
+          style={{ lineHeight: 0, position: 'absolute', left: 0 }}
           onClick={() => {
             reset();
             resetResultStore();
@@ -77,38 +78,13 @@ function Header() {
         </NavLink>
 
         <div>
-          {showNotification && (
-            <div
-              style={{
-                position: 'fixed',
-                backgroundColor: '#E4E3FF',
-                border: '1px solid #3E36DC',
-                fontSize: 13,
-                borderRadius: 24,
-                color: '#545987',
-                padding: '8px 16px',
-                margin: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 999999,
-                transform: !isMobile ? 'translateX(-40%)' : 'translateX(-50%)',
-                top: !isMobile ? 54 : 'unset',
-                bottom: isMobile ? 144 : 'unset',
-                maxWidth: 510,
-                left: !isMobile ? '40%' : '50%',
-              }}
-            >
-              {t('We have successfully defined the search criteria', { prefilter_value: specifications.prefilter_value, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() })}
-            </div>
-          )}
           <div
             className={twMerge(['hidden', showSearchBar && 'desktop:block'])}
             style={{
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
+              // position: 'relative',
+              // left: '50%',
+              // top: '50%',
+              // transform: 'translate(-50%, -50%)',
             }}
           >
             <TextSearch />

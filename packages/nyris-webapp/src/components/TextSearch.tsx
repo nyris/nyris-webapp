@@ -1,5 +1,4 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isEmpty, debounce, clone } from 'lodash';
 import { twMerge } from 'tailwind-merge';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -16,6 +15,7 @@ import useRequestStore from 'stores/request/requestStore';
 import Tooltip from './Tooltip/TooltipComponent';
 import UploadDisclaimer from './UploadDisclaimer';
 import { getFilters } from '../services/filter';
+import { useMediaQuery } from 'react-responsive';
 
 function TextSearch({
   className,
@@ -28,6 +28,8 @@ function TextSearch({
   const user = useAuth0().user;
 
   const focusInp: any = useRef<HTMLDivElement | null>(null);
+  const iconRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
 
   const { t } = useTranslation();
 
@@ -44,6 +46,8 @@ function TextSearch({
   const setValueInput = useRequestStore(state => state.setValueInput);
   const setMetaFilter = useRequestStore(state => state.setMetaFilter);
   const specifications = useRequestStore(state => state.specifications);
+  const showNotification = useRequestStore(state => state.showNotification);
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const regions = useRequestStore(state => state.regions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
@@ -212,7 +216,7 @@ function TextSearch({
           'flex',
           'h-full',
           'justify-between',
-          'overflow-hidden',
+          // 'overflow-hidden',
           'p-0',
           'rounded-3xl',
           'w-full',
@@ -260,6 +264,7 @@ function TextSearch({
                   }
                 >
                   <div
+                    ref={iconRef}
                     className={twMerge(
                       'p-2 desktop:p-3',
                       location.pathname === '/result' && 'desktop:p-2',
@@ -280,6 +285,56 @@ function TextSearch({
                     />
                   </div>
                 </Tooltip>
+              )}
+              {showNotification && (
+                <div
+                  style={{
+                    position: 'fixed',
+                    backgroundColor: '#E4E3FF',
+                    border: '1px solid #3E36DC',
+                    fontSize: 13,
+                    borderRadius: 24,
+                    color: '#545987',
+                    padding: '8px 16px',
+                    margin: 'auto',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 999999,
+                    top: !isMobile ?  60 : 'unset',
+                    bottom: isMobile ? 144 : 'unset',
+                    maxWidth: 510,
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: -7,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 0,
+                      height: 0,
+                      borderLeft: '7px solid transparent',
+                      borderRight: '7px solid transparent',
+                      borderBottom: '7px solid #3E36DC',
+                    }}
+                  />
+
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: -6,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 0,
+                      height: 0,
+                      borderLeft: '6px solid transparent',
+                      borderRight: '6px solid transparent',
+                      borderBottom: '6px solid #E4E3FF',
+                    }}
+                  />
+                  {t('We have successfully defined the search criteria', { prefilter_value: specifications.prefilter_value, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() })}
+                </div>
               )}
               {!showPreFilter && (
                 <div className="p-2 hidden desktop:block">
