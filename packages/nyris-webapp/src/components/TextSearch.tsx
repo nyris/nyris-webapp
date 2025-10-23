@@ -216,7 +216,6 @@ function TextSearch({
           'flex',
           'h-full',
           'justify-between',
-          // 'overflow-hidden',
           'p-0',
           'rounded-3xl',
           'w-full',
@@ -300,37 +299,44 @@ function TextSearch({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    marginLeft: 8,
                     zIndex: 999999,
                     top: !isMobile ?  60 : 'unset',
-                    bottom: isMobile ? 144 : 'unset',
+                    bottom: isMobile ? 76 : 'unset',
                     maxWidth: 510,
+                    width: !isMobile ? 'unset' : '90%',
+                    left: !isMobile ? 'unset' : 0,
                   }}
                 >
                   <div
                     style={{
                       position: 'absolute',
-                      top: -7,
-                      left: '50%',
+                      top: !isMobile ? -7 : 'unset',
+                      bottom: isMobile ? -7 : 'unset',
+                      left: !isMobile ? '50%' : 30,
                       transform: 'translateX(-50%)',
                       width: 0,
                       height: 0,
                       borderLeft: '7px solid transparent',
                       borderRight: '7px solid transparent',
-                      borderBottom: '7px solid #3E36DC',
+                      borderTop: isMobile ? '7px solid #3E36DC' : 'unset',
+                      borderBottom: !isMobile ? '7px solid #3E36DC' : 'unset',
                     }}
                   />
 
                   <div
                     style={{
                       position: 'absolute',
-                      top: -6,
-                      left: '50%',
+                      top: !isMobile ? -6 : 'unset',
+                      bottom: isMobile ? -6 : 'unset',
+                      left: !isMobile ? '50%' : 30,
                       transform: 'translateX(-50%)',
                       width: 0,
                       height: 0,
                       borderLeft: '6px solid transparent',
                       borderRight: '6px solid transparent',
-                      borderBottom: '6px solid #E4E3FF',
+                      borderTop: isMobile ? '6px solid #E4E3FF' : 'unset',
+                      borderBottom: !isMobile ? '6px solid #E4E3FF' : 'unset',
                     }}
                   />
                   {t('We have successfully defined the search criteria', { prefilter_value: specifications.prefilter_value, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() })}
