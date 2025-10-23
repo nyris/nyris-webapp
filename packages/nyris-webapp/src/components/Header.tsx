@@ -12,7 +12,7 @@ import LogoutModal from './LogoutModal';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import useResultStore from 'stores/result/resultStore';
 import { useTranslation } from 'react-i18next';
-import {useMediaQuery} from "react-responsive";
+import { useMediaQuery } from 'react-responsive';
 
 function Header() {
   const { theme, auth0 } = window.settings;
@@ -99,7 +99,7 @@ function Header() {
                 left: !isMobile ? '40%' : '50%',
               }}
             >
-              {t('We have successfully defined the search criteria', { prefilter_value: specifications.prefilter_value })}
+              {t('We have successfully defined the search criteria', { prefilter_value: specifications.prefilter_value, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() })}
             </div>
           )}
           <div

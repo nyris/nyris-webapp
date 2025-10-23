@@ -10,6 +10,7 @@ import { truncateString } from 'utils/truncateString';
 import { twMerge } from 'tailwind-merge';
 import Tooltip from 'components/Tooltip/TooltipComponent';
 import { Skeleton } from 'components/Skeleton';
+import { useNavigate } from 'react-router';
 
 interface Props {
   handleClose?: any;
@@ -36,10 +37,12 @@ const PreFilterComponent = (props: Props) => {
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const specification = useRequestStore(state => state.specifications);
+  const setSpecifications = useRequestStore(state => state.setSpecifications);
 
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
   );
+  const navigate = useNavigate();
 
   const selectedFilter = useMemo(
     () =>
@@ -134,6 +137,10 @@ const PreFilterComponent = (props: Props) => {
         : '';
     setAlgoliaFilter(filter);
 
+    if (showNotMatchedError && Object.keys(preFilter).length) {
+      setSpecifications({ prefilter_value: Object.keys(preFilter)[0] });
+      navigate('/result');
+    }
     handleClose();
 
     if (requestImages.length === 0) {

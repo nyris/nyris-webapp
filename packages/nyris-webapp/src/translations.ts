@@ -65,7 +65,7 @@ export const translations = {
       'Please enable location services when prompted.':
         'Please enable location services when prompted.',
       'I understand': 'I understand',
-      'We have successfully defined the search criteria': 'Nameplate detected and matched to {{prefilter_value}}. Items are shown for this machine. You can now upload an image or enter a keyword to search.',
+      'We have successfully defined the search criteria': 'Nameplate detected and matched to {{prefilter_value}}. Items are shown for this {{preFilterTitle}}. You can now upload an image or enter a keyword to search.',
       'Type plates': 'Type plates',
       'Parts': 'Parts',
       'Labels': 'Labels',
@@ -141,7 +141,7 @@ export const translations = {
       'Please enable location services when prompted.':
         'Bitte erlauben Sie den Zugriff auf Ihren Standort.',
       'I understand': 'Weiter',
-      'We have successfully defined the search criteria': 'Typenschild erkannt und mit {{prefilter_value}} abgeglichen. Es werden Artikel für dieses Gerät angezeigt. Sie können nun ein Bild hochladen oder ein Stichwort zur Suche eingeben.',
+      'We have successfully defined the search criteria': 'Typenschild erkannt und mit {{prefilter_value}} abgeglichen. Es werden Artikel für dieses {{preFilterTitle}}. Sie können nun ein Bild hochladen oder ein Stichwort zur Suche eingeben.',
       'Type plates': 'Typenschilder',
       'Parts': 'Teile',
       'Labels': 'Etiketten',
@@ -218,7 +218,7 @@ export const translations = {
       'Please enable location services when prompted.':
         'Por favor, ative os serviços de localização quando solicitado',
       'I understand': 'Compreendo',
-      'We have successfully defined the search criteria': 'Placa de identificação detetada e correspondente a {{prefilter_value}}. São apresentados os itens para esta máquina. Agora pode carregar uma imagem ou introduzir uma palavra-chave para pesquisar.',
+      'We have successfully defined the search criteria': 'Placa de identificação detetada e correspondente a {{prefilter_value}}. São apresentados os itens para esta {{preFilterTitle}}. Agora pode carregar uma imagem ou introduzir uma palavra-chave para pesquisar.',
       'Type plates': 'Placa de identificação',
       'Parts': 'Peças',
       'Labels': 'Etiquetas',
