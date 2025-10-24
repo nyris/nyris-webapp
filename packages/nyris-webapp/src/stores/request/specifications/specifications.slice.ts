@@ -5,7 +5,7 @@ import { initialState } from './specifications.initialState';
 const filterSlice: StateCreator<SpecificationState & SpecificationAction> = set => ({
   ...initialState,
   setSpecifications: specifications => set(state => ({ specifications })),
-  setShowNotification: showNotification => set(state => ({ showNotification })),
+  setNameplateNotificationText: nameplateNotificationText => set(state => ({ nameplateNotificationText })),
   setShowLoading: showLoading => set(state => ({ showLoading })),
 
 });

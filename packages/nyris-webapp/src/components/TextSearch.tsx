@@ -46,14 +46,14 @@ function TextSearch({
   const setValueInput = useRequestStore(state => state.setValueInput);
   const setMetaFilter = useRequestStore(state => state.setMetaFilter);
   const specifications = useRequestStore(state => state.specifications);
-  const showNotification = useRequestStore(state => state.showNotification);
+  const nameplateNotificationText = useRequestStore(state => state.nameplateNotificationText);
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const regions = useRequestStore(state => state.regions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
-  const setShowNotification = useRequestStore(state => state.setShowNotification);
+  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
 
@@ -175,10 +175,12 @@ function TextSearch({
           setShowLoading(false);
           navigate('/result');
 
-          setShowNotification(true);
           setTimeout(() => {
-            setShowNotification(false);
-          }, 5000);
+            setNameplateNotificationText(t('We have successfully defined the search criteria', { prefilter_value: specificationPrefilter, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+          }, 1000);
+          setTimeout(() => {
+            setNameplateNotificationText('');
+          }, 6000);
         }
         if (!hasPrefilter.length && showPreFilter) {
           navigate('/');
@@ -285,7 +287,7 @@ function TextSearch({
                   </div>
                 </Tooltip>
               )}
-              {showNotification && (
+              {nameplateNotificationText && (
                 <div
                   style={{
                     position: 'fixed',
@@ -339,7 +341,7 @@ function TextSearch({
                       borderBottom: !isMobile ? '6px solid #E4E3FF' : 'unset',
                     }}
                   />
-                  {t('We have successfully defined the search criteria', { prefilter_value: specifications.prefilter_value, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() })}
+                  {nameplateNotificationText}
                 </div>
               )}
               {!showPreFilter && (

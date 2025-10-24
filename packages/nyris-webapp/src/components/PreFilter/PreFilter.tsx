@@ -38,6 +38,7 @@ const PreFilterComponent = (props: Props) => {
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const specification = useRequestStore(state => state.specifications);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
+  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
 
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
@@ -139,6 +140,12 @@ const PreFilterComponent = (props: Props) => {
 
     if (showNotMatchedError && Object.keys(preFilter).length) {
       setSpecifications({ prefilter_value: Object.keys(preFilter)[0] });
+      setTimeout(() => {
+        setNameplateNotificationText(t('Items are shown for the selected', { prefilter_value: Object.keys(preFilter)[0] }));
+      }, 1000);
+      setTimeout(() => {
+        setNameplateNotificationText('');
+      }, 6000);
       navigate('/result');
     }
     handleClose();
@@ -214,7 +221,7 @@ const PreFilterComponent = (props: Props) => {
             maxWidth: 'max-content'
           }}
         >
-          {t('Nameplate not matching', { prefilter_value: specification?.prefilter_value, preFilterTitle: settings.preFilterTitle })}
+          {t('Nameplate not matching', { prefilter_value: specification?.prefilter_value, preFilterTitle: settings.preFilterTitle?.toLocaleLowerCase() })}
         </div>
       )}
 

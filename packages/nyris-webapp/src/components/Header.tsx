@@ -18,10 +18,6 @@ function Header() {
   const { theme, auth0 } = window.settings;
   const { isAuthenticated, user, logout } = useAuth0();
   let location = useLocation();
-  const showNotification = useRequestStore(state => state.showNotification);
-  const specifications = useRequestStore(state => state.specifications);
-  const { t } = useTranslation();
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const reset = useRequestStore(state => state.reset);
   const resetResultStore = useResultStore(state => state.reset);

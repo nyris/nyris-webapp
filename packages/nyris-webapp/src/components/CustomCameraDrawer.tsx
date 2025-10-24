@@ -42,7 +42,7 @@ function CustomCamera(props: Props) {
   const requestImages = useRequestStore(state => state.requestImages);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
-  const setShowNotification = useRequestStore(state => state.setShowNotification);
+  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
@@ -103,9 +103,9 @@ function CustomCamera(props: Props) {
           setShowLoading(false);
           handleClose();
 
-          setShowNotification(true);
+          setNameplateNotificationText(t('We have successfully defined the search criteria', { prefilter_value: specificationPrefilter, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
           setTimeout(() => {
-            setShowNotification(false);
+            setNameplateNotificationText('');
           }, 5000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {

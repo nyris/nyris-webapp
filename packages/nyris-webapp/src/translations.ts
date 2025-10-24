@@ -71,6 +71,7 @@ export const translations = {
       'Labels': 'Labels',
       'Barcodes': 'Barcodes',
       'Nameplate not matching': 'Nameplate detected, but {{prefilter_value}} was not found in the list. You can select the correct {{preFilterTitle}} to continue.',
+      'Items are shown for the selected': 'Items are shown for the selected {{prefilter_value}}. You can now upload an image or enter a keyword to search.',
     },
   },
   de: {
@@ -147,6 +148,7 @@ export const translations = {
       'Labels': 'Etiketten',
       'Barcodes': 'Barcodes',
       'Nameplate not matching': 'Typenschild erkannt, aber {{prefilter_value}} wurde nicht in der Liste gefunden. Sie können die richtigen {{preFilterTitle}}, um fortzufahren.',
+      'Items are shown for the selected': 'Items are shown for the selected {{prefilter_value}}. You can now upload an image or enter a keyword to search.',
     },
   },
   pt: {
@@ -224,6 +226,7 @@ export const translations = {
       'Labels': 'Etiquetas',
       'Barcodes': 'Códigos de barras',
       'Nameplate not matching': 'Placa de identificação detetada, mas {{prefilter_value}} não foi encontrado na lista. Pode selecionar os {{preFilterTitle}} corretos para continuar.',
+      'Items are shown for the selected': 'Items are shown for the selected {{prefilter_value}}. You can now upload an image or enter a keyword to search.',
     },
   },
 };

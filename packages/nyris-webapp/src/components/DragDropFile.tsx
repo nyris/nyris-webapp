@@ -34,7 +34,7 @@ function DragDropFile(props: Props) {
 
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
-  const setShowNotification = useRequestStore(state => state.setShowNotification);
+  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
@@ -84,10 +84,12 @@ function DragDropFile(props: Props) {
           setShowLoading(false);
           navigate('/result');
 
-          setShowNotification(true);
           setTimeout(() => {
-            setShowNotification(false);
-          }, 5000);
+            setNameplateNotificationText(t('We have successfully defined the search criteria', { prefilter_value: specificationPrefilter, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+          }, 1000);
+          setTimeout(() => {
+            setNameplateNotificationText('');
+          }, 6000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {
           setPreFilter({});
