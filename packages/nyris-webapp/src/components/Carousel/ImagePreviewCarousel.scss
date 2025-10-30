@@ -30,3 +30,12 @@
     // }
   }
 }
+
+.box-carosel {
+  .splide.splide--slide {
+    height: calc(100% - 48px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
