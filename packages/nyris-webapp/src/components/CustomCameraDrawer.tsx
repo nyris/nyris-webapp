@@ -46,6 +46,7 @@ function CustomCamera(props: Props) {
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
+  const setNameplateImage = useRequestStore(state => state.setNameplateImage);
 
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] = useState(false);
   const [capturedImages, setCapturedImages] = useState<HTMLCanvasElement[]>([]);
@@ -97,6 +98,7 @@ function CustomCamera(props: Props) {
         setSpecifications(clone(singleImageResp.image_analysis.specification));
         setRequestImages([]);
         if (hasPrefilter.length) {
+          setNameplateImage(image);
           setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
           setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
 

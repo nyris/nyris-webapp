@@ -7,6 +7,7 @@ const filterSlice: StateCreator<SpecificationState & SpecificationAction> = set 
   setSpecifications: specifications => set(state => ({ specifications })),
   setNameplateNotificationText: nameplateNotificationText => set(state => ({ nameplateNotificationText })),
   setShowLoading: showLoading => set(state => ({ showLoading })),
+  setNameplateImage: nameplateImage => set(state => ({ nameplateImage })),
 
 });
 

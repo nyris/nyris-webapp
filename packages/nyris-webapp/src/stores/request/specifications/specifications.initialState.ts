@@ -4,4 +4,5 @@ export const initialState: SpecificationState = {
   specifications: null,
   nameplateNotificationText: '',
   showLoading: false,
+  nameplateImage: null,
 };

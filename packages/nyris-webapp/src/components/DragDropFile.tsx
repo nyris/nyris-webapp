@@ -38,6 +38,7 @@ function DragDropFile(props: Props) {
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
+  const setNameplateImage = useRequestStore(state => state.setNameplateImage);
 
   const getPreFilters = async () => {
     const dataResultFilter = getFilters(1000, window.settings)
@@ -78,6 +79,7 @@ function DragDropFile(props: Props) {
         setSpecifications(clone(singleImageResp.image_analysis.specification));
         setRequestImages([]);
         if (hasPrefilter.length) {
+          setNameplateImage(file);
           setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
           setAlgoliaFilter(`${window.settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
 

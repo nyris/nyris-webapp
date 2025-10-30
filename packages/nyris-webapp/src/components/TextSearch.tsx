@@ -56,6 +56,7 @@ function TextSearch({
   const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
+  const setNameplateImage = useRequestStore(state => state.setNameplateImage);
 
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] =
     useState<boolean>(false);
@@ -169,6 +170,7 @@ function TextSearch({
         setSpecifications(clone(singleImageResp.image_analysis.specification));
         setRequestImages([]);
         if (hasPrefilter.length) {
+          setNameplateImage(files[0]);
           setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
           setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
 

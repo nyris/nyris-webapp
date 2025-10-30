@@ -121,10 +121,12 @@ export interface SpecificationState {
   specifications: any;
   nameplateNotificationText: string;
   showLoading: boolean;
+  nameplateImage: any;
 }
 
 export interface SpecificationAction {
   setSpecifications: (specifications: any) => void;
   setNameplateNotificationText: (nameplateNotificationText: string) => void;
   setShowLoading: (show: boolean) => void;
+  setNameplateImage: (nameplateImage: any) => void;
 }
