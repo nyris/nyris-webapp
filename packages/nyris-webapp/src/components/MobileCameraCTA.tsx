@@ -7,9 +7,6 @@ function MobileCameraCTA({ setOpenModalCamera }: { setOpenModalCamera: any }) {
     <div className="take-photo">
       <div
         className="take-photo-wrapper"
-        style={{
-          background: 'linear-gradient(90deg, #55566B 0%, #2B2C46 100%)',
-        }}
       >
         <div
           className="outer"
@@ -18,7 +15,7 @@ function MobileCameraCTA({ setOpenModalCamera }: { setOpenModalCamera: any }) {
           }}
         >
           <div className="inner">
-            <Icon name="camera" color={'#2B2C46'} width={121} height={96} />
+            <Icon name="mobile_camera" color={'#2B2C46'} width={121} height={120} />
           </div>
         </div>
       </div>
