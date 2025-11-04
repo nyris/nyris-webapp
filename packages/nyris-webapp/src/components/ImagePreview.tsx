@@ -12,8 +12,7 @@ import { DEFAULT_REGION } from '../constants';
 import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
 import useResultStore from 'stores/result/resultStore';
-import {getFilters} from "../services/filter";
-import PreFilterModal from "./PreFilter/PreFilterModal";
+import { getFilters } from '../services/filter';
 
 function ImagePreviewComponent({
   showAdjustInfo = false,
@@ -26,7 +25,6 @@ function ImagePreviewComponent({
   const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
     useState(false);
   const [resultFilter, setResultFilter] = useState<any>([]);
-  const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] = useState(false);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -45,6 +43,7 @@ function ImagePreviewComponent({
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
+  const setIsResultPrefilterOpened = useRequestStore(state => state.setIsResulrPrefilterOpened);
 
   const detectedRegions = useResultStore(state => state.detectedRegions);
   const resetResultStore = useResultStore(state => state.reset);
@@ -98,7 +97,7 @@ function ImagePreviewComponent({
         const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
         if (specificationPrefilter) {
           setSpecifications(clone(res.image_analysis.specification));
-          // setRequestImages([]);
+          setRequestImages([]);
           if (hasPrefilter.length) {
             setNameplateImage(image);
             setPreFilter({[res.image_analysis?.specification?.prefilter_value]: true});
@@ -120,7 +119,7 @@ function ImagePreviewComponent({
           if (!hasPrefilter.length && window.settings.preFilterOption) {
             setPreFilter({});
             setAlgoliaFilter('');
-            setToggleModalFilterDesktop(true);
+            setIsResultPrefilterOpened(true);
             setShowLoading(false);
           }
         } else {
@@ -152,12 +151,6 @@ function ImagePreviewComponent({
 
   return (
     <>
-      {window.settings.preFilterOption && (
-        <PreFilterModal
-          openModal={isOpenModalFilterDesktop}
-          handleClose={() => setToggleModalFilterDesktop(false)}
-        />
-      )}
       {/* Image preview Desktop, To-do: Remove and use same code as Image preview for Mobile */}
       <div
         ref={previewWrapperRef}

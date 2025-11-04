@@ -26,6 +26,7 @@ import { useCurrentRefinements } from 'react-instantsearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import { useTranslation } from 'react-i18next';
 import { useImageSearch } from 'hooks/useImageSearch';
+import PreFilterModal from "../components/PreFilter/PreFilterModal";
 
 function Results() {
   const settings = window.settings;
@@ -35,6 +36,7 @@ function Results() {
     'hidden' | 'submitted' | 'visible'
   >();
   const [showFeedbackSuccess, setShowFeedbackSuccess] = useState(false);
+  const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] = useState(false);
 
   const productsFromFindApi = useResultStore(
     state => state.productsFromFindApi,
@@ -48,6 +50,8 @@ function Results() {
   const setShowFeedback = useUiStore(state => state.setShowFeedback);
   const showFeedback = useUiStore(state => state.showFeedback);
   const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
+  const isResultPrefilterOpened = useRequestStore(state => state.isResultPrefilterOpened);
+  const setIsResultPrefilterOpened = useRequestStore(state => state.setIsResulrPrefilterOpened);
 
   const requestId = useResultStore(state => state.requestId);
   const imageAnalysis = useResultStore(state => state.imageAnalysis);
@@ -165,6 +169,10 @@ function Results() {
     isFindApiLoading,
   ]);
 
+  useEffect(() => {
+    setToggleModalFilterDesktop(isResultPrefilterOpened);
+  }, [isResultPrefilterOpened]);
+
   const disablePostFilter = useMemo(() => {
     return settings.postFilterOption && productsFromAlgolia.length > 0
       ? false
@@ -175,6 +183,14 @@ function Results() {
 
   return (
     <>
+      {window.settings.preFilterOption && (
+        <PreFilterModal
+          openModal={isOpenModalFilterDesktop}
+          handleClose={() => {
+            setIsResultPrefilterOpened(false);
+          }}
+        />
+      )}
       {isFindApiLoading && (
         <div className="box-wrap-loading" style={{ zIndex: 99999999 }}>
           <Loading />

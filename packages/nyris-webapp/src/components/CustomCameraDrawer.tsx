@@ -20,7 +20,6 @@ import { useCadSearch } from 'hooks/useCadSearch';
 import { isCadFile } from '@nyris/nyris-api';
 import { clone } from 'lodash';
 import { getFilters } from '../services/filter';
-import PreFilterModal from "./PreFilter/PreFilterModal";
 
 interface Props {
   show: boolean;
@@ -47,8 +46,8 @@ function CustomCamera(props: Props) {
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
+  const setIsResultPrefilterOpened = useRequestStore(state => state.setIsResulrPrefilterOpened);
 
-  const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] = useState(false);
   const [capturedImages, setCapturedImages] = useState<HTMLCanvasElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageCaptureHelpModal, setImageCaptureHelpModal] = useState(false);
@@ -60,7 +59,7 @@ function CustomCamera(props: Props) {
   };
 
   const getPreFilters = async () => {
-    const dataResultFilter = getFilters(1000, settings)
+    getFilters(1000, settings)
       .then(res => {
         setResultFilter(res);
       })
@@ -113,7 +112,7 @@ function CustomCamera(props: Props) {
         if (!hasPrefilter.length && window.settings.preFilterOption) {
           setPreFilter({});
           setAlgoliaFilter('');
-          setToggleModalFilterDesktop(true);
+          setIsResultPrefilterOpened(true);
           setShowLoading(false);
         }
       } else {
@@ -140,12 +139,6 @@ function CustomCamera(props: Props) {
 
   return (
     <>
-      {window.settings.preFilterOption && (
-        <PreFilterModal
-          openModal={isOpenModalFilterDesktop}
-          handleClose={() => setToggleModalFilterDesktop(false)}
-        />
-      )}
       <Drawer
         open={imageCaptureHelpModal}
         onOpenChange={setImageCaptureHelpModal}
@@ -267,6 +260,7 @@ function CustomCamera(props: Props) {
                               '.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,.pdf,image/*'
                             }
                             onChange={(fs: any) => {
+                              console.log('here');
                               const file = fs.target?.files[0];
                               if (!file) return;
 

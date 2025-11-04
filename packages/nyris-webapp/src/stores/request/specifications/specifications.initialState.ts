@@ -5,4 +5,5 @@ export const initialState: SpecificationState = {
   nameplateNotificationText: '',
   showLoading: false,
   nameplateImage: null,
+  isResultPrefilterOpened: false,
 };

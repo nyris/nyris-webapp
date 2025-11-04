@@ -2,8 +2,6 @@ import { memo, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { useTranslation } from 'react-i18next';
 
-import { Icon } from '@nyris/nyris-react-components';
-
 import Loading from './Loading';
 import { useImageSearch } from 'hooks/useImageSearch';
 import useDragAndDrop from 'hooks/useDragAndDrop';
