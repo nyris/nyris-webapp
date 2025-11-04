@@ -41,7 +41,7 @@ function DragDropFile(props: Props) {
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
 
   const getPreFilters = async () => {
-    const dataResultFilter = getFilters(1000, window.settings)
+    getFilters(1000, window.settings)
       .then(res => {
         setResultFilter(res);
       })

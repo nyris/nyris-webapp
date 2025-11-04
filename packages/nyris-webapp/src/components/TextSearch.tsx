@@ -133,7 +133,7 @@ function TextSearch({
   const { cadSearch } = useCadSearch();
   
   const getPreFilters = async () => {
-    const dataResultFilter = getFilters(1000, settings)
+    getFilters(1000, settings)
       .then(res => {
         setResultFilter(res);
       })
