@@ -391,7 +391,7 @@ function Results() {
                       {!isFindApiLoading &&
                         window.settings.support &&
                         window.settings.support.enabled &&
-                        (query || requestImages[0] || specifications?.is_nameplate) && (
+                        (query || requestImages[0] || specifications) && (
                           <InquiryBanner
                             requestImage={requestImages[0]}
                             selectedRegion={regions[0]}
