@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.84 - 2025-11-05
+
+### Updated
+- Mobile camera icon
+- Minimum size for product detail popup
+
+### Fixed
+- Product detail popup carousel
+
 ## 0.3.83 - 2025-09-23
 
 ### Updated
