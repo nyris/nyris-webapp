@@ -28,6 +28,7 @@ export const ICONS = {
   logout: 'logout',
   machine_view: 'machine_view',
   minus: 'minus',
+  mobile_camera: 'mobile_camera',
   next_arrow: 'next_arrow',
   plus_rounded: 'plus_rounded',
   plus: 'plus',

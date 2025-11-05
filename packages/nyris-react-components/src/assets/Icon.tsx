@@ -41,6 +41,7 @@ import { ReactComponent as AutoFocus } from './icons/auto_focus.svg';
 import { ReactComponent as Wear } from './icons/wear.svg';
 import { ReactComponent as Spare } from './icons/spare.svg';
 import { ReactComponent as Copy } from './icons/copy.svg';
+import { ReactComponent as MobileCamera } from './icons/mobile_camera.svg';
 
 import { SUPPORTED_ICON } from './types';
 
@@ -76,6 +77,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   logout: { component: Logout },
   machine_view: { component: MachineView },
   minus: { component: Minus },
+  mobile_camera: { component: MobileCamera },
   next_arrow: { component: NextArrow },
   plus_rounded: { component: PlusRounded },
   plus: { component: Plus },
