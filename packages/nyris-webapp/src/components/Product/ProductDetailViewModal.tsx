@@ -40,7 +40,7 @@ function ProductDetailViewModal({
     >
       <DialogContent
         closeButton={false}
-        className="flex flex-col min-h-[468px] min-w-[330px] w-[360px] desktop:w-[600px] m-0 desktop:m-auto bg-white rounded-xl p-0"
+        className="flex flex-col min-h-[468px] min-w-[250px] max-w-[360px] desktop:w-[600px] desktop:max-w-[600px] m-0 desktop:m-auto bg-white rounded-xl p-0"
         onPointerDownOutside={e => {
           const hasDataAttribute = (e.target as HTMLElement)?.hasAttribute(
             'data-modal-overlay',
