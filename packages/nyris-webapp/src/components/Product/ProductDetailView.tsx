@@ -107,8 +107,7 @@ function ProductDetailView(props: Props) {
             dataImageCarousel.length === 0 ? 'flex justify-center' : ''
           } ${
             is3dView ? 'w-0 h-0 opacity-0 hidden' : 'w-full'
-          } transition-opacity duration-300 pt-4`}
-          style={{ height: is3dView ? '0px' : 'h-[368px] desktop:h-[60%]' }}
+          } transition-opacity duration-300 pt-4 ${is3dView ? '0px' : 'h-[368px] desktop:h-[100%]'}`}
         >
           {dataImageCarousel.length > 0 && (
             <ImagePreviewCarousel
