@@ -93,7 +93,7 @@ function ProductDetailView(props: Props) {
         </button>
       </div>
 
-      <div className="relative h-[368px] desktop:h-[456px]">
+      <div className="relative min-h-[120px] max-h-[368px] desktop:h-[456px] desktop:max-h-[456px]">
         {settings.cadenas?.cadenas3dWebView && (
           <CadenasWebViewer
             is3dView={is3dView}
