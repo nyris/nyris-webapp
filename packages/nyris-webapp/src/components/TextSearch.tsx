@@ -29,7 +29,6 @@ function TextSearch({
 
   const focusInp: any = useRef<HTMLDivElement | null>(null);
   const iconRef = useRef<HTMLDivElement>(null);
-  const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
 
   const { t } = useTranslation();
 
@@ -185,11 +184,16 @@ function TextSearch({
           }, 6000);
         }
         if (!hasPrefilter.length && showPreFilter) {
-          navigate('/');
+          navigate('/result');
           setPreFilter({});
           setAlgoliaFilter('');
-          setToggleModalFilterDesktop(true);
           setShowLoading(false);
+          setTimeout(() => {
+            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
+          }, 1000);
+          setTimeout(() => {
+            setNameplateNotificationText('');
+          }, 6000);
         }
       } else {
         setShowLoading(false);

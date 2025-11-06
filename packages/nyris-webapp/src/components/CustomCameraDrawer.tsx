@@ -20,6 +20,7 @@ import { useCadSearch } from 'hooks/useCadSearch';
 import { isCadFile } from '@nyris/nyris-api';
 import { clone } from 'lodash';
 import { getFilters } from '../services/filter';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   show: boolean;
@@ -37,6 +38,7 @@ function CustomCamera(props: Props) {
   const location = useLocation();
   const { singleImageSearch } = useImageSearch();
   const { cadSearch } = useCadSearch();
+  const { t } = useTranslation();
 
   const requestImages = useRequestStore(state => state.requestImages);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
@@ -46,7 +48,6 @@ function CustomCamera(props: Props) {
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
-  const setIsResultPrefilterOpened = useRequestStore(state => state.setIsResulrPrefilterOpened);
 
   const [capturedImages, setCapturedImages] = useState<HTMLCanvasElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -112,8 +113,14 @@ function CustomCamera(props: Props) {
         if (!hasPrefilter.length && window.settings.preFilterOption) {
           setPreFilter({});
           setAlgoliaFilter('');
-          setIsResultPrefilterOpened(true);
           setShowLoading(false);
+          handleClose();
+          setTimeout(() => {
+            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
+          }, 1000);
+          setTimeout(() => {
+            setNameplateNotificationText('');
+          }, 6000);
         }
       } else {
         setShowLoading(false);
@@ -260,7 +267,6 @@ function CustomCamera(props: Props) {
                               '.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,.pdf,image/*'
                             }
                             onChange={(fs: any) => {
-                              console.log('here');
                               const file = fs.target?.files[0];
                               if (!file) return;
 

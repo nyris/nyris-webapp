@@ -6,18 +6,9 @@ import PostFilterComponent from './PostFilter/PostFilterComponent';
 import useResultStore from 'stores/result/resultStore';
 import { Icon } from '@nyris/nyris-react-components';
 import Tooltip from './Tooltip/TooltipComponent';
-import { filterProducts } from 'utils/specificationFilter';
-import { useEffect } from 'react';
 
 export default function SidePanel({ className }: { className?: string }) {
   const requestImages = useRequestStore(state => state.requestImages);
-  const setSpecificationFilteredProducts = useResultStore(
-    state => state.setSpecificationFilteredProducts,
-  );
-
-  const productsFromAlgolia = useResultStore(
-    state => state.productsFromAlgolia,
-  );
 
   const specificationFilter = useRequestStore(
     state => state.specificationFilter,
@@ -85,7 +76,7 @@ export default function SidePanel({ className }: { className?: string }) {
           </div>
 
           {Object.keys(imageAnalysis?.specification || {})
-            .filter((key) => key !== 'is_nameplate')
+            .filter((key) => (key !== 'is_nameplate' && key !== 'prefilter_value'))
             .map(key => {
               const value = imageAnalysis?.specification[key];
               if (!value) {

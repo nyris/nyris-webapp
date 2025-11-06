@@ -122,7 +122,6 @@ export interface SpecificationState {
   nameplateNotificationText: string;
   showLoading: boolean;
   nameplateImage: any;
-  isResultPrefilterOpened: boolean;
 }
 
 export interface SpecificationAction {
@@ -130,5 +129,4 @@ export interface SpecificationAction {
   setNameplateNotificationText: (nameplateNotificationText: string) => void;
   setShowLoading: (show: boolean) => void;
   setNameplateImage: (nameplateImage: any) => void;
-  setIsResulrPrefilterOpened: (isResultPrefilterOpened: boolean) => void;
 }

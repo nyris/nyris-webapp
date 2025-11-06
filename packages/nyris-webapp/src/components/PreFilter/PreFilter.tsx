@@ -141,7 +141,7 @@ const PreFilterComponent = (props: Props) => {
     if (showNotMatchedError && Object.keys(preFilter).length) {
       setSpecifications({ prefilter_value: Object.keys(preFilter)[0] });
       setTimeout(() => {
-        setNameplateNotificationText(t('Items are shown for the selected', { prefilter_value: Object.keys(preFilter)[0] }));
+        setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
       }, 1000);
       setTimeout(() => {
         setNameplateNotificationText('');

@@ -43,7 +43,6 @@ function ImagePreviewComponent({
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
-  const setIsResultPrefilterOpened = useRequestStore(state => state.setIsResulrPrefilterOpened);
 
   const detectedRegions = useResultStore(state => state.detectedRegions);
   const resetResultStore = useResultStore(state => state.reset);
@@ -119,8 +118,13 @@ function ImagePreviewComponent({
           if (!hasPrefilter.length && window.settings.preFilterOption) {
             setPreFilter({});
             setAlgoliaFilter('');
-            setIsResultPrefilterOpened(true);
             setShowLoading(false);
+            setTimeout(() => {
+              setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
+            }, 1000);
+            setTimeout(() => {
+              setNameplateNotificationText('');
+            }, 6000);
           }
         } else {
           const highConfidence = res.results.find(

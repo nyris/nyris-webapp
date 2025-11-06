@@ -71,7 +71,7 @@ export const translations = {
       'Labels': 'Labels',
       'Barcodes': 'Barcodes',
       'Nameplate not matching': 'Nameplate detected, but {{prefilter_value}} was not found in the list. You can select the correct {{preFilterTitle}} to continue.',
-      'Items are shown for the selected': 'Items are shown for the selected {{prefilter_value}}. You can now upload an image or enter a keyword to search.',
+      'Extracted details from the nameplate could not be matched': 'Extracted details from the nameplate could not be matched to a known machine. Select a different pre-filter, send details to support via the Inquiry button, or continue searching.',
     },
   },
   de: {
@@ -148,7 +148,7 @@ export const translations = {
       'Labels': 'Etiketten',
       'Barcodes': 'Barcodes',
       'Nameplate not matching': 'Typenschild erkannt, aber {{prefilter_value}} wurde nicht in der Liste gefunden. Sie können die richtigen {{preFilterTitle}}, um fortzufahren.',
-      'Items are shown for the selected': 'Items are shown for the selected {{prefilter_value}}. You can now upload an image or enter a keyword to search.',
+      'Extracted details from the nameplate could not be matched': 'Die vom Typenschild extrahierten Angaben konnten keiner bekannten Maschine zugeordnet werden. Wählen Sie einen anderen Vorfilter aus, senden Sie die Angaben über die Schaltfläche „Anfrage” an den Support oder setzen Sie die Suche fort.',
     },
   },
   pt: {
@@ -226,7 +226,7 @@ export const translations = {
       'Labels': 'Etiquetas',
       'Barcodes': 'Códigos de barras',
       'Nameplate not matching': 'Placa de identificação detetada, mas {{prefilter_value}} não foi encontrado na lista. Pode selecionar os {{preFilterTitle}} corretos para continuar.',
-      'Items are shown for the selected': 'Items are shown for the selected {{prefilter_value}}. You can now upload an image or enter a keyword to search.',
+      'Extracted details from the nameplate could not be matched': 'Os detalhes extraídos da placa de identificação não puderam ser correspondidos a uma máquina conhecida. Selecione um pré-filtro diferente, envie os detalhes para o suporte através do botão Consulta ou continue a pesquisa.',
     },
   },
 };

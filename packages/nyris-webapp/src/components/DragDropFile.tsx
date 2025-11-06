@@ -12,7 +12,6 @@ import Hint from './Hint';
 import { clone } from 'lodash';
 import useRequestStore from '../stores/request/requestStore';
 import { getFilters } from '../services/filter';
-import PreFilterModal from "./PreFilter/PreFilterModal";
 
 interface Props {
   onChangeLoading?: any;
@@ -28,7 +27,6 @@ function DragDropFile(props: Props) {
   const { cadSearch } = useCadSearch();
 
   const [resultFilter, setResultFilter] = useState<any>([]);
-  const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] = useState(false);
 
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
@@ -92,10 +90,16 @@ function DragDropFile(props: Props) {
           }, 6000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {
+          navigate('/result');
           setPreFilter({});
           setAlgoliaFilter('');
-          setToggleModalFilterDesktop(true);
           setShowLoading(false);
+          setTimeout(() => {
+            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
+          }, 1000);
+          setTimeout(() => {
+            setNameplateNotificationText('');
+          }, 6000);
         }
       } else {
         setShowLoading(false);
@@ -110,12 +114,6 @@ function DragDropFile(props: Props) {
 
   return (
     <>
-      {window.settings.preFilterOption && (
-        <PreFilterModal
-          openModal={isOpenModalFilterDesktop}
-          handleClose={() => setToggleModalFilterDesktop(false)}
-        />
-      )}
       <label
         htmlFor="select_file"
         className={
