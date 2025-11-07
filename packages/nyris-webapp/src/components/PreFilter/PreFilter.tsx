@@ -38,7 +38,6 @@ const PreFilterComponent = (props: Props) => {
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const specification = useRequestStore(state => state.specifications);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
-  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
 
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
@@ -138,14 +137,8 @@ const PreFilterComponent = (props: Props) => {
         : '';
     setAlgoliaFilter(filter);
 
-    if (showNotMatchedError && Object.keys(preFilter).length) {
+    if (showNotMatchedError) {
       setSpecifications({ prefilter_value: Object.keys(preFilter)[0] });
-      setTimeout(() => {
-        setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
-      }, 1000);
-      setTimeout(() => {
-        setNameplateNotificationText('');
-      }, 6000);
       navigate('/result');
     }
     handleClose();
@@ -209,21 +202,6 @@ const PreFilterComponent = (props: Props) => {
           )}
         </div>
       </div>
-      {showNotMatchedError && (
-        <div
-          style={{
-            marginLeft: 16,
-            marginBottom: 8,
-            marginRight: 8,
-            padding: '8px 16px',
-            backgroundColor: '#FF8800',
-            borderRadius: 8,
-            maxWidth: 'max-content'
-          }}
-        >
-          {t('Nameplate not matching', { prefilter_value: specification?.prefilter_value, preFilterTitle: settings.preFilterTitle?.toLocaleLowerCase() })}
-        </div>
-      )}
 
       {!isEmpty(keyFilter) && selectedFilter > 0 && (
         <div className="py-2.5 flex justify-between bg-[#FAFAFA] ml-4 mb-1 desktop:mb-0">

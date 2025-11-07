@@ -133,6 +133,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       <div className="flex justify-center items-center h-full col-span-full">
         <div className="text-center text-[#AAABB5]">
           {t('Please upload an image or enter a keyword to search.')}
+          {t('Extracted details from the nameplate could not be matched')}
         </div>
       </div>
     );

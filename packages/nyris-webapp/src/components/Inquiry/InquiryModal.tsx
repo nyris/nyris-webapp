@@ -13,8 +13,7 @@ import { AutosizeTextarea } from 'components/AutosizeTextArea';
 import Tooltip from 'components/Tooltip/TooltipComponent';
 
 import { useTranslation } from 'react-i18next';
-import {elementToCanvas} from "@nyris/nyris-api";
-import {createImage} from "../../services/visualSearch";
+import { createImage } from '../../services/visualSearch';
 interface Props {
   requestImage: any;
   selectedRegion: any;
@@ -64,6 +63,25 @@ export default function InquiryModal({
   );
   const { t } = useTranslation();
 
+  useEffect(() => {
+    function omitKeys(obj: any, keys: string[]) {
+      return Object.fromEntries(
+        Object.entries(obj).filter(([key]) => !keys.includes(key))
+      );
+    }
+    const omittedSpecification = omitKeys(specifications, ['is_nameplate', '']);
+    setInformation(
+      Object
+        .entries(omittedSpecification)
+        .reduce((acc, [k, v]) =>
+            v == null || (typeof v === 'string' && v.trim() === '')
+              ? acc
+              : `${acc}${k}: ${v}\n`,
+          ''
+        )
+      );
+  }, [specifications]);
+
   useEffect(() => emailjs.init('SMGihPnuEGcYLm0V4'), []);
   useEffect(() => {
     if (email)
@@ -77,7 +95,6 @@ export default function InquiryModal({
       ? getCroppedCanvas(requestImage, selectedRegion)
       : null;
     const nameplateImageCanvas = nameplateImage ? await createImage(nameplateImage) : null;
-    const { ['is_nameplate']: _, ...rest } = specifications;
     
     const serviceId = 'service_zfsxshi';
     setIsInquiryModalOpen(false);
@@ -92,7 +109,7 @@ export default function InquiryModal({
           : '<not specified>',
       } : {
         email_id: email.trim(),
-        information_text: rest,
+        information_text: information,
         request_image: croppedImage?.toDataURL() || '',
         typeplate_image: nameplateImageCanvas?.toDataURL() || '',
         prefilter_values: specifications.prefilter_value,
