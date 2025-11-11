@@ -11,8 +11,6 @@ import { useState } from 'react';
 import LogoutModal from './LogoutModal';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import useResultStore from 'stores/result/resultStore';
-import { useTranslation } from 'react-i18next';
-import { useMediaQuery } from 'react-responsive';
 
 function Header() {
   const { theme, auth0 } = window.settings;

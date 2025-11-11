@@ -8,6 +8,7 @@ const filterSlice: StateCreator<SpecificationState & SpecificationAction> = set 
   setNameplateNotificationText: nameplateNotificationText => set(state => ({ nameplateNotificationText })),
   setShowLoading: showLoading => set(state => ({ showLoading })),
   setNameplateImage: nameplateImage => set(state => ({ nameplateImage })),
+  setShowNotMatchedError: showNotMatchedError => set(state => ({ showNotMatchedError })),
 
 });
 

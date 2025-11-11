@@ -53,6 +53,7 @@ function TextSearch({
   const setSpecifications = useRequestStore(state => state.setSpecifications);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
   const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
+  const setShowNotMatchedError = useRequestStore(state => state.setShowNotMatchedError);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
@@ -168,6 +169,7 @@ function TextSearch({
       if (specificationPrefilter) {
         setSpecifications(clone(singleImageResp.image_analysis.specification));
         setRequestImages([]);
+        setShowNotMatchedError(false);
         if (hasPrefilter.length) {
           setNameplateImage(files[0]);
           setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
@@ -188,12 +190,7 @@ function TextSearch({
           setPreFilter({});
           setAlgoliaFilter('');
           setShowLoading(false);
-          setTimeout(() => {
-            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
-          }, 1000);
-          setTimeout(() => {
-            setNameplateNotificationText('');
-          }, 6000);
+          setShowNotMatchedError(true);
         }
       } else {
         setShowLoading(false);

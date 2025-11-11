@@ -69,7 +69,7 @@ export default function InquiryModal({
         Object.entries(obj).filter(([key]) => !keys.includes(key))
       );
     }
-    const omittedSpecification = omitKeys(specifications, ['is_nameplate', '']);
+    const omittedSpecification = omitKeys(specifications, ['is_nameplate', 'prefilter_value']);
     setInformation(
       Object
         .entries(omittedSpecification)

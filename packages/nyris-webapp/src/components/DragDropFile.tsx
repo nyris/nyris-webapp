@@ -31,6 +31,7 @@ function DragDropFile(props: Props) {
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
   const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
+  const setShowNotMatchedError = useRequestStore(state => state.setShowNotMatchedError);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
@@ -74,6 +75,7 @@ function DragDropFile(props: Props) {
       if (specificationPrefilter) {
         setSpecifications(clone(singleImageResp.image_analysis.specification));
         setRequestImages([]);
+        setShowNotMatchedError(false);
         if (hasPrefilter.length) {
           setNameplateImage(file);
           setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
@@ -94,12 +96,7 @@ function DragDropFile(props: Props) {
           setPreFilter({});
           setAlgoliaFilter('');
           setShowLoading(false);
-          setTimeout(() => {
-            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
-          }, 1000);
-          setTimeout(() => {
-            setNameplateNotificationText('');
-          }, 6000);
+          setShowNotMatchedError(true);
         }
       } else {
         setShowLoading(false);

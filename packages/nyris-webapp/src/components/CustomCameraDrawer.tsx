@@ -48,7 +48,7 @@ function CustomCamera(props: Props) {
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
-
+  const setShowNotMatchedError = useRequestStore(state => state.setShowNotMatchedError);
   const [capturedImages, setCapturedImages] = useState<HTMLCanvasElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageCaptureHelpModal, setImageCaptureHelpModal] = useState(false);
@@ -97,6 +97,7 @@ function CustomCamera(props: Props) {
       if (specificationPrefilter) {
         setSpecifications(clone(singleImageResp.image_analysis.specification));
         setRequestImages([]);
+        setShowNotMatchedError(false);
         if (hasPrefilter.length) {
           setNameplateImage(image);
           setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
@@ -115,12 +116,7 @@ function CustomCamera(props: Props) {
           setAlgoliaFilter('');
           setShowLoading(false);
           handleClose();
-          setTimeout(() => {
-            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
-          }, 1000);
-          setTimeout(() => {
-            setNameplateNotificationText('');
-          }, 6000);
+          setShowNotMatchedError(true);
         }
       } else {
         setShowLoading(false);
