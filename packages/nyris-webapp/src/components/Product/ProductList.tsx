@@ -34,7 +34,6 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const specificationFilter = useRequestStore(
     state => state.specificationFilter,
   );
-  const showNotMatchedError = useRequestStore(state => state.showNotMatchedError);
 
   const getUrlToCanvasFile = async (url: string) => {
     setQuery('');
@@ -128,10 +127,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     return (
       <div className="flex justify-center items-center h-full col-span-full">
         <div className="text-center text-[#AAABB5]">
-          {showNotMatchedError
-            ? t('Extracted details from the nameplate could not be matched')
-            : t('Please upload an image or enter a keyword to search.')
-          }
+          {t('Please upload an image or enter a keyword to search.')}
         </div>
       </div>
     );

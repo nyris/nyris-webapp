@@ -95,6 +95,7 @@ function AppLayout(): JSX.Element {
   if (!showLayout) {
     return <Outlet />;
   }
+  console.log(specifications);
 
   return (
     <div className="full-height flex flex-col">
@@ -104,10 +105,10 @@ function AppLayout(): JSX.Element {
       <Header />
       {window.settings?.algolia.enabled && (
         <Configure
-          query={query}
+          query={!query && specifications && !requestImages.length ? '*' : query}
           filters={
             specifications && !requestImages.length
-              ? `${alogoliaFilterField}:'${specifications.prefilter_value}'`
+              ? specifications.prefilter_value ? `${alogoliaFilterField}:'${specifications.prefilter_value}'` : ''
               : !query && !algoliaFilter.includes('score=1')
                   ? undefined
                   : `${algoliaFilter}${

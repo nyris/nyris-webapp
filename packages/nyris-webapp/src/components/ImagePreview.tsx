@@ -96,10 +96,10 @@ function ImagePreviewComponent({
         const specificationPrefilter = res.image_analysis?.specification?.prefilter_value || null;
         const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
         if (specificationPrefilter) {
-          setSpecifications(clone(res.image_analysis.specification));
           setRequestImages([]);
           setShowNotMatchedError(false);
           if (hasPrefilter.length) {
+            setSpecifications(clone(res.image_analysis.specification));
             setNameplateImage(image);
             setPreFilter({[res.image_analysis?.specification?.prefilter_value]: true});
             setAlgoliaFilter(`${settings.alogoliaFilterField}:'${res.image_analysis?.specification?.prefilter_value}'`);
@@ -118,12 +118,20 @@ function ImagePreviewComponent({
             }, 6000);
           }
           if (!hasPrefilter.length && window.settings.preFilterOption) {
+            setSpecifications(clone({...res.image_analysis.specification, prefilter_value: ''}));
             setPreFilter({});
             setAlgoliaFilter('');
             setShowLoading(false);
             setShowNotMatchedError(true);
+            setTimeout(() => {
+              setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
+            }, 1000);
+            setTimeout(() => {
+              setNameplateNotificationText('');
+            }, 6000);
           }
         } else {
+          setSpecifications({is_nameplate: false, prefilter_value: ''});
           const highConfidence = res.results.find(
             (data: { score: number }) => data.score >= 0.65,
           );

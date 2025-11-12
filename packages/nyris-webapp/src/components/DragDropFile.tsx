@@ -73,10 +73,10 @@ function DragDropFile(props: Props) {
       const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
       const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
       if (specificationPrefilter) {
-        setSpecifications(clone(singleImageResp.image_analysis.specification));
         setRequestImages([]);
         setShowNotMatchedError(false);
         if (hasPrefilter.length) {
+          setSpecifications(clone(singleImageResp.image_analysis.specification));
           setNameplateImage(file);
           setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
           setAlgoliaFilter(`${window.settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
@@ -92,13 +92,21 @@ function DragDropFile(props: Props) {
           }, 6000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {
+          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: ''}));
           navigate('/result');
           setPreFilter({});
           setAlgoliaFilter('');
           setShowLoading(false);
           setShowNotMatchedError(true);
+          setTimeout(() => {
+            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
+          }, 1000);
+          setTimeout(() => {
+            setNameplateNotificationText('');
+          }, 6000);
         }
       } else {
+        setSpecifications({is_nameplate: false, prefilter_value: ''});
         setShowLoading(false);
         navigate('/result');
       }
