@@ -72,6 +72,8 @@ export const translations = {
       'Barcodes': 'Barcodes',
       'Nameplate not matching': 'Nameplate detected, but {{prefilter_value}} was not found in the list. You can select the correct {{preFilterTitle}} to continue.',
       'Extracted details from the nameplate could not be matched': 'Extracted details from the nameplate could not be matched to a known machine. Select a different pre-filter, send details to support via the Inquiry button, or continue searching.',
+      'Showing results for machine': 'Showing results for machine {{prefilter_title}} \'{{prefilter_value}}\'',
+      'No matches found for': 'No matches found for {{prefilter_title}} \'{{prefilter_value}}\'. Showing all items instead.',
     },
   },
   de: {
@@ -149,6 +151,8 @@ export const translations = {
       'Barcodes': 'Barcodes',
       'Nameplate not matching': 'Typenschild erkannt, aber {{prefilter_value}} wurde nicht in der Liste gefunden. Sie können die richtigen {{preFilterTitle}}, um fortzufahren.',
       'Extracted details from the nameplate could not be matched': 'Die vom Typenschild extrahierten Angaben konnten keiner bekannten Maschine zugeordnet werden. Wählen Sie einen anderen Vorfilter aus, senden Sie die Angaben über die Schaltfläche „Anfrage” an den Support oder setzen Sie die Suche fort.',
+      'Showing results for machine': `Ergebnisse für Maschine anzeigen {{prefilter_title}} '{{prefilter_value}}'`,
+      'No matches found for': `Keine Übereinstimmungen gefunden für {{prefilter_title}} '{{prefilter_value}}'. Alle Artikel anzeigen stattdessen.`,
     },
   },
   pt: {
@@ -227,6 +231,8 @@ export const translations = {
       'Barcodes': 'Códigos de barras',
       'Nameplate not matching': 'Placa de identificação detetada, mas {{prefilter_value}} não foi encontrado na lista. Pode selecionar os {{preFilterTitle}} corretos para continuar.',
       'Extracted details from the nameplate could not be matched': 'Os detalhes extraídos da placa de identificação não puderam ser correspondidos a uma máquina conhecida. Selecione um pré-filtro diferente, envie os detalhes para o suporte através do botão Consulta ou continue a pesquisa.',
+      'Showing results for machine': `Mostrando resultados para máquina {{prefilter_title}} '{{prefilter_value}}'`,
+      'No matches found for': `Não foram encontrados resultados para {{prefilter_title}} '{{prefilter_value}}'. Mostrando todos os itens em vez disso.`,
     },
   },
 };

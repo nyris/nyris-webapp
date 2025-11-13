@@ -314,6 +314,21 @@ function Results() {
                 'desktop:mt-0',
               ])}
             >
+              {specifications?.is_nameplate && (
+                <div
+                  style={{
+                    fontWeight: 700,
+                    fontSize: 16,
+                    marginLeft: 16,
+                    marginBottom: 16,
+                  }}
+                >
+                  {!specifications.specificationPrefilter
+                    ? t('Showing results for machine', { prefilter_title: window.settings.preFilterTitle?.toLocaleLowerCase(), prefilter_value: specifications.prefilter_value })
+                    : t('No matches found for', { prefilter_title: window.settings.preFilterTitle?.toLocaleLowerCase(), prefilter_value: specifications.specificationPrefilter })
+                  }
+                </div>
+              )}
               <div
                 className={twMerge([
                   'h-full',

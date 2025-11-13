@@ -32,6 +32,7 @@ function ImagePreviewComponent({
   const isMultiImageSearchEnabled = settings.multiImageSearch;
 
   const requestImages = useRequestStore(state => state.requestImages);
+  const specifications = useRequestStore(state => state.specifications);
   const resetRegions = useRequestStore(state => state.resetRegions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const regions = useRequestStore(state => state.regions);
@@ -118,7 +119,7 @@ function ImagePreviewComponent({
             }, 6000);
           }
           if (!hasPrefilter.length && window.settings.preFilterOption) {
-            setSpecifications(clone({...res.image_analysis.specification, prefilter_value: ''}));
+            setSpecifications(clone({...res.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
             setPreFilter({});
             setAlgoliaFilter('');
             setShowLoading(false);
@@ -131,7 +132,11 @@ function ImagePreviewComponent({
             }, 6000);
           }
         } else {
-          setSpecifications({is_nameplate: false, prefilter_value: ''});
+          if (specifications?.is_nameplate) {
+            setSpecifications({...specifications, prefilter_value: ''});
+          } else {
+            setSpecifications({is_nameplate: false, prefilter_value: ''});
+          }
           const highConfidence = res.results.find(
             (data: { score: number }) => data.score >= 0.65,
           );

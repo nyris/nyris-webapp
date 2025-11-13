@@ -95,7 +95,6 @@ function AppLayout(): JSX.Element {
   if (!showLayout) {
     return <Outlet />;
   }
-  console.log(specifications);
 
   return (
     <div className="full-height flex flex-col">

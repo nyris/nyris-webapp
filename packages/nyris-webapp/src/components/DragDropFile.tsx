@@ -28,6 +28,7 @@ function DragDropFile(props: Props) {
 
   const [resultFilter, setResultFilter] = useState<any>([]);
 
+  const specifications = useRequestStore(state => state.specifications);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
   const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
@@ -92,7 +93,7 @@ function DragDropFile(props: Props) {
           }, 6000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {
-          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: ''}));
+          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
           navigate('/result');
           setPreFilter({});
           setAlgoliaFilter('');
@@ -106,7 +107,11 @@ function DragDropFile(props: Props) {
           }, 6000);
         }
       } else {
-        setSpecifications({is_nameplate: false, prefilter_value: ''});
+        if (specifications?.is_nameplate) {
+          setSpecifications({...specifications, prefilter_value: ''});
+        } else {
+          setSpecifications({is_nameplate: false, prefilter_value: ''});
+        }
         setShowLoading(false);
         navigate('/result');
       }

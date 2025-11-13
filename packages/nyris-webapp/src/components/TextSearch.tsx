@@ -186,7 +186,7 @@ function TextSearch({
           }, 6000);
         }
         if (!hasPrefilter.length && showPreFilter) {
-          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: ''}));
+          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
           navigate('/result');
           setPreFilter({});
           setAlgoliaFilter('');
@@ -200,7 +200,12 @@ function TextSearch({
           }, 6000);
         }
       } else {
-        setSpecifications({is_nameplate: false, prefilter_value: ''});
+        if (specifications?.is_nameplate) {
+          console.log('here');
+          setSpecifications({...specifications, prefilter_value: ''});
+        } else {
+          setSpecifications({is_nameplate: false, prefilter_value: ''});
+        }
         setShowLoading(false);
         navigate('/result');
       }
@@ -302,8 +307,11 @@ function TextSearch({
                 <div
                   style={{
                     position: 'fixed',
-                    backgroundColor: '#E4E3FF',
-                    border: '1px solid #3E36DC',
+                    backgroundColor:
+                      nameplateNotificationText !== t('Extracted details from the nameplate could not be matched')
+                        ? '#E4E3FF' : '#FFDBB3',
+                    border: '1px solid',
+                    borderColor: nameplateNotificationText !== t('Extracted details from the nameplate could not be matched') ? '#3E36DC' : '#FF8800',
                     fontSize: 13,
                     borderRadius: 24,
                     color: '#545987',
@@ -332,8 +340,8 @@ function TextSearch({
                       height: 0,
                       borderLeft: '7px solid transparent',
                       borderRight: '7px solid transparent',
-                      borderTop: isMobile ? '7px solid #3E36DC' : 'unset',
-                      borderBottom: !isMobile ? '7px solid #3E36DC' : 'unset',
+                      borderTop: isMobile ? `7px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched') ? '#3E36DC' : '#FF8800'}`  : 'unset',
+                      borderBottom: !isMobile ? `7px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched') ? '#3E36DC' : '#FF8800'}`  : 'unset',
                     }}
                   />
 
@@ -348,8 +356,8 @@ function TextSearch({
                       height: 0,
                       borderLeft: '6px solid transparent',
                       borderRight: '6px solid transparent',
-                      borderTop: isMobile ? '6px solid #E4E3FF' : 'unset',
-                      borderBottom: !isMobile ? '6px solid #E4E3FF' : 'unset',
+                      borderTop: isMobile ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched') ? '#E4E3FF' : '#FFDBB3'}` : 'unset',
+                      borderBottom: !isMobile ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched') ? '#E4E3FF' : '#FFDBB3'}` : 'unset',
                     }}
                   />
                   {nameplateNotificationText}

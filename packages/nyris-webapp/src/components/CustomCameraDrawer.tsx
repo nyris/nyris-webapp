@@ -41,6 +41,7 @@ function CustomCamera(props: Props) {
   const { t } = useTranslation();
 
   const requestImages = useRequestStore(state => state.requestImages);
+  const specifications = useRequestStore(state => state.specifications);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
@@ -112,7 +113,7 @@ function CustomCamera(props: Props) {
           }, 5000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {
-          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: ''}));
+          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
           setPreFilter({});
           setAlgoliaFilter('');
           setShowLoading(false);
@@ -126,7 +127,11 @@ function CustomCamera(props: Props) {
           }, 6000);
         }
       } else {
-        setSpecifications({is_nameplate: false, prefilter_value: ''});
+        if (specifications?.is_nameplate) {
+          setSpecifications({...specifications, prefilter_value: ''});
+        } else {
+          setSpecifications({is_nameplate: false, prefilter_value: ''});
+        }
         setShowLoading(false);
         handleClose();
       }

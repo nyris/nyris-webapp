@@ -115,7 +115,7 @@ export default function InquiryModal({
         prefilter_values: specifications.prefilter_value,
       };
       try {
-        await emailjs.send(serviceId, templateId, body);
+        // await emailjs.send(serviceId, templateId, body);
         ToastHelper.success(t('Request sent successfully'));
       } catch (error) {
         toast(
