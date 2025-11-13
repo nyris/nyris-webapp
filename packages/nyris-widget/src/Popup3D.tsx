@@ -20,6 +20,23 @@ const Popup3D = ({
     "loading" | "loaded" | "not-found" | undefined
   >("loading");
 
+  /**
+   * Gets the product link URL.
+   * If productLinkBaseURL is configured, constructs URL as baseURL + sku.
+   * Otherwise, falls back to links.main from search results.
+   */
+  const getProductLink = (): string | undefined => {
+    const { productLinkBaseURL } = window.nyrisSettings;
+    if (productLinkBaseURL && resultDetails.sku) {
+      // Ensure baseURL ends with / if it doesn't already
+      const baseURL = productLinkBaseURL.endsWith('/') 
+        ? productLinkBaseURL 
+        : `${productLinkBaseURL}/`;
+      return `${baseURL}${resultDetails.sku}`;
+    }
+    return resultDetails.links?.main;
+  };
+
   const modalToggle = (isOpen: boolean) => {
     setShowModal(isOpen);
     if (isOpen) {
@@ -82,7 +99,7 @@ const Popup3D = ({
                 </div>
                 <a
                   className="nyris__product-cta"
-                  href={resultDetails.links?.main}
+                  href={getProductLink()}
                   target={window.nyrisSettings.navigatePreference}
                   style={{
                     backgroundColor:
@@ -92,7 +109,7 @@ const Popup3D = ({
                   <div className="nyris__product-button">
                     {window.nyrisSettings.ctaButtonText}
                   </div>
-                  {resultDetails.links?.main && (
+                  {getProductLink() && (
                     <img src={link} width={"14px"} height={"14px"} />
                   )}
                 </a>
