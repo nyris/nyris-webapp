@@ -22,14 +22,14 @@ const Popup3D = ({
 
   /**
    * Gets the product link URL.
-   * If productLinkBaseURL is configured, replaces {SKU} placeholder with the actual SKU.
+   * If productLinkBaseURL is configured, replaces all {SKU} placeholder occurrences with the actual SKU.
    * Otherwise, falls back to links.main from search results.
    */
   const getProductLink = (): string | undefined => {
     const { productLinkBaseURL } = window.nyrisSettings;
     if (productLinkBaseURL && resultDetails.sku) {
-      // Replace {SKU} placeholder with actual SKU
-      return productLinkBaseURL.replace('{SKU}', resultDetails.sku);
+      // Replace all {SKU} placeholder occurrences with actual SKU
+      return productLinkBaseURL.replace(/{SKU}/g, resultDetails.sku);
     }
     return resultDetails.links?.main;
   };

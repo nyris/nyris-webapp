@@ -21,13 +21,13 @@ export const ProductCard = (r: ProductCardProps) => {
 
   /**
    * Gets the product link URL.
-   * If productLinkBaseURL is configured, replaces {SKU} placeholder with the actual SKU.
+   * If productLinkBaseURL is configured, replaces all {SKU} placeholder occurrences with the actual SKU.
    * Otherwise, falls back to links.main from search results.
    */
   const getProductLink = (): string | undefined => {
     if (productLinkBaseURL && r.sku) {
-      // Replace {SKU} placeholder with actual SKU
-      return productLinkBaseURL.replace('{SKU}', r.sku);
+      // Replace all {SKU} placeholder occurrences with actual SKU
+      return productLinkBaseURL.replace(/{SKU}/g, r.sku);
     }
     return r.links?.main;
   };
