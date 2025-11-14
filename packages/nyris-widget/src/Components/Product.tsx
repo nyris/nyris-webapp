@@ -17,16 +17,38 @@ export const ProductCard = (r: ProductCardProps) => {
   const [bounding, setBounding] = useState<any>(null);
 
   const mountPoint = document.querySelector('#nyris-mount-point');
-  const { cadenasAPIKey } = window.nyrisSettings;
+  const { cadenasAPIKey, productLinkBaseURL } = window.nyrisSettings;
+
+  /**
+   * Gets the product link URL.
+   * If productLinkBaseURL is configured, constructs URL as baseURL + sku.
+   * Otherwise, falls back to links.main from search results.
+   */
+  const getProductLink = (): string | undefined => {
+    if (productLinkBaseURL && r.sku) {
+      // Ensure baseURL ends with / if it doesn't already
+      const baseURL = productLinkBaseURL.endsWith('/')
+        ? productLinkBaseURL
+        : `${productLinkBaseURL}/`;
+      return `${baseURL}${r.sku}`;
+    }
+    return r.links?.main;
+  };
 
   const getCTAURL = () => {
-    if (!r.metadata || !r.metadata.startsWith('search?')) {
-      return r.links?.main;
+    // If productLinkBaseURL is configured, always use it (prioritize custom product links)
+    if (productLinkBaseURL && r.sku) {
+      return getProductLink();
     }
-    const index = window.location.href.indexOf('/#/');
-    return index !== -1
-      ? `${window.location.href.substring(0, index + 3)}${r.metadata}`
-      : window.location.href;
+    // If metadata starts with 'search?', handle it as a special case
+    if (r.metadata && r.metadata.startsWith('search?')) {
+      const index = window.location.href.indexOf('/#/');
+      return index !== -1
+        ? `${window.location.href.substring(0, index + 3)}${r.metadata}`
+        : window.location.href;
+    }
+    // Otherwise, use the product link (links.main from search results)
+    return getProductLink();
   };
 
   return (
@@ -44,7 +66,7 @@ export const ProductCard = (r: ProductCardProps) => {
             ''
           )}
           <a
-            href={r.links?.main}
+            href={getProductLink()}
             target={window.nyrisSettings.navigatePreference}
             className="nyris__product-image"
           >
@@ -113,7 +135,9 @@ export const ProductCard = (r: ProductCardProps) => {
             <div className="nyris__product-button">
               {window.nyrisSettings.ctaButtonText}
             </div>
-            {r.links?.main && <img src={link} width={'14px'} height={'14px'} />}
+            {getProductLink() && (
+              <img src={link} width={'14px'} height={'14px'} />
+            )}
           </a>
         </div>
       </div>

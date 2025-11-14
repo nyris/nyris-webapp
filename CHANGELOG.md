@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.86 - 2025-11-14
+
+### Added
+- Product link base URL for widget
+
 ## 0.3.85 - 2025-11-07
 
 ### Updated
