@@ -193,7 +193,7 @@ function TextSearch({
           setShowLoading(false);
           setShowNotMatchedError(true);
           setTimeout(() => {
-            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
+            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle }));
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
@@ -201,8 +201,7 @@ function TextSearch({
         }
       } else {
         if (specifications?.is_nameplate) {
-          console.log('here');
-          setSpecifications({...specifications, prefilter_value: ''});
+          setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
         } else {
           setSpecifications({is_nameplate: false, prefilter_value: ''});
         }

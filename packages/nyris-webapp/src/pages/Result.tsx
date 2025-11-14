@@ -324,8 +324,11 @@ function Results() {
                   }}
                 >
                   {!specifications.specificationPrefilter
-                    ? t('Showing results for machine', { prefilter_title: window.settings.preFilterTitle?.toLocaleLowerCase(), prefilter_value: specifications.prefilter_value })
-                    : t('No matches found for', { prefilter_title: window.settings.preFilterTitle?.toLocaleLowerCase(), prefilter_value: specifications.specificationPrefilter })
+                    && specifications.prefilter_value
+                    && t('Showing results for machine', { prefilter_value: specifications.prefilter_value })
+                  }
+                  {specifications.specificationPrefilter
+                    && t('No matches found for', { prefilter_value: specifications.specificationPrefilter })
                   }
                 </div>
               )}

@@ -21,7 +21,6 @@ const PreFilterComponent = (props: Props) => {
   const { handleClose } = props;
   const { settings } = window;
   const [resultFilter, setResultFilter] = useState<any>([]);
-  const [showNotMatchedError, setShowNotMatchedError] = useState(false);
 
   const [searchKey, setSearchKey] = useState<string>('');
 
@@ -77,13 +76,6 @@ const PreFilterComponent = (props: Props) => {
         }, {});
         setResultFilter(newResult);
         setColumns(Object.keys(newResult).length);
-
-        const hasPrefilter = res.filter((filter: any) => filter.values.includes(specification?.prefilter_value || ''));
-        if (isEmpty(keyFilter)) {
-          setShowNotMatchedError(specification?.prefilter_value ? !hasPrefilter?.length : false);
-        } else {
-          setShowNotMatchedError(false);
-        }
         
       })
       .catch((e: any) => {
@@ -137,10 +129,10 @@ const PreFilterComponent = (props: Props) => {
         : '';
     setAlgoliaFilter(filter);
 
-    if (showNotMatchedError) {
-      setSpecifications({ prefilter_value: Object.keys(preFilter)[0] });
-      navigate('/result');
+    if (preFilterValues?.length && preFilterValues[0] !== specification.prefilter_value) {
+      setSpecifications({});
     }
+
     handleClose();
 
     if (requestImages.length === 0) {

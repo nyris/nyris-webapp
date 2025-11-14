@@ -120,7 +120,7 @@ function CustomCamera(props: Props) {
           handleClose();
           setShowNotMatchedError(true);
           setTimeout(() => {
-            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched'));
+            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle }));
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
