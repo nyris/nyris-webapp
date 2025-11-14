@@ -2,7 +2,18 @@ import { Region, RectCoords, NyrisAPISettings } from '@nyris/nyris-api';
 import { FeedbackStatus } from './type';
 
 export type CadenasScriptStatus = 'ready' | 'loading' | 'failed' | 'disabled';
-export type Language = 'de' | 'en' | 'fr' | 'pl' | 'it' | 'se' | 'es' | 'da' | 'nl' | 'no' | 'ru';
+export type Language =
+  | 'de'
+  | 'en'
+  | 'fr'
+  | 'pl'
+  | 'it'
+  | 'se'
+  | 'es'
+  | 'da'
+  | 'nl'
+  | 'no'
+  | 'ru';
 
 export enum WidgetScreen {
   Hidden = 'hidden',
@@ -31,6 +42,7 @@ export interface NyrisSettings extends NyrisAPISettings {
   searchCriteriaKey?: string;
   filter?: { label: string; field: string }[];
   emailTemplateId?: string;
+  productLinkBaseURL?: string; // Base URL for constructing product links (baseURL + sku)
 }
 
 export interface AppProps {
