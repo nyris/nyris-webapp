@@ -129,8 +129,9 @@ const PreFilterComponent = (props: Props) => {
         : '';
     setAlgoliaFilter(filter);
 
-    if (preFilterValues?.length && preFilterValues[0] !== specification.prefilter_value) {
-      setSpecifications({});
+    if (preFilterValues?.length && preFilterValues[0] !== specification?.prefilter_value) {
+      console.log('here');
+      setSpecifications({ prefilter_value: preFilterValues?.join(', ') || ''});
     }
 
     handleClose();

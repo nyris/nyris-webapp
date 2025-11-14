@@ -128,9 +128,9 @@ function CustomCamera(props: Props) {
         }
       } else {
         if (specifications?.is_nameplate) {
-          setSpecifications({...specifications, prefilter_value: ''});
+          setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
         } else {
-          setSpecifications({is_nameplate: false, prefilter_value: ''});
+          setSpecifications({...specifications, is_nameplate: false});
         }
         setShowLoading(false);
         handleClose();

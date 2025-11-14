@@ -203,7 +203,7 @@ function TextSearch({
         if (specifications?.is_nameplate) {
           setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
         } else {
-          setSpecifications({is_nameplate: false, prefilter_value: ''});
+          setSpecifications({...specifications, is_nameplate: false});
         }
         setShowLoading(false);
         navigate('/result');
@@ -307,10 +307,10 @@ function TextSearch({
                   style={{
                     position: 'fixed',
                     backgroundColor:
-                      nameplateNotificationText !== t('Extracted details from the nameplate could not be matched')
+                      nameplateNotificationText !== t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle })
                         ? '#E4E3FF' : '#FFDBB3',
                     border: '1px solid',
-                    borderColor: nameplateNotificationText !== t('Extracted details from the nameplate could not be matched') ? '#3E36DC' : '#FF8800',
+                    borderColor: nameplateNotificationText !== t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle }) ? '#3E36DC' : '#FF8800',
                     fontSize: 13,
                     borderRadius: 24,
                     color: '#545987',
@@ -339,8 +339,18 @@ function TextSearch({
                       height: 0,
                       borderLeft: '7px solid transparent',
                       borderRight: '7px solid transparent',
-                      borderTop: isMobile ? `7px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched') ? '#3E36DC' : '#FF8800'}`  : 'unset',
-                      borderBottom: !isMobile ? `7px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched') ? '#3E36DC' : '#FF8800'}`  : 'unset',
+                      borderTop: isMobile
+                        ? `7px solid ${
+                          nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
+                            { preFilterTitle: window.settings.preFilterTitle }) ? '#3E36DC' : '#FF8800'
+                          }`
+                        : 'unset',
+                      borderBottom: !isMobile
+                        ? `7px solid ${
+                        nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
+                          { preFilterTitle: window.settings.preFilterTitle }) ? '#3E36DC' : '#FF8800'
+                        }`
+                        : 'unset',
                     }}
                   />
 
@@ -355,8 +365,14 @@ function TextSearch({
                       height: 0,
                       borderLeft: '6px solid transparent',
                       borderRight: '6px solid transparent',
-                      borderTop: isMobile ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched') ? '#E4E3FF' : '#FFDBB3'}` : 'unset',
-                      borderBottom: !isMobile ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched') ? '#E4E3FF' : '#FFDBB3'}` : 'unset',
+                      borderTop: isMobile
+                        ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
+                          { preFilterTitle: window.settings.preFilterTitle }) ? '#E4E3FF' : '#FFDBB3'}`
+                        : 'unset',
+                      borderBottom: !isMobile
+                        ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
+                          { preFilterTitle: window.settings.preFilterTitle }) ? '#E4E3FF' : '#FFDBB3'}`
+                        : 'unset',
                     }}
                   />
                   {nameplateNotificationText}

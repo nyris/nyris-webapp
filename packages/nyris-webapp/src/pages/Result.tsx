@@ -314,24 +314,22 @@ function Results() {
                 'desktop:mt-0',
               ])}
             >
-              {specifications?.is_nameplate && (
-                <div
-                  style={{
-                    fontWeight: 700,
-                    fontSize: 16,
-                    marginLeft: 16,
-                    marginBottom: 16,
-                  }}
-                >
-                  {!specifications.specificationPrefilter
-                    && specifications.prefilter_value
-                    && t('Showing results for machine', { prefilter_value: specifications.prefilter_value })
-                  }
-                  {specifications.specificationPrefilter
-                    && t('No matches found for', { prefilter_value: specifications.specificationPrefilter })
-                  }
-                </div>
-              )}
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: 16,
+                  marginLeft: 16,
+                  marginBottom: 16,
+                }}
+              >
+                {!specifications?.specificationPrefilter
+                  && specifications?.prefilter_value
+                  && t('Showing results for machine', { prefilter_value: specifications.prefilter_value })
+                }
+                {specifications?.is_nameplate && specifications?.specificationPrefilter
+                  && t('No matches found for', { prefilter_value: specifications.specificationPrefilter })
+                }
+              </div>
               <div
                 className={twMerge([
                   'h-full',

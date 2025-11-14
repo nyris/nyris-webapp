@@ -133,9 +133,9 @@ function ImagePreviewComponent({
           }
         } else {
           if (specifications?.is_nameplate) {
-            setSpecifications({...specifications, prefilter_value: ''});
+            setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
           } else {
-            setSpecifications({is_nameplate: false, prefilter_value: ''});
+            setSpecifications({...specifications, is_nameplate: false});
           }
           const highConfidence = res.results.find(
             (data: { score: number }) => data.score >= 0.65,
