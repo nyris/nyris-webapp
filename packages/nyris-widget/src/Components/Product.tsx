@@ -21,16 +21,13 @@ export const ProductCard = (r: ProductCardProps) => {
 
   /**
    * Gets the product link URL.
-   * If productLinkBaseURL is configured, constructs URL as baseURL + sku.
+   * If productLinkBaseURL is configured, replaces {SKU} placeholder with the actual SKU.
    * Otherwise, falls back to links.main from search results.
    */
   const getProductLink = (): string | undefined => {
     if (productLinkBaseURL && r.sku) {
-      // Ensure baseURL ends with / if it doesn't already
-      const baseURL = productLinkBaseURL.endsWith('/') 
-        ? productLinkBaseURL 
-        : `${productLinkBaseURL}/`;
-      return `${baseURL}${r.sku}`;
+      // Replace {SKU} placeholder with actual SKU
+      return productLinkBaseURL.replace('{SKU}', r.sku);
     }
     return r.links?.main;
   };
