@@ -36,6 +36,10 @@ export const ProductCard = (r: ProductCardProps) => {
   };
 
   const getCTAURL = () => {
+    // If productLinkBaseURL is configured, always use it (prioritize custom product links)
+    if (productLinkBaseURL && r.sku) {
+      return getProductLink();
+    }
     // If metadata starts with 'search?', handle it as a special case
     if (r.metadata && r.metadata.startsWith('search?')) {
       const index = window.location.href.indexOf('/#/');
@@ -43,7 +47,7 @@ export const ProductCard = (r: ProductCardProps) => {
         ? `${window.location.href.substring(0, index + 3)}${r.metadata}`
         : window.location.href;
     }
-    // Otherwise, use the product link (either baseURL + sku or links.main)
+    // Otherwise, use the product link (links.main from search results)
     return getProductLink();
   };
 

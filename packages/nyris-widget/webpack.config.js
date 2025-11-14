@@ -32,11 +32,26 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx|ts|tsx)$/,
-        exclude: /node_modules/,
+        exclude: [
+          /node_modules/,
+          /packages\/(?!nyris-widget)/
+        ],
+        include: [
+          path.resolve(__dirname, "src"),
+        ],
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env"],
+            presets: [
+              "@babel/preset-env",
+              "@babel/preset-react",
+              "@babel/preset-typescript"
+            ],
+            plugins: [
+              "@babel/plugin-proposal-class-properties",
+              "@babel/proposal-object-rest-spread",
+              "@babel/plugin-transform-runtime"
+            ],
           },
         },
       },
