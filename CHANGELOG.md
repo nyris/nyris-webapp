@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.87 - 2025-11-14
+
+### Added
+- Widget: Adds support for constructing product links using a configurable baseURL with {SKU} placeholder replacement.
+
 ## 0.3.86 - 2025-11-14
 
 ### Added
