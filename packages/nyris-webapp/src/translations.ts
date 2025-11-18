@@ -72,8 +72,8 @@ export const translations = {
       'Barcodes': 'Barcodes',
       'Nameplate not matching': 'Nameplate detected, but {{prefilter_value}} was not found in the list. You can select the correct {{preFilterTitle}} to continue.',
       'Extracted details from the nameplate could not be matched': 'Extracted details from the nameplate could not be matched to a known {{preFilterTitle}}. Select a different machine, send details to support via the Inquiry button, or continue searching.',
-      'Showing results for machine': 'Showing results for machine {{prefilter_title}} \'{{prefilter_value}}\'',
-      'No matches found for': 'No matches found for machine {{prefilter_title}} \'{{prefilter_value}}\'. Showing all items instead.',
+      'Showing results for machine': `Showing results for machine {{prefilter_title}} '{{prefilter_value}}'`,
+      'No matches found for': `No matches found for machine {{prefilter_title}} '{{prefilter_value}}'. Showing all items instead.`,
     },
   },
   de: {
