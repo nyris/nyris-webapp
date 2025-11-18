@@ -11,6 +11,7 @@ import { twMerge } from 'tailwind-merge';
 import Tooltip from 'components/Tooltip/TooltipComponent';
 import { Skeleton } from 'components/Skeleton';
 import { useNavigate } from 'react-router';
+import useResultStore from "../../stores/result/resultStore";
 
 interface Props {
   handleClose?: any;
@@ -37,6 +38,7 @@ const PreFilterComponent = (props: Props) => {
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const specification = useRequestStore(state => state.specifications);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
+  const setImageAnalysis = useResultStore(state => state.setImageAnalysis);
 
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
@@ -130,8 +132,10 @@ const PreFilterComponent = (props: Props) => {
     setAlgoliaFilter(filter);
 
     if (preFilterValues?.length && preFilterValues[0] !== specification?.prefilter_value) {
-      console.log('here');
       setSpecifications({ prefilter_value: preFilterValues?.join(', ') || ''});
+    }
+    if (specification?.is_nameplate) {
+      setImageAnalysis({});
     }
 
     handleClose();

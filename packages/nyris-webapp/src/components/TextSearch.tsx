@@ -193,7 +193,7 @@ function TextSearch({
           setShowLoading(false);
           setShowNotMatchedError(true);
           setTimeout(() => {
-            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle }));
+            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
@@ -307,10 +307,10 @@ function TextSearch({
                   style={{
                     position: 'fixed',
                     backgroundColor:
-                      nameplateNotificationText !== t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle })
+                      nameplateNotificationText !== t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() })
                         ? '#E4E3FF' : '#FFDBB3',
                     border: '1px solid',
-                    borderColor: nameplateNotificationText !== t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle }) ? '#3E36DC' : '#FF8800',
+                    borderColor: nameplateNotificationText !== t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#3E36DC' : '#FF8800',
                     fontSize: 13,
                     borderRadius: 24,
                     color: '#545987',
@@ -342,13 +342,13 @@ function TextSearch({
                       borderTop: isMobile
                         ? `7px solid ${
                           nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
-                            { preFilterTitle: window.settings.preFilterTitle }) ? '#3E36DC' : '#FF8800'
+                            { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#3E36DC' : '#FF8800'
                           }`
                         : 'unset',
                       borderBottom: !isMobile
                         ? `7px solid ${
                         nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
-                          { preFilterTitle: window.settings.preFilterTitle }) ? '#3E36DC' : '#FF8800'
+                          { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#3E36DC' : '#FF8800'
                         }`
                         : 'unset',
                     }}
@@ -367,11 +367,11 @@ function TextSearch({
                       borderRight: '6px solid transparent',
                       borderTop: isMobile
                         ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
-                          { preFilterTitle: window.settings.preFilterTitle }) ? '#E4E3FF' : '#FFDBB3'}`
+                          { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#E4E3FF' : '#FFDBB3'}`
                         : 'unset',
                       borderBottom: !isMobile
                         ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
-                          { preFilterTitle: window.settings.preFilterTitle }) ? '#E4E3FF' : '#FFDBB3'}`
+                          { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#E4E3FF' : '#FFDBB3'}`
                         : 'unset',
                     }}
                   />

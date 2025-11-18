@@ -100,7 +100,7 @@ function DragDropFile(props: Props) {
           setShowLoading(false);
           setShowNotMatchedError(true);
           setTimeout(() => {
-            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle }));
+            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
