@@ -324,10 +324,10 @@ function Results() {
               >
                 {!specifications?.specificationPrefilter
                   && specifications?.prefilter_value
-                  && t('Showing results for machine', { prefilter_title: window.settings.preFilterTitle, prefilter_value: specifications.prefilter_value })
+                  && t('Showing results for machine', { prefilter_title: window.settings.preFilterTitle?.toLocaleLowerCase(), prefilter_value: specifications.prefilter_value })
                 }
                 {specifications?.is_nameplate && specifications?.specificationPrefilter
-                  && t('No matches found for', { prefilter_title: window.settings.preFilterTitle, prefilter_value: specifications.specificationPrefilter })
+                  && t('No matches found for', { prefilter_title: window.settings.preFilterTitle?.toLocaleLowerCase(), prefilter_value: specifications.specificationPrefilter })
                 }
               </div>
               <div
