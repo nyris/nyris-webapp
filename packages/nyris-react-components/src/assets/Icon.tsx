@@ -45,6 +45,7 @@ import { ReactComponent as Barcode } from './icons/barcode.svg';
 import { ReactComponent as Label } from './icons/label.svg';
 import { ReactComponent as Part } from './icons/part.svg';
 import { ReactComponent as Typeplate } from './icons/typeplate.svg';
+import { ReactComponent as MobileCamera } from './icons/mobile_camera.svg';
 
 import { SUPPORTED_ICON } from './types';
 
@@ -82,6 +83,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   logout: { component: Logout },
   machine_view: { component: MachineView },
   minus: { component: Minus },
+  mobile_camera: { component: MobileCamera },
   next_arrow: { component: NextArrow },
   part: { component: Part },
   plus_rounded: { component: PlusRounded },

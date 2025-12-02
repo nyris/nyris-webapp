@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import { createPortal } from "react-dom";
-import { ReactComponent as Box3dIcon } from "./images/3d.svg";
-import { ReactComponent as IconClose } from "./images/close.svg";
-import { ResultProps } from "./Components/Product";
-import CadenasWebViewer from "./CadenasWebViewer";
-import link from "./images/link.svg";
-import { CadenasScriptStatus } from "./App";
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
+import { ReactComponent as Box3dIcon } from './images/3d.svg';
+import { ReactComponent as IconClose } from './images/close.svg';
+import CadenasWebViewer from './CadenasWebViewer';
+import link from './images/link.svg';
+import { CadenasScriptStatus, ResultProps } from './types';
 
 const Popup3D = ({
   resultDetails,
@@ -15,17 +14,31 @@ const Popup3D = ({
   cadenasScriptStatus?: CadenasScriptStatus;
 }) => {
   const [showModal, setShowModal] = useState(false);
-  const mountPoint = document.querySelector(".nyris__wrapper");
+  const mountPoint = document.querySelector('.nyris__wrapper');
   const [status3dView, setStatus3dView] = useState<
-    "loading" | "loaded" | "not-found" | undefined
-  >("loading");
+    'loading' | 'loaded' | 'not-found' | undefined
+  >('loading');
+
+  /**
+   * Gets the product link URL.
+   * If productLinkBaseURL is configured, replaces all {SKU} placeholder occurrences with the actual SKU.
+   * Otherwise, falls back to links.main from search results.
+   */
+  const getProductLink = (): string | undefined => {
+    const { productLinkBaseURL } = window.nyrisSettings;
+    if (productLinkBaseURL && resultDetails.sku) {
+      // Replace all {SKU} placeholder occurrences with actual SKU
+      return productLinkBaseURL.replace(/{SKU}/g, resultDetails.sku);
+    }
+    return resultDetails.links?.main;
+  };
 
   const modalToggle = (isOpen: boolean) => {
     setShowModal(isOpen);
     if (isOpen) {
-      document.body.classList.add("overflow-hidden");
+      document.body.classList.add('overflow-hidden');
     } else {
-      document.body.classList.remove("overflow-hidden");
+      document.body.classList.remove('overflow-hidden');
     }
   };
 
@@ -37,7 +50,7 @@ const Popup3D = ({
           modalToggle(true);
         }}
       >
-        <Box3dIcon width={16} height={16} color={"#AAABB5"} />
+        <Box3dIcon width={16} height={16} color={'#AAABB5'} />
       </div>
 
       {mountPoint &&
@@ -45,23 +58,23 @@ const Popup3D = ({
         createPortal(
           <div
             className="nyris__custom-modal"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               modalToggle(false);
             }}
           >
             <div
               className="nyris__custom-modal-body"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
               }}
             >
               <IconClose
                 width={24}
                 height={24}
-                fill={"#2B2C46"}
+                fill={'#2B2C46'}
                 className="close-icon"
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   modalToggle(false);
                 }}
@@ -82,24 +95,24 @@ const Popup3D = ({
                 </div>
                 <a
                   className="nyris__product-cta"
-                  href={resultDetails.links?.main}
+                  href={getProductLink()}
                   target={window.nyrisSettings.navigatePreference}
                   style={{
                     backgroundColor:
-                      window.nyrisSettings.primaryColor || "#3E36DC",
+                      window.nyrisSettings.primaryColor || '#3E36DC',
                   }}
                 >
                   <div className="nyris__product-button">
                     {window.nyrisSettings.ctaButtonText}
                   </div>
-                  {resultDetails.links?.main && (
-                    <img src={link} width={"14px"} height={"14px"} />
+                  {getProductLink() && (
+                    <img src={link} width={'14px'} height={'14px'} />
                   )}
                 </a>
               </div>
             </div>
           </div>,
-          mountPoint
+          mountPoint,
         )}
     </>
   );

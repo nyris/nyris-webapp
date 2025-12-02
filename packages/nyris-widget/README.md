@@ -26,6 +26,9 @@ Inside your HTML (best just before the closing ```</body>``` tag), add the follo
         searchCriteriaKey: '', // Define the attribute where filter values are stored
         filter: [] // Define attributes and labels for search Refinements e.g. [{label: 'Brand', field: 'brand' }]
         emailTemplateId: '', // emailjs template id for sending inquiry support email
+        productLinkBaseURL: '', // Base URL for constructing product links. Must include {SKU} placeholder(s) which will be replaced with the actual SKU.
+        // Examples: 'https://example.com/products/{SKU}' or 'https://example.com/search?sku={SKU}&id={SKU}'
+        // Multiple {SKU} occurrences are supported and will all be replaced with the same SKU value.
     };
     var s = document.createElement("script");
     s.src = "https://assets.nyris.io/nyris-widget/v1/widget.js";

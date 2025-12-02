@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.87 - 2025-11-14
+
+### Added
+- Widget: Adds support for constructing product links using a configurable baseURL with {SKU} placeholder replacement.
+
+## 0.3.86 - 2025-11-14
+
+### Added
+- Product link base URL for widget
+
+## 0.3.85 - 2025-11-07
+
+### Updated
+- Carousel size in Products Detail View popup
+
+## 0.3.84 - 2025-11-05
+
+### Updated
+- Mobile camera icon
+- Minimum size for product detail popup
+
+### Fixed
+- Product detail popup carousel
+
 ## 0.3.83 - 2025-09-23
 
 ### Updated
