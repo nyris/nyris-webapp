@@ -36,7 +36,7 @@ Image Scan:
   stage: Security Scanning
   extends: .trivy_base
   rules:
-      when: never
+    - when: never
 
 publish to npm:
   stage: publish
