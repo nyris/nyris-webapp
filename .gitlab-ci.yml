@@ -37,6 +37,8 @@ Image Scan:
   extends: .trivy_base
   rules:
     - when: never
+  needs: []
+  script: []
 
 publish to npm:
   stage: publish
