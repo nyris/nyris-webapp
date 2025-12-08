@@ -38,7 +38,8 @@ Image Scan:
   rules:
     - when: never
   needs: []
-  script: []
+  script:
+    - echo "This should never run"
 
 publish to npm:
   stage: publish
