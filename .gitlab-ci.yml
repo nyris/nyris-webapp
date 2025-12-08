@@ -1,3 +1,12 @@
+variables:
+  TRIVY_RUN_IMAGE_SCAN: false
+
+include:
+  - file:
+      - security-scanning.yaml
+    project: gitlab/gitlab-ci-include-files
+    ref: develop
+
 stages:
   - build
   - publish
@@ -21,7 +30,6 @@ build:
     - (cd packages/nyris-api && npm pack && mv nyris-nyris-api-*.tgz ../../npm-packages/)
     - (cd packages/nyris-widget && npm pack && mv nyris-nyris-widget-*.tgz ../../npm-packages/)
     - (cd packages/nyris-webapp && npm pack && mv nyris-nyris-webapp-*.tgz ../../npm-packages/)
-
 
 publish to npm:
   stage: publish
