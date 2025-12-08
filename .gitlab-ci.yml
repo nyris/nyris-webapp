@@ -9,6 +9,7 @@ include:
 
 stages:
   - build
+  - Security Scanning
   - publish
 
 build:
