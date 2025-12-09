@@ -280,7 +280,7 @@ function Product(props: Props) {
               'justify-between',
               'flex',
               'flex-col',
-              'bg-[#FAFAFA]',
+              'bg-[#fff]',
               'flex-grow',
               'z-10',
               'pt-2',
@@ -416,7 +416,7 @@ function Product(props: Props) {
                     background:
                       settings.secondaryCTAButton?.secondaryCTAButtonColor ||
                       '#2B2C46',
-                    borderRadius: 2,
+                    borderRadius: 4,
                     padding: '0px 8px',
                     marginBottom: settings.CTAButton?.CTAButton ? 8 : 0,
                     display: 'flex',
@@ -493,7 +493,7 @@ function Product(props: Props) {
                     background:
                       settings.CTAButton?.CTAButtonColor ||
                       settings.theme?.primaryColor,
-                    borderRadius: 2,
+                    borderRadius: 4,
                     padding: '0px 8px',
                     display: 'flex',
                     justifyItems: 'center',

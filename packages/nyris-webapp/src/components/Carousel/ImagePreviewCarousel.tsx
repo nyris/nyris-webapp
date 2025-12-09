@@ -84,7 +84,7 @@ export const ImagePreviewCarousel = (props: Props) => {
         }}
         options={mainOptions}
         ref={mainRef}
-        style={{ maxWidth: '100%', height: isMobile ? '80%' : '' }}
+        style={{ maxWidth: '100%', height: isMobile ? '80%' : 'calc(100% - 48px);' }}
       >
         {renderSlides()}
       </Splide>

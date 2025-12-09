@@ -104,6 +104,21 @@
     display: none !important;
   }
 
+.drag-n-drop-label {
+    background-color: transparent;
+    padding: 24px;
+    &:hover {
+        background-color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border-radius: 24px;
+        .drag-n-drop-inner {
+            background-color: #F0EFFF;
+            border-color: #e0e0e0;
+            color: #2B2C46;
+        }
+    }
+}
+
 .custom-modal {
   position: absolute;
   z-index: 99999;

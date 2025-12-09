@@ -3,6 +3,7 @@ export const ICONS = {
   auto_focus: 'auto_focus',
   avatar: 'avatar',
   back: 'back',
+  barcode: 'barcode',
   box3d: 'box3d',
   call: 'call',
   camera_simple: 'camera_simple',
@@ -23,6 +24,7 @@ export const ICONS = {
   filter: 'filter',
   gallery: 'gallery',
   info: 'info',
+  label: 'label',
   like: 'like',
   link: 'link',
   logout: 'logout',
@@ -30,6 +32,7 @@ export const ICONS = {
   minus: 'minus',
   mobile_camera: 'mobile_camera',
   next_arrow: 'next_arrow',
+  part: 'part',
   plus_rounded: 'plus_rounded',
   plus: 'plus',
   powered_by_nyris: 'powered_by_nyris',
@@ -39,6 +42,7 @@ export const ICONS = {
   share: 'share',
   spare: 'spare',
   trash: 'trash',
+  typeplate: 'typeplate',
   wear: 'wear',
 } as const;
 

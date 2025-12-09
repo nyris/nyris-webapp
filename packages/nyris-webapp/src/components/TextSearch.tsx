@@ -1,6 +1,5 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
-
-import { isEmpty, debounce } from 'lodash';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { isEmpty, debounce, clone } from 'lodash';
 import { twMerge } from 'tailwind-merge';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useLocation, useNavigate } from 'react-router';
@@ -15,6 +14,8 @@ import PreFilterModal from './PreFilter/PreFilterModal';
 import useRequestStore from 'stores/request/requestStore';
 import Tooltip from './Tooltip/TooltipComponent';
 import UploadDisclaimer from './UploadDisclaimer';
+import { getFilters } from '../services/filter';
+import { useMediaQuery } from 'react-responsive';
 
 function TextSearch({
   className,
@@ -27,11 +28,14 @@ function TextSearch({
   const user = useAuth0().user;
 
   const focusInp: any = useRef<HTMLDivElement | null>(null);
+  const iconRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation();
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [resultFilter, setResultFilter] = useState<any>([]);
 
   const preFilter = useRequestStore(state => state.preFilter);
   const requestImages = useRequestStore(state => state.requestImages);
@@ -40,8 +44,19 @@ function TextSearch({
   const valueInput = useRequestStore(state => state.valueInput);
   const setValueInput = useRequestStore(state => state.setValueInput);
   const setMetaFilter = useRequestStore(state => state.setMetaFilter);
+  const specifications = useRequestStore(state => state.specifications);
+  const nameplateNotificationText = useRequestStore(state => state.nameplateNotificationText);
+  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const regions = useRequestStore(state => state.regions);
+  const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const setSpecifications = useRequestStore(state => state.setSpecifications);
+  const setShowLoading = useRequestStore(state => state.setShowLoading);
+  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
+  const setShowNotMatchedError = useRequestStore(state => state.setShowNotMatchedError);
+  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+  const setPreFilter = useRequestStore(state => state.setPreFilter);
+  const setNameplateImage = useRequestStore(state => state.setNameplateImage);
 
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] =
     useState<boolean>(false);
@@ -84,7 +99,7 @@ function TextSearch({
   const searchOrRedirect = useCallback(
     debounce((value: any) => {
       setQuery(value);
-      if (requestImages.length === 0 && value === '') {
+      if (requestImages.length === 0 && value === '' && !specifications) {
         navigate('/');
         return;
       }
@@ -109,19 +124,31 @@ function TextSearch({
     setValueInput(event.currentTarget.value);
     searchOrRedirect(event.currentTarget.value);
 
-    if (event.currentTarget.value === '') {
+    if (event.currentTarget.value === '' && !specifications) {
       setValueInput('');
       setQuery('');
     }
   };
 
   const { cadSearch } = useCadSearch();
+  
+  const getPreFilters = async () => {
+    getFilters(1000, settings)
+      .then(res => {
+        setResultFilter(res);
+      })
+      .catch((e: any) => {
+        console.log('err getDataFilterDesktop', e);
+      });
+  }
+
+  useEffect(() => {
+    getPreFilters()
+  }, []);
 
   const handleUpload = (files: File[]) => {
     setValueInput('');
     setQuery('');
-
-    navigate('/result');
 
     if (isCadFile(files[0])) {
       cadSearch({ file: files[0], settings, newSearch: true }).then(res => {});
@@ -129,12 +156,59 @@ function TextSearch({
       return;
     }
 
+    setShowLoading(true);
+
     singleImageSearch({
       image: files[0],
       settings: window.settings,
       showFeedback: true,
       newSearch: true,
-    }).then(() => {});
+    }).then((singleImageResp) => {
+      const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
+      const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
+      if (specificationPrefilter) {
+        setRequestImages([]);
+        setShowNotMatchedError(false);
+        if (hasPrefilter.length) {
+          setSpecifications(clone(singleImageResp.image_analysis.specification));
+          setNameplateImage(files[0]);
+          setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
+          setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+
+          setShowLoading(false);
+          navigate('/result');
+
+          setTimeout(() => {
+            setNameplateNotificationText(t('We have successfully defined the search criteria', { prefilter_value: specificationPrefilter, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+          }, 1000);
+          setTimeout(() => {
+            setNameplateNotificationText('');
+          }, 6000);
+        }
+        if (!hasPrefilter.length && showPreFilter) {
+          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
+          navigate('/result');
+          setPreFilter({});
+          setAlgoliaFilter('');
+          setShowLoading(false);
+          setShowNotMatchedError(true);
+          setTimeout(() => {
+            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+          }, 1000);
+          setTimeout(() => {
+            setNameplateNotificationText('');
+          }, 6000);
+        }
+      } else {
+        if (specifications?.is_nameplate) {
+          setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
+        } else {
+          setSpecifications({...specifications, is_nameplate: false});
+        }
+        setShowLoading(false);
+        navigate('/result');
+      }
+    });
   };
 
   return (
@@ -159,7 +233,6 @@ function TextSearch({
           'flex',
           'h-full',
           'justify-between',
-          'overflow-hidden',
           'p-0',
           'rounded-3xl',
           'w-full',
@@ -207,6 +280,7 @@ function TextSearch({
                   }
                 >
                   <div
+                    ref={iconRef}
                     className={twMerge(
                       'p-2 desktop:p-3',
                       location.pathname === '/result' && 'desktop:p-2',
@@ -227,6 +301,82 @@ function TextSearch({
                     />
                   </div>
                 </Tooltip>
+              )}
+              {nameplateNotificationText && (
+                <div
+                  style={{
+                    position: 'fixed',
+                    backgroundColor:
+                      nameplateNotificationText !== t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() })
+                        ? '#E4E3FF' : '#FFDBB3',
+                    border: '1px solid',
+                    borderColor: nameplateNotificationText !== t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#3E36DC' : '#FF8800',
+                    fontSize: 13,
+                    borderRadius: 24,
+                    color: '#545987',
+                    padding: '8px 16px',
+                    margin: 'auto',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: 8,
+                    zIndex: 999999,
+                    top: !isMobile ?  60 : 'unset',
+                    bottom: isMobile ? 76 : 'unset',
+                    maxWidth: 510,
+                    width: !isMobile ? 'unset' : '90%',
+                    left: !isMobile ? 'unset' : 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: !isMobile ? -7 : 'unset',
+                      bottom: isMobile ? -7 : 'unset',
+                      left: !isMobile ? '50%' : 30,
+                      transform: 'translateX(-50%)',
+                      width: 0,
+                      height: 0,
+                      borderLeft: '7px solid transparent',
+                      borderRight: '7px solid transparent',
+                      borderTop: isMobile
+                        ? `7px solid ${
+                          nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
+                            { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#3E36DC' : '#FF8800'
+                          }`
+                        : 'unset',
+                      borderBottom: !isMobile
+                        ? `7px solid ${
+                        nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
+                          { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#3E36DC' : '#FF8800'
+                        }`
+                        : 'unset',
+                    }}
+                  />
+
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: !isMobile ? -6 : 'unset',
+                      bottom: isMobile ? -6 : 'unset',
+                      left: !isMobile ? '50%' : 30,
+                      transform: 'translateX(-50%)',
+                      width: 0,
+                      height: 0,
+                      borderLeft: '6px solid transparent',
+                      borderRight: '6px solid transparent',
+                      borderTop: isMobile
+                        ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
+                          { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#E4E3FF' : '#FFDBB3'}`
+                        : 'unset',
+                      borderBottom: !isMobile
+                        ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
+                          { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#E4E3FF' : '#FFDBB3'}`
+                        : 'unset',
+                    }}
+                  />
+                  {nameplateNotificationText}
+                </div>
               )}
               {!showPreFilter && (
                 <div className="p-2 hidden desktop:block">
@@ -311,6 +461,7 @@ function TextSearch({
                     }
                     return;
                   }
+                  setSpecifications(null);
                   setQuery('');
                   setValueInput('');
                   navigate('/');
@@ -356,6 +507,7 @@ function TextSearch({
                 }
                 onClick={e => {
                   if (!showDisclaimerDisabled) {
+                    // disclaimer
                     setShowDisclaimer(true);
                   } else if (onCameraClick) {
                     onCameraClick();

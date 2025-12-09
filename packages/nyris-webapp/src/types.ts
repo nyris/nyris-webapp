@@ -114,6 +114,7 @@ export interface AppSettings extends NyrisAPISettings {
   geoLocation?: boolean;
   geoLocationMessage?: string;
   visualSearchFilterKey?: string;
+  showImageDetails?: boolean;
 }
 
 export interface SearchSuiteSettings {
