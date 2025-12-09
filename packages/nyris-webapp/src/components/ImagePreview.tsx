@@ -1,6 +1,6 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
-import { debounce } from 'lodash';
+import {clone, debounce} from 'lodash';
 import { twMerge } from 'tailwind-merge';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import { DEFAULT_REGION } from '../constants';
 import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
 import useResultStore from 'stores/result/resultStore';
+import { getFilters } from '../services/filter';
 
 function ImagePreviewComponent({
   showAdjustInfo = false,
@@ -23,6 +24,7 @@ function ImagePreviewComponent({
 }) {
   const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
     useState(false);
+  const [resultFilter, setResultFilter] = useState<any>([]);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -30,11 +32,19 @@ function ImagePreviewComponent({
   const isMultiImageSearchEnabled = settings.multiImageSearch;
 
   const requestImages = useRequestStore(state => state.requestImages);
+  const specifications = useRequestStore(state => state.specifications);
   const resetRegions = useRequestStore(state => state.resetRegions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const regions = useRequestStore(state => state.regions);
   const updateRegion = useRequestStore(state => state.updateRegion);
   const resetRequestStore = useRequestStore(state => state.reset);
+  const setSpecifications = useRequestStore(state => state.setSpecifications);
+  const setShowLoading = useRequestStore(state => state.setShowLoading);
+  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
+  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+  const setPreFilter = useRequestStore(state => state.setPreFilter);
+  const setNameplateImage = useRequestStore(state => state.setNameplateImage);
+  const setShowNotMatchedError = useRequestStore(state => state.setShowNotMatchedError);
 
   const detectedRegions = useResultStore(state => state.detectedRegions);
   const resetResultStore = useResultStore(state => state.reset);
@@ -48,6 +58,20 @@ function ImagePreviewComponent({
 
   const previewWrapperRef = useRef<any>(null);
 
+  const getPreFilters = async () => {
+    getFilters(1000, settings)
+      .then(res => {
+        setResultFilter(res);
+      })
+      .catch((e: any) => {
+        console.log('err getDataFilterDesktop', e);
+      });
+  };
+
+  useEffect(() => {
+    getPreFilters()
+  }, []);
+
   const onImageRemove = () => {
     resetRegions();
     setRequestImages([]);
@@ -55,6 +79,7 @@ function ImagePreviewComponent({
     navigate('/');
     resetResultStore();
     resetRequestStore();
+    setSpecifications(null);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -69,15 +94,59 @@ function ImagePreviewComponent({
         showFeedback: true,
         compress: false,
       }).then((res: any) => {
-        const highConfidence = res.results.find(
-          (data: { score: number }) => data.score >= 0.65,
-        );
-        if (!highConfidence) {
-          setShowAdjustInfoBasedOnConfidence(true);
+        const specificationPrefilter = res.image_analysis?.specification?.prefilter_value || null;
+        const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
+        if (specificationPrefilter) {
+          setRequestImages([]);
+          setShowNotMatchedError(false);
+          if (hasPrefilter.length) {
+            setSpecifications(clone(res.image_analysis.specification));
+            setNameplateImage(image);
+            setPreFilter({[res.image_analysis?.specification?.prefilter_value]: true});
+            setAlgoliaFilter(`${settings.alogoliaFilterField}:'${res.image_analysis?.specification?.prefilter_value}'`);
+
+            setShowLoading(false);
+            navigate('/result');
+
+            setTimeout(() => {
+              setNameplateNotificationText(t('We have successfully defined the search criteria', {
+                prefilter_value: specificationPrefilter,
+                preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase()
+              }));
+            }, 1000);
+            setTimeout(() => {
+              setNameplateNotificationText('');
+            }, 6000);
+          }
+          if (!hasPrefilter.length && window.settings.preFilterOption) {
+            setSpecifications(clone({...res.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
+            setPreFilter({});
+            setAlgoliaFilter('');
+            setShowLoading(false);
+            setShowNotMatchedError(true);
+            setTimeout(() => {
+              setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+            }, 1000);
+            setTimeout(() => {
+              setNameplateNotificationText('');
+            }, 6000);
+          }
+        } else {
+          if (specifications?.is_nameplate) {
+            setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
+          } else {
+            setSpecifications({...specifications, is_nameplate: false});
+          }
+          const highConfidence = res.results.find(
+            (data: { score: number }) => data.score >= 0.65,
+          );
+          if (!highConfidence) {
+            setShowAdjustInfoBasedOnConfidence(true);
+          }
+          setTimeout(() => {
+            setShowAdjustInfoBasedOnConfidence(false);
+          }, 2000);
         }
-        setTimeout(() => {
-          setShowAdjustInfoBasedOnConfidence(false);
-        }, 2000);
       });
       return;
     }, 1500),

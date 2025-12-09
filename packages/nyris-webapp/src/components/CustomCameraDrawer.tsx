@@ -18,6 +18,9 @@ import {
 } from './Drawer/Drawer';
 import { useCadSearch } from 'hooks/useCadSearch';
 import { isCadFile } from '@nyris/nyris-api';
+import { clone } from 'lodash';
+import { getFilters } from '../services/filter';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   show: boolean;
@@ -35,17 +38,41 @@ function CustomCamera(props: Props) {
   const location = useLocation();
   const { singleImageSearch } = useImageSearch();
   const { cadSearch } = useCadSearch();
+  const { t } = useTranslation();
 
   const requestImages = useRequestStore(state => state.requestImages);
-
+  const specifications = useRequestStore(state => state.specifications);
+  const setSpecifications = useRequestStore(state => state.setSpecifications);
+  const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
+  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+  const setPreFilter = useRequestStore(state => state.setPreFilter);
+  const setShowLoading = useRequestStore(state => state.setShowLoading);
+  const setNameplateImage = useRequestStore(state => state.setNameplateImage);
+  const setShowNotMatchedError = useRequestStore(state => state.setShowNotMatchedError);
   const [capturedImages, setCapturedImages] = useState<HTMLCanvasElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageCaptureHelpModal, setImageCaptureHelpModal] = useState(false);
+  const [resultFilter, setResultFilter] = useState<any>([]);
 
   const videoConstraints = {
     width: 1080,
     aspectRatio: 1.11111,
   };
+
+  const getPreFilters = async () => {
+    getFilters(1000, settings)
+      .then(res => {
+        setResultFilter(res);
+      })
+      .catch((e: any) => {
+        console.log('err getDataFilterDesktop', e);
+      });
+  }
+
+  useEffect(() => {
+    getPreFilters()
+  }, []);
 
   const handlerFindImage = async (image: any) => {
     if (location.pathname !== '/result') {
@@ -65,8 +92,51 @@ function CustomCamera(props: Props) {
       settings,
       newSearch,
       showFeedback: true,
-    }).then(() => {});
-    handleClose();
+    }).then((singleImageResp) => {
+      const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
+      const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
+      if (specificationPrefilter) {
+        setRequestImages([]);
+        setShowNotMatchedError(false);
+        if (hasPrefilter.length) {
+          setSpecifications(clone(singleImageResp.image_analysis.specification));
+          setNameplateImage(image);
+          setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
+          setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+
+          setShowLoading(false);
+          handleClose();
+
+          setNameplateNotificationText(t('We have successfully defined the search criteria', { prefilter_value: specificationPrefilter, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+          setTimeout(() => {
+            setNameplateNotificationText('');
+          }, 5000);
+        }
+        if (!hasPrefilter.length && window.settings.preFilterOption) {
+          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
+          setPreFilter({});
+          setAlgoliaFilter('');
+          setShowLoading(false);
+          handleClose();
+          setShowNotMatchedError(true);
+          setTimeout(() => {
+            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+          }, 1000);
+          setTimeout(() => {
+            setNameplateNotificationText('');
+          }, 6000);
+        }
+      } else {
+        if (specifications?.is_nameplate) {
+          setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
+        } else {
+          setSpecifications({...specifications, is_nameplate: false});
+        }
+        setShowLoading(false);
+        handleClose();
+      }
+    });
+    
   };
 
   const handleClose = () => {

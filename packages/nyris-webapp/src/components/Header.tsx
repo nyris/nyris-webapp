@@ -19,6 +19,7 @@ function Header() {
 
   const reset = useRequestStore(state => state.reset);
   const resetResultStore = useResultStore(state => state.reset);
+  const setSpecifications = useRequestStore(state => state.setSpecifications);
 
   const showSearchBar = location?.pathname === '/result';
 
@@ -42,8 +43,9 @@ function Header() {
     >
       <div
         className={twMerge([
+          'w-full',
           'flex',
-          'justify-between',
+          'justify-center',
           'items-center',
           'relative',
           'h-full',
@@ -51,10 +53,11 @@ function Header() {
       >
         <NavLink
           to="/"
-          style={{ lineHeight: 0 }}
+          style={{ lineHeight: 0, position: 'absolute', left: 0 }}
           onClick={() => {
             reset();
             resetResultStore();
+            setSpecifications(null);
           }}
         >
           <img
@@ -68,16 +71,18 @@ function Header() {
           />
         </NavLink>
 
-        <div
-          className={twMerge(['hidden', showSearchBar && 'desktop:block'])}
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
-        >
-          <TextSearch />
+        <div>
+          <div
+            className={twMerge(['hidden', showSearchBar && 'desktop:block'])}
+            style={{
+              // position: 'relative',
+              // left: '50%',
+              // top: '50%',
+              // transform: 'translate(-50%, -50%)',
+            }}
+          >
+            <TextSearch />
+          </div>
         </div>
 
         {auth0.enabled && isAuthenticated && (

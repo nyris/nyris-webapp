@@ -169,9 +169,7 @@ function ProductDetailView(props: Props) {
       </div>
 
       <div
-        className={`overflow-y-auto max-h-[90svh] px-4 pb-4  ${
-          settings.simpleCardView ? 'bg-[#FaFafa]' : 'bg-[#f3f3f5]'
-        } mt-1`}
+        className={`overflow-y-auto max-h-[90svh] px-4 pb-4 'bg-[#fff] mt-1`}
       >
         {settings.simpleCardView ? (
           <div className="info-container">
@@ -186,7 +184,7 @@ function ProductDetailView(props: Props) {
         ) : (
           <div className="box-content flex flex-col bg-[#F3F3F5] mt-4">
             <div className="box-top">
-              <div className="bg-[#F3F3F5] flex flex-col justify-between">
+              <div className="bg-[#fff] flex flex-col justify-between">
                 <div className="gap-1.5 flex flex-wrap w-full">
                   <div className="w-full">
                     {settings.mainTitle && (

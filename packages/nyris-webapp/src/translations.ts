@@ -65,6 +65,15 @@ export const translations = {
       'Please enable location services when prompted.':
         'Please enable location services when prompted.',
       'I understand': 'I understand',
+      'We have successfully defined the search criteria': 'Nameplate detected and matched to {{prefilter_value}}. Items are shown for this {{preFilterTitle}}. You can now upload an image or enter a keyword to search.',
+      'Type plates': 'Type plates',
+      'Parts': 'Parts',
+      'Labels': 'Labels',
+      'Barcodes': 'Barcodes',
+      'Nameplate not matching': 'Nameplate detected, but {{prefilter_value}} was not found in the list. You can select the correct {{preFilterTitle}} to continue.',
+      'Extracted details from the nameplate could not be matched': 'Extracted details from the nameplate could not be matched to a known {{preFilterTitle}}. Select a different machine, send details to support via the Inquiry button, or continue searching.',
+      'Showing results for machine': `Showing results for {{prefilter_title}} '{{prefilter_value}}'`,
+      'No matches found for': `No matches found for {{prefilter_title}} '{{prefilter_value}}'. Showing all items instead.`,
     },
   },
   de: {
@@ -135,6 +144,15 @@ export const translations = {
       'Please enable location services when prompted.':
         'Bitte erlauben Sie den Zugriff auf Ihren Standort.',
       'I understand': 'Weiter',
+      'We have successfully defined the search criteria': 'Typenschild erkannt und mit {{prefilter_value}} abgeglichen. Es werden Artikel für dieses {{preFilterTitle}}. Sie können nun ein Bild hochladen oder ein Stichwort zur Suche eingeben.',
+      'Type plates': 'Typenschilder',
+      'Parts': 'Teile',
+      'Labels': 'Etiketten',
+      'Barcodes': 'Barcodes',
+      'Nameplate not matching': 'Typenschild erkannt, aber {{prefilter_value}} wurde nicht in der Liste gefunden. Sie können die richtigen {{preFilterTitle}}, um fortzufahren.',
+      'Extracted details from the nameplate could not be matched': 'Die vom Typenschild extrahierten Angaben konnten keiner bekannten {{preFilterTitle}} zugeordnet werden. Wählen Sie einen anderen Maschine aus, senden Sie die Angaben über die Schaltfläche „Anfrage” an den Support oder setzen Sie die Suche fort.',
+      'Showing results for machine': `Ergebnisse für {{prefilter_title}} '{{prefilter_value}}' anzeigen`,
+      'No matches found for': `Keine Übereinstimmungen gefunden für {{prefilter_title}} '{{prefilter_value}}'. Alle Artikel anzeigen stattdessen.`,
     },
   },
   pt: {
@@ -206,6 +224,15 @@ export const translations = {
       'Please enable location services when prompted.':
         'Por favor, ative os serviços de localização quando solicitado',
       'I understand': 'Compreendo',
+      'We have successfully defined the search criteria': 'Placa de identificação detetada e correspondente a {{prefilter_value}}. São apresentados os itens para esta {{preFilterTitle}}. Agora pode carregar uma imagem ou introduzir uma palavra-chave para pesquisar.',
+      'Type plates': 'Placa de identificação',
+      'Parts': 'Peças',
+      'Labels': 'Etiquetas',
+      'Barcodes': 'Códigos de barras',
+      'Nameplate not matching': 'Placa de identificação detetada, mas {{prefilter_value}} não foi encontrado na lista. Pode selecionar os {{preFilterTitle}} corretos para continuar.',
+        'Extracted details from the nameplate could not be matched': 'Os detalhes extraídos da placa de identificação não puderam ser correspondidos a uma {{preFilterTitle}} conhecida. Selecione um máquina diferente, envie os detalhes para o suporte através do botão Consulta ou continue a pesquisa.',
+      'Showing results for machine': `Mostrando resultados para {{prefilter_title}} '{{prefilter_value}}'`,
+      'No matches found for': `Não foram encontrados resultados para {{prefilter_title}} '{{prefilter_value}}'. Mostrando todos os itens em vez disso.`,
     },
   },
 };

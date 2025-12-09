@@ -116,3 +116,19 @@ export interface SessionAction {
   setSessionId: (sessionId: string) => void;
   setRequestId: (requestId: string) => void;
 }
+
+export interface SpecificationState {
+  specifications: any;
+  nameplateNotificationText: string;
+  showLoading: boolean;
+  nameplateImage: any;
+  showNotMatchedError: boolean;
+}
+
+export interface SpecificationAction {
+  setSpecifications: (specifications: any) => void;
+  setNameplateNotificationText: (nameplateNotificationText: string) => void;
+  setShowLoading: (show: boolean) => void;
+  setNameplateImage: (nameplateImage: any) => void;
+  setShowNotMatchedError: (showNotMatchedError: boolean) => void;
+}

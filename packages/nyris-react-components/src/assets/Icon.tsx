@@ -41,6 +41,10 @@ import { ReactComponent as AutoFocus } from './icons/auto_focus.svg';
 import { ReactComponent as Wear } from './icons/wear.svg';
 import { ReactComponent as Spare } from './icons/spare.svg';
 import { ReactComponent as Copy } from './icons/copy.svg';
+import { ReactComponent as Barcode } from './icons/barcode.svg';
+import { ReactComponent as Label } from './icons/label.svg';
+import { ReactComponent as Part } from './icons/part.svg';
+import { ReactComponent as Typeplate } from './icons/typeplate.svg';
 import { ReactComponent as MobileCamera } from './icons/mobile_camera.svg';
 
 import { SUPPORTED_ICON } from './types';
@@ -52,6 +56,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   auto_focus: { component: AutoFocus },
   avatar: { component: Avatar },
   back: { component: Back },
+  barcode: { component: Barcode },
   box3d: { component: Box3d },
   call: { component: Call },
   camera_simple: { component: CameraSimple },
@@ -72,6 +77,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   filter: { component: Filter },
   gallery: { component: Gallery },
   info: { component: Info },
+  label: { component: Label },
   like: { component: Like },
   link: { component: Link },
   logout: { component: Logout },
@@ -79,6 +85,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   minus: { component: Minus },
   mobile_camera: { component: MobileCamera },
   next_arrow: { component: NextArrow },
+  part: { component: Part },
   plus_rounded: { component: PlusRounded },
   plus: { component: Plus },
   powered_by_nyris: { component: PoweredByNyris },
@@ -88,6 +95,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   share: { component: Share },
   spare: { component: Spare },
   trash: { component: Trash },
+  typeplate: { component: Typeplate },
   wear: { component: Wear },
 };
 const Icon: FC<

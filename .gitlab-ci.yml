@@ -1,5 +1,15 @@
+variables:
+  TRIVY_RUN_IMAGE_SCAN: false
+
+include:
+  - file:
+      - security-scanning.yaml
+    project: gitlab/gitlab-ci-include-files
+    ref: develop
+
 stages:
   - build
+  - Security Scanning
   - publish
 
 build:
@@ -22,6 +32,14 @@ build:
     - (cd packages/nyris-widget && npm pack && mv nyris-nyris-widget-*.tgz ../../npm-packages/)
     - (cd packages/nyris-webapp && npm pack && mv nyris-nyris-webapp-*.tgz ../../npm-packages/)
 
+Image Scan:
+  stage: Security Scanning
+  extends: .trivy_base
+  rules:
+    - when: never
+  needs: []
+  script:
+    - echo "This should never run"
 
 publish to npm:
   stage: publish

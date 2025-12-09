@@ -6,7 +6,6 @@ import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
-import { useCurrentRefinements } from 'react-instantsearch';
 import { filterProducts } from 'utils/specificationFilter';
 
 interface Props {
@@ -34,10 +33,6 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const setValueInput = useRequestStore(state => state.setValueInput);
   const specificationFilter = useRequestStore(
     state => state.specificationFilter,
-  );
-
-  const specificationFilteredProducts = useResultStore(
-    state => state.specificationFilteredProducts,
   );
 
   const getUrlToCanvasFile = async (url: string) => {

@@ -13,6 +13,7 @@ import { AutosizeTextarea } from 'components/AutosizeTextArea';
 import Tooltip from 'components/Tooltip/TooltipComponent';
 
 import { useTranslation } from 'react-i18next';
+import { createImage } from '../../services/visualSearch';
 interface Props {
   requestImage: any;
   selectedRegion: any;
@@ -44,6 +45,8 @@ export default function InquiryModal({
 }: Props) {
   const settings = window.settings;
   const preFilter = useRequestStore(state => state.preFilter);
+  const specifications = useRequestStore(state => state.specifications);
+  const nameplateImage = useRequestStore(state => state.nameplateImage);
 
   const preFilterValues = Object.keys(preFilter) as string[];
 
@@ -60,6 +63,25 @@ export default function InquiryModal({
   );
   const { t } = useTranslation();
 
+  useEffect(() => {
+    function omitKeys(obj: any, keys: string[]) {
+      return Object.fromEntries(
+        Object.entries(obj).filter(([key]) => !keys.includes(key))
+      );
+    }
+    const omittedSpecification = omitKeys(specifications, ['is_nameplate', 'prefilter_value']);
+    setInformation(
+      Object
+        .entries(omittedSpecification)
+        .reduce((acc, [k, v]) =>
+            v == null || (typeof v === 'string' && v.trim() === '')
+              ? acc
+              : `${acc}${k}: ${v}\n`,
+          ''
+        )
+      );
+  }, [specifications]);
+
   useEffect(() => emailjs.init('SMGihPnuEGcYLm0V4'), []);
   useEffect(() => {
     if (email)
@@ -72,19 +94,28 @@ export default function InquiryModal({
     const croppedImage = requestImage
       ? getCroppedCanvas(requestImage, selectedRegion)
       : null;
+    const nameplateImageCanvas = nameplateImage ? await createImage(nameplateImage) : null;
+    
     const serviceId = 'service_zfsxshi';
     setIsInquiryModalOpen(false);
     const templateId = settings.support?.emailTemplateId;
     if (templateId) {
+      const body = !specifications?.is_nameplate ? {
+        email_id: email.trim(),
+        information_text: information ? information : '<not specified>',
+        request_image: croppedImage?.toDataURL(),
+        prefilter_values: preFilterValues?.length
+          ? preFilterValues.join(', ')
+          : '<not specified>',
+      } : {
+        email_id: email.trim(),
+        information_text: information,
+        request_image: croppedImage?.toDataURL() || '',
+        typeplate_image: nameplateImageCanvas?.toDataURL() || '',
+        prefilter_values: specifications.prefilter_value,
+      };
       try {
-        await emailjs.send(serviceId, templateId, {
-          email_id: email.trim(),
-          information_text: information ? information : '<not specified>',
-          request_image: croppedImage?.toDataURL(),
-          prefilter_values: preFilterValues?.length
-            ? preFilterValues.join(', ')
-            : '<not specified>',
-        });
+        await emailjs.send(serviceId, templateId, body);
         ToastHelper.success(t('Request sent successfully'));
       } catch (error) {
         toast(
@@ -260,7 +291,7 @@ export default function InquiryModal({
                       color: '#2B2C46',
                     }}
                   >
-                    {settings.support.prefilterFieldName}
+                    {settings.preFilterTitle}
                   </p>
                   <Tooltip
                     content={t(
