@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.88 - 2025-12-09
+
+### Added
+- Prefilter extraction from nameplate. 
+
 ## 0.3.87 - 2025-11-14
 
 ### Added
