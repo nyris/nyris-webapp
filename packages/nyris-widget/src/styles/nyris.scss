@@ -195,6 +195,10 @@
       @media #{$desktop-query} {
         &--desktop {
           display: flex;
+          &-info {
+            width: 100%;
+            margin-bottom: 24px;
+          }
         }
 
         &--mobile {
