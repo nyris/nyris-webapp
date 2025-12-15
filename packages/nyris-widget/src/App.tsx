@@ -285,7 +285,7 @@ const Hello = ({
 
         <div className="nyris__main-content nyris__main-content--desktop">
 
-          {window.nyrisSettings.showAdditionalInfo && (
+          {window.nyrisSettings.showHelperText && (
             <div className="nyris__main-content--desktop-info">{labels['Need a spare part reference?']}</div>
           )}
           {/* <label
