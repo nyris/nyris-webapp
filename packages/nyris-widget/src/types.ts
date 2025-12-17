@@ -32,6 +32,7 @@ export interface NyrisSettings extends NyrisAPISettings {
   filter?: { label: string; field: string }[];
   emailTemplateId?: string;
   productLinkBaseURL?: string; // Base URL for constructing product links (baseURL + sku)
+  showHelperText?: boolean;
 }
 
 export interface AppProps {
