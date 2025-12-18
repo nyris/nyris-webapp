@@ -284,6 +284,10 @@ const Hello = ({
         </Modal>
 
         <div className="nyris__main-content nyris__main-content--desktop">
+
+          {window.nyrisSettings.showHelperText && (
+            <div className="nyris__main-content--desktop-info">{labels['Need a spare part reference?']}</div>
+          )}
           {/* <label
             className="nyris__hello-upload"
             style={{ backgroundColor: window.nyrisSettings.primaryColor }}

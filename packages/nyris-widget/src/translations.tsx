@@ -56,7 +56,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Teile es mit dem Team',
       'Send': 'Senden',
       'Request sent successfully': 'Anfrage erfolgreich gesendet',
-      'Request not sent, please try again': 'Anfrage nicht gesendet, bitte versuchen Sie es erneut.'
+      'Request not sent, please try again': 'Anfrage nicht gesendet, bitte versuchen Sie es erneut.',
+      'Need a spare part reference?': 'Benötigen Sie eine Ersatzteilreferenz? Ziehen Sie einfach ein Foto des Teils per Drag & Drop in unsere KI-gestützte Smart Search, und schon werden Ihnen die richtigen Referenzen vorgeschlagen.',
     },
     en: {
       Search: 'Search',
@@ -109,7 +110,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Share it with the team',
       'Send': 'Send',
       'Request sent successfully': 'Request sent successfully',
-      'Request not sent, please try again': 'Request not sent, please try again.'
+      'Request not sent, please try again': 'Request not sent, please try again.',
+      'Need a spare part reference?': 'Need a spare part reference? Simply drag and drop a photo of the part into our AI-powered Smart Search, and it will instantly suggest the correct references.',
     },
     fr: {
       Search: 'Recherche',
@@ -162,7 +164,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Partagez-le avec l’équipe',
       'Send': 'Envoyer',
       'Request sent successfully': 'Demande envoyée avec succès',
-      'Request not sent, please try again': 'Demande non envoyée, veuillez réessayer.'
+      'Request not sent, please try again': 'Demande non envoyée, veuillez réessayer.',
+      'Need a spare part reference?': 'Vous avez besoin d\'une référence de pièce détachée ? Il vous suffit de glisser-déposer une photo de la pièce dans notre outil de recherche intelligente alimenté par l\'IA, qui vous proposera instantanément les références correctes.',
     },
     pl: {
       Search: 'Wyszukiwanie',
@@ -215,7 +218,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Udostępnij to zespołowi',
       'Send': 'Wyślij',
       'Request sent successfully': 'Żądanie zostało pomyślnie wysłane',
-      'Request not sent, please try again': 'Żądanie nie zostało wysłane. Spróbuj ponownie.'
+      'Request not sent, please try again': 'Żądanie nie zostało wysłane. Spróbuj ponownie.',
+      'Need a spare part reference?': 'Potrzebujesz numeru referencyjnego części zamiennej? Po prostu przeciągnij i upuść zdjęcie części do naszej inteligentnej wyszukiwarki opartej na sztucznej inteligencji, a natychmiast wyświetli ona odpowiednie numery referencyjne.',
     },
     it: {
       Search: 'Cerca',
@@ -268,7 +272,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Condividilo con il team',
       'Send': 'Invia',
       'Request sent successfully': 'Richiesta inviata con successo.',
-      'Request not sent, please try again': 'Richiesta non inviata, riprova.'
+      'Request not sent, please try again': 'Richiesta non inviata, riprova.',
+      'Need a spare part reference?': 'Hai bisogno di un riferimento per un pezzo di ricambio? Basta trascinare una foto del pezzo nella nostra ricerca intelligente basata sull\'intelligenza artificiale e ti suggerirà immediatamente i riferimenti corretti.',
     },
     se: {
       Search: 'Sök',
@@ -321,7 +326,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Dela det med teamet',
       'Send': 'Skicka',
       'Request sent successfully': 'Begäran har skickats.',
-      'Request not sent, please try again': 'Förfrågan har inte skickats, försök igen.'
+      'Request not sent, please try again': 'Förfrågan har inte skickats, försök igen.',
+      'Need a spare part reference?': 'Behöver du en reservdelsreferens? Dra och släpp helt enkelt en bild av delen i vår AI-drivna smarta sökfunktion så föreslår den omedelbart rätt referenser.',
     },
     es: {
       Search: 'Buscar',
@@ -374,7 +380,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Compártelo con el equipo',
       'Send': 'Enviar',
       'Request sent successfully': 'Solicitud enviada exitosamente.',
-      'Request not sent, please try again': 'Solicitud no enviada, por favor inténtelo nuevamente.'
+      'Request not sent, please try again': 'Solicitud no enviada, por favor inténtelo nuevamente.',
+      'Need a spare part reference?': '¿Necesita una referencia de pieza de repuesto? Simplemente arrastre y suelte una foto de la pieza en nuestra búsqueda inteligente con tecnología de inteligencia artificial, y le sugerirá al instante las referencias correctas.',
     },
     da: {
       Search: 'Søg',
@@ -427,7 +434,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Del det med teamet',
       'Send': 'Send',
       'Request sent successfully': 'Anmodningen blev sendt.',
-      'Request not sent, please try again': 'Anmodningen er ikke sendt, prøv venligst igen.'
+      'Request not sent, please try again': 'Anmodningen er ikke sendt, prøv venligst igen.',
+      'Need a spare part reference?': 'Har du brug for en reservedelsreference? Du skal blot trække og slippe et foto af delen ind i vores AI-drevne Smart Search, så vil den straks foreslå de korrekte referencer.',
     },
     nl: {
       Search: 'Zoek',
@@ -480,7 +488,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Deel het met het team',
       'Send': 'Verzenden',
       'Request sent successfully': 'Aanvraag succesvol verzonden.',
-      'Request not sent, please try again': 'Verzoek niet verzonden, probeer het opnieuw.'
+      'Request not sent, please try again': 'Verzoek niet verzonden, probeer het opnieuw.',
+      'Need a spare part reference?': 'Heb je een referentie voor een reserveonderdeel nodig? Sleep gewoon een foto van het onderdeel naar onze AI-aangedreven Smart Search en deze zal onmiddellijk de juiste referenties voorstellen.',
     },
     no: {
       Search: 'Søk',
@@ -533,7 +542,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Del det med teamet',
       'Send': 'Send',
       'Request sent successfully': 'Forespørselen ble sendt.',
-      'Request not sent, please try again': 'Forespørsel ikke sendt, vennligst prøv igjen.'
+      'Request not sent, please try again': 'Forespørsel ikke sendt, vennligst prøv igjen.',
+      'Need a spare part reference?': 'Trenger du en reservedelsreferanse? Bare dra og slipp et bilde av delen inn i vår AI-drevne Smart Search, så vil den umiddelbart foreslå de riktige referansene.',
     },
     ru: {
       Search: 'Поиск',
@@ -586,7 +596,8 @@ const translations = (language: Language) => {
       'Share it with the team': 'Поделитесь с командой',
       'Send': 'Отправить',
       'Request sent successfully': 'Запрос успешно отправлен.',
-      'Request not sent, please try again': 'Запрос не отправлен, попробуйте еще раз.'
+      'Request not sent, please try again': 'Запрос не отправлен, попробуйте еще раз.',
+      'Need a spare part reference?': 'Нужна информация о запасной части? Просто перетащите фотографию детали в наш интеллектуальный поиск на базе искусственного интеллекта, и он мгновенно предложит вам правильные ссылки.',
     }
   };
 
