@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.89 - 2025-12-17
+
+### Removed
+- Machine based search
+
+### Added
+- Additional info for widget
+
 ## 0.3.88 - 2025-12-09
 
 ### Added
