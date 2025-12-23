@@ -39,6 +39,7 @@ function CustomCamera(props: Props) {
   const { cadSearch } = useCadSearch();
   const { t } = useTranslation();
 
+  const preFilterList = useRequestStore(state => state.preFilterList);
   const requestImages = useRequestStore(state => state.requestImages);
   const specifications = useRequestStore(state => state.specifications);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
