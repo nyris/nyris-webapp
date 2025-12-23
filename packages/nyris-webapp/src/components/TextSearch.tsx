@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { isEmpty, debounce, clone } from 'lodash';
 import { twMerge } from 'tailwind-merge';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -35,8 +35,7 @@ function TextSearch({
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [resultFilter, setResultFilter] = useState<any>([]);
-
+  const preFilterList = useRequestStore(state => state.preFilterList);
   const preFilter = useRequestStore(state => state.preFilter);
   const requestImages = useRequestStore(state => state.requestImages);
   const setQuery = useRequestStore(state => state.setQuery);
@@ -131,20 +130,6 @@ function TextSearch({
   };
 
   const { cadSearch } = useCadSearch();
-  
-  const getPreFilters = async () => {
-    getFilters(1000, settings)
-      .then(res => {
-        setResultFilter(res);
-      })
-      .catch((e: any) => {
-        console.log('err getDataFilterDesktop', e);
-      });
-  }
-
-  useEffect(() => {
-    getPreFilters()
-  }, []);
 
   const handleUpload = (files: File[]) => {
     setValueInput('');
@@ -165,7 +150,7 @@ function TextSearch({
       newSearch: true,
     }).then((singleImageResp) => {
       const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
-      const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
+      const hasPrefilter = preFilterList.filter((filter: any) => filter.values.includes(specificationPrefilter));
       if (specificationPrefilter) {
         setRequestImages([]);
         setShowNotMatchedError(false);

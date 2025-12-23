@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useEffect, useMemo, useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { twMerge } from 'tailwind-merge';
 
 import DragDropFile from 'components/DragDropFile';
@@ -12,8 +12,11 @@ import LocationInfoPopup from "../components/LocationInfoPopup";
 import Hint from '../components/Hint';
 import Loading from '../components/Loading';
 import useRequestStore from '../stores/request/requestStore';
+import { getFilters } from '../services/filter';
+
 function Home() {
   const settings = window.settings;
+  const user = useAuth0().user;
   const { experienceVisualSearch, experienceVisualSearchImages, geoLocation } = settings;
   const navigate = useNavigate();
 
@@ -21,6 +24,31 @@ function Home() {
     useState<Blob[]>([]);
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const showLoading = useRequestStore(store => store.showLoading);
+  const setPreFilterList = useRequestStore(state => state.setPreFilterList);
+  const setMetaFilter = useRequestStore(state => state.setMetaFilter);
+  const preFilterList = useRequestStore(state => state.preFilterList);
+
+  const showPreFilter = useMemo(() => {
+    if (settings.shouldUseUserMetadata && user) {
+      if (user['/user_metadata'].value) {
+        setMetaFilter(user['/user_metadata'].value);
+      }
+    }
+
+    if (settings.shouldUseUserMetadata && user) {
+      if (settings.preFilterOption && !user['/user_metadata'].value) {
+        return true;
+      }
+      return false;
+    }
+
+    return settings.preFilterOption;
+  }, [
+    setMetaFilter,
+    settings.preFilterOption,
+    settings.shouldUseUserMetadata,
+    user,
+  ]);
 
   const fetchImage = async (url: string) => {
     const response = await fetch(url, { cache: 'force-cache' });
@@ -65,6 +93,22 @@ function Home() {
       navigate(`/result?${queryParams}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getPreFilters = async () => {
+    getFilters(1000, settings)
+      .then(res => {
+        setPreFilterList(res);
+      })
+      .catch((e: any) => {
+        console.log('err getDataFilterDesktop', e);
+      });
+  }
+
+  useEffect(() => {
+    if (showPreFilter) {
+      getPreFilters();
+    }
   }, []);
 
   return (

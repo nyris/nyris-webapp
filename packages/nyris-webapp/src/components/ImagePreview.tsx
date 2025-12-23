@@ -24,13 +24,13 @@ function ImagePreviewComponent({
 }) {
   const [showAdjustInfoBasedOnConfidence, setShowAdjustInfoBasedOnConfidence] =
     useState(false);
-  const [resultFilter, setResultFilter] = useState<any>([]);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
   const settings = window.settings;
   const isMultiImageSearchEnabled = settings.multiImageSearch;
 
+  const preFilterList = useRequestStore(state => state.preFilterList);
   const requestImages = useRequestStore(state => state.requestImages);
   const specifications = useRequestStore(state => state.specifications);
   const resetRegions = useRequestStore(state => state.resetRegions);
@@ -58,20 +58,6 @@ function ImagePreviewComponent({
 
   const previewWrapperRef = useRef<any>(null);
 
-  const getPreFilters = async () => {
-    getFilters(1000, settings)
-      .then(res => {
-        setResultFilter(res);
-      })
-      .catch((e: any) => {
-        console.log('err getDataFilterDesktop', e);
-      });
-  };
-
-  useEffect(() => {
-    getPreFilters()
-  }, []);
-
   const onImageRemove = () => {
     resetRegions();
     setRequestImages([]);
@@ -95,7 +81,7 @@ function ImagePreviewComponent({
         compress: false,
       }).then((res: any) => {
         const specificationPrefilter = res.image_analysis?.specification?.prefilter_value || null;
-        const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
+        const hasPrefilter = preFilterList.filter((filter: any) => filter.values.includes(specificationPrefilter));
         if (specificationPrefilter) {
           setRequestImages([]);
           setShowNotMatchedError(false);

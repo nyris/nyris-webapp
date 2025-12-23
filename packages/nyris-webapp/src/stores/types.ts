@@ -1,4 +1,4 @@
-import { RectCoords, Region } from '@nyris/nyris-api';
+import {Filter, RectCoords, Region} from '@nyris/nyris-api';
 
 export interface RequestImageState {
   requestImages: HTMLCanvasElement[];
@@ -79,6 +79,7 @@ export interface DetectedRegionsAction {
 
 export interface FilterState {
   preFilter: Record<string, boolean>;
+  preFilterList: Filter[];
   algoliaFilter: string;
   firstSearchPreFilter: Record<string, boolean>;
   specificationFilter: Record<string, string>;
@@ -86,6 +87,7 @@ export interface FilterState {
 
 export interface FilterAction {
   setPreFilter: (query: Record<string, boolean>) => void;
+  setPreFilterList: (any: Filter[]) => void;
   setFirstSearchPreFilter: (query: Record<string, boolean>) => void;
   setAlgoliaFilter: (query: string) => void;
   setSpecificationFilter: (query: Record<string, string>) => void;
