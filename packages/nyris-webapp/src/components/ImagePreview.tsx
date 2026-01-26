@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import {clone, debounce} from 'lodash';
 import { twMerge } from 'tailwind-merge';
@@ -12,7 +12,6 @@ import { DEFAULT_REGION } from '../constants';
 import { useImageSearch } from 'hooks/useImageSearch';
 import useRequestStore from 'stores/request/requestStore';
 import useResultStore from 'stores/result/resultStore';
-import { getFilters } from '../services/filter';
 
 function ImagePreviewComponent({
   showAdjustInfo = false,
@@ -105,7 +104,7 @@ function ImagePreviewComponent({
             }, 6000);
           }
           if (!hasPrefilter.length && window.settings.preFilterOption) {
-            setSpecifications(clone({...res.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
+            setSpecifications(clone({...res.image_analysis.specification, specificationPrefilter}));
             setPreFilter({});
             setAlgoliaFilter('');
             setShowLoading(false);
@@ -118,9 +117,7 @@ function ImagePreviewComponent({
             }, 6000);
           }
         } else {
-          if (specifications?.is_nameplate) {
-            setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
-          } else {
+          if (!specifications?.is_nameplate) {
             setSpecifications({...specifications, is_nameplate: false});
           }
           const highConfidence = res.results.find(
@@ -272,8 +269,8 @@ function ImagePreviewComponent({
             regions={detectedRegions[currentIndex] || []}
             minWidth={Math.min(
               80 *
-                (requestImages[currentIndex]?.width /
-                  requestImages[currentIndex]?.height),
+              (requestImages[currentIndex]?.width /
+                requestImages[currentIndex]?.height),
               200,
             )}
             minHeight={80}

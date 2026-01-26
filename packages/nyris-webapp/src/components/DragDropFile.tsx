@@ -77,7 +77,7 @@ function DragDropFile(props: Props) {
           }, 6000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {
-          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
+          setSpecifications(clone({...singleImageResp.image_analysis.specification, specificationPrefilter}));
           navigate('/result');
           setPreFilter({});
           setAlgoliaFilter('');
@@ -91,9 +91,7 @@ function DragDropFile(props: Props) {
           }, 6000);
         }
       } else {
-        if (specifications?.is_nameplate) {
-          setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
-        } else {
+        if (!specifications?.is_nameplate) {
           setSpecifications({...specifications, is_nameplate: false});
         }
         setShowLoading(false);
@@ -115,7 +113,7 @@ function DragDropFile(props: Props) {
         }
       >
         {isLoading && <Loading />}
-  
+
         <div
           className={'relative flex flex-col items-center justify-center w-full'}
           {...dragProps}

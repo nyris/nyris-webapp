@@ -14,7 +14,6 @@ import PreFilterModal from './PreFilter/PreFilterModal';
 import useRequestStore from 'stores/request/requestStore';
 import Tooltip from './Tooltip/TooltipComponent';
 import UploadDisclaimer from './UploadDisclaimer';
-import { getFilters } from '../services/filter';
 import { useMediaQuery } from 'react-responsive';
 
 function TextSearch({
@@ -168,10 +167,10 @@ function TextSearch({
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
-          }, 6000);
+          }, 10000);
         }
         if (!hasPrefilter.length && showPreFilter) {
-          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
+          setSpecifications(clone({...singleImageResp.image_analysis.specification, specificationPrefilter}));
           navigate('/result');
           setPreFilter({});
           setAlgoliaFilter('');
@@ -182,12 +181,10 @@ function TextSearch({
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
-          }, 6000);
+          }, 15000);
         }
       } else {
-        if (specifications?.is_nameplate) {
-          setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
-        } else {
+        if (!specifications?.is_nameplate) {
           setSpecifications({...specifications, is_nameplate: false});
         }
         setShowLoading(false);

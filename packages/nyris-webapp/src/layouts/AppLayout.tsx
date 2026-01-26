@@ -104,10 +104,10 @@ function AppLayout(): JSX.Element {
       <Header />
       {window.settings?.algolia.enabled && (
         <Configure
-          query={!query && specifications && !requestImages.length ? '*' : query}
+          query={query}
           filters={
             specifications && !requestImages.length
-              ? specifications.prefilter_value ? `${alogoliaFilterField}:'${specifications.prefilter_value}'` : ''
+              ? `${alogoliaFilterField}:'${specifications.prefilter_value}'`
               : !query && !algoliaFilter.includes('score=1')
                   ? undefined
                   : `${algoliaFilter}${

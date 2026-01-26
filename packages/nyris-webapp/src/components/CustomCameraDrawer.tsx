@@ -98,7 +98,7 @@ function CustomCamera(props: Props) {
           }, 5000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {
-          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
+          setSpecifications(clone({...singleImageResp.image_analysis.specification, specificationPrefilter}));
           setPreFilter({});
           setAlgoliaFilter('');
           setShowLoading(false);
@@ -112,16 +112,13 @@ function CustomCamera(props: Props) {
           }, 6000);
         }
       } else {
-        if (specifications?.is_nameplate) {
-          setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
-        } else {
+        if (!specifications?.is_nameplate) {
           setSpecifications({...specifications, is_nameplate: false});
         }
         setShowLoading(false);
         handleClose();
       }
     });
-    
   };
 
   const handleClose = () => {
