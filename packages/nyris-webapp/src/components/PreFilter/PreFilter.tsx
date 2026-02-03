@@ -33,7 +33,7 @@ const PreFilterComponent = (props: Props) => {
   const requestImages = useRequestStore(state => state.requestImages);
   const imageRegions = useRequestStore(state => state.regions);
   const keyFilterState = useRequestStore(state => state.preFilter);
-
+  const preFilterList = useRequestStore(state => state.preFilterList);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const specification = useRequestStore(state => state.specifications);
@@ -61,33 +61,20 @@ const PreFilterComponent = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getDataFilterDesktop = async () => {
-    setLoading(true);
-    const dataResultFilter = getFilters(1000, settings)
-      .then(res => {
-        const arrResult =
-          res.find(value => value.key === settings.visualSearchFilterKey)
-            ?.values || [];
+  const getDataFilterDesktop =  () => {
+    const arrResult =
+      preFilterList.find(value => value.key === settings.visualSearchFilterKey)
+        ?.values || [];
 
-        const newResult = arrResult.sort().reduce((a: any, c: any) => {
-          if (!c[0]) return a;
-          let k = c[0]?.toLocaleUpperCase();
-          if (a[k]) a[k].push(c);
-          else a[k] = [c];
-          return a;
-        }, {});
-        setResultFilter(newResult);
-        setColumns(Object.keys(newResult).length);
-        
-      })
-      .catch((e: any) => {
-        console.log('err getDataFilterDesktop', e);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-
-    return dataResultFilter;
+    const newResult = arrResult.sort().reduce((a: any, c: any) => {
+      if (!c[0]) return a;
+      let k = c[0]?.toLocaleUpperCase();
+      if (a[k]) a[k].push(c);
+      else a[k] = [c];
+      return a;
+      }, {});
+    setResultFilter(newResult);
+    setColumns(Object.keys(newResult).length);
   };
 
   const filterSearchHandler = async (value: any) => {
