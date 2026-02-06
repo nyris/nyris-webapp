@@ -42,6 +42,7 @@ export interface NyrisAPISettings {
   maxWidth: number;
   maxHeight: number;
   responseFormat?: string;
+  requestContentType?: string;
 }
 
 export default class NyrisAPI {
@@ -67,6 +68,7 @@ export default class NyrisAPI {
   private readonly apiKey: string;
   private readonly xOptions: string | boolean;
   private readonly findFilters: string;
+  private readonly requestContentType: string;
 
   constructor(settings: NyrisAPISettings) {
     this.httpClient = axios.create();
@@ -93,6 +95,8 @@ export default class NyrisAPI {
     this.customSearchRequest = settings.customSearchRequest;
     this.responseHook = settings.responseHook;
     this.xOptions = settings.xOptions;
+    this.requestContentType =
+      settings.requestContentType || 'multipart/form-data';
   }
 
   private async prepareImage(
@@ -238,7 +242,7 @@ export default class NyrisAPI {
   ): Promise<SearchResult> {
     var requestBody = new FormData();
     let params: any = {};
-    let headers = this.getSearchRequestHeaders('multipart/form-data');
+    let headers = this.getSearchRequestHeaders(this.requestContentType);
     if (xOptions) {
       // headers["X-Nyris-Request-Options"] = xOptions;
       headers['X-Options'] = xOptions;
@@ -248,15 +252,15 @@ export default class NyrisAPI {
       requestBody.append('latitude', options.geoLocation.latitude.toString());
       requestBody.append('longitude', options.geoLocation.longitude.toString());
     }
-    if (canvas && options.text) {
-      requestBody.append('text', options.text);
-      const { text, geoLocation, ...rest } = options;
-      params = this.getParams(rest);
-    } else if (options.text && filters && filters.length > 0) {
-      requestBody.append('text', options.text);
-    } else {
-      params = this.getParams(options);
-    }
+    // if (canvas && options.text) {
+    //   requestBody.append('text', options.text);
+    //   const { text, geoLocation, ...rest } = options;
+    //   params = this.getParams(rest);
+    // } else if (options.text && filters && filters.length > 0) {
+    //   requestBody.append('text', options.text);
+    // } else {
+    // }
+    params = this.getParams(options);
 
     if (canvas) {
       const imageBytes = await this.prepareImage(canvas, options.cropRect);
