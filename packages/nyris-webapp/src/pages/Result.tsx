@@ -214,9 +214,13 @@ function Results() {
                       </div>
                     )}
 
-                    <div className="justify-start text-[#2b2c46] text-base font-semibold mt-1">
-                      Identified Attributes
-                    </div>
+                    {Object.keys(imageAnalysis?.specification || {})
+                      .filter((key) => (key !== 'is_nameplate' && key !== 'prefilter_value'))
+                      .some((key) => !!imageAnalysis?.specification[key]) && (
+                        <div className="justify-start text-[#2b2c46] text-base font-semibold mt-1">
+                          Identified Attributes
+                        </div>
+                    )}
                     <div className="flex justify-start items-start gap-4 flex-wrap content-start">
                       {Object.keys(imageAnalysis?.specification || {})
                         .filter(

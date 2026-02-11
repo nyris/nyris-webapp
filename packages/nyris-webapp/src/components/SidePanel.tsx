@@ -72,9 +72,13 @@ export default function SidePanel({ className }: { className?: string }) {
               </div>
             )}
 
-            <div className="justify-start text-black text-base font-semibold mt-2">
-              Identified Attributes
-            </div>
+            {Object.keys(imageAnalysis?.specification || {})
+              .filter((key) => (key !== 'is_nameplate' && key !== 'prefilter_value'))
+              .some((key) => !!imageAnalysis?.specification[key]) && (
+                <div className="justify-start text-black text-base font-semibold mt-2">
+                  Identified Attributes
+                </div>
+            )}
 
             {Object.keys(imageAnalysis?.specification || {})
               .filter(
