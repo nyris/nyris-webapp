@@ -1,6 +1,6 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import {clone, debounce} from 'lodash';
+import { clone, debounce } from 'lodash';
 import { twMerge } from 'tailwind-merge';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -39,11 +39,15 @@ function ImagePreviewComponent({
   const resetRequestStore = useRequestStore(state => state.reset);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
-  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
+  const setNameplateNotificationText = useRequestStore(
+    state => state.setNameplateNotificationText,
+  );
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
-  const setShowNotMatchedError = useRequestStore(state => state.setShowNotMatchedError);
+  const setShowNotMatchedError = useRequestStore(
+    state => state.setShowNotMatchedError,
+  );
 
   const detectedRegions = useResultStore(state => state.detectedRegions);
   const resetResultStore = useResultStore(state => state.reset);
@@ -54,8 +58,32 @@ function ImagePreviewComponent({
 
   const [isVisible] = useState(true);
   const [zIndex] = useState<number>(0);
+  const [previewWidth, setPreviewWidth] = useState(0);
 
   const previewWrapperRef = useRef<any>(null);
+
+  useEffect(() => {
+    const container = previewWrapperRef.current as HTMLDivElement | null;
+    if (!container) {
+      return;
+    }
+
+    const updateWidth = () => {
+      const nextWidth = Math.round(container.getBoundingClientRect().width);
+      setPreviewWidth(prevWidth =>
+        prevWidth === nextWidth ? prevWidth : nextWidth,
+      );
+    };
+
+    updateWidth();
+
+    const resizeObserver = new ResizeObserver(updateWidth);
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   const onImageRemove = () => {
     resetRegions();
@@ -79,38 +107,58 @@ function ImagePreviewComponent({
         showFeedback: true,
         compress: false,
       }).then((res: any) => {
-        const specificationPrefilter = res.image_analysis?.specification?.prefilter_value || null;
-        const hasPrefilter = preFilterList.filter((filter: any) => filter.values.includes(specificationPrefilter));
+        const specificationPrefilter =
+          res.image_analysis?.specification?.prefilter_value || null;
+        const hasPrefilter = preFilterList.filter((filter: any) =>
+          filter.values.includes(specificationPrefilter),
+        );
         if (specificationPrefilter) {
           setRequestImages([]);
           setShowNotMatchedError(false);
           if (hasPrefilter.length) {
             setSpecifications(clone(res.image_analysis.specification));
             setNameplateImage(image);
-            setPreFilter({[res.image_analysis?.specification?.prefilter_value]: true});
-            setAlgoliaFilter(`${settings.alogoliaFilterField}:'${res.image_analysis?.specification?.prefilter_value}'`);
+            setPreFilter({
+              [res.image_analysis?.specification?.prefilter_value]: true,
+            });
+            setAlgoliaFilter(
+              `${settings.alogoliaFilterField}:'${res.image_analysis?.specification?.prefilter_value}'`,
+            );
 
             setShowLoading(false);
             navigate('/result');
 
             setTimeout(() => {
-              setNameplateNotificationText(t('We have successfully defined the search criteria', {
-                prefilter_value: specificationPrefilter,
-                preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase()
-              }));
+              setNameplateNotificationText(
+                t('We have successfully defined the search criteria', {
+                  prefilter_value: specificationPrefilter,
+                  preFilterTitle:
+                    window.settings.preFilterTitle?.toLocaleLowerCase(),
+                }),
+              );
             }, 1000);
             setTimeout(() => {
               setNameplateNotificationText('');
             }, 6000);
           }
           if (!hasPrefilter.length && window.settings.preFilterOption) {
-            setSpecifications(clone({...res.image_analysis.specification, specificationPrefilter}));
+            setSpecifications(
+              clone({
+                ...res.image_analysis.specification,
+                specificationPrefilter,
+              }),
+            );
             setPreFilter({});
             setAlgoliaFilter('');
             setShowLoading(false);
             setShowNotMatchedError(true);
             setTimeout(() => {
-              setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+              setNameplateNotificationText(
+                t('Extracted details from the nameplate could not be matched', {
+                  preFilterTitle:
+                    window.settings.preFilterTitle?.toLocaleLowerCase(),
+                }),
+              );
             }, 1000);
             setTimeout(() => {
               setNameplateNotificationText('');
@@ -118,7 +166,7 @@ function ImagePreviewComponent({
           }
         } else {
           if (!specifications?.is_nameplate) {
-            setSpecifications({...specifications, is_nameplate: false});
+            setSpecifications({ ...specifications, is_nameplate: false });
           }
           const highConfidence = res.results.find(
             (data: { score: number }) => data.score >= 0.65,
@@ -156,6 +204,7 @@ function ImagePreviewComponent({
           'justify-center',
           isVisible ? (!isMultiImageSearchEnabled ? 'py-5' : 'pt-6') : '',
           'px-7',
+          'box-border',
           'w-full',
           'desktop:px-5',
           'relative',
@@ -185,6 +234,7 @@ function ImagePreviewComponent({
           ])}
         >
           <Preview
+            key={previewWidth}
             onSelectionChange={(r: RectCoords) => {
               debouncedOnImageSelectionChange(r, currentIndex);
             }}
@@ -269,8 +319,8 @@ function ImagePreviewComponent({
             regions={detectedRegions[currentIndex] || []}
             minWidth={Math.min(
               80 *
-              (requestImages[currentIndex]?.width /
-                requestImages[currentIndex]?.height),
+                (requestImages[currentIndex]?.width /
+                  requestImages[currentIndex]?.height),
               200,
             )}
             minHeight={80}

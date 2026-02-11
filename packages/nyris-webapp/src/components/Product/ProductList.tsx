@@ -7,6 +7,7 @@ import useUiStore from 'stores/ui/uiStore';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
 import { filterProducts } from 'utils/specificationFilter';
+import { filterProductsByText } from 'utils/textSearchFilter';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -34,6 +35,44 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const specificationFilter = useRequestStore(
     state => state.specificationFilter,
   );
+  const postFilterSelections = useRequestStore(
+    state => state.postFilterSelections,
+  );
+
+  const textFilteredProducts = useMemo(() => {
+    if (!requestImages?.length) {
+      return productsFromFindApi;
+    }
+
+    if (!query?.trim()) {
+      return productsFromFindApi;
+    }
+
+    return filterProductsByText(query || '', productsFromFindApi);
+  }, [productsFromFindApi, query, requestImages]);
+
+  const postFilteredProducts = useMemo(() => {
+    const entries = Object.entries(postFilterSelections || {}).filter(
+      ([, values]) => values?.length,
+    );
+
+    if (entries.length === 0) {
+      return textFilteredProducts;
+    }
+
+    return textFilteredProducts.filter(product => {
+      const productFilters = product?.filters || {};
+
+      return entries.every(([attribute, selectedValues]) => {
+        const productValues = productFilters?.[attribute];
+        if (!Array.isArray(productValues)) {
+          return false;
+        }
+
+        return selectedValues.some(value => productValues.includes(value));
+      });
+    });
+  }, [postFilterSelections, textFilteredProducts]);
 
   const getUrlToCanvasFile = async (url: string) => {
     setQuery('');
@@ -50,20 +89,21 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const isAlgoliaEnabled = window.settings?.algolia?.enabled;
   const products = useMemo(() => {
     const filter = Object.values(specificationFilter || {})[0];
+    const baseFindApiProducts = postFilteredProducts;
 
     if (filter) {
       return filterProducts(
         filter,
-        isAlgoliaEnabled ? productsFromAlgolia : productsFromFindApi,
+        isAlgoliaEnabled ? productsFromAlgolia : baseFindApiProducts,
       );
     }
 
     if (!isAlgoliaEnabled) {
-      return productsFromFindApi;
+      return baseFindApiProducts;
     }
 
     if (productsFromAlgolia.length === 0 && isAlgoliaLoading && !query) {
-      return productsFromFindApi;
+      return baseFindApiProducts;
     }
     return productsFromAlgolia;
   }, [
@@ -72,7 +112,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     productsFromAlgolia,
     isAlgoliaLoading,
     query,
-    productsFromFindApi,
+    postFilteredProducts,
   ]);
 
   const renderItem = useMemo(() => {
@@ -96,8 +136,8 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
                 !isAlgoliaEnabled
                   ? product['image']
                   : product['image(main_similarity)']
-                  ? product['image(main_similarity)']
-                  : product['main_image_link']
+                    ? product['image(main_similarity)']
+                    : product['main_image_link']
               }
             />
           );

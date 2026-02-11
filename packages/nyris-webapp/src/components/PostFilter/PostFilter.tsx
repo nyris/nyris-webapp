@@ -12,10 +12,14 @@ function PostFilter({
   attribute,
   label,
   searchable,
+  onVisibilityChange,
+  isLastVisible,
 }: {
   attribute: string;
   label: string;
   searchable: boolean;
+  onVisibilityChange?: (attribute: string, isVisible: boolean) => void;
+  isLastVisible?: boolean;
 }) {
   const [itemsLimit, setItemsLimit] = useState(10);
   const [searchInput, setSearchInput] = useState<string>('');
@@ -33,13 +37,30 @@ function PostFilter({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchInput]);
 
+  const hasSelection = items.some(item => item.isRefined);
+  const hasAvailableValues = items.length > 0 || searchInput.length > 0;
+  const isVisible = hasAvailableValues || hasSelection;
+
+  useEffect(() => {
+    onVisibilityChange?.(attribute, isVisible);
+  }, [attribute, isVisible, onVisibilityChange]);
+
+  if (!isVisible) {
+    return null;
+  }
+
   const onShowMore = () => {
     setItemsLimit(prev => prev + 10);
   };
 
   return (
     <>
-      <AccordionItem value={attribute}>
+      <AccordionItem
+        value={attribute}
+        className={
+          isLastVisible ? 'py-4' : 'border-b border-solid border-[#e0e0e0] py-4'
+        }
+      >
         <AccordionTrigger className="text-sm font-semibold w-full h-8 items-center">
           {label}
         </AccordionTrigger>

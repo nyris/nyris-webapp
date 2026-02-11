@@ -33,6 +33,9 @@ export const useImageSearch = () => {
   const setSpecificationFilter = useRequestStore(
     state => state.setSpecificationFilter,
   );
+  const clearPostFilterSelections = useRequestStore(
+    state => state.clearPostFilterSelections,
+  );
 
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const preFilter = useRequestStore(state => state.preFilter);
@@ -276,23 +279,25 @@ export const useImageSearch = () => {
           filters: !isEmpty(preFilterParams || preFilter)
             ? preFilterValues
             : metaFilter
-            ? [
-                {
-                  key: settings.visualSearchFilterKey,
-                  values: [metaFilter],
-                },
-              ]
-            : undefined,
+              ? [
+                  {
+                    key: settings.visualSearchFilterKey,
+                    values: [metaFilter],
+                  },
+                ]
+              : undefined,
           region,
-          text: !window.settings.algolia.enabled
-            ? isUndefined(text)
-              ? query
-              : text
-            : undefined,
+          text:
+            !window.settings.algolia.enabled && !requestImage
+              ? isUndefined(text)
+                ? query
+                : text
+              : undefined,
         });
 
         if (clearPostFilter) {
           refine();
+          clearPostFilterSelections();
         }
 
         setFindApiProducts(res?.results);
@@ -349,6 +354,7 @@ export const useImageSearch = () => {
       setFirstSearchPreFilter,
       setFirstRequestImageAnalysis,
       query,
+      clearPostFilterSelections,
     ],
   );
 
