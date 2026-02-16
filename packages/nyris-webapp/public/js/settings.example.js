@@ -6,6 +6,7 @@ var settings = {
     supportEmail: '',
   },
   algolia: {
+    enabled: false,
     apiKey: '',
     appId: '',
     indexName: '',
@@ -31,6 +32,16 @@ var settings = {
   responseFormat: 'application/offers.complete+json',
   visualSearchFilterKey: '',
   shouldUseUserMetadata: '',
+  requestContentType: 'multipart/form-data', // use 'image/jpeg' for elastic search
+  textSearchScoring: {
+    sku: { exactMatch: 50, startsWith: 30 },
+    customIds: { exactMatch: 40, startsWith: 6, partial: 2 },
+    title: { exactMatch: 25, partial: 10 },
+    brand: { exactMatch: 15, startsWith: 6, partial: 2 },
+    links: { searchable: false },
+    'customIds.gtin': { searchable: false }, // for nested fields use dot notation
+    otherFields: { exactMatch: 8, startsWith: 6, partial: 2 },
+  },
   // UI - theme
   theme: {
     appBarLogoUrl: '',

@@ -7,8 +7,8 @@ import { InstantSearch } from 'react-instantsearch';
 
 function App() {
   const algoliaClient = algoliasearch(
-    window.settings.algolia.appId,
-    window.settings.algolia.apiKey,
+    window.settings.algolia.appId || '0',
+    window.settings.algolia.apiKey || '0',
   );
 
   return (
@@ -20,7 +20,9 @@ function App() {
           ...algoliaClient,
           search(requests: any) {
             if (
-              requests?.every(({ params }: any) => !params.query && !params.filters)
+              requests?.every(
+                ({ params }: any) => !params.query && !params.filters,
+              )
             ) {
               return Promise.resolve({
                 results: requests.map(() => ({

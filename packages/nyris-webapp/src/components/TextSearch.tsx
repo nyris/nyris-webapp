@@ -491,7 +491,7 @@ function TextSearch({
               }}
               className="peer desktop:bg-gray-200 focus:bg-white pl-1.5 outline-none"
               placeholder={t('Search')}
-              value={valueInput || query}
+              value={valueInput}
               onChange={onChangeText}
               ref={focusInp}
             />

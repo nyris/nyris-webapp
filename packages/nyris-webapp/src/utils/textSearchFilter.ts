@@ -1,5 +1,35 @@
 type ProductLike = Record<string, any>;
 
+type TextSearchFieldScoring =
+  | number
+  | {
+      exactMatch?: number;
+      startsWith?: number;
+      partial?: number;
+      searchable?: boolean;
+    };
+
+type TextSearchScoring = Record<string, TextSearchFieldScoring>;
+
+const defaultTextSearchScoring = {
+  sku: { exactMatch: 50, startsWith: 30 },
+  customIds: { exactMatch: 40, startsWith: 6, partial: 2 },
+  title: { exactMatch: 25, partial: 10 },
+  brand: { exactMatch: 15, startsWith: 6, partial: 2 },
+  otherFields: { exactMatch: 8, startsWith: 6, partial: 2 },
+};
+
+const getTextSearchScoring = (): TextSearchScoring => {
+  if (
+    typeof window !== 'undefined' &&
+    window.settings &&
+    window.settings.textSearchScoring
+  ) {
+    return window.settings.textSearchScoring;
+  }
+  return defaultTextSearchScoring;
+};
+
 const normalizeText = (value: string): string =>
   value
     .toLowerCase()
@@ -26,8 +56,60 @@ const collectValues = (value: any): string[] => {
   return values;
 };
 
-const collectOtherFieldValues = (product: ProductLike): string[] => {
-  const excludedKeys = new Set(['title', 'brand', 'sku', 'ids', 'customIds']);
+const collectValuesWithExclusions = (
+  value: any,
+  excludedPaths: string[],
+): string[] => {
+  if (!excludedPaths.length) return collectValues(value);
+
+  const values: string[] = [];
+  const excludedSet = new Set(excludedPaths);
+
+  const addValue = (item: any, path: string): void => {
+    if (!item) return;
+    if (excludedSet.has(path)) return;
+
+    if (Array.isArray(item)) {
+      item.forEach((entry, index) => addValue(entry, `${path}.${index}`));
+      return;
+    }
+    if (typeof item === 'object') {
+      Object.entries(item).forEach(([key, entry]) =>
+        addValue(entry, path ? `${path}.${key}` : key),
+      );
+      return;
+    }
+    values.push(String(item));
+  };
+
+  addValue(value, '');
+  return values;
+};
+
+const getValueByPath = (target: any, path: string): any => {
+  if (!path) return undefined;
+  const parts = path.split('.').filter(Boolean);
+  let current = target;
+  for (const part of parts) {
+    if (!current || typeof current !== 'object') return undefined;
+    current = current[part];
+  }
+  return current;
+};
+
+const isSearchableFalse = (fieldScoring: TextSearchFieldScoring): boolean =>
+  typeof fieldScoring === 'object' && fieldScoring?.searchable === false;
+
+const collectOtherFieldValues = (
+  product: ProductLike,
+  scoring: TextSearchScoring,
+): string[] => {
+  const excludedKeys = new Set<string>(['otherFields']);
+
+  Object.keys(scoring).forEach(key => {
+    const topLevelKey = key.split('.')[0];
+    if (topLevelKey) excludedKeys.add(topLevelKey);
+  });
   const values: string[] = [];
 
   Object.entries(product || {}).forEach(([key, value]) => {
@@ -38,6 +120,35 @@ const collectOtherFieldValues = (product: ProductLike): string[] => {
   return values;
 };
 
+const scoreFieldValues = (
+  values: string[],
+  normalizedQuery: string,
+  fieldScoring: TextSearchFieldScoring,
+): number => {
+  if (!values.length) return 0;
+
+  let score = 0;
+  for (const value of values) {
+    const normalizedValue = normalizeText(value);
+    if (!normalizedValue) continue;
+
+    if (typeof fieldScoring === 'number') {
+      if (normalizedValue === normalizedQuery) score += fieldScoring;
+      continue;
+    }
+
+    if (normalizedValue === normalizedQuery) {
+      score += fieldScoring?.exactMatch ?? 0;
+    } else if (normalizedValue.startsWith(normalizedQuery)) {
+      score += fieldScoring?.startsWith ?? 0;
+    } else if (normalizedValue.includes(normalizedQuery)) {
+      score += fieldScoring?.partial ?? 0;
+    }
+  }
+
+  return score;
+};
+
 export const filterProductsByText = (
   query: string,
   products: ProductLike[],
@@ -46,73 +157,41 @@ export const filterProductsByText = (
   // matching. Stable ordering is preserved for ties.
   if (!query?.trim()) return products;
 
+  const scoring = getTextSearchScoring();
+
   const normalizedQuery = normalizeText(query);
   const ranked = products
     .map((product, index) => {
-      const title = normalizeText(product?.title || '');
-      const brand = normalizeText(product?.brand || '');
-      const sku = normalizeText(product?.sku || '');
-      const customIdValues = collectValues(product?.customIds).concat(
-        collectValues(product?.ids),
-      );
-      const otherFieldValues = collectOtherFieldValues(product);
+      const fieldValues: Record<string, string[]> = {
+        sku: collectValues(product?.sku),
+        title: collectValues(product?.title),
+        brand: collectValues(product?.brand),
+        customIds: collectValues(product?.customIds).concat(
+          collectValues(product?.ids),
+        ),
+        otherFields: collectOtherFieldValues(product, scoring),
+      };
 
       let score = 0;
 
-      if (sku) {
-        if (sku === normalizedQuery) {
-          score += 50;
-        } else if (sku.startsWith(normalizedQuery)) {
-          score += 30;
+      for (const [key, fieldScoring] of Object.entries(scoring)) {
+        if (isSearchableFalse(fieldScoring)) {
+          continue;
         }
-      }
 
-      if (customIdValues.length > 0) {
-        const normalizedCustomIds = customIdValues.map(value =>
-          normalizeText(value),
-        );
-        if (normalizedCustomIds.some(value => value === normalizedQuery)) {
-          score += 40;
-        } else if (
-          normalizedCustomIds.some(value => value.startsWith(normalizedQuery))
-        ) {
-          score += 6;
-        } else if (
-          normalizedCustomIds.some(value => value.includes(normalizedQuery))
-        ) {
-          score += 2;
-        }
-      }
+        const excludedNestedPaths = Object.entries(scoring)
+          .filter(
+            ([scoringKey, scoringValue]) =>
+              scoringKey.startsWith(`${key}.`) &&
+              isSearchableFalse(scoringValue),
+          )
+          .map(([scoringKey]) => scoringKey.slice(key.length + 1));
 
-      if (title) {
-        if (title === normalizedQuery) {
-          score += 25;
-        } else if (title.includes(normalizedQuery)) {
-          score += 10;
-        }
-      }
-
-      if (brand) {
-        if (brand === normalizedQuery) {
-          score += 15;
-        } else if (brand.startsWith(normalizedQuery)) {
-          score += 6;
-        } else if (brand.includes(normalizedQuery)) {
-          score += 2;
-        }
-      }
-
-      for (const value of otherFieldValues) {
-        const field = normalizeText(value);
-        if (!field) continue;
-
-        if (field === normalizedQuery) {
-          score += 8;
-        } else if (field.startsWith(normalizedQuery)) {
-          score += 6;
-        } else if (field.includes(normalizedQuery)) {
-          score += 2;
-        }
+        const sourceValue = getValueByPath(product, key) ?? product?.[key];
+        const values = excludedNestedPaths.length
+          ? collectValuesWithExclusions(sourceValue, excludedNestedPaths)
+          : (fieldValues[key] ?? collectValues(sourceValue));
+        score += scoreFieldValues(values, normalizedQuery, fieldScoring);
       }
 
       return { product, score, index };
