@@ -4,7 +4,6 @@ import { get } from 'lodash';
 import { Icon } from '@nyris/nyris-react-components';
 
 import ProductAttribute from './ProductAttribute';
-import { truncateString } from 'utils/truncateString';
 
 import '../../styles/product.scss';
 import { twMerge } from 'tailwind-merge';
@@ -83,7 +82,7 @@ function Product(props: Props) {
         setOpenDetailedView={setOpenDetailedView}
         main_image_link={main_image_link}
       />
-      <div className="wrap-main-item-result max-w-[190px] w-[180px] desktop:w-[190px] border border-solid border-[#E0E0E0] scroll-pt-5">
+      <div className="wrap-main-item-result max-w-[190px] w-[180px] desktop:w-[190px] border border-solid border-[#E0E0E0] scroll-pt-5 h-fit">
         <div className="relative h-fit">
           {!isHover && main_image_link && !settings.noSimilarSearch && (
             <div
@@ -141,7 +140,7 @@ function Product(props: Props) {
                   src={main_image_link}
                   key={main_image_link}
                   alt=""
-                  className="img-style product-image"
+                  className="img-style product-image p-[8px]"
                   style={{
                     width: '100%',
                     height: '100%',
@@ -291,13 +290,11 @@ function Product(props: Props) {
               style={{ color: '#FFFFFF' }}
             >
               <div>
-                <div className="max-h-[38px] h-fit">
+                <div className="h-fit">
                   {dataItem[settings.mainTitle] && (
-                    <Tooltip content={dataItem[settings.mainTitle] || ''}>
-                      <div className="text-xs font-bold text-primary mb-1 ml-2 max-line-1 w-fit">
-                        {truncateString(dataItem[settings.mainTitle], 45)}
-                      </div>
-                    </Tooltip>
+                    <div className="text-xs font-bold text-primary mb-1 ml-2 w-fit cursor-default">
+                      {dataItem[settings.mainTitle]}
+                    </div>
                   )}
                   {dataItem[settings.secondaryTitle] && (
                     <div
@@ -308,20 +305,9 @@ function Product(props: Props) {
                         'text-primary',
                       ])}
                     >
-                      <Tooltip
-                        content={dataItem[settings.secondaryTitle]}
-                        disabled={
-                          dataItem[settings.secondaryTitle]?.length < 19 ||
-                          !dataItem[settings.secondaryTitle]
-                        }
-                      >
-                        <div className="text-[10px] font-normal max-line-1 text-primary mb-2 ml-2">
-                          {truncateString(
-                            dataItem[settings.secondaryTitle],
-                            40,
-                          )}
-                        </div>
-                      </Tooltip>
+                      <div className="text-[10px] font-normal text-primary mb-2 ml-2 cursor-default">
+                        {dataItem[settings.secondaryTitle]}
+                      </div>
                     </div>
                   )}
                 </div>
