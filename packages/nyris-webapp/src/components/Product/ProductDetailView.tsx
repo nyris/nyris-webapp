@@ -189,8 +189,14 @@ function ProductDetailView(props: Props) {
                   <div className="w-full">
                     {settings.mainTitle && (
                       <Tooltip content={dataItem[settings.mainTitle]}>
-                        <p className="text-base font-bold max-line-1 text-[#2B2C46] font-source-sans-3 leading-[22.78px] ml-2 w-fit">
-                          {truncateString(dataItem[settings.mainTitle], 45)}
+                        <p
+                          className="text-base font-bold max-line-1 text-[#2B2C46] font-source-sans-3 leading-[22.78px] ml-2 w-fit "
+                          style={{
+                            maxHeight: 68,
+                            WebkitLineClamp: 3,
+                          }}
+                        >
+                          {truncateString(dataItem[settings.mainTitle], 90)}
                         </p>
                       </Tooltip>
                     )}
@@ -198,10 +204,16 @@ function ProductDetailView(props: Props) {
                       <Tooltip
                         content={dataItem[settings.secondaryTitle] || ''}
                       >
-                        <p className="text-f14 max-line-1 fw-400 text-[#2B2C46] ml-2 text-base w-fit">
+                        <p
+                          className="text-f14 fw-400 max-line-1 text-[#2B2C46] ml-2 text-base w-fit h-[72px]"
+                          style={{
+                            maxHeight: 72,
+                            WebkitLineClamp: 3,
+                          }}
+                        >
                           {truncateString(
                             dataItem[settings.secondaryTitle],
-                            isMobile ? 45 : 70,
+                            90,
                           )}
                         </p>
                       </Tooltip>
