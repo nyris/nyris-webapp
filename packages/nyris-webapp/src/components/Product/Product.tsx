@@ -325,7 +325,7 @@ function Product(props: Props) {
                         <div
                           className="text-[10px] max-line-1 font-normal text-primary mb-2 ml-2"
                           style={{
-                            height: 45,
+                            maxHeight: 45,
                             WebkitLineClamp: 3,
                           }}
                         >
