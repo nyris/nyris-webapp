@@ -110,6 +110,7 @@ export interface AppSettings extends NyrisAPISettings {
   showPoweredByNyris?: boolean;
   simpleCardView?: boolean;
   support: Support;
+  textSearchScoring?: Record<string, Record<string, number>>;
   theme: SearchSuiteSettings;
   geoLocation?: boolean;
   geoLocationMessage?: string;

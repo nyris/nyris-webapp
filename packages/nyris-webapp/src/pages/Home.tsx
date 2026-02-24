@@ -8,7 +8,7 @@ import TextSearch from 'components/TextSearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import ExperienceVisualSearchTrigger from 'components/ExperienceVisualSearch/ExperienceVisualSearchTrigger';
 import { useNavigate } from 'react-router';
-import LocationInfoPopup from "../components/LocationInfoPopup";
+import LocationInfoPopup from '../components/LocationInfoPopup';
 import Hint from '../components/Hint';
 import Loading from '../components/Loading';
 import useRequestStore from '../stores/request/requestStore';
@@ -17,7 +17,8 @@ import { getFilters } from '../services/filter';
 function Home() {
   const settings = window.settings;
   const user = useAuth0().user;
-  const { experienceVisualSearch, experienceVisualSearchImages, geoLocation } = settings;
+  const { experienceVisualSearch, experienceVisualSearchImages, geoLocation } =
+    settings;
   const navigate = useNavigate();
 
   const [experienceVisualSearchBlobs, setExperienceVisualSearchBlobs] =
@@ -25,8 +26,10 @@ function Home() {
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const showLoading = useRequestStore(store => store.showLoading);
   const setPreFilterList = useRequestStore(state => state.setPreFilterList);
+  const setPreFilterLoading = useRequestStore(
+    state => state.setPreFilterLoading,
+  );
   const setMetaFilter = useRequestStore(state => state.setMetaFilter);
-  const preFilterList = useRequestStore(state => state.preFilterList);
 
   const showPreFilter = useMemo(() => {
     if (settings.shouldUseUserMetadata && user) {
@@ -96,14 +99,16 @@ function Home() {
   }, []);
 
   const getPreFilters = async () => {
-    getFilters(1000, settings)
-      .then(res => {
-        setPreFilterList(res);
-      })
-      .catch((e: any) => {
-        console.log('err getDataFilterDesktop', e);
-      });
-  }
+    setPreFilterLoading(true);
+    try {
+      const res = await getFilters(1000, settings);
+      setPreFilterList(res);
+    } catch (e: any) {
+      console.log('err getDataFilterDesktop', e);
+    } finally {
+      setPreFilterLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (showPreFilter) {

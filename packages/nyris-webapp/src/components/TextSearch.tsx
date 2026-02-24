@@ -43,15 +43,21 @@ function TextSearch({
   const setValueInput = useRequestStore(state => state.setValueInput);
   const setMetaFilter = useRequestStore(state => state.setMetaFilter);
   const specifications = useRequestStore(state => state.specifications);
-  const nameplateNotificationText = useRequestStore(state => state.nameplateNotificationText);
+  const nameplateNotificationText = useRequestStore(
+    state => state.nameplateNotificationText,
+  );
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
 
   const regions = useRequestStore(state => state.regions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
-  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
-  const setShowNotMatchedError = useRequestStore(state => state.setShowNotMatchedError);
+  const setNameplateNotificationText = useRequestStore(
+    state => state.setNameplateNotificationText,
+  );
+  const setShowNotMatchedError = useRequestStore(
+    state => state.setShowNotMatchedError,
+  );
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
@@ -102,7 +108,7 @@ function TextSearch({
         return;
       }
 
-      if (!window.settings?.algolia.enabled) {
+      if (!window.settings?.algolia.enabled && requestImages.length === 0) {
         singleImageSearch({
           image: requestImages[0],
           imageRegion: regions[0],
@@ -147,37 +153,64 @@ function TextSearch({
       settings: window.settings,
       showFeedback: true,
       newSearch: true,
-    }).then((singleImageResp) => {
-      const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
-      const hasPrefilter = preFilterList.filter((filter: any) => filter.values.includes(specificationPrefilter));
+      clearPostFilter: true,
+    }).then(singleImageResp => {
+      const specificationPrefilter =
+        singleImageResp.image_analysis?.specification?.prefilter_value || null;
+      const hasPrefilter = preFilterList.filter((filter: any) =>
+        filter.values.includes(specificationPrefilter),
+      );
       if (specificationPrefilter) {
         setRequestImages([]);
         setShowNotMatchedError(false);
         if (hasPrefilter.length) {
-          setSpecifications(clone(singleImageResp.image_analysis.specification));
+          setSpecifications(
+            clone(singleImageResp.image_analysis.specification),
+          );
           setNameplateImage(files[0]);
-          setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
-          setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+          setPreFilter({
+            [singleImageResp.image_analysis?.specification?.prefilter_value]:
+              true,
+          });
+          setAlgoliaFilter(
+            `${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`,
+          );
 
           setShowLoading(false);
           navigate('/result');
 
           setTimeout(() => {
-            setNameplateNotificationText(t('We have successfully defined the search criteria', { prefilter_value: specificationPrefilter, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+            setNameplateNotificationText(
+              t('We have successfully defined the search criteria', {
+                prefilter_value: specificationPrefilter,
+                preFilterTitle:
+                  window.settings.preFilterTitle?.toLocaleLowerCase(),
+              }),
+            );
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
           }, 10000);
         }
         if (!hasPrefilter.length && showPreFilter) {
-          setSpecifications(clone({...singleImageResp.image_analysis.specification, specificationPrefilter}));
+          setSpecifications(
+            clone({
+              ...singleImageResp.image_analysis.specification,
+              specificationPrefilter,
+            }),
+          );
           navigate('/result');
           setPreFilter({});
           setAlgoliaFilter('');
           setShowLoading(false);
           setShowNotMatchedError(true);
           setTimeout(() => {
-            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+            setNameplateNotificationText(
+              t('Extracted details from the nameplate could not be matched', {
+                preFilterTitle:
+                  window.settings.preFilterTitle?.toLocaleLowerCase(),
+              }),
+            );
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
@@ -185,7 +218,7 @@ function TextSearch({
         }
       } else {
         if (!specifications?.is_nameplate) {
-          setSpecifications({...specifications, is_nameplate: false});
+          setSpecifications({ ...specifications, is_nameplate: false });
         }
         setShowLoading(false);
         navigate('/result');
@@ -289,10 +322,28 @@ function TextSearch({
                   style={{
                     position: 'fixed',
                     backgroundColor:
-                      nameplateNotificationText !== t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() })
-                        ? '#E4E3FF' : '#FFDBB3',
+                      nameplateNotificationText !==
+                      t(
+                        'Extracted details from the nameplate could not be matched',
+                        {
+                          preFilterTitle:
+                            window.settings.preFilterTitle?.toLocaleLowerCase(),
+                        },
+                      )
+                        ? '#E4E3FF'
+                        : '#FFDBB3',
                     border: '1px solid',
-                    borderColor: nameplateNotificationText !== t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#3E36DC' : '#FF8800',
+                    borderColor:
+                      nameplateNotificationText !==
+                      t(
+                        'Extracted details from the nameplate could not be matched',
+                        {
+                          preFilterTitle:
+                            window.settings.preFilterTitle?.toLocaleLowerCase(),
+                        },
+                      )
+                        ? '#3E36DC'
+                        : '#FF8800',
                     fontSize: 13,
                     borderRadius: 24,
                     color: '#545987',
@@ -303,7 +354,7 @@ function TextSearch({
                     justifyContent: 'center',
                     marginLeft: 8,
                     zIndex: 999999,
-                    top: !isMobile ?  60 : 'unset',
+                    top: !isMobile ? 60 : 'unset',
                     bottom: isMobile ? 76 : 'unset',
                     maxWidth: 510,
                     width: !isMobile ? 'unset' : '90%',
@@ -323,15 +374,31 @@ function TextSearch({
                       borderRight: '7px solid transparent',
                       borderTop: isMobile
                         ? `7px solid ${
-                          nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
-                            { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#3E36DC' : '#FF8800'
+                            nameplateNotificationText !==
+                            t(
+                              'Extracted details from the nameplate could not be matched',
+                              {
+                                preFilterTitle:
+                                  window.settings.preFilterTitle?.toLocaleLowerCase(),
+                              },
+                            )
+                              ? '#3E36DC'
+                              : '#FF8800'
                           }`
                         : 'unset',
                       borderBottom: !isMobile
                         ? `7px solid ${
-                        nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
-                          { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#3E36DC' : '#FF8800'
-                        }`
+                            nameplateNotificationText !==
+                            t(
+                              'Extracted details from the nameplate could not be matched',
+                              {
+                                preFilterTitle:
+                                  window.settings.preFilterTitle?.toLocaleLowerCase(),
+                              },
+                            )
+                              ? '#3E36DC'
+                              : '#FF8800'
+                          }`
                         : 'unset',
                     }}
                   />
@@ -348,12 +415,32 @@ function TextSearch({
                       borderLeft: '6px solid transparent',
                       borderRight: '6px solid transparent',
                       borderTop: isMobile
-                        ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
-                          { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#E4E3FF' : '#FFDBB3'}`
+                        ? `6px solid ${
+                            nameplateNotificationText !==
+                            t(
+                              'Extracted details from the nameplate could not be matched',
+                              {
+                                preFilterTitle:
+                                  window.settings.preFilterTitle?.toLocaleLowerCase(),
+                              },
+                            )
+                              ? '#E4E3FF'
+                              : '#FFDBB3'
+                          }`
                         : 'unset',
                       borderBottom: !isMobile
-                        ? `6px solid ${nameplateNotificationText !== t('Extracted details from the nameplate could not be matched',
-                          { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }) ? '#E4E3FF' : '#FFDBB3'}`
+                        ? `6px solid ${
+                            nameplateNotificationText !==
+                            t(
+                              'Extracted details from the nameplate could not be matched',
+                              {
+                                preFilterTitle:
+                                  window.settings.preFilterTitle?.toLocaleLowerCase(),
+                              },
+                            )
+                              ? '#E4E3FF'
+                              : '#FFDBB3'
+                          }`
                         : 'unset',
                     }}
                   />
@@ -404,7 +491,7 @@ function TextSearch({
               }}
               className="peer desktop:bg-gray-200 focus:bg-white pl-1.5 outline-none"
               placeholder={t('Search')}
-              value={valueInput || query}
+              value={valueInput}
               onChange={onChangeText}
               ref={focusInp}
             />
@@ -431,7 +518,10 @@ function TextSearch({
                     navigate('/result');
                     setValueInput('');
                     setQuery('');
-                    if (!window.settings?.algolia.enabled) {
+                    if (
+                      !window.settings?.algolia.enabled &&
+                      requestImages.length === 0
+                    ) {
                       singleImageSearch({
                         image: requestImages[0],
                         imageRegion: regions[0],

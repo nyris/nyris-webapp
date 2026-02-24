@@ -114,6 +114,7 @@ function Results() {
         image: file,
         settings: window.settings,
         showFeedback: true,
+        clearPostFilter: true,
       }).then(() => {});
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -196,33 +197,40 @@ function Results() {
 
           <div className="block desktop:hidden mb-4 desktop:mb-0">
             {requestImages[0] && <ImagePreview />}
-            {window.settings.showImageDetails && (imageAnalysis?.imageDescription ||
-              Object.keys(imageAnalysis?.specification || {}).length > 0) && (
-              <div className="p-2">
-                <div className="self-stretch p-4 bg-[#f3f3f5] rounded flex justify-start flex-col items-start gap-2 flex-wrap content-start w-full">
-                  {imageAnalysis?.imageDescription !==
-                    'No description available' && (
-                    <div className="self-stretch flex flex-col justify-start items-start">
-                      <div className="justify-start text-black text-base font-semibold">
-                        Image description
+            {window.settings.showImageDetails &&
+              (imageAnalysis?.imageDescription ||
+                Object.keys(imageAnalysis?.specification || {}).length > 0) && (
+                <div className="p-2">
+                  <div className="self-stretch p-4 bg-[#f3f3f5] rounded flex justify-start flex-col items-start gap-2 flex-wrap content-start w-full">
+                    {imageAnalysis?.imageDescription !==
+                      'No description available' && (
+                      <div className="self-stretch flex flex-col justify-start items-start">
+                        <div className="justify-start text-black text-base font-semibold">
+                          Image description
+                        </div>
+                        <div className="self-stretch justify-start text-black text-sm font-normal">
+                          {imageAnalysis?.imageDescription || ''}
+                        </div>
                       </div>
-                      <div className="self-stretch justify-start text-black text-sm font-normal">
-                        {imageAnalysis?.imageDescription || ''}
-                      </div>
-                    </div>
-                  )}
-                  {Object.keys(imageAnalysis?.specification || {})
-                    .filter((key) => (key !== 'is_nameplate' && key !== 'prefilter_value'))
-                    .some((key) => !!imageAnalysis?.specification[key]) && (
+                    )}
+
+                    {Object.keys(imageAnalysis?.specification || {})
+                      .filter(
+                        key =>
+                          key !== 'is_nameplate' && key !== 'prefilter_value',
+                      )
+                      .some(key => !!imageAnalysis?.specification[key]) && (
                       <div className="justify-start text-[#2b2c46] text-base font-semibold mt-1">
                         Identified Attributes
                       </div>
                     )}
-                  <div className="flex justify-start items-start gap-4 flex-wrap content-start">
-                    {Object.keys(imageAnalysis?.specification || {})
-                      .filter((key) => (key !== 'is_nameplate' && key !== 'prefilter_value'))
-                      .map(
-                        key => {
+                    <div className="flex justify-start items-start gap-4 flex-wrap content-start">
+                      {Object.keys(imageAnalysis?.specification || {})
+                        .filter(
+                          key =>
+                            key !== 'is_nameplate' && key !== 'prefilter_value',
+                        )
+                        .map(key => {
                           const value = imageAnalysis?.specification[key];
                           if (!value) {
                             return null;
@@ -253,11 +261,11 @@ function Results() {
                                     const setSpecificationFilter =
                                       useRequestStore.getState()
                                         .setSpecificationFilter;
-  
+
                                     const setSpecificationFilteredProducts =
                                       useResultStore.getState()
                                         .setSpecificationFilteredProducts;
-  
+
                                     if (specificationFilter[key]) {
                                       setSpecificationFilter({});
                                       setSpecificationFilteredProducts([]);
@@ -287,17 +295,16 @@ function Results() {
                               </div>
                             </>
                           );
-                        },
-                      )}
+                        })}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
           <div
             className={twMerge([
               requestImages[0] ? 'pt-0' : 'pt-3',
-              'desktop:pt-10',
+              'desktop:pt-4',
               'desktop:overflow-hidden',
               'desktop:overflow-y-auto',
               'flex',
@@ -325,10 +332,14 @@ function Results() {
                   marginBottom: 16,
                 }}
               >
-                {!specifications?.specificationPrefilter
-                  && specifications?.prefilter_value
-                  && t('Showing results for machine', { prefilter_title: window.settings.preFilterTitle?.toLocaleLowerCase(), prefilter_value: specifications.prefilter_value })
-                }
+                {!specifications?.specificationPrefilter &&
+                  specifications?.prefilter_value &&
+                  window.settings.algolia.enabled &&
+                  t('Showing results for machine', {
+                    prefilter_title:
+                      window.settings.preFilterTitle?.toLocaleLowerCase(),
+                    prefilter_value: specifications.prefilter_value,
+                  })}
               </div>
               <div
                 className={twMerge([
@@ -467,8 +478,8 @@ function Results() {
                   disablePostFilter
                     ? '#F3F3F5'
                     : isPostFilterApplied
-                    ? '#F0EFFF'
-                    : '#F3F3F5'
+                      ? '#F0EFFF'
+                      : '#F3F3F5'
                 }`,
                 borderRadius: '40px',
                 width: '32px',
@@ -483,8 +494,8 @@ function Results() {
                   isPostFilterApplied
                     ? 'text-[#3E36DC]'
                     : disablePostFilter
-                    ? 'text-[#E0E0E0]'
-                    : 'text-[#2B2C46]',
+                      ? 'text-[#E0E0E0]'
+                      : 'text-[#2B2C46]',
                 ])}
               />
             </div>
@@ -514,8 +525,8 @@ function Results() {
                     isPostFilterApplied
                       ? 'bg-[#3E36DC]'
                       : disablePostFilter
-                      ? 'bg-[#E0E0E0]'
-                      : 'bg-[#2B2C46]',
+                        ? 'bg-[#E0E0E0]'
+                        : 'bg-[#2B2C46]',
                   ])}
                 ></div>
               </div>
