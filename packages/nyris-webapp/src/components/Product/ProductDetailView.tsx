@@ -201,7 +201,7 @@ function ProductDetailView(props: Props) {
                         <p className="text-f14 fw-400 max-line-1 text-[#2B2C46] ml-2 text-base w-fit h-[72px]">
                           {truncateString(
                             dataItem[settings.secondaryTitle],
-                            isMobile ? 45 : 120,
+                            isMobile ? 45 : 80,
                           )}
                         </p>
                       </Tooltip>
