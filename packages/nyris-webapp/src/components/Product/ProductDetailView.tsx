@@ -190,7 +190,7 @@ function ProductDetailView(props: Props) {
                     {settings.mainTitle && (
                       <Tooltip content={dataItem[settings.mainTitle]}>
                         <p className="text-base font-bold max-line-1 text-[#2B2C46] font-source-sans-3 leading-[22.78px] ml-2 w-fit ">
-                          {truncateString(dataItem[settings.mainTitle], 45)}
+                          {truncateString(dataItem[settings.mainTitle], 90)}
                         </p>
                       </Tooltip>
                     )}
@@ -201,7 +201,7 @@ function ProductDetailView(props: Props) {
                         <p className="text-f14 fw-400 max-line-1 text-[#2B2C46] ml-2 text-base w-fit h-[72px]">
                           {truncateString(
                             dataItem[settings.secondaryTitle],
-                            isMobile ? 45 : 70,
+                            isMobile ? 45 : 120,
                           )}
                         </p>
                       </Tooltip>

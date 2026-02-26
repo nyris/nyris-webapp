@@ -21,7 +21,9 @@ function ExperienceVisualSearch({
   const { singleImageSearch } = useImageSearch();
 
   const initiateVisualSearch = async (blob: string) => {
-    singleImageSearch({ image: blob, settings }).then(() => {});
+    singleImageSearch({ image: blob, settings, clearPostFilter: true }).then(
+      () => {},
+    );
     navigate('/result');
   };
 

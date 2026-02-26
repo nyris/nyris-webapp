@@ -56,27 +56,30 @@ export default function SidePanel({ className }: { className?: string }) {
         {requestImages[0] && <ImagePreview />}
       </div>
 
-      {window.settings.showImageDetails && (imageAnalysis?.imageDescription ||
-        Object.keys(imageAnalysis?.specification || {}).length > 0) && (
-        <div className="self-stretch p-4 bg-[#f3f3f5] rounded inline-flex flex-col justify-start items-start gap-1.5 mt-4 mx-4 ">
-          {imageAnalysis?.imageDescription !== 'No description available' && (
-            <div className="self-stretch flex flex-col justify-start items-start">
-              <div className="justify-start text-black text-base font-semibold">
-                Image description
+      {window.settings.showImageDetails &&
+        (imageAnalysis?.imageDescription ||
+          Object.keys(imageAnalysis?.specification || {}).length > 0) && (
+          <div className="self-stretch p-4 bg-[#f3f3f5] rounded inline-flex flex-col justify-start items-start gap-1.5 mt-4 mx-4 ">
+            {imageAnalysis?.imageDescription !== 'No description available' && (
+              <div className="self-stretch flex flex-col justify-start items-start">
+                <div className="justify-start text-black text-base font-semibold">
+                  Image description
+                </div>
+                <div className="self-stretch justify-start text-black text-xs font-normal">
+                  {imageAnalysis?.imageDescription || ''}
+                </div>
               </div>
-              <div className="self-stretch justify-start text-black text-xs font-normal">
-                {imageAnalysis?.imageDescription || ''}
-              </div>
-            </div>
-          )}
+            )}
 
-          {Object.keys(imageAnalysis?.specification || {})
-            .filter((key) => (key !== 'is_nameplate' && key !== 'prefilter_value'))
-            .some((key) => !!imageAnalysis?.specification[key]) && (
-            <div className="justify-start text-black text-base font-semibold mt-2">
-              Identified Attributes
-            </div>
-          )}
+            {Object.keys(imageAnalysis?.specification || {})
+              .filter(
+                key => key !== 'is_nameplate' && key !== 'prefilter_value',
+              )
+              .some(key => !!imageAnalysis?.specification[key]) && (
+              <div className="justify-start text-black text-base font-semibold mt-2">
+                Identified Attributes
+              </div>
+            )}
 
           {Object.keys(imageAnalysis?.specification || {})
             .filter((key) => (key !== 'is_nameplate' && key !== 'prefilter_value'))

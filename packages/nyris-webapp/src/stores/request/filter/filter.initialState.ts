@@ -6,4 +6,6 @@ export const initialState: FilterState = {
   preFilterList: [],
   firstSearchPreFilter: {},
   specificationFilter: {},
+  postFilterSelections: {},
+  preFilterLoading: false,
 };
