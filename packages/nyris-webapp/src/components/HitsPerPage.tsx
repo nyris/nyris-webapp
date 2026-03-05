@@ -1,5 +1,7 @@
+import { Icon } from '@nyris/nyris-react-components';
 import { useTranslation } from 'react-i18next';
 import { useHitsPerPage, UseHitsPerPageProps } from 'react-instantsearch';
+import PoweredBy from './Footer';
 
 export const HitsPerPage = (props: UseHitsPerPageProps) => {
   const { items, refine } = useHitsPerPage(props);
@@ -10,8 +12,8 @@ export const HitsPerPage = (props: UseHitsPerPageProps) => {
 
   return (
     <>
-      <div className="w-full min-h-12 bg-[#f3f3f5] border-t border-solid border-[#e0e0e0] justify-start items-center hidden desktop:inline-flex">
-        <div className="self-stretch pl-4 pr-6 border-r border-solid border-[#e0e0e0] justify-center items-center gap-1 flex">
+      <div className="w-full min-h-8 bg-[#FFFFFF] border-t border-solid border-[#DDDEE7] items-center hidden desktop:inline-flex rounded-2xl mb-4 justify-between pr-2">
+        <div className="self-stretch pl-4 pr-6 border-r border-solid border-[#DDDEE7] justify-center items-center gap-1 flex">
           <div className="text-[#2b2c46] text-[13px] font-normal font-['Source Sans 3'] leading-none tracking-tight">
             {t('Items per page')}:
           </div>
@@ -29,6 +31,7 @@ export const HitsPerPage = (props: UseHitsPerPageProps) => {
             ))}
           </select>
         </div>
+        {window.settings.showPoweredByNyris && <PoweredBy />}
       </div>
     </>
   );

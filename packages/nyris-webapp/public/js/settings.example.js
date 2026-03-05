@@ -90,6 +90,7 @@ var settings = {
     },
   ],
   // features
+  cart: false,
   showPoweredByNyris: '',
   postFilterOption: '',
   preFilterOption: '',

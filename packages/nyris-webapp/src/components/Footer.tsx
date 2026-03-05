@@ -1,16 +1,11 @@
 import { Icon } from '@nyris/nyris-react-components';
 import { twMerge } from 'tailwind-merge';
 
-export default function Footer({ className }: { className?: string }) {
+export default function PoweredBy({ className }: { className?: string }) {
   return (
-    <div
-      className={twMerge(
-        'bg-white desktop:hover:bg-[#F0EFFF] group flex-shrink-0 py-2 justify-center desktop:border-t border-solid border-[#E0E0E0] flex',
-        className,
-      )}
-    >
+    <div className={twMerge(className)}>
       <Icon
-        className="fill-[#aaabb5] desktop:fill-primary group-hover:fill-[url(#powered_by_nyris_colored_svg__gradient)] cursor-pointer w-24 h-4"
+        className="fill-[#767A9F] group-hover:fill-[url(#powered_by_nyris_colored_svg__gradient)] hover:fill-[url(#powered_by_nyris_colored_svg__gradient)] cursor-pointer w-[110px] h-5"
         name="powered_by_nyris"
         onClick={() => {
           window.open('https://www.nyris.io', '_blank');

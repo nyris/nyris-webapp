@@ -19,13 +19,14 @@ import TextSearch from 'components/TextSearch';
 import { Icon } from '@nyris/nyris-react-components';
 import PostFilterDrawer from 'components/PostFilter/PostFilterDrawer';
 import ImagePreview from 'components/ImagePreview';
-import Footer from 'components/Footer';
+import PoweredBy from 'components/Footer';
 import CurrentRefinements from 'components/CurrentRefinements';
 import { GoBackButton } from 'components/GoBackButton';
 import { useCurrentRefinements } from 'react-instantsearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import { useTranslation } from 'react-i18next';
 import { useImageSearch } from 'hooks/useImageSearch';
+import ImageUpload from 'components/ImageUpload';
 
 function Results() {
   const settings = window.settings;
@@ -190,7 +191,6 @@ function Results() {
             'justify-between',
             'relative',
             'h-full',
-            'overflow-y-auto',
           ])}
         >
           <SidePanel className="hidden desktop:flex" />
@@ -301,169 +301,179 @@ function Results() {
                 </div>
               )}
           </div>
-          <div
-            className={twMerge([
-              requestImages[0] ? 'pt-0' : 'pt-3',
-              'desktop:pt-4',
-              'desktop:overflow-hidden',
-              'desktop:overflow-y-auto',
-              'flex',
-              'flex-col',
-              'relative',
-              'w-full',
-              'mr-auto',
-              'ml-auto',
-              'h-full',
-            ])}
-          >
+          <div className="w-full h-full flex flex-col">
             <div
               className={twMerge([
+                requestImages[0] ? 'pt-0' : 'pt-3',
+                'desktop:pt-4',
                 'flex',
                 'flex-col',
-                'flex-grow',
-                'desktop:mt-0',
+                'relative',
+                'w-full',
+                'mr-auto',
+                'ml-auto',
+                'max-h-full',
+                'flex-1',
+                'overflow-y-auto',
+                'pb-6',
               ])}
             >
               <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: 16,
-                  marginLeft: 16,
-                  marginBottom: 16,
-                }}
-              >
-                {!specifications?.specificationPrefilter &&
-                  specifications?.prefilter_value &&
-                  window.settings.algolia.enabled &&
-                  t('Showing results for machine', {
-                    prefilter_title:
-                      window.settings.preFilterTitle?.toLocaleLowerCase(),
-                    prefilter_value: specifications.prefilter_value,
-                  })}
-              </div>
-              <div
                 className={twMerge([
-                  'h-full',
-                  'relative',
                   'flex',
-                  'justify-center',
-                  'mx-0.5',
-                  'mobile-md:mx-2',
-                  'desktop:mx-4',
+                  'flex-col',
+                  'flex-grow',
+                  'desktop:mt-0',
                 ])}
               >
-                <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20 desktop:mb-0">
-                  <div
-                    className={twMerge(
-                      'grid grid-cols-[repeat(auto-fit,_minmax(180px,_0px))] desktop:grid-cols-[repeat(auto-fit,_minmax(190px,_0px))]',
-                      'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
-                      'w-full',
-                    )}
-                  >
-                    <GoBackButton className="col-span-full mb-2 desktop:mb-0" />
-                    <CurrentRefinements className="col-span-full" />
-                    <ProductList />
-                  </div>
-
-                  {showFeedbackSuccess && (
-                    <div className={'feedback-floating'}>
-                      <div className="feedback-section">
-                        <div className="feedback-success">
-                          {t('Thank you for your feedback')}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {feedbackStatus === 'visible' &&
-                    !showFeedbackSuccess &&
-                    productsFromAlgolia.length > 0 && (
-                      <div className={'feedback-floating'}>
-                        <div className="feedback-section feedback-backdrop-blur" />
-
-                        <div className="feedback-section">
-                          <Feedback
-                            submitFeedback={submitFeedback}
-                            onFeedbackClose={() => {
-                              setFeedbackStatus('submitted');
-                              setShowFeedback(false);
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  <div>
-                    <Pagination
-                      isLoading={isFindApiLoading || isAlgoliaLoading}
-                      className={
-                        productsFromAlgolia.length === 0 && !isAlgoliaLoading
-                          ? 'opacity-0'
-                          : ''
-                      }
-                    />
+                <div
+                  style={{
+                    fontWeight: 700,
+                    fontSize: 16,
+                    marginLeft: 16,
+                    marginBottom: 16,
+                  }}
+                >
+                  {!specifications?.specificationPrefilter &&
+                    specifications?.prefilter_value &&
+                    window.settings.algolia.enabled &&
+                    t('Showing results for machine', {
+                      prefilter_title:
+                        window.settings.preFilterTitle?.toLocaleLowerCase(),
+                      prefilter_value: specifications.prefilter_value,
+                    })}
+                </div>
+                <div
+                  className={twMerge([
+                    'h-full',
+                    'relative',
+                    'flex',
+                    'justify-center',
+                    'mx-0.5',
+                    'mobile-md:mx-2',
+                    'desktop:mx-4',
+                  ])}
+                >
+                  <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20 desktop:mb-0">
                     <div
-                      style={{
-                        display: 'flex',
-                        flexGrow: 1,
-                      }}
+                      className={twMerge(
+                        'grid grid-cols-[repeat(auto-fit,_minmax(180px,_0px))] desktop:grid-cols-[repeat(auto-fit,_minmax(190px,_0px))]',
+                        'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
+                        'w-full',
+                      )}
                     >
-                      {requestImages.length > 0 &&
-                        !isAlgoliaLoading &&
-                        !isFindApiLoading &&
-                        window.settings.rfq &&
-                        window.settings.rfq.enabled && (
-                          <RfqBanner
-                            requestImage={requestImages[0]}
-                            selectedRegion={regions[0]}
-                          />
-                        )}
-                      {!isFindApiLoading &&
-                        window.settings.support &&
-                        window.settings.support.enabled &&
-                        (query || requestImages[0] || specifications) && (
-                          <InquiryBanner
-                            requestImage={requestImages[0]}
-                            selectedRegion={regions[0]}
-                            query={query}
-                          />
-                        )}
+                      <GoBackButton className="col-span-full mb-2 desktop:mb-0" />
+                      <CurrentRefinements className="col-span-full" />
+                      <ProductList />
                     </div>
-                    <Footer className="bg-[#fafafa] desktop:hidden" />
+
+                    {showFeedbackSuccess && (
+                      <div className={'feedback-floating'}>
+                        <div className="feedback-section">
+                          <div className="feedback-success">
+                            {t('Thank you for your feedback')}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {feedbackStatus === 'visible' &&
+                      !showFeedbackSuccess &&
+                      productsFromAlgolia.length > 0 && (
+                        <div className={'feedback-floating'}>
+                          <div className="feedback-section feedback-backdrop-blur" />
+
+                          <div className="feedback-section">
+                            <Feedback
+                              submitFeedback={submitFeedback}
+                              onFeedbackClose={() => {
+                                setFeedbackStatus('submitted');
+                                setShowFeedback(false);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    <div>
+                      <Pagination
+                        isLoading={isFindApiLoading || isAlgoliaLoading}
+                        className={
+                          productsFromAlgolia.length === 0 && !isAlgoliaLoading
+                            ? 'opacity-0'
+                            : ''
+                        }
+                      />
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexGrow: 1,
+                        }}
+                      >
+                        {requestImages.length > 0 &&
+                          !isAlgoliaLoading &&
+                          !isFindApiLoading &&
+                          window.settings.rfq &&
+                          window.settings.rfq.enabled && (
+                            <RfqBanner
+                              requestImage={requestImages[0]}
+                              selectedRegion={regions[0]}
+                            />
+                          )}
+                        {!isFindApiLoading &&
+                          window.settings.support &&
+                          window.settings.support.enabled &&
+                          (query || requestImages[0] || specifications) && (
+                            <InquiryBanner
+                              requestImage={requestImages[0]}
+                              selectedRegion={regions[0]}
+                              query={query}
+                            />
+                          )}
+                      </div>
+                      {settings.showPoweredByNyris && (
+                        <PoweredBy
+                          className={
+                            'flex desktop:w-0 desktop:h-0 w-full justify-center items-center mb-2'
+                          }
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            <HitsPerPage
-              items={[
-                { label: '10', value: 10 },
-                { label: '20', value: 20, default: true },
-                { label: '30', value: 30 },
-                { label: '40', value: 40 },
-                { label: '50', value: 50 },
-              ]}
-            />
+            <div className="pl-2 pr-4 mt-[6px]">
+              <HitsPerPage
+                items={[
+                  { label: '10', value: 10 },
+                  { label: '20', value: 20, default: true },
+                  { label: '30', value: 30 },
+                  { label: '40', value: 40 },
+                  { label: '50', value: 50 },
+                ]}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="flex desktop:hidden w-full fixed bottom-4 z-50 px-3 gap-2">
+      <div className="flex desktop:hidden w-full fixed bottom-4 z-50 px-3 pr-5 gap-2">
         <TextSearch
           className="flex desktop:hidden w-full gap-2"
           onCameraClick={() => setOpenModalCamera(true)}
         />
+        <ImageUpload />
         {isShowFilter && settings.postFilterOption && (
           <div
-            style={{
-              position: 'relative',
-              width: '48px',
-              height: '48px',
-              padding: ' 8px',
-              flexShrink: 0,
-              borderRadius: '32px',
-              background: '#FAFAFA',
-              boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
-            }}
+            className={twMerge([
+              'h-14',
+              'min-w-14',
+              'rounded-full',
+              'bg-white',
+              'p-2',
+              'border border-solid border-[#DDDEE7]',
+              'shadow-drop-shadow-1',
+            ])}
             onClick={() => {
               if (disablePostFilter && !isPostFilterApplied) return;
               setShowPostFilter(true);
@@ -472,20 +482,15 @@ function Results() {
             }}
           >
             <div
+              className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full"
               style={{
-                display: 'flex',
                 background: `${
                   disablePostFilter
-                    ? '#F3F3F5'
+                    ? '#FAFAFA'
                     : isPostFilterApplied
                       ? '#F0EFFF'
-                      : '#F3F3F5'
+                      : '#FAFAFA'
                 }`,
-                borderRadius: '40px',
-                width: '32px',
-                height: '32px',
-                justifyContent: 'center',
-                alignItems: 'center',
               }}
             >
               <Icon

@@ -5,10 +5,14 @@ export class ToastHelper {
     toast.success(msg, {
       duration: 3000,
       style: {
-        background: '#1E1F31',
-        color: '#fff',
+        background: '#E4E3FF',
+        color: '#000000',
       },
       position: position,
+      iconTheme: {
+        primary: '#3E36DC',
+        secondary: '#fff',
+      },
     });
   }
 
