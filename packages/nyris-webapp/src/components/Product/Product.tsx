@@ -291,11 +291,18 @@ function Product(props: Props) {
               style={{ color: '#FFFFFF' }}
             >
               <div>
-                <div className="max-h-[38px] h-fit">
+                <div className="h-[102px]">
                   {dataItem[settings.mainTitle] && (
                     <Tooltip content={dataItem[settings.mainTitle] || ''}>
-                      <div className="text-xs font-bold text-primary mb-1 ml-2 max-line-1 w-fit">
-                        {truncateString(dataItem[settings.mainTitle], 45)}
+                      <div
+                        className="text-xs max-line-1 font-bold text-primary mb-1 ml-2 w-fit"
+                        style={{
+                          wordBreak: 'break-all',
+                          maxHeight: 46,
+                          WebkitLineClamp: 3,
+                        }}
+                      >
+                        {truncateString(dataItem[settings.mainTitle], 92)}
                       </div>
                     </Tooltip>
                   )}
@@ -315,10 +322,16 @@ function Product(props: Props) {
                           !dataItem[settings.secondaryTitle]
                         }
                       >
-                        <div className="text-[10px] font-normal max-line-1 text-primary mb-2 ml-2">
+                        <div
+                          className="text-[10px] max-line-1 font-normal text-primary mb-2 ml-2"
+                          style={{
+                            maxHeight: 45,
+                            WebkitLineClamp: 3,
+                          }}
+                        >
                           {truncateString(
                             dataItem[settings.secondaryTitle],
-                            40,
+                            114,
                           )}
                         </div>
                       </Tooltip>

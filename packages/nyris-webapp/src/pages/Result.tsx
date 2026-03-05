@@ -26,6 +26,7 @@ import { useCurrentRefinements } from 'react-instantsearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import { useTranslation } from 'react-i18next';
 import { useImageSearch } from 'hooks/useImageSearch';
+import ItemSpecification from 'components/ItemSpecification';
 
 function Results() {
   const settings = window.settings;
@@ -236,64 +237,12 @@ function Results() {
                             return null;
                           }
                           return (
-                            <>
-                              <div
-                                className="inline-flex flex-col justify-center items-start "
-                                key={key}
-                              >
-                                <div className="pl-1 inline-flex justify-center items-center gap-2.5">
-                                  <div className="justify-start text-[#2b2c46] text-sm font-semibold">
-                                    {key}
-                                  </div>
-                                </div>
-                                <div
-                                  className={twMerge(
-                                    `p-3 bg-[#e4e3ff] rounded-lg  inline-flex justify-center items-center gap-1.5`,
-                                    'text-[#3e36dc]',
-                                    specificationFilter[key]
-                                      ? 'border-[#3E36DC] bg-[#3E36DC] text-white'
-                                      : '',
-                                  )}
-                                  onClick={() => {
-                                    if (!value) {
-                                      return;
-                                    }
-                                    const setSpecificationFilter =
-                                      useRequestStore.getState()
-                                        .setSpecificationFilter;
-
-                                    const setSpecificationFilteredProducts =
-                                      useResultStore.getState()
-                                        .setSpecificationFilteredProducts;
-
-                                    if (specificationFilter[key]) {
-                                      setSpecificationFilter({});
-                                      setSpecificationFilteredProducts([]);
-                                      // setProducts(results);
-                                    } else {
-                                      setSpecificationFilter({
-                                        [key]: value,
-                                      });
-                                    }
-                                  }}
-                                >
-                                  <div className="justify-start text-sm font-medium leading-none flex gap-2">
-                                    {imageAnalysis?.specification[key] || 'N/A'}
-                                    <div>
-                                      <Icon
-                                        name="close"
-                                        className={twMerge(
-                                          'w-3 h-3 text-white',
-                                          specificationFilter[key]
-                                            ? 'block'
-                                            : 'hidden',
-                                        )}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </>
+                            <ItemSpecification
+                              attr={key}
+                              value={value}
+                              specificationFilter={specificationFilter}
+                              imageAnalysis={imageAnalysis}
+                            />
                           );
                         })}
                     </div>
