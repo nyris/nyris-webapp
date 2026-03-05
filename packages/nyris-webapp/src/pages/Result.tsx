@@ -195,117 +195,12 @@ function Results() {
         >
           <SidePanel className="hidden desktop:flex" />
 
-          <div className="block desktop:hidden mb-4 desktop:mb-0">
-            {requestImages[0] && <ImagePreview />}
-            {window.settings.showImageDetails &&
-              (imageAnalysis?.imageDescription ||
-                Object.keys(imageAnalysis?.specification || {}).length > 0) && (
-                <div className="p-2">
-                  <div className="self-stretch p-4 bg-[#f3f3f5] rounded flex justify-start flex-col items-start gap-2 flex-wrap content-start w-full">
-                    {imageAnalysis?.imageDescription !==
-                      'No description available' && (
-                      <div className="self-stretch flex flex-col justify-start items-start">
-                        <div className="justify-start text-black text-base font-semibold">
-                          Image description
-                        </div>
-                        <div className="self-stretch justify-start text-black text-sm font-normal">
-                          {imageAnalysis?.imageDescription || ''}
-                        </div>
-                      </div>
-                    )}
-
-                    {Object.keys(imageAnalysis?.specification || {})
-                      .filter(
-                        key =>
-                          key !== 'is_nameplate' && key !== 'prefilter_value',
-                      )
-                      .some(key => !!imageAnalysis?.specification[key]) && (
-                      <div className="justify-start text-[#2b2c46] text-base font-semibold mt-1">
-                        Identified Attributes
-                      </div>
-                    )}
-                    <div className="flex justify-start items-start gap-4 flex-wrap content-start">
-                      {Object.keys(imageAnalysis?.specification || {})
-                        .filter(
-                          key =>
-                            key !== 'is_nameplate' && key !== 'prefilter_value',
-                        )
-                        .map(key => {
-                          const value = imageAnalysis?.specification[key];
-                          if (!value) {
-                            return null;
-                          }
-                          return (
-                            <>
-                              <div
-                                className="inline-flex flex-col justify-center items-start "
-                                key={key}
-                              >
-                                <div className="pl-1 inline-flex justify-center items-center gap-2.5">
-                                  <div className="justify-start text-[#2b2c46] text-sm font-semibold">
-                                    {key}
-                                  </div>
-                                </div>
-                                <div
-                                  className={twMerge(
-                                    `p-3 bg-[#e4e3ff] rounded-lg  inline-flex justify-center items-center gap-1.5`,
-                                    'text-[#3e36dc]',
-                                    specificationFilter[key]
-                                      ? 'border-[#3E36DC] bg-[#3E36DC] text-white'
-                                      : '',
-                                  )}
-                                  onClick={() => {
-                                    if (!value) {
-                                      return;
-                                    }
-                                    const setSpecificationFilter =
-                                      useRequestStore.getState()
-                                        .setSpecificationFilter;
-
-                                    const setSpecificationFilteredProducts =
-                                      useResultStore.getState()
-                                        .setSpecificationFilteredProducts;
-
-                                    if (specificationFilter[key]) {
-                                      setSpecificationFilter({});
-                                      setSpecificationFilteredProducts([]);
-                                      // setProducts(results);
-                                    } else {
-                                      setSpecificationFilter({
-                                        [key]: value,
-                                      });
-                                    }
-                                  }}
-                                >
-                                  <div className="justify-start text-sm font-medium leading-none flex gap-2">
-                                    {imageAnalysis?.specification[key] || 'N/A'}
-                                    <div>
-                                      <Icon
-                                        name="close"
-                                        className={twMerge(
-                                          'w-3 h-3 text-white',
-                                          specificationFilter[key]
-                                            ? 'block'
-                                            : 'hidden',
-                                        )}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </>
-                          );
-                        })}
-                    </div>
-                  </div>
-                </div>
-              )}
-          </div>
           <div className="w-full h-full flex flex-col">
             <div
               className={twMerge([
                 requestImages[0] ? 'pt-0' : 'pt-3',
-                'desktop:pt-4',
+                'desktop:pt-2',
+                'desktop:mt-4',
                 'flex',
                 'flex-col',
                 'relative',
@@ -316,8 +211,119 @@ function Results() {
                 'flex-1',
                 'overflow-y-auto',
                 'pb-6',
+                requestImages[0] && 'gap-4',
               ])}
             >
+              <div className="block desktop:hidden desktop:mb-0 px-2">
+                {requestImages[0] && <ImagePreview />}
+                {window.settings.showImageDetails &&
+                  (imageAnalysis?.imageDescription ||
+                    Object.keys(imageAnalysis?.specification || {}).length >
+                      0) && (
+                    <div className="p-2">
+                      <div className="self-stretch p-4 bg-[#f3f3f5] rounded flex justify-start flex-col items-start gap-2 flex-wrap content-start w-full">
+                        {imageAnalysis?.imageDescription !==
+                          'No description available' && (
+                          <div className="self-stretch flex flex-col justify-start items-start">
+                            <div className="justify-start text-black text-base font-semibold">
+                              Image description
+                            </div>
+                            <div className="self-stretch justify-start text-black text-sm font-normal">
+                              {imageAnalysis?.imageDescription || ''}
+                            </div>
+                          </div>
+                        )}
+
+                        {Object.keys(imageAnalysis?.specification || {})
+                          .filter(
+                            key =>
+                              key !== 'is_nameplate' &&
+                              key !== 'prefilter_value',
+                          )
+                          .some(key => !!imageAnalysis?.specification[key]) && (
+                          <div className="justify-start text-[#2b2c46] text-base font-semibold mt-1">
+                            Identified Attributes
+                          </div>
+                        )}
+                        <div className="flex justify-start items-start gap-4 flex-wrap content-start">
+                          {Object.keys(imageAnalysis?.specification || {})
+                            .filter(
+                              key =>
+                                key !== 'is_nameplate' &&
+                                key !== 'prefilter_value',
+                            )
+                            .map(key => {
+                              const value = imageAnalysis?.specification[key];
+                              if (!value) {
+                                return null;
+                              }
+                              return (
+                                <>
+                                  <div
+                                    className="inline-flex flex-col justify-center items-start "
+                                    key={key}
+                                  >
+                                    <div className="pl-1 inline-flex justify-center items-center gap-2.5">
+                                      <div className="justify-start text-[#2b2c46] text-sm font-semibold">
+                                        {key}
+                                      </div>
+                                    </div>
+                                    <div
+                                      className={twMerge(
+                                        `p-3 bg-[#e4e3ff] rounded-lg  inline-flex justify-center items-center gap-1.5`,
+                                        'text-[#3e36dc]',
+                                        specificationFilter[key]
+                                          ? 'border-[#3E36DC] bg-[#3E36DC] text-white'
+                                          : '',
+                                      )}
+                                      onClick={() => {
+                                        if (!value) {
+                                          return;
+                                        }
+                                        const setSpecificationFilter =
+                                          useRequestStore.getState()
+                                            .setSpecificationFilter;
+
+                                        const setSpecificationFilteredProducts =
+                                          useResultStore.getState()
+                                            .setSpecificationFilteredProducts;
+
+                                        if (specificationFilter[key]) {
+                                          setSpecificationFilter({});
+                                          setSpecificationFilteredProducts([]);
+                                          // setProducts(results);
+                                        } else {
+                                          setSpecificationFilter({
+                                            [key]: value,
+                                          });
+                                        }
+                                      }}
+                                    >
+                                      <div className="justify-start text-sm font-medium leading-none flex gap-2">
+                                        {imageAnalysis?.specification[key] ||
+                                          'N/A'}
+                                        <div>
+                                          <Icon
+                                            name="close"
+                                            className={twMerge(
+                                              'w-3 h-3 text-white',
+                                              specificationFilter[key]
+                                                ? 'block'
+                                                : 'hidden',
+                                            )}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              );
+                            })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+              </div>
               <div
                 className={twMerge([
                   'flex',
@@ -326,23 +332,24 @@ function Results() {
                   'desktop:mt-0',
                 ])}
               >
-                <div
-                  style={{
-                    fontWeight: 700,
-                    fontSize: 16,
-                    marginLeft: 16,
-                    marginBottom: 16,
-                  }}
-                >
-                  {!specifications?.specificationPrefilter &&
-                    specifications?.prefilter_value &&
-                    window.settings.algolia.enabled &&
-                    t('Showing results for machine', {
-                      prefilter_title:
-                        window.settings.preFilterTitle?.toLocaleLowerCase(),
-                      prefilter_value: specifications.prefilter_value,
-                    })}
-                </div>
+                {!specifications?.specificationPrefilter &&
+                  specifications?.prefilter_value &&
+                  window.settings.algolia.enabled && (
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        fontSize: 16,
+                        marginLeft: 16,
+                        marginBottom: 16,
+                      }}
+                    >
+                      {t('Showing results for machine', {
+                        prefilter_title:
+                          window.settings.preFilterTitle?.toLocaleLowerCase(),
+                        prefilter_value: specifications.prefilter_value,
+                      })}
+                    </div>
+                  )}
                 <div
                   className={twMerge([
                     'h-full',
@@ -462,7 +469,7 @@ function Results() {
           className="flex desktop:hidden w-full gap-2"
           onCameraClick={() => setOpenModalCamera(true)}
         />
-        <ImageUpload />
+        <ImageUpload onCameraClick={() => setOpenModalCamera(true)} />
         {isShowFilter && settings.postFilterOption && (
           <div
             className={twMerge([

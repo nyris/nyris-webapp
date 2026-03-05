@@ -303,11 +303,12 @@ function ImagePreviewComponent({
           'relative',
           'flex',
           'desktop:hidden',
+          'rounded-3xl',
         ])}
       >
         <div
           className={`w-full ${
-            editActive ? 'bg-[#545987] ' : ''
+            editActive ? 'bg-[#545987] rounded-3xl ' : ''
           } flex just items-center`}
         >
           <Preview

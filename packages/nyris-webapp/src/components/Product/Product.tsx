@@ -84,7 +84,7 @@ function Product(props: Props) {
     setOpenDetailedView('image');
   };
 
-  const onAddPart = (part: any): void => {
+  const onAddToCart = (part: any): void => {
     // Get current cart from sessionStorage
     const cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
     // Find if part already exists in cart
@@ -124,6 +124,7 @@ function Product(props: Props) {
         openDetailedView={openDetailedView}
         setOpenDetailedView={setOpenDetailedView}
         main_image_link={main_image_link}
+        onAddToCart={onAddToCart}
       />
       <div className="wrap-main-item-result max-w-[190px] w-[180px] desktop:w-[190px] border border-solid border-[#E0E0E0] scroll-pt-5">
         <div className="relative h-fit">
@@ -332,9 +333,9 @@ function Product(props: Props) {
               <div>
                 <div className="flex flex-col gap-1 h-fit mb-1.5">
                   {dataItem[settings.mainTitle] && (
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-1">
                       <Tooltip content={dataItem[settings.mainTitle] || ''}>
-                        <div className="text-xs font-bold text-primary ml-2 max-line-1 w-fit">
+                        <div className="text-xs font-bold text-primary ml-2 max-line-2 w-fit">
                           {truncateString(dataItem[settings.mainTitle], 45)}
                         </div>
                       </Tooltip>
@@ -342,7 +343,7 @@ function Product(props: Props) {
                         onClick={() => {
                           handleCopy(dataItem[settings.mainTitle], 'main');
                         }}
-                        className="group relative w-[18px] h-[18px] bg-[#FAFAFA] hover:bg-gray-100 flex items-center justify-center rounded-md cursor-pointer"
+                        className="group relative min-w-6 h-6 desktop:min-w-[18px] desktop:w-[18px] desktop:h-[18px] bg-[#FAFAFA] hover:bg-gray-100 flex items-center justify-center rounded-md cursor-pointer"
                       >
                         {copiedKey === 'main' && (
                           <div className="absolute -top-3.5 -right-2 bg-[#2B2C46] text-white text-[10px] py-0 px-1 rounded shadow pointer-events-none">
@@ -351,7 +352,7 @@ function Product(props: Props) {
                         )}
                         <Icon
                           name="copy"
-                          className="text-[#AAABB5] w-[8px] h-[8px] group-hover:text-[#5a5b61] "
+                          className="text-[#AAABB5] w-3 h-3 desktop:w-[8px] desktop:h-[8px] group-hover:text-[#5a5b61] "
                         />
                       </div>
                     </div>
@@ -363,6 +364,7 @@ function Product(props: Props) {
                         'justify-between',
                         'flex-row',
                         'text-primary',
+                        'gap-1',
                       ])}
                     >
                       <Tooltip
@@ -372,7 +374,7 @@ function Product(props: Props) {
                           !dataItem[settings.secondaryTitle]
                         }
                       >
-                        <div className="text-[10px] font-normal max-line-1 text-primary ml-2">
+                        <div className="text-sm desktop:text-[10px] font-normal max-line-1 text-primary ml-2">
                           {truncateString(
                             dataItem[settings.secondaryTitle],
                             40,
@@ -386,7 +388,7 @@ function Product(props: Props) {
                             'secondary',
                           );
                         }}
-                        className="group relative w-[18px] h-[18px] bg-[#FAFAFA] hover:bg-gray-100 flex items-center justify-center rounded-md cursor-pointer"
+                        className="group relative min-w-6 h-6 desktop:min-w-[18px] desktop:w-[18px] desktop:h-[18px] bg-[#FAFAFA] hover:bg-gray-100 flex items-center justify-center rounded-md cursor-pointer"
                       >
                         {copiedKey === 'secondary' && (
                           <div className="absolute -top-4 -right-2 bg-[#2B2C46] text-white text-[10px] py-0 px-1 rounded shadow pointer-events-none">
@@ -395,7 +397,7 @@ function Product(props: Props) {
                         )}
                         <Icon
                           name="copy"
-                          className="text-[#AAABB5] w-[8px] h-[8px] group-hover:text-[#5a5b61] "
+                          className="text-[#AAABB5] w-3 h-3 desktop:w-[8px] desktop:h-[8px] group-hover:text-[#5a5b61] "
                         />
                       </div>
                     </div>
@@ -661,11 +663,7 @@ function Product(props: Props) {
                     justifyItems: 'center',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginTop:
-                      window.settings.CTAButton?.CTAButton ||
-                      settings.secondaryCTAButton?.secondaryCTAButton
-                        ? 8
-                        : 0,
+                    marginTop: 8,
                   }}
                 >
                   <div
@@ -678,7 +676,7 @@ function Product(props: Props) {
                       cursor: 'pointer',
                     }}
                     onClick={() => {
-                      onAddPart(dataItem);
+                      onAddToCart(dataItem);
                     }}
                   >
                     <div

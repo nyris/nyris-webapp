@@ -96,50 +96,7 @@ function Header() {
         {auth0.enabled && isAuthenticated && (
           <>
             <div
-              className="hidden desktop:block"
-              style={{ position: 'relative' }}
-            >
-              <Popover>
-                <PopoverTrigger>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      cursor: 'pointer',
-                    }}
-                    className="h-14 w-6"
-                  >
-                    <p style={{ color: '#2B2C46' }}>{user?.email}</p>
-                    <Icon name="avatar" />
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent className="w-[152px] bg-white p-2 shadow-outer">
-                  <div
-                    className={twMerge([
-                      'flex',
-                      'w-[75px]',
-                      'h-[24px]',
-                      'px-2',
-                      'items-center',
-                      'bg-[#2B2C46]',
-                      'text-white',
-                      'text-[10px]',
-                      'cursor-pointer',
-                    ])}
-                    onClick={() => {
-                      logout({
-                        logoutParams: { returnTo: window.location.origin },
-                      });
-                    }}
-                  >
-                    Sign out
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div
-              className="block desktop:hidden cursor-pointer"
+              className="block cursor-pointer mr-1"
               onClick={() => {
                 setShowLogoutModal(true);
               }}
