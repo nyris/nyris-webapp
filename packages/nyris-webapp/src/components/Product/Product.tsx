@@ -331,12 +331,19 @@ function Product(props: Props) {
               style={{ color: '#FFFFFF' }}
             >
               <div>
-                <div className="flex flex-col gap-1 h-fit mb-1.5">
+                <div className="flex flex-col gap-1 h-[102px] mb-1.5">
                   {dataItem[settings.mainTitle] && (
                     <div className="flex justify-between gap-1">
                       <Tooltip content={dataItem[settings.mainTitle] || ''}>
-                        <div className="text-xs font-bold text-primary ml-2 max-line-2 w-fit">
-                          {truncateString(dataItem[settings.mainTitle], 45)}
+                        <div
+                          className="text-xs font-bold text-primary ml-2 max-line-1 w-fit"
+                          style={{
+                            wordBreak: 'break-all',
+                            maxHeight: 46,
+                            WebkitLineClamp: 3,
+                          }}
+                        >
+                          {truncateString(dataItem[settings.mainTitle], 92)}
                         </div>
                       </Tooltip>
                       <div
@@ -374,10 +381,16 @@ function Product(props: Props) {
                           !dataItem[settings.secondaryTitle]
                         }
                       >
-                        <div className="text-sm desktop:text-[10px] font-normal max-line-1 text-primary ml-2">
+                        <div
+                          className="text-sm desktop:text-[10px] font-normal max-line-1 text-primary ml-2"
+                          style={{
+                            maxHeight: 45,
+                            WebkitLineClamp: 3,
+                          }}
+                        >
                           {truncateString(
                             dataItem[settings.secondaryTitle],
-                            40,
+                            114,
                           )}
                         </div>
                       </Tooltip>

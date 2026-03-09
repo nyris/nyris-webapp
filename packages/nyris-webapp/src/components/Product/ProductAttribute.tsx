@@ -40,7 +40,7 @@ function ProductAttribute(props: Props) {
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
           }}
-          className="text-xs font-semibold"
+          className="text-xs font-normal"
         >
           {title}
         </div>
@@ -56,7 +56,7 @@ function ProductAttribute(props: Props) {
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
           }}
-          className="text-xs font-normal"
+          className="text-xs font-semibold"
         >
           {value || '-'}
         </div>

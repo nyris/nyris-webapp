@@ -27,6 +27,7 @@ import CustomCamera from 'components/CustomCameraDrawer';
 import { useTranslation } from 'react-i18next';
 import { useImageSearch } from 'hooks/useImageSearch';
 import ImageUpload from 'components/ImageUpload';
+import ItemSpecification from 'components/ItemSpecification';
 
 function Results() {
   const settings = window.settings;
@@ -258,65 +259,12 @@ function Results() {
                                 return null;
                               }
                               return (
-                                <>
-                                  <div
-                                    className="inline-flex flex-col justify-center items-start "
-                                    key={key}
-                                  >
-                                    <div className="pl-1 inline-flex justify-center items-center gap-2.5">
-                                      <div className="justify-start text-[#2b2c46] text-sm font-semibold">
-                                        {key}
-                                      </div>
-                                    </div>
-                                    <div
-                                      className={twMerge(
-                                        `p-3 bg-[#e4e3ff] rounded-lg  inline-flex justify-center items-center gap-1.5`,
-                                        'text-[#3e36dc]',
-                                        specificationFilter[key]
-                                          ? 'border-[#3E36DC] bg-[#3E36DC] text-white'
-                                          : '',
-                                      )}
-                                      onClick={() => {
-                                        if (!value) {
-                                          return;
-                                        }
-                                        const setSpecificationFilter =
-                                          useRequestStore.getState()
-                                            .setSpecificationFilter;
-
-                                        const setSpecificationFilteredProducts =
-                                          useResultStore.getState()
-                                            .setSpecificationFilteredProducts;
-
-                                        if (specificationFilter[key]) {
-                                          setSpecificationFilter({});
-                                          setSpecificationFilteredProducts([]);
-                                          // setProducts(results);
-                                        } else {
-                                          setSpecificationFilter({
-                                            [key]: value,
-                                          });
-                                        }
-                                      }}
-                                    >
-                                      <div className="justify-start text-sm font-medium leading-none flex gap-2">
-                                        {imageAnalysis?.specification[key] ||
-                                          'N/A'}
-                                        <div>
-                                          <Icon
-                                            name="close"
-                                            className={twMerge(
-                                              'w-3 h-3 text-white',
-                                              specificationFilter[key]
-                                                ? 'block'
-                                                : 'hidden',
-                                            )}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </>
+                                <ItemSpecification
+                                  attr={key}
+                                  value={value}
+                                  specificationFilter={specificationFilter}
+                                  imageAnalysis={imageAnalysis}
+                                />
                               );
                             })}
                         </div>
@@ -326,236 +274,252 @@ function Results() {
               </div>
               <div
                 className={twMerge([
+                  requestImages[0] ? 'pt-0' : 'pt-3',
+                  'desktop:pt-4',
+                  'desktop:overflow-hidden',
+                  'desktop:overflow-y-auto',
                   'flex',
                   'flex-col',
-                  'flex-grow',
-                  'desktop:mt-0',
+                  'relative',
+                  'w-full',
+                  'mr-auto',
+                  'ml-auto',
+                  'h-full',
                 ])}
               >
-                {!specifications?.specificationPrefilter &&
-                  specifications?.prefilter_value &&
-                  window.settings.algolia.enabled && (
-                    <div
-                      style={{
-                        fontWeight: 700,
-                        fontSize: 16,
-                        marginLeft: 16,
-                        marginBottom: 16,
-                      }}
-                    >
-                      {t('Showing results for machine', {
+                <div
+                  className={twMerge([
+                    'flex',
+                    'flex-col',
+                    'flex-grow',
+                    'desktop:mt-0',
+                  ])}
+                >
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      fontSize: 16,
+                      marginLeft: 16,
+                      marginBottom: 16,
+                    }}
+                  >
+                    {!specifications?.specificationPrefilter &&
+                      specifications?.prefilter_value &&
+                      window.settings.algolia.enabled &&
+                      t('Showing results for machine', {
                         prefilter_title:
                           window.settings.preFilterTitle?.toLocaleLowerCase(),
                         prefilter_value: specifications.prefilter_value,
                       })}
-                    </div>
-                  )}
-                <div
-                  className={twMerge([
-                    'h-full',
-                    'relative',
-                    'flex',
-                    'justify-center',
-                    'mx-0.5',
-                    'mobile-md:mx-2',
-                    'desktop:mx-4',
-                  ])}
-                >
-                  <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20 desktop:mb-0">
-                    <div
-                      className={twMerge(
-                        'grid grid-cols-[repeat(auto-fit,_minmax(180px,_0px))] desktop:grid-cols-[repeat(auto-fit,_minmax(190px,_0px))]',
-                        'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
-                        'w-full',
-                      )}
-                    >
-                      <GoBackButton className="col-span-full mb-2 desktop:mb-0" />
-                      <CurrentRefinements className="col-span-full" />
-                      <ProductList />
-                    </div>
-
-                    {showFeedbackSuccess && (
-                      <div className={'feedback-floating'}>
-                        <div className="feedback-section">
-                          <div className="feedback-success">
-                            {t('Thank you for your feedback')}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {feedbackStatus === 'visible' &&
-                      !showFeedbackSuccess &&
-                      productsFromAlgolia.length > 0 && (
-                        <div className={'feedback-floating'}>
-                          <div className="feedback-section feedback-backdrop-blur" />
-
-                          <div className="feedback-section">
-                            <Feedback
-                              submitFeedback={submitFeedback}
-                              onFeedbackClose={() => {
-                                setFeedbackStatus('submitted');
-                                setShowFeedback(false);
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    <div>
-                      <Pagination
-                        isLoading={isFindApiLoading || isAlgoliaLoading}
-                        className={
-                          productsFromAlgolia.length === 0 && !isAlgoliaLoading
-                            ? 'opacity-0'
-                            : ''
-                        }
-                      />
+                  </div>
+                  <div
+                    className={twMerge([
+                      'h-full',
+                      'relative',
+                      'flex',
+                      'justify-center',
+                      'mx-0.5',
+                      'mobile-md:mx-2',
+                      'desktop:mx-4',
+                    ])}
+                  >
+                    <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20 desktop:mb-0">
                       <div
-                        style={{
-                          display: 'flex',
-                          flexGrow: 1,
-                        }}
+                        className={twMerge(
+                          'grid grid-cols-[repeat(auto-fit,_minmax(180px,_0px))] desktop:grid-cols-[repeat(auto-fit,_minmax(190px,_0px))]',
+                          'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
+                          'w-full',
+                        )}
                       >
-                        {requestImages.length > 0 &&
-                          !isAlgoliaLoading &&
-                          !isFindApiLoading &&
-                          window.settings.rfq &&
-                          window.settings.rfq.enabled && (
-                            <RfqBanner
-                              requestImage={requestImages[0]}
-                              selectedRegion={regions[0]}
-                            />
-                          )}
-                        {!isFindApiLoading &&
-                          window.settings.support &&
-                          window.settings.support.enabled &&
-                          (query || requestImages[0] || specifications) && (
-                            <InquiryBanner
-                              requestImage={requestImages[0]}
-                              selectedRegion={regions[0]}
-                              query={query}
-                            />
-                          )}
+                        <GoBackButton className="col-span-full mb-2 desktop:mb-0" />
+                        <CurrentRefinements className="col-span-full" />
+                        <ProductList />
                       </div>
-                      {settings.showPoweredByNyris && (
-                        <PoweredBy
+
+                      {showFeedbackSuccess && (
+                        <div className={'feedback-floating'}>
+                          <div className="feedback-section">
+                            <div className="feedback-success">
+                              {t('Thank you for your feedback')}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {feedbackStatus === 'visible' &&
+                        !showFeedbackSuccess &&
+                        productsFromAlgolia.length > 0 && (
+                          <div className={'feedback-floating'}>
+                            <div className="feedback-section feedback-backdrop-blur" />
+
+                            <div className="feedback-section">
+                              <Feedback
+                                submitFeedback={submitFeedback}
+                                onFeedbackClose={() => {
+                                  setFeedbackStatus('submitted');
+                                  setShowFeedback(false);
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      <div>
+                        <Pagination
+                          isLoading={isFindApiLoading || isAlgoliaLoading}
                           className={
-                            'flex desktop:w-0 desktop:h-0 w-full justify-center items-center mb-2'
+                            productsFromAlgolia.length === 0 &&
+                            !isAlgoliaLoading
+                              ? 'opacity-0'
+                              : ''
                           }
                         />
-                      )}
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexGrow: 1,
+                          }}
+                        >
+                          {requestImages.length > 0 &&
+                            !isAlgoliaLoading &&
+                            !isFindApiLoading &&
+                            window.settings.rfq &&
+                            window.settings.rfq.enabled && (
+                              <RfqBanner
+                                requestImage={requestImages[0]}
+                                selectedRegion={regions[0]}
+                              />
+                            )}
+                          {!isFindApiLoading &&
+                            window.settings.support &&
+                            window.settings.support.enabled &&
+                            (query || requestImages[0] || specifications) && (
+                              <InquiryBanner
+                                requestImage={requestImages[0]}
+                                selectedRegion={regions[0]}
+                                query={query}
+                              />
+                            )}
+                        </div>
+                        {settings.showPoweredByNyris && (
+                          <PoweredBy
+                            className={
+                              'flex desktop:w-0 desktop:h-0 w-full justify-center items-center mb-2'
+                            }
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="pl-2 pr-4 mt-[6px]">
-              <HitsPerPage
-                items={[
-                  { label: '10', value: 10 },
-                  { label: '20', value: 20, default: true },
-                  { label: '30', value: 30 },
-                  { label: '40', value: 40 },
-                  { label: '50', value: 50 },
-                ]}
-              />
+              <div className="pl-2 pr-4 mt-[6px]">
+                <HitsPerPage
+                  items={[
+                    { label: '10', value: 10 },
+                    { label: '20', value: 20, default: true },
+                    { label: '30', value: 30 },
+                    { label: '40', value: 40 },
+                    { label: '50', value: 50 },
+                  ]}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex desktop:hidden w-full fixed bottom-4 z-50 px-3 pr-5 gap-2">
-        <TextSearch
-          className="flex desktop:hidden w-full gap-2"
-          onCameraClick={() => setOpenModalCamera(true)}
-        />
-        <ImageUpload onCameraClick={() => setOpenModalCamera(true)} />
-        {isShowFilter && settings.postFilterOption && (
-          <div
-            className={twMerge([
-              'h-14',
-              'min-w-14',
-              'rounded-full',
-              'bg-white',
-              'p-2',
-              'border border-solid border-[#DDDEE7]',
-              'shadow-drop-shadow-1',
-            ])}
-            onClick={() => {
-              if (disablePostFilter && !isPostFilterApplied) return;
-              setShowPostFilter(true);
-
-              // setPreFilterDropdown(false);
-            }}
-          >
+        <div className="flex desktop:hidden w-full fixed bottom-4 z-50 px-3 pr-5 gap-2">
+          <TextSearch
+            className="flex desktop:hidden w-full gap-2"
+            onCameraClick={() => setOpenModalCamera(true)}
+          />
+          <ImageUpload onCameraClick={() => setOpenModalCamera(true)} />
+          {isShowFilter && settings.postFilterOption && (
             <div
-              className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full"
-              style={{
-                background: `${
-                  disablePostFilter
-                    ? '#FAFAFA'
-                    : isPostFilterApplied
-                      ? '#F0EFFF'
-                      : '#FAFAFA'
-                }`,
+              className={twMerge([
+                'h-14',
+                'min-w-14',
+                'rounded-full',
+                'bg-white',
+                'p-2',
+                'border border-solid border-[#DDDEE7]',
+                'shadow-drop-shadow-1',
+              ])}
+              onClick={() => {
+                if (disablePostFilter && !isPostFilterApplied) return;
+                setShowPostFilter(true);
+
+                // setPreFilterDropdown(false);
               }}
             >
-              <Icon
-                name="filter"
-                className={twMerge([
-                  isPostFilterApplied
-                    ? 'text-[#3E36DC]'
-                    : disablePostFilter
-                      ? 'text-[#E0E0E0]'
-                      : 'text-[#2B2C46]',
-                ])}
-              />
-            </div>
-
-            {isPostFilterApplied && (
               <div
+                className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full"
                 style={{
-                  position: 'absolute',
-                  top: '8px',
-                  left: '35px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  background: 'white',
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '100%',
+                  background: `${
+                    disablePostFilter
+                      ? '#FAFAFA'
+                      : isPostFilterApplied
+                        ? '#F0EFFF'
+                        : '#FAFAFA'
+                  }`,
                 }}
               >
-                <div
-                  style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '100%',
-                  }}
+                <Icon
+                  name="filter"
                   className={twMerge([
                     isPostFilterApplied
-                      ? 'bg-[#3E36DC]'
+                      ? 'text-[#3E36DC]'
                       : disablePostFilter
-                        ? 'bg-[#E0E0E0]'
-                        : 'bg-[#2B2C46]',
+                        ? 'text-[#E0E0E0]'
+                        : 'text-[#2B2C46]',
                   ])}
-                ></div>
+                />
               </div>
-            )}
-          </div>
-        )}
+
+              {isPostFilterApplied && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    left: '35px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    background: 'white',
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '100%',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '100%',
+                    }}
+                    className={twMerge([
+                      isPostFilterApplied
+                        ? 'bg-[#3E36DC]'
+                        : disablePostFilter
+                          ? 'bg-[#E0E0E0]'
+                          : 'bg-[#2B2C46]',
+                    ])}
+                  ></div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        <PostFilterDrawer
+          openModal={showPostFilter}
+          handleClose={() => setShowPostFilter(false)}
+        />
+        <CustomCamera
+          show={isOpenModalCamera}
+          onClose={() => {
+            setOpenModalCamera(s => !s);
+          }}
+        />
       </div>
-      <PostFilterDrawer
-        openModal={showPostFilter}
-        handleClose={() => setShowPostFilter(false)}
-      />
-      <CustomCamera
-        show={isOpenModalCamera}
-        onClose={() => {
-          setOpenModalCamera(s => !s);
-        }}
-      />
     </>
   );
 }

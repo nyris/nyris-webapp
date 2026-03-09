@@ -218,7 +218,7 @@ function ProductDetailView(props: Props) {
                       <div className="flex justify-between">
                         <Tooltip content={dataItem[settings.mainTitle]}>
                           <p className="text-base font-bold max-line-1 text-[#2B2C46] font-source-sans-3 leading-[22.78px] ml-2 w-fit">
-                            {truncateString(dataItem[settings.mainTitle], 45)}
+                            {truncateString(dataItem[settings.mainTitle], 90)}
                           </p>
                         </Tooltip>
 
@@ -245,10 +245,10 @@ function ProductDetailView(props: Props) {
                         <Tooltip
                           content={dataItem[settings.secondaryTitle] || ''}
                         >
-                          <p className="text-f14 max-line-1 fw-400 text-[#2B2C46] ml-2 text-base w-fit">
+                          <p className="text-f14 max-line-1 fw-400 text-[#2B2C46] ml-2 text-base w-fit  h-[72px]">
                             {truncateString(
                               dataItem[settings.secondaryTitle],
-                              isMobile ? 45 : 70,
+                              isMobile ? 45 : 80,
                             )}
                           </p>
                         </Tooltip>
