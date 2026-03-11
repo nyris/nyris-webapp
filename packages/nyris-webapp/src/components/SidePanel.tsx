@@ -28,31 +28,26 @@ export default function SidePanel({ className }: { className?: string }) {
     <div
       className={twMerge(
         [
+          'max-w-[325px]',
           'w-full',
           'shadow-[3px_-2px_3px_-3px_#d3d4d8]',
-          'overflow-hidden',
+          'overflow-x-hidden',
+          'overflow-y-auto',
           'bg-white',
           'relative',
           'flex',
           'flex-col',
-          'ml-4',
-          'mt-2',
-          'mb-4',
-
-          showSidePanel ? 'rounded-[32px]' : 'rounded-2xl',
-          'transition-all',
-          showSidePanel ? 'w-[332px] min-w-[332px]' : 'w-[56px] min-w-0',
         ],
         className,
       )}
     >
       <div
         className={twMerge(
-          'sidepanel-scroll w-full h-full overflow-y-auto overflow-x-hidden',
+          ' w-full h-full overflow-y-auto overflow-x-hidden',
           showSidePanel ? 'block' : 'hidden',
         )}
       >
-        <div className="w-full h-full p-4">
+        <div className="w-full h-full">
           <div
             className={twMerge([
               'w-full',
@@ -65,62 +60,66 @@ export default function SidePanel({ className }: { className?: string }) {
               'min-w-[283px]',
               // 'mx-4',
               // 'mt-4',
+              // 'rounded',
             ])}
           >
             {requestImages[0] && <ImagePreview />}
           </div>
-
-          {window.settings.showImageDetails &&
-            (imageAnalysis?.imageDescription ||
-              Object.keys(imageAnalysis?.specification || {}).length > 0) && (
-              <div className="self-stretch p-4 bg-[#f3f3f5] rounded inline-flex flex-col justify-start items-start gap-1.5 mt-4 mx-4 ">
-                {imageAnalysis?.imageDescription !==
-                  'No description available' && (
-                  <div className="self-stretch flex flex-col justify-start items-start">
-                    <div className="justify-start text-black text-base font-semibold">
-                      Image description
+          <div className="p-3">
+            {window.settings.showImageDetails &&
+              (imageAnalysis?.imageDescription ||
+                Object.keys(imageAnalysis?.specification || {}).length > 0) && (
+                <div className="self-stretch p-4 bg-[#f3f3f5] rounded inline-flex flex-col justify-start items-start gap-1.5 mt-4 mx-4 ">
+                  {imageAnalysis?.imageDescription !==
+                    'No description available' && (
+                    <div className="self-stretch flex flex-col justify-start items-start">
+                      <div className="justify-start text-black text-base font-semibold">
+                        Image description
+                      </div>
+                      <div className="self-stretch justify-start text-black text-xs font-normal">
+                        {imageAnalysis?.imageDescription || ''}
+                      </div>
                     </div>
-                    <div className="self-stretch justify-start text-black text-xs font-normal">
-                      {imageAnalysis?.imageDescription || ''}
+                  )}
+
+                  {Object.keys(imageAnalysis?.specification || {})
+                    .filter(
+                      key =>
+                        key !== 'is_nameplate' && key !== 'prefilter_value',
+                    )
+                    .some(key => !!imageAnalysis?.specification[key]) && (
+                    <div className="justify-start text-black text-base font-semibold mt-2">
+                      Identified Attributes
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {Object.keys(imageAnalysis?.specification || {})
-                  .filter(
-                    key => key !== 'is_nameplate' && key !== 'prefilter_value',
-                  )
-                  .some(key => !!imageAnalysis?.specification[key]) && (
-                  <div className="justify-start text-black text-base font-semibold mt-2">
-                    Identified Attributes
-                  </div>
-                )}
-
-                {Object.keys(imageAnalysis?.specification || {})
-                  .filter(
-                    key => key !== 'is_nameplate' && key !== 'prefilter_value',
-                  )
-                  .map(key => {
-                    const value = imageAnalysis?.specification[key];
-                    if (!value) {
-                      return null;
-                    }
-                    return (
-                      <ItemSpecification
-                        attr={key}
-                        value={value}
-                        specificationFilter={specificationFilter}
-                        imageAnalysis={imageAnalysis}
-                      />
-                    );
-                  })}
-              </div>
+                  {Object.keys(imageAnalysis?.specification || {})
+                    .filter(
+                      key =>
+                        key !== 'is_nameplate' && key !== 'prefilter_value',
+                    )
+                    .map(key => {
+                      const value = imageAnalysis?.specification[key];
+                      if (!value) {
+                        return null;
+                      }
+                      return (
+                        <ItemSpecification
+                          attr={key}
+                          value={value}
+                          specificationFilter={specificationFilter}
+                          imageAnalysis={imageAnalysis}
+                        />
+                      );
+                    })}
+                </div>
+              )}
+            {showPostFilter && (
+              <PostFilterComponent
+                className={requestImages.length === 0 ? 'mt-9' : ''}
+              />
             )}
-          {showPostFilter && (
-            <PostFilterComponent
-              className={requestImages.length === 0 ? 'mt-9' : ''}
-            />
-          )}
+          </div>
         </div>
       </div>
     </div>

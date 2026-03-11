@@ -12,9 +12,11 @@ import PreFilterModal from './PreFilter/PreFilterModal';
 import useRequestStore from 'stores/request/requestStore';
 import Tooltip from './Tooltip/TooltipComponent';
 import { useMediaQuery } from 'react-responsive';
+import ImageUpload from './ImageUpload';
 
 function TextSearch({
   className,
+  onCameraClick,
 }: {
   className?: string;
   onCameraClick?: () => void;
@@ -112,29 +114,31 @@ function TextSearch({
   return (
     <div
       className={twMerge(
-        'w-full desktop:max-w-[531px] min-w-0',
-        'h-14',
-
+        'w-[426px]',
+        'h-12',
+        location.pathname === '/result' && 'desktop:h-10',
         className,
       )}
     >
       <div
         className={twMerge([
           'bg-white',
-          'border border-solid',
-          'border-[#DDDEE7]',
+          'desktop:bg-gray-200',
+          'desktop:border border-solid',
+          'desktop:border-gray-300',
           'desktop:focus-within:bg-white',
           'desktop:focus-within:shadow-[0px_0px_6px_rgba(202,202,209,1)]',
-          'shadow-drop-shadow-1',
+          'shadow-[0px_0px_16px_0px_rgba(170,171,181,0.50)]',
+          'desktop:shadow-none',
           'flex',
           'h-full',
           'justify-between',
           'p-0',
-          'rounded-[32px]',
+          'rounded-3xl',
           'w-full',
         ])}
       >
-        <div className="flex justify-center items-center w-full p-2">
+        <div className="flex justify-center items-center w-full">
           <div
             className={twMerge([
               'relative',
@@ -148,9 +152,17 @@ function TextSearch({
             <div
               className={twMerge([
                 'flex',
+                'py-2',
+                'px-2',
+                'desktop:py-1',
+                'desktop:pl-1',
+                'pr-2',
                 'h-full',
                 'justify-center',
                 'items-center',
+                'desktop:border-r',
+                'border-solid',
+                'border-[#CACAD1]',
               ])}
               style={{
                 cursor: showPreFilter ? 'pointer' : 'default',
@@ -170,16 +182,12 @@ function TextSearch({
                   <div
                     ref={iconRef}
                     className={twMerge(
-                      'flex',
-                      'h-10',
-                      'w-10',
-                      'justify-center',
-                      'items-center',
+                      'p-2 desktop:p-3',
                       location.pathname === '/result' && 'desktop:p-2',
                       `flex rounded-full bg-[#f3f3f5]`,
                       !isEmpty(preFilter)
                         ? 'desktop:bg-theme-primary'
-                        : 'desktop:bg-[#FAFAFA]',
+                        : 'desktop:bg-[#2B2C46]',
                     )}
                   >
                     <Icon
@@ -188,6 +196,7 @@ function TextSearch({
                         !isEmpty(preFilter)
                           ? 'fill-theme-primary'
                           : 'fill-[#2B2C46]',
+                        `desktop:fill-white`,
                       )}
                     />
                   </div>
@@ -365,7 +374,7 @@ function TextSearch({
                 fontSize: 14,
                 color: '#2B2C46',
               }}
-              className="peer focus:bg-white pl-1.5 outline-none"
+              className="peer desktop:bg-gray-200 focus:bg-white pl-1.5 outline-none"
               placeholder={t('Search')}
               value={valueInput}
               onChange={onChangeText}
@@ -419,6 +428,8 @@ function TextSearch({
               </button>
             </Tooltip>
           )}
+
+          <ImageUpload onCameraClick={onCameraClick} />
         </div>
       </div>
 

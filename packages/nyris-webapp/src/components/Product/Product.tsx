@@ -327,11 +327,11 @@ function Product(props: Props) {
             ])}
           >
             <div
-              className="relative h-fit text-primary flex flex-col justify-between "
+              className="relative text-primary flex flex-col justify-between h-full"
               style={{ color: '#FFFFFF' }}
             >
-              <div>
-                <div className="flex flex-col gap-1 h-[102px] mb-1.5">
+              <div className="h-full flex flex-col">
+                <div className="flex flex-col gap-1 mb-1.5">
                   {dataItem[settings.mainTitle] && (
                     <div className="flex justify-between gap-1">
                       <Tooltip content={dataItem[settings.mainTitle] || ''}>
@@ -422,7 +422,7 @@ function Product(props: Props) {
                     settings.attributes?.attributeThreeValue ||
                     settings.attributes?.attributeFourValue) && (
                     <div
-                      className="attribute-container"
+                      className="attribute-container flex-grow content-end"
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',

@@ -19,7 +19,7 @@ import TextSearch from 'components/TextSearch';
 import { Icon } from '@nyris/nyris-react-components';
 import PostFilterDrawer from 'components/PostFilter/PostFilterDrawer';
 import ImagePreview from 'components/ImagePreview';
-import PoweredBy from 'components/Footer';
+import PoweredBy from 'components/PoweredBy';
 import CurrentRefinements from 'components/CurrentRefinements';
 import { GoBackButton } from 'components/GoBackButton';
 import { useCurrentRefinements } from 'react-instantsearch';
@@ -200,8 +200,8 @@ function Results() {
             <div
               className={twMerge([
                 requestImages[0] ? 'pt-0' : 'pt-3',
-                'desktop:pt-2',
-                'desktop:mt-4',
+                'desktop:pt-0',
+                'desktop:mt-0',
                 'flex',
                 'flex-col',
                 'relative',
@@ -211,11 +211,9 @@ function Results() {
                 'max-h-full',
                 'flex-1',
                 'overflow-y-auto',
-                'pb-6',
-                requestImages[0] && 'gap-4',
               ])}
             >
-              <div className="block desktop:hidden desktop:mb-0 px-2">
+              <div className="block desktop:hidden desktop:mb-0">
                 {requestImages[0] && <ImagePreview />}
                 {window.settings.showImageDetails &&
                   (imageAnalysis?.imageDescription ||
@@ -412,7 +410,7 @@ function Results() {
                   </div>
                 </div>
               </div>
-              <div className="pl-2 pr-4 mt-[6px]">
+              <div className="mt-[6px]">
                 <HitsPerPage
                   items={[
                     { label: '10', value: 10 },
@@ -432,18 +430,19 @@ function Results() {
             className="flex desktop:hidden w-full gap-2"
             onCameraClick={() => setOpenModalCamera(true)}
           />
-          <ImageUpload onCameraClick={() => setOpenModalCamera(true)} />
+          {/* <ImageUpload onCameraClick={() => setOpenModalCamera(true)} /> */}
           {isShowFilter && settings.postFilterOption && (
             <div
-              className={twMerge([
-                'h-14',
-                'min-w-14',
-                'rounded-full',
-                'bg-white',
-                'p-2',
-                'border border-solid border-[#DDDEE7]',
-                'shadow-drop-shadow-1',
-              ])}
+              style={{
+                position: 'relative',
+                width: '48px',
+                height: '48px',
+                padding: ' 8px',
+                flexShrink: 0,
+                borderRadius: '32px',
+                background: '#FAFAFA',
+                boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
+              }}
               onClick={() => {
                 if (disablePostFilter && !isPostFilterApplied) return;
                 setShowPostFilter(true);
@@ -452,15 +451,20 @@ function Results() {
               }}
             >
               <div
-                className="w-10 h-10 flex justify-center items-center cursor-pointer rounded-full"
                 style={{
+                  display: 'flex',
                   background: `${
                     disablePostFilter
-                      ? '#FAFAFA'
+                      ? '#F3F3F5'
                       : isPostFilterApplied
                         ? '#F0EFFF'
-                        : '#FAFAFA'
+                        : '#F3F3F5'
                   }`,
+                  borderRadius: '40px',
+                  width: '32px',
+                  height: '32px',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <Icon

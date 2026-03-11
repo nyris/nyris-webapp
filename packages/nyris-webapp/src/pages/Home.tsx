@@ -133,7 +133,6 @@ function Home() {
           'justify-center',
           'h-auto',
           'mt-[calc(50vh-110px)]',
-          'bg-[#F3F4F8]',
         ])}
       >
         {geoLocation && <LocationInfoPopup />}
@@ -152,7 +151,7 @@ function Home() {
           )}
 
           <TextSearch />
-          <ImageUpload />
+          {/* <ImageUpload /> */}
         </div>
         <div className="max-w-[532px] relative w-full">
           <DragDropFile />
@@ -164,7 +163,7 @@ function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col desktop:hidden justify-center items-center w-full h-full bg-[#F3F4F8]">
+      <div className="flex flex-col desktop:hidden justify-center items-center w-full h-full ">
         <MobileCameraCTA setOpenModalCamera={setOpenModalCamera} />
         <div className="box-screenshot-camera">
           <CustomCamera
@@ -192,7 +191,7 @@ function Home() {
 
         <div className="flex desktop:hidden w-full fixed bottom-12 px-2 gap-2">
           <TextSearch className="flex md:hidden w-full " />
-          <ImageUpload />
+          {/* <ImageUpload /> */}
         </div>
       </div>
     </>

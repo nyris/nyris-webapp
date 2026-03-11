@@ -8,7 +8,7 @@ import { initReactI18next } from 'react-i18next';
 
 import '../styles/common.scss';
 
-import PoweredBy from 'components/Footer';
+import PoweredBy from 'components/PoweredBy';
 import Header from 'components/Header';
 import { translations } from 'translations';
 
@@ -97,7 +97,7 @@ function AppLayout(): JSX.Element {
   }
 
   return (
-    <div className="full-height flex flex-col bg-[#F3F4F8]">
+    <div className="full-height flex flex-col ">
       <div>
         <Toaster />
       </div>

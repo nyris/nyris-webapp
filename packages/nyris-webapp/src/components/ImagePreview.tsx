@@ -200,7 +200,7 @@ function ImagePreviewComponent({
       <div
         ref={previewWrapperRef}
         className={twMerge([
-          'bg-[#545987]',
+          'bg-primary',
           'justify-center',
           isVisible ? (!isMultiImageSearchEnabled ? 'py-5' : 'pt-6') : '',
           'px-7',
@@ -210,7 +210,7 @@ function ImagePreviewComponent({
           'relative',
           'hidden',
           'desktop:flex',
-          'rounded-[24px]',
+          // 'rounded',
         ])}
         // style={{
         //   height: '100%',
@@ -230,7 +230,7 @@ function ImagePreviewComponent({
           className={twMerge([
             // 'w-[243px]',
             'w-full',
-            'bg-[#545987] aspect-square flex just items-center',
+            'bg-[#55566b] aspect-square flex just items-center',
           ])}
         >
           <Preview
@@ -303,12 +303,11 @@ function ImagePreviewComponent({
           'relative',
           'flex',
           'desktop:hidden',
-          'rounded-3xl',
         ])}
       >
         <div
           className={`w-full ${
-            editActive ? 'bg-[#545987] rounded-3xl ' : ''
+            editActive ? 'bg-[#55566b] ' : ''
           } flex just items-center`}
         >
           <Preview

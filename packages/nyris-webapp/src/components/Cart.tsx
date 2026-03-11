@@ -117,48 +117,41 @@ const Cart = () => {
         content="The basket is currently empty"
         disabled={!!amountOfParts}
       >
-        <div
+        <button
           className={twMerge(
-            'w-14 h-14 bg-white rounded-2xl flex items-center justify-center ',
-            'border border-solid border-[#DDDEE7]',
+            'relative flex items-center justify-center rounded-2xl border border-solid border-[#DDDEE7]',
+            'h-8 w-8',
           )}
+          style={{
+            backgroundColor:
+              amountOfParts > 0
+                ? window.settings.theme.primaryColor
+                : '#FAFAFA',
+          }}
+          onClick={() => onToggleCart(true)}
         >
-          <button
-            className={twMerge(
-              'relative flex items-center justify-center rounded-2xl',
-              'h-8 w-8',
-            )}
-            style={{
-              backgroundColor:
-                amountOfParts > 0
-                  ? window.settings.theme.primaryColor
-                  : '#FAFAFA',
-            }}
-            onClick={() => onToggleCart(true)}
-          >
-            {amountOfParts ? (
-              <div
-                className={twMerge(
-                  'absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white border-solid text-white',
-                  'text-[9px]',
-                )}
-                style={{
-                  backgroundColor: window.settings.theme.primaryColor,
-                }}
-              >
-                {amountOfParts}
-              </div>
-            ) : (
-              ''
-            )}
-            <Icon
-              name="cart"
+          {amountOfParts ? (
+            <div
               className={twMerge(
-                amountOfParts > 0 ? 'fill-white text-white' : 'text-black',
+                'absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white border-solid text-white',
+                'text-[9px]',
               )}
-            />
-          </button>
-        </div>
+              style={{
+                backgroundColor: window.settings.theme.primaryColor,
+              }}
+            >
+              {amountOfParts}
+            </div>
+          ) : (
+            ''
+          )}
+          <Icon
+            name="cart"
+            className={twMerge(
+              amountOfParts > 0 ? 'fill-white text-white' : 'text-black',
+            )}
+          />
+        </button>
       </Tooltip>
       {isCartOpen &&
         createPortal(
@@ -170,10 +163,9 @@ const Cart = () => {
             <div
               className={twMerge(
                 'absolute right-0 flex h-full w-[410px] max-w-full flex-col bg-transparent',
-                'p-4',
               )}
             >
-              <div className="flex h-full  max-w-full flex-col bg-white rounded-2xl">
+              <div className="flex h-full  max-w-full flex-col bg-white">
                 <div className="flex h-[52px] items-center justify-between px-4 py-2 border-b border-solid border-[#DDDEE7]">
                   <div className="text-xl font-semibold">
                     Your cart ({amountOfParts} items)
