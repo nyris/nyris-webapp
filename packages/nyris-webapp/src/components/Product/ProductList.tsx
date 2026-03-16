@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import useResultStore from 'stores/result/resultStore';
 import Product from './Product';
 import { useImageSearch } from 'hooks/useImageSearch';
@@ -135,6 +135,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       return products;
     }
     return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groundingFilterResult]);
 
   const renderItem = useMemo(() => {

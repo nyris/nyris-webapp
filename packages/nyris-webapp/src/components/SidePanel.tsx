@@ -38,12 +38,6 @@ export default function SidePanel({ className }: { className?: string }) {
     googleGroundingResponse?.identified_product ||
     googleGroundingResponse ||
     null;
-  const specsTable = groundingProduct
-    ? Object.entries(groundingProduct.key_specs || {}).map(([key, value]) => ({
-        label: key.replace(/_/g, ' '),
-        value,
-      }))
-    : [];
 
   if (!showPostFilter && requestImages.length === 0) {
     return <></>;

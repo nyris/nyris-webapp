@@ -26,7 +26,6 @@ import { useCurrentRefinements } from 'react-instantsearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import { useTranslation } from 'react-i18next';
 import { useImageSearch } from 'hooks/useImageSearch';
-import ImageUpload from 'components/ImageUpload';
 import ItemSpecification from 'components/ItemSpecification';
 import MatchNotificationBanner from 'components/MatchNotificationBanner';
 

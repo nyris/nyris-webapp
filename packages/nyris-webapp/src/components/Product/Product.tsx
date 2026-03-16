@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useState } from 'react';
-import { get, set } from 'lodash';
+import { get } from 'lodash';
 
 import { Icon } from '@nyris/nyris-react-components';
 

@@ -47,6 +47,7 @@ const MatchNotificationBanner = ({ className }: { className?: string }) => {
     }
 
     return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productsFromFindApi]);
 
   const showingGroundingFilterResult = useResultStore(
