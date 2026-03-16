@@ -286,7 +286,7 @@ function Product(props: Props) {
                           settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
                         fontSize: '12px',
                         letterSpacing: '0.27px',
-                        wordBreak: 'break-all',
+                        wordBreak: 'break-word',
                         paddingRight: '8px',
                       }}
                     >
@@ -338,7 +338,7 @@ function Product(props: Props) {
                         <div
                           className="text-xs font-bold text-primary ml-2 max-line-1 w-fit"
                           style={{
-                            wordBreak: 'break-all',
+                            wordBreak: 'break-word',
                             maxHeight: 46,
                             WebkitLineClamp: 3,
                           }}
@@ -558,7 +558,7 @@ function Product(props: Props) {
                           fontWeight: 600,
                           fontSize: '12px',
                           letterSpacing: '0.27px',
-                          wordBreak: 'break-all',
+                          wordBreak: 'break-word',
                           color:
                             settings.secondaryCTAButton
                               .secondaryCTAButtonTextColor || '#FFFFFF',
@@ -570,7 +570,14 @@ function Product(props: Props) {
                     </Tooltip>
                     {settings.secondaryCTAButton.secondaryCTAIcon && (
                       <div style={{ width: '16px' }}>
-                        <Icon name="settings" color="white" width={10} />
+                        <Icon
+                          name="settings"
+                          fill={
+                            settings.secondaryCTAButton
+                              ?.secondaryCTAButtonTextColor || '#FFFFFF'
+                          }
+                          width={10}
+                        />
                       </div>
                     )}
                   </div>
@@ -637,7 +644,7 @@ function Product(props: Props) {
                             settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
                           fontSize: '12px',
                           letterSpacing: '0.27px',
-                          wordBreak: 'break-all',
+                          wordBreak: 'break-word',
                           paddingRight: '8px',
                         }}
                       >
@@ -702,7 +709,7 @@ function Product(props: Props) {
                           settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
                         fontSize: '12px',
                         letterSpacing: '0.27px',
-                        wordBreak: 'break-all',
+                        wordBreak: 'break-word',
                         paddingRight: '8px',
                       }}
                     >

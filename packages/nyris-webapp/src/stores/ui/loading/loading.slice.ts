@@ -10,6 +10,10 @@ const loadingSlice: StateCreator<LoadingState & LoadingAction> = set => ({
     set(state => ({ isFindApiLoading: isLoading })),
   setIsCadenasLoaded: (isLoading: boolean) =>
     set(state => ({ isCadenasLoaded: isLoading })),
+  setIsGoogleGroundingLoading: isLoading =>
+    set(state => ({
+      isGoogleGroundingLoading: isLoading,
+    })),
 });
 
 export default loadingSlice;

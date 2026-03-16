@@ -30,12 +30,14 @@ export interface LoadingState {
   isFindApiLoading: boolean;
   isAlgoliaLoading: boolean;
   isCadenasLoaded: boolean;
+  isGoogleGroundingLoading: boolean;
 }
 
 export interface LoadingAction {
   setIsFindApiLoading: (isLoading: boolean) => void;
   setIsAlgoliaLoading: (isLoading: boolean) => void;
   setIsCadenasLoaded: (isLoading: boolean) => void;
+  setIsGoogleGroundingLoading: (isLoading: boolean) => void;
 }
 
 export interface ProductsState {
@@ -54,6 +56,9 @@ export interface ProductsState {
   };
 
   specificationFilteredProducts: any[];
+  googleGroundingResponse: Record<string, any> | null;
+  groundingFilterResult: any[];
+  showingGroundingFilterResult: boolean;
 }
 
 export interface ProductsAction {
@@ -67,6 +72,9 @@ export interface ProductsAction {
     specification: Record<string, string>;
   }) => void;
   setSpecificationFilteredProducts: (products: any[]) => void;
+  setGoogleGroundingResponse: (result: any | null) => void;
+  setGroundingFilterResult: (result: any[]) => void;
+  setShowingGroundingFilterResult: (val?: boolean) => void;
 }
 
 export interface DetectedRegionsState {
@@ -101,10 +109,12 @@ export interface FilterAction {
 
 export interface MiscState {
   metaFilter: string;
+  groundingQuery: string;
 }
 
 export interface MiscAction {
   setMetaFilter: (filter: string) => void;
+  setGroundingQuery: (query: string) => void;
 }
 
 export interface FeedbackState {

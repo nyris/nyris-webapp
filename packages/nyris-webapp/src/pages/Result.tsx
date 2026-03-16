@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 import { useImageSearch } from 'hooks/useImageSearch';
 import ImageUpload from 'components/ImageUpload';
 import ItemSpecification from 'components/ItemSpecification';
+import MatchNotificationBanner from 'components/MatchNotificationBanner';
 
 function Results() {
   const settings = window.settings;
@@ -331,6 +332,7 @@ function Results() {
                       >
                         <GoBackButton className="col-span-full mb-2 desktop:mb-0" />
                         <CurrentRefinements className="col-span-full" />
+                        <MatchNotificationBanner className="col-span-full" />
                         <ProductList />
                       </div>
 

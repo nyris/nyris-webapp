@@ -70,6 +70,7 @@ interface ProductDetailsAttribute {
   value: string;
 }
 export interface AppSettings extends NyrisAPISettings {
+  aiApiKey?: string;
   algolia: AlgoliaSettings;
   alogoliaFilterField?: string;
   appTitle?: string;
@@ -77,12 +78,19 @@ export interface AppSettings extends NyrisAPISettings {
   auth0: Auth0Settings;
   brandName?: string;
   cadenas?: Cadenas;
-  cart?: boolean;
   cadSearch?: boolean;
+  cart?: boolean;
   clarityId?: string;
   CTAButton?: CTAButtonSettings;
   experienceVisualSearch?: boolean;
   experienceVisualSearchImages?: string[];
+  geoLocation?: boolean;
+  geoLocationMessage?: string;
+  vizo: {
+    enabled?: boolean;
+    groundingEnabled?: boolean;
+    fallbackToElasticSearch?: boolean;
+  };
   headerText?: string;
   instantRedirectPatterns: string[];
   isBrandNameTitleVisible?: boolean;
@@ -108,15 +116,13 @@ export interface AppSettings extends NyrisAPISettings {
   showFeedback?: boolean;
   showFeedbackAndShare?: boolean;
   showGroup?: boolean;
+  showImageDetails?: boolean;
   showPoweredByNyris?: boolean;
   simpleCardView?: boolean;
   support: Support;
   textSearchScoring?: Record<string, Record<string, number>>;
   theme: SearchSuiteSettings;
-  geoLocation?: boolean;
-  geoLocationMessage?: string;
   visualSearchFilterKey?: string;
-  showImageDetails?: boolean;
 }
 
 export interface SearchSuiteSettings {
