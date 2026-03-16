@@ -8,7 +8,7 @@ import { initReactI18next } from 'react-i18next';
 
 import '../styles/common.scss';
 
-import Footer from 'components/Footer';
+import PoweredBy from 'components/PoweredBy';
 import Header from 'components/Header';
 import { translations } from 'translations';
 
@@ -97,7 +97,7 @@ function AppLayout(): JSX.Element {
   }
 
   return (
-    <div className="full-height flex flex-col">
+    <div className="full-height flex flex-col ">
       <div>
         <Toaster />
       </div>
@@ -109,14 +109,14 @@ function AppLayout(): JSX.Element {
             specifications && !requestImages.length
               ? `${alogoliaFilterField}:'${specifications.prefilter_value}'`
               : !query && !algoliaFilter.includes('score=1')
-                  ? undefined
-                  : `${algoliaFilter}${
-                      metaFilter
-                        ? `${
-                            algoliaFilter ? 'AND ' : ''
-                          }${alogoliaFilterField}:'${metaFilter}'`
-                        : ''
-                    }`
+                ? undefined
+                : `${algoliaFilter}${
+                    metaFilter
+                      ? `${
+                          algoliaFilter ? 'AND ' : ''
+                        }${alogoliaFilterField}:'${metaFilter}'`
+                      : ''
+                  }`
           }
           // facets={['brand', 'keyword_0']}
           hitsPerPage={20}
@@ -127,9 +127,11 @@ function AppLayout(): JSX.Element {
         <Outlet />
       </div>
       {showPoweredByNyris && (
-        <Footer
+        <PoweredBy
           className={
-            location.pathname === '/result' ? 'hidden desktop:flex' : 'flex'
+            location.pathname === '/result'
+              ? 'hidden'
+              : 'flex w-full justify-center items-center mb-2'
           }
         />
       )}

@@ -55,6 +55,65 @@ body {
   font-family: 'Source Sans 3', sans-serif !important;
 }
 
+/* Side panel scrollbar: visible on hover only (Facebook-like). */
+.sidepanel-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  scrollbar-gutter: stable;
+  position: relative;
+  clip-path: inset(0 round 1px);
+}
+
+.sidepanel-scroll:hover {
+  scrollbar-color: #c3c6cf transparent;
+}
+
+.sidepanel-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidepanel-scroll:hover::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidepanel-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 16px 0;
+}
+
+.sidepanel-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.sidepanel-scroll:hover::-webkit-scrollbar-thumb {
+  background: #c3c6cf;
+}
+
+.sidepanel-scroll::before,
+.sidepanel-scroll::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 8px;
+  height: 16px;
+  background: #fff;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sidepanel-scroll::before {
+  top: 0;
+  border-top-right-radius: 32px;
+}
+
+.sidepanel-scroll::after {
+  bottom: 0;
+  border-bottom-right-radius: 32px;
+}
+
 a,
 abbr,
 acronym,

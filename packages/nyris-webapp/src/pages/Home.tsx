@@ -13,6 +13,7 @@ import Hint from '../components/Hint';
 import Loading from '../components/Loading';
 import useRequestStore from '../stores/request/requestStore';
 import { getFilters } from '../services/filter';
+import ImageUpload from 'components/ImageUpload';
 
 function Home() {
   const settings = window.settings;
@@ -131,12 +132,11 @@ function Home() {
           'items-center',
           'justify-center',
           'h-auto',
-          'mt-[calc(50vh-75px)]',
-          'bg-[#fafafa]',
+          'mt-[calc(50vh-110px)]',
         ])}
       >
         {geoLocation && <LocationInfoPopup />}
-        <div className="relative flex flex-col items-center justify-center w-full">
+        <div className="relative flex items-center justify-center w-full gap-2">
           {settings.headerText && (
             <div
               className={twMerge([
@@ -150,9 +150,8 @@ function Home() {
             </div>
           )}
 
-          <div className="w-[427px]">
-            <TextSearch />
-          </div>
+          <TextSearch />
+          {/* <ImageUpload /> */}
         </div>
         <div className="max-w-[532px] relative w-full">
           <DragDropFile />
@@ -164,7 +163,7 @@ function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col desktop:hidden justify-center items-center w-full h-full bg-white">
+      <div className="flex flex-col desktop:hidden justify-center items-center w-full h-full ">
         <MobileCameraCTA setOpenModalCamera={setOpenModalCamera} />
         <div className="box-screenshot-camera">
           <CustomCamera
@@ -190,8 +189,9 @@ function Home() {
           />
         )}
 
-        <div className="flex desktop:hidden w-full">
-          <TextSearch className="flex md:hidden fixed bottom-12 w-full px-2 gap-2" />
+        <div className="flex desktop:hidden w-full fixed bottom-12 px-2 gap-2">
+          <TextSearch className="flex md:hidden w-full " />
+          {/* <ImageUpload /> */}
         </div>
       </div>
     </>

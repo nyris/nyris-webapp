@@ -77,6 +77,7 @@ export interface AppSettings extends NyrisAPISettings {
   auth0: Auth0Settings;
   brandName?: string;
   cadenas?: Cadenas;
+  cart?: boolean;
   cadSearch?: boolean;
   clarityId?: string;
   CTAButton?: CTAButtonSettings;

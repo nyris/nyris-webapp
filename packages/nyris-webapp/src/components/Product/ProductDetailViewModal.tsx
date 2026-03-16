@@ -9,6 +9,7 @@ function ProductDetailViewModal({
   handlerFeedback,
   onSearchImage,
   main_image_link,
+  onAddToCart,
 }: {
   openDetailedView: '3d' | 'image' | undefined;
   setOpenDetailedView: (value: '3d' | 'image' | undefined) => void;
@@ -16,6 +17,7 @@ function ProductDetailViewModal({
   handlerFeedback: (value: string) => void;
   onSearchImage: (url: string) => void;
   main_image_link: string;
+  onAddToCart: (item: any) => void;
 }) {
   useEffect(() => {
     if (openDetailedView === '3d' || openDetailedView === 'image') {
@@ -63,6 +65,7 @@ function ProductDetailViewModal({
           onSearchImage={(url: string) => {
             onSearchImage(url);
           }}
+          onAddToCart={onAddToCart}
         />
       </DialogContent>
     </Dialog>

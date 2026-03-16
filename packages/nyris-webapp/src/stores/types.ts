@@ -115,6 +115,14 @@ export interface FeedbackAction {
   setShowFeedback: (show: boolean) => void;
 }
 
+export interface SidePanelState {
+  showSidePanel: boolean;
+}
+
+export interface SidePanelAction {
+  setShowSidePanel: (show: boolean) => void;
+}
+
 export interface SessionState {
   requestId: string;
   sessionId: string;

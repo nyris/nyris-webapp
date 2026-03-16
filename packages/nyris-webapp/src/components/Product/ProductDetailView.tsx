@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { get } from 'lodash';
 import { useMediaQuery } from 'react-responsive';
 import { useTranslation } from 'react-i18next';
@@ -28,10 +28,17 @@ interface Props {
   onHandlerModalShare?: any;
   show3dView?: boolean;
   onSearchImage?: any;
+  onAddToCart?: any;
 }
 
 function ProductDetailView(props: Props) {
-  const { dataItem, handleClose, show3dView = false, onSearchImage } = props;
+  const {
+    dataItem,
+    handleClose,
+    show3dView = false,
+    onSearchImage,
+    onAddToCart,
+  } = props;
   const { sku } = dataItem;
   const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { settings } = window;
@@ -47,6 +54,8 @@ function ProductDetailView(props: Props) {
   const extraDetailPropertyLength = isMobile ? 15 : 30;
   const extraDetailValueLength = isMobile ? 35 : 60;
 
+  const [copiedKey, setCopiedKey] = useState<'main' | 'secondary' | null>(null);
+  const copyTimeoutRef = useRef<number | undefined>(undefined);
   useEffect(() => {
     if (dataItem) {
       checkDataItemResult(dataItem);
@@ -57,6 +66,24 @@ function ProductDetailView(props: Props) {
       );
     }
   }, [dataItem]);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        window.clearTimeout(copyTimeoutRef.current);
+      }
+    };
+  }, []);
+  const handleCopy = (value: string, key: 'main' | 'secondary') => {
+    navigator.clipboard.writeText(value);
+    setCopiedKey(key);
+    if (copyTimeoutRef.current) {
+      window.clearTimeout(copyTimeoutRef.current);
+    }
+    copyTimeoutRef.current = window.setTimeout(() => {
+      setCopiedKey(null);
+    }, 1000);
+  };
 
   const handlerCheckUrlImage = (url: any, timeout?: number) => {
     timeout = timeout || 5000;
@@ -186,25 +213,66 @@ function ProductDetailView(props: Props) {
             <div className="box-top">
               <div className="bg-[#fff] flex flex-col justify-between">
                 <div className="gap-1.5 flex flex-wrap w-full">
-                  <div className="w-full">
+                  <div className="w-full flex flex-col gap-1">
                     {settings.mainTitle && (
-                      <Tooltip content={dataItem[settings.mainTitle]}>
-                        <p className="text-base font-bold max-line-1 text-[#2B2C46] font-source-sans-3 leading-[22.78px] ml-2 w-fit ">
-                          {truncateString(dataItem[settings.mainTitle], 90)}
-                        </p>
-                      </Tooltip>
+                      <div className="flex justify-between">
+                        <Tooltip content={dataItem[settings.mainTitle]}>
+                          <p className="text-base font-bold max-line-1 text-[#2B2C46] font-source-sans-3 leading-[22.78px] ml-2 w-fit">
+                            {truncateString(dataItem[settings.mainTitle], 90)}
+                          </p>
+                        </Tooltip>
+
+                        <div
+                          onClick={() => {
+                            handleCopy(dataItem[settings.mainTitle], 'main');
+                          }}
+                          className="group relative w-[22px] h-[22px] bg-[#FAFAFA] hover:bg-gray-100 flex items-center justify-center rounded-md cursor-pointer"
+                        >
+                          {copiedKey === 'main' && (
+                            <div className="absolute -top-3.5 -right-2 bg-[#2B2C46] text-white text-[10px] py-0 px-1 rounded shadow pointer-events-none">
+                              Copied!
+                            </div>
+                          )}
+                          <Icon
+                            name="copy"
+                            className="text-[#AAABB5] w-[12px] h-[12px] group-hover:text-[#5a5b61] "
+                          />
+                        </div>
+                      </div>
                     )}
                     {settings.secondaryTitle && (
-                      <Tooltip
-                        content={dataItem[settings.secondaryTitle] || ''}
-                      >
-                        <p className="text-f14 fw-400 max-line-1 text-[#2B2C46] ml-2 text-base w-fit h-[72px]">
-                          {truncateString(
-                            dataItem[settings.secondaryTitle],
-                            isMobile ? 45 : 80,
+                      <div className="flex justify-between">
+                        <Tooltip
+                          content={dataItem[settings.secondaryTitle] || ''}
+                        >
+                          <p className="text-f14 max-line-1 fw-400 text-[#2B2C46] ml-2 text-base w-fit  h-[72px]">
+                            {truncateString(
+                              dataItem[settings.secondaryTitle],
+                              isMobile ? 45 : 80,
+                            )}
+                          </p>
+                        </Tooltip>
+
+                        <div
+                          onClick={() => {
+                            handleCopy(
+                              dataItem[settings.secondaryTitle],
+                              'secondary',
+                            );
+                          }}
+                          className="group relative w-[22px] h-[22px] bg-[#FAFAFA] hover:bg-gray-100 flex items-center justify-center rounded-md cursor-pointer"
+                        >
+                          {copiedKey === 'secondary' && (
+                            <div className="absolute -top-3.5 -right-2 bg-[#2B2C46] text-white text-[10px] py-0 px-1 rounded shadow pointer-events-none">
+                              Copied!
+                            </div>
                           )}
-                        </p>
-                      </Tooltip>
+                          <Icon
+                            name="copy"
+                            className="text-[#AAABB5] w-[12px] h-[12px] group-hover:text-[#5a5b61] "
+                          />
+                        </div>
+                      </div>
                     )}
                   </div>
                   {settings.attributes?.productAttributes && (
@@ -388,9 +456,46 @@ function ProductDetailView(props: Props) {
                       </div>
                     )}
                   </div>
+                  {settings.cart && (
+                    <div
+                      className="bg-[#2B2C46] rounded mt-2 flex justify-between items-center h-8 desktop:h-12 w-full btn-detail-item"
+                      style={{
+                        background:
+                          settings.CTAButton?.CTAButtonColor ||
+                          settings.theme?.primaryColor,
+                      }}
+                    >
+                      <div
+                        className="flex justify-between items-center w-full px-3 min-h-8 cursor-pointer"
+                        onClick={() => {
+                          onAddToCart(dataItem);
+                        }}
+                      >
+                        <div className="text-f16 fw-600 max-line-1 text-white pr-1.5">
+                          Add to cart
+                        </div>
+                        <div style={{ width: '16px' }}>
+                          <Icon
+                            name="plus"
+                            fill={
+                              settings.CTAButton?.CTAButtonTextColor ||
+                              '#FFFFFF'
+                            }
+                            className={'text-white'}
+                            width={16}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 {settings.productDetailsAttribute?.length && (
-                  <Accordion type="single" collapsible className="w-full">
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="w-full"
+                    defaultValue="view-details"
+                  >
                     <AccordionItem value="view-details">
                       <AccordionTrigger className="w-full button-hover bg-[#F3F3F5] text-[#2b2c46] flex justify-between mt-3 px-4 text-base normal-case">
                         {t('View details')}
