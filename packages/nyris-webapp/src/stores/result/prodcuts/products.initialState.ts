@@ -15,4 +15,8 @@ export const initialState: ProductsState = {
     optimizedSearchQuery: '',
     specification: {},
   },
+
+  googleGroundingResponse: null,
+  groundingFilterResult: [],
+  showingGroundingFilterResult: false,
 };

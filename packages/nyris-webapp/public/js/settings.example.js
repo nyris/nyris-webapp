@@ -24,6 +24,7 @@ var settings = {
   ],
   // Nyris - visual search
   apiKey: '',
+  aiApiKey: '',
   baseUrl: 'https://api.nyris.io',
   jpegQuality: 0.9,
   maxHeight: 1024,
@@ -41,6 +42,11 @@ var settings = {
     links: { searchable: false },
     'customIds.gtin': { searchable: false }, // for nested fields use dot notation
     otherFields: { exactMatch: 8, startsWith: 6, partial: 2 },
+  },
+  vizo: {
+    enabled: false,
+    groundingEnabled: false,
+    fallbackToElasticSearch: false,
   },
   // UI - theme
   theme: {

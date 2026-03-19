@@ -1,12 +1,17 @@
 import { useRefinementList } from 'react-instantsearch';
 import Tooltip from './Tooltip/TooltipComponent';
-import { twMerge } from "tailwind-merge";
+import { twMerge } from 'tailwind-merge';
 import useRequestStore from '../stores/request/requestStore';
 import useResultStore from '../stores/result/resultStore';
 import { Icon } from '@nyris/nyris-react-components';
-import {useMediaQuery} from "react-responsive";
+import { useMediaQuery } from 'react-responsive';
 
-const ItemSpecification = ({ attr, value, specificationFilter, imageAnalysis }: any) => {
+const ItemSpecification = ({
+  attr,
+  value,
+  specificationFilter,
+  imageAnalysis,
+}: any) => {
   const refinement = window.settings.refinements.filter((ref: any) => {
     return ref.header.toLocaleLowerCase() === attr.toLocaleLowerCase();
   });
@@ -19,78 +24,69 @@ const ItemSpecification = ({ attr, value, specificationFilter, imageAnalysis }: 
     limit: 1,
   });
 
-  return isMobile
-  ? (
-      <>
-        <div
-          className="inline-flex flex-col justify-center items-start "
-          key={attr}
-        >
-          <div className="pl-1 inline-flex justify-center items-center gap-2.5">
-            <div className="justify-start text-[#2b2c46] text-sm font-semibold">
-              {attr}
-            </div>
+  return isMobile ? (
+    <>
+      <div
+        className="inline-flex flex-col justify-center items-start "
+        key={attr}
+      >
+        <div className="pl-1 inline-flex justify-center items-center gap-2.5">
+          <div className="justify-start text-[#3B3E5F] text-sm font-semibold">
+            {attr}
           </div>
-          <div
-            className={twMerge(
-              `p-3 bg-[#e4e3ff] rounded-lg  inline-flex justify-center items-center gap-1.5`,
-              'text-[#3e36dc]',
-              specificationFilter[attr]
-                ? 'border-[#3E36DC] bg-[#3E36DC] text-white'
-                : '',
-            )}
-            onClick={() => {
-              if (!value) {
-                return;
-              }
-              if (attribute !== 'none') {
-                refine(value);
+        </div>
+        <div
+          className={twMerge(
+            `p-3 bg-[#e4e3ff] rounded-lg  inline-flex justify-center items-center gap-1.5`,
+            'text-[#3e36dc]',
+            specificationFilter[attr]
+              ? 'border-[#3E36DC] bg-[#3E36DC] text-white'
+              : '',
+          )}
+          onClick={() => {
+            if (!value) {
+              return;
+            }
+            if (attribute !== 'none') {
+              refine(value);
+            } else {
+              const setSpecificationFilter =
+                useRequestStore.getState().setSpecificationFilter;
+
+              const setSpecificationFilteredProducts =
+                useResultStore.getState().setSpecificationFilteredProducts;
+
+              if (specificationFilter[attr]) {
+                setSpecificationFilter({});
+                setSpecificationFilteredProducts([]);
+                // setProducts(results);
               } else {
-                const setSpecificationFilter =
-                  useRequestStore.getState()
-                    .setSpecificationFilter;
-
-                const setSpecificationFilteredProducts =
-                  useResultStore.getState()
-                    .setSpecificationFilteredProducts;
-
-                if (specificationFilter[attr]) {
-                  setSpecificationFilter({});
-                  setSpecificationFilteredProducts([]);
-                  // setProducts(results);
-                } else {
-                  setSpecificationFilter({
-                    [attr]: value,
-                  });
-                }
+                setSpecificationFilter({
+                  [attr]: value,
+                });
               }
-            }}
-          >
-            <div className="justify-start text-sm font-medium leading-none flex gap-2">
-              {imageAnalysis?.specification[attr] || 'N/A'}
-              <div>
-                <Icon
-                  name="close"
-                  className={twMerge(
-                    'w-3 h-3 text-white',
-                    specificationFilter[attr]
-                      ? 'block'
-                      : 'hidden',
-                  )}
-                />
-              </div>
+            }
+          }}
+        >
+          <div className="justify-start text-sm font-medium leading-none flex gap-2">
+            {imageAnalysis?.specification[attr] || 'N/A'}
+            <div>
+              <Icon
+                name="close"
+                className={twMerge(
+                  'w-3 h-3 text-white',
+                  specificationFilter[attr] ? 'block' : 'hidden',
+                )}
+              />
             </div>
           </div>
         </div>
-      </>
-    )
-  :(
-    <div
-      key={attr}
-      className="flex justify-between w-full gap-2 items-center"
-    >
+      </div>
+    </>
+  ) : (
+    <div key={attr} className="flex justify-between w-full gap-2 items-center">
       <div className="self-stretch inline-flex justify-start items-center gap-1.5">
-        <div className="justify-start text-black text-xs font-semibold">
+        <div className="justify-start text-[#3B3E5F] text-xs font-semibold">
           {attr}:
         </div>
         <Tooltip
@@ -107,9 +103,7 @@ const ItemSpecification = ({ attr, value, specificationFilter, imageAnalysis }: 
               `px-1 py-1 bg-[#e4e3ff] rounded-[1px] flex justify-center items-center gap-1.5`,
               'border border-solid border-transparent hover:border-[#3E36DC]',
               'cursor-pointer',
-              specificationFilter[attr]
-                ? 'border-[#3E36DC] bg-[#3E36DC] '
-                : '',
+              specificationFilter[attr] ? 'border-[#3E36DC] bg-[#3E36DC] ' : '',
             )}
             onClick={() => {
               if (!value) {
@@ -122,8 +116,7 @@ const ItemSpecification = ({ attr, value, specificationFilter, imageAnalysis }: 
                   useRequestStore.getState().setSpecificationFilter;
 
                 const setSpecificationFilteredProducts =
-                  useResultStore.getState()
-                    .setSpecificationFilteredProducts;
+                  useResultStore.getState().setSpecificationFilteredProducts;
 
                 if (specificationFilter[attr]) {
                   setSpecificationFilter({});
@@ -166,6 +159,6 @@ const ItemSpecification = ({ attr, value, specificationFilter, imageAnalysis }: 
       </div>
     </div>
   );
-}
+};
 
 export default ItemSpecification;

@@ -24,6 +24,15 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const productsFromFindApi = useResultStore(
     state => state.productsFromFindApi,
   );
+
+  const groundingFilterResult = useResultStore(
+    state => state.groundingFilterResult,
+  );
+
+  const showingGroundingFilterResult = useResultStore(
+    state => state.showingGroundingFilterResult,
+  );
+
   const isAlgoliaLoading = useUiStore(state => state.isAlgoliaLoading);
   const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
 
@@ -115,10 +124,31 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     postFilteredProducts,
   ]);
 
+  const groundedFilteredProducts = useMemo(() => {
+    if (groundingFilterResult && groundingFilterResult.length > 0) {
+      const filtered = products.filter((product: any) =>
+        groundingFilterResult.some((result: any) => product.sku === result.sku),
+      );
+      if (filtered.length > 0) {
+        return filtered;
+      }
+      return products;
+    }
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groundingFilterResult]);
+
   const renderItem = useMemo(() => {
+    const productsToRender =
+      groundedFilteredProducts &&
+      groundedFilteredProducts.length > 0 &&
+      showingGroundingFilterResult
+        ? groundedFilteredProducts
+        : products;
+
     return (
       <div className={twMerge(['contents'])}>
-        {products?.map((product: any, i: number) => {
+        {productsToRender?.map((product: any, i: number) => {
           return (
             <Product
               key={i}
@@ -155,7 +185,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       </div>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [products]);
+  }, [products, groundedFilteredProducts, showingGroundingFilterResult]);
 
   if (
     products?.length === 0 &&

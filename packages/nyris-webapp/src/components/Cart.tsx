@@ -224,10 +224,10 @@ const Cart = () => {
                           className="mr-2 h-[50px] w-[50px] bg-white object-contain"
                         />
                         <div>
-                          <div className="max-w-[175px] break-all text-[9px] font-normal">
+                          <div className="max-w-[175px] break-words text-[9px] font-normal">
                             {part.sku}
                           </div>
-                          <div className="max-w-[175px] break-all text-xs font-semibold">
+                          <div className="max-w-[175px] break-words text-xs font-semibold">
                             {part.title}
                           </div>
                         </div>

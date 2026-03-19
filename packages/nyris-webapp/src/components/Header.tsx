@@ -84,7 +84,8 @@ function Header() {
           className="flex items-center justify-end min-w-0 gap-4"
           style={{ flex: '0 0 auto' }}
         >
-          <Cart />
+          {window.settings.cart && <Cart />}
+
           {auth0.enabled && isAuthenticated && (
             <>
               <div
