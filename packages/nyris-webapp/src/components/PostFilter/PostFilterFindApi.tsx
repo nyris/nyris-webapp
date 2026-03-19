@@ -29,6 +29,12 @@ function PostFilterFindApi({
   const productsFromFindApi = useResultStore(
     state => state.productsFromFindApi,
   );
+  const groundingFilterResult = useResultStore(
+    state => state.groundingFilterResult,
+  );
+  const showingGroundingFilterResult = useResultStore(
+    state => state.showingGroundingFilterResult,
+  );
   const query = useRequestStore(state => state.query);
   const requestImages = useRequestStore(state => state.requestImages);
   const postFilterSelections = useRequestStore(
@@ -40,16 +46,29 @@ function PostFilterFindApi({
   const { t } = useTranslation();
 
   const productsForFilters = useMemo(() => {
-    if (!requestImages?.length) {
-      return productsFromFindApi;
+    let baseProducts = productsFromFindApi;
+
+    if (requestImages?.length && query?.trim()) {
+      baseProducts = filterProductsByText(query, productsFromFindApi);
     }
 
-    if (!query?.trim()) {
-      return productsFromFindApi;
+    if (showingGroundingFilterResult && groundingFilterResult?.length > 0) {
+      const grounded = baseProducts.filter((product: any) =>
+        groundingFilterResult.some((result: any) => product.sku === result.sku),
+      );
+      if (grounded.length > 0) {
+        return grounded;
+      }
     }
 
-    return filterProductsByText(query, productsFromFindApi);
-  }, [productsFromFindApi, query, requestImages]);
+    return baseProducts;
+  }, [
+    productsFromFindApi,
+    query,
+    requestImages,
+    showingGroundingFilterResult,
+    groundingFilterResult,
+  ]);
 
   const filteredProductsForCounts = useMemo(() => {
     const selections = postFilterSelections || {};
@@ -71,6 +90,7 @@ function PostFilterFindApi({
       }),
     );
   }, [attribute, postFilterSelections, productsForFilters]);
+  console.log({ filteredProductsForCounts });
 
   const valueCounts = useMemo(() => {
     const counts: Record<string, number> = {};

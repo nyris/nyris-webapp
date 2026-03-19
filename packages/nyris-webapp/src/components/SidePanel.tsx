@@ -133,14 +133,9 @@ export default function SidePanel({ className }: { className?: string }) {
                     })}
                 </div>
               )}
-            {showPostFilter && (
-              <PostFilterComponent
-                className={requestImages.length === 0 ? 'mt-9' : ''}
-              />
-            )}
 
             {(isGoogleGroundingLoading || googleGroundingResponse) && (
-              <div className="mx-4 mb-4 rounded-3xl bg-[#F3F4F8] border border-[#e4e3ff] p-3.5 text-[#3B3E5F] ">
+              <div className="mx-4 mb-4 mt-4 rounded-3xl bg-[#F3F4F8] border border-[#e4e3ff] p-3.5 text-[#3B3E5F] ">
                 <div className="flex items-center justify-between">
                   {!isGoogleGroundingLoading && (
                     <div className="flex items-center gap-2 text-base font-semibold">
@@ -256,6 +251,11 @@ export default function SidePanel({ className }: { className?: string }) {
                     </div>
                   )}
               </div>
+            )}
+            {showPostFilter && (
+              <PostFilterComponent
+                className={requestImages.length === 0 ? 'mt-9' : ''}
+              />
             )}
           </div>
         </div>

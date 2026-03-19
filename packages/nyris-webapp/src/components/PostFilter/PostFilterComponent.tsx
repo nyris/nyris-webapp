@@ -55,7 +55,7 @@ function PostFilterComponent({ className }: { className?: string }) {
       className={twMerge([
         'mt-4',
         'w-full',
-        'px-1',
+        'px-4',
         'flex',
         'flex-col',
         'gap-4',
