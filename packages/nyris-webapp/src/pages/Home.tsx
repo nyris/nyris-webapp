@@ -13,7 +13,6 @@ import Hint from '../components/Hint';
 import Loading from '../components/Loading';
 import useRequestStore from '../stores/request/requestStore';
 import { getFilters } from '../services/filter';
-import ImageUpload from 'components/ImageUpload';
 
 function Home() {
   const settings = window.settings;
