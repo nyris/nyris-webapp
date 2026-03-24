@@ -58,6 +58,7 @@ function DragDropFile(props: Props) {
       settings: window.settings,
       showFeedback: true,
       clearPostFilter: true,
+      newSearch: true,
     }).then(singleImageResp => {
       const specificationPrefilter =
         singleImageResp.image_analysis?.specification?.prefilter_value || null;
