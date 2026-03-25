@@ -53,7 +53,6 @@ function PostFilterComponent({ className }: { className?: string }) {
   return (
     <div
       className={twMerge([
-        'mt-4',
         'w-full',
         'px-4',
         'flex',

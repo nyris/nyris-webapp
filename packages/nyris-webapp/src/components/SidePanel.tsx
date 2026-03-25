@@ -7,6 +7,7 @@ import useResultStore from 'stores/result/resultStore';
 import ItemSpecification from './ItemSpecification';
 import useUiStore from 'stores/ui/uiStore';
 import GroundingSpecs from './GroundingSpecs';
+import { Icon } from '@nyris/nyris-react-components';
 
 export default function SidePanel({ className }: { className?: string }) {
   const requestImages = useRequestStore(state => state.requestImages);
@@ -66,11 +67,11 @@ export default function SidePanel({ className }: { className?: string }) {
     >
       <div
         className={twMerge(
-          ' w-full h-full overflow-y-auto overflow-x-hidden',
+          ' w-full overflow-y-auto overflow-x-hidden',
           showSidePanel ? 'block' : 'hidden',
         )}
       >
-        <div className="w-full h-full">
+        <div className="w-full">
           <div
             className={twMerge([
               'w-full',
@@ -89,58 +90,43 @@ export default function SidePanel({ className }: { className?: string }) {
           >
             {requestImages[0] && <ImagePreview />}
           </div>
-          <div className="pb-4">
+          <div className="pb-4 flex flex-col gap-6">
             {window.settings.showImageDetails &&
               (imageAnalysis?.imageDescription ||
                 Object.keys(imageAnalysis?.specification || {}).length > 0) && (
-                <div className="self-stretch p-3.5 bg-[#F3F4F8] rounded-3xl inline-flex flex-col justify-start items-start gap-1.5 mt-4 mx-4 ">
-                  {imageAnalysis?.imageDescription !==
-                    'No description available' && (
-                    <div className="self-stretch flex flex-col justify-start items-start">
-                      <div className="justify-start text-[#3B3E5F] text-base font-semibold">
-                        Image description
-                      </div>
-                      <div className="self-stretch justify-start text-[#3B3E5F] text-xs font-normal">
-                        {imageAnalysis?.imageDescription || ''}
-                      </div>
+                <div>
+                  <div className="flex gap-2 ml-[30px]">
+                    <div className="text-[#3B3E5F] font-bold text-sm">
+                      Smart generated filters
                     </div>
-                  )}
-
-                  {Object.keys(imageAnalysis?.specification || {})
-                    .filter(
-                      key =>
-                        key !== 'is_nameplate' && key !== 'prefilter_value',
-                    )
-                    .some(key => !!imageAnalysis?.specification[key]) && (
-                    <div className="justify-start text-[#3B3E5F] text-base font-semibold mt-2">
-                      Identified Attributes
-                    </div>
-                  )}
-
-                  {Object.keys(imageAnalysis?.specification || {})
-                    .filter(
-                      key =>
-                        key !== 'is_nameplate' && key !== 'prefilter_value',
-                    )
-                    .map(key => {
-                      const value = imageAnalysis?.specification[key];
-                      if (!value) {
-                        return null;
-                      }
-                      return (
-                        <ItemSpecification
-                          attr={key}
-                          value={value}
-                          specificationFilter={specificationFilter}
-                          imageAnalysis={imageAnalysis}
-                        />
-                      );
-                    })}
+                    <Icon name="smart_filter_indication" className="mt-1" />
+                  </div>
+                  <div className="flex flex-wrap mx-4 gap-2 mt-4">
+                    {Object.keys(imageAnalysis?.specification || {})
+                      .filter(
+                        key =>
+                          key !== 'is_nameplate' && key !== 'prefilter_value',
+                      )
+                      .map(key => {
+                        const value = imageAnalysis?.specification[key];
+                        if (!value) {
+                          return null;
+                        }
+                        return (
+                          <ItemSpecification
+                            attr={key}
+                            value={value}
+                            specificationFilter={specificationFilter}
+                            imageAnalysis={imageAnalysis}
+                          />
+                        );
+                      })}
+                  </div>
                 </div>
               )}
 
             {(isGoogleGroundingLoading || googleGroundingResponse) && (
-              <div className="mx-4 mb-4 mt-4 rounded-3xl bg-[#F3F4F8] border border-[#e4e3ff] p-3.5 text-[#3B3E5F] ">
+              <div className="mx-4 rounded-3xl bg-[#F3F4F8] border border-[#e4e3ff] p-3.5 text-[#3B3E5F] ">
                 <div className="flex items-center justify-between">
                   {!isGoogleGroundingLoading && (
                     <div className="flex items-center gap-2 text-base font-semibold">

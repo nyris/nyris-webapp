@@ -43,6 +43,7 @@ export const ICONS = {
   search: 'search',
   settings: 'settings',
   share: 'share',
+  smart_filter_indication: 'smart_filter_indication',
   spare: 'spare',
   trash: 'trash',
   typeplate: 'typeplate',

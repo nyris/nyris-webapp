@@ -49,6 +49,7 @@ import { ReactComponent as MobileCamera } from './icons/mobile_camera.svg';
 import { ReactComponent as Cart } from './icons/cart.svg';
 import { ReactComponent as Hamburger } from './icons/hamburger.svg';
 import { ReactComponent as CameraAi } from './icons/camera_ai.svg';
+import { ReactComponent as SmartFilterIndication } from './icons/smart_filter_indication.svg';
 import { SUPPORTED_ICON } from './types';
 
 type IconConfig = { component: FC<SVGAttributes<SVGElement>> };
@@ -98,6 +99,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   search: { component: Search },
   settings: { component: Settings },
   share: { component: Share },
+  smart_filter_indication: { component: SmartFilterIndication },
   spare: { component: Spare },
   trash: { component: Trash },
   typeplate: { component: Typeplate },
