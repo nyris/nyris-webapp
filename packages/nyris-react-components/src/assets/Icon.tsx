@@ -48,7 +48,7 @@ import { ReactComponent as Typeplate } from './icons/typeplate.svg';
 import { ReactComponent as MobileCamera } from './icons/mobile_camera.svg';
 import { ReactComponent as Cart } from './icons/cart.svg';
 import { ReactComponent as Hamburger } from './icons/hamburger.svg';
-
+import { ReactComponent as CameraAi } from './icons/camera_ai.svg';
 import { SUPPORTED_ICON } from './types';
 
 type IconConfig = { component: FC<SVGAttributes<SVGElement>> };
@@ -63,6 +63,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   call: { component: Call },
   camera_simple: { component: CameraSimple },
   camera: { component: Camera },
+  camera_ai: { component: CameraAi },
   caret_left: { component: CaretLeft },
   caret_right: { component: CaretRight },
   cart: { component: Cart },

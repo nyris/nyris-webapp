@@ -211,6 +211,7 @@ function ImagePreviewComponent({
           'hidden',
           'desktop:flex',
           // 'rounded',
+          'rounded-[24px]',
         ])}
         // style={{
         //   height: '100%',
@@ -228,9 +229,9 @@ function ImagePreviewComponent({
       >
         <div
           className={twMerge([
-            // 'w-[243px]',
             'w-full',
             'bg-[#55566b] aspect-square flex just items-center',
+            'rounded-[24px]',
           ])}
         >
           <Preview

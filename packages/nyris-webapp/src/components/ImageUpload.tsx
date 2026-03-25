@@ -191,9 +191,11 @@ function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
         <Tooltip content={t('Search with an image')}>
           <label
             className={twMerge(
-              'mr-2 desktop:mr-1',
+              '',
               'w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-100 desktop:bg-transparent hover:bg-gray-100',
               location.pathname === '/result' && 'desktop:w-8 desktop:h-8',
+              location.pathname !== '/result' &&
+                'desktop:bg-[#FAFAFA] desktop:hover:bg-[#FAFAFA]',
             )}
             htmlFor={
               showDisclaimerDisabled && !onCameraClick ? 'icon-button-file' : ''
@@ -207,7 +209,7 @@ function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
               }
             }}
           >
-            <Icon name="camera_simple" width={16} height={16} fill="#2B2C46" />
+            <Icon name="camera_ai" width={16} height={16} fill="#3B3E5F" />
           </label>
         </Tooltip>
       </div>

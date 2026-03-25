@@ -13,6 +13,7 @@ import Hint from '../components/Hint';
 import Loading from '../components/Loading';
 import useRequestStore from '../stores/request/requestStore';
 import { getFilters } from '../services/filter';
+import ImageUpload from 'components/ImageUpload';
 
 function Home() {
   const settings = window.settings;
@@ -149,8 +150,15 @@ function Home() {
             </div>
           )}
 
-          <TextSearch />
-          {/* <ImageUpload /> */}
+          <TextSearch className="h-[56px]" showImageUpload={false} />
+          <div
+            className={twMerge(
+              'h-14 w-14 flex items-center justify-center rounded-full bg-[#FFFFFF] hover:bg-[#F3F4F8] border border-solid border-[#DDDEE7]',
+              'shadow-ds-2',
+            )}
+          >
+            <ImageUpload />
+          </div>
         </div>
         <div className="max-w-[532px] relative w-full">
           <DragDropFile />

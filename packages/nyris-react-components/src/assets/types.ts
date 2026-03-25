@@ -8,6 +8,7 @@ export const ICONS = {
   call: 'call',
   camera_simple: 'camera_simple',
   camera: 'camera',
+  camera_ai: 'camera_ai',
   caret_left: 'caret_left',
   caret_right: 'caret_right',
   cart: 'cart',

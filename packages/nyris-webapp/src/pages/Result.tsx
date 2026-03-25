@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 import { useImageSearch } from 'hooks/useImageSearch';
 import ItemSpecification from 'components/ItemSpecification';
 import MatchNotificationBanner from 'components/MatchNotificationBanner';
+import ImageUpload from 'components/ImageUpload';
 
 function Results() {
   const settings = window.settings;
@@ -293,23 +294,24 @@ function Results() {
                     'desktop:mt-0',
                   ])}
                 >
-                  <div
-                    style={{
-                      fontWeight: 700,
-                      fontSize: 16,
-                      marginLeft: 16,
-                      marginBottom: 16,
-                    }}
-                  >
-                    {!specifications?.specificationPrefilter &&
-                      specifications?.prefilter_value &&
-                      window.settings.algolia.enabled &&
-                      t('Showing results for machine', {
-                        prefilter_title:
-                          window.settings.preFilterTitle?.toLocaleLowerCase(),
-                        prefilter_value: specifications.prefilter_value,
-                      })}
-                  </div>
+                  {!specifications?.specificationPrefilter &&
+                    specifications?.prefilter_value &&
+                    window.settings.algolia.enabled && (
+                      <div
+                        style={{
+                          fontWeight: 700,
+                          fontSize: 16,
+                          marginLeft: 16,
+                          marginBottom: 16,
+                        }}
+                      >
+                        {t('Showing results for machine', {
+                          prefilter_title:
+                            window.settings.preFilterTitle?.toLocaleLowerCase(),
+                          prefilter_value: specifications.prefilter_value,
+                        })}
+                      </div>
+                    )}
                   <div
                     className={twMerge([
                       'h-full',
@@ -410,17 +412,17 @@ function Results() {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="mt-[6px]">
-                <HitsPerPage
-                  items={[
-                    { label: '10', value: 10 },
-                    { label: '20', value: 20, default: true },
-                    { label: '30', value: 30 },
-                    { label: '40', value: 40 },
-                    { label: '50', value: 50 },
-                  ]}
-                />
+                <div className="mt-[6px] px-6  mb-6">
+                  <HitsPerPage
+                    items={[
+                      { label: '10', value: 10 },
+                      { label: '20', value: 20, default: true },
+                      { label: '30', value: 30 },
+                      { label: '40', value: 40 },
+                      { label: '50', value: 50 },
+                    ]}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -430,20 +432,27 @@ function Results() {
           <TextSearch
             className="flex desktop:hidden w-full gap-2"
             onCameraClick={() => setOpenModalCamera(true)}
+            showImageUpload={false}
           />
-          {/* <ImageUpload onCameraClick={() => setOpenModalCamera(true)} /> */}
+          <div
+            className={twMerge(
+              'h-14 min-w-14 flex items-center justify-center rounded-full bg-[#FFFFFF] border border-solid border-[#DDDEE7]',
+              'shadow-ds-2',
+            )}
+          >
+            <ImageUpload onCameraClick={() => setOpenModalCamera(true)} />
+          </div>
           {isShowFilter && settings.postFilterOption && (
             <div
               style={{
                 position: 'relative',
-                width: '48px',
-                height: '48px',
                 padding: ' 8px',
                 flexShrink: 0,
                 borderRadius: '32px',
                 background: '#FAFAFA',
                 boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
               }}
+              className="h-14 min-w-14 flex items-center justify-center"
               onClick={() => {
                 if (disablePostFilter && !isPostFilterApplied) return;
                 setShowPostFilter(true);
@@ -462,8 +471,8 @@ function Results() {
                         : '#F3F3F5'
                   }`,
                   borderRadius: '40px',
-                  width: '32px',
-                  height: '32px',
+                  width: '40px',
+                  height: '40px',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}

@@ -17,9 +17,11 @@ import ImageUpload from './ImageUpload';
 function TextSearch({
   className,
   onCameraClick,
+  showImageUpload = true,
 }: {
   className?: string;
   onCameraClick?: () => void;
+  showImageUpload?: boolean;
 }) {
   const settings = window.settings;
   const user = useAuth0().user;
@@ -114,27 +116,25 @@ function TextSearch({
   return (
     <div
       className={twMerge(
-        'w-[426px]',
+        'w-[636px]',
         'h-12',
-        location.pathname === '/result' && 'desktop:h-10',
+        location.pathname === '/result' && 'desktop:h-[52px]',
         className,
       )}
     >
       <div
         className={twMerge([
           'bg-white',
-          'desktop:bg-gray-200',
+          location.pathname === '/result' &&
+            'desktop:bg-[#E7E8F1] desktop:focus-within:bg-[#FFFFFF] desktop:focus-within:shadow-ds-2',
           'desktop:border border-solid',
-          'desktop:border-gray-300',
-          'desktop:focus-within:bg-white',
-          'desktop:focus-within:shadow-[0px_0px_6px_rgba(202,202,209,1)]',
-          'shadow-[0px_0px_16px_0px_rgba(170,171,181,0.50)]',
-          'desktop:shadow-none',
+          'desktop:border-[#DDDEE7]',
+          location.pathname !== '/result' && 'shadow-ds-2',
           'flex',
           'h-full',
           'justify-between',
-          'p-0',
-          'rounded-3xl',
+          'pr-1.5',
+          'rounded-[32px]',
           'w-full',
         ])}
       >
@@ -154,15 +154,12 @@ function TextSearch({
                 'flex',
                 'py-2',
                 'px-2',
-                'desktop:py-1',
-                'desktop:pl-1',
-                'pr-2',
+                'desktop:py-1.5',
+                'desktop:pl-1.5',
+                'pr-1.5',
                 'h-full',
                 'justify-center',
                 'items-center',
-                'desktop:border-r',
-                'border-solid',
-                'border-[#CACAD1]',
               ])}
               style={{
                 cursor: showPreFilter ? 'pointer' : 'default',
@@ -183,11 +180,11 @@ function TextSearch({
                     ref={iconRef}
                     className={twMerge(
                       'p-2 desktop:p-3',
-                      location.pathname === '/result' && 'desktop:p-2',
+                      location.pathname === '/result' && 'desktop:p-3',
                       `flex rounded-full bg-[#f3f3f5]`,
                       !isEmpty(preFilter)
                         ? 'desktop:bg-theme-primary'
-                        : 'desktop:bg-[#2B2C46]',
+                        : 'desktop:bg-[#FAFAFA]',
                     )}
                   >
                     <Icon
@@ -196,7 +193,7 @@ function TextSearch({
                         !isEmpty(preFilter)
                           ? 'fill-theme-primary'
                           : 'fill-[#2B2C46]',
-                        `desktop:fill-white`,
+                        `desktop:fill-[#3B3E5F]`,
                       )}
                     />
                   </div>
@@ -374,62 +371,67 @@ function TextSearch({
                 fontSize: 14,
                 color: '#2B2C46',
               }}
-              className="peer desktop:bg-gray-200 focus:bg-white pl-1.5 outline-none"
+              className={twMerge(
+                'peer pl-1.5 outline-none',
+                'bg-white',
+                location.pathname === '/result' &&
+                  'desktop:bg-[#E7E8F1] focus:bg-[#FFFFFF]',
+              )}
               placeholder={t('Search')}
               value={valueInput}
               onChange={onChangeText}
               ref={focusInp}
             />
           </div>
+          <div className="flex gap-2">
+            {location.pathname === '/result' && (valueInput || query) && (
+              <Tooltip content={t('Clear text search')}>
+                <button
+                  className={twMerge([
+                    'flex',
+                    'justify-center',
+                    'items-center',
+                    'rounded-full',
+                    'cursor-pointer',
+                    'min-w-10 min-h-10',
+                    'z-10',
+                    'hover:bg-gray-100',
 
-          {location.pathname === '/result' && (valueInput || query) && (
-            <Tooltip content={t('Clear text search')}>
-              <button
-                className={twMerge([
-                  'flex',
-                  'justify-center',
-                  'items-center',
-                  'rounded-full',
-                  'cursor-pointer',
-                  'min-w-10 min-h-10',
-                  'z-10',
-                  'hover:bg-gray-100',
-                  'mr-2',
-                  location.pathname === '/result' &&
-                    'desktop:min-w-8 desktop:min-h-8',
-                ])}
-                onClick={() => {
-                  if (visualSearch) {
-                    navigate('/result');
-                    setValueInput('');
-                    setQuery('');
-                    if (
-                      !window.settings?.algolia.enabled &&
-                      requestImages.length === 0
-                    ) {
-                      singleImageSearch({
-                        image: requestImages[0],
-                        imageRegion: regions[0],
-                        text: '',
-                        settings,
-                        showFeedback: false,
-                        newSearch: false,
-                      });
+                    location.pathname === '/result' &&
+                      'desktop:min-w-8 desktop:min-h-8',
+                  ])}
+                  onClick={() => {
+                    if (visualSearch) {
+                      navigate('/result');
+                      setValueInput('');
+                      setQuery('');
+                      if (
+                        !window.settings?.algolia.enabled &&
+                        requestImages.length === 0
+                      ) {
+                        singleImageSearch({
+                          image: requestImages[0],
+                          imageRegion: regions[0],
+                          text: '',
+                          settings,
+                          showFeedback: false,
+                          newSearch: false,
+                        });
+                      }
+                      return;
                     }
-                    return;
-                  }
-                  setSpecifications(null);
-                  setQuery('');
-                  setValueInput('');
-                  navigate('/');
-                }}
-              >
-                <Icon name="close" className="w-3 h-3 text-primary" />
-              </button>
-            </Tooltip>
-          )}
-
-          <ImageUpload onCameraClick={onCameraClick} />
+                    setSpecifications(null);
+                    setQuery('');
+                    setValueInput('');
+                    navigate('/');
+                  }}
+                >
+                  <Icon name="close" className="w-3 h-3 text-primary" />
+                </button>
+              </Tooltip>
+            )}
+            {showImageUpload && <ImageUpload onCameraClick={onCameraClick} />}
+          </div>
         </div>
       </div>
 

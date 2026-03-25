@@ -47,15 +47,19 @@ export default function SidePanel({ className }: { className?: string }) {
     <div
       className={twMerge(
         [
-          'max-w-[325px]',
           'w-full',
-          'shadow-[3px_-2px_3px_-3px_#d3d4d8]',
-          'overflow-x-hidden',
-          'overflow-y-auto',
+          'overflow-hidden',
           'bg-white',
           'relative',
           'flex',
           'flex-col',
+          'ml-4',
+          'mb-4',
+          showSidePanel && 'border border-solid border-[#DDDEE7]',
+          showSidePanel ? 'rounded-[32px]' : 'rounded-2xl',
+          'transition-all',
+          showSidePanel ? 'w-[334px] min-w-[334px]' : 'w-0 min-w-0',
+          'shadow-ds-1',
         ],
         className,
       )}
@@ -76,7 +80,8 @@ export default function SidePanel({ className }: { className?: string }) {
               'flex',
               'justify-center',
               'items-center',
-              'min-w-[283px]',
+              'w-[295px]',
+              'm-4',
               // 'mx-4',
               // 'mt-4',
               // 'rounded',

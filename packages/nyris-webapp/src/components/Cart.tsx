@@ -117,41 +117,49 @@ const Cart = () => {
         content="The basket is currently empty"
         disabled={!!amountOfParts}
       >
-        <button
+        <div
           className={twMerge(
-            'relative flex items-center justify-center rounded-2xl border border-solid border-[#DDDEE7]',
-            'h-8 w-8',
+            'min-w-[68px] h-[68px] bg-white rounded-2xl flex items-center justify-center ',
+            'border border-solid border-[#DDDEE7]',
+            'shadow-ds-1',
           )}
-          style={{
-            backgroundColor:
-              amountOfParts > 0
-                ? window.settings.theme.primaryColor
-                : '#FAFAFA',
-          }}
-          onClick={() => onToggleCart(true)}
         >
-          {amountOfParts ? (
-            <div
-              className={twMerge(
-                'absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white border-solid text-white',
-                'text-[9px]',
-              )}
-              style={{
-                backgroundColor: window.settings.theme.primaryColor,
-              }}
-            >
-              {amountOfParts}
-            </div>
-          ) : (
-            ''
-          )}
-          <Icon
-            name="cart"
+          <button
             className={twMerge(
-              amountOfParts > 0 ? 'fill-white text-white' : 'text-black',
+              'relative flex items-center justify-center rounded-2xl',
+              'h-10 w-10',
             )}
-          />
-        </button>
+            style={{
+              backgroundColor:
+                amountOfParts > 0
+                  ? window.settings.theme.primaryColor
+                  : '#FAFAFA',
+            }}
+            onClick={() => onToggleCart(true)}
+          >
+            {amountOfParts ? (
+              <div
+                className={twMerge(
+                  'absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white border-solid text-white',
+                  'text-[9px]',
+                )}
+                style={{
+                  backgroundColor: window.settings.theme.primaryColor,
+                }}
+              >
+                {amountOfParts}
+              </div>
+            ) : (
+              ''
+            )}
+            <Icon
+              name="cart"
+              className={twMerge(
+                amountOfParts > 0 ? 'fill-white text-white' : 'text-[#BBBDCF]',
+              )}
+            />
+          </button>
+        </div>
       </Tooltip>
       {isCartOpen &&
         createPortal(
@@ -163,9 +171,10 @@ const Cart = () => {
             <div
               className={twMerge(
                 'absolute right-0 flex h-full w-[410px] max-w-full flex-col bg-transparent',
+                'p-4',
               )}
             >
-              <div className="flex h-full  max-w-full flex-col bg-white">
+              <div className="flex h-full  max-w-full flex-col bg-white rounded-2xl">
                 <div className="flex h-[52px] items-center justify-between px-4 py-2 border-b border-solid border-[#DDDEE7]">
                   <div className="text-xl font-semibold">
                     Your cart ({amountOfParts} items)
@@ -224,11 +233,13 @@ const Cart = () => {
                           className="mr-2 h-[50px] w-[50px] bg-white object-contain"
                         />
                         <div>
-                          <div className="max-w-[175px] break-words text-[9px] font-normal">
-                            {part.sku}
-                          </div>
-                          <div className="max-w-[175px] break-words text-xs font-semibold">
-                            {part.title}
+                          <div>
+                            <div className="max-w-[175px] break-words text-[9px] font-normal">
+                              {part.sku}
+                            </div>
+                            <div className="max-w-[175px] break-words text-xs font-semibold">
+                              {part.title}
+                            </div>
                           </div>
                         </div>
                       </div>

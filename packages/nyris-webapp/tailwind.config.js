@@ -8,7 +8,8 @@ module.exports = {
       boxShadow: {
         outer: '0 0 16px 0 rgba(202, 202, 209, 0.5)',
         outer200: '0 0 16px 0 rgba(170, 171, 181, 0.5)',
-        'drop-shadow-1': '0 0 20px 0 rgba(221, 222, 231, 0.5)',
+        'ds-1': '0 0 16px 0 rgba(221, 222, 231, 0.5)',
+        'ds-2': '0 0 20px 0 rgba(221, 222, 231, 0.5)',
       },
       keyframes: {
         slideUp: {
