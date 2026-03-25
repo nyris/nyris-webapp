@@ -119,7 +119,8 @@ const Cart = () => {
       >
         <div
           className={twMerge(
-            'min-w-[68px] h-[68px] bg-white rounded-2xl flex items-center justify-center ',
+            'h-[56px] min-w-[56px]',
+            'desktop:min-w-[68px] desktop:h-[68px] bg-white rounded-2xl flex items-center justify-center ',
             'border border-solid border-[#DDDEE7]',
             'shadow-ds-1',
           )}

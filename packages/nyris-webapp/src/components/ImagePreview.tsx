@@ -200,7 +200,7 @@ function ImagePreviewComponent({
       <div
         ref={previewWrapperRef}
         className={twMerge([
-          'bg-primary',
+          'bg-[#545987]',
           'justify-center',
           isVisible ? (!isMultiImageSearchEnabled ? 'py-5' : 'pt-6') : '',
           'px-7',
@@ -230,7 +230,7 @@ function ImagePreviewComponent({
         <div
           className={twMerge([
             'w-full',
-            'bg-[#55566b] aspect-square flex just items-center',
+            'bg-[#545987] aspect-square flex just items-center',
             'rounded-[24px]',
           ])}
         >
@@ -296,7 +296,7 @@ function ImagePreviewComponent({
       {/* Image preview Mobile*/}
       <div
         className={twMerge([
-          'bg-primary',
+          'bg-[#545987]',
           'justify-center',
           'p-5',
           !editActive ? 'py-2' : '',
@@ -304,11 +304,13 @@ function ImagePreviewComponent({
           'relative',
           'flex',
           'desktop:hidden',
+          !editActive && 'rounded-[32px]',
+          editActive && 'rounded-[24px]',
         ])}
       >
         <div
           className={`w-full ${
-            editActive ? 'bg-[#55566b] ' : ''
+            editActive ? 'bg-[#545987] ' : ''
           } flex just items-center`}
         >
           <Preview
@@ -319,12 +321,12 @@ function ImagePreviewComponent({
             selection={regions[currentIndex] || DEFAULT_REGION}
             regions={detectedRegions[currentIndex] || []}
             minWidth={Math.min(
-              80 *
+              40 *
                 (requestImages[currentIndex]?.width /
                   requestImages[currentIndex]?.height),
               200,
             )}
-            minHeight={80}
+            minHeight={40}
             dotColor={editActive ? '#FBD914' : ''}
             minCropWidth={editActive ? 30 : 5}
             minCropHeight={editActive ? 30 : 5}
@@ -371,26 +373,38 @@ function ImagePreviewComponent({
         )}
         <div
           onClick={() => setEditActive(s => !s)}
-          className={`absolute right-1 ${
-            editActive ? 'bottom-1' : 'bottom-8'
-          } flex justify-center items-center desktop:hidden p-1`}
+          className={twMerge(
+            `absolute right-1 ${
+              editActive ? 'bottom-1' : 'bottom-1'
+            } flex justify-center items-center desktop:hidden p-1`,
+          )}
         >
-          <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
+          <div
+            className={twMerge(
+              'rounded-full w-6 h-6 flex justify-center items-center desktop:hidden',
+              editActive ? 'w-8 h-8 bg-white' : 'w-10 h-10 bg-transparent',
+            )}
+          >
             {editActive && <Icon name="collapse" className="text-primary" />}
-            {!editActive && <Icon name="crop" className="text-primary" />}
+            {!editActive && <Icon name="crop" className="text-white" />}
           </div>
         </div>
 
         <div
           onClick={() => onImageRemove()}
           className={`absolute left-1 ${
-            editActive ? 'top-1' : 'top-8'
+            editActive ? 'top-1' : 'top-1'
           } flex justify-center items-center desktop:hidden p-1`}
         >
-          <div className="rounded-full bg-white w-6 h-6 flex justify-center items-center desktop:hidden">
+          <div
+            className={twMerge(
+              'rounded-full bg-[#FFE5EF] flex justify-center items-center desktop:hidden',
+              editActive ? 'w-8 h-8' : 'w-10 h-10',
+            )}
+          >
             <Icon
               name="trash"
-              className="text-primary"
+              className="text-[#E31B5D]"
               width={14}
               height={14}
             />

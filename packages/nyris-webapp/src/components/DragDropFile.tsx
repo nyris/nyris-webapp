@@ -154,9 +154,9 @@ function DragDropFile(props: Props) {
           <div
             className={twMerge([
               'drag-n-drop-inner',
-              'flex flex-col items-center w-full cursor-pointer pb-4 pt-4 rounded-[12px]',
-              'text-[#cacad1] hover:text-primary',
-              'border-2 border-dashed border-transparent hover:border-[#e0e0e0]',
+              'flex flex-col items-center w-full cursor-pointer py-10 rounded-[12px]',
+              'text-[#767A9F] hover:text-primary',
+              'border-2 border-dashed border-[#BBBDCF]',
               isDragging && 'text-primary border-[#e0e0e0]',
             ])}
           >

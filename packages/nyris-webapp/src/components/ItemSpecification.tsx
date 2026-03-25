@@ -24,66 +24,7 @@ const ItemSpecification = ({
     limit: 1,
   });
 
-  return isMobile ? (
-    <>
-      <div
-        className="inline-flex flex-col justify-center items-start "
-        key={attr}
-      >
-        <div className="pl-1 inline-flex justify-center items-center gap-2.5">
-          <div className="justify-start text-[#3B3E5F] text-sm font-semibold">
-            {attr}
-          </div>
-        </div>
-        <div
-          className={twMerge(
-            `p-3 bg-[#e4e3ff] rounded-lg  inline-flex justify-center items-center gap-1.5`,
-            'text-[#3e36dc]',
-            specificationFilter[attr]
-              ? 'border-[#3E36DC] bg-[#3E36DC] text-white'
-              : '',
-          )}
-          onClick={() => {
-            if (!value) {
-              return;
-            }
-            if (attribute !== 'none') {
-              refine(value);
-            } else {
-              const setSpecificationFilter =
-                useRequestStore.getState().setSpecificationFilter;
-
-              const setSpecificationFilteredProducts =
-                useResultStore.getState().setSpecificationFilteredProducts;
-
-              if (specificationFilter[attr]) {
-                setSpecificationFilter({});
-                setSpecificationFilteredProducts([]);
-                // setProducts(results);
-              } else {
-                setSpecificationFilter({
-                  [attr]: value,
-                });
-              }
-            }
-          }}
-        >
-          <div className="justify-start text-sm font-medium leading-none flex gap-2">
-            {imageAnalysis?.specification[attr] || 'N/A'}
-            <div>
-              <Icon
-                name="close"
-                className={twMerge(
-                  'w-3 h-3 text-white',
-                  specificationFilter[attr] ? 'block' : 'hidden',
-                )}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  ) : (
+  return (
     <Tooltip
       content={
         specificationFilter[attr]

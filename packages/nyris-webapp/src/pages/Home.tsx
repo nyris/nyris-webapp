@@ -198,7 +198,6 @@ function Home() {
 
         <div className="flex desktop:hidden w-full fixed bottom-12 px-2 gap-2">
           <TextSearch className="flex md:hidden w-full " />
-          {/* <ImageUpload /> */}
         </div>
       </div>
     </>

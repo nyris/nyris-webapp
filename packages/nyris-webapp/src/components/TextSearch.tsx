@@ -127,9 +127,10 @@ function TextSearch({
           'bg-white',
           location.pathname === '/result' &&
             'desktop:bg-[#E7E8F1] desktop:focus-within:bg-[#FFFFFF] desktop:focus-within:shadow-ds-2',
-          'desktop:border border-solid',
-          'desktop:border-[#DDDEE7]',
+          'border border-solid',
+          'border-[#DDDEE7]',
           location.pathname !== '/result' && 'shadow-ds-2',
+          location.pathname === '/result' && 'shadow-ds-2 desktop:shadow-none',
           'flex',
           'h-full',
           'justify-between',

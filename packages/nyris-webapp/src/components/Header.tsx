@@ -31,14 +31,18 @@ function Header() {
   return (
     <div
       className={twMerge([
+        'h-[56px]',
         'desktop:h-[68px]',
         'desktop:min-h-[68px]',
-        'px-4',
+        'px-2',
+        'desktop:px-4',
         'w-full',
         'flex-shrink-0',
         'bg-transparent',
-        'mt-4',
-        'mb-2',
+        'mt-2',
+        'desktop:mt-4',
+        'mb-4',
+        'desktop:mb-2',
         'flex',
         'gap-2',
         'justify-between',
@@ -49,7 +53,8 @@ function Header() {
         <div
           className={twMerge(
             'hidden desktop:flex',
-            'min-w-[68px] h-[68px]',
+            'h-[56px] min-w-[56px]',
+            'desktop:min-w-[68px] desktop:h-[68px]',
             'border border-solid border-[#DDDEE7] items-center justify-center cursor-pointer bg-white',
             'rounded-2xl',
             'shadow-ds-1',
@@ -64,7 +69,8 @@ function Header() {
 
       <div
         className={twMerge(
-          'min-w-[268px] h-[68px] flex items-center justify-between',
+          'h-[56px]',
+          'min-w-[268px] desktop:h-[68px] flex items-center justify-between',
           'border border-solid border-[#DDDEE7]',
           'bg-white',
           'rounded-2xl',
@@ -135,7 +141,8 @@ function Header() {
             <>
               <div
                 className={twMerge(
-                  'min-w-[68px] h-[68px] bg-white rounded-2xl flex items-center justify-center ',
+                  'h-[56px] min-w-[56px]',
+                  'desktop:min-w-[68px] desktop:h-[68px] bg-white rounded-2xl flex items-center justify-center ',
                   'border border-solid border-[#DDDEE7]',
                   'shadow-ds-1',
                 )}

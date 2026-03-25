@@ -29,6 +29,7 @@ import { useImageSearch } from 'hooks/useImageSearch';
 import ItemSpecification from 'components/ItemSpecification';
 import MatchNotificationBanner from 'components/MatchNotificationBanner';
 import ImageUpload from 'components/ImageUpload';
+import SmartFilter from 'components/SmartFilter';
 
 function Results() {
   const settings = window.settings;
@@ -200,7 +201,7 @@ function Results() {
           <div className="w-full h-full flex flex-col">
             <div
               className={twMerge([
-                requestImages[0] ? 'pt-0' : 'pt-3',
+                requestImages[0] && 'pt-0',
                 'desktop:pt-0',
                 'desktop:mt-0',
                 'flex',
@@ -214,66 +215,23 @@ function Results() {
                 'overflow-y-auto',
               ])}
             >
-              <div className="block desktop:hidden desktop:mb-0">
+              <div className="block desktop:hidden desktop:mb-0 mx-2">
                 {requestImages[0] && <ImagePreview />}
                 {window.settings.showImageDetails &&
                   (imageAnalysis?.imageDescription ||
                     Object.keys(imageAnalysis?.specification || {}).length >
                       0) && (
-                    <div className="p-2">
-                      <div className="self-stretch p-4 bg-[#f3f3f5] rounded flex justify-start flex-col items-start gap-2 flex-wrap content-start w-full">
-                        {imageAnalysis?.imageDescription !==
-                          'No description available' && (
-                          <div className="self-stretch flex flex-col justify-start items-start">
-                            <div className="justify-start text-black text-base font-semibold">
-                              Image description
-                            </div>
-                            <div className="self-stretch justify-start text-black text-sm font-normal">
-                              {imageAnalysis?.imageDescription || ''}
-                            </div>
-                          </div>
-                        )}
-
-                        {Object.keys(imageAnalysis?.specification || {})
-                          .filter(
-                            key =>
-                              key !== 'is_nameplate' &&
-                              key !== 'prefilter_value',
-                          )
-                          .some(key => !!imageAnalysis?.specification[key]) && (
-                          <div className="justify-start text-[#2b2c46] text-base font-semibold mt-1">
-                            Identified Attributes
-                          </div>
-                        )}
-                        <div className="flex justify-start items-start gap-4 flex-wrap content-start">
-                          {Object.keys(imageAnalysis?.specification || {})
-                            .filter(
-                              key =>
-                                key !== 'is_nameplate' &&
-                                key !== 'prefilter_value',
-                            )
-                            .map(key => {
-                              const value = imageAnalysis?.specification[key];
-                              if (!value) {
-                                return null;
-                              }
-                              return (
-                                <ItemSpecification
-                                  attr={key}
-                                  value={value}
-                                  specificationFilter={specificationFilter}
-                                  imageAnalysis={imageAnalysis}
-                                />
-                              );
-                            })}
-                        </div>
-                      </div>
+                    <div className="my-4">
+                      <SmartFilter
+                        imageAnalysis={imageAnalysis}
+                        specificationFilter={specificationFilter}
+                      />
                     </div>
                   )}
               </div>
               <div
                 className={twMerge([
-                  requestImages[0] ? 'pt-0' : 'pt-3',
+                  requestImages[0] && 'pt-0',
                   'desktop:pt-4',
                   'desktop:overflow-hidden',
                   'desktop:overflow-y-auto',
@@ -331,7 +289,7 @@ function Results() {
                           'w-full',
                         )}
                       >
-                        <GoBackButton className="col-span-full mb-2 desktop:mb-0" />
+                        <GoBackButton className="col-span-full mb-2 desktop:mb-0 mt-2 desktop:mt-0" />
                         <CurrentRefinements className="col-span-full" />
                         <MatchNotificationBanner className="col-span-full" />
                         <ProductList />
@@ -434,14 +392,7 @@ function Results() {
             onCameraClick={() => setOpenModalCamera(true)}
             showImageUpload={false}
           />
-          <div
-            className={twMerge(
-              'h-14 min-w-14 flex items-center justify-center rounded-full bg-[#FFFFFF] border border-solid border-[#DDDEE7]',
-              'shadow-ds-2',
-            )}
-          >
-            <ImageUpload onCameraClick={() => setOpenModalCamera(true)} />
-          </div>
+
           {isShowFilter && settings.postFilterOption && (
             <div
               style={{
@@ -450,9 +401,12 @@ function Results() {
                 flexShrink: 0,
                 borderRadius: '32px',
                 background: '#FAFAFA',
-                boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
               }}
-              className="h-14 min-w-14 flex items-center justify-center"
+              className={twMerge(
+                'h-14 min-w-14 flex items-center justify-center ',
+                'border border-solid border-[#DDDEE7]',
+                'shadow-ds-2',
+              )}
               onClick={() => {
                 if (disablePostFilter && !isPostFilterApplied) return;
                 setShowPostFilter(true);
@@ -522,6 +476,14 @@ function Results() {
               )}
             </div>
           )}
+          <div
+            className={twMerge(
+              'h-14 min-w-14 flex items-center justify-center rounded-full bg-[#FFFFFF] border border-solid border-[#DDDEE7]',
+              'shadow-ds-2',
+            )}
+          >
+            <ImageUpload onCameraClick={() => setOpenModalCamera(true)} />
+          </div>
         </div>
         <PostFilterDrawer
           openModal={showPostFilter}

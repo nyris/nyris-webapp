@@ -4,10 +4,9 @@ import ImagePreview from './ImagePreview';
 import useRequestStore from 'stores/request/requestStore';
 import PostFilterComponent from './PostFilter/PostFilterComponent';
 import useResultStore from 'stores/result/resultStore';
-import ItemSpecification from './ItemSpecification';
 import useUiStore from 'stores/ui/uiStore';
 import GroundingSpecs from './GroundingSpecs';
-import { Icon } from '@nyris/nyris-react-components';
+import SmartFilter from './SmartFilter';
 
 export default function SidePanel({ className }: { className?: string }) {
   const requestImages = useRequestStore(state => state.requestImages);
@@ -15,6 +14,8 @@ export default function SidePanel({ className }: { className?: string }) {
   const specificationFilter = useRequestStore(
     state => state.specificationFilter,
   );
+
+  const findApiProducts = useResultStore(state => state.productsFromFindApi);
 
   const showSidePanel = useUiStore(state => state.showSidePanel);
 
@@ -41,6 +42,14 @@ export default function SidePanel({ className }: { className?: string }) {
     null;
 
   if (!showPostFilter && requestImages.length === 0) {
+    return <></>;
+  }
+
+  if (
+    requestImages.length === 0 &&
+    findApiProducts.length === 0 &&
+    !window.settings.algolia.enabled
+  ) {
     return <></>;
   }
 
@@ -94,35 +103,10 @@ export default function SidePanel({ className }: { className?: string }) {
             {window.settings.showImageDetails &&
               (imageAnalysis?.imageDescription ||
                 Object.keys(imageAnalysis?.specification || {}).length > 0) && (
-                <div>
-                  <div className="flex gap-2 ml-[30px]">
-                    <div className="text-[#3B3E5F] font-bold text-sm">
-                      Smart generated filters
-                    </div>
-                    <Icon name="smart_filter_indication" className="mt-1" />
-                  </div>
-                  <div className="flex flex-wrap mx-4 gap-2 mt-4">
-                    {Object.keys(imageAnalysis?.specification || {})
-                      .filter(
-                        key =>
-                          key !== 'is_nameplate' && key !== 'prefilter_value',
-                      )
-                      .map(key => {
-                        const value = imageAnalysis?.specification[key];
-                        if (!value) {
-                          return null;
-                        }
-                        return (
-                          <ItemSpecification
-                            attr={key}
-                            value={value}
-                            specificationFilter={specificationFilter}
-                            imageAnalysis={imageAnalysis}
-                          />
-                        );
-                      })}
-                  </div>
-                </div>
+                <SmartFilter
+                  imageAnalysis={imageAnalysis}
+                  specificationFilter={specificationFilter}
+                />
               )}
 
             {(isGoogleGroundingLoading || googleGroundingResponse) && (

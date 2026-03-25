@@ -19,7 +19,7 @@ export const HitsPerPage = (props: UseHitsPerPageProps) => {
         )}
       >
         <div className="self-stretch pl-4 pr-6 border-r border-solid border-[#DDDEE7] justify-center items-center gap-1 flex">
-          <div className="text-[#2b2c46] text-[13px] font-normal font-['Source Sans 3'] leading-none tracking-tight">
+          <div className="text-[#3B3E5F] text-[13px] font-normal font-['Source Sans 3'] leading-none tracking-tight">
             {t('Items per page')}:
           </div>
           <select
