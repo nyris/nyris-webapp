@@ -328,7 +328,7 @@ function Results() {
                           className={
                             productsFromAlgolia.length === 0 &&
                             !isAlgoliaLoading
-                              ? 'opacity-0'
+                              ? 'opacity-0 hidden'
                               : ''
                           }
                         />

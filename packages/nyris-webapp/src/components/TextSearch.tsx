@@ -4,24 +4,25 @@ import { twMerge } from 'tailwind-merge';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useLocation, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-
 import { Icon } from '@nyris/nyris-react-components';
-
 import { useImageSearch } from 'hooks/useImageSearch';
 import PreFilterModal from './PreFilter/PreFilterModal';
 import useRequestStore from 'stores/request/requestStore';
 import Tooltip from './Tooltip/TooltipComponent';
 import { useMediaQuery } from 'react-responsive';
 import ImageUpload from './ImageUpload';
+import useUiStore from 'stores/ui/uiStore';
 
 function TextSearch({
   className,
   onCameraClick,
   showImageUpload = true,
+  aiMode = false,
 }: {
   className?: string;
   onCameraClick?: () => void;
   showImageUpload?: boolean;
+  aiMode?: boolean;
 }) {
   const settings = window.settings;
   const user = useAuth0().user;
@@ -33,6 +34,8 @@ function TextSearch({
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const toggleAiMode = useUiStore(state => state.toggleAiMode);
 
   const preFilter = useRequestStore(state => state.preFilter);
   const requestImages = useRequestStore(state => state.requestImages);
@@ -397,9 +400,8 @@ function TextSearch({
                     'min-w-10 min-h-10',
                     'z-10',
                     'hover:bg-gray-100',
-
                     location.pathname === '/result' &&
-                      'desktop:min-w-8 desktop:min-h-8',
+                      'desktop:min-w-10 desktop:min-h-10',
                   ])}
                   onClick={() => {
                     if (visualSearch) {
@@ -432,6 +434,20 @@ function TextSearch({
               </Tooltip>
             )}
             {showImageUpload && <ImageUpload onCameraClick={onCameraClick} />}
+            {aiMode && (
+              <button
+                type="button"
+                className={twMerge(
+                  'px-[10px] h-10 rounded-full text-[14px] text-[#989BB7] flex items-center justify-center gap-2 whitespace-nowrap bg-[#FAFAFA] border border-solid border-transparent',
+                  'hover:bg-gradient-to-r hover:from-white hover:to-[#E4E3FF]',
+                  'hover:border-[#DDDEE7] hover:text-[#3B3E5F]',
+                )}
+                onClick={() => toggleAiMode()}
+              >
+                <Icon name="search" width={14} height={14} />
+                AI mode
+              </button>
+            )}
           </div>
         </div>
       </div>

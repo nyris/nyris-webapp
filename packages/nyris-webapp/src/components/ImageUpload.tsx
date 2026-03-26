@@ -191,8 +191,7 @@ function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
         <Tooltip content={t('Search with an image')}>
           <label
             className={twMerge(
-              '',
-              'w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-100 desktop:bg-transparent hover:bg-gray-100',
+              'min-w-10 min-h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-100 desktop:bg-transparent hover:bg-gray-100',
               location.pathname === '/result' && 'desktop:w-8 desktop:h-8',
               location.pathname !== '/result' &&
                 'desktop:bg-[#FAFAFA] desktop:hover:bg-[#FAFAFA]',

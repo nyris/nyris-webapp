@@ -33,6 +33,15 @@ export interface LoadingState {
   isGoogleGroundingLoading: boolean;
 }
 
+export interface AiUiState {
+  isAiModeOpen: boolean;
+}
+
+export interface AiUiAction {
+  setIsAiModeOpen: (isOpen: boolean) => void;
+  toggleAiMode: () => void;
+}
+
 export interface LoadingAction {
   setIsFindApiLoading: (isLoading: boolean) => void;
   setIsAlgoliaLoading: (isLoading: boolean) => void;
