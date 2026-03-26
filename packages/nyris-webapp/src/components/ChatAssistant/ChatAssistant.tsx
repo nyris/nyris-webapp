@@ -747,6 +747,7 @@ If NONE of the current results match the new image, return:
       }}
     >
       {/* ── Header ── */}
+      {/*
       <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 bg-[#3E36DC] text-white rounded-[24px]">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
@@ -768,6 +769,7 @@ If NONE of the current results match the new image, return:
           <X size={16} />
         </button>
       </div>
+      */}
 
       {/* ── Warnings ── */}
       {!hasApiKey && (
@@ -916,24 +918,21 @@ If NONE of the current results match the new image, return:
       )}
 
       {/* ── Upload image — fixed above input ── */}
-      {/* {isEvaluated && hasApiKey && (
-        <div className="flex-shrink-0 flex gap-2 px-3 py-2 border-t border-[#E0E0E0] bg-[#FAFAFF] rounded-3xl">
-          <button
-            onClick={() => imageInputRef.current?.click()}
-            disabled={isLoading}
-            className={twMerge(
-              'flex-1 flex items-center justify-center gap-1.5 px-3 py-2',
-              'text-[11px] font-medium rounded-lg',
-              'bg-[#3E36DC] text-white',
-              'hover:bg-[#332CB7] transition-colors shadow-sm',
-              isLoading && 'opacity-50 cursor-not-allowed',
-            )}
-          >
-            <Camera size={12} />
-            <span>Upload image</span>
-          </button>
-        </div>
-      )} */}
+      {isEvaluated && hasApiKey && (
+        <button
+          onClick={() => imageInputRef.current?.click()}
+          disabled={isLoading}
+          className={twMerge(
+            'w-full h-14 rounded-[32px] bg-[#3B3E5F] mb-2',
+            'flex items-center justify-center gap-2 text-white cursor-pointer',
+            'hover:bg-[#333653] transition-colors',
+            isLoading && 'opacity-50 cursor-not-allowed',
+          )}
+        >
+          <Camera size={12} />
+          <span>Upload image</span>
+        </button>
+      )}
 
       {/* ── Input ── */}
       {/* <div className="flex-shrink-0 px-3 py-3 border-t border-[#E0E0E0] bg-white rounded-3xl mt-2">
