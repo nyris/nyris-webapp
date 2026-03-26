@@ -108,7 +108,7 @@ function Header() {
             'min-w-0',
           ])}
         >
-          <TextSearch className="w-full max-w-[531px] min-w-0" />
+          <TextSearch className="w-full max-w-[531px] min-w-0" aiMode={true} />
         </div>
 
         {auth0.enabled &&

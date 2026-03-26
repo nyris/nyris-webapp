@@ -25,12 +25,18 @@ interface Props {
   show: boolean;
   onClose: any;
   newSearch?: boolean;
+  handleImageUpload?: (image: any) => void;
 }
 
 const FACING_MODE_USER = 'environment';
 
 function CustomCamera(props: Props) {
-  const { show: isToggle, onClose: onToggleModal, newSearch } = props;
+  const {
+    show: isToggle,
+    onClose: onToggleModal,
+    newSearch,
+    handleImageUpload,
+  } = props;
   const settings = window.settings;
   const webcamRef: any = useRef(null);
   const navigate = useNavigate();
@@ -44,12 +50,16 @@ function CustomCamera(props: Props) {
   const specifications = useRequestStore(state => state.specifications);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
-  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
+  const setNameplateNotificationText = useRequestStore(
+    state => state.setNameplateNotificationText,
+  );
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
-  const setShowNotMatchedError = useRequestStore(state => state.setShowNotMatchedError);
+  const setShowNotMatchedError = useRequestStore(
+    state => state.setShowNotMatchedError,
+  );
   const [capturedImages, setCapturedImages] = useState<HTMLCanvasElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageCaptureHelpModal, setImageCaptureHelpModal] = useState(false);
@@ -60,6 +70,12 @@ function CustomCamera(props: Props) {
   };
 
   const handlerFindImage = async (image: any) => {
+    if (handleImageUpload) {
+      handleImageUpload(image);
+      handleClose();
+      return;
+    }
+
     if (location.pathname !== '/result') {
       navigate('/result');
     }
@@ -77,35 +93,62 @@ function CustomCamera(props: Props) {
       settings,
       newSearch,
       showFeedback: true,
-    }).then((singleImageResp) => {
-      const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
-      const hasPrefilter = preFilterList.filter((filter: any) => filter.values.includes(specificationPrefilter));
+    }).then(singleImageResp => {
+      const specificationPrefilter =
+        singleImageResp.image_analysis?.specification?.prefilter_value || null;
+
+      const hasPrefilter = preFilterList.filter((filter: any) =>
+        filter.values.includes(specificationPrefilter),
+      );
       if (specificationPrefilter) {
         setRequestImages([]);
         setShowNotMatchedError(false);
         if (hasPrefilter.length) {
-          setSpecifications(clone(singleImageResp.image_analysis.specification));
+          setSpecifications(
+            clone(singleImageResp.image_analysis.specification),
+          );
           setNameplateImage(image);
-          setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
-          setAlgoliaFilter(`${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+          setPreFilter({
+            [singleImageResp.image_analysis?.specification?.prefilter_value]:
+              true,
+          });
+          setAlgoliaFilter(
+            `${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`,
+          );
 
           setShowLoading(false);
           handleClose();
 
-          setNameplateNotificationText(t('We have successfully defined the search criteria', { prefilter_value: specificationPrefilter, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+          setNameplateNotificationText(
+            t('We have successfully defined the search criteria', {
+              prefilter_value: specificationPrefilter,
+              preFilterTitle:
+                window.settings.preFilterTitle?.toLocaleLowerCase(),
+            }),
+          );
           setTimeout(() => {
             setNameplateNotificationText('');
           }, 5000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {
-          setSpecifications(clone({...singleImageResp.image_analysis.specification, specificationPrefilter}));
+          setSpecifications(
+            clone({
+              ...singleImageResp.image_analysis.specification,
+              specificationPrefilter,
+            }),
+          );
           setPreFilter({});
           setAlgoliaFilter('');
           setShowLoading(false);
           handleClose();
           setShowNotMatchedError(true);
           setTimeout(() => {
-            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+            setNameplateNotificationText(
+              t('Extracted details from the nameplate could not be matched', {
+                preFilterTitle:
+                  window.settings.preFilterTitle?.toLocaleLowerCase(),
+              }),
+            );
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
@@ -113,7 +156,7 @@ function CustomCamera(props: Props) {
         }
       } else {
         if (!specifications?.is_nameplate) {
-          setSpecifications({...specifications, is_nameplate: false});
+          setSpecifications({ ...specifications, is_nameplate: false });
         }
         setShowLoading(false);
         handleClose();

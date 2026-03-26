@@ -47,6 +47,7 @@ var settings = {
     enabled: false,
     groundingEnabled: false,
     fallbackToElasticSearch: false,
+    chat: false,
   },
   // UI - theme
   theme: {
