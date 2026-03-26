@@ -304,7 +304,6 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
               ></div>
             );
           })}
-        {renderChatPanel}
       </div>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps

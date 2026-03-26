@@ -156,7 +156,7 @@ const Chat: React.FC<Props> = ({
       <div className="w-full flex flex-col items-center gap-2">
         <label
           htmlFor="chat-upload-image-control"
-          className="text-white flex items-center justify-center"
+          className="text-white flex items-center justify-center "
           style={{
             width: 260,
             height: 56,

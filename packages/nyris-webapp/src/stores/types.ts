@@ -68,6 +68,8 @@ export interface ProductsState {
   googleGroundingResponse: Record<string, any> | null;
   groundingFilterResult: any[];
   showingGroundingFilterResult: boolean;
+  firstAlgoliaProducts: any[];
+  fullResultPool: any[];
 }
 
 export interface ProductsAction {
@@ -84,6 +86,8 @@ export interface ProductsAction {
   setGoogleGroundingResponse: (result: any | null) => void;
   setGroundingFilterResult: (result: any[]) => void;
   setShowingGroundingFilterResult: (val?: boolean) => void;
+  setFirstAlgoliaProducts: (products: any[]) => void;
+  setFullResultPool: (products: any[]) => void;
 }
 
 export interface DetectedRegionsState {

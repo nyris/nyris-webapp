@@ -129,7 +129,7 @@ function TextSearch({
         className={twMerge([
           'bg-white',
           location.pathname === '/result' &&
-            'desktop:bg-[#E7E8F1] desktop:focus-within:bg-[#FFFFFF] desktop:focus-within:shadow-ds-2',
+            'desktop:bg-[#E7E8F1] desktop:has-[input:focus]:bg-[#FFFFFF] desktop:has-[input:focus]:shadow-ds-2',
           'border border-solid',
           'border-[#DDDEE7]',
           location.pathname !== '/result' && 'shadow-ds-2',
