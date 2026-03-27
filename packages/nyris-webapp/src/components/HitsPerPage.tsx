@@ -1,4 +1,3 @@
-import { Icon } from '@nyris/nyris-react-components';
 import { useTranslation } from 'react-i18next';
 import { useHitsPerPage, UseHitsPerPageProps } from 'react-instantsearch';
 import PoweredBy from './PoweredBy';

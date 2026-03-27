@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { twMerge } from 'tailwind-merge';
 
@@ -98,7 +98,7 @@ function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getPreFilters = async () => {
+  const getPreFilters = useCallback(async () => {
     setPreFilterLoading(true);
     try {
       const res = await getFilters(1000, settings);
@@ -108,13 +108,13 @@ function Home() {
     } finally {
       setPreFilterLoading(false);
     }
-  };
+  }, [settings, setPreFilterList, setPreFilterLoading]);
 
   useEffect(() => {
     if (showPreFilter) {
       getPreFilters();
     }
-  }, []);
+  }, [getPreFilters, showPreFilter]);
 
   return (
     <>
