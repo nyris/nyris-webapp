@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { twMerge } from 'tailwind-merge';
 
 import DragDropFile from 'components/DragDropFile';
@@ -8,19 +8,50 @@ import TextSearch from 'components/TextSearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import ExperienceVisualSearchTrigger from 'components/ExperienceVisualSearch/ExperienceVisualSearchTrigger';
 import { useNavigate } from 'react-router';
-import LocationInfoPopup from "../components/LocationInfoPopup";
+import LocationInfoPopup from '../components/LocationInfoPopup';
 import Hint from '../components/Hint';
 import Loading from '../components/Loading';
 import useRequestStore from '../stores/request/requestStore';
+import { getFilters } from '../services/filter';
+
 function Home() {
   const settings = window.settings;
-  const { experienceVisualSearch, experienceVisualSearchImages, geoLocation } = settings;
+  const user = useAuth0().user;
+  const { experienceVisualSearch, experienceVisualSearchImages, geoLocation } =
+    settings;
   const navigate = useNavigate();
 
   const [experienceVisualSearchBlobs, setExperienceVisualSearchBlobs] =
     useState<Blob[]>([]);
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const showLoading = useRequestStore(store => store.showLoading);
+  const setPreFilterList = useRequestStore(state => state.setPreFilterList);
+  const setPreFilterLoading = useRequestStore(
+    state => state.setPreFilterLoading,
+  );
+  const setMetaFilter = useRequestStore(state => state.setMetaFilter);
+
+  const showPreFilter = useMemo(() => {
+    if (settings.shouldUseUserMetadata && user) {
+      if (user['/user_metadata'].value) {
+        setMetaFilter(user['/user_metadata'].value);
+      }
+    }
+
+    if (settings.shouldUseUserMetadata && user) {
+      if (settings.preFilterOption && !user['/user_metadata'].value) {
+        return true;
+      }
+      return false;
+    }
+
+    return settings.preFilterOption;
+  }, [
+    setMetaFilter,
+    settings.preFilterOption,
+    settings.shouldUseUserMetadata,
+    user,
+  ]);
 
   const fetchImage = async (url: string) => {
     const response = await fetch(url, { cache: 'force-cache' });
@@ -67,6 +98,24 @@ function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getPreFilters = useCallback(async () => {
+    setPreFilterLoading(true);
+    try {
+      const res = await getFilters(1000, settings);
+      setPreFilterList(res);
+    } catch (e: any) {
+      console.log('err getDataFilterDesktop', e);
+    } finally {
+      setPreFilterLoading(false);
+    }
+  }, [settings, setPreFilterList, setPreFilterLoading]);
+
+  useEffect(() => {
+    if (showPreFilter) {
+      getPreFilters();
+    }
+  }, [getPreFilters, showPreFilter]);
+
   return (
     <>
       {showLoading && (
@@ -82,12 +131,11 @@ function Home() {
           'items-center',
           'justify-center',
           'h-auto',
-          'mt-[calc(50vh-75px)]',
-          'bg-[#fafafa]',
+          'mt-[calc(50vh-110px)]',
         ])}
       >
         {geoLocation && <LocationInfoPopup />}
-        <div className="relative flex flex-col items-center justify-center w-full">
+        <div className="relative flex items-center justify-center w-full gap-2">
           {settings.headerText && (
             <div
               className={twMerge([
@@ -101,9 +149,8 @@ function Home() {
             </div>
           )}
 
-          <div className="w-[427px]">
-            <TextSearch />
-          </div>
+          <TextSearch />
+          {/* <ImageUpload /> */}
         </div>
         <div className="max-w-[532px] relative w-full">
           <DragDropFile />
@@ -115,7 +162,7 @@ function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col desktop:hidden justify-center items-center w-full h-full bg-white">
+      <div className="flex flex-col desktop:hidden justify-center items-center w-full h-full ">
         <MobileCameraCTA setOpenModalCamera={setOpenModalCamera} />
         <div className="box-screenshot-camera">
           <CustomCamera
@@ -141,8 +188,9 @@ function Home() {
           />
         )}
 
-        <div className="flex desktop:hidden w-full">
-          <TextSearch className="flex md:hidden fixed bottom-12 w-full px-2 gap-2" />
+        <div className="flex desktop:hidden w-full fixed bottom-12 px-2 gap-2">
+          <TextSearch className="flex md:hidden w-full " />
+          {/* <ImageUpload /> */}
         </div>
       </div>
     </>

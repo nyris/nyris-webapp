@@ -5,6 +5,7 @@ import { initialState } from './misc.initialstate';
 const miscSlice: StateCreator<MiscState & MiscAction> = set => ({
   ...initialState,
   setMetaFilter: filter => set(state => ({ metaFilter: filter })),
+  setGroundingQuery: query => set(state => ({ groundingQuery: query })),
 });
 
 export default miscSlice;

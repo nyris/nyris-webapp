@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +11,6 @@ import { isCadFile } from '@nyris/nyris-api';
 import Hint from './Hint';
 import { clone } from 'lodash';
 import useRequestStore from '../stores/request/requestStore';
-import { getFilters } from '../services/filter';
 
 interface Props {
   onChangeLoading?: any;
@@ -26,34 +25,22 @@ function DragDropFile(props: Props) {
   const { singleImageSearch } = useImageSearch();
   const { cadSearch } = useCadSearch();
 
-  const [resultFilter, setResultFilter] = useState<any>([]);
-
+  const preFilterList = useRequestStore(state => state.preFilterList);
   const specifications = useRequestStore(state => state.specifications);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
-  const setNameplateNotificationText = useRequestStore(state => state.setNameplateNotificationText);
-  const setShowNotMatchedError = useRequestStore(state => state.setShowNotMatchedError);
+  const setNameplateNotificationText = useRequestStore(
+    state => state.setNameplateNotificationText,
+  );
+  const setShowNotMatchedError = useRequestStore(
+    state => state.setShowNotMatchedError,
+  );
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setShowLoading = useRequestStore(state => state.setShowLoading);
   const setNameplateImage = useRequestStore(state => state.setNameplateImage);
 
-  const getPreFilters = async () => {
-    getFilters(1000, window.settings)
-      .then(res => {
-        setResultFilter(res);
-      })
-      .catch((e: any) => {
-        console.log('err getDataFilterDesktop', e);
-      });
-  }
-
-  useEffect(() => {
-    getPreFilters()
-  }, []);
-
   const handleUpload = (file: File) => {
-
     if (isCadFile(file)) {
       cadSearch({
         file: file,
@@ -70,47 +57,73 @@ function DragDropFile(props: Props) {
       image: file,
       settings: window.settings,
       showFeedback: true,
-    }).then((singleImageResp) => {
-      const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
-      const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
+      clearPostFilter: true,
+      newSearch: true,
+    }).then(singleImageResp => {
+      const specificationPrefilter =
+        singleImageResp.image_analysis?.specification?.prefilter_value || null;
+      const hasPrefilter = preFilterList.filter((filter: any) =>
+        filter.values.includes(specificationPrefilter),
+      );
       if (specificationPrefilter) {
         setRequestImages([]);
         setShowNotMatchedError(false);
         if (hasPrefilter.length) {
-          setSpecifications(clone(singleImageResp.image_analysis.specification));
+          setSpecifications(
+            clone(singleImageResp.image_analysis.specification),
+          );
           setNameplateImage(file);
-          setPreFilter({[singleImageResp.image_analysis?.specification?.prefilter_value]: true});
-          setAlgoliaFilter(`${window.settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`);
+          setPreFilter({
+            [singleImageResp.image_analysis?.specification?.prefilter_value]:
+              true,
+          });
+          setAlgoliaFilter(
+            `${window.settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`,
+          );
 
           setShowLoading(false);
           navigate('/result');
 
           setTimeout(() => {
-            setNameplateNotificationText(t('We have successfully defined the search criteria', { prefilter_value: specificationPrefilter, preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+            setNameplateNotificationText(
+              t('We have successfully defined the search criteria', {
+                prefilter_value: specificationPrefilter,
+                preFilterTitle:
+                  window.settings.preFilterTitle?.toLocaleLowerCase(),
+              }),
+            );
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
           }, 6000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {
-          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
+          setSpecifications(
+            clone({
+              ...singleImageResp.image_analysis.specification,
+              specificationPrefilter,
+            }),
+          );
           navigate('/result');
           setPreFilter({});
           setAlgoliaFilter('');
           setShowLoading(false);
           setShowNotMatchedError(true);
           setTimeout(() => {
-            setNameplateNotificationText(t('Extracted details from the nameplate could not be matched', { preFilterTitle: window.settings.preFilterTitle?.toLocaleLowerCase() }));
+            setNameplateNotificationText(
+              t('Extracted details from the nameplate could not be matched', {
+                preFilterTitle:
+                  window.settings.preFilterTitle?.toLocaleLowerCase(),
+              }),
+            );
           }, 1000);
           setTimeout(() => {
             setNameplateNotificationText('');
           }, 6000);
         }
       } else {
-        if (specifications?.is_nameplate) {
-          setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
-        } else {
-          setSpecifications({...specifications, is_nameplate: false});
+        if (!specifications?.is_nameplate) {
+          setSpecifications({ ...specifications, is_nameplate: false });
         }
         setShowLoading(false);
         navigate('/result');
@@ -131,9 +144,11 @@ function DragDropFile(props: Props) {
         }
       >
         {isLoading && <Loading />}
-  
+
         <div
-          className={'relative flex flex-col items-center justify-center w-full'}
+          className={
+            'relative flex flex-col items-center justify-center w-full'
+          }
           {...dragProps}
         >
           <div
@@ -146,7 +161,9 @@ function DragDropFile(props: Props) {
             ])}
           >
             <div className="" style={{ fontSize: 14 }}>
-              <span className="font-bold text-sm pr-1">{t('Drag and drop')}</span>
+              <span className="font-bold text-sm pr-1">
+                {t('Drag and drop')}
+              </span>
               {t('an image here')}
             </div>
             <Hint />
@@ -164,7 +181,9 @@ function DragDropFile(props: Props) {
               id="select_file"
               className="absolute z-[-1] opacity-0"
               placeholder="Choose photo"
-              accept={'.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,.pdf,image/*'}
+              accept={
+                '.stp,.step,.stl,.obj,.glb,.gltf,.heic,.heif,.pdf,image/*'
+              }
             />
           </div>
         </div>

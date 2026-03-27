@@ -26,6 +26,21 @@ const productsSlice: StateCreator<ProductsState & ProductsAction> = set => ({
         ...analysis,
       },
     })),
+  setGoogleGroundingResponse: result =>
+    set(state => ({
+      googleGroundingResponse: result,
+    })),
+
+  setGroundingFilterResult: result =>
+    set(state => ({
+      groundingFilterResult: result,
+    })),
+  setShowingGroundingFilterResult: (val?: boolean) =>
+    set(state =>
+      val === undefined
+        ? { showingGroundingFilterResult: !state.showingGroundingFilterResult }
+        : { showingGroundingFilterResult: val },
+    ),
 });
 
 export default productsSlice;

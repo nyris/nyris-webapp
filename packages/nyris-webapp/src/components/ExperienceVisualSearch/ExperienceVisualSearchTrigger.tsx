@@ -48,8 +48,8 @@ function ExperienceVisualSearchTrigger({
     <>
       <div className="flex flex-col items-center">
         <div
-          className={`group bg-[#3E36DC] w-[215px] desktop:w-10 hover:w-[215px] hover:gap-2 ${
-            expand ? 'desktop:w-[215px] gap-2' : ''
+          className={`group bg-[#3E36DC] w-10 hover:w-[215px] hover:gap-2 ${
+            expand ? 'w-[215px] gap-2' : ''
           } h-10 flex flex-row justify-center items-center rounded-full cursor-pointer my-8 transition-all duration-300`}
           onClick={() => modalToggle(true)}
         >

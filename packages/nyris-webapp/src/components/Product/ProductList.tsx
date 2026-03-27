@@ -7,6 +7,7 @@ import useUiStore from 'stores/ui/uiStore';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
 import { filterProducts } from 'utils/specificationFilter';
+import { filterProductsByText } from 'utils/textSearchFilter';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -23,6 +24,15 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const productsFromFindApi = useResultStore(
     state => state.productsFromFindApi,
   );
+
+  const groundingFilterResult = useResultStore(
+    state => state.groundingFilterResult,
+  );
+
+  const showingGroundingFilterResult = useResultStore(
+    state => state.showingGroundingFilterResult,
+  );
+
   const isAlgoliaLoading = useUiStore(state => state.isAlgoliaLoading);
   const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
 
@@ -34,6 +44,44 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const specificationFilter = useRequestStore(
     state => state.specificationFilter,
   );
+  const postFilterSelections = useRequestStore(
+    state => state.postFilterSelections,
+  );
+
+  const textFilteredProducts = useMemo(() => {
+    if (!requestImages?.length) {
+      return productsFromFindApi;
+    }
+
+    if (!query?.trim()) {
+      return productsFromFindApi;
+    }
+
+    return filterProductsByText(query || '', productsFromFindApi);
+  }, [productsFromFindApi, query, requestImages]);
+
+  const postFilteredProducts = useMemo(() => {
+    const entries = Object.entries(postFilterSelections || {}).filter(
+      ([, values]) => values?.length,
+    );
+
+    if (entries.length === 0) {
+      return textFilteredProducts;
+    }
+
+    return textFilteredProducts.filter(product => {
+      const productFilters = product?.filters || {};
+
+      return entries.every(([attribute, selectedValues]) => {
+        const productValues = productFilters?.[attribute];
+        if (!Array.isArray(productValues)) {
+          return false;
+        }
+
+        return selectedValues.some(value => productValues.includes(value));
+      });
+    });
+  }, [postFilterSelections, textFilteredProducts]);
 
   const getUrlToCanvasFile = async (url: string) => {
     setQuery('');
@@ -50,20 +98,21 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const isAlgoliaEnabled = window.settings?.algolia?.enabled;
   const products = useMemo(() => {
     const filter = Object.values(specificationFilter || {})[0];
+    const baseFindApiProducts = postFilteredProducts;
 
     if (filter) {
       return filterProducts(
         filter,
-        isAlgoliaEnabled ? productsFromAlgolia : productsFromFindApi,
+        isAlgoliaEnabled ? productsFromAlgolia : baseFindApiProducts,
       );
     }
 
     if (!isAlgoliaEnabled) {
-      return productsFromFindApi;
+      return baseFindApiProducts;
     }
 
     if (productsFromAlgolia.length === 0 && isAlgoliaLoading && !query) {
-      return productsFromFindApi;
+      return baseFindApiProducts;
     }
     return productsFromAlgolia;
   }, [
@@ -72,13 +121,34 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     productsFromAlgolia,
     isAlgoliaLoading,
     query,
-    productsFromFindApi,
+    postFilteredProducts,
   ]);
 
+  const groundedFilteredProducts = useMemo(() => {
+    if (groundingFilterResult && groundingFilterResult.length > 0) {
+      const filtered = products.filter((product: any) =>
+        groundingFilterResult.some((result: any) => product.sku === result.sku),
+      );
+      if (filtered.length > 0) {
+        return filtered;
+      }
+      return products;
+    }
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groundingFilterResult]);
+
   const renderItem = useMemo(() => {
+    const productsToRender =
+      groundedFilteredProducts &&
+      groundedFilteredProducts.length > 0 &&
+      showingGroundingFilterResult
+        ? groundedFilteredProducts
+        : products;
+
     return (
       <div className={twMerge(['contents'])}>
-        {products?.map((product: any, i: number) => {
+        {productsToRender?.map((product: any, i: number) => {
           return (
             <Product
               key={i}
@@ -96,8 +166,8 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
                 !isAlgoliaEnabled
                   ? product['image']
                   : product['image(main_similarity)']
-                  ? product['image(main_similarity)']
-                  : product['main_image_link']
+                    ? product['image(main_similarity)']
+                    : product['main_image_link']
               }
             />
           );
@@ -115,7 +185,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       </div>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [products]);
+  }, [products, groundedFilteredProducts, showingGroundingFilterResult]);
 
   if (
     products?.length === 0 &&

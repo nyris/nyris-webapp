@@ -1,4 +1,4 @@
-import { RectCoords, Region } from '@nyris/nyris-api';
+import { Filter, RectCoords, Region } from '@nyris/nyris-api';
 
 export interface RequestImageState {
   requestImages: HTMLCanvasElement[];
@@ -30,12 +30,14 @@ export interface LoadingState {
   isFindApiLoading: boolean;
   isAlgoliaLoading: boolean;
   isCadenasLoaded: boolean;
+  isGoogleGroundingLoading: boolean;
 }
 
 export interface LoadingAction {
   setIsFindApiLoading: (isLoading: boolean) => void;
   setIsAlgoliaLoading: (isLoading: boolean) => void;
   setIsCadenasLoaded: (isLoading: boolean) => void;
+  setIsGoogleGroundingLoading: (isLoading: boolean) => void;
 }
 
 export interface ProductsState {
@@ -54,6 +56,9 @@ export interface ProductsState {
   };
 
   specificationFilteredProducts: any[];
+  googleGroundingResponse: Record<string, any> | null;
+  groundingFilterResult: any[];
+  showingGroundingFilterResult: boolean;
 }
 
 export interface ProductsAction {
@@ -67,6 +72,9 @@ export interface ProductsAction {
     specification: Record<string, string>;
   }) => void;
   setSpecificationFilteredProducts: (products: any[]) => void;
+  setGoogleGroundingResponse: (result: any | null) => void;
+  setGroundingFilterResult: (result: any[]) => void;
+  setShowingGroundingFilterResult: (val?: boolean) => void;
 }
 
 export interface DetectedRegionsState {
@@ -79,24 +87,34 @@ export interface DetectedRegionsAction {
 
 export interface FilterState {
   preFilter: Record<string, boolean>;
+  preFilterList: Filter[];
   algoliaFilter: string;
   firstSearchPreFilter: Record<string, boolean>;
   specificationFilter: Record<string, string>;
+  postFilterSelections: Record<string, string[]>;
+  preFilterLoading: boolean;
 }
 
 export interface FilterAction {
   setPreFilter: (query: Record<string, boolean>) => void;
+  setPreFilterList: (any: Filter[]) => void;
   setFirstSearchPreFilter: (query: Record<string, boolean>) => void;
   setAlgoliaFilter: (query: string) => void;
   setSpecificationFilter: (query: Record<string, string>) => void;
+  setPostFilterSelections: (filters: Record<string, string[]>) => void;
+  togglePostFilterSelection: (attribute: string, value: string) => void;
+  clearPostFilterSelections: () => void;
+  setPreFilterLoading: (isLoading: boolean) => void;
 }
 
 export interface MiscState {
   metaFilter: string;
+  groundingQuery: string;
 }
 
 export interface MiscAction {
   setMetaFilter: (filter: string) => void;
+  setGroundingQuery: (query: string) => void;
 }
 
 export interface FeedbackState {
@@ -105,6 +123,14 @@ export interface FeedbackState {
 
 export interface FeedbackAction {
   setShowFeedback: (show: boolean) => void;
+}
+
+export interface SidePanelState {
+  showSidePanel: boolean;
+}
+
+export interface SidePanelAction {
+  setShowSidePanel: (show: boolean) => void;
 }
 
 export interface SessionState {

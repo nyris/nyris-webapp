@@ -1,10 +1,11 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { get } from 'lodash';
 
 import { Icon } from '@nyris/nyris-react-components';
 
 import ProductAttribute from './ProductAttribute';
 import { truncateString } from 'utils/truncateString';
+import { ToastHelper } from 'helpers/ToastHelper';
 
 import '../../styles/product.scss';
 import { twMerge } from 'tailwind-merge';
@@ -37,6 +38,8 @@ function Product(props: Props) {
   } = props;
   const [urlImage, setUrlImage] = useState<string>('');
   const settings = window.settings;
+  const [copiedKey, setCopiedKey] = useState<'main' | 'secondary' | null>(null);
+  const copyTimeoutRef = useRef<number | undefined>(undefined);
 
   const [openDetailedView, setOpenDetailedView] = useState<
     '3d' | 'image' | undefined
@@ -47,6 +50,14 @@ function Product(props: Props) {
       handlerCheckUrlImage(main_image_link);
     }
   }, [main_image_link]);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        window.clearTimeout(copyTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handlerCheckUrlImage = (url: any, timeout?: number) => {
     timeout = timeout || 5000;
@@ -73,6 +84,37 @@ function Product(props: Props) {
     setOpenDetailedView('image');
   };
 
+  const onAddToCart = (part: any): void => {
+    // Get current cart from sessionStorage
+    const cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
+    // Find if part already exists in cart
+    const partIndex = cart.findIndex((p: any) => p.sku === part.sku);
+    if (partIndex === -1) {
+      // Add new part with quantity 1
+      cart.push({ ...part, quantity: 1 });
+    } else {
+      // Increment quantity
+      cart[partIndex] = {
+        ...cart[partIndex],
+        quantity: cart[partIndex].quantity + 1,
+      };
+    }
+    sessionStorage.setItem('cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cart-updated'));
+    ToastHelper.success('Product added');
+  };
+
+  const handleCopy = (value: string, key: 'main' | 'secondary') => {
+    navigator.clipboard.writeText(value);
+    setCopiedKey(key);
+    if (copyTimeoutRef.current) {
+      window.clearTimeout(copyTimeoutRef.current);
+    }
+    copyTimeoutRef.current = window.setTimeout(() => {
+      setCopiedKey(null);
+    }, 1000);
+  };
+
   return (
     <>
       <ProductDetailViewModal
@@ -82,6 +124,7 @@ function Product(props: Props) {
         openDetailedView={openDetailedView}
         setOpenDetailedView={setOpenDetailedView}
         main_image_link={main_image_link}
+        onAddToCart={onAddToCart}
       />
       <div className="wrap-main-item-result max-w-[190px] w-[180px] desktop:w-[190px] border border-solid border-[#E0E0E0] scroll-pt-5">
         <div className="relative h-fit">
@@ -161,7 +204,9 @@ function Product(props: Props) {
           </div>
         </div>
         {settings.simpleCardView && (
-          <div className={`info-container-card ${settings.CTAButton?.CTAButton ? 'w-cta' : ''}`}>
+          <div
+            className={`info-container-card ${settings.CTAButton?.CTAButton ? 'w-cta' : ''}`}
+          >
             <div className="info-sku">{dataItem.sku}</div>
             <span className="info-marking">{dataItem.Bezeichnung}</span>
             <Tooltip
@@ -191,7 +236,7 @@ function Product(props: Props) {
                     settings.CTAButton?.CTAButtonColor ||
                     settings.theme?.primaryColor,
                   borderRadius: 2,
-                  padding: '0px 8px',
+                  paddingLeft: '8px',
                   display: 'flex',
                   justifyItems: 'center',
                   alignItems: 'center',
@@ -222,10 +267,7 @@ function Product(props: Props) {
                 >
                   <Tooltip
                     content={
-                      get(
-                        dataItem,
-                        settings.CTAButton?.CTAButtonText || '',
-                      ) ||
+                      get(dataItem, settings.CTAButton?.CTAButtonText || '') ||
                       settings.CTAButton?.CTAButtonText ||
                       ''
                     }
@@ -244,14 +286,12 @@ function Product(props: Props) {
                           settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
                         fontSize: '12px',
                         letterSpacing: '0.27px',
-                        wordBreak: 'break-all',
+                        wordBreak: 'break-word',
                         paddingRight: '8px',
                       }}
                     >
-                      {get(
-                        dataItem,
-                        settings.CTAButton?.CTAButtonText || '',
-                      ) || settings.CTAButton?.CTAButtonText}
+                      {get(dataItem, settings.CTAButton?.CTAButtonText || '') ||
+                        settings.CTAButton?.CTAButtonText}
                     </div>
                   </Tooltip>
                   {settings.CTAButton?.CTAIcon && (
@@ -287,17 +327,42 @@ function Product(props: Props) {
             ])}
           >
             <div
-              className="relative h-fit text-primary flex flex-col justify-between "
+              className="relative text-primary flex flex-col justify-between h-full"
               style={{ color: '#FFFFFF' }}
             >
-              <div>
-                <div className="max-h-[38px] h-fit">
+              <div className="h-full flex flex-col">
+                <div className="flex flex-col gap-1 mb-1.5">
                   {dataItem[settings.mainTitle] && (
-                    <Tooltip content={dataItem[settings.mainTitle] || ''}>
-                      <div className="text-xs font-bold text-primary mb-1 ml-2 max-line-1 w-fit">
-                        {truncateString(dataItem[settings.mainTitle], 45)}
+                    <div className="flex justify-between gap-1 items-center">
+                      <Tooltip content={dataItem[settings.mainTitle] || ''}>
+                        <div
+                          className="text-xs font-bold text-primary ml-2 max-line-1 w-fit"
+                          style={{
+                            wordBreak: 'break-word',
+                            maxHeight: 46,
+                            WebkitLineClamp: 3,
+                          }}
+                        >
+                          {truncateString(dataItem[settings.mainTitle], 92)}
+                        </div>
+                      </Tooltip>
+                      <div
+                        onClick={() => {
+                          handleCopy(dataItem[settings.mainTitle], 'main');
+                        }}
+                        className="group relative min-w-6 h-6 desktop:min-w-[18px] desktop:w-[18px] desktop:h-[18px] bg-[#FAFAFA] hover:bg-gray-100 flex items-center justify-center rounded-md cursor-pointer"
+                      >
+                        {copiedKey === 'main' && (
+                          <div className="absolute -top-3.5 -right-2 bg-[#2B2C46] text-white text-[10px] py-0 px-1 rounded shadow pointer-events-none">
+                            Copied!
+                          </div>
+                        )}
+                        <Icon
+                          name="copy"
+                          className="text-[#AAABB5] w-3 h-3 desktop:w-[8px] desktop:h-[8px] group-hover:text-[#5a5b61] "
+                        />
                       </div>
-                    </Tooltip>
+                    </div>
                   )}
                   {dataItem[settings.secondaryTitle] && (
                     <div
@@ -306,6 +371,7 @@ function Product(props: Props) {
                         'justify-between',
                         'flex-row',
                         'text-primary',
+                        'gap-1',
                       ])}
                     >
                       <Tooltip
@@ -315,13 +381,38 @@ function Product(props: Props) {
                           !dataItem[settings.secondaryTitle]
                         }
                       >
-                        <div className="text-[10px] font-normal max-line-1 text-primary mb-2 ml-2">
+                        <div
+                          className="text-sm desktop:text-[10px] font-normal max-line-1 text-primary ml-2"
+                          style={{
+                            maxHeight: 45,
+                            WebkitLineClamp: 3,
+                          }}
+                        >
                           {truncateString(
                             dataItem[settings.secondaryTitle],
-                            40,
+                            114,
                           )}
                         </div>
                       </Tooltip>
+                      <div
+                        onClick={() => {
+                          handleCopy(
+                            dataItem[settings.secondaryTitle],
+                            'secondary',
+                          );
+                        }}
+                        className="group relative min-w-6 h-6 desktop:min-w-[18px] desktop:w-[18px] desktop:h-[18px] bg-[#FAFAFA] hover:bg-gray-100 flex items-center justify-center rounded-md cursor-pointer"
+                      >
+                        {copiedKey === 'secondary' && (
+                          <div className="absolute -top-4 -right-2 bg-[#2B2C46] text-white text-[10px] py-0 px-1 rounded shadow pointer-events-none">
+                            Copied!
+                          </div>
+                        )}
+                        <Icon
+                          name="copy"
+                          className="text-[#AAABB5] w-3 h-3 desktop:w-[8px] desktop:h-[8px] group-hover:text-[#5a5b61] "
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -331,7 +422,7 @@ function Product(props: Props) {
                     settings.attributes?.attributeThreeValue ||
                     settings.attributes?.attributeFourValue) && (
                     <div
-                      className="attribute-container"
+                      className="attribute-container flex-grow content-end"
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -417,7 +508,7 @@ function Product(props: Props) {
                       settings.secondaryCTAButton?.secondaryCTAButtonColor ||
                       '#2B2C46',
                     borderRadius: 4,
-                    padding: '0px 8px',
+                    paddingLeft: '8px',
                     marginBottom: settings.CTAButton?.CTAButton ? 8 : 0,
                     display: 'flex',
                     justifyItems: 'center',
@@ -467,7 +558,7 @@ function Product(props: Props) {
                           fontWeight: 600,
                           fontSize: '12px',
                           letterSpacing: '0.27px',
-                          wordBreak: 'break-all',
+                          wordBreak: 'break-word',
                           color:
                             settings.secondaryCTAButton
                               .secondaryCTAButtonTextColor || '#FFFFFF',
@@ -479,7 +570,14 @@ function Product(props: Props) {
                     </Tooltip>
                     {settings.secondaryCTAButton.secondaryCTAIcon && (
                       <div style={{ width: '16px' }}>
-                        <Icon name="settings" color="white" />
+                        <Icon
+                          name="settings"
+                          fill={
+                            settings.secondaryCTAButton
+                              ?.secondaryCTAButtonTextColor || '#FFFFFF'
+                          }
+                          width={10}
+                        />
                       </div>
                     )}
                   </div>
@@ -494,7 +592,7 @@ function Product(props: Props) {
                       settings.CTAButton?.CTAButtonColor ||
                       settings.theme?.primaryColor,
                     borderRadius: 4,
-                    padding: '0px 8px',
+                    paddingLeft: '8px',
                     display: 'flex',
                     justifyItems: 'center',
                     alignItems: 'center',
@@ -546,7 +644,7 @@ function Product(props: Props) {
                             settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
                           fontSize: '12px',
                           letterSpacing: '0.27px',
-                          wordBreak: 'break-all',
+                          wordBreak: 'break-word',
                           paddingRight: '8px',
                         }}
                       >
@@ -563,10 +661,70 @@ function Product(props: Props) {
                           fill={
                             settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'
                           }
-                          width={16}
+                          width={10}
                         />
                       </div>
                     )}
+                  </div>
+                </div>
+              )}
+
+              {settings.cart && (
+                <div
+                  style={{
+                    boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
+                    minHeight: 28,
+                    background:
+                      settings.CTAButton?.CTAButtonColor ||
+                      settings.theme?.primaryColor,
+                    borderRadius: 4,
+                    paddingLeft: '8px',
+                    display: 'flex',
+                    justifyItems: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: 8,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%',
+                      padding: 0,
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      onAddToCart(dataItem);
+                    }}
+                  >
+                    <div
+                      className={`max-line-1 ${'desktop:136px'}`}
+                      style={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        fontWeight: 600,
+                        color:
+                          settings.CTAButton?.CTAButtonTextColor || '#FFFFFF',
+                        fontSize: '12px',
+                        letterSpacing: '0.27px',
+                        wordBreak: 'break-word',
+                        paddingRight: '8px',
+                      }}
+                    >
+                      Add to cart
+                    </div>
+                    <div style={{ width: '16px' }}>
+                      <Icon
+                        name="plus"
+                        fill={
+                          settings.CTAButton?.CTAButtonTextColor || '#FFFFFF'
+                        }
+                        className={twMerge('text-white')}
+                        width={10}
+                      />
+                    </div>
                   </div>
                 </div>
               )}

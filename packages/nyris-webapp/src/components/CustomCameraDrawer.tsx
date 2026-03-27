@@ -19,7 +19,6 @@ import {
 import { useCadSearch } from 'hooks/useCadSearch';
 import { isCadFile } from '@nyris/nyris-api';
 import { clone } from 'lodash';
-import { getFilters } from '../services/filter';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -40,6 +39,7 @@ function CustomCamera(props: Props) {
   const { cadSearch } = useCadSearch();
   const { t } = useTranslation();
 
+  const preFilterList = useRequestStore(state => state.preFilterList);
   const requestImages = useRequestStore(state => state.requestImages);
   const specifications = useRequestStore(state => state.specifications);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
@@ -53,26 +53,11 @@ function CustomCamera(props: Props) {
   const [capturedImages, setCapturedImages] = useState<HTMLCanvasElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageCaptureHelpModal, setImageCaptureHelpModal] = useState(false);
-  const [resultFilter, setResultFilter] = useState<any>([]);
 
   const videoConstraints = {
     width: 1080,
     aspectRatio: 1.11111,
   };
-
-  const getPreFilters = async () => {
-    getFilters(1000, settings)
-      .then(res => {
-        setResultFilter(res);
-      })
-      .catch((e: any) => {
-        console.log('err getDataFilterDesktop', e);
-      });
-  }
-
-  useEffect(() => {
-    getPreFilters()
-  }, []);
 
   const handlerFindImage = async (image: any) => {
     if (location.pathname !== '/result') {
@@ -94,7 +79,7 @@ function CustomCamera(props: Props) {
       showFeedback: true,
     }).then((singleImageResp) => {
       const specificationPrefilter = singleImageResp.image_analysis?.specification?.prefilter_value || null;
-      const hasPrefilter = resultFilter.filter((filter: any) => filter.values.includes(specificationPrefilter));
+      const hasPrefilter = preFilterList.filter((filter: any) => filter.values.includes(specificationPrefilter));
       if (specificationPrefilter) {
         setRequestImages([]);
         setShowNotMatchedError(false);
@@ -113,7 +98,7 @@ function CustomCamera(props: Props) {
           }, 5000);
         }
         if (!hasPrefilter.length && window.settings.preFilterOption) {
-          setSpecifications(clone({...singleImageResp.image_analysis.specification, prefilter_value: '', specificationPrefilter}));
+          setSpecifications(clone({...singleImageResp.image_analysis.specification, specificationPrefilter}));
           setPreFilter({});
           setAlgoliaFilter('');
           setShowLoading(false);
@@ -127,16 +112,13 @@ function CustomCamera(props: Props) {
           }, 6000);
         }
       } else {
-        if (specifications?.is_nameplate) {
-          setSpecifications({...specifications, prefilter_value: '', specificationPrefilter: ''});
-        } else {
+        if (!specifications?.is_nameplate) {
           setSpecifications({...specifications, is_nameplate: false});
         }
         setShowLoading(false);
         handleClose();
       }
     });
-    
   };
 
   const handleClose = () => {

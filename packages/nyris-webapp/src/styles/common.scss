@@ -12,6 +12,16 @@
     -webkit-box-orient: vertical;
   }
 
+   .max-line-2 {
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    max-height: 66px; /* fallback */
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
+  }
+
   .box-wrap-loading {
     position: fixed;
     background: #00000075;

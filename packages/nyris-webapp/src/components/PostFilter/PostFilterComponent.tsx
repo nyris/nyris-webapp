@@ -3,11 +3,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from 'components/Accordion';
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
 import PostFilter from './PostFilter';
-import useResultStore from 'stores/result/resultStore';
+import PostFilterFindApi from './PostFilterFindApi';
 
 function PostFilterComponent({ className }: { className?: string }) {
   const [accordionValues, setAccordionValues] = useState([
@@ -17,25 +17,45 @@ function PostFilterComponent({ className }: { className?: string }) {
     'expand',
   ]);
 
-  const isExpanded = React.useMemo(
+  const isExpanded = useMemo(
     () => accordionValues.includes('expand'),
     [accordionValues],
   );
 
   const { t } = useTranslation();
 
-  const productsFromAlgolia = useResultStore(
-    state => state.productsFromAlgolia,
+  const [visibleSections, setVisibleSections] = useState<
+    Record<string, boolean>
+  >({});
+
+  const handleVisibilityChange = useCallback(
+    (attribute: string, isVisible: boolean) => {
+      setVisibleSections(prev =>
+        prev[attribute] === isVisible
+          ? prev
+          : { ...prev, [attribute]: isVisible },
+      );
+    },
+    [],
   );
 
-  if (productsFromAlgolia.length === 0) return <></>;
+  const hasVisibleSections = useMemo(
+    () => Object.values(visibleSections).some(Boolean),
+    [visibleSections],
+  );
+
+  const visibleAttributes = useMemo(() => {
+    return window.settings.refinements
+      .map((refinement: { attribute: string }) => refinement.attribute)
+      .filter((attribute: string | number) => visibleSections[attribute]);
+  }, [visibleSections]);
 
   return (
     <div
       className={twMerge([
         'mt-4',
         'w-full',
-        'px-6',
+        'px-4',
         'flex',
         'flex-col',
         'gap-4',
@@ -81,31 +101,44 @@ function PostFilterComponent({ className }: { className?: string }) {
         }}
         value={accordionValues}
       >
-        <AccordionItem value={'expand'}>
-          <AccordionTrigger className="text-xs font-normal w-full h-8 items-center justify-end gap-2 border-b border-solid border-[#e0e0e0]">
-            {isExpanded ? t('Collapse all') : t('Expand all')}
-          </AccordionTrigger>
-        </AccordionItem>
+        {hasVisibleSections && (
+          <AccordionItem value={'expand'}>
+            <AccordionTrigger className="text-xs font-normal w-full h-8 items-center justify-end gap-2 border-b border-solid border-[#e0e0e0]">
+              {isExpanded ? t('Collapse all') : t('Expand all')}
+            </AccordionTrigger>
+          </AccordionItem>
+        )}
         {window.settings.refinements.map(
           (
             refinement: { attribute: string; header: any; searchable: any },
             index: React.Key | null | undefined,
           ) => {
+            const isLastVisible =
+              visibleAttributes[visibleAttributes.length - 1] ===
+              refinement.attribute;
+
             return (
-              <div
-                key={index}
-                className={twMerge([
-                  index !== window.settings.refinements.length - 1 &&
-                    'border-b border-solid border-[#e0e0e0]',
-                  'py-4',
-                ])}
-              >
-                <PostFilter
-                  attribute={refinement.attribute}
-                  label={refinement.header}
-                  searchable={refinement.searchable}
-                />
-              </div>
+              <React.Fragment key={index}>
+                {window.settings.algolia.enabled && (
+                  <PostFilter
+                    attribute={refinement.attribute}
+                    label={refinement.header}
+                    searchable={refinement.searchable}
+                    onVisibilityChange={handleVisibilityChange}
+                    isLastVisible={isLastVisible}
+                  />
+                )}
+
+                {!window.settings.algolia.enabled && (
+                  <PostFilterFindApi
+                    attribute={refinement.attribute}
+                    label={refinement.header}
+                    searchable={false}
+                    onVisibilityChange={handleVisibilityChange}
+                    isLastVisible={isLastVisible}
+                  />
+                )}
+              </React.Fragment>
             );
           },
         )}

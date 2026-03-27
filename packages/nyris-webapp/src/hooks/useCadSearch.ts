@@ -17,6 +17,9 @@ export const useCadSearch = () => {
 
   const setRegions = useRequestStore(state => state.setRegions);
   const setRequestImages = useRequestStore(state => state.setRequestImages);
+  const clearPostFilterSelections = useRequestStore(
+    state => state.clearPostFilterSelections,
+  );
 
   const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
   const setShowFeedback = useUiStore(state => state.setShowFeedback);
@@ -66,6 +69,7 @@ export const useCadSearch = () => {
 
         if (clearPostFilter) {
           refine();
+          clearPostFilterSelections();
         }
 
         const responseBody = res?.responseBody;
@@ -136,6 +140,7 @@ export const useCadSearch = () => {
     [
       preFilter,
       refine,
+      clearPostFilterSelections,
       setAlgoliaFilter,
       setDetectedRegions,
       setFindApiProducts,

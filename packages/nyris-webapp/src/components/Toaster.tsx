@@ -13,33 +13,52 @@ export const Toaster = () => {
 
   return (
     <ReactHotToaster
-      containerClassName="bottom-[80px] desktop:bottom-auto desktop:top-[60px]"
       position={isMobile ? 'bottom-center' : 'top-right'}
+      containerStyle={{
+        top: 80,
+        bottom: isMobile ? 80 : 'auto',
+      }}
     >
       {t => (
-        <ToastBar toast={t} style={{ padding: 0, borderRadius: 0 }}>
+        <ToastBar
+          toast={t}
+          style={{
+            padding: 0,
+            borderRadius: 0,
+            width: !isMobile ? 410 : undefined,
+          }}
+        >
           {({ icon }) => (
             <>
               <span
                 style={{
                   width: 5,
                   height: '100%',
-                  background: t.type === 'success' ? '#61d345' : 'transparent',
+                  background: t.type === 'success' ? '#3E36DC' : 'transparent',
                   marginRight: 7,
                 }}
               />
-              <span style={{ padding: 15, display: 'inline-flex' }}>
-                {icon}
-                <span
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 300,
-                    margin: '0 10px',
-                  }}
-                >
-                  {' '}
-                  {resolveValue(t.message, t)}
-                </span>
+              <span
+                style={{
+                  padding: 15,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                }}
+              >
+                <div className="flex items-center justify-center">
+                  {icon}
+                  <span
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      margin: '0 10px',
+                    }}
+                  >
+                    {' '}
+                    {resolveValue(t.message, t)}
+                  </span>
+                </div>
                 {t.type !== 'loading' && (
                   <span style={{ display: 'flex', alignItems: 'center' }}>
                     <Icon

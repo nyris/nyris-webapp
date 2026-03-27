@@ -11,6 +11,7 @@ import { useState } from 'react';
 import LogoutModal from './LogoutModal';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import useResultStore from 'stores/result/resultStore';
+import Cart from './Cart';
 
 function Header() {
   const { theme, auth0 } = window.settings;
@@ -42,109 +43,109 @@ function Header() {
       style={{ background: theme?.headerColor }}
     >
       <div
-        className={twMerge([
-          'w-full',
-          'flex',
-          'justify-center',
-          'items-center',
-          'relative',
-          'h-full',
-        ])}
+        className={twMerge(['w-full', 'flex', 'items-center', 'h-full'])}
+        style={{ display: 'flex', alignItems: 'center', height: '100%' }}
       >
-        <NavLink
-          to="/"
-          style={{ lineHeight: 0, position: 'absolute', left: 0 }}
-          onClick={() => {
-            reset();
-            resetResultStore();
-            setSpecifications(null);
-          }}
+        {/* Left: Logo */}
+        <div
+          className="flex items-center justify-start min-w-0"
+          style={{ flex: '0 0 auto' }}
         >
-          <img
-            src={theme?.appBarLogoUrl}
-            alt="logo"
-            style={{
-              aspectRatio: 1,
-              width: theme?.logoWidth,
-              height: theme?.logoHeight,
+          <NavLink
+            to="/"
+            style={{ lineHeight: 0 }}
+            onClick={() => {
+              reset();
+              resetResultStore();
+              setSpecifications(null);
             }}
-          />
-        </NavLink>
-
-        <div>
+          >
+            <img
+              src={theme?.appBarLogoUrl}
+              alt="logo"
+              style={{
+                aspectRatio: 1,
+                width: theme?.logoWidth,
+                height: theme?.logoHeight,
+              }}
+            />
+          </NavLink>
+        </div>
+        {/* Center: Search bar */}
+        <div className="flex-1 flex justify-center items-center min-w-0">
           <div
             className={twMerge(['hidden', showSearchBar && 'desktop:block'])}
-            style={{
-              // position: 'relative',
-              // left: '50%',
-              // top: '50%',
-              // transform: 'translate(-50%, -50%)',
-            }}
           >
             <TextSearch />
           </div>
         </div>
+        {/* Right: Cart and user actions */}
+        <div
+          className="flex items-center justify-end min-w-0 gap-4"
+          style={{ flex: '0 0 auto' }}
+        >
+          {window.settings.cart && <Cart />}
 
-        {auth0.enabled && isAuthenticated && (
-          <>
-            <div
-              className="hidden desktop:block"
-              style={{ position: 'relative' }}
-            >
-              <Popover>
-                <PopoverTrigger>
-                  <div
-                    style={{
-                      display: 'flex',
-                      columnGap: '16px',
-                      alignItems: 'center',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <p style={{ color: '#2B2C46' }}>{user?.email}</p>
-                    <Icon name="avatar" />
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent className="w-[152px] bg-white p-2 shadow-outer">
-                  <div
-                    className={twMerge([
-                      'flex',
-                      'w-[75px]',
-                      'h-[24px]',
-                      'px-2',
-                      'items-center',
-                      'bg-[#2B2C46]',
-                      'text-white',
-                      'text-[10px]',
-                      'cursor-pointer',
-                    ])}
-                    onClick={() => {
-                      logout({
-                        logoutParams: { returnTo: window.location.origin },
-                      });
-                    }}
-                  >
-                    Sign out
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div
-              className="block desktop:hidden cursor-pointer"
-              onClick={() => {
-                setShowLogoutModal(true);
-              }}
-            >
-              <Icon
-                name="logout"
-                className="text-[#AAABB5]"
-                width={24}
-                height={24}
-              />
-            </div>
-          </>
-        )}
+          {auth0.enabled && isAuthenticated && (
+            <>
+              <div
+                className="hidden desktop:block"
+                style={{ position: 'relative' }}
+              >
+                <Popover>
+                  <PopoverTrigger>
+                    <div
+                      style={{
+                        display: 'flex',
+                        columnGap: '16px',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <p style={{ color: '#2B2C46' }}>{user?.email}</p>
+                      <Icon name="avatar" />
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[152px] bg-white p-2 shadow-outer">
+                    <div
+                      className={twMerge([
+                        'flex',
+                        'w-[75px]',
+                        'h-[24px]',
+                        'px-2',
+                        'items-center',
+                        'bg-[#2B2C46]',
+                        'text-white',
+                        'text-[10px]',
+                        'cursor-pointer',
+                      ])}
+                      onClick={() => {
+                        logout({
+                          logoutParams: { returnTo: window.location.origin },
+                        });
+                      }}
+                    >
+                      Sign out
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div
+                className="block desktop:hidden cursor-pointer"
+                onClick={() => {
+                  setShowLogoutModal(true);
+                }}
+              >
+                <Icon
+                  name="logout"
+                  className="text-[#AAABB5]"
+                  width={24}
+                  height={24}
+                />
+              </div>
+            </>
+          )}
+        </div>
       </div>
       <LogoutModal
         setShowLogoutModal={setShowLogoutModal}

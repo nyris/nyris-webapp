@@ -46,6 +46,8 @@ import { ReactComponent as Label } from './icons/label.svg';
 import { ReactComponent as Part } from './icons/part.svg';
 import { ReactComponent as Typeplate } from './icons/typeplate.svg';
 import { ReactComponent as MobileCamera } from './icons/mobile_camera.svg';
+import { ReactComponent as Cart } from './icons/cart.svg';
+import { ReactComponent as Hamburger } from './icons/hamburger.svg';
 
 import { SUPPORTED_ICON } from './types';
 
@@ -63,6 +65,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   camera: { component: Camera },
   caret_left: { component: CaretLeft },
   caret_right: { component: CaretRight },
+  cart: { component: Cart },
   close: { component: Close },
   collapse: { component: Collapse },
   copy: { component: Copy },
@@ -76,6 +79,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   filter_settings: { component: FilterSettings },
   filter: { component: Filter },
   gallery: { component: Gallery },
+  hamburger: { component: Hamburger },
   info: { component: Info },
   label: { component: Label },
   like: { component: Like },

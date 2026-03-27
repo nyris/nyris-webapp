@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { getFilters, searchFilters } from 'services/filter';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { searchFilters } from 'services/filter';
 
 import { isEmpty, pickBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +9,8 @@ import useRequestStore from 'stores/request/requestStore';
 import { truncateString } from 'utils/truncateString';
 import { twMerge } from 'tailwind-merge';
 import Tooltip from 'components/Tooltip/TooltipComponent';
-import { Skeleton } from 'components/Skeleton';
 import { useNavigate } from 'react-router';
-import useResultStore from "../../stores/result/resultStore";
+import useResultStore from '../../stores/result/resultStore';
 
 interface Props {
   handleClose?: any;
@@ -25,15 +24,18 @@ const PreFilterComponent = (props: Props) => {
 
   const [searchKey, setSearchKey] = useState<string>('');
 
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(true);
   const [columns, setColumns] = useState<number>(0);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceDelayMs = 300;
 
   const { singleImageSearch } = useImageSearch();
 
   const requestImages = useRequestStore(state => state.requestImages);
   const imageRegions = useRequestStore(state => state.regions);
   const keyFilterState = useRequestStore(state => state.preFilter);
-
+  const preFilterList = useRequestStore(state => state.preFilterList);
+  const preFilterLoading = useRequestStore(state => state.preFilterLoading);
   const setPreFilter = useRequestStore(state => state.setPreFilter);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
   const specification = useRequestStore(state => state.specifications);
@@ -56,45 +58,48 @@ const PreFilterComponent = (props: Props) => {
     [keyFilter],
   );
 
+  const isLoadingState = isLoading || preFilterLoading;
+
   useEffect(() => {
+    if (searchKey && searchKey.trim()) {
+      return;
+    }
+    setLoading(true);
     getDataFilterDesktop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preFilterList, searchKey]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
   }, []);
 
-  const getDataFilterDesktop = async () => {
-    setLoading(true);
-    const dataResultFilter = getFilters(1000, settings)
-      .then(res => {
-        const arrResult =
-          res.find(value => value.key === settings.visualSearchFilterKey)
-            ?.values || [];
+  const getDataFilterDesktop = () => {
+    const arrResult =
+      preFilterList.find(value => value.key === settings.visualSearchFilterKey)
+        ?.values || [];
 
-        const newResult = arrResult.sort().reduce((a: any, c: any) => {
-          if (!c[0]) return a;
-          let k = c[0]?.toLocaleUpperCase();
-          if (a[k]) a[k].push(c);
-          else a[k] = [c];
-          return a;
-        }, {});
-        setResultFilter(newResult);
-        setColumns(Object.keys(newResult).length);
-        
-      })
-      .catch((e: any) => {
-        console.log('err getDataFilterDesktop', e);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-
-    return dataResultFilter;
+    const newResult = arrResult.sort().reduce((a: any, c: any) => {
+      if (!c[0]) return a;
+      let k = c[0]?.toLocaleUpperCase();
+      if (a[k]) a[k].push(c);
+      else a[k] = [c];
+      return a;
+    }, {});
+    setResultFilter(newResult);
+    setColumns(Object.keys(newResult).length);
+    setLoading(false);
   };
 
   const filterSearchHandler = async (value: any) => {
-    if (!value) {
+    if (!value || !String(value).trim()) {
       getDataFilterDesktop();
       return;
     }
+    setLoading(true);
     const data = await searchFilters(
       settings.visualSearchFilterKey,
       encodeURIComponent(value),
@@ -110,12 +115,23 @@ const PreFilterComponent = (props: Props) => {
           setResultFilter({});
           setColumns(4);
         }
+        setLoading(false);
         return;
       })
       .catch((e: any) => {
         console.log('err filterSearchHandler', e);
+        setLoading(false);
       });
     return data;
+  };
+
+  const debouncedFilterSearchHandler = (value: any) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    debounceTimerRef.current = setTimeout(() => {
+      filterSearchHandler(value);
+    }, debounceDelayMs);
   };
 
   const onHandlerSubmitData = () => {
@@ -131,8 +147,11 @@ const PreFilterComponent = (props: Props) => {
         : '';
     setAlgoliaFilter(filter);
 
-    if (preFilterValues?.length && preFilterValues[0] !== specification?.prefilter_value) {
-      setSpecifications({ prefilter_value: preFilterValues?.join(', ') || ''});
+    if (
+      preFilterValues?.length &&
+      preFilterValues[0] !== specification?.prefilter_value
+    ) {
+      setSpecifications({ prefilter_value: preFilterValues?.join(', ') || '' });
     }
     if (specification?.is_nameplate) {
       setImageAnalysis({});
@@ -181,7 +200,7 @@ const PreFilterComponent = (props: Props) => {
             className="border-none  bg-transparent outline-none w-full desktop:w-[500px] h-full"
             placeholder={t('Search')}
             onChange={(e: any) => {
-              filterSearchHandler(e.target.value);
+              debouncedFilterSearchHandler(e.target.value);
               setSearchKey(e.target.value);
             }}
             value={searchKey}
@@ -191,7 +210,7 @@ const PreFilterComponent = (props: Props) => {
               className="w-10 h-10 rounded-[50%] flex justify-center items-center cursor-pointer"
               onClick={() => {
                 setSearchKey('');
-                filterSearchHandler('');
+                debouncedFilterSearchHandler('');
               }}
             >
               <Icon name="close" className="w-4 h-4 text-primary" />
@@ -299,25 +318,29 @@ const PreFilterComponent = (props: Props) => {
             );
           })}
 
-        {isLoading && (
-          <div className={`columns-1 desktop:columns-4`}>
-            {Array(12)
-              .fill('')
-              .map((_, index) => {
-                return (
-                  <div key={index} className="mb-4 flex flex-col gap-3 w-full">
-                    <Skeleton className="h-[20px] w-[60px]" />
-                    {Array(6)
-                      .fill('')
-                      .map((_, index) => (
-                        <Skeleton key={index} className="h-[20px] w-full" />
-                      ))}
-                  </div>
-                );
-              })}
+        {isLoadingState && (
+          <div className="w-full flex items-center justify-center py-10">
+            <svg
+              width={48}
+              height={48}
+              viewBox="0 0 50 50"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="loading-spinner"
+            >
+              <circle
+                cx="25"
+                cy="25"
+                r="20"
+                stroke="#3E36DC"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeDasharray="90 30"
+              />
+            </svg>
           </div>
         )}
-        {isEmpty(resultFilter) && !isLoading && (
+        {isEmpty(resultFilter) && !isLoadingState && (
           <div>{t('No result found')}</div>
         )}
       </div>
