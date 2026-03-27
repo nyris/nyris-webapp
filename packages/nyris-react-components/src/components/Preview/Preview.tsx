@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Layer, Stage, Image, Circle, Rect, Path } from 'react-konva';
 import { RectCoords, Region, getThumbSizeLongestEdge } from '@nyris/nyris-api';
 import Konva from 'konva';
-import { NodeGroup } from 'react-move';
 import useFilteredRegions from '../../hooks/useFilteredRegions';
 
 type PreviewElem = 'tl' | 'tr' | 'bl' | 'br' | 'rect';
@@ -242,12 +241,23 @@ const Preview = ({
   const maxHeight = initialMaxHeight || dimensions.height;
   const maxWidth = initialMaxWidth || dimensions.width;
 
-  useEffect(() => {
+  let { w, h } = getThumbSizeLongestEdge(
+    dimensions.width,
+    dimensions.height,
+    image.width,
+    image.height,
+  );
+  const width = Math.max(minWidth, w);
+  const height = Math.max(minHeight, h);
+
+  let [minX, minY] = [minCropWidth, minCropHeight];
+
+  const syncSelectionToPreview = (rect: RectCoords) => {
     let newState = {
-      x1: selection.x1 * width,
-      x2: selection.x2 * width,
-      y1: selection.y1 * height,
-      y2: selection.y2 * height,
+      x1: rect.x1 * width,
+      x2: rect.x2 * width,
+      y1: rect.y1 * height,
+      y2: rect.y2 * height,
     };
 
     const xGap =
@@ -271,7 +281,43 @@ const Preview = ({
       y1: newState.y1 / height,
       y2: newState.y2 / height,
     });
-  }, [selection]);
+  };
+
+  // Sync selection synchronously during render to avoid flicker on resize.
+  // Using React's "adjusting state during render" pattern ensures the stale
+  // frame is never painted (React aborts and re-renders before commit).
+  const [prevSyncDeps, setPrevSyncDeps] = useState(() => ({
+    sx1: selection.x1,
+    sx2: selection.x2,
+    sy1: selection.y1,
+    sy2: selection.y2,
+    w: width,
+    h: height,
+    mx: minX,
+    my: minY,
+  }));
+  if (
+    selection.x1 !== prevSyncDeps.sx1 ||
+    selection.x2 !== prevSyncDeps.sx2 ||
+    selection.y1 !== prevSyncDeps.sy1 ||
+    selection.y2 !== prevSyncDeps.sy2 ||
+    width !== prevSyncDeps.w ||
+    height !== prevSyncDeps.h ||
+    minX !== prevSyncDeps.mx ||
+    minY !== prevSyncDeps.my
+  ) {
+    setPrevSyncDeps({
+      sx1: selection.x1,
+      sx2: selection.x2,
+      sy1: selection.y1,
+      sy2: selection.y2,
+      w: width,
+      h: height,
+      mx: minX,
+      my: minY,
+    });
+    syncSelectionToPreview(selection);
+  }
 
   useEffect(() => {
     if (divRef.current?.offsetWidth) {
@@ -293,19 +339,25 @@ const Preview = ({
       window.addEventListener('resize', handleResize);
     }
 
+    const observer =
+      resize && typeof ResizeObserver !== 'undefined' && divRef.current
+        ? new ResizeObserver(() => {
+            handleResize();
+          })
+        : null;
+
+    if (observer && divRef.current) {
+      observer.observe(divRef.current);
+      if (divRef.current.parentElement) {
+        observer.observe(divRef.current.parentElement);
+      }
+    }
+
     return () => {
       window.removeEventListener('resize', handleResize);
+      observer?.disconnect();
     };
-  }, []);
-
-  let { w, h } = getThumbSizeLongestEdge(
-    dimensions.width,
-    dimensions.height,
-    image.width,
-    image.height,
-  );
-  const width = Math.max(minWidth, w);
-  const height = Math.max(minHeight, h);
+  }, [resize, initialMaxHeight, shrinkAnimation]);
 
   const { x1, y1, x2, y2 } = scaleToPreviewPixels(
     width,
@@ -314,7 +366,6 @@ const Preview = ({
     minCropWidth,
     minCropHeight,
   );
-  let [minX, minY] = [minCropWidth, minCropHeight];
 
   const handleDragBoundTl = ({ x, y }: { x: number; y: number }) => {
     let xNew = x;
@@ -473,34 +524,7 @@ const Preview = ({
   };
 
   const objectSelection = (r: RectCoords) => {
-    let newState = {
-      x1: r.x1 * width,
-      x2: r.x2 * width,
-      y1: r.y1 * height,
-      y2: r.y2 * height,
-    };
-
-    const xGap =
-      minX + gripSize - (newState.x2 - newState.x1) + gripStrokeWidth;
-    const yGap =
-      minY + gripSize - (newState.y2 - newState.y1) + gripStrokeWidth;
-
-    if (newState.x2 - newState.x1 < minX + gripSize) {
-      newState.x1 = newState.x1 - xGap / 2;
-      newState.x2 = newState.x2 + xGap / 2;
-    }
-
-    if (newState.y2 - newState.y1 < minY + gripSize) {
-      newState.y1 = newState.y1 - yGap / 2;
-      newState.y2 = newState.y2 + yGap / 2;
-    }
-
-    setImageSelection({
-      x1: newState.x1 / width,
-      x2: newState.x2 / width,
-      y1: newState.y1 / height,
-      y2: newState.y2 / height,
-    });
+    syncSelectionToPreview(r);
   };
 
   if (!image) {
@@ -924,49 +948,36 @@ const Preview = ({
               </Layer>
             )}
 
-            <NodeGroup
-              data={dots}
-              keyAccessor={r => r.key}
-              start={(d, i) => ({ opacity: 0, x: -100, y: d.y })}
-              enter={(d, i) => ({
-                opacity: [1],
-                x: [d.x],
-                y: d.y,
-                timing: { delay: i * 100, duration: 300 },
-              })}
-            >
-              {ds => (
-                <Layer key="dots">
-                  {ds.map(({ key, data, state: position }) => (
-                    <Circle
-                      onClick={() => {
-                        objectSelection(data.region.normalizedRect);
-                        setState({ dotHover: false });
-                        if (onSelectionChange) {
-                          onSelectionChange(data.region.normalizedRect);
-                        }
-                      }}
-                      onTap={() => {
-                        objectSelection(data.region.normalizedRect);
-                        setState({ dotHover: false });
-                        if (onSelectionChange) {
-                          onSelectionChange(data.region.normalizedRect);
-                        }
-                      }}
-                      onMouseOver={() => setState({ dotHover: true })}
-                      onMouseOut={() => setState({ dotHover: false })}
-                      key={key}
-                      radius={7}
-                      {...position}
-                      stroke={dotColor}
-                      fill="white"
-                      strokeWidth={5}
-                      opacity={dotColor ? data.region.show : 0}
-                    />
-                  ))}
-                </Layer>
-              )}
-            </NodeGroup>
+            <Layer key="dots">
+              {dots.map(dot => (
+                <Circle
+                  onClick={() => {
+                    objectSelection(dot.region.normalizedRect);
+                    setState({ dotHover: false });
+                    if (onSelectionChange) {
+                      onSelectionChange(dot.region.normalizedRect);
+                    }
+                  }}
+                  onTap={() => {
+                    objectSelection(dot.region.normalizedRect);
+                    setState({ dotHover: false });
+                    if (onSelectionChange) {
+                      onSelectionChange(dot.region.normalizedRect);
+                    }
+                  }}
+                  onMouseOver={() => setState({ dotHover: true })}
+                  onMouseOut={() => setState({ dotHover: false })}
+                  key={dot.key}
+                  radius={7}
+                  x={dot.x}
+                  y={dot.y}
+                  stroke={dotColor}
+                  fill="white"
+                  strokeWidth={5}
+                  opacity={dotColor ? (dot.region.show ? 1 : 0) : 0}
+                />
+              ))}
+            </Layer>
           </>
         )}
       </Stage>
