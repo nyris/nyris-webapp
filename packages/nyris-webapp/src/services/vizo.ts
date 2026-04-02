@@ -20,6 +20,66 @@ export function canvasToBlob(
   });
 }
 
+export interface SmartFilterRerankItemMetadata {
+  title: string;
+  description: string;
+  language: string;
+  sku: string;
+  score: number | null;
+}
+
+export interface SmartFilterRerankItem {
+  sku: string;
+  metadata: SmartFilterRerankItemMetadata;
+  imageUrl: string;
+}
+
+export interface SmartFilterRerankPayload {
+  filters: Record<string, string>;
+  items: SmartFilterRerankItem[];
+}
+
+export interface SmartFilterRerankParams {
+  image: File;
+  payload: SmartFilterRerankPayload;
+  timeoutMs?: number;
+  apiKey?: string;
+}
+
+export interface SmartFilterRerankResponse {
+  filtered_items: Array<{ sku: string }>;
+}
+
+export async function rerankSmartFilters({
+  image,
+  payload,
+  timeoutMs = 5000,
+}: SmartFilterRerankParams): Promise<SmartFilterRerankResponse> {
+  const formData = new FormData();
+  formData.append('image', image);
+  formData.append('payload', JSON.stringify(payload));
+
+  try {
+    const response = await axios.post<SmartFilterRerankResponse>(
+      `${window.settings.baseUrl}/api/ai-analysis/smart-filters/rerank`,
+      formData,
+      {
+        headers: {
+          'x-api-key': window.settings.aiApiKey || '',
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw new Error(`API error: ${error.response.statusText}`);
+    } else {
+      throw new Error(`API error: ${error.message}`);
+    }
+  }
+}
+
 function buildProductEntry(p: any, index: number): string {
   const title = p.Bezeichnung || p.title || p.name || '';
   const desc =

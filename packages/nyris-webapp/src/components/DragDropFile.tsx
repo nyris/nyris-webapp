@@ -61,7 +61,7 @@ function DragDropFile(props: Props) {
       newSearch: true,
     }).then(singleImageResp => {
       const specificationPrefilter =
-        singleImageResp.image_analysis?.specification?.prefilter_value || null;
+        singleImageResp?.image_analysis?.specification?.prefilter_value || null;
       const hasPrefilter = preFilterList.filter((filter: any) =>
         filter.values.includes(specificationPrefilter),
       );
