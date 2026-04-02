@@ -57,6 +57,7 @@ function Results() {
 
   const requestId = useResultStore(state => state.requestId);
   const imageAnalysis = useResultStore(state => state.imageAnalysis);
+  const smartFilters = useResultStore(state => state.smartFilters);
 
   const specificationFilter = useRequestStore(
     state => state.specificationFilter,
@@ -220,8 +221,8 @@ function Results() {
                   {requestImages[0] && <ImagePreview />}
                   {window.settings.showImageDetails &&
                     (imageAnalysis?.imageDescription ||
-                      Object.keys(imageAnalysis?.specification || {}).length >
-                        0) && (
+                      Object.keys(imageAnalysis?.specification || {}).length > 0 ||
+                      smartFilters.status !== 'idle') && (
                       <div className="my-4">
                         <SmartFilter
                           imageAnalysis={imageAnalysis}

@@ -40,7 +40,7 @@ export interface SmartFilterRerankPayload {
 }
 
 export interface SmartFilterRerankParams {
-  image: File;
+  image: File | HTMLCanvasElement;
   payload: SmartFilterRerankPayload;
   timeoutMs?: number;
   apiKey?: string;
@@ -48,15 +48,38 @@ export interface SmartFilterRerankParams {
 
 export interface SmartFilterRerankResponse {
   filtered_items: Array<{ sku: string }>;
+  rerankingApplied?: boolean;
+  message?: string;
+}
+
+export interface SmartFilterGenerateParams {
+  image: File | HTMLCanvasElement;
+  prompt: string;
+  model?: string;
+  timeoutMs?: number;
+  apiKey?: string;
+}
+
+export interface SmartFilterGenerateResponse {
+  filters: Record<string, string | string[]>;
+  rerankingApplied?: boolean;
+  filtered_items?: Array<{ sku: string }>;
+  rerankedSkus?: string[];
+  message?: string;
 }
 
 export async function rerankSmartFilters({
   image,
   payload,
-  timeoutMs = 5000,
+  apiKey,
 }: SmartFilterRerankParams): Promise<SmartFilterRerankResponse> {
   const formData = new FormData();
-  formData.append('image', image);
+  if (image instanceof HTMLCanvasElement) {
+    const imageBlob = await canvasToBlob(image);
+    formData.append('image', imageBlob, 'smart-filters-rerank.jpg');
+  } else {
+    formData.append('image', image);
+  }
   formData.append('payload', JSON.stringify(payload));
 
   try {
@@ -65,18 +88,57 @@ export async function rerankSmartFilters({
       formData,
       {
         headers: {
-          'x-api-key': window.settings.aiApiKey || '',
+          'x-api-key': apiKey || window.settings.aiApiKey || window.settings.apiKey,
         },
       },
     );
 
     return response.data;
   } catch (error: any) {
+    if (error?.code === 'ECONNABORTED') {
+      throw new Error('SMART_FILTER_TIMEOUT');
+    }
     if (error.response) {
       throw new Error(`API error: ${error.response.statusText}`);
     } else {
       throw new Error(`API error: ${error.message}`);
     }
+  }
+}
+
+export async function generateSmartFilters({
+  image,
+  prompt,
+}: SmartFilterGenerateParams): Promise<SmartFilterGenerateResponse> {
+  const formData = new FormData();
+  if (image instanceof HTMLCanvasElement) {
+    const imageBlob = await canvasToBlob(image);
+    formData.append('image', imageBlob, 'smart-filters-generate.jpg');
+  } else {
+    formData.append('image', image);
+  }
+  formData.append('prompt', prompt);
+
+  try {
+    const response = await axios.post<SmartFilterGenerateResponse>(
+      `${window.settings.baseUrl}/api/ai-analysis/smart-filters/generate`,
+      formData,
+      {
+        headers: {
+          'x-api-key':  window.settings.aiApiKey || window.settings.apiKey,
+        },
+      },
+    );
+    console.log(response);
+    return response.data;
+  } catch (error: any) {
+    if (error?.code === 'ECONNABORTED') {
+      throw new Error('SMART_FILTER_TIMEOUT');
+    }
+    if (error.response) {
+      throw new Error(`API error: ${error.response.statusText}`);
+    }
+    throw new Error(`API error: ${error.message}`);
   }
 }
 

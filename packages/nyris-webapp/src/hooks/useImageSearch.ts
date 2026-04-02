@@ -20,6 +20,7 @@ import { GlobalWorkerOptions } from 'pdfjs-dist';
 // @ts-ignore
 import * as pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs';
 import {
+  generateSmartFilters,
   groundedSearch,
   groundedSearchFilter,
   groundingSearchQuery,
@@ -29,6 +30,9 @@ GlobalWorkerOptions.workerSrc = new URL(
   pdfjsWorker,
   import.meta.url,
 ).toString();
+
+const DEFAULT_SMART_FILTER_PROMPT =
+  'Extract at most 4 relevant product intent filters from the request image. Return strict JSON only.';
 
 export const useImageSearch = () => {
   const setRegions = useRequestStore(state => state.setRegions);
@@ -80,6 +84,7 @@ export const useImageSearch = () => {
   const setGroundingFilterResult = useResultStore(
     state => state.setGroundingFilterResult,
   );
+  const setSmartFilters = useResultStore(state => state.setSmartFilters);
 
   const { refine } = useClearRefinements();
 
@@ -227,6 +232,16 @@ export const useImageSearch = () => {
       if (newSearch) {
         setGroundingFilterResult([]);
         setGoogleGroundingResponse(null);
+        setSmartFilters({
+          status: 'idle',
+          filters: [],
+          selectedFilterKey: null,
+          selectedFilterValue: null,
+          rerankedSkus: [],
+          rerankStatus: 'idle',
+          errorMessage: null,
+          infoMessage: null,
+        });
         useRequestStore.getState().setGroundingQuery('');
         useResultStore.getState().setShowingGroundingFilterResult(false);
       }
@@ -296,6 +311,91 @@ export const useImageSearch = () => {
           values: Object.keys(preFilterParams || preFilter),
         },
       ];
+
+      let smartFilterPromise: Promise<void> | null = null;
+      if (requestImage && newSearch) {
+        setSmartFilters({
+          status: 'loading',
+          filters: [],
+          selectedFilterKey: null,
+          selectedFilterValue: null,
+          rerankedSkus: [],
+          rerankStatus: 'idle',
+          errorMessage: null,
+          infoMessage: null,
+        });
+
+        smartFilterPromise = generateSmartFilters({
+          image: requestImage,
+          prompt: DEFAULT_SMART_FILTER_PROMPT,
+        })
+          .then(response => {
+            const rawFilters = response?.filters;
+            if (!rawFilters || typeof rawFilters !== 'object') {
+              setSmartFilters({
+                status: 'error',
+                filters: [],
+                selectedFilterKey: null,
+                selectedFilterValue: null,
+                rerankedSkus: [],
+                rerankStatus: 'idle',
+                errorMessage: 'Could not generate smart filters.',
+                infoMessage: null,
+              });
+              return;
+            }
+
+            const normalizedFilters = Object.entries(rawFilters)
+              .slice(0, 4)
+              .map(([key, value]) => {
+                const normalizedValue = Array.isArray(value)
+                  ? String(value[0] || '')
+                  : String(value || '');
+                return {
+                  key: String(key),
+                  label: String(key),
+                  value: normalizedValue,
+                  selected: false,
+                };
+              })
+              .filter(filter => filter.value.trim().length > 0);
+
+            const rerankedSkus =
+              response?.rerankedSkus ||
+              response?.filtered_items?.map(item => String(item.sku)) ||
+              [];
+            const rerankingApplied =
+              response?.rerankingApplied ?? (rerankedSkus.length > 0 ? true : false);
+
+            setSmartFilters({
+              status: 'success',
+              filters: normalizedFilters,
+              selectedFilterKey: null,
+              selectedFilterValue: null,
+              rerankedSkus,
+              rerankStatus: 'idle',
+              errorMessage: null,
+              infoMessage: rerankingApplied ? null : 'Results were not reranked.',
+            });
+          })
+          .catch(error => {
+            const timeout = String(error?.message || '').includes(
+              'SMART_FILTER_TIMEOUT',
+            );
+            setSmartFilters({
+              status: 'error',
+              filters: [],
+              selectedFilterKey: null,
+              selectedFilterValue: null,
+              rerankedSkus: [],
+              rerankStatus: 'idle',
+              errorMessage: timeout
+                ? 'Smart filters are unavailable right now.'
+                : 'Could not generate smart filters.',
+              infoMessage: null,
+            });
+          });
+      }
 
       try {
         res = await find({
@@ -411,6 +511,10 @@ export const useImageSearch = () => {
         setIsFindApiLoading(false);
       }
 
+      if (smartFilterPromise) {
+        void smartFilterPromise;
+      }
+
       return res;
     },
     [
@@ -438,6 +542,7 @@ export const useImageSearch = () => {
       setFirstSearchImage,
       setFirstSearchPreFilter,
       setFirstRequestImageAnalysis,
+      setSmartFilters,
     ],
   );
 

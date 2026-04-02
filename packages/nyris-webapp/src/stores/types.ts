@@ -70,6 +70,21 @@ export interface ProductsState {
   showingGroundingFilterResult: boolean;
   firstAlgoliaProducts: any[];
   fullResultPool: any[];
+  smartFilters: {
+    status: 'idle' | 'loading' | 'success' | 'error';
+    filters: Array<{
+      key: string;
+      label: string;
+      value: string;
+      selected?: boolean;
+    }>;
+    selectedFilterKey: string | null;
+    selectedFilterValue: string | null;
+    rerankedSkus: string[];
+    rerankStatus: 'idle' | 'loading' | 'success' | 'error';
+    errorMessage: string | null;
+    infoMessage: string | null;
+  };
 }
 
 export interface ProductsAction {
@@ -88,6 +103,7 @@ export interface ProductsAction {
   setShowingGroundingFilterResult: (val?: boolean) => void;
   setFirstAlgoliaProducts: (products: any[]) => void;
   setFullResultPool: (products: any[]) => void;
+  setSmartFilters: (smartFilters: ProductsState['smartFilters']) => void;
 }
 
 export interface DetectedRegionsState {

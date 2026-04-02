@@ -47,6 +47,10 @@ const productsSlice: StateCreator<ProductsState & ProductsAction> = set => ({
     set(state => ({
       fullResultPool: products,
     })),
+  setSmartFilters: smartFilters =>
+    set(state => ({
+      smartFilters,
+    })),
 });
 
 export default productsSlice;
