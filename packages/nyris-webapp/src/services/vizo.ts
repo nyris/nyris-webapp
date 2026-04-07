@@ -48,6 +48,8 @@ export interface SmartFilterRerankParams {
 
 export interface SmartFilterRerankResponse {
   filtered_items: Array<{ sku: string }>;
+  // TODO: confirm final backend field name; some responses use `reranked`.
+  reranked?: boolean;
   rerankingApplied?: boolean;
   message?: string;
 }

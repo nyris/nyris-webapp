@@ -14,10 +14,21 @@ function SmartFilter({
   const smartFilters = useResultStore(state => state.smartFilters);
   const setSmartFilters = useResultStore(state => state.setSmartFilters);
   const productsFromFindApi = useResultStore(state => state.productsFromFindApi);
+  const productsFromAlgolia = useResultStore(state => state.productsFromAlgolia);
+  const firstSearchResults = useResultStore(state => state.firstSearchResults);
+  const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
+  const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
   const requestImages = useRequestStore(state => state.requestImages);
+  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+  const isAlgoliaEnabled = !!window.settings?.algolia?.enabled;
+
+  const activeProducts =
+    isAlgoliaEnabled && productsFromAlgolia.length > 0
+      ? productsFromAlgolia
+      : productsFromFindApi;
 
   const rerankItems: SmartFilterRerankItem[] = useMemo(() => {
-    return (productsFromFindApi || [])
+    return (activeProducts || [])
       .slice(0, 50)
       .map((product: any): SmartFilterRerankItem | null => {
         const sku = product?.sku || product?.objectID;
@@ -52,7 +63,37 @@ function SmartFilter({
         };
       })
       .filter((item): item is SmartFilterRerankItem => item !== null);
-  }, [productsFromFindApi]);
+  }, [activeProducts]);
+
+  const applySkuOrderingToCurrentResults = (orderedSkus: string[]) => {
+    const sourceResults = activeProducts || [];
+    const map = new Map<string, any>(
+      sourceResults.map((item: any) => [
+        String(item?.sku || item?.objectID || '').trim(),
+        item,
+      ]),
+    );
+
+    const reordered = orderedSkus
+      .map(sku => map.get(String(sku).trim()))
+      .filter(Boolean);
+
+    if (reordered.length === 0) {
+      return false;
+    }
+
+    setFindApiProducts(reordered);
+    if (isAlgoliaEnabled) {
+      setAlgoliaProducts(reordered);
+      const nonEmptyFilter: string[] = ['sku:DOES_NOT_EXIST<score=1> '];
+      const rankedFilters = orderedSkus
+        .slice()
+        .reverse()
+        .map((sku, i) => `sku:'${sku}'<score=${i}> `);
+      setAlgoliaFilter([...nonEmptyFilter, ...rankedFilters].join('OR '));
+    }
+    return true;
+  };
 
   const onFilterClick = async (filter: { key: string; value: string }) => {
     if (
@@ -64,7 +105,11 @@ function SmartFilter({
         selectedFilterKey: null,
         selectedFilterValue: null,
         rerankStatus: 'idle',
+        errorMessage: null,
       });
+      if (firstSearchResults.length > 0) {
+        setFindApiProducts(firstSearchResults);
+      }
       return;
     }
 
@@ -100,7 +145,45 @@ function SmartFilter({
         String(item.sku),
       );
       const rerankingApplied =
-        rerankResponse?.rerankingApplied ?? (rerankedSkus.length > 0 ? true : false);
+        (rerankResponse?.reranked as boolean | undefined) ??
+        rerankResponse?.rerankingApplied ??
+        (rerankedSkus.length > 0 ? true : false);
+
+      if (!Array.isArray(rerankResponse?.filtered_items)) {
+        setSmartFilters({
+          ...smartFilters,
+          selectedFilterKey: filter.key,
+          selectedFilterValue: filter.value,
+          rerankStatus: 'error',
+          errorMessage: 'Could not rerank results.',
+          infoMessage: null,
+        });
+        return;
+      }
+
+      if (!rerankingApplied) {
+        setSmartFilters({
+          ...smartFilters,
+          selectedFilterKey: filter.key,
+          selectedFilterValue: filter.value,
+          rerankStatus: 'success',
+          errorMessage: null,
+          infoMessage: 'Results were not reranked.',
+        });
+        return;
+      }
+
+      if (rerankedSkus.length === 0 || !applySkuOrderingToCurrentResults(rerankedSkus)) {
+        setSmartFilters({
+          ...smartFilters,
+          selectedFilterKey: filter.key,
+          selectedFilterValue: filter.value,
+          rerankStatus: 'error',
+          errorMessage: 'Could not rerank results.',
+          infoMessage: null,
+        });
+        return;
+      }
 
       setSmartFilters({
         ...smartFilters,
@@ -120,7 +203,7 @@ function SmartFilter({
         rerankStatus: 'error',
         errorMessage: timeout
           ? 'Smart filters are unavailable right now.'
-          : 'Could not generate smart filters.',
+          : 'Could not rerank results.',
       });
     }
   };
