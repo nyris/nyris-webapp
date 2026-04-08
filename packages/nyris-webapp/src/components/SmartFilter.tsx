@@ -7,10 +7,14 @@ import { rerankSmartFilters, SmartFilterRerankItem } from 'services/vizo';
 function SmartFilter({
   imageAnalysis: _imageAnalysis,
   specificationFilter: _specificationFilter,
+  variant = 'results',
 }: {
   imageAnalysis?: any;
   specificationFilter?: any;
+  variant?: 'sidepanel' | 'results';
 }) {
+  const settings = window.settings;
+  const isSmartFiltersEnabled = !!settings.useSmartFilters;
   const smartFilters = useResultStore(state => state.smartFilters);
   const setSmartFilters = useResultStore(state => state.setSmartFilters);
   const productsFromFindApi = useResultStore(state => state.productsFromFindApi);
@@ -96,6 +100,9 @@ function SmartFilter({
   };
 
   const onFilterClick = async (filter: { key: string; value: string }) => {
+    if (!isSmartFiltersEnabled) {
+      return;
+    }
     if (
       smartFilters.selectedFilterKey === filter.key &&
       smartFilters.selectedFilterValue === filter.value
@@ -208,6 +215,10 @@ function SmartFilter({
     }
   };
 
+  if (!isSmartFiltersEnabled) {
+    return null;
+  }
+
   return (
     <div>
       <div className="flex gap-2 ml-[30px]">
@@ -239,7 +250,31 @@ function SmartFilter({
       {smartFilters.rerankStatus === 'loading' && (
         <div className="mx-4 mt-1 text-xs text-[#3E36DC]">Applying rerank...</div>
       )}
-      <div className="flex flex-wrap mx-4 gap-2 mt-4">
+      <div
+        className={
+          variant === 'results'
+            ? 'smartFilters--results mx-4 mt-4 overflow-x-auto overflow-y-hidden'
+            : 'smartFilters--sidepanel mx-4 mt-4'
+        }
+        style={
+          variant === 'results'
+            ? {
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                scrollBehavior: 'smooth',
+              }
+            : undefined
+        }
+      >
+        <div
+          className={
+            variant === 'results'
+              ? 'flex flex-row flex-nowrap gap-2 pb-1'
+              : 'flex flex-row flex-wrap gap-2 pb-1'
+          }
+          style={variant === 'results' ? { width: 'max-content' } : { width: 'auto' }}
+        >
         {smartFilters.filters.map((filter, index) => {
           const isSelected =
             smartFilters.selectedFilterKey === filter.key &&
@@ -247,6 +282,7 @@ function SmartFilter({
           return (
             <button
               key={`${filter.key}-${filter.value}-${index}`}
+              style={variant === 'results' ? { flex: '0 0 auto' } : undefined}
               className={`px-3.5 py-2 rounded-lg border text-sm ${
                 isSelected
                   ? 'bg-[#545987] text-white border-[#545987]'
@@ -264,6 +300,7 @@ function SmartFilter({
             </button>
           );
         })}
+        </div>
       </div>
     </div>
   );

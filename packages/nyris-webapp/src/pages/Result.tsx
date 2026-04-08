@@ -34,6 +34,7 @@ import { ChatAssistant } from 'components/ChatAssistant';
 
 function Results() {
   const settings = window.settings;
+  const isSmartFiltersEnabled = !!settings.useSmartFilters;
   const cadenas = settings.cadenas;
 
   const [feedbackStatus, setFeedbackStatus] = useState<
@@ -219,7 +220,8 @@ function Results() {
               >
                 <div className="block desktop:hidden desktop:mb-0 mx-2">
                   {requestImages[0] && <ImagePreview />}
-                  {window.settings.showImageDetails &&
+                  {isSmartFiltersEnabled &&
+                    window.settings.showImageDetails &&
                     (imageAnalysis?.imageDescription ||
                       Object.keys(imageAnalysis?.specification || {}).length > 0 ||
                       smartFilters.status !== 'idle') && (
@@ -227,6 +229,7 @@ function Results() {
                         <SmartFilter
                           imageAnalysis={imageAnalysis}
                           specificationFilter={specificationFilter}
+                          variant="results"
                         />
                       </div>
                     )}

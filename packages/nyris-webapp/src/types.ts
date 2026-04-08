@@ -117,6 +117,7 @@ export interface AppSettings extends NyrisAPISettings {
   showFeedbackAndShare?: boolean;
   showGroup?: boolean;
   showImageDetails?: boolean;
+  useSmartFilters?: boolean;
   showPoweredByNyris?: boolean;
   simpleCardView?: boolean;
   support: Support;

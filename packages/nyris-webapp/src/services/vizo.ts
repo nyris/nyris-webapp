@@ -75,6 +75,16 @@ export async function rerankSmartFilters({
   payload,
   apiKey,
 }: SmartFilterRerankParams): Promise<SmartFilterRerankResponse> {
+  const settings = window.settings;
+  const isSmartFiltersEnabled = !!settings.useSmartFilters;
+  if (!isSmartFiltersEnabled) {
+    return {
+      filtered_items: [],
+      rerankingApplied: false,
+      message: 'SMART_FILTERS_DISABLED',
+    };
+  }
+
   const formData = new FormData();
   if (image instanceof HTMLCanvasElement) {
     const imageBlob = await canvasToBlob(image);
@@ -112,6 +122,16 @@ export async function generateSmartFilters({
   image,
   prompt,
 }: SmartFilterGenerateParams): Promise<SmartFilterGenerateResponse> {
+  const settings = window.settings;
+  const isSmartFiltersEnabled = !!settings.useSmartFilters;
+  if (!isSmartFiltersEnabled) {
+    return {
+      filters: {},
+      rerankingApplied: false,
+      message: 'SMART_FILTERS_DISABLED',
+    };
+  }
+
   const formData = new FormData();
   if (image instanceof HTMLCanvasElement) {
     const imageBlob = await canvasToBlob(image);
@@ -131,7 +151,6 @@ export async function generateSmartFilters({
         },
       },
     );
-    console.log(response);
     return response.data;
   } catch (error: any) {
     if (error?.code === 'ECONNABORTED') {

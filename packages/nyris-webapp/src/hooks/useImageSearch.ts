@@ -226,22 +226,25 @@ export const useImageSearch = () => {
       text?: string;
       grounding?: boolean;
     }) => {
+      const isSmartFiltersEnabled = !!settings.useSmartFilters;
       setIsFindApiLoading(true);
       // setAlgoliaProducts([]);
 
       if (newSearch) {
         setGroundingFilterResult([]);
         setGoogleGroundingResponse(null);
-        setSmartFilters({
-          status: 'idle',
-          filters: [],
-          selectedFilterKey: null,
-          selectedFilterValue: null,
-          rerankedSkus: [],
-          rerankStatus: 'idle',
-          errorMessage: null,
-          infoMessage: null,
-        });
+        if (isSmartFiltersEnabled) {
+          setSmartFilters({
+            status: 'idle',
+            filters: [],
+            selectedFilterKey: null,
+            selectedFilterValue: null,
+            rerankedSkus: [],
+            rerankStatus: 'idle',
+            errorMessage: null,
+            infoMessage: null,
+          });
+        }
         useRequestStore.getState().setGroundingQuery('');
         useResultStore.getState().setShowingGroundingFilterResult(false);
       }
@@ -313,7 +316,7 @@ export const useImageSearch = () => {
       ];
 
       let smartFilterPromise: Promise<void> | null = null;
-      if (requestImage && newSearch) {
+      if (isSmartFiltersEnabled && requestImage && newSearch) {
         setSmartFilters({
           status: 'loading',
           filters: [],
