@@ -39,6 +39,7 @@ export const ICONS = {
   plus_rounded: 'plus_rounded',
   plus: 'plus',
   powered_by_nyris: 'powered_by_nyris',
+  search_ai: 'search_ai',
   search_image: 'search_image',
   search: 'search',
   settings: 'settings',
