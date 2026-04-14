@@ -9,18 +9,20 @@ import TextSearch from './TextSearch';
 import useRequestStore from 'stores/request/requestStore';
 import { useState } from 'react';
 import LogoutModal from './LogoutModal';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import useResultStore from 'stores/result/resultStore';
 import Cart from './Cart';
+import useUiStore from 'stores/ui/uiStore';
 
 function Header() {
   const { theme, auth0 } = window.settings;
-  const { isAuthenticated, user, logout } = useAuth0();
+  const { isAuthenticated } = useAuth0();
   let location = useLocation();
 
   const reset = useRequestStore(state => state.reset);
   const resetResultStore = useResultStore(state => state.reset);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
+  const showSidePanel = useUiStore(state => state.showSidePanel);
+  const setShowSidePanel = useUiStore(state => state.setShowSidePanel);
 
   const showSearchBar = location?.pathname === '/result';
 
@@ -29,124 +31,142 @@ function Header() {
   return (
     <div
       className={twMerge([
-        'h-12',
-        'desktop:h-[58px]',
-        'desktop:min-h-[58px]',
-        location?.pathname === '/result' &&
-          'border-solid border-b border-[#afafaf52]',
-        'desktop:border-solid desktop:border-b desktop:border-[#E0E0E0]',
-        'pr-6',
-        'pl-4',
+        'h-[56px]',
+        'desktop:h-[68px]',
+        'desktop:min-h-[68px]',
+        'px-2',
+        'desktop:px-4',
         'w-full',
         'flex-shrink-0',
+        'bg-transparent',
+        'mt-2',
+        'desktop:mt-4',
+        'mb-4',
+        'desktop:mb-2',
+        'flex',
+        'gap-2',
+        'justify-between',
+        'desktop:items-start',
       ])}
-      style={{ background: theme?.headerColor }}
     >
-      <div
-        className={twMerge(['w-full', 'flex', 'items-center', 'h-full'])}
-        style={{ display: 'flex', alignItems: 'center', height: '100%' }}
-      >
-        {/* Left: Logo */}
+      {location?.pathname === '/result' && (
         <div
-          className="flex items-center justify-start min-w-0"
-          style={{ flex: '0 0 auto' }}
+          className={twMerge(
+            'hidden desktop:flex',
+            'h-[56px] min-w-[56px]',
+            'desktop:min-w-[68px] desktop:h-[68px]',
+            'border border-solid border-[#DDDEE7] items-center justify-center cursor-pointer bg-white',
+            'rounded-2xl',
+            'shadow-ds-1',
+          )}
+          onClick={() => {
+            setShowSidePanel(!showSidePanel);
+          }}
         >
-          <NavLink
-            to="/"
-            style={{ lineHeight: 0 }}
-            onClick={() => {
-              reset();
-              resetResultStore();
-              setSpecifications(null);
-            }}
-          >
-            <img
-              src={theme?.appBarLogoUrl}
-              alt="logo"
-              style={{
-                aspectRatio: 1,
-                width: theme?.logoWidth,
-                height: theme?.logoHeight,
-              }}
-            />
-          </NavLink>
+          <Icon name={showSidePanel ? 'close' : 'hamburger'} />
         </div>
-        {/* Center: Search bar */}
-        <div className="flex-1 flex justify-center items-center min-w-0">
-          <div
-            className={twMerge(['hidden', showSearchBar && 'desktop:block'])}
-          >
-            <TextSearch />
-          </div>
-        </div>
-        {/* Right: Cart and user actions */}
-        <div
-          className="flex items-center justify-end min-w-0 gap-4"
-          style={{ flex: '0 0 auto' }}
-        >
-          {window.settings.cart && <Cart />}
+      )}
 
-          {auth0.enabled && isAuthenticated && (
+      <div
+        className={twMerge(
+          'h-[56px]',
+          'min-w-[268px] desktop:h-[68px] flex items-center justify-between',
+          'border border-solid border-[#DDDEE7]',
+          'bg-white',
+          'rounded-2xl',
+          'shadow-ds-1',
+          location?.pathname === '/result' && 'flex-grow',
+        )}
+      >
+        <NavLink
+          to="/"
+          style={{ lineHeight: 0 }}
+          onClick={() => {
+            reset();
+            resetResultStore();
+            setSpecifications(null);
+          }}
+          className="pl-6"
+        >
+          <img
+            src={theme?.appBarLogoUrl}
+            alt="logo"
+            style={{
+              aspectRatio: 1,
+              width: theme?.logoWidth,
+              height: theme?.logoHeight,
+            }}
+          />
+        </NavLink>
+
+        <div
+          className={twMerge([
+            'hidden',
+            showSearchBar && 'desktop:flex',
+            'flex-1',
+            'justify-center',
+            'min-w-0',
+          ])}
+        >
+          <TextSearch className="w-full max-w-[531px] min-w-0" aiMode={true} />
+        </div>
+
+        {auth0.enabled &&
+          isAuthenticated &&
+          location?.pathname === '/result' && (
             <>
               <div
-                className="hidden desktop:block"
-                style={{ position: 'relative' }}
-              >
-                <Popover>
-                  <PopoverTrigger>
-                    <div
-                      style={{
-                        display: 'flex',
-                        columnGap: '16px',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <p style={{ color: '#2B2C46' }}>{user?.email}</p>
-                      <Icon name="avatar" />
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[152px] bg-white p-2 shadow-outer">
-                    <div
-                      className={twMerge([
-                        'flex',
-                        'w-[75px]',
-                        'h-[24px]',
-                        'px-2',
-                        'items-center',
-                        'bg-[#2B2C46]',
-                        'text-white',
-                        'text-[10px]',
-                        'cursor-pointer',
-                      ])}
-                      onClick={() => {
-                        logout({
-                          logoutParams: { returnTo: window.location.origin },
-                        });
-                      }}
-                    >
-                      Sign out
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div
-                className="block desktop:hidden cursor-pointer"
+                className={twMerge(
+                  'cursor-pointer w-10 h-10 rounded-full bg-[#FAFAFA] flex items-center justify-center',
+                  'mr-3.5',
+                )}
                 onClick={() => {
                   setShowLogoutModal(true);
                 }}
               >
                 <Icon
                   name="logout"
-                  className="text-[#AAABB5]"
-                  width={24}
-                  height={24}
+                  className="text-black"
+                  width={16}
+                  height={16}
                 />
               </div>
             </>
           )}
-        </div>
       </div>
+      <div className="flex gap-2">
+        {auth0.enabled &&
+          isAuthenticated &&
+          location?.pathname !== '/result' && (
+            <>
+              <div
+                className={twMerge(
+                  'h-[56px] min-w-[56px]',
+                  'desktop:min-w-[68px] desktop:h-[68px] bg-white rounded-2xl flex items-center justify-center ',
+                  'border border-solid border-[#DDDEE7]',
+                  'shadow-ds-1',
+                )}
+              >
+                <button
+                  className={twMerge(
+                    'relative flex items-center justify-center rounded-2xl',
+                    'h-10 w-10',
+                  )}
+                  style={{
+                    backgroundColor: '#FAFAFA',
+                  }}
+                  onClick={() => {
+                    setShowLogoutModal(true);
+                  }}
+                >
+                  <Icon name="logout" className={twMerge('text-[#BBBDCF]')} />
+                </button>
+              </div>
+            </>
+          )}
+        {window.settings.cart && <Cart />}
+      </div>
+
       <LogoutModal
         setShowLogoutModal={setShowLogoutModal}
         showModal={showLogoutModal}

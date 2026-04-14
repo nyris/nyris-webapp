@@ -48,7 +48,9 @@ import { ReactComponent as Typeplate } from './icons/typeplate.svg';
 import { ReactComponent as MobileCamera } from './icons/mobile_camera.svg';
 import { ReactComponent as Cart } from './icons/cart.svg';
 import { ReactComponent as Hamburger } from './icons/hamburger.svg';
-
+import { ReactComponent as CameraAi } from './icons/camera_ai.svg';
+import { ReactComponent as SmartFilterIndication } from './icons/smart_filter_indication.svg';
+import { ReactComponent as SearchAi } from './icons/search_ai.svg';
 import { SUPPORTED_ICON } from './types';
 
 type IconConfig = { component: FC<SVGAttributes<SVGElement>> };
@@ -63,6 +65,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   call: { component: Call },
   camera_simple: { component: CameraSimple },
   camera: { component: Camera },
+  camera_ai: { component: CameraAi },
   caret_left: { component: CaretLeft },
   caret_right: { component: CaretRight },
   cart: { component: Cart },
@@ -93,10 +96,12 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   plus_rounded: { component: PlusRounded },
   plus: { component: Plus },
   powered_by_nyris: { component: PoweredByNyris },
+  search_ai: { component: SearchAi },
   search_image: { component: SearchImage },
   search: { component: Search },
   settings: { component: Settings },
   share: { component: Share },
+  smart_filter_indication: { component: SmartFilterIndication },
   spare: { component: Spare },
   trash: { component: Trash },
   typeplate: { component: Typeplate },

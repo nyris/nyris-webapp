@@ -24,6 +24,8 @@ import {
   groundedSearchFilter,
   groundingSearchQuery,
 } from 'services/vizo';
+import useResultEvaluator from './useResultEvaluator';
+import useConversationStore from 'stores/chat/conversationStore';
 
 GlobalWorkerOptions.workerSrc = new URL(
   pdfjsWorker,
@@ -196,6 +198,8 @@ export const useImageSearch = () => {
       reader.onerror = () => reject(new Error('Error reading PDF file.'));
     });
   };
+  const { evaluateResults } = useResultEvaluator();
+  const startNewSession = useConversationStore(s => s.startNewSession);
 
   const singleImageSearch = useCallback(
     async ({
@@ -229,6 +233,7 @@ export const useImageSearch = () => {
         setGoogleGroundingResponse(null);
         useRequestStore.getState().setGroundingQuery('');
         useResultStore.getState().setShowingGroundingFilterResult(false);
+        startNewSession();
       }
 
       let region: RectCoords | undefined = imageRegion;
@@ -384,7 +389,12 @@ export const useImageSearch = () => {
               setIsGoogleGroundingLoading(false);
             });
         }
-
+        if (window.settings.vizo.chat && newSearch) {
+          evaluateResults({
+            activeProducts: res?.results || [],
+            imageAnalysis: res?.image_analysis,
+          });
+        }
         const nonEmptyFilter: any[] = ['sku:DOES_NOT_EXIST<score=1> '];
         const filterSkus: any = res?.results
           ? res?.results
@@ -416,6 +426,9 @@ export const useImageSearch = () => {
     [
       setIsFindApiLoading,
       preFilter,
+      setGroundingFilterResult,
+      setGoogleGroundingResponse,
+      startNewSession,
       setRequestImages,
       setSpecificationFilter,
       setDetectedRegions,
@@ -431,8 +444,7 @@ export const useImageSearch = () => {
       refine,
       clearPostFilterSelections,
       setIsGoogleGroundingLoading,
-      setGoogleGroundingResponse,
-      setGroundingFilterResult,
+      evaluateResults,
       setShowFeedback,
       setFirstSearchResults,
       setFirstSearchImage,

@@ -4,9 +4,9 @@ import ImagePreview from './ImagePreview';
 import useRequestStore from 'stores/request/requestStore';
 import PostFilterComponent from './PostFilter/PostFilterComponent';
 import useResultStore from 'stores/result/resultStore';
-import ItemSpecification from './ItemSpecification';
 import useUiStore from 'stores/ui/uiStore';
 import GroundingSpecs from './GroundingSpecs';
+import SmartFilter from './SmartFilter';
 
 export default function SidePanel({ className }: { className?: string }) {
   const requestImages = useRequestStore(state => state.requestImages);
@@ -14,6 +14,8 @@ export default function SidePanel({ className }: { className?: string }) {
   const specificationFilter = useRequestStore(
     state => state.specificationFilter,
   );
+
+  const findApiProducts = useResultStore(state => state.productsFromFindApi);
 
   const showSidePanel = useUiStore(state => state.showSidePanel);
 
@@ -43,30 +45,42 @@ export default function SidePanel({ className }: { className?: string }) {
     return <></>;
   }
 
+  if (
+    requestImages.length === 0 &&
+    findApiProducts.length === 0 &&
+    !window.settings.algolia.enabled
+  ) {
+    return <></>;
+  }
+
   return (
     <div
       className={twMerge(
         [
-          'max-w-[325px]',
           'w-full',
-          'shadow-[3px_-2px_3px_-3px_#d3d4d8]',
-          'overflow-x-hidden',
-          'overflow-y-auto',
+          'overflow-hidden',
           'bg-white',
           'relative',
           'flex',
           'flex-col',
+          'ml-4',
+          'mb-4',
+          showSidePanel && 'border border-solid border-[#DDDEE7]',
+          showSidePanel ? 'rounded-[32px]' : 'rounded-2xl',
+          'transition-all',
+          showSidePanel ? 'w-[334px] min-w-[334px]' : 'w-0 min-w-0',
+          'shadow-ds-1',
         ],
         className,
       )}
     >
       <div
         className={twMerge(
-          ' w-full h-full overflow-y-auto overflow-x-hidden',
+          ' w-full overflow-y-auto overflow-x-hidden',
           showSidePanel ? 'block' : 'hidden',
         )}
       >
-        <div className="w-full h-full">
+        <div className="w-full">
           <div
             className={twMerge([
               'w-full',
@@ -76,7 +90,8 @@ export default function SidePanel({ className }: { className?: string }) {
               'flex',
               'justify-center',
               'items-center',
-              'min-w-[283px]',
+              'w-[295px]',
+              'm-4',
               // 'mx-4',
               // 'mt-4',
               // 'rounded',
@@ -84,58 +99,18 @@ export default function SidePanel({ className }: { className?: string }) {
           >
             {requestImages[0] && <ImagePreview />}
           </div>
-          <div className="pb-4">
+          <div className="pb-4 flex flex-col gap-6">
             {window.settings.showImageDetails &&
               (imageAnalysis?.imageDescription ||
                 Object.keys(imageAnalysis?.specification || {}).length > 0) && (
-                <div className="self-stretch p-3.5 bg-[#F3F4F8] rounded-3xl inline-flex flex-col justify-start items-start gap-1.5 mt-4 mx-4 ">
-                  {imageAnalysis?.imageDescription !==
-                    'No description available' && (
-                    <div className="self-stretch flex flex-col justify-start items-start">
-                      <div className="justify-start text-[#3B3E5F] text-base font-semibold">
-                        Image description
-                      </div>
-                      <div className="self-stretch justify-start text-[#3B3E5F] text-xs font-normal">
-                        {imageAnalysis?.imageDescription || ''}
-                      </div>
-                    </div>
-                  )}
-
-                  {Object.keys(imageAnalysis?.specification || {})
-                    .filter(
-                      key =>
-                        key !== 'is_nameplate' && key !== 'prefilter_value',
-                    )
-                    .some(key => !!imageAnalysis?.specification[key]) && (
-                    <div className="justify-start text-[#3B3E5F] text-base font-semibold mt-2">
-                      Identified Attributes
-                    </div>
-                  )}
-
-                  {Object.keys(imageAnalysis?.specification || {})
-                    .filter(
-                      key =>
-                        key !== 'is_nameplate' && key !== 'prefilter_value',
-                    )
-                    .map(key => {
-                      const value = imageAnalysis?.specification[key];
-                      if (!value) {
-                        return null;
-                      }
-                      return (
-                        <ItemSpecification
-                          attr={key}
-                          value={value}
-                          specificationFilter={specificationFilter}
-                          imageAnalysis={imageAnalysis}
-                        />
-                      );
-                    })}
-                </div>
+                <SmartFilter
+                  imageAnalysis={imageAnalysis}
+                  specificationFilter={specificationFilter}
+                />
               )}
 
             {(isGoogleGroundingLoading || googleGroundingResponse) && (
-              <div className="mx-4 mb-4 mt-4 rounded-3xl bg-[#F3F4F8] border border-[#e4e3ff] p-3.5 text-[#3B3E5F] ">
+              <div className="mx-4 rounded-3xl bg-[#F3F4F8] border border-[#e4e3ff] p-3.5 text-[#3B3E5F] ">
                 <div className="flex items-center justify-between">
                   {!isGoogleGroundingLoading && (
                     <div className="flex items-center gap-2 text-base font-semibold">

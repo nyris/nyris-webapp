@@ -1,9 +1,7 @@
 .wrap-main-item-result {
     display: flex;
     flex-direction: column;
-    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0px 0px 16px rgba(224, 224, 224, 0.8);
 
     @media screen and (max-width: 776px) {
         .wrap-main-item-result {

@@ -26,16 +26,16 @@ function ProductAttribute(props: Props) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        borderRadius: 2,
+        borderRadius: 6,
         height: '36px',
-        backgroundColor: props.backgroundColor || '#E0E0E0',
+        backgroundColor: props.backgroundColor || '#F3F3F5',
         padding: padding,
       }}
     >
       {isTitleVisible ? (
         <div
           style={{
-            color: '#2B2C46',
+            color: '#3B3E5F',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -51,7 +51,7 @@ function ProductAttribute(props: Props) {
       <Tooltip content={value} disabled={!value} sideOffset={10}>
         <div
           style={{
-            color: '#2B2C46',
+            color: '#3B3E5F',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
