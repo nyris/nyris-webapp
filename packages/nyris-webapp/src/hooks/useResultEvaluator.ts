@@ -14,7 +14,6 @@ import useConversationStore, {
   ResultQuality,
 } from 'stores/chat/conversationStore';
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
-import useResultStore from 'stores/result/resultStore';
 import {
   buildP2SystemPrompt,
   buildBrandRegex,

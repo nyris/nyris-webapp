@@ -254,6 +254,7 @@ export function useChatWithDb() {
         setIsLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       geminiApiKey,
       chatWithDbApiUrl,

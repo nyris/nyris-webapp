@@ -420,6 +420,7 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
         setIsLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       messages,
       failureMode,

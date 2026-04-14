@@ -8,7 +8,6 @@ import { Sparkles, Send, Loader2, AlertCircle, Globe } from 'lucide-react';
 
 import useConversationStore from 'stores/chat/conversationStore';
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
-import useResultStore from 'stores/result/resultStore';
 import { Icon } from '@nyris/nyris-react-components';
 import Tooltip from 'components/Tooltip/TooltipComponent';
 import useUiStore from 'stores/ui/uiStore';

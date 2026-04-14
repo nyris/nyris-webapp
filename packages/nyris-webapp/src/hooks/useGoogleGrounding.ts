@@ -110,15 +110,6 @@ function normalize(s: string | null | undefined): string {
     .trim();
 }
 
-function normalizeLoose(s: string | null | undefined): string {
-  if (!s) return '';
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
 /**
  * Programmatic matching: check google_input_filters against current products.
  * STRICT matching — only exact SKU/part_number/model matches count.
@@ -412,6 +403,7 @@ Then search Google for that specific product. Return JSON only.`;
     } finally {
       isRunningRef.current = false;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     shouldActivate,
     geminiApiKey,
