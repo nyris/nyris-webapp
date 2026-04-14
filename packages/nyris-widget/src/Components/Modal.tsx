@@ -19,7 +19,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, className = ''
 
   return (
     <div className="nyris-modal-backdrop" onClick={handleBackdropClick}>
-      <div className={`modal-content ${className}`}>{children}</div>
+      <div className={`nyris-modal-content ${className}`}>{children}</div>
     </div>
   );
 };

@@ -44,7 +44,6 @@ var settings = {
     otherFields: { exactMatch: 8, startsWith: 6, partial: 2 },
   },
   vizo: {
-    enabled: false,
     groundingEnabled: false,
     fallbackToElasticSearch: false,
     chat: false,

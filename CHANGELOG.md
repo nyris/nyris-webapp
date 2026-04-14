@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.90 - 2026-03-27
+
+### search suite
+- Disabled algolia by default
+- Introduced requestContentType settings
+- Introduced textSearchScoring settings for text search with visual search when algolia is disabled 
+- Added grounding 
+- Added noindex, nofollow 
+
 ## 0.3.89 - 2025-12-17
 
 ### Removed
