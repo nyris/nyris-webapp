@@ -90,7 +90,6 @@ function PostFilterFindApi({
       }),
     );
   }, [attribute, postFilterSelections, productsForFilters]);
-  console.log({ filteredProductsForCounts });
 
   const valueCounts = useMemo(() => {
     const counts: Record<string, number> = {};

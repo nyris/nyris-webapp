@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useResultStore from 'stores/result/resultStore';
 import Product from './Product';
 import { useImageSearch } from 'hooks/useImageSearch';
@@ -35,6 +35,9 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
 
   const isAlgoliaLoading = useUiStore(state => state.isAlgoliaLoading);
   const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
+  const isAiModeOpen = useUiStore(state => state.isAiModeOpen);
+
+  const [products, setProducts] = useState<any[]>([]);
 
   const setQuery = useRequestStore(state => state.setQuery);
   const query = useRequestStore(state => state.query);
@@ -96,7 +99,8 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     }).then(() => {});
   };
   const isAlgoliaEnabled = window.settings?.algolia?.enabled;
-  const products = useMemo(() => {
+
+  const baseProducts = useMemo(() => {
     const filter = Object.values(specificationFilter || {})[0];
     const baseFindApiProducts = postFilteredProducts;
 
@@ -124,6 +128,10 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     postFilteredProducts,
   ]);
 
+  useEffect(() => {
+    setProducts(baseProducts || []);
+  }, [baseProducts, specificationFilter]);
+
   const groundedFilteredProducts = useMemo(() => {
     if (groundingFilterResult && groundingFilterResult.length > 0) {
       const filtered = products.filter((product: any) =>
@@ -134,12 +142,12 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       }
       return products;
     }
-    return () => {};
+    return products;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groundingFilterResult]);
 
   const renderItem = useMemo(() => {
-    const productsToRender =
+    const productsToRender: any[] =
       groundedFilteredProducts &&
       groundedFilteredProducts.length > 0 &&
       showingGroundingFilterResult
@@ -185,7 +193,12 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       </div>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [products, groundedFilteredProducts, showingGroundingFilterResult]);
+  }, [
+    products,
+    groundedFilteredProducts,
+    showingGroundingFilterResult,
+    isAiModeOpen,
+  ]);
 
   if (
     products?.length === 0 &&

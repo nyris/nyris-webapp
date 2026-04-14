@@ -8,7 +8,8 @@ module.exports = {
       boxShadow: {
         outer: '0 0 16px 0 rgba(202, 202, 209, 0.5)',
         outer200: '0 0 16px 0 rgba(170, 171, 181, 0.5)',
-        'drop-shadow-1': '0 0 20px 0 rgba(221, 222, 231, 0.5)',
+        'ds-1': '0 0 16px 0 rgba(221, 222, 231, 0.5)',
+        'ds-2': '0 0 20px 0 rgba(221, 222, 231, 0.5)',
       },
       keyframes: {
         slideUp: {
@@ -67,7 +68,7 @@ module.exports = {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
       colors: {
-        primary: '#2B2C46',
+        primary: '#3B3E5F',
         secondary: '#3E36DC',
         theme: {
           primary: 'var(--primary-color)',

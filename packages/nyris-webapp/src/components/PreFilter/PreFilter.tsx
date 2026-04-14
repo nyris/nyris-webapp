@@ -45,7 +45,6 @@ const PreFilterComponent = (props: Props) => {
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
   );
-  const navigate = useNavigate();
 
   const selectedFilter = useMemo(
     () =>

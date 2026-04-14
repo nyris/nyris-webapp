@@ -97,7 +97,7 @@ function AppLayout(): JSX.Element {
   }
 
   return (
-    <div className="full-height flex flex-col ">
+    <div className="full-height flex flex-col bg-[#F3F4F8]">
       <div>
         <Toaster />
       </div>
