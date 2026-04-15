@@ -7,6 +7,7 @@ import {
 import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
+import { RectCoords } from '@nyris/nyris-api';
 
 export const useGroundedSearch = () => {
   const setGoogleGroundingResponse = useResultStore(
@@ -21,11 +22,15 @@ export const useGroundedSearch = () => {
   );
 
   const groundedSearchCallback = useCallback(
-    (requestImage: File | HTMLCanvasElement, products: any[] = []) => {
+    (
+      requestImage: File | HTMLCanvasElement,
+      products: any[] = [],
+      region?: RectCoords,
+    ) => {
       setIsGoogleGroundingLoading(true);
       //   setGroundingError('Unable to search the Internet.');
       setGroundingError(null);
-      groundedSearch(requestImage, window.settings.aiApiKey || '')
+      groundedSearch(requestImage, region)
         .then(groundingRes => {
           const groundingSpecs = {
             product_name: groundingRes.product_name,

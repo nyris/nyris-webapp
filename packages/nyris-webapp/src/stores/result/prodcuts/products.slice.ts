@@ -51,6 +51,13 @@ const productsSlice: StateCreator<ProductsState & ProductsAction> = set => ({
     set(state => ({
       fullResultPool: products,
     })),
+  resetGrounding: () =>
+    set(state => ({
+      groundingError: null,
+      groundingFilterResult: [],
+      googleGroundingResponse: null,
+      showingGroundingFilterResult: false,
+    })),
 });
 
 export default productsSlice;

@@ -1,4 +1,6 @@
+import { RectCoords } from '@nyris/nyris-api';
 import axios from 'axios';
+import { cropImage } from 'utils/cropImageToBase64';
 // Utility: Convert HTMLCanvasElement to Blob
 export function canvasToBlob(
   canvas: HTMLCanvasElement,
@@ -60,18 +62,18 @@ function buildProductEntry(p: any, index: number): string {
  */
 export async function groundedSearch(
   imageInput: File | HTMLCanvasElement,
-  apiKey: string,
+  region?: RectCoords,
 ): Promise<any> {
   const formData = new FormData();
   let imageBlobOrFile: File | Blob;
 
   if (imageInput instanceof HTMLCanvasElement) {
-    imageBlobOrFile = await canvasToBlob(imageInput);
+    const croppedCanvas = cropImage(imageInput, region);
+    imageBlobOrFile = await canvasToBlob(croppedCanvas);
     formData.append('image', imageBlobOrFile, 'canvas.jpg');
   } else {
     formData.append('image', imageInput);
   }
-
   try {
     const response = await axios.post(
       'https://api.nyris.io/api/ai-analysis/grounded-search',

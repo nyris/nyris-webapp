@@ -90,6 +90,7 @@ export interface ProductsAction {
   setGroundingError: (error: string | null) => void;
   setFirstAlgoliaProducts: (products: any[]) => void;
   setFullResultPool: (products: any[]) => void;
+  resetGrounding: () => void;
 }
 
 export interface DetectedRegionsState {
