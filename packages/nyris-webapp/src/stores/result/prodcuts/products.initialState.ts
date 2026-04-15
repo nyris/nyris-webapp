@@ -19,6 +19,7 @@ export const initialState: ProductsState = {
   googleGroundingResponse: null,
   groundingFilterResult: [],
   showingGroundingFilterResult: false,
+  groundingError: null,
   firstAlgoliaProducts: [],
   fullResultPool: [],
 };

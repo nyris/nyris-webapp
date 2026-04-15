@@ -19,13 +19,9 @@ import { GlobalWorkerOptions } from 'pdfjs-dist';
 
 // @ts-ignore
 import * as pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs';
-import {
-  groundedSearch,
-  groundedSearchFilter,
-  groundingSearchQuery,
-} from 'services/vizo';
 import useResultEvaluator from './useResultEvaluator';
 import useConversationStore from 'stores/chat/conversationStore';
+import { useGroundedSearch } from './useGroundedSearch';
 
 GlobalWorkerOptions.workerSrc = new URL(
   pdfjsWorker,
@@ -75,13 +71,12 @@ export const useImageSearch = () => {
   const setGoogleGroundingResponse = useResultStore(
     state => state.setGoogleGroundingResponse,
   );
-  const setIsGoogleGroundingLoading = useUiStore(
-    state => state.setIsGoogleGroundingLoading,
-  );
 
   const setGroundingFilterResult = useResultStore(
     state => state.setGroundingFilterResult,
   );
+
+  const setGroundingError = useResultStore(state => state.setGroundingError);
 
   const { refine } = useClearRefinements();
 
@@ -199,6 +194,7 @@ export const useImageSearch = () => {
     });
   };
   const { evaluateResults } = useResultEvaluator();
+  const { groundedSearch } = useGroundedSearch();
   const startNewSession = useConversationStore(s => s.startNewSession);
 
   const singleImageSearch = useCallback(
@@ -231,6 +227,7 @@ export const useImageSearch = () => {
       if (newSearch) {
         setGroundingFilterResult([]);
         setGoogleGroundingResponse(null);
+        setGroundingError(null);
         useRequestStore.getState().setGroundingQuery('');
         useResultStore.getState().setShowingGroundingFilterResult(false);
         startNewSession();
@@ -339,55 +336,7 @@ export const useImageSearch = () => {
         const hasOcr = Object.keys(specification).length > 0;
 
         if (hasOcr && newSearch && window.settings.vizo?.groundingEnabled) {
-          // call grounding API with ocr text
-          setIsGoogleGroundingLoading(true);
-
-          groundedSearch(
-            requestImage || canvasImage,
-            window.settings.aiApiKey || '',
-          )
-            .then(groundingRes => {
-              const groundingSpecs = {
-                product_name: groundingRes.product_name,
-                brand: groundingRes.brand,
-                part_number: groundingRes.part_number,
-                key_specs: groundingRes.key_specs,
-              };
-
-              groundedSearchFilter({
-                products: res?.results || [],
-                groundingSummary: groundingRes?.grounding_summary || '',
-                apiKey: window.settings.aiApiKey || '',
-              })
-                .then((filterRes: any) => {
-                  setGroundingFilterResult(filterRes?.matches || []);
-
-                  if (
-                    filterRes?.matches?.length === 0 &&
-                    window.settings.vizo?.fallbackToElasticSearch
-                  ) {
-                    groundingSearchQuery({
-                      groundingSummary: JSON.stringify(groundingRes),
-                      apiKey: window.settings.aiApiKey || '',
-                    }).then((queryRes: any) => {
-                      useRequestStore
-                        .getState()
-                        .setGroundingQuery(queryRes?.query);
-                    });
-                  }
-                })
-                .catch(error => {
-                  console.log('Grounding Filter API error:', error);
-                });
-
-              setGoogleGroundingResponse(groundingSpecs);
-            })
-            .catch(error => {
-              console.log('Grounding API error:', error);
-            })
-            .finally(() => {
-              setIsGoogleGroundingLoading(false);
-            });
+          groundedSearch(requestImage || canvasImage, res?.results || []);
         }
         if (window.settings.vizo.chat && newSearch) {
           evaluateResults({
@@ -410,6 +359,8 @@ export const useImageSearch = () => {
         if (showFeedback) {
           setShowFeedback(true);
         }
+
+        // setGroundingError(null);
         // go back
         if (firstSearchResults.length === 0 || newSearch) {
           setFirstSearchResults(res?.results);
@@ -428,6 +379,7 @@ export const useImageSearch = () => {
       preFilter,
       setGroundingFilterResult,
       setGoogleGroundingResponse,
+      setGroundingError,
       startNewSession,
       setRequestImages,
       setSpecificationFilter,
@@ -443,7 +395,7 @@ export const useImageSearch = () => {
       firstSearchResults.length,
       refine,
       clearPostFilterSelections,
-      setIsGoogleGroundingLoading,
+      groundedSearch,
       evaluateResults,
       setShowFeedback,
       setFirstSearchResults,

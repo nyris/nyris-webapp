@@ -1,3 +1,4 @@
+import { useGroundedSearch } from 'hooks/useGroundedSearch';
 import React, { useEffect, useMemo, useState } from 'react';
 import { find } from 'services/visualSearch';
 import useRequestStore from 'stores/request/requestStore';
@@ -15,10 +16,13 @@ const MatchNotificationBanner = ({ className }: { className?: string }) => {
   const productsFromFindApi = useResultStore(
     state => state.productsFromFindApi,
   );
+  const groundingError = useResultStore(state => state.groundingError);
 
   const groundingFilterResult = useResultStore(
     state => state.groundingFilterResult,
   );
+
+  const { groundedSearch } = useGroundedSearch();
 
   const showBanner = useMemo(() => {
     if (groundingFilterResult.length !== productsFromFindApi.length) {
@@ -58,6 +62,40 @@ const MatchNotificationBanner = ({ className }: { className?: string }) => {
   if (goBack) {
     return <></>;
   }
+
+  if (groundingError) {
+    return (
+      <div
+        className={twMerge([
+          'flex items-center justify-between w-full bg-[#FFF8FB] rounded-[16px] p-2 pl-2 shadow-sm',
+          className,
+        ])}
+      >
+        {/* Left Section: Icon and Text */}
+        <div className="flex items-center gap-3">
+          <div className="h-2.5 w-2.5 rounded-full bg-[#E31B5D]" />
+          <p className="text-[#4a5568] text-sm md:text-base">
+            No results from web search.
+          </p>
+        </div>
+
+        {/* Right Section: Action Button */}
+        <button
+          className="bg-[#373b53] hover:bg-[#2d3145] text-white px-6 py-3 rounded-lg text-xs font-semibold transition-colors duration-200"
+          onClick={() => {
+            const requestImages = useRequestStore.getState().requestImages;
+            const requestImage = requestImages?.[0];
+            const findApiProducts =
+              useResultStore.getState().productsFromFindApi;
+            groundedSearch(requestImage, findApiProducts || []);
+          }}
+        >
+          Search again
+        </button>
+      </div>
+    );
+  }
+
   if (
     (!groundingFilterResult || groundingFilterResult?.length === 0) &&
     !groundingQuery
