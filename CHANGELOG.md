@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.91 - 2026-04-13
+### Updated
+- Updated readme file of the widget
+
 ## 0.3.90 - 2026-03-27
 
 ### search suite
