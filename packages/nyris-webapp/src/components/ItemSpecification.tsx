@@ -4,7 +4,6 @@ import { twMerge } from 'tailwind-merge';
 import useRequestStore from '../stores/request/requestStore';
 import useResultStore from '../stores/result/resultStore';
 import { Icon } from '@nyris/nyris-react-components';
-import { useMediaQuery } from 'react-responsive';
 
 const ItemSpecification = ({
   attr,
@@ -16,7 +15,6 @@ const ItemSpecification = ({
     return ref.header.toLocaleLowerCase() === attr.toLocaleLowerCase();
   });
   const attribute = refinement?.length ? refinement[0].attribute : 'none';
-  const isMobile = useMediaQuery({ query: '(max-width: 776px)' });
   const { refine } = useRefinementList({
     attribute,
     operator: 'or',

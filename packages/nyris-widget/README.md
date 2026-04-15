@@ -29,6 +29,7 @@ Inside your HTML (best just before the closing ```</body>``` tag), add the follo
         productLinkBaseURL: '', // Base URL for constructing product links. Must include {SKU} placeholder(s) which will be replaced with the actual SKU.
         // Examples: 'https://example.com/products/{SKU}' or 'https://example.com/search?sku={SKU}&id={SKU}'
         // Multiple {SKU} occurrences are supported and will all be replaced with the same SKU value.
+        showHelperText: false, // show or hide short instruction on how to search
     };
     var s = document.createElement("script");
     s.src = "https://assets.nyris.io/nyris-widget/v1/widget.js";

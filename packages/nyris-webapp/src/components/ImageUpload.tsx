@@ -12,7 +12,13 @@ import { useCadSearch } from 'hooks/useCadSearch';
 import { isCadFile } from '@nyris/nyris-api';
 import UploadDisclaimer from './UploadDisclaimer';
 
-function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
+function ImageUpload({
+  onCameraClick,
+  disableDisclaimer,
+}: {
+  onCameraClick?: () => void;
+  disableDisclaimer?: boolean;
+}) {
   const settings = window.settings;
   const user = useAuth0().user;
 
@@ -66,12 +72,13 @@ function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
   ]);
 
   const showDisclaimerDisabled = useMemo(() => {
+    if (disableDisclaimer) return true;
     const disclaimer = localStorage.getItem('upload-disclaimer-suite');
     if (requestImages.length === 0) return true;
     if (!disclaimer) return false;
     return disclaimer === 'dont-show';
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDisclaimer, requestImages]);
+  }, [showDisclaimer, requestImages, disableDisclaimer]);
 
   const { singleImageSearch } = useImageSearch();
   const { cadSearch } = useCadSearch();
@@ -213,7 +220,7 @@ function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
         </Tooltip>
       </div>
 
-      {showDisclaimer && (
+      {showDisclaimer && !disableDisclaimer && (
         <UploadDisclaimer
           onClose={() => {
             setShowDisclaimer(false);

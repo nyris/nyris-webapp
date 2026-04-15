@@ -50,6 +50,7 @@ import { ReactComponent as Cart } from './icons/cart.svg';
 import { ReactComponent as Hamburger } from './icons/hamburger.svg';
 import { ReactComponent as CameraAi } from './icons/camera_ai.svg';
 import { ReactComponent as SmartFilterIndication } from './icons/smart_filter_indication.svg';
+import { ReactComponent as SearchAi } from './icons/search_ai.svg';
 import { SUPPORTED_ICON } from './types';
 
 type IconConfig = { component: FC<SVGAttributes<SVGElement>> };
@@ -95,6 +96,7 @@ export const svgIconsConfig: Record<SUPPORTED_ICON, IconConfig> = {
   plus_rounded: { component: PlusRounded },
   plus: { component: Plus },
   powered_by_nyris: { component: PoweredByNyris },
+  search_ai: { component: SearchAi },
   search_image: { component: SearchImage },
   search: { component: Search },
   settings: { component: Settings },

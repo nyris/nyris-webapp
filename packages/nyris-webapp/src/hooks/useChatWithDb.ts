@@ -48,7 +48,7 @@ If the input does NOT look like a product description (e.g. "show me rings" or "
 export interface P6ExtractionResult {
   is_product_description: boolean;
   message: string;
-  filters: Array< { key: string; value: string }>;
+  filters: Array<{ key: string; value: string }>;
   search_query?: string;
 }
 
@@ -63,20 +63,25 @@ export function looksLikeProductDescription(message: string): boolean {
   if (words.length < 5) return false;
 
   // Exclude conversational questions
-  const isQuestion = /^(what|how|why|which|where|when|who|can|do|does|is|are|show|tell|compare|find)\b/i.test(trimmed)
-    || trimmed.includes('?');
+  const isQuestion =
+    /^(what|how|why|which|where|when|who|can|do|does|is|are|show|tell|compare|find)\b/i.test(
+      trimmed,
+    ) || trimmed.includes('?');
   if (isQuestion) return false;
 
   // Exclude conversational requests — these should go to P3 for filtering
-  const isRequest = /^(i\s+(need|want|am looking|would like)|looking\s+for|find\s+me|show\s+me|get\s+me|search\s+for|give\s+me|help\s+me|filter|narrow|sort|only\s+show|remove|exclude)\b/i.test(trimmed);
+  const isRequest =
+    /^(i\s+(need|want|am looking|would like)|looking\s+for|find\s+me|show\s+me|get\s+me|search\s+for|give\s+me|help\s+me|filter|narrow|sort|only\s+show|remove|exclude)\b/i.test(
+      trimmed,
+    );
   if (isRequest) return false;
 
   // Require multiple spec-like patterns or a part number format to qualify as a product description
   const specPatterns = [
     /\d+\s*(mm|cm|m|V|volt|A|amp|W|watt|Hz|inch|kg|lb|°C|°F|ohm|Ω)/i,
     /\b(sku|art\.|part\s*#|no\.|nr\.|p\/n|ref\.|item\s*#)\b/i,
-    /\b[A-Z]{2,}[-\s]?\d{2,}/,  // Part number patterns like "ZBV-B6", "AB 1234"
-    /\d+\s*[x×]\s*\d+/,         // Dimensions like "50x30"
+    /\b[A-Z]{2,}[-\s]?\d{2,}/, // Part number patterns like "ZBV-B6", "AB 1234"
+    /\d+\s*[x×]\s*\d+/, // Dimensions like "50x30"
   ];
   const matchCount = specPatterns.filter(p => p.test(trimmed)).length;
   return matchCount >= 2 || /\b(sku|art\.|part\s*#|p\/n)\b/i.test(trimmed);
@@ -86,7 +91,7 @@ export function looksLikeProductDescription(message: string): boolean {
 async function queryChatWithDb(
   filters: Array<{ key: string; value: string }>,
   searchQuery?: string,
-  apiUrl?: string
+  apiUrl?: string,
 ): Promise<any[]> {
   const url = apiUrl || (window as any).settings?.chatWithDb?.apiUrl;
   if (url) {
@@ -105,19 +110,21 @@ async function queryChatWithDb(
 
 export function useChatWithDb() {
   const { addMessage, setIsLoading, setError } = useConversationStore();
-  const { geminiApiKey, geminiModel, chatWithDbApiUrl } = useSmartFiltersStore();
+  const { geminiApiKey, geminiModel, chatWithDbApiUrl } =
+    useSmartFiltersStore();
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
 
   const sendMessage = useCallback(
     async (userMessage: string) => {
-      const apiKey = geminiApiKey || (window as any).settings?.smartFilters?.geminiApiKey;
+      const apiKey = geminiApiKey || process.env.REACT_APP_GEMINI_API_KEY;
 
       addMessage({ role: 'user', content: userMessage });
 
       if (!apiKey) {
         addMessage({
           role: 'assistant',
-          content: 'Please configure your Gemini API key in Admin Settings to use Chat with DB.',
+          content:
+            'Please configure your Gemini API key in Admin Settings to use Chat with DB.',
         });
         return;
       }
@@ -138,12 +145,14 @@ export function useChatWithDb() {
                   role: 'model',
                   parts: [
                     {
-                      text:
-                        'I will extract catalog filters from product descriptions. Output JSON only.',
+                      text: 'I will extract catalog filters from product descriptions. Output JSON only.',
                     },
                   ],
                 },
-                { role: 'user', parts: [{ text: `USER MESSAGE: ${userMessage}` }] },
+                {
+                  role: 'user',
+                  parts: [{ text: `USER MESSAGE: ${userMessage}` }],
+                },
               ],
               generationConfig: {
                 temperature: 0.2,
@@ -151,7 +160,7 @@ export function useChatWithDb() {
                 responseMimeType: 'application/json',
               },
             }),
-          }
+          },
         );
 
         const data = await response.json();
@@ -178,21 +187,24 @@ export function useChatWithDb() {
         const dbResults = await queryChatWithDb(
           p6Result.filters,
           p6Result.search_query,
-          chatWithDbApiUrl || undefined
+          chatWithDbApiUrl || undefined,
         );
 
         if (dbResults.length > 0) {
           setFindApiProducts(dbResults);
           addMessage({
             role: 'assistant',
-            content: `Found ${dbResults.length} result(s) for: ${p6Result.filters.map((f) => `${f.key}=${f.value}`).join(', ')}.`,
+            content: `Found ${dbResults.length} result(s) for: ${p6Result.filters.map(f => `${f.key}=${f.value}`).join(', ')}.`,
           });
           return;
         }
 
         // Fallback: use nyris Find API text search
-        const searchTerms = p6Result.search_query || p6Result.filters.map((f) => f.value).join(' ');
-        const filterSummary = p6Result.filters.map((f) => `${f.key}=${f.value}`).join(', ');
+        const searchTerms =
+          p6Result.search_query || p6Result.filters.map(f => f.value).join(' ');
+        const filterSummary = p6Result.filters
+          .map(f => `${f.key}=${f.value}`)
+          .join(', ');
         let catalogResultCount = 0;
         try {
           const settings = (window as any).settings;
@@ -204,7 +216,7 @@ export function useChatWithDb() {
             method: 'POST',
             headers: {
               'X-Api-Key': apiKey,
-              'Accept': 'application/offers.complete+json',
+              Accept: 'application/offers.complete+json',
               'X-Options': 'limit=50',
             },
             body: formData,
@@ -242,6 +254,7 @@ export function useChatWithDb() {
         setIsLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       geminiApiKey,
       chatWithDbApiUrl,
@@ -249,7 +262,7 @@ export function useChatWithDb() {
       setIsLoading,
       setError,
       setFindApiProducts,
-    ]
+    ],
   );
 
   return { sendMessage };

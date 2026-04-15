@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { getFilters, searchFilters } from 'services/filter';
+import { searchFilters } from 'services/filter';
 
 import { isEmpty, pickBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +45,6 @@ const PreFilterComponent = (props: Props) => {
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
   );
-  const navigate = useNavigate();
 
   const selectedFilter = useMemo(
     () =>

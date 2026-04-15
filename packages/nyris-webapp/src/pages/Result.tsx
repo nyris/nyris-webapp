@@ -26,11 +26,10 @@ import { useCurrentRefinements } from 'react-instantsearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import { useTranslation } from 'react-i18next';
 import { useImageSearch } from 'hooks/useImageSearch';
-import ItemSpecification from 'components/ItemSpecification';
 import MatchNotificationBanner from 'components/MatchNotificationBanner';
 import ImageUpload from 'components/ImageUpload';
 import SmartFilter from 'components/SmartFilter';
-import { ChatAssistant } from 'components/ChatAssistant';
+import { ChatAssistant, MobileChatAssistant } from 'components/ChatAssistant';
 
 function Results() {
   const settings = window.settings;
@@ -175,6 +174,10 @@ function Results() {
   ]);
 
   const disablePostFilter = useMemo(() => {
+    if (!settings.algolia.enabled) {
+      return false;
+    }
+
     return settings.postFilterOption && productsFromAlgolia.length > 0
       ? false
       : true;
@@ -220,16 +223,14 @@ function Results() {
               >
                 <div className="block desktop:hidden desktop:mb-0 mx-2">
                   {requestImages[0] && <ImagePreview />}
-                  {isSmartFiltersEnabled &&
-                    window.settings.showImageDetails &&
+                  {isSmartFiltersEnabled && window.settings.showImageDetails &&
                     (imageAnalysis?.imageDescription ||
-                      Object.keys(imageAnalysis?.specification || {}).length > 0 ||
-                      smartFilters.status !== 'idle') && (
+                      Object.keys(imageAnalysis?.specification || {}).length >
+                        0) && (
                       <div className="my-4">
                         <SmartFilter
                           imageAnalysis={imageAnalysis}
                           specificationFilter={specificationFilter}
-                          variant="results"
                         />
                       </div>
                     )}
@@ -411,6 +412,7 @@ function Results() {
             className="flex desktop:hidden w-full gap-2"
             onCameraClick={() => setOpenModalCamera(true)}
             showImageUpload={false}
+            aiMode={true}
           />
 
           {isShowFilter && settings.postFilterOption && (
@@ -515,6 +517,13 @@ function Results() {
             setOpenModalCamera(s => !s);
           }}
         />
+        {isAiModeOpen && (
+          <div className="desktop:hidden">
+            <MobileChatAssistant
+              onCameraClick={() => setOpenModalCamera(true)}
+            />
+          </div>
+        )}
       </div>
     </>
   );

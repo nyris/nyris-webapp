@@ -342,7 +342,7 @@ function Product(props: Props) {
               <div className="h-full flex flex-col">
                 <div className="flex flex-col gap-1 mb-1.5">
                   {dataItem[settings.mainTitle] && (
-                    <div className="flex justify-between gap-1">
+                    <div className="flex justify-between gap-1 items-center">
                       <Tooltip content={dataItem[settings.mainTitle] || ''}>
                         <div
                           className="text-xs font-bold text-primary ml-2 max-line-1 w-fit"

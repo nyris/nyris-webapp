@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { OrganizationProfile, DEFAULT_ORG_PROFILE } from './organizationProfile';
+import {
+  OrganizationProfile,
+  DEFAULT_ORG_PROFILE,
+} from './organizationProfile';
 
 export interface SmartFilter {
   id: string;
@@ -25,7 +28,7 @@ interface SmartFiltersState {
   geminiModel: string; // 'gemini-3.1-flash-lite-preview'
   filterPrompt: string;
   rerankPrompt: string;
-  
+
   // Settings
   includeReasoning: boolean; // Toggle for AI reasoning (slower but more informative)
   backgroundRemovalEnabled: boolean; // Toggle for rembg background removal
@@ -45,24 +48,27 @@ interface SmartFiltersState {
   // Filters
   filters: SmartFilter[];
   selectedFilters: SmartFilter[];
-  
+
   // Reranking (Smart Filters)
   rerankedResults: RerankedResult[];
   originalRankings: Record<string, number>;
   isReranked: boolean;
-  
+
   // Visual Reranking state
   isVisualReranked: boolean;
   isVisualReranking: boolean;
-  visualRerankRankings: Record<string, { originalRank: number; newRank: number; score: number; reasoning: string }>;
-  
+  visualRerankRankings: Record<
+    string,
+    { originalRank: number; newRank: number; score: number; reasoning: string }
+  >;
+
   // Loading states
   isGeneratingFilters: boolean;
   isReranking: boolean;
-  
+
   // Error
   error: string | null;
-  
+
   // Admin settings modal
   showAdminSettings: boolean;
 }
@@ -74,7 +80,7 @@ interface SmartFiltersActions {
   setGeminiModel: (model: string) => void;
   setFilterPrompt: (prompt: string) => void;
   setRerankPrompt: (prompt: string) => void;
-  
+
   // Settings
   setIncludeReasoning: (include: boolean) => void;
   setBackgroundRemovalEnabled: (enabled: boolean) => void;
@@ -95,29 +101,39 @@ interface SmartFiltersActions {
   setFilters: (filters: SmartFilter[]) => void;
   toggleFilter: (filter: SmartFilter) => void;
   clearSelectedFilters: () => void;
-  
+
   // Reranking actions (Smart Filters)
   setRerankedResults: (results: RerankedResult[]) => void;
   setOriginalRankings: (rankings: Record<string, number>) => void;
   setIsReranked: (isReranked: boolean) => void;
   clearReranking: () => void;
-  
+
   // Visual Reranking actions
   setIsVisualReranked: (isReranked: boolean) => void;
   setIsVisualReranking: (loading: boolean) => void;
-  setVisualRerankRankings: (rankings: Record<string, { originalRank: number; newRank: number; score: number; reasoning: string }>) => void;
+  setVisualRerankRankings: (
+    rankings: Record<
+      string,
+      {
+        originalRank: number;
+        newRank: number;
+        score: number;
+        reasoning: string;
+      }
+    >,
+  ) => void;
   clearVisualReranking: () => void;
-  
+
   // Loading states
   setIsGeneratingFilters: (loading: boolean) => void;
   setIsReranking: (loading: boolean) => void;
-  
+
   // Error
   setError: (error: string | null) => void;
-  
+
   // Admin settings
   setShowAdminSettings: (show: boolean) => void;
-  
+
   // Reset
   reset: () => void;
 }
@@ -131,7 +147,7 @@ const getDefaultPrompts = () => {
 };
 
 // Default Gemini API key — hardcoded for ease of use
-const DEFAULT_GEMINI_KEY = 'AIzaSyC41LvDmZHVbRMlsEO1IaTdxYekYtOF4Ww';
+const DEFAULT_GEMINI_KEY = process.env.REACT_APP_GEMINI_API_KEY || '';
 
 const initialState: SmartFiltersState = {
   nyrisApiKeyOverride: '',
@@ -169,92 +185,111 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
   persist(
     (set, get) => ({
       ...initialState,
-      
+
       // Initialize prompts from settings on first load
       filterPrompt: getDefaultPrompts().filterPrompt,
       rerankPrompt: getDefaultPrompts().rerankPrompt,
-      
-      setNyrisApiKeyOverride: (key) => set({ nyrisApiKeyOverride: key }),
-      setGeminiApiKey: (key) => set({ geminiApiKey: key }),
-      setGeminiModel: (model) => set({ geminiModel: model }),
-      setFilterPrompt: (prompt) => set({ filterPrompt: prompt }),
-      setRerankPrompt: (prompt) => set({ rerankPrompt: prompt }),
-      setIncludeReasoning: (include) => set({ includeReasoning: include }),
-      setBackgroundRemovalEnabled: (enabled) => set({ backgroundRemovalEnabled: enabled }),
-      setBackgroundRemovalModel: (model) => set({ backgroundRemovalModel: model }),
-      setSam3Enabled: (enabled) => set({ sam3Enabled: enabled }),
-      setSam3ServerUrl: (url) => set({ sam3ServerUrl: url }),
-      setSam3SegmentOnClickOnly: (onClickOnly) => set({ sam3SegmentOnClickOnly: onClickOnly }),
-      setChatWithDbEnabled: (enabled) => set({ chatWithDbEnabled: enabled }),
-      setChatWithDbApiUrl: (url) => set({ chatWithDbApiUrl: url }),
-      setGoogleGroundingEnabled: (enabled) => set({ googleGroundingEnabled: enabled }),
-      setVisualRerankEnabled: (enabled) => set({ visualRerankEnabled: enabled }),
-      setShowFilterChips: (show) => set({ showFilterChips: show }),
-      setOrgProfile: (profile) => set({ orgProfile: profile }),
 
-      setFilters: (filters) => set({ filters }),
-      
-      toggleFilter: (filter) => set((state) => {
-        const isSelected = state.selectedFilters.some(f => f.id === filter.id);
-        if (isSelected) {
-          return { selectedFilters: state.selectedFilters.filter(f => f.id !== filter.id) };
-        } else {
-          return { selectedFilters: [...state.selectedFilters, filter] };
-        }
-      }),
-      
-      clearSelectedFilters: () => set({ 
-        selectedFilters: [], 
-        isReranked: false,
-        rerankedResults: [],
-      }),
-      
-      setRerankedResults: (results) => set({ rerankedResults: results }),
-      setOriginalRankings: (rankings) => set({ originalRankings: rankings }),
-      setIsReranked: (isReranked) => set({ isReranked }),
-      
-      clearReranking: () => set({
-        rerankedResults: [],
-        isReranked: false,
-      }),
-      
-      setIsVisualReranked: (isReranked) => set({ isVisualReranked: isReranked }),
-      setIsVisualReranking: (loading) => set({ isVisualReranking: loading }),
-      setVisualRerankRankings: (rankings) => set({ visualRerankRankings: rankings }),
-      clearVisualReranking: () => set({
-        isVisualReranked: false,
-        isVisualReranking: false,
-        visualRerankRankings: {},
-      }),
-      
-      setIsGeneratingFilters: (loading) => set({ isGeneratingFilters: loading }),
-      setIsReranking: (loading) => set({ isReranking: loading }),
-      
-      setError: (error) => set({ error }),
-      
-      setShowAdminSettings: (show) => set({ showAdminSettings: show }),
-      
-      reset: () => set({
-        filters: [],
-        selectedFilters: [],
-        rerankedResults: [],
-        originalRankings: {},
-        isReranked: false,
-        isVisualReranked: false,
-        isVisualReranking: false,
-        visualRerankRankings: {},
-        isGeneratingFilters: false,
-        isReranking: false,
-        error: null,
-      }),
+      setNyrisApiKeyOverride: key => set({ nyrisApiKeyOverride: key }),
+      setGeminiApiKey: key => set({ geminiApiKey: key }),
+      setGeminiModel: model => set({ geminiModel: model }),
+      setFilterPrompt: prompt => set({ filterPrompt: prompt }),
+      setRerankPrompt: prompt => set({ rerankPrompt: prompt }),
+      setIncludeReasoning: include => set({ includeReasoning: include }),
+      setBackgroundRemovalEnabled: enabled =>
+        set({ backgroundRemovalEnabled: enabled }),
+      setBackgroundRemovalModel: model =>
+        set({ backgroundRemovalModel: model }),
+      setSam3Enabled: enabled => set({ sam3Enabled: enabled }),
+      setSam3ServerUrl: url => set({ sam3ServerUrl: url }),
+      setSam3SegmentOnClickOnly: onClickOnly =>
+        set({ sam3SegmentOnClickOnly: onClickOnly }),
+      setChatWithDbEnabled: enabled => set({ chatWithDbEnabled: enabled }),
+      setChatWithDbApiUrl: url => set({ chatWithDbApiUrl: url }),
+      setGoogleGroundingEnabled: enabled =>
+        set({ googleGroundingEnabled: enabled }),
+      setVisualRerankEnabled: enabled => set({ visualRerankEnabled: enabled }),
+      setShowFilterChips: show => set({ showFilterChips: show }),
+      setOrgProfile: profile => set({ orgProfile: profile }),
+
+      setFilters: filters => set({ filters }),
+
+      toggleFilter: filter =>
+        set(state => {
+          const isSelected = state.selectedFilters.some(
+            f => f.id === filter.id,
+          );
+          if (isSelected) {
+            return {
+              selectedFilters: state.selectedFilters.filter(
+                f => f.id !== filter.id,
+              ),
+            };
+          } else {
+            return { selectedFilters: [...state.selectedFilters, filter] };
+          }
+        }),
+
+      clearSelectedFilters: () =>
+        set({
+          selectedFilters: [],
+          isReranked: false,
+          rerankedResults: [],
+        }),
+
+      setRerankedResults: results => set({ rerankedResults: results }),
+      setOriginalRankings: rankings => set({ originalRankings: rankings }),
+      setIsReranked: isReranked => set({ isReranked }),
+
+      clearReranking: () =>
+        set({
+          rerankedResults: [],
+          isReranked: false,
+        }),
+
+      setIsVisualReranked: isReranked => set({ isVisualReranked: isReranked }),
+      setIsVisualReranking: loading => set({ isVisualReranking: loading }),
+      setVisualRerankRankings: rankings =>
+        set({ visualRerankRankings: rankings }),
+      clearVisualReranking: () =>
+        set({
+          isVisualReranked: false,
+          isVisualReranking: false,
+          visualRerankRankings: {},
+        }),
+
+      setIsGeneratingFilters: loading => set({ isGeneratingFilters: loading }),
+      setIsReranking: loading => set({ isReranking: loading }),
+
+      setError: error => set({ error }),
+
+      setShowAdminSettings: show => set({ showAdminSettings: show }),
+
+      reset: () =>
+        set({
+          filters: [],
+          selectedFilters: [],
+          rerankedResults: [],
+          originalRankings: {},
+          isReranked: false,
+          isVisualReranked: false,
+          isVisualReranking: false,
+          visualRerankRankings: {},
+          isGeneratingFilters: false,
+          isReranking: false,
+          error: null,
+        }),
     }),
     {
       name: 'smart-filters-storage',
-      version: 3,
+      version: 3.1,
       migrate: (persisted: unknown, version: number) => {
         const state = persisted as Partial<SmartFiltersState>;
         if (version < 1) {
-          if (!state.geminiModel || state.geminiModel === 'gemini-2.5-flash-lite') {
+          if (
+            !state.geminiModel ||
+            state.geminiModel === 'gemini-2.5-flash-lite'
+          ) {
             state.geminiModel = 'gemini-3.1-flash-lite-preview';
           }
         }
@@ -266,13 +301,11 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
           state.sam3Enabled = false;
         }
         if (version < 3) {
-          if (!state.geminiApiKey || state.geminiApiKey === 'AIzaSyC41LvDmZHVbRMlsEO1laTdxYekYtOQJDY') {
-            state.geminiApiKey = 'AIzaSyC41LvDmZHVbRMlsEO1IaTdxYekYtOF4Ww';
-          }
+          state.geminiApiKey = process.env.REACT_APP_GEMINI_API_KEY;
         }
         return state;
       },
-      partialize: (state) => ({
+      partialize: state => ({
         nyrisApiKeyOverride: state.nyrisApiKeyOverride,
         geminiApiKey: state.geminiApiKey,
         geminiModel: state.geminiModel,
@@ -291,8 +324,8 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
         showFilterChips: state.showFilterChips,
         orgProfile: state.orgProfile,
       }),
-    }
-  )
+    },
+  ),
 );
 
 export default useSmartFiltersStore;

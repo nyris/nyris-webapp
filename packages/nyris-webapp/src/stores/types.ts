@@ -68,23 +68,24 @@ export interface ProductsState {
   googleGroundingResponse: Record<string, any> | null;
   groundingFilterResult: any[];
   showingGroundingFilterResult: boolean;
+  groundingError: string | null;
   firstAlgoliaProducts: any[];
   fullResultPool: any[];
-  smartFilters: {
-    status: 'idle' | 'loading' | 'success' | 'error';
-    filters: Array<{
-      key: string;
-      label: string;
-      value: string;
-      selected?: boolean;
-    }>;
-    selectedFilterKey: string | null;
-    selectedFilterValue: string | null;
-    rerankedSkus: string[];
-    rerankStatus: 'idle' | 'loading' | 'success' | 'error';
-    errorMessage: string | null;
-    infoMessage: string | null;
-  };
+    smartFilters: {
+        status: 'idle' | 'loading' | 'success' | 'error';
+        filters: Array<{
+            key: string;
+            label: string;
+            value: string;
+            selected?: boolean;
+        }>;
+        selectedFilterKey: string | null;
+        selectedFilterValue: string | null;
+        rerankedSkus: string[];
+        rerankStatus: 'idle' | 'loading' | 'success' | 'error';
+        errorMessage: string | null;
+        infoMessage: string | null;
+    };
 }
 
 export interface ProductsAction {
@@ -101,9 +102,10 @@ export interface ProductsAction {
   setGoogleGroundingResponse: (result: any | null) => void;
   setGroundingFilterResult: (result: any[]) => void;
   setShowingGroundingFilterResult: (val?: boolean) => void;
+  setGroundingError: (error: string | null) => void;
   setFirstAlgoliaProducts: (products: any[]) => void;
   setFullResultPool: (products: any[]) => void;
-  setSmartFilters: (smartFilters: ProductsState['smartFilters']) => void;
+    setSmartFilters: (smartFilters: ProductsState['smartFilters']) => void;
 }
 
 export interface DetectedRegionsState {

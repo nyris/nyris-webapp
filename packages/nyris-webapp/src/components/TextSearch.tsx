@@ -36,6 +36,7 @@ function TextSearch({
   const navigate = useNavigate();
 
   const toggleAiMode = useUiStore(state => state.toggleAiMode);
+  const isAiModeOpen = useUiStore(state => state.isAiModeOpen);
 
   const preFilter = useRequestStore(state => state.preFilter);
   const requestImages = useRequestStore(state => state.requestImages);
@@ -55,6 +56,7 @@ function TextSearch({
 
   const [isOpenModalFilterDesktop, setToggleModalFilterDesktop] =
     useState<boolean>(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const showPreFilter = useMemo(() => {
     if (settings.shouldUseUserMetadata && user) {
@@ -384,6 +386,8 @@ function TextSearch({
               placeholder={t('Search')}
               value={valueInput}
               onChange={onChangeText}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
               ref={focusInp}
             />
           </div>
@@ -403,6 +407,10 @@ function TextSearch({
                     location.pathname === '/result' &&
                       'desktop:min-w-10 desktop:min-h-10',
                   ])}
+                  onPointerDown={event => {
+                    // Keep focus on input until click runs so mobile AI button doesn't pop in first.
+                    event.preventDefault();
+                  }}
                   onClick={() => {
                     if (visualSearch) {
                       navigate('/result');
@@ -434,20 +442,35 @@ function TextSearch({
               </Tooltip>
             )}
             {showImageUpload && <ImageUpload onCameraClick={onCameraClick} />}
-            {aiMode && (
-              <button
-                type="button"
-                className={twMerge(
-                  'px-[10px] h-10 rounded-full text-[14px] text-[#989BB7] flex items-center justify-center gap-2 whitespace-nowrap bg-[#FAFAFA] border border-solid border-transparent',
-                  'hover:bg-gradient-to-r hover:from-white hover:to-[#E4E3FF]',
-                  'hover:border-[#DDDEE7] hover:text-[#3B3E5F]',
-                )}
-                onClick={() => toggleAiMode()}
-              >
-                <Icon name="search" width={14} height={14} />
-                AI mode
-              </button>
-            )}
+            {aiMode &&
+              window.settings.vizo.chat &&
+              requestImages.length !== 0 &&
+              !(isMobile && isInputFocused) && (
+                <button
+                  type="button"
+                  className={twMerge(
+                    'px-[10px] h-10 rounded-full text-[14px] text-[#989BB7] flex items-center justify-center gap-2 whitespace-nowrap bg-[#FAFAFA] border border-solid border-transparent',
+                    !isAiModeOpen &&
+                      'hover:bg-gradient-to-r hover:from-white hover:to-[#E4E3FF]',
+                    !isAiModeOpen &&
+                      'hover:border-[#DDDEE7] hover:text-[#3B3E5F]',
+                    isAiModeOpen &&
+                      'bg-[#3B3E5F] text-white hover:bg-[#3B3E5F]',
+                  )}
+                  onClick={() => toggleAiMode()}
+                >
+                  <Icon
+                    name="search_ai"
+                    width={14}
+                    height={14}
+                    className={twMerge(
+                      'text-[#3B3E5F]',
+                      isAiModeOpen && 'text-white',
+                    )}
+                  />
+                  AI mode
+                </button>
+              )}
           </div>
         </div>
       </div>

@@ -68,7 +68,10 @@ async function toBase64(source: HTMLCanvasElement | string): Promise<string> {
       offscreen.width = Math.round(canvas.width * scale);
       offscreen.height = Math.round(canvas.height * scale);
       const ctx = offscreen.getContext('2d');
-      if (ctx) { ctx.drawImage(canvas, 0, 0, offscreen.width, offscreen.height); canvas = offscreen; }
+      if (ctx) {
+        ctx.drawImage(canvas, 0, 0, offscreen.width, offscreen.height);
+        canvas = offscreen;
+      }
     }
     return canvas.toDataURL('image/jpeg', 0.7).split(',')[1] || '';
   }
@@ -88,7 +91,10 @@ async function toBase64(source: HTMLCanvasElement | string): Promise<string> {
       canvas.width = Math.round(img.width * scale);
       canvas.height = Math.round(img.height * scale);
       const ctx = canvas.getContext('2d');
-      if (!ctx) { reject(new Error('No 2d context')); return; }
+      if (!ctx) {
+        reject(new Error('No 2d context'));
+        return;
+      }
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       const b64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1] || '';
       resolve(b64);
@@ -99,7 +105,7 @@ async function toBase64(source: HTMLCanvasElement | string): Promise<string> {
 }
 
 export function useVisualRerank() {
-  const { 
+  const {
     geminiApiKey,
     geminiModel,
     visualRerankEnabled,
@@ -107,7 +113,9 @@ export function useVisualRerank() {
     setIsVisualReranked,
     setVisualRerankRankings,
   } = useSmartFiltersStore();
-  const productsFromAlgolia = useResultStore(state => state.productsFromAlgolia);
+  const productsFromAlgolia = useResultStore(
+    state => state.productsFromAlgolia,
+  );
   const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
   const requestImages = useRequestStore(state => state.requestImages);
 
@@ -123,7 +131,7 @@ export function useVisualRerank() {
       return;
     }
 
-    const apiKey = geminiApiKey || (window as any).settings?.smartFilters?.geminiApiKey;
+    const apiKey = geminiApiKey || process.env.REACT_APP_GEMINI_API_KEY;
     if (!apiKey) {
       console.log('[VisualRerank] No API key');
       return;
@@ -145,8 +153,13 @@ export function useVisualRerank() {
       const [requestImageB64, ...candidateImages] = await Promise.all([
         toBase64(requestImages[0]),
         ...resultsToRerank.map(async (result: any) => {
-          const imageUrl = result.matches?.[0]?.url || result.main_image_link || result.image || result.images?.[0];
-          if (!imageUrl) return { sku: result.sku || result.objectID, base64: null };
+          const imageUrl =
+            result.matches?.[0]?.url ||
+            result.main_image_link ||
+            result.image ||
+            result.images?.[0];
+          if (!imageUrl)
+            return { sku: result.sku || result.objectID, base64: null };
           try {
             const b64 = await toBase64(imageUrl);
             return { sku: result.sku || result.objectID, base64: b64 };
@@ -156,7 +169,9 @@ export function useVisualRerank() {
         }),
       ]);
 
-      console.log(`[VisualRerank] Images fetched in ${Date.now() - startTime}ms`);
+      console.log(
+        `[VisualRerank] Images fetched in ${Date.now() - startTime}ms`,
+      );
 
       // Build multimodal parts
       const parts: any[] = [
@@ -175,15 +190,21 @@ export function useVisualRerank() {
         ];
         if (score !== null) meta.push(`API Score: ${Number(score).toFixed(3)}`);
         if (result.brand) meta.push(`Brand: ${result.brand}`);
-        if (result.description) meta.push(`Description: ${(result.description || '').substring(0, 120)}`);
-        if (result.category || result.type) meta.push(`Category: ${result.category || result.type}`);
+        if (result.description)
+          meta.push(
+            `Description: ${(result.description || '').substring(0, 120)}`,
+          );
+        if (result.category || result.type)
+          meta.push(`Category: ${result.category || result.type}`);
         if (result.material) meta.push(`Material: ${result.material}`);
 
         parts.push({ text: meta.join('\n') + '\n' });
 
         const imgData = candidateImages[i];
         if (imgData?.base64) {
-          parts.push({ inline_data: { mime_type: 'image/jpeg', data: imgData.base64 } });
+          parts.push({
+            inline_data: { mime_type: 'image/jpeg', data: imgData.base64 },
+          });
         } else {
           parts.push({ text: '[Image not available]' });
         }
@@ -202,10 +223,12 @@ export function useVisualRerank() {
             contents: [{ parts }],
             generationConfig: { temperature: 0.1, maxOutputTokens: 2048 },
           }),
-        }
+        },
       );
 
-      console.log(`[VisualRerank] Gemini responded in ${Date.now() - geminiStart}ms`);
+      console.log(
+        `[VisualRerank] Gemini responded in ${Date.now() - geminiStart}ms`,
+      );
 
       if (!response.ok) {
         const errData = await response.json();
@@ -233,7 +256,12 @@ export function useVisualRerank() {
 
       // Build SKU → score + reasoning map
       const scoreMap = new Map<string, { score: number; reasoning: string }>();
-      rankedResults.forEach(r => scoreMap.set(String(r.sku).trim(), { score: r.score, reasoning: r.reasoning }));
+      rankedResults.forEach(r =>
+        scoreMap.set(String(r.sku).trim(), {
+          score: r.score,
+          reasoning: r.reasoning,
+        }),
+      );
 
       // Record original rankings (1-based) before reordering
       const originalRankMap: Record<string, number> = {};
@@ -255,10 +283,18 @@ export function useVisualRerank() {
       });
 
       // Build rank change map: SKU → { originalRank, newRank, score, reasoning }
-      const rankingsMap: Record<string, { originalRank: number; newRank: number; score: number; reasoning: string }> = {};
+      const rankingsMap: Record<
+        string,
+        {
+          originalRank: number;
+          newRank: number;
+          score: number;
+          reasoning: string;
+        }
+      > = {};
       reordered.forEach((p, i) => {
         const sku = String(p.sku || p.objectID).trim();
-        const orig = originalRankMap[sku] ?? (i + 1);
+        const orig = originalRankMap[sku] ?? i + 1;
         const info = scoreMap.get(sku);
         rankingsMap[sku] = {
           originalRank: orig,
@@ -271,25 +307,38 @@ export function useVisualRerank() {
       setAlgoliaProducts([...reordered, ...rest]);
       setVisualRerankRankings(rankingsMap);
       setIsVisualReranked(true);
-      console.log(`[VisualRerank] Results reranked in ${Date.now() - startTime}ms total`);
+      console.log(
+        `[VisualRerank] Results reranked in ${Date.now() - startTime}ms total`,
+      );
 
       // Log top 5 for debugging
       reordered.slice(0, 5).forEach((p, i) => {
         const sku = String(p.sku || p.objectID).trim();
         const info = rankingsMap[sku];
         const change = info ? info.originalRank - info.newRank : 0;
-        const arrow = change > 0 ? `↑${change}` : change < 0 ? `↓${Math.abs(change)}` : '—';
-        console.log(`  ${i + 1}. [${info?.score ?? '?'}] ${sku} ${arrow} — ${info?.reasoning || ''}`);
+        const arrow =
+          change > 0 ? `↑${change}` : change < 0 ? `↓${Math.abs(change)}` : '—';
+        console.log(
+          `  ${i + 1}. [${info?.score ?? '?'}] ${sku} ${arrow} — ${info?.reasoning || ''}`,
+        );
       });
-
     } catch (err: any) {
       console.error('[VisualRerank] Error:', err);
     } finally {
       isRunningRef.current = false;
       setIsVisualReranking(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [geminiApiKey, visualRerankEnabled, productsFromAlgolia, requestImages, setAlgoliaProducts, setIsVisualReranking, setIsVisualReranked, setVisualRerankRankings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    geminiApiKey,
+    visualRerankEnabled,
+    productsFromAlgolia,
+    requestImages,
+    setAlgoliaProducts,
+    setIsVisualReranking,
+    setIsVisualReranked,
+    setVisualRerankRankings,
+  ]);
 
   return {
     runVisualRerank,

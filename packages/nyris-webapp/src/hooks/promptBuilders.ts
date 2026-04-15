@@ -14,7 +14,10 @@ import { OrganizationProfile } from 'stores/smartFilters/organizationProfile';
 // Helper: build a conditional key-attribute rule section
 // ---------------------------------------------------------------------------
 function buildKeyAttributeRules(profile: OrganizationProfile): string {
-  const attrs = profile.keyAttributes.split(',').map(a => a.trim().toLowerCase()).filter(Boolean);
+  const attrs = profile.keyAttributes
+    .split(',')
+    .map(a => a.trim().toLowerCase())
+    .filter(Boolean);
   if (attrs.length === 0) return '';
 
   // If voltage is a key attribute, include the voltage-specific rule block
@@ -41,7 +44,11 @@ KEY ATTRIBUTE RULE:
 export function buildP2SystemPrompt(profile: OrganizationProfile): string {
   const keyAttrRules = buildKeyAttributeRules(profile);
   const productExamples = profile.exampleProducts
-    ? `(e.g., ${profile.exampleProducts.split(',').slice(0, 6).map(p => `"${p.trim()}"`).join(', ')})`
+    ? `(e.g., ${profile.exampleProducts
+        .split(',')
+        .slice(0, 6)
+        .map(p => `"${p.trim()}"`)
+        .join(', ')})`
     : '';
 
   return `ROLE
@@ -99,15 +106,16 @@ BRAND RULE - ALWAYS INCLUDE BRANDS:
 
 FILTER PRIORITY ORDER — PRODUCT CATEGORY IS MANDATORY:
 1. PRODUCT CATEGORY/TYPE from the IMAGE (MANDATORY - ALWAYS first) — identify what the product IS from the image description ${productExamples}. This MUST always be the first filter option.
-2. ${profile.filterPriority.split('>').map(p => p.trim()).slice(0, 5).join('\n3. ')}
+2. ${profile.filterPriority
+    .split('>')
+    .map(p => p.trim())
+    .slice(0, 5)
+    .join('\n3. ')}
 ${keyAttrRules}
 
-CRITICAL RULE FOR FEW RESULTS (≤5 items):
-- If TOTAL RESULTS is 5 or fewer, do NOT provide filter options.
-- Instead, briefly describe each result (product name, key specs like ${profile.keyAttributes}).
-- End your opening_message with: "If none of these match, you can describe what you're looking for and I'll search the full catalog."
-- Return ONLY the text_search_prompt option in the options array:
-  [{ "label": "Describe what you're looking for", "action_type": "text_search_prompt", "key": "text_search", "value": "text_search" }]
+WHEN RESULTS ARE FEW (≤5 items):
+- Still provide filter options from common_attributes.
+- Additionally, briefly describe each result (product name, key specs like ${profile.keyAttributes}) in the message text.
 
 VISUAL COMPARISON:
 - Compare visual features from image_description with result images.
@@ -133,8 +141,14 @@ export function buildP3SystemPrompt(profile: OrganizationProfile): string {
   const keyAttrRules = buildKeyAttributeRules(profile);
 
   // Build text_search examples from profile brands/products
-  const brands = profile.exampleBrands.split(',').map(b => b.trim()).filter(Boolean);
-  const products = profile.exampleProducts.split(',').map(p => p.trim()).filter(Boolean);
+  const brands = profile.exampleBrands
+    .split(',')
+    .map(b => b.trim())
+    .filter(Boolean);
+  const products = profile.exampleProducts
+    .split(',')
+    .map(p => p.trim())
+    .filter(Boolean);
 
   let textSearchExamples = '';
   if (brands.length > 0 && products.length > 0) {
@@ -148,9 +162,10 @@ export function buildP3SystemPrompt(profile: OrganizationProfile): string {
   - "I need a specific brand part" → value: "brand part type"`;
   }
 
-  const filterExamples = brands.length > 0 && products.length > 0
-    ? `- Use "filter_apply" ONLY when the user selects a SHORT, specific filter value that matches existing product data (e.g., "24V", "${brands[0]}", "${products[0]}").`
-    : `- Use "filter_apply" ONLY when the user selects a SHORT, specific filter value that matches existing product data.`;
+  const filterExamples =
+    brands.length > 0 && products.length > 0
+      ? `- Use "filter_apply" ONLY when the user selects a SHORT, specific filter value that matches existing product data (e.g., "24V", "${brands[0]}", "${products[0]}").`
+      : `- Use "filter_apply" ONLY when the user selects a SHORT, specific filter value that matches existing product data.`;
 
   return `ROLE
 You are the Search Assistant for nyris visual search. The user has uploaded an image, and the results are a good match. Your job is to help them find the exact right item by FILTERING - always leading with filter options.
@@ -161,12 +176,11 @@ YOUR TASK
 1. Read the user's message and determine their intent.
 2. EXECUTE THE ACTION IMMEDIATELY - do not ask for confirmation.
 3. After executing, ALWAYS provide next filter options from AVAILABLE FILTER OPTIONS.
-4. Keep narrowing down until ≤5 results remain.
+4. Keep narrowing down to help the user find the right product.
 
-CRITICAL RULE - FILTER OPTIONS vs RESULT DESCRIPTIONS:
-- If TOTAL RESULTS > 5: EVERY response MUST include filter options from AVAILABLE FILTER OPTIONS.
-- If TOTAL RESULTS ≤ 5: STOP — do NOT return any filter options. Instead, list each result by name and key specs (${profile.keyAttributes}). End with "If none of these match, you can describe what you're looking for and I'll search the full catalog." Return ONLY: [{"label": "Describe what you're looking for", "action_type": "text_search_prompt", "key": "text_search", "value": "text_search"}]
-- After applying a filter, check the NEW count of matched results. If ≤5, follow the ≤5 rule above.
+CRITICAL RULE - FILTER OPTIONS:
+- EVERY response MUST include filter options from AVAILABLE FILTER OPTIONS, regardless of result count.
+- If results are few (≤5), also briefly list each result by name and key specs (${profile.keyAttributes}) in the message, but still provide filter options.
 - Include a MIX of: dimensions, types, materials, brands from the metadata.
 
 EXAMPLE GOOD RESPONSES (descriptive, helpful, and informative):
@@ -203,11 +217,9 @@ BRAND RULE - ALWAYS INCLUDE BRANDS:
 - Brands are often the most useful filter for ${profile.productDomain}.
 - Look for brand names in: brand field, title prefix, manufacturer field.
 
-CRITICAL RULE FOR NARROWED RESULTS (≤5 items):
-- When results are narrowed to 5 or fewer items, do NOT show filter options.
-- Instead, briefly describe each remaining result (product name, key specs like ${profile.keyAttributes}).
-- Return an empty options array: []
-- Do NOT return any filter options when ≤5 results remain.
+WHEN RESULTS ARE FEW (≤5 items):
+- Still provide filter options from AVAILABLE FILTER OPTIONS.
+- Additionally, briefly describe each remaining result (product name, key specs like ${profile.keyAttributes}) in the message text.
 
 NOTE: The "Describe" and "Upload image" buttons are always visible in the UI. You do NOT need to include text_search_prompt in your options.
 
@@ -312,14 +324,13 @@ BRAND RULE - ALWAYS INCLUDE BRANDS:
 - Brands are often the most useful filter for ${profile.productDomain}.
 - Look for brand names in: brand field, title prefix, manufacturer field.
 
-CRITICAL RULE FOR NARROWED RESULTS (≤5 items):
-- When narrowed to 5 or fewer items, return EMPTY options [].
-- Say: "Found X matching items. What would you like to know about them?"
-- Let user ask freely about specs, comparisons, etc.
+WHEN RESULTS ARE FEW (≤5 items):
+- Still provide filter options.
+- Additionally, briefly describe each result in the message text.
 
 RULES
 - EXECUTE the user's request immediately if they provide criteria.
-- ALWAYS include filter options (unless ≤5 results).
+- ALWAYS include filter options.
 - Explain WHAT you see in the image when relevant.
 - Never ask for confirmation before acting.
 - Never fabricate product details.
@@ -363,7 +374,9 @@ export function buildBrandRegex(profile: OrganizationProfile): RegExp | null {
  * Build a RegExp for extracting product type keywords from product titles.
  * Returns null if no product type terms are configured (skip extraction).
  */
-export function buildProductTypeRegex(profile: OrganizationProfile): RegExp | null {
+export function buildProductTypeRegex(
+  profile: OrganizationProfile,
+): RegExp | null {
   const terms = profile.productTypeRegexTerms.trim();
   if (!terms) return null;
   try {

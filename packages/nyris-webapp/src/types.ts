@@ -90,6 +90,7 @@ export interface AppSettings extends NyrisAPISettings {
     enabled?: boolean;
     groundingEnabled?: boolean;
     fallbackToElasticSearch?: boolean;
+    chat?: boolean;
   };
   headerText?: string;
   instantRedirectPatterns: string[];

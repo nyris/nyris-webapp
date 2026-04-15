@@ -15,7 +15,7 @@ import useUiStore from 'stores/ui/uiStore';
 
 function Header() {
   const { theme, auth0 } = window.settings;
-  const { isAuthenticated, user, logout } = useAuth0();
+  const { isAuthenticated } = useAuth0();
   let location = useLocation();
 
   const reset = useRequestStore(state => state.reset);

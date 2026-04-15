@@ -8,9 +8,6 @@ import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
 import { filterProducts } from 'utils/specificationFilter';
 import { filterProductsByText } from 'utils/textSearchFilter';
-import Chat from 'components/Vizo/Chat';
-import { MessageType } from 'types';
-import { useGeminiProductFilter } from 'hooks/useGeminiProductFilter';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -39,17 +36,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const isAlgoliaLoading = useUiStore(state => state.isAlgoliaLoading);
   const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
   const isAiModeOpen = useUiStore(state => state.isAiModeOpen);
-  const setIsAiModeOpen = useUiStore(state => state.setIsAiModeOpen);
 
-  const [ocr, setOcr] = useState([]);
-  const [showNewResultButton, setShowNewResultButton] = useState(false);
-  const [vizoResultAssessment, setVizoResultAssessment] = useState<any>();
-  const [vizoLoading, setVizoLoading] = useState(false);
-  const [vizoLoadingMessage, setVizoLoadingMessage] = useState('');
-  const [chatHistory, setChatHistory] = useState<any[]>(() =>
-    // loadPersistedChatHistory<any>(),
-    [],
-  );
   const [products, setProducts] = useState<any[]>([]);
 
   const setQuery = useRequestStore(state => state.setQuery);
@@ -63,8 +50,6 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const postFilterSelections = useRequestStore(
     state => state.postFilterSelections,
   );
-
-  const { visualResults } = useGeminiProductFilter();
 
   const textFilteredProducts = useMemo(() => {
     if (!requestImages?.length) {
@@ -161,105 +146,6 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groundingFilterResult]);
 
-  const reorderProducts = (skuInOrder: string[], products: any[]): any[] => {
-    // Create a map from the sku to the product for quick lookup
-    const productMap = new Map(products.map(product => [product.sku, product]));
-
-    // Reorder products based on skuInOrder
-    const orderedProducts = skuInOrder
-      .map(sku => productMap.get(sku))
-      .filter(product => product !== undefined);
-
-    return orderedProducts;
-  };
-
-  const showRefinedResult = () => {
-    if (typeof vizoResultAssessment?.result[0] === 'object') {
-      const res = vizoResultAssessment?.result.map(
-        (item: { sku: any }) => item.sku,
-      );
-      setProducts(reorderProducts(res, products));
-    } else {
-      setProducts(reorderProducts(vizoResultAssessment?.result, products));
-    }
-    setShowNewResultButton(false);
-  };
-
-  const onUserQuery = async (userQuery: string) => {
-    setVizoLoading(true);
-    setVizoLoadingMessage('Analyzing results...');
-    console.log({ userQuery });
-
-    setChatHistory(s => [
-      ...s,
-      {
-        type: MessageType.USER,
-        message: userQuery,
-      },
-    ]);
-    try {
-      const res = await visualResults(
-        userQuery,
-        productsFromFindApi,
-        productsFromAlgolia,
-      );
-      console.log(res);
-      if (
-        !res?.extracted_filters ||
-        Object.keys(res.extracted_filters).length === 0
-      )
-        return;
-      if (res.text_type === 'keyword_query') {
-      }
-      if (res.text_type === 'product_description' && res.extracted_filters) {
-        const foundProducts = productsFromFindApi.filter(
-          (itemFindApiProd: any) =>
-            Object.keys(res.extracted_filters).some(
-              key =>
-                itemFindApiProd[key] === res.extracted_filters[key] ||
-                itemFindApiProd.ids?.[key] === res.extracted_filters[key] ||
-                itemFindApiProd.customIds?.[key] === res.extracted_filters[key],
-            ),
-        );
-        if (foundProducts.length > 0) {
-          setProducts(foundProducts);
-        }
-        if (!foundProducts.length) {
-          singleImageSearch({
-            image: requestImages,
-            settings,
-            showFeedback: true,
-            compress: false,
-            clearPostFilter: true,
-            text: Object.values(res.extracted_filters).join(' '),
-          }).then(() => {});
-        }
-      }
-    } finally {
-      setVizoLoadingMessage('');
-      setVizoLoading(false);
-    }
-  };
-
-  const renderChatPanel = isAiModeOpen ? (
-    <div className="fixed right-0 top-12 desktop:top-[88px] desktop:right-4 h-[calc(100vh-48px)] desktop:h-[calc(100vh-100px)] w-[284px] z-50 border-l border-[#E0E0E0] p-2">
-      <Chat
-        imageThumb={null}
-        ocrList={ocr}
-        vizoLoading={vizoLoading}
-        onUserQuery={onUserQuery}
-        chatHistory={chatHistory}
-        filters={[]}
-        showNewResultButton={showNewResultButton}
-        showRefinedResult={showRefinedResult}
-        imageSearch={null}
-        vizoLoadingMessage={vizoLoadingMessage}
-        noResult={!!products?.length}
-        onCloseAiMode={() => setIsAiModeOpen(false)}
-      />
-    </div>
-  ) : null;
-
   const renderItem = useMemo(() => {
     const productsToRender: any[] =
       groundedFilteredProducts &&
@@ -312,7 +198,6 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     groundedFilteredProducts,
     showingGroundingFilterResult,
     isAiModeOpen,
-    renderChatPanel,
   ]);
 
   if (

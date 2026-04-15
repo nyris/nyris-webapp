@@ -15,31 +15,60 @@ function createTinyImageBlob(): Promise<Blob> {
     canvas.width = 10;
     canvas.height = 10;
     const ctx = canvas.getContext('2d');
-    if (!ctx) { reject(new Error('No canvas context')); return; }
+    if (!ctx) {
+      reject(new Error('No canvas context'));
+      return;
+    }
     // Draw a simple colored square so it's not just white
     ctx.fillStyle = '#888888';
     ctx.fillRect(0, 0, 10, 10);
     canvas.toBlob(
-      (blob) => blob ? resolve(blob) : reject(new Error('Canvas toBlob failed')),
+      blob =>
+        blob ? resolve(blob) : reject(new Error('Canvas toBlob failed')),
       'image/jpeg',
-      0.8
+      0.8,
     );
   });
 }
 
 /** Known structural fields to skip (not useful for product card display) */
 const SKIP_FIELDS = new Set([
-  'oid', 'score', 'images', 'image', 'matches', 'filters', 'keywords',
-  'links', 'position', 'title', 'description', 'language', 'sku',
-  'customIds', 'ids',
+  'oid',
+  'score',
+  'images',
+  'image',
+  'matches',
+  'filters',
+  'keywords',
+  'links',
+  'position',
+  'title',
+  'description',
+  'language',
+  'sku',
+  'customIds',
+  'ids',
 ]);
 
 /** Priority order for choosing which fields to display on product cards */
 const FIELD_PRIORITY: string[] = [
-  'brand', 'mpn', 'gtin', 'categoryGroup', 'series',
-  'category1', 'category2', 'brandCode', 'model', 'type',
-  'material', 'color', 'voltage', 'dimensions', 'size',
-  'manufacturer', 'product_line',
+  'brand',
+  'mpn',
+  'gtin',
+  'categoryGroup',
+  'series',
+  'category1',
+  'category2',
+  'brandCode',
+  'model',
+  'type',
+  'material',
+  'color',
+  'voltage',
+  'dimensions',
+  'size',
+  'manufacturer',
+  'product_line',
 ];
 
 /** Human-readable labels for known field names */
@@ -71,7 +100,11 @@ export interface ProbeResult {
   /** Total results returned */
   resultCount: number;
   /** All discovered fields with their source path (e.g. "ids.brand") */
-  availableFields: { path: string; label: string; sampleValue: string | null }[];
+  availableFields: {
+    path: string;
+    label: string;
+    sampleValue: string | null;
+  }[];
   /** Best 4 fields for product card attributes */
   recommendedAttributes: {
     attributeOneLabelValue: string;
@@ -97,35 +130,45 @@ export async function probeApiSchema(apiKey: string): Promise<ProbeResult> {
   try {
     // Generate a valid test image via canvas
     const blob = await createTinyImageBlob();
-    console.log('[Probe] Created test image blob:', blob.size, 'bytes');
 
     const formData = new FormData();
     formData.append('image', blob, 'probe.jpg');
 
     const url = `${baseUrl}/find/v1.1`;
-    console.log('[Probe] Sending probe to:', url, 'with key:', apiKey.substring(0, 8) + '...');
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'X-Api-Key': apiKey,
-        'Accept': 'application/offers.complete+json',
+        Accept: 'application/offers.complete+json',
         'X-Options': 'limit=5',
       },
       body: formData,
     });
 
-    console.log('[Probe] Response status:', response.status, response.statusText);
-
     if (!response.ok) {
-      return { success: false, error: `API returned ${response.status}: ${response.statusText}`, resultCount: 0, availableFields: [], recommendedAttributes: emptyAttributes(), hasBrandField: false };
+      return {
+        success: false,
+        error: `API returned ${response.status}: ${response.statusText}`,
+        resultCount: 0,
+        availableFields: [],
+        recommendedAttributes: emptyAttributes(),
+        hasBrandField: false,
+      };
     }
 
     const data = await response.json();
     const results = data?.results || [];
 
     if (results.length === 0) {
-      return { success: false, error: 'No results returned — index may be empty', resultCount: 0, availableFields: [], recommendedAttributes: emptyAttributes(), hasBrandField: false };
+      return {
+        success: false,
+        error: 'No results returned — index may be empty',
+        resultCount: 0,
+        availableFields: [],
+        recommendedAttributes: emptyAttributes(),
+        hasBrandField: false,
+      };
     }
 
     // Analyze field structure across all returned results
@@ -165,20 +208,32 @@ export async function probeApiSchema(apiKey: string): Promise<ProbeResult> {
     }
 
     // Score each field: prefer fields that have non-null values across results
-    const scoredFields: { path: string; fieldName: string; score: number; sampleValue: string | null }[] = [];
+    const scoredFields: {
+      path: string;
+      fieldName: string;
+      score: number;
+      sampleValue: string | null;
+    }[] = [];
 
     for (const [path, values] of Object.entries(fieldValues)) {
-      const nonNullValues = values.filter(v => v !== null && v !== '' && v !== 'null');
+      const nonNullValues = values.filter(
+        v => v !== null && v !== '' && v !== 'null',
+      );
       const fieldName = path.includes('.') ? path.split('.').pop()! : path;
 
       // Skip structural fields in ids/customIds
       if (['hasPartsListEntries'].includes(fieldName)) continue;
 
       const priorityIndex = FIELD_PRIORITY.indexOf(fieldName);
-      const priorityScore = priorityIndex >= 0 ? (FIELD_PRIORITY.length - priorityIndex) * 10 : 0;
+      const priorityScore =
+        priorityIndex >= 0 ? (FIELD_PRIORITY.length - priorityIndex) * 10 : 0;
       const coverageScore = (nonNullValues.length / values.length) * 50;
       // Prefer ids.* paths over top-level (more specific accessor)
-      const pathBonus = path.startsWith('ids.') ? 5 : path.startsWith('customIds.') ? 2 : 3;
+      const pathBonus = path.startsWith('ids.')
+        ? 5
+        : path.startsWith('customIds.')
+          ? 2
+          : 3;
 
       scoredFields.push({
         path,
@@ -209,12 +264,30 @@ export async function probeApiSchema(apiKey: string): Promise<ProbeResult> {
     }));
 
     const attrs = emptyAttributes();
-    if (top4[0]) { attrs.attributeOneLabelValue = FIELD_LABELS[top4[0].fieldName] || top4[0].fieldName; attrs.attributeOneValue = top4[0].path; }
-    if (top4[1]) { attrs.attributeTwoLabelValue = FIELD_LABELS[top4[1].fieldName] || top4[1].fieldName; attrs.attributeTwoValue = top4[1].path; }
-    if (top4[2]) { attrs.attributeThreeLabelValue = FIELD_LABELS[top4[2].fieldName] || top4[2].fieldName; attrs.attributeThreeValue = top4[2].path; }
-    if (top4[3]) { attrs.attributeFourLabelValue = FIELD_LABELS[top4[3].fieldName] || top4[3].fieldName; attrs.attributeFourValue = top4[3].path; }
+    if (top4[0]) {
+      attrs.attributeOneLabelValue =
+        FIELD_LABELS[top4[0].fieldName] || top4[0].fieldName;
+      attrs.attributeOneValue = top4[0].path;
+    }
+    if (top4[1]) {
+      attrs.attributeTwoLabelValue =
+        FIELD_LABELS[top4[1].fieldName] || top4[1].fieldName;
+      attrs.attributeTwoValue = top4[1].path;
+    }
+    if (top4[2]) {
+      attrs.attributeThreeLabelValue =
+        FIELD_LABELS[top4[2].fieldName] || top4[2].fieldName;
+      attrs.attributeThreeValue = top4[2].path;
+    }
+    if (top4[3]) {
+      attrs.attributeFourLabelValue =
+        FIELD_LABELS[top4[3].fieldName] || top4[3].fieldName;
+      attrs.attributeFourValue = top4[3].path;
+    }
 
-    const hasBrandField = results.some((r: any) => r.brand && typeof r.brand === 'string');
+    const hasBrandField = results.some(
+      (r: any) => r.brand && typeof r.brand === 'string',
+    );
 
     return {
       success: true,
@@ -225,7 +298,14 @@ export async function probeApiSchema(apiKey: string): Promise<ProbeResult> {
     };
   } catch (err: any) {
     console.error('[Probe] Error:', err);
-    return { success: false, error: err.message || 'Network error', resultCount: 0, availableFields: [], recommendedAttributes: emptyAttributes(), hasBrandField: false };
+    return {
+      success: false,
+      error: err.message || 'Network error',
+      resultCount: 0,
+      availableFields: [],
+      recommendedAttributes: emptyAttributes(),
+      hasBrandField: false,
+    };
   }
 }
 

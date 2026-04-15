@@ -41,6 +41,10 @@ const productsSlice: StateCreator<ProductsState & ProductsAction> = set => ({
         ? { showingGroundingFilterResult: !state.showingGroundingFilterResult }
         : { showingGroundingFilterResult: val },
     ),
+  setGroundingError: error =>
+    set(state => ({
+      groundingError: error,
+    })),
   setFirstAlgoliaProducts: products =>
     set(state => ({ firstAlgoliaProducts: products })),
   setFullResultPool: products =>

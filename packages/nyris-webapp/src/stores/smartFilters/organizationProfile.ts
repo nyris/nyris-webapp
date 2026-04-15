@@ -8,8 +8,12 @@
  */
 
 import {
-  RS_P2_PROMPT, RS_P3_PROMPT, RS_P5_PROMPT,
-  GC_P2_PROMPT, GC_P3_PROMPT, GC_P5_PROMPT,
+  RS_P2_PROMPT,
+  RS_P3_PROMPT,
+  RS_P5_PROMPT,
+  GC_P2_PROMPT,
+  GC_P3_PROMPT,
+  GC_P5_PROMPT,
 } from './frozenPrompts';
 
 export interface OrganizationProfile {
@@ -49,27 +53,35 @@ export interface OrganizationProfile {
 
 export const RS_COMPONENTS_PRESET: OrganizationProfile = {
   orgName: 'RS Components',
-  nyrisApiKey: 'hVxjODlsbdgFMZ3XTktUralCrjVM58zi',
+  nyrisApiKey: '',
   productDomain: 'industrial electrical components and spare parts',
-  exampleProducts: 'light blocks, contactors, bearings, relays, motors, sensors, fans, controllers',
-  exampleBrands: 'Schneider Electric, Siemens, ABB, Phoenix Contact, Bosch, SKF',
+  exampleProducts:
+    'light blocks, contactors, bearings, relays, motors, sensors, fans, controllers',
+  exampleBrands:
+    'Schneider Electric, Siemens, ABB, Phoenix Contact, Bosch, SKF',
   keyAttributes: 'voltage, current rating, IP rating, material, dimensions',
   filterPriority: 'VOLTAGE > BRAND > TYPE > DIMENSIONS > MATERIAL',
-  exampleGoodResult: 'I see a Schneider Electric ZBV-B6 light block — this is an LED indicator module typically used in industrial push button assemblies. Found 20 matching parts across different voltage ratings and series. You can filter by voltage, brand, or model.',
-  exampleBadResult: 'This appears to be a precision bearing ring, commonly used in rotating machinery. The results show various industrial parts that may not be an exact match. Try filtering by product type or material to find closer alternatives.',
-  exampleFilterNarrow: 'I\'ve filtered the results to show only light blocks — these are the LED/lamp modules used inside Schneider Electric push button assemblies. Showing 14 light blocks out of the original 20 results. You can narrow further by voltage rating or specific model series.',
-  brandRegexTerms: 'DMG|MORI|SIEMENS|FANUC|HAAS|MAZAK|OKUMA|HEIDENHAIN|BOSCH|SKF|NSK|FAG|INA|TIMKEN',
-  productTypeRegexTerms: 'spacer\\s*ring|rotor[- ]?ring|bearing|housing|ring|deckel|lid|spindle|mandrino|chuck|collet|tool\\s*holder',
+  exampleGoodResult:
+    'I see a Schneider Electric ZBV-B6 light block — this is an LED indicator module typically used in industrial push button assemblies. Found 20 matching parts across different voltage ratings and series. You can filter by voltage, brand, or model.',
+  exampleBadResult:
+    'This appears to be a precision bearing ring, commonly used in rotating machinery. The results show various industrial parts that may not be an exact match. Try filtering by product type or material to find closer alternatives.',
+  exampleFilterNarrow:
+    "I've filtered the results to show only light blocks — these are the LED/lamp modules used inside Schneider Electric push button assemblies. Showing 14 light blocks out of the original 20 results. You can narrow further by voltage rating or specific model series.",
+  brandRegexTerms:
+    'DMG|MORI|SIEMENS|FANUC|HAAS|MAZAK|OKUMA|HEIDENHAIN|BOSCH|SKF|NSK|FAG|INA|TIMKEN',
+  productTypeRegexTerms:
+    'spacer\\s*ring|rotor[- ]?ring|bearing|housing|ring|deckel|lid|spindle|mandrino|chuck|collet|tool\\s*holder',
   p2Prompt: RS_P2_PROMPT,
   p3Prompt: RS_P3_PROMPT,
   p5Prompt: RS_P5_PROMPT,
   settingsOverrides: {
-    apiKey: 'hVxjODlsbdgFMZ3XTktUralCrjVM58zi',
+    apiKey: '',
     appTitle: 'RS Components Visual Search',
     headerText: 'RS Components Visual Search',
     language: 'en',
     theme: {
-      appBarLogoUrl: 'https://storage.googleapis.com/product-data-public/RS%20Components/logo/RS_LOGO_CMYK_reversed.jpg',
+      appBarLogoUrl:
+        'https://storage.googleapis.com/product-data-public/RS%20Components/logo/RS_LOGO_CMYK_reversed.jpg',
       headerColor: '#ffffff',
       logoHeight: '54px',
       logoWidth: '100px',
@@ -92,27 +104,37 @@ export const RS_COMPONENTS_PRESET: OrganizationProfile = {
 
 export const GC_GRUPPE_PRESET: OrganizationProfile = {
   orgName: 'GC Gruppe',
-  nyrisApiKey: 'fxIhhQAZlhQ8aZYJaQbysZGJ69J4hwGl',
-  productDomain: 'plumbing, heating, sanitary, and building installation products',
-  exampleProducts: 'faucets, shower enclosures, radiators, thermostats, pumps, water heaters, washbasins, toilets, valves, pressure reducers, pipes, boilers, heat exchangers, drainage systems',
-  exampleBrands: 'Dornbracht, Villeroy & Boch, Hansgrohe, KSB, AEG, Wilo, Grohe, Geberit, Viessmann, Buderus, Grundfos, Stiebel Eltron, BOYSEN',
-  keyAttributes: 'brand, product type, material, dimensions, connection size, flow rate, pressure rating, energy rating',
+  nyrisApiKey: '',
+  productDomain:
+    'plumbing, heating, sanitary, and building installation products',
+  exampleProducts:
+    'faucets, shower enclosures, radiators, thermostats, pumps, water heaters, washbasins, toilets, valves, pressure reducers, pipes, boilers, heat exchangers, drainage systems',
+  exampleBrands:
+    'Dornbracht, Villeroy & Boch, Hansgrohe, KSB, AEG, Wilo, Grohe, Geberit, Viessmann, Buderus, Grundfos, Stiebel Eltron, BOYSEN',
+  keyAttributes:
+    'brand, product type, material, dimensions, connection size, flow rate, pressure rating, energy rating',
   filterPriority: 'BRAND > TYPE > DIMENSIONS > MATERIAL > CONNECTION SIZE',
-  exampleGoodResult: 'I see a Dornbracht basin mixer tap — this is a bathroom faucet used for washbasins. Found 20 matching products across different brands and series. You can filter by brand, type, or connection size.',
-  exampleBadResult: 'This appears to be a plumbing fixture. The results show various sanitary/heating products that may not be an exact match. Try filtering by product type or brand to find closer alternatives.',
-  exampleFilterNarrow: 'I\'ve filtered the results to show only basin mixer taps. Showing 8 matching faucets out of the original 20 results. You can narrow further by brand or connection size.',
-  brandRegexTerms: 'DORNBRACHT|HANSGROHE|GROHE|GEBERIT|VILLEROY|V&B|KSB|AEG|WILO|VIESSMANN|BUDERUS|GRUNDFOS|STIEBEL|BOYSEN|RADA|MONDIAL|VAILLANT|JUNKERS|WOLF|KERMI|OVENTROP|FLAMCO|REFLEX|HONEYWELL|CALEFFI|DANFOSS',
-  productTypeRegexTerms: 'armatur|mischer|brause|dusch|wasch|becken|wanne|thermostat|ventil|pumpe|speicher|heiz|kessel|filter|regler|ablauf|siphon|rohr|fitting|faucet|mixer|shower|basin|toilet|radiator|valve|pump|boiler|heater',
+  exampleGoodResult:
+    'I see a Dornbracht basin mixer tap — this is a bathroom faucet used for washbasins. Found 20 matching products across different brands and series. You can filter by brand, type, or connection size.',
+  exampleBadResult:
+    'This appears to be a plumbing fixture. The results show various sanitary/heating products that may not be an exact match. Try filtering by product type or brand to find closer alternatives.',
+  exampleFilterNarrow:
+    "I've filtered the results to show only basin mixer taps. Showing 8 matching faucets out of the original 20 results. You can narrow further by brand or connection size.",
+  brandRegexTerms:
+    'DORNBRACHT|HANSGROHE|GROHE|GEBERIT|VILLEROY|V&B|KSB|AEG|WILO|VIESSMANN|BUDERUS|GRUNDFOS|STIEBEL|BOYSEN|RADA|MONDIAL|VAILLANT|JUNKERS|WOLF|KERMI|OVENTROP|FLAMCO|REFLEX|HONEYWELL|CALEFFI|DANFOSS',
+  productTypeRegexTerms:
+    'armatur|mischer|brause|dusch|wasch|becken|wanne|thermostat|ventil|pumpe|speicher|heiz|kessel|filter|regler|ablauf|siphon|rohr|fitting|faucet|mixer|shower|basin|toilet|radiator|valve|pump|boiler|heater',
   p2Prompt: GC_P2_PROMPT,
   p3Prompt: GC_P3_PROMPT,
   p5Prompt: GC_P5_PROMPT,
   settingsOverrides: {
-    apiKey: 'fxIhhQAZlhQ8aZYJaQbysZGJ69J4hwGl',
+    apiKey: '',
     appTitle: 'GC Gruppe Visual Search',
     headerText: 'GC Gruppe Visual Search',
     language: 'de',
     theme: {
-      appBarLogoUrl: 'https://storage.googleapis.com/product-data-public/RS%20Components/logo/RS_LOGO_CMYK_reversed.jpg',
+      appBarLogoUrl:
+        'https://storage.googleapis.com/product-data-public/RS%20Components/logo/RS_LOGO_CMYK_reversed.jpg',
       headerColor: '#ffffff',
       logoHeight: '54px',
       logoWidth: '100px',
@@ -141,9 +163,12 @@ export const GENERIC_PRESET: OrganizationProfile = {
   exampleBrands: '',
   keyAttributes: 'brand, type, size, material, color',
   filterPriority: 'BRAND > TYPE > SIZE > MATERIAL > COLOR',
-  exampleGoodResult: 'I found products matching your image. You can use the filters below to narrow down the results by brand, type, or other attributes.',
-  exampleBadResult: 'The results may not be an exact match for your image. Try filtering by product type or brand to find closer alternatives.',
-  exampleFilterNarrow: 'Filtered the results based on your selection. You can continue narrowing by other attributes.',
+  exampleGoodResult:
+    'I found products matching your image. You can use the filters below to narrow down the results by brand, type, or other attributes.',
+  exampleBadResult:
+    'The results may not be an exact match for your image. Try filtering by product type or brand to find closer alternatives.',
+  exampleFilterNarrow:
+    'Filtered the results based on your selection. You can continue narrowing by other attributes.',
   brandRegexTerms: '',
   productTypeRegexTerms: '',
   p2Prompt: '',
@@ -156,7 +181,13 @@ export const DEFAULT_ORG_PROFILE: OrganizationProfile = RS_COMPONENTS_PRESET;
 
 /** All available presets for the admin UI dropdown */
 export const ORG_PRESETS: { label: string; value: OrganizationProfile }[] = [
-  { label: 'RS Components (Industrial Electrical)', value: RS_COMPONENTS_PRESET },
-  { label: 'GC Gruppe (Plumbing, Heating & Sanitary)', value: GC_GRUPPE_PRESET },
+  {
+    label: 'RS Components (Industrial Electrical)',
+    value: RS_COMPONENTS_PRESET,
+  },
+  {
+    label: 'GC Gruppe (Plumbing, Heating & Sanitary)',
+    value: GC_GRUPPE_PRESET,
+  },
   { label: 'Generic (Product Agnostic)', value: GENERIC_PRESET },
 ];
