@@ -210,18 +210,11 @@ SPECIFICATION (from image analysis):
 ${JSON.stringify(p4Specification, null, 2)}
 
 TOP 20 RESULTS WITH METADATA:
-<<<<<<< HEAD
-${resultsSummary.map(r => 
-  `${r.rank}. ${r.title}${r.description ? ` - ${r.description}` : ''} (Score: ${r.score})${r.metadata ? `\n   Metadata: ${JSON.stringify(r.metadata)}` : ''}`
-).join('\n')}
-=======
 ${resultsSummary
   .map(
     r =>
       `${r.rank}. ${r.title}${r.description ? ` - ${r.description}` : ''} (Score: ${r.score})${r.metadata ? `\n   Metadata: ${JSON.stringify(r.metadata)}` : ''}`,
-  )
-  .join('\n')}
->>>>>>> develop
+  ).join('\n')}
 
 COMMON ATTRIBUTES FOUND IN RESULTS (for filter suggestions):
 ${JSON.stringify(attributeFrequency, null, 2)}
