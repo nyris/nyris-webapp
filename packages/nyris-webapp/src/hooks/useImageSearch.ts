@@ -243,7 +243,6 @@ export const useImageSearch = () => {
                   rerankedSkus: [],
                   rerankStatus: 'idle',
                   errorMessage: null,
-                  infoMessage: null,
               });
           }
         useRequestStore.getState().setGroundingQuery('');
@@ -327,7 +326,6 @@ export const useImageSearch = () => {
           rerankedSkus: [],
           rerankStatus: 'idle',
           errorMessage: null,
-          infoMessage: null,
         });
 
         smartFilterPromise = generateSmartFilters({
@@ -345,7 +343,6 @@ export const useImageSearch = () => {
                 rerankedSkus: [],
                 rerankStatus: 'idle',
                 errorMessage: 'Could not generate smart filters.',
-                infoMessage: null,
               });
               return;
             }
@@ -380,7 +377,6 @@ export const useImageSearch = () => {
               rerankedSkus,
               rerankStatus: 'idle',
               errorMessage: null,
-              infoMessage: rerankingApplied ? null : 'Results were not reranked.',
             });
           })
           .catch(error => {
@@ -397,7 +393,6 @@ export const useImageSearch = () => {
               errorMessage: timeout
                 ? 'Smart filters are unavailable right now.'
                 : 'Could not generate smart filters.',
-              infoMessage: null,
             });
           });
       }

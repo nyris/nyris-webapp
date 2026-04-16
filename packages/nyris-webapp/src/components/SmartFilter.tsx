@@ -163,7 +163,6 @@ function SmartFilter({
           selectedFilterValue: filter.value,
           rerankStatus: 'error',
           errorMessage: 'Could not rerank results.',
-          infoMessage: null,
         });
         return;
       }
@@ -175,7 +174,6 @@ function SmartFilter({
           selectedFilterValue: filter.value,
           rerankStatus: 'success',
           errorMessage: null,
-          infoMessage: 'Results were not reranked.',
         });
         return;
       }
@@ -187,7 +185,6 @@ function SmartFilter({
           selectedFilterValue: filter.value,
           rerankStatus: 'error',
           errorMessage: 'Could not rerank results.',
-          infoMessage: null,
         });
         return;
       }
@@ -199,7 +196,6 @@ function SmartFilter({
         rerankedSkus,
         rerankStatus: 'success',
         errorMessage: null,
-        infoMessage: rerankingApplied ? null : 'Results were not reranked.',
       });
     } catch (error: any) {
       const timeout = String(error?.message || '').includes('SMART_FILTER_TIMEOUT');
@@ -240,11 +236,6 @@ function SmartFilter({
       {smartFilters.status === 'success' && smartFilters.filters.length === 0 && (
         <div className="mx-4 mt-3 text-xs text-[#767A9F]">
           No smart filters available for this image.
-        </div>
-      )}
-      {smartFilters.infoMessage && (
-        <div className="mx-4 mt-3 text-xs text-[#767A9F]">
-          {smartFilters.infoMessage}
         </div>
       )}
       {smartFilters.rerankStatus === 'loading' && (

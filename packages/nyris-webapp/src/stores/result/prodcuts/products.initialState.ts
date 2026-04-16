@@ -30,6 +30,5 @@ export const initialState: ProductsState = {
     rerankedSkus: [],
     rerankStatus: 'idle',
     errorMessage: null,
-    infoMessage: null,
   },
 };

@@ -84,7 +84,6 @@ export interface ProductsState {
         rerankedSkus: string[];
         rerankStatus: 'idle' | 'loading' | 'success' | 'error';
         errorMessage: string | null;
-        infoMessage: string | null;
     };
 }
 
