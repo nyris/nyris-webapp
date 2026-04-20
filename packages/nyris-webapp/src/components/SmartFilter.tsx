@@ -27,6 +27,7 @@ function SmartFilter({
             }
             return (
               <ItemSpecification
+                key={key}
                 attr={key}
                 value={value}
                 specificationFilter={specificationFilter}

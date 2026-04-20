@@ -141,6 +141,17 @@ export interface FeedbackAction {
   setShowFeedback: (show: boolean) => void;
 }
 
+export interface BannerState {
+  bannerGoBack: boolean;
+  bannerTextSearch: 'loading' | 'resolved' | 'pending';
+}
+
+export interface BannerAction {
+  setBannerGoBack: (goBack: boolean) => void;
+  setBannerTextSearch: (textSearch: 'loading' | 'resolved' | 'pending') => void;
+  resetBanner: () => void;
+}
+
 export interface SidePanelState {
   showSidePanel: boolean;
 }

@@ -443,7 +443,7 @@ function TextSearch({
             )}
             {showImageUpload && <ImageUpload onCameraClick={onCameraClick} />}
             {aiMode &&
-              window.settings.vizo.chat &&
+              window.settings.vizo?.chat &&
               requestImages.length !== 0 &&
               !(isMobile && isInputFocused) && (
                 <button

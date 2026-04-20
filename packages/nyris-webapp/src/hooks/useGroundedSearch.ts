@@ -72,6 +72,7 @@ export const useGroundedSearch = () => {
         .catch(error => {
           console.log('Grounding API error:', error);
           setGroundingError('Unable to search the Internet.');
+          setIsGoogleGroundingLoading(false);
         })
         .finally(() => {});
     },

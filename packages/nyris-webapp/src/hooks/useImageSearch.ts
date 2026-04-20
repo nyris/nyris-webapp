@@ -91,6 +91,7 @@ export const useImageSearch = () => {
       // setAlgoliaProducts([]);
       useRequestStore.getState().setGroundingQuery('');
       useResultStore.getState().resetGrounding();
+      useUiStore.getState().resetBanner();
       if (newSearch) {
         startNewSession();
       }
@@ -197,7 +198,11 @@ export const useImageSearch = () => {
         const specification = res?.image_analysis?.specification || {};
         const hasOcr = Object.keys(specification).length > 0;
 
-        if (hasOcr && window.settings.vizo?.groundingEnabled) {
+        if (
+          hasOcr &&
+          window.settings.vizo?.groundingEnabled &&
+          res?.results.length > 0
+        ) {
           groundedSearch(
             requestImage || canvasImage,
             res?.results || [],
