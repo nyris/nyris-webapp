@@ -90,7 +90,7 @@ export const useImageSearch = () => {
       setIsFindApiLoading(true);
       // setAlgoliaProducts([]);
       useRequestStore.getState().setGroundingQuery('');
-      useResultStore.getState().resetGrounding();
+
       useUiStore.getState().resetBanner();
       if (newSearch) {
         startNewSession();
@@ -184,7 +184,7 @@ export const useImageSearch = () => {
                 : text
               : undefined,
         });
-
+        useResultStore.getState().resetGrounding();
         if (clearPostFilter) {
           refine();
           clearPostFilterSelections();
