@@ -1,5 +1,4 @@
 import Tooltip from 'components/Tooltip/TooltipComponent';
-import React from 'react';
 
 interface Props {
   title: any;

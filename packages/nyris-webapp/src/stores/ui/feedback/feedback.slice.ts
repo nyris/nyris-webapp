@@ -5,7 +5,7 @@ import { initialState } from './feedback.initialState';
 
 const feedbackSlice: StateCreator<FeedbackState & FeedbackAction> = set => ({
   ...initialState,
-  setShowFeedback: (showFeedback: boolean) => set(state => ({ showFeedback })),
+  setShowFeedback: (showFeedback: boolean) => set(() => ({ showFeedback })),
 });
 
 export default feedbackSlice;

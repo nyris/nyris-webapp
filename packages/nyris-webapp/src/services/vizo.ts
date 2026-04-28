@@ -178,7 +178,7 @@ export async function groundingSearchQuery({
 export async function chatAnalysis({
   promptKey,
   multimodalInputs,
-  apiKey = 'NyuA2QP1OVy5YksAUU-ftCU64GsOCWFO',
+  apiKey,
 }: ChatAnalysisParams): Promise<any> {
   try {
     const response = await axios.post(

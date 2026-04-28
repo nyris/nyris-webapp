@@ -13,47 +13,8 @@ import useConversationStore, {
 } from 'stores/chat/conversationStore';
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import useResultStore from 'stores/result/resultStore';
-import {
-  buildP5SystemPrompt,
-  buildBrandRegex,
-  buildProductTypeRegex,
-} from './promptBuilders';
+import { buildBrandRegex, buildProductTypeRegex } from './promptBuilders';
 import { chatAnalysis } from 'services/vizo';
-
-// Helper function to normalize text for fuzzy matching
-// Handles umlauts (ö→o, ü→u, ä→a, ß→ss) and other diacritics
-const normalizeText = (text: string): string => {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-    .replace(/ö/g, 'o')
-    .replace(/ü/g, 'u')
-    .replace(/ä/g, 'a')
-    .replace(/ß/g, 'ss')
-    .replace(/[^a-z0-9\s]/g, ' ') // Replace special chars with space
-    .replace(/\s+/g, ' ')
-    .trim();
-};
-
-// Fuzzy match helper - checks if searchTerm is contained in text with normalization (reserved for future use)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const fuzzyMatch = (text: string, searchTerm: string): boolean => {
-  const normalizedText = normalizeText(text);
-  const normalizedSearch = normalizeText(searchTerm);
-
-  // Direct containment check
-  if (normalizedText.includes(normalizedSearch)) return true;
-
-  // Check individual words from search term
-  const searchWords = normalizedSearch.split(' ').filter(w => w.length > 2);
-  if (searchWords.length > 1) {
-    // All significant words must be present
-    return searchWords.every(word => normalizedText.includes(word));
-  }
-
-  return false;
-};
 
 // P5 System Prompt is now dynamically built via buildP5SystemPrompt(orgProfile)
 
@@ -76,8 +37,7 @@ export function useBadResultsRecovery() {
     setError,
   } = useConversationStore();
 
-  const { geminiApiKey, geminiModel, filters, orgProfile } =
-    useSmartFiltersStore();
+  const { filters, orgProfile } = useSmartFiltersStore();
   const productsFromAlgolia = useResultStore(
     state => state.productsFromAlgolia,
   );
@@ -105,22 +65,11 @@ export function useBadResultsRecovery() {
 
   const sendMessage = useCallback(
     async (userMessage: string) => {
-      const apiKey = geminiApiKey || process.env.REACT_APP_GEMINI_API_KEY;
-
       // Add user message to chat
       addMessage({
         role: 'user',
         content: userMessage,
       });
-
-      if (!apiKey) {
-        addMessage({
-          role: 'assistant',
-          content:
-            'Please configure your Gemini API key in Admin Settings to use the recovery assistant.',
-        });
-        return;
-      }
 
       // Check if we've exceeded max attempts
       if (attemptCounter >= 3) {
@@ -376,7 +325,6 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
       messages,
       failureMode,
       attemptCounter,
-      geminiApiKey,
       filters,
       orgProfile,
       activeProducts,

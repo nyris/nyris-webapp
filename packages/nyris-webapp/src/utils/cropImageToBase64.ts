@@ -11,7 +11,6 @@ export function cropImage(
   region?: RectCoords,
   maxWidth: number = 1024,
   maxHeight: number = 1024,
-  jpegQuality: number = 0.9,
 ): HTMLCanvasElement {
   if (!region) return canvas;
   console.log({ region });

@@ -14,7 +14,6 @@ import useConversationStore, {
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
-import { buildP3SystemPrompt } from './promptBuilders';
 import { chatAnalysis } from 'services/vizo';
 
 /**
@@ -135,22 +134,6 @@ function extractSearchKeywords(description: string): string {
   );
 }
 
-/**
- * Deduplicates incoming products against existing ones by SKU/objectID.
- * Returns only products from `incoming` that are not already in `existing`.
- */
-export function deduplicateProducts(existing: any[], incoming: any[]): any[] {
-  const existingKeys = new Set(
-    existing
-      .map(p => (p.sku || p.objectID || '').toLowerCase())
-      .filter(Boolean),
-  );
-  return incoming.filter(p => {
-    const key = (p.sku || p.objectID || '').toLowerCase();
-    return key && !existingKeys.has(key);
-  });
-}
-
 // P3 System Prompt is now dynamically built via buildP3SystemPrompt(orgProfile)
 
 /**
@@ -251,8 +234,7 @@ export function useGoodResultsChat() {
     setError,
   } = useConversationStore();
 
-  const { geminiApiKey, geminiModel, filters, orgProfile } =
-    useSmartFiltersStore();
+  const { filters, orgProfile } = useSmartFiltersStore();
   const productsFromAlgolia = useResultStore(
     state => state.productsFromAlgolia,
   );
@@ -300,22 +282,11 @@ export function useGoodResultsChat() {
 
   const sendMessage = useCallback(
     async (userMessage: string, options?: { silent?: boolean }) => {
-      const apiKey = geminiApiKey || process.env.REACT_APP_GEMINI_API_KEY;
-
       if (!options?.silent) {
         addMessage({
           role: 'user',
           content: userMessage,
         });
-      }
-
-      if (!apiKey) {
-        addMessage({
-          role: 'assistant',
-          content:
-            'Please configure your Gemini API key in Admin Settings to use the chat assistant.',
-        });
-        return;
       }
 
       setIsLoading(true);
@@ -338,7 +309,7 @@ export function useGoodResultsChat() {
           }
         });
 
-        // Get all results for Gemini context — read fresh from store to avoid stale closure data
+        // Get all results for AI context — read fresh from store to avoid stale closure data
         const freshState = useResultStore.getState();
         const freshFullPool = freshState.fullResultPool;
         const freshFindApi = freshState.productsFromFindApi;
@@ -350,9 +321,9 @@ export function useGoodResultsChat() {
             : freshFindApi;
         const freshOriginal =
           freshFullPool.length > 0 ? freshFullPool : freshActive;
-        const poolForGemini =
+        const poolForAI =
           freshOriginal.length > 0 ? freshOriginal : activeProducts;
-        const visibleResults = poolForGemini
+        const visibleResults = poolForAI
           .slice(0, 30)
           .map((p: any, i: number) => {
             const title = p.title || p.name || '';
@@ -396,7 +367,7 @@ export function useGoodResultsChat() {
 
         // Fetch product thumbnail images with caching — send images for ALL results (up to 50)
         // Cache persists across filter operations; only clears on new search session
-        const productsForImages = poolForGemini.slice(0, 30);
+        const productsForImages = poolForAI.slice(0, 30);
         const currentSessionId = useConversationStore.getState().sessionId;
         if (currentSessionId !== lastSessionIdRef.current) {
           imageCacheRef.current.clear();
@@ -433,7 +404,7 @@ export function useGoodResultsChat() {
         // Build multimodal user parts: text context + product images interleaved with metadata
         const userParts: any[] = [];
 
-        // Visual availability notice — prevents Gemini from hallucinating visual attributes
+        // Visual availability notice — prevents AI from hallucinating visual attributes
         const visualNotice = hasVisualContext
           ? `PRODUCT IMAGES: ${imagesAvailable} product thumbnail images are included below. Use them to evaluate visual attributes (color, shape, size, form factor).`
           : `PRODUCT IMAGES: NOT AVAILABLE — product images could not be loaded. Do NOT make claims about visual attributes like color, shape, or appearance. Only use text metadata for filtering. If the user asks about visual properties (color, shape, etc.), tell them you cannot evaluate visual attributes from the current data and suggest they search the full catalog instead.`;
@@ -462,7 +433,7 @@ PRODUCT LIST (up to 50 results — each has a unique ID in [brackets] and AI-gen
         // Part 2: Product entries with interleaved images (for all results up to 50)
         visibleResults.forEach((r, i) => {
           // Include AI-generated tags if available (from useProductTagger)
-          const originalProduct = poolForGemini[i];
+          const originalProduct = poolForAI[i];
           const tags = originalProduct?._tags;
           const tagStr = tags
             ? ` | TAGS: type=${tags.productType}, color=${tags.color}, shape=${tags.shape}, material=${tags.material}`
@@ -552,8 +523,8 @@ Respond to the user's message with an appropriate action and follow-up options.`
         }
 
         // ===== SIMPLIFIED ACTION HANDLING =====
-        // Gemini returns matched_ids (SKU/ID array). We look up products by ID from the pool.
-        const sourcePool = poolForGemini.slice(0, 30);
+        // AI returns matched_ids (SKU/ID array). We look up products by ID from the pool.
+        const sourcePool = poolForAI.slice(0, 30);
         let actualFilteredCount = 0;
 
         // Build a lookup map: ID → product
@@ -577,12 +548,12 @@ Respond to the user's message with an appropriate action and follow-up options.`
             p3Response.action.matched_indices || [];
 
           console.log(
-            `[P3] Gemini returned matched_ids:`,
+            `[P3] AI returned matched_ids:`,
             matchedIds.slice(0, 5),
             `(${matchedIds.length} total)`,
           );
           console.log(
-            `[P3] Gemini returned matched_indices:`,
+            `[P3] AI returned matched_indices:`,
             matchedIndices.slice(0, 5),
             `(${matchedIndices.length} total)`,
           );
@@ -673,7 +644,7 @@ Respond to the user's message with an appropriate action and follow-up options.`
           );
         }
 
-        // Use Gemini's message directly. Only override if Gemini returned 0 matches for a filter action.
+        // Use AI's message directly. Only override if AI returned 0 matches for a filter action.
         let finalMessage = p3Response.message;
         if (
           actualFilteredCount === 0 &&
@@ -686,7 +657,7 @@ Respond to the user's message with an appropriate action and follow-up options.`
             .setPendingCatalogText(p3Response.action?.value || '');
         }
 
-        // Fix count mismatches: Gemini often says a different number than what was actually resolved.
+        // Fix count mismatches: AI often says a different number than what was actually resolved.
         // Replace numeric counts in the message with the actual count.
         if (
           actualFilteredCount > 0 &&
@@ -754,7 +725,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
     [
       messages,
       activeFilters,
-      geminiApiKey,
       filters,
       orgProfile,
       activeProducts,

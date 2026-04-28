@@ -4,10 +4,9 @@
 
 import { memo, useRef, useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { Sparkles, Send, Loader2, AlertCircle, Globe } from 'lucide-react';
+import { Sparkles, Send, Loader2, Globe } from 'lucide-react';
 
 import useConversationStore from 'stores/chat/conversationStore';
-import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import { Icon } from '@nyris/nyris-react-components';
 import Tooltip from 'components/Tooltip/TooltipComponent';
 import useUiStore from 'stores/ui/uiStore';
@@ -22,7 +21,6 @@ function ChatAssistant() {
     messages,
     isLoading,
     isEvaluated,
-    error,
     hasApiKey,
     p7Running,
     p7Done,
@@ -86,12 +84,10 @@ function ChatAssistant() {
               <Sparkles size={20} className="text-[#3E36DC]" />
             </div>
             <p className="text-sm font-semibold text-[#2B2C46] mb-1">
-              {hasApiKey ? 'Vizo Search Assistant' : 'API Key Required'}
+              Vizo Search Assistant
             </p>
             <p className="text-[11px] text-[#999] leading-relaxed max-w-[200px]">
-              {hasApiKey
-                ? 'Upload an image to get started, or search for a product'
-                : 'Configure your Gemini API key in settings to use the assistant'}
+              Upload an image to get started, or search for a product
             </p>
           </div>
         ) : (
@@ -276,13 +272,9 @@ function ChatAssistant() {
             }
           }}
           placeholder={
-            !hasApiKey
-              ? 'Configure API key first...'
-              : isLoading
-                ? 'Please wait...'
-                : 'Ask about the results...'
+            isLoading ? 'Please wait...' : 'Ask about the results...'
           }
-          disabled={!hasApiKey || isLoading}
+          disabled={isLoading}
           rows={1}
           className={twMerge(
             'flex-1 resize-none rounded-xl px-3 py-2.5 text-sm pr-14',

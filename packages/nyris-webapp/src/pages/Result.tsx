@@ -517,9 +517,7 @@ function Results() {
         />
         {isAiModeOpen && (
           <div className="desktop:hidden">
-            <MobileChatAssistant
-              onCameraClick={() => setOpenModalCamera(true)}
-            />
+            <MobileChatAssistant />
           </div>
         )}
       </div>

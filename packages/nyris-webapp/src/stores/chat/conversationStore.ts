@@ -91,7 +91,7 @@ interface ConversationState {
   // Description mode — set when user clicks "Describe what you're looking for"
   awaitingDescription: boolean;
 
-  // Pending catalog search — stored for deferred API search after Gemini refinement
+  // Pending catalog search — stored for deferred API search after AI refinement
   pendingCatalogImage: File | string | null;
   pendingCatalogText: string | null;
 

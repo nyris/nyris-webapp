@@ -14,11 +14,7 @@ import useConversationStore, {
   ResultQuality,
 } from 'stores/chat/conversationStore';
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
-import {
-  buildP2SystemPrompt,
-  buildBrandRegex,
-  buildProductTypeRegex,
-} from './promptBuilders';
+import { buildBrandRegex, buildProductTypeRegex } from './promptBuilders';
 import { chatAnalysis } from 'services/vizo';
 
 interface P2EvaluationResult {
@@ -32,8 +28,7 @@ interface P2EvaluationResult {
 export function useResultEvaluator() {
   const { isEvaluated, setEvaluationResult, setIsLoading, setError } =
     useConversationStore();
-  const { geminiApiKey, geminiModel, filters, orgProfile } =
-    useSmartFiltersStore();
+  const { filters, orgProfile } = useSmartFiltersStore();
 
   const evaluatingRef = useRef(false);
 
@@ -45,8 +40,6 @@ export function useResultEvaluator() {
       imageAnalysis: any;
       activeProducts: any[];
     }) => {
-      const apiKey = geminiApiKey;
-
       setIsLoading(true);
       setError(null);
 
@@ -297,15 +290,7 @@ Evaluate if these results match the image. If they do (same type of product), ro
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      geminiApiKey,
-      setIsLoading,
-      setError,
-      filters,
-      geminiModel,
-      orgProfile,
-      setEvaluationResult,
-    ],
+    [setIsLoading, setError, filters, orgProfile, setEvaluationResult],
   );
 
   // Reset the guard ref when a new session starts (isEvaluated goes back to false)

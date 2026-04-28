@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 
 import useConversationStore from 'stores/chat/conversationStore';
-import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
 import { useGoodResultsChat } from 'hooks/useGoodResultsChat';
@@ -21,15 +20,8 @@ export function useChatAssistantLogic() {
   const error = useConversationStore(s => s.error);
   // const startNewSession = useConversationStore(s => s.startNewSession);
 
-  // Smart filters store
-  const geminiApiKey = useSmartFiltersStore(s => s.geminiApiKey);
-
-  const geminiModel = useSmartFiltersStore(s => s.geminiModel);
-  const chatWithDbEnabled = useSmartFiltersStore(s => s.chatWithDbEnabled);
-  const googleGroundingEnabled = useSmartFiltersStore(
-    s => s.googleGroundingEnabled,
-  );
-  const hasApiKey = Boolean(geminiApiKey);
+  // Smart filters store (no longer requires API key)
+  const hasApiKey = true;
 
   // Result store
   const productsFromAlgolia = useResultStore(
@@ -270,10 +262,9 @@ export function useChatAssistantLogic() {
       store.setPendingCatalogImage(file);
 
       try {
-        const geminiKey = geminiApiKey || process.env.REACT_APP_GEMINI_API_KEY;
         const currentProducts = [...activeProducts];
 
-        if (!geminiKey || currentProducts.length === 0) {
+        if (currentProducts.length === 0) {
           store.addMessage({
             role: 'assistant',
             content:
@@ -377,7 +368,7 @@ If NONE of the current results match the new image, return:
 
         const parsed = response;
         const matchedIndices: number[] = parsed.matched_indices || [];
-        const geminiMessage: string = parsed.message || '';
+        const aiMessage: string = parsed.message || '';
 
         const setProducts = getSetProducts();
 
@@ -390,7 +381,7 @@ If NONE of the current results match the new image, return:
             setProducts(filteredProducts);
             store.addMessage({
               role: 'assistant',
-              content: `${geminiMessage}\n\nI found ${filteredProducts.length} matching product${filteredProducts.length === 1 ? '' : 's'} from the current results. Want me to search the full catalog for more options?`,
+              content: `${aiMessage}\n\nI found ${filteredProducts.length} matching product${filteredProducts.length === 1 ? '' : 's'} from the current results. Want me to search the full catalog for more options?`,
               options: [
                 {
                   label: 'Search catalog with this image',
@@ -403,7 +394,7 @@ If NONE of the current results match the new image, return:
           } else {
             store.addMessage({
               role: 'assistant',
-              content: `${geminiMessage}\n\nI couldn't find those items in the current results. Let me search the full catalog for you.`,
+              content: `${aiMessage}\n\nI couldn't find those items in the current results. Let me search the full catalog for you.`,
               options: [
                 {
                   label: 'Search catalog with this image',
@@ -417,7 +408,7 @@ If NONE of the current results match the new image, return:
         } else {
           store.addMessage({
             role: 'assistant',
-            content: `${geminiMessage}\n\nThis doesn't match the current results. Would you like to search the full catalog?`,
+            content: `${aiMessage}\n\nThis doesn't match the current results. Would you like to search the full catalog?`,
             options: [
               {
                 label: 'Search catalog with this image',
@@ -447,7 +438,7 @@ If NONE of the current results match the new image, return:
         store.setIsLoading(false);
       }
     },
-    [geminiApiKey, activeProducts, requestImages, getSetProducts],
+    [activeProducts, requestImages, getSetProducts],
   );
 
   const handleCatalogSearchWithImage = useCallback(async () => {
@@ -578,7 +569,7 @@ If NONE of the current results match the new image, return:
         }
       } catch (cleanErr) {
         console.warn(
-          '[ChatAssistant] Gemini cleaning failed, using raw text:',
+          '[ChatAssistant] Query cleaning failed, using raw text:',
           cleanErr,
         );
       }

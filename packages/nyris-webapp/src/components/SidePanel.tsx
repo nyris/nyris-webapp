@@ -34,9 +34,6 @@ export default function SidePanel({ className }: { className?: string }) {
   const googleGroundingResponse = useResultStore(
     state => state.googleGroundingResponse,
   );
-  const groundingFilterResult = useResultStore(
-    state => state.groundingFilterResult,
-  );
   const groundingError = useResultStore(state => state.groundingError);
   const groundingProduct =
     googleGroundingResponse?.identified_product ||

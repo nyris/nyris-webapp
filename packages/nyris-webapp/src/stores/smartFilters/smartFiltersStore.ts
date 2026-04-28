@@ -24,8 +24,6 @@ export interface RerankedResult {
 interface SmartFiltersState {
   // API Keys (persisted in localStorage for admin convenience)
   nyrisApiKeyOverride: string; // Override for nyris API key (empty = use settings.js)
-  geminiApiKey: string;
-  geminiModel: string; // 'gemini-3.1-flash-lite-preview'
   filterPrompt: string;
   rerankPrompt: string;
 
@@ -39,7 +37,7 @@ interface SmartFiltersState {
   chatWithDbEnabled: boolean; // P6: extract filters from product description, query full index / MongoDB
   chatWithDbApiUrl: string; // Backend API URL for Chat with DB (MongoDB etc.)
   googleGroundingEnabled: boolean; // P7: validate bad results via Google Search
-  visualRerankEnabled: boolean; // Visual reranking: 1:1 image comparison with Gemini
+  visualRerankEnabled: boolean; // Visual reranking: 1:1 image comparison
   showFilterChips: boolean; // Toggle visibility of Smart Filter chips (independent of Chat Assistant)
 
   // Organization profile for dynamic prompt tailoring
@@ -76,8 +74,6 @@ interface SmartFiltersState {
 interface SmartFiltersActions {
   // API Key actions
   setNyrisApiKeyOverride: (key: string) => void;
-  setGeminiApiKey: (key: string) => void;
-  setGeminiModel: (model: string) => void;
   setFilterPrompt: (prompt: string) => void;
   setRerankPrompt: (prompt: string) => void;
 
@@ -146,13 +142,8 @@ const getDefaultPrompts = () => {
   };
 };
 
-// Default Gemini API key — hardcoded for ease of use
-const DEFAULT_GEMINI_KEY = process.env.REACT_APP_GEMINI_API_KEY || '';
-
 const initialState: SmartFiltersState = {
   nyrisApiKeyOverride: '',
-  geminiApiKey: DEFAULT_GEMINI_KEY,
-  geminiModel: 'gemini-3.1-flash-lite-preview',
   filterPrompt: '',
   rerankPrompt: '',
   includeReasoning: false, // Default: off for faster filtering
@@ -183,7 +174,7 @@ const initialState: SmartFiltersState = {
 
 const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
   persist(
-    (set, get) => ({
+    (set, _get) => ({
       ...initialState,
 
       // Initialize prompts from settings on first load
@@ -191,8 +182,6 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
       rerankPrompt: getDefaultPrompts().rerankPrompt,
 
       setNyrisApiKeyOverride: key => set({ nyrisApiKeyOverride: key }),
-      setGeminiApiKey: key => set({ geminiApiKey: key }),
-      setGeminiModel: model => set({ geminiModel: model }),
       setFilterPrompt: prompt => set({ filterPrompt: prompt }),
       setRerankPrompt: prompt => set({ rerankPrompt: prompt }),
       setIncludeReasoning: include => set({ includeReasoning: include }),
@@ -285,14 +274,6 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
       version: 3.1,
       migrate: (persisted: unknown, version: number) => {
         const state = persisted as Partial<SmartFiltersState>;
-        if (version < 1) {
-          if (
-            !state.geminiModel ||
-            state.geminiModel === 'gemini-2.5-flash-lite'
-          ) {
-            state.geminiModel = 'gemini-3.1-flash-lite-preview';
-          }
-        }
         if (version < 2) {
           state.backgroundRemovalEnabled = false;
           state.googleGroundingEnabled = false;
@@ -300,15 +281,13 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
           state.showFilterChips = false;
           state.sam3Enabled = false;
         }
-        if (version < 3) {
-          state.geminiApiKey = process.env.REACT_APP_GEMINI_API_KEY;
-        }
+        // v3.1: removed geminiApiKey and geminiModel
+        delete (state as any).geminiApiKey;
+        delete (state as any).geminiModel;
         return state;
       },
       partialize: state => ({
         nyrisApiKeyOverride: state.nyrisApiKeyOverride,
-        geminiApiKey: state.geminiApiKey,
-        geminiModel: state.geminiModel,
         filterPrompt: state.filterPrompt,
         rerankPrompt: state.rerankPrompt,
         includeReasoning: state.includeReasoning,

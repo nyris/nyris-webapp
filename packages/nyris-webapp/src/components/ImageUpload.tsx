@@ -88,7 +88,7 @@ function ImageUpload({
     setQuery('');
 
     if (isCadFile(files[0])) {
-      cadSearch({ file: files[0], settings, newSearch: true }).then(res => {});
+      cadSearch({ file: files[0], settings, newSearch: true }).then(() => {});
 
       return;
     }
@@ -206,7 +206,7 @@ function ImageUpload({
             htmlFor={
               showDisclaimerDisabled && !onCameraClick ? 'icon-button-file' : ''
             }
-            onClick={e => {
+            onClick={() => {
               if (!showDisclaimerDisabled) {
                 // disclaimer
                 setShowDisclaimer(true);

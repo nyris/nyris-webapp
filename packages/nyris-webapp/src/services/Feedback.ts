@@ -65,7 +65,7 @@ export const sendFeedbackByApi = async (
   const api = new NyrisAPI(settings);
   if (requestId) {
     try {
-      await api.sendFeedback({ sessionId, requestId, payload }).then(res => {});
+      await api.sendFeedback({ sessionId, requestId, payload }).then(() => {});
     } catch (error) {
       console.log('error sendFeedbackByApi', error);
     }

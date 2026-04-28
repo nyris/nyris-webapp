@@ -1,4 +1,3 @@
-import React from 'react';
 import ItemSpecification from './ItemSpecification';
 import { Icon } from '@nyris/nyris-react-components';
 

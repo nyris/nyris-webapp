@@ -9,7 +9,6 @@ import useRequestStore from 'stores/request/requestStore';
 import { truncateString } from 'utils/truncateString';
 import { twMerge } from 'tailwind-merge';
 import Tooltip from 'components/Tooltip/TooltipComponent';
-import { useNavigate } from 'react-router';
 import useResultStore from '../../stores/result/resultStore';
 
 interface Props {
@@ -169,7 +168,7 @@ const PreFilterComponent = (props: Props) => {
         imageRegion: imageRegions[0],
         preFilterParams: preFilter,
         compress: false,
-      }).then(res => {});
+      }).then(() => {});
     } else {
     }
   };

@@ -21,11 +21,7 @@ function getAllValues(obj: any): any[] {
   return values;
 }
 
-function findBestMatch(
-  query: string,
-  array: string[],
-  threshold = 1,
-): string | null {
+function findBestMatch(query: string, array: string[]): string | null {
   const normalizedQuery = normalize(query);
 
   let bestMatch = null;

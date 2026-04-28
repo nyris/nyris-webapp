@@ -10,11 +10,7 @@ import CustomCamera from 'components/CustomCameraDrawer';
 import ImageUpload from 'components/ImageUpload';
 import { useChatAssistantLogic } from './useChatAssistantLogic';
 
-function MobileChatAssistant({
-  onCameraClick,
-}: {
-  onCameraClick?: () => void;
-}) {
+function MobileChatAssistant() {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -262,14 +258,8 @@ function MobileChatAssistant({
               <input
                 ref={inputRef}
                 className="flex-1 min-w-0 bg-transparent outline-none text-sm text-[#2B2C46] placeholder-[#989BB7]"
-                placeholder={
-                  !hasApiKey
-                    ? 'Configure API key first...'
-                    : isLoading
-                      ? 'Please wait...'
-                      : t('Ask Vizo!')
-                }
-                disabled={!hasApiKey || isLoading}
+                placeholder={isLoading ? 'Please wait...' : t('Ask Vizo!')}
+                disabled={isLoading}
                 value={inputValue}
                 onChange={e => setInputValue(e.target.value)}
                 onKeyDown={e => {

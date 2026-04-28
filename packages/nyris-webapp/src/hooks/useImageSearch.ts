@@ -74,7 +74,6 @@ export const useImageSearch = () => {
       preFilterParams,
       clearPostFilter,
       text,
-      grounding,
     }: {
       image?: any;
       settings: AppSettings;
@@ -85,7 +84,6 @@ export const useImageSearch = () => {
       preFilterParams?: Record<string, boolean>;
       clearPostFilter?: boolean;
       text?: string;
-      grounding?: boolean;
     }) => {
       setIsFindApiLoading(true);
       // setAlgoliaProducts([]);

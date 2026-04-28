@@ -85,34 +85,13 @@ export const find = async ({
   return nyrisApi.find(options, image, filters);
 };
 
-export const findMulti = ({
-  images,
-  settings,
-  regions,
-  filters,
-  text,
-}: {
-  images?: HTMLCanvasElement[];
-  settings: NyrisAPISettings;
-  regions?: RectCoords[];
-  filters?: Filter[];
-  text?: string;
-}) => {
-  const nyrisApi = new NyrisAPI(settings);
-  let options: ImageSearchOptions = text ? { text } : {};
-
-  return nyrisApi.findMulti(options, images, regions, filters);
-};
-
 export const findCad = ({
   file,
-  options,
   settings,
   filters,
 }: {
   file: File;
   settings: NyrisAPISettings;
-  options?: ImageSearchOptions;
   filters?: Filter[];
 }) => {
   const nyrisApi = new NyrisAPI(settings);
