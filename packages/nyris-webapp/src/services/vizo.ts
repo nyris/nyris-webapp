@@ -1,6 +1,19 @@
 import { RectCoords } from '@nyris/nyris-api';
 import axios from 'axios';
 import { cropImage } from 'utils/cropImageToBase64';
+
+export interface ChatMultimodalInput {
+  metadata: string;
+  mimeType?: string;
+  image?: string;
+}
+
+interface ChatAnalysisParams {
+  promptKey: string;
+  multimodalInputs: ChatMultimodalInput[];
+  apiKey?: string;
+}
+
 // Utility: Convert HTMLCanvasElement to Blob
 export function canvasToBlob(
   canvas: HTMLCanvasElement,
@@ -159,5 +172,35 @@ export async function groundingSearchQuery({
     } else {
       throw new Error(`API error: ${error.message}`);
     }
+  }
+}
+
+export async function chatAnalysis({
+  promptKey,
+  multimodalInputs,
+  apiKey = 'NyuA2QP1OVy5YksAUU-ftCU64GsOCWFO',
+}: ChatAnalysisParams): Promise<any> {
+  try {
+    const response = await axios.post(
+      'https://api.i.nyris.io/api/ai-analysis/chat',
+      {
+        promptKey,
+        multimodalInputs,
+      },
+      {
+        headers: {
+          'x-api-key': apiKey || window.settings.aiApiKey || '',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw new Error(`API error: ${error.response.statusText}`);
+    }
+
+    throw new Error(`API error: ${error.message}`);
   }
 }

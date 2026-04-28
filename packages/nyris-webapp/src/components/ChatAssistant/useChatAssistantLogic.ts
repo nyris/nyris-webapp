@@ -6,11 +6,7 @@ import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
 import { useGoodResultsChat } from 'hooks/useGoodResultsChat';
 import { useBadResultsRecovery } from 'hooks/useBadResultsRecovery';
-import {
-  useChatWithDb,
-  looksLikeProductDescription,
-} from 'hooks/useChatWithDb';
-import { useGoogleGrounding } from 'hooks/useGoogleGrounding';
+import { chatAnalysis } from 'services/vizo';
 
 export function useChatAssistantLogic() {
   const [inputValue, setInputValue] = useState('');
@@ -68,8 +64,6 @@ export function useChatAssistantLogic() {
   // Hooks for P2, P3, P5, P6, P7
   const { sendMessage: sendP3Message } = useGoodResultsChat();
   const { sendMessage: sendP5Message } = useBadResultsRecovery();
-  const { sendMessage: sendP6Message } = useChatWithDb();
-  const { runGrounding, applyGroundingResult } = useGoogleGrounding();
 
   // P7 state
   const p7TriggeredRef = useRef(false);
@@ -148,27 +142,6 @@ export function useChatAssistantLogic() {
     setFirstAlgoliaProducts,
   ]);
 
-  // P7 Google Grounding
-  useEffect(() => {
-    if (isEvaluated && !p7TriggeredRef.current && googleGroundingEnabled) {
-      p7TriggeredRef.current = true;
-      setP7Running(true);
-      runGrounding().then(async result => {
-        setP7Running(false);
-        setP7Done(true);
-        if (result) {
-          await applyGroundingResult(result);
-        }
-      });
-    }
-  }, [
-    isEvaluated,
-    route,
-    googleGroundingEnabled,
-    runGrounding,
-    applyGroundingResult,
-  ]);
-
   // Reset P7 flags when session resets
   useEffect(() => {
     if (!isEvaluated) {
@@ -192,11 +165,6 @@ export function useChatAssistantLogic() {
     setInputValue('');
     setCatalogSearchReady(true);
 
-    if (chatWithDbEnabled && looksLikeProductDescription(message)) {
-      await sendP6Message(message);
-      return;
-    }
-
     if (route === 'P3') {
       await sendP3Message(message);
     } else if (route === 'P5') {
@@ -204,15 +172,7 @@ export function useChatAssistantLogic() {
     } else {
       await sendP3Message(message);
     }
-  }, [
-    inputValue,
-    isLoading,
-    chatWithDbEnabled,
-    route,
-    sendP3Message,
-    sendP5Message,
-    sendP6Message,
-  ]);
+  }, [inputValue, isLoading, route, sendP3Message, sendP5Message]);
 
   const handleOptionClick = useCallback(
     async (option: any) => {
@@ -368,7 +328,10 @@ export function useChatAssistantLogic() {
           )
           .join('\n');
 
-        const parts: any[] = [];
+        const parts: {
+          inlineData?: { mimeType: string; data: string };
+          text?: string;
+        }[] = [];
         if (origBase64) {
           parts.push({
             inlineData: { mimeType: 'image/jpeg', data: origBase64 },
@@ -377,6 +340,7 @@ export function useChatAssistantLogic() {
         parts.push({
           inlineData: { mimeType: 'image/jpeg', data: newBase64 },
         });
+        // category: result_evaluator_prompt
         parts.push({
           text: `The user is searching for industrial products. They originally uploaded the first image and got these results. Now they uploaded a NEW image (the ${origBase64 ? 'second' : 'only'} image) to refine their search.
 
@@ -398,26 +362,20 @@ If NONE of the current results match the new image, return:
 }`,
         });
 
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ role: 'user', parts }],
-              generationConfig: {
-                temperature: 0.2,
-                maxOutputTokens: 8192,
-                responseMimeType: 'application/json',
-              },
-            }),
-          },
-        );
-        const data = await res.json();
-        const responseText =
-          data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const response = await chatAnalysis({
+          promptKey: 'product_tagging_prompt',
+          multimodalInputs: parts.map(p =>
+            p.inlineData
+              ? {
+                  metadata: '',
+                  mimeType: p.inlineData.mimeType,
+                  image: p.inlineData.data,
+                }
+              : { metadata: p.text || '' },
+          ),
+        });
 
-        const parsed = JSON.parse(responseText);
+        const parsed = response;
         const matchedIndices: number[] = parsed.matched_indices || [];
         const geminiMessage: string = parsed.message || '';
 
@@ -489,7 +447,7 @@ If NONE of the current results match the new image, return:
         store.setIsLoading(false);
       }
     },
-    [geminiApiKey, geminiModel, activeProducts, requestImages, getSetProducts],
+    [geminiApiKey, activeProducts, requestImages, getSetProducts],
   );
 
   const handleCatalogSearchWithImage = useCallback(async () => {
@@ -601,43 +559,28 @@ If NONE of the current results match the new image, return:
       const settings = (window as any).settings;
       const nyrisKey = settings?.apiKey || settings?.nyrisApiKey;
       const baseUrl = settings?.baseUrl || 'https://api.nyris.io';
-      const geminiKey = geminiApiKey || settings?.smartFilters?.geminiApiKey;
 
       let searchQuery = rawText;
-      if (geminiKey) {
-        try {
-          const cleanRes = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [
-                  {
-                    role: 'user',
-                    parts: [
-                      {
-                        text: `Extract only the product search keywords from this user message. Remove filler words, conversational phrases, and intent words. Return ONLY the clean search terms, nothing else.\n\nExamples:\n"I need to look for a 100v connector" → "100V connector"\n"show me Schneider Electric blue LED lights" → "Schneider Electric blue LED light"\n"search for light block with more than 500 volts" → "light block 500V"\n\nUser message: "${rawText}"`,
-                      },
-                    ],
-                  },
-                ],
-                generationConfig: { temperature: 0, maxOutputTokens: 100 },
-              }),
-            },
-          );
-          const cleanData = await cleanRes.json();
-          const cleaned =
-            cleanData.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-          if (cleaned) {
-            searchQuery = cleaned.replace(/^["']|["']$/g, '');
-          }
-        } catch (cleanErr) {
-          console.warn(
-            '[ChatAssistant] Gemini cleaning failed, using raw text:',
-            cleanErr,
-          );
+
+      const response = await chatAnalysis({
+        promptKey: 'product_tagging_prompt',
+        multimodalInputs: [
+          {
+            metadata: `Extract only the product search keywords from this user message. Remove filler words, conversational phrases, and intent words. Return ONLY the clean search terms, nothing else.\n\nExamples:\n"I need to look for a 100v connector" → "100V connector"\n"show me Schneider Electric blue LED lights" → "Schneider Electric blue LED light"\n"search for light block with more than 500 volts" → "light block 500V"\n\nUser message: "${rawText}" return only json {query: "clean search terms here"}`,
+          },
+        ],
+      });
+
+      try {
+        const cleaned = response?.query.trim();
+        if (cleaned) {
+          searchQuery = cleaned.replace(/^["']|["']$/g, '');
         }
+      } catch (cleanErr) {
+        console.warn(
+          '[ChatAssistant] Gemini cleaning failed, using raw text:',
+          cleanErr,
+        );
       }
 
       store.setPreCatalogResults([...activeProducts]);
@@ -696,14 +639,7 @@ If NONE of the current results match the new image, return:
       store.setIsLoading(false);
       setCatalogSearching(false);
     }
-  }, [
-    geminiApiKey,
-    geminiModel,
-    activeProducts,
-    getSetProducts,
-    setFullResultPool,
-    sendP3Message,
-  ]);
+  }, [activeProducts, getSetProducts, setFullResultPool, sendP3Message]);
 
   return {
     // State

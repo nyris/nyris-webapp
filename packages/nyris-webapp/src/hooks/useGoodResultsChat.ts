@@ -15,6 +15,7 @@ import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
 import { buildP3SystemPrompt } from './promptBuilders';
+import { chatAnalysis } from 'services/vizo';
 
 /**
  * Extracts search keywords from a user's natural language description.
@@ -497,118 +498,17 @@ USER MESSAGE: ${userMessage}
 Respond to the user's message with an appropriate action and follow-up options.`,
         });
 
-        // Adjust model acknowledgment based on whether images are available
-        const modelAck = hasVisualContext
-          ? 'I understand. I will help the user filter, compare, and identify products within the existing results. I will use both text metadata and product images to evaluate visual attributes like color, shape, and form factor.'
-          : 'I understand. I will help the user filter, compare, and identify products within the existing results using text metadata only. I will NOT make claims about visual attributes like color or shape since product images are not available.';
+        const response = await chatAnalysis({
+          promptKey: 'chat_assistant_prompt',
+          multimodalInputs: userParts.map(part => ({
+            metadata: part.text,
+          })),
+        });
 
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [
-                {
-                  role: 'user',
-                  parts: [
-                    {
-                      text:
-                        orgProfile.p3Prompt || buildP3SystemPrompt(orgProfile),
-                    },
-                  ],
-                },
-                { role: 'model', parts: [{ text: modelAck }] },
-                { role: 'user', parts: userParts },
-              ],
-              generationConfig: {
-                temperature: 0.4,
-                maxOutputTokens: 8192,
-                responseMimeType: 'application/json',
-                responseSchema: {
-                  type: 'OBJECT',
-                  properties: {
-                    message: {
-                      type: 'STRING',
-                      description:
-                        'Response message to the user (2-4 sentences)',
-                    },
-                    action: {
-                      type: 'OBJECT',
-                      properties: {
-                        type: {
-                          type: 'STRING',
-                          enum: [
-                            'filter_apply',
-                            'filter_remove',
-                            'filter_clear',
-                            'text_search',
-                            'none',
-                          ],
-                        },
-                        key: {
-                          type: 'STRING',
-                          description:
-                            'What was filtered (e.g. voltage, brand, type)',
-                        },
-                        value: {
-                          type: 'STRING',
-                          description: 'Filter value or search query',
-                        },
-                        matched_ids: {
-                          type: 'ARRAY',
-                          items: { type: 'STRING' },
-                          description:
-                            'Array of product IDs (from [brackets]) that match the filter. Must be exact IDs from the product list.',
-                        },
-                      },
-                      required: ['type', 'matched_ids'],
-                    },
-                    options: {
-                      type: 'ARRAY',
-                      items: {
-                        type: 'OBJECT',
-                        properties: {
-                          label: { type: 'STRING' },
-                          action_type: { type: 'STRING' },
-                          key: { type: 'STRING' },
-                          value: { type: 'STRING' },
-                        },
-                        required: ['label', 'action_type'],
-                      },
-                    },
-                  },
-                  required: ['message', 'action', 'options'],
-                },
-              },
-            }),
-          },
-        );
-
-        if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(
-            errData.error?.message || `Gemini API error: ${response.status}`,
-          );
-        }
-
-        const data = await response.json();
-        console.log(
-          '[P3] Gemini response:',
-          JSON.stringify(data).substring(0, 500),
-        );
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        if (!responseText) {
-          const finishReason = data.candidates?.[0]?.finishReason;
-          const blockReason = data.promptFeedback?.blockReason;
-          throw new Error(
-            `No response from P3 (finish: ${finishReason || 'none'}, block: ${blockReason || 'none'})`,
-          );
-        }
+        const responseText = response;
 
         // Parse the JSON response
-        const p3Response: P3Response = JSON.parse(responseText);
+        const p3Response: P3Response = responseText;
 
         console.log('[P3] Response:', p3Response);
 

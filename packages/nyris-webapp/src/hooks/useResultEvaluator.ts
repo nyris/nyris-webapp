@@ -19,6 +19,7 @@ import {
   buildBrandRegex,
   buildProductTypeRegex,
 } from './promptBuilders';
+import { chatAnalysis } from 'services/vizo';
 
 interface P2EvaluationResult {
   quality: ResultQuality;
@@ -224,65 +225,19 @@ TOTAL RESULTS: ${resultsSummary.length}
 
 Evaluate if these results match the image. If they do (same type of product), route to P3 and suggest filter options based on the COMMON ATTRIBUTES found above (like voltage, size, brand). Do NOT suggest the obvious category match.`;
 
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [
-                {
-                  role: 'user',
-                  parts: [
-                    {
-                      text:
-                        orgProfile.p2Prompt || buildP2SystemPrompt(orgProfile),
-                    },
-                  ],
-                },
-                {
-                  role: 'model',
-                  parts: [
-                    {
-                      text: 'I understand. I will evaluate the results and provide a JSON response.',
-                    },
-                  ],
-                },
-                { role: 'user', parts: [{ text: userPrompt }] },
-              ],
-              generationConfig: {
-                temperature: 0.3,
-                maxOutputTokens: 8192,
-                responseMimeType: 'application/json',
-              },
-            }),
-          },
-        );
+        const response = await chatAnalysis({
+          promptKey: 'result_evaluator_prompt',
+          multimodalInputs: [
+            {
+              metadata: userPrompt,
+            },
+          ],
+        });
 
-        if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(
-            errData.error?.message || `Gemini API error: ${response.status}`,
-          );
-        }
+        const evaluation: P2EvaluationResult = response;
+        console.log({ evaluation });
 
-        const data = await response.json();
-
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        if (!responseText) {
-          const finishReason = data.candidates?.[0]?.finishReason;
-          const blockReason = data.promptFeedback?.blockReason;
-          throw new Error(
-            `No response from P2 (finish: ${finishReason || 'none'}, block: ${blockReason || 'none'})`,
-          );
-        }
-
-        // Parse the JSON response
-        const evaluation: P2EvaluationResult = JSON.parse(responseText);
-
-        // Store the evaluation result — append "Describe what you're looking for" as last option
-        let mappedOptions = evaluation.options.map(opt => ({
+        let mappedOptions = evaluation?.options?.map(opt => ({
           label: opt.label,
           action_type: opt.action_type as
             | 'filter'
@@ -300,9 +255,6 @@ Evaluate if these results match the image. If they do (same type of product), ro
 
         // Enforce ≤5 rule: if initial results are ≤5, strip filter options, keep only text_search_prompt
         if (activeProducts.length <= 5 && activeProducts.length > 0) {
-          console.log(
-            `[P2] ≤5 results (${activeProducts.length}) — stripping filter options, keeping only text_search_prompt`,
-          );
           mappedOptions = [
             {
               label: "Describe what you're looking for",
@@ -321,7 +273,7 @@ Evaluate if these results match the image. If they do (same type of product), ro
           mappedOptions,
         );
       } catch (err: any) {
-        console.error('[P2] Evaluation error:', err);
+        console.error('result_evaluator_prompt', err);
         setError(err.message || 'Failed to evaluate results');
 
         // Fallback to good results on error
@@ -344,6 +296,7 @@ Evaluate if these results match the image. If they do (same type of product), ro
         setIsLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       geminiApiKey,
       setIsLoading,

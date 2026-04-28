@@ -37,9 +37,7 @@ function ChatAssistant() {
   } = useChatAssistantLogic();
 
   const setIsOpen = useConversationStore(s => s.setIsOpen);
-  const setShowAdminSettings = useSmartFiltersStore(
-    s => s.setShowAdminSettings,
-  );
+
   const toggleAiMode = useUiStore(state => state.toggleAiMode);
 
   // Focus input on text_search_prompt option click
@@ -64,7 +62,7 @@ function ChatAssistant() {
       ])}
     >
       <div
-        className="absolute top-5 right-6 bg-[#FAFAFA] w-7 h-7 flex justify-center items-center rounded-lg cursor-pointer"
+        className="absolute top-3 right-4 bg-[#FAFAFA] w-7 h-7 flex justify-center items-center rounded-lg cursor-pointer"
         onClick={() => {
           toggleAiMode();
           setIsOpen(false);
@@ -73,26 +71,12 @@ function ChatAssistant() {
         <Icon name="close" className="fill-[#BBBDCF] text-[#BBBDCF]" />
       </div>
 
-      {!hasApiKey && (
-        <div className="flex-shrink-0 mx-3 mt-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg">
-          <p className="text-[11px] text-amber-700">
-            Gemini API key required.{' '}
-            <button
-              onClick={() => setShowAdminSettings(true)}
-              className="underline font-semibold"
-            >
-              Configure
-            </button>
-          </p>
-        </div>
-      )}
-
-      {error && (
+      {/* {error && (
         <div className="flex-shrink-0 mx-3 mt-2 p-2.5 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
           <AlertCircle size={12} className="text-red-500 flex-shrink-0" />
           <p className="text-[11px] text-red-700">{error}</p>
         </div>
-      )}
+      )} */}
 
       {/* ── Messages ── */}
       <div className="flex-1 min-h-0 overflow-y-auto px-5 py-3 space-y-3">
@@ -129,6 +113,7 @@ function ChatAssistant() {
                       : msg.content.startsWith('[P7')
                         ? 'bg-[#EEF2FF] border border-[#C7D2FE] text-[#2B2C46] rounded-2xl rounded-bl-sm'
                         : ' text-[#2B2C46] rounded-2xl rounded-bl-sm',
+                    i === 0 && 'pr-6',
                   )}
                 >
                   {msg.imageUrl && (

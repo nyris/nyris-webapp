@@ -18,6 +18,7 @@ import {
   buildBrandRegex,
   buildProductTypeRegex,
 } from './promptBuilders';
+import { chatAnalysis } from 'services/vizo';
 
 // Helper function to normalize text for fuzzy matching
 // Handles umlauts (ö→o, ü→u, ä→a, ß→ss) and other diacritics
@@ -289,65 +290,15 @@ USER MESSAGE: ${userMessage}
 
 Based on the user's answer and the failure mode strategy, decide whether to ask another question, resurface better matches, or exit.`;
 
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [
-                {
-                  role: 'user',
-                  parts: [
-                    {
-                      text:
-                        orgProfile.p5Prompt || buildP5SystemPrompt(orgProfile),
-                    },
-                  ],
-                },
-                {
-                  role: 'model',
-                  parts: [
-                    {
-                      text: 'I understand. I will help recover from poor search results by asking clarifying questions and resurfacing better matches.',
-                    },
-                  ],
-                },
-                { role: 'user', parts: [{ text: userPrompt }] },
-              ],
-              generationConfig: {
-                temperature: 0.4,
-                maxOutputTokens: 8192,
-                responseMimeType: 'application/json',
-              },
-            }),
-          },
-        );
+        const response = await chatAnalysis({
+          promptKey: 'recovery_prompt',
+          multimodalInputs: [{ metadata: userPrompt }],
+        });
 
-        if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(
-            errData.error?.message || `Gemini API error: ${response.status}`,
-          );
-        }
-
-        const data = await response.json();
-        console.log(
-          '[P5] Gemini response:',
-          JSON.stringify(data).substring(0, 500),
-        );
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        if (!responseText) {
-          const finishReason = data.candidates?.[0]?.finishReason;
-          const blockReason = data.promptFeedback?.blockReason;
-          throw new Error(
-            `No response from P5 (finish: ${finishReason || 'none'}, block: ${blockReason || 'none'})`,
-          );
-        }
+        const responseText = response;
 
         // Parse the JSON response
-        const p5Response: P5Response = JSON.parse(responseText);
+        const p5Response: P5Response = responseText;
 
         console.log('[P5] Response:', p5Response);
 

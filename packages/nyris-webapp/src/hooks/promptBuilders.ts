@@ -40,6 +40,7 @@ KEY ATTRIBUTE RULE:
 
 // ---------------------------------------------------------------------------
 // P2 System Prompt Builder (Result Evaluator)
+// category: result_evaluator_prompt
 // ---------------------------------------------------------------------------
 export function buildP2SystemPrompt(profile: OrganizationProfile): string {
   const keyAttrRules = buildKeyAttributeRules(profile);
@@ -136,6 +137,7 @@ OUTPUT FORMAT (JSON only, no markdown):
 
 // ---------------------------------------------------------------------------
 // P3 System Prompt Builder (Good Results Chat)
+// category: chat_assistant_prompt
 // ---------------------------------------------------------------------------
 export function buildP3SystemPrompt(profile: OrganizationProfile): string {
   const keyAttrRules = buildKeyAttributeRules(profile);
@@ -271,6 +273,7 @@ OUTPUT FORMAT (JSON only, no markdown):
 
 // ---------------------------------------------------------------------------
 // P5 System Prompt Builder (Bad Results Recovery)
+// category: recovery_prompt
 // ---------------------------------------------------------------------------
 export function buildP5SystemPrompt(profile: OrganizationProfile): string {
   const keyAttrRules = buildKeyAttributeRules(profile);
