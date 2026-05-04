@@ -372,7 +372,6 @@ export function useGoodResultsChat() {
         if (currentSessionId !== lastSessionIdRef.current) {
           imageCacheRef.current.clear();
           lastSessionIdRef.current = currentSessionId;
-          console.log('[P3] New session — cleared image cache');
         }
         const imageResults = await Promise.all(
           productsForImages.map(async (p: any, i: number) => {
@@ -390,16 +389,11 @@ export function useGoodResultsChat() {
             return { rank: i + 1, base64 };
           }),
         );
-        const cacheHits = productsForImages.filter((p: any) =>
-          imageCacheRef.current.has(getProductImageUrl(p) || ''),
-        ).length;
+
         const imagesAvailable = imageResults.filter(
           r => r.base64 !== null,
         ).length;
         const hasVisualContext = imagesAvailable >= 3;
-        console.log(
-          `[P3] Images: ${imagesAvailable}/${productsForImages.length} available, ${cacheHits} from cache (visual context: ${hasVisualContext ? 'YES' : 'NO'})`,
-        );
 
         // Build multimodal user parts: text context + product images interleaved with metadata
         const userParts: any[] = [];
@@ -481,11 +475,8 @@ Respond to the user's message with an appropriate action and follow-up options.`
         // Parse the JSON response
         const p3Response: P3Response = responseText;
 
-        console.log('[P3] Response:', p3Response);
-
         // Silent mode: only suggest filters, never apply actions
         if (options?.silent && p3Response.action) {
-          console.log('[P3] Silent mode — forcing action to none');
           p3Response.action.type = 'none';
           p3Response.action.matched_ids = [];
           p3Response.action.matched_indices = undefined;
@@ -495,9 +486,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
         const { awaitingDescription, setAwaitingDescription } =
           useConversationStore.getState();
         if (awaitingDescription && p3Response.action) {
-          console.log(
-            '[P3] Forcing text_search — awaitingDescription flag is set',
-          );
           p3Response.action.type = 'text_search';
           p3Response.action.value = extractSearchKeywords(userMessage);
           p3Response.action.matched_indices = undefined;
@@ -511,14 +499,9 @@ Respond to the user's message with an appropriate action and follow-up options.`
         ) {
           const valWords = p3Response.action.value.trim().split(/\s+/);
           if (valWords.length > 8) {
-            console.log(
-              '[P3] Trimming text_search query from:',
-              p3Response.action.value,
-            );
             p3Response.action.value = extractSearchKeywords(
               p3Response.action.value,
             );
-            console.log('[P3] Trimmed to:', p3Response.action.value);
           }
         }
 
@@ -535,28 +518,12 @@ Respond to the user's message with an appropriate action and follow-up options.`
         });
 
         // Debug: log the map keys so we can see what IDs are available
-        const mapKeys = Array.from(productById.keys()).slice(0, 5);
-        console.log(
-          `[P3] Product ID map: ${productById.size} entries, sample keys:`,
-          mapKeys,
-        );
 
         if (p3Response.action) {
           const { type, key, value } = p3Response.action;
           const matchedIds: string[] = p3Response.action.matched_ids || [];
           const matchedIndices: number[] =
             p3Response.action.matched_indices || [];
-
-          console.log(
-            `[P3] AI returned matched_ids:`,
-            matchedIds.slice(0, 5),
-            `(${matchedIds.length} total)`,
-          );
-          console.log(
-            `[P3] AI returned matched_indices:`,
-            matchedIndices.slice(0, 5),
-            `(${matchedIndices.length} total)`,
-          );
 
           let matchedProducts: any[] = [];
 
@@ -565,14 +532,10 @@ Respond to the user's message with an appropriate action and follow-up options.`
             matchedProducts = matchedIds
               .map(id => {
                 const found = productById.get(String(id));
-                if (!found && matchedIds.length <= 5)
-                  console.log(`[P3] ID "${id}" not found in map`);
+
                 return found;
               })
               .filter(Boolean);
-            console.log(
-              `[P3] Resolved ${matchedProducts.length}/${matchedIds.length} via matched_ids`,
-            );
           }
 
           // 2. Try matched_indices as SKU IDs (convert numbers to strings, look up in map)
@@ -582,9 +545,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
               .filter(Boolean);
             if (asIds.length > 0) {
               matchedProducts = asIds;
-              console.log(
-                `[P3] Resolved ${matchedProducts.length}/${matchedIndices.length} via matched_indices-as-IDs`,
-              );
             }
           }
 
@@ -596,9 +556,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
               .filter(Boolean);
             if (asPositions.length > 0) {
               matchedProducts = asPositions;
-              console.log(
-                `[P3] Resolved ${matchedProducts.length}/${matchedIndices.length} via positional indices`,
-              );
             }
           }
 
@@ -638,10 +595,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
             case 'none':
               break;
           }
-
-          console.log(
-            `[P3] Action: ${type}, matched_ids: ${matchedIds.length}, matched_indices: ${matchedIndices.length}, resolved: ${matchedProducts.length}, pool: ${sourcePool.length}, displayed: ${actualFilteredCount}`,
-          );
         }
 
         // Use AI's message directly. Only override if AI returned 0 matches for a filter action.
@@ -690,6 +643,16 @@ Respond to the user's message with an appropriate action and follow-up options.`
 
         // If user came from a catalog search, offer to go back to previous results
         const preCatalog = useConversationStore.getState().preCatalogResults;
+        finalOptions = [
+          ...finalOptions,
+          {
+            label: 'Text search in catalog',
+            action_type: 'catalog_search_text' as const,
+            key: 'catalog_search_text',
+            value: 'catalog_search_text',
+          },
+        ];
+
         if (preCatalog && preCatalog.length > 0) {
           finalOptions = [
             ...finalOptions,
@@ -698,6 +661,27 @@ Respond to the user's message with an appropriate action and follow-up options.`
               action_type: 'restore_original' as const,
               key: 'restore',
               value: 'restore',
+            },
+          ];
+        }
+
+        const {
+          relatedPartsUsed,
+          requestImageKeyword,
+          relatedPartsTableSuggestions,
+        } = useConversationStore.getState();
+        if (
+          window.settings.vizo?.findRelatedParts &&
+          !relatedPartsUsed &&
+          relatedPartsTableSuggestions.length > 0
+        ) {
+          finalOptions = [
+            ...finalOptions,
+            {
+              label: `Find parts related to ${requestImageKeyword || 'request image'}`,
+              action_type: 'find_related_parts' as const,
+              key: 'find_related',
+              value: 'find_related_parts',
             },
           ];
         }

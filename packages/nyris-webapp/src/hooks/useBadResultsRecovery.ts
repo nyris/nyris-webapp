@@ -249,8 +249,6 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
         // Parse the JSON response
         const p5Response: P5Response = responseText;
 
-        console.log('[P5] Response:', p5Response);
-
         // Execute the action
         // ALWAYS use firstAlgoliaProducts for index lookup (matches what we sent to LLM)
         const sourceProducts =

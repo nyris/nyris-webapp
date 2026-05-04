@@ -36,6 +36,9 @@ export interface QuickReplyOption {
     | 'text_search_prompt'
     | 'catalog_search_image'
     | 'catalog_search_text'
+    | 'restore_previous'
+    | 'related_part'
+    | 'find_related_parts'
     | 'restore_original';
   value?: string;
   key?: string;
@@ -59,6 +62,11 @@ export interface ChatMessage {
 export interface ActiveFilter {
   key: string;
   value: string;
+}
+
+export interface RelatedPartSuggestion {
+  label: string;
+  description: string;
 }
 
 interface ConversationState {
@@ -97,6 +105,11 @@ interface ConversationState {
 
   // Pre-catalog results — saved before catalog search so user can go back
   preCatalogResults: any[] | null;
+  relatedPartsUsed: boolean;
+  pendingRelatedPart: string | null;
+  relatedPartsTableSuggestions: RelatedPartSuggestion[];
+
+  requestImageKeyword?: string; // Added to track the keyword extracted from the image in P2
 }
 
 interface ConversationActions {
@@ -107,9 +120,9 @@ interface ConversationActions {
   setEvaluationResult: (
     quality: ResultQuality,
     route: ConversationRoute,
-    failureMode: FailureMode,
     openingMessage: string,
     options: QuickReplyOption[],
+    requestImageKeyword?: string,
   ) => void;
 
   // Messages
@@ -133,6 +146,12 @@ interface ConversationActions {
   setPendingCatalogImage: (file: File | string | null) => void;
   setPendingCatalogText: (text: string | null) => void;
   setPreCatalogResults: (results: any[] | null) => void;
+  setPendingRelatedPart: (part: string | null) => void;
+  setRelatedPartsTableSuggestions: (
+    suggestions: RelatedPartSuggestion[],
+  ) => void;
+
+  setRelatedPartsUsed: (used: boolean) => void;
 
   // Reset
   reset: () => void;
@@ -162,6 +181,10 @@ const initialState: ConversationState = {
   pendingCatalogImage: null,
   pendingCatalogText: null,
   preCatalogResults: null,
+  relatedPartsUsed: false,
+  pendingRelatedPart: null,
+  relatedPartsTableSuggestions: [],
+  requestImageKeyword: '',
 };
 
 const useConversationStore = create<ConversationState & ConversationActions>()(
@@ -179,9 +202,9 @@ const useConversationStore = create<ConversationState & ConversationActions>()(
     setEvaluationResult: (
       quality,
       route,
-      failureMode,
       openingMessage,
       options,
+      requestImageKeyword,
     ) => {
       const state = get();
 
@@ -192,12 +215,12 @@ const useConversationStore = create<ConversationState & ConversationActions>()(
         isEvaluated: true,
         quality,
         route,
-        failureMode,
         openingMessage,
         openingOptions: options,
         attemptCounter: route === 'P5' ? 1 : 0,
         isOpen: false, // Don't auto-open — show notification badge instead
         hasNotification: true,
+        requestImageKeyword,
       });
 
       // Add opening message to chat
@@ -258,6 +281,10 @@ const useConversationStore = create<ConversationState & ConversationActions>()(
     setPendingCatalogImage: file => set({ pendingCatalogImage: file }),
     setPendingCatalogText: text => set({ pendingCatalogText: text }),
     setPreCatalogResults: results => set({ preCatalogResults: results }),
+    setRelatedPartsTableSuggestions: suggestions =>
+      set({ relatedPartsTableSuggestions: suggestions }),
+    setRelatedPartsUsed: used => set({ relatedPartsUsed: used }),
+    setPendingRelatedPart: part => set({ pendingRelatedPart: part }),
 
     reset: () =>
       set({

@@ -3,11 +3,11 @@ import { twMerge } from 'tailwind-merge';
 import { Sparkles, Send, Loader2, AlertCircle, Globe } from 'lucide-react';
 
 import { Icon } from '@nyris/nyris-react-components';
-import Tooltip from 'components/Tooltip/TooltipComponent';
 import useUiStore from 'stores/ui/uiStore';
 import { useTranslation } from 'react-i18next';
 import CustomCamera from 'components/CustomCameraDrawer';
 import ImageUpload from 'components/ImageUpload';
+import OptionChip, { ChatOption } from './OptionChip';
 import { useChatAssistantLogic } from './useChatAssistantLogic';
 
 function MobileChatAssistant() {
@@ -40,14 +40,21 @@ function MobileChatAssistant() {
 
   // Focus input on text_search_prompt option click
   const wrappedHandleOptionClick = useCallback(
-    async (option: any) => {
+    async (option: ChatOption) => {
       if (option.action_type === 'text_search_prompt') {
+        inputRef.current?.focus();
+      }
+      if (option.action_type === 'related_part') {
         inputRef.current?.focus();
       }
       await handleOptionClick(option);
     },
     [handleOptionClick],
   );
+
+  const handleCatalogSearchTextChipClick = useCallback(async () => {
+    await handleCatalogSearchWithText();
+  }, [handleCatalogSearchWithText]);
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[50] flex flex-col justify-end max-h-[50vh]">
@@ -105,7 +112,7 @@ function MobileChatAssistant() {
                       'py-3 px-4 text-sm leading-relaxed',
                       msg.role === 'user'
                         ? 'bg-[#3E36DC] text-white rounded-tl-[16px] rounded-tr-[8px] rounded-br-[16px] rounded-bl-[16px] px-4 py-3 font-medium'
-                        : msg.content.startsWith('[P7')
+                        : msg?.content?.startsWith('[P7')
                           ? 'bg-[#EEF2FF] border border-[#C7D2FE] text-[#2B2C46] rounded-2xl rounded-bl-sm'
                           : 'bg-white text-[#2B2C46] rounded-2xl rounded-bl-sm shadow-sm',
                     )}
@@ -117,13 +124,13 @@ function MobileChatAssistant() {
                         className="w-[48px] h-[48px] rounded-lg object-cover mb-2"
                       />
                     )}
-                    {msg.content.startsWith('[P7') && (
+                    {msg?.content?.startsWith('[P7') && (
                       <div className="flex items-center gap-1 mb-1.5 text-indigo-600 font-semibold text-[10px]">
                         <Globe size={10} /> Google Grounding
                       </div>
                     )}
                     <pre className="whitespace-pre-wrap font-sans text-sm leading-5 tracking-[0.16px]">
-                      {msg.content.startsWith('[P7')
+                      {msg?.content?.startsWith('[P7')
                         ? msg.content.replace(/^\[P7[^\]]*\]\s*/, '')
                         : msg.content}
                     </pre>
@@ -141,50 +148,24 @@ function MobileChatAssistant() {
                                 o.action_type !== 'catalog_search_text',
                             )
                             .map((option, optIdx) => (
-                              <Tooltip
+                              <OptionChip
                                 key={optIdx}
-                                content={option.label}
-                                disabled={option.label.length <= 32}
-                              >
-                                <button
-                                  key={optIdx}
-                                  onClick={() =>
-                                    wrappedHandleOptionClick(option)
-                                  }
-                                  disabled={isLoading}
-                                  className={twMerge(
-                                    'px-2.5 py-1.5 text-sm font-medium rounded-full',
-                                    'transition-colors',
-                                    isLoading &&
-                                      'opacity-50 cursor-not-allowed',
-                                    'bg-[#FFFFFF] font-semibold',
-                                    'border border-[#DDDEE7] text-[#767A9F] hover:bg-[#545987] hover:text-[#F3F4F8]',
-                                  )}
-                                >
-                                  {option.label}
-                                </button>
-                              </Tooltip>
+                                option={option}
+                                onClick={wrappedHandleOptionClick}
+                                disabled={isLoading}
+                              />
                             ))}
 
                           {!(isLoading || !catalogSearchReady) &&
                             i === messages.length - 1 && (
-                              <button
-                                onClick={handleCatalogSearchWithText}
+                              <OptionChip
+                                option={{
+                                  action_type: 'catalog_search_text',
+                                  label: 'Text search in catalog',
+                                }}
+                                onClick={handleCatalogSearchTextChipClick}
                                 disabled={isLoading || !catalogSearchReady}
-                                className={twMerge(
-                                  'px-2.5 py-1.5 text-sm font-medium rounded-full flex justify-center items-center gap-2',
-                                  'transition-colors',
-                                  isLoading && 'opacity-50 cursor-not-allowed',
-                                  'bg-[#FFFFFF] font-semibold',
-                                  'border border-[#DDDEE7] text-[#767A9F] hover:bg-[#545987] hover:text-[#F3F4F8]',
-                                )}
-                              >
-                                <span>Text search in catalog</span>
-                                <Icon
-                                  name="search"
-                                  className="text-[10px] w-[10px] h-[10px] fill-[#767A9F]"
-                                />
-                              </button>
+                              />
                             )}
                         </div>
                       </div>

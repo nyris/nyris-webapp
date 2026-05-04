@@ -16,18 +16,26 @@ import useConversationStore, {
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import { buildBrandRegex, buildProductTypeRegex } from './promptBuilders';
 import { chatAnalysis } from 'services/vizo';
+import useRequestStore from 'stores/request/requestStore';
+import { canvasToBase64, cropImage } from 'utils/cropImageToBase64';
+import { loadRelatedPartsTable, lookupRelatedParts } from 'utils/relatedParts';
 
 interface P2EvaluationResult {
   quality: ResultQuality;
-  failure_mode: FailureMode;
   route: ConversationRoute;
   opening_message: string;
   options: QuickReplyOption[];
+  keyword?: string;
 }
 
 export function useResultEvaluator() {
-  const { isEvaluated, setEvaluationResult, setIsLoading, setError } =
-    useConversationStore();
+  const {
+    isEvaluated,
+    setEvaluationResult,
+    setIsLoading,
+    setError,
+    setRelatedPartsTableSuggestions,
+  } = useConversationStore();
   const { filters, orgProfile } = useSmartFiltersStore();
 
   const evaluatingRef = useRef(false);
@@ -42,6 +50,7 @@ export function useResultEvaluator() {
     }) => {
       setIsLoading(true);
       setError(null);
+      setRelatedPartsTableSuggestions([]);
 
       try {
         // Build context for P2
@@ -50,6 +59,7 @@ export function useResultEvaluator() {
           imageAnalysis?.imageDescription || 'No description available';
 
         // Get results (up to 30) with DETAILED metadata for finding differentiating attributes
+
         const resultsSummary = activeProducts
           .slice(0, 30)
           .map((p: any, i: number) => {
@@ -217,12 +227,21 @@ ${JSON.stringify(attributeFrequency, null, 2)}
 TOTAL RESULTS: ${resultsSummary.length}
 
 Evaluate if these results match the image. If they do (same type of product), route to P3 and suggest filter options based on the COMMON ATTRIBUTES found above (like voltage, size, brand). Do NOT suggest the obvious category match.`;
-
+        const requestImage = useRequestStore.getState().requestImages;
+        const regions = useRequestStore.getState().regions;
+        const croppedCanvas = cropImage(requestImage[0], regions[0]);
+        const base64Image = canvasToBase64(croppedCanvas, 'image/jpeg', 1);
         const response = await chatAnalysis({
           promptKey: 'result_evaluator_prompt',
           multimodalInputs: [
             {
               metadata: userPrompt,
+            },
+            {
+              metadata:
+                'Uploaded request image, find one keyword that describes the product well',
+              mimeType: 'image/jpeg',
+              image: base64Image,
             },
           ],
         });
@@ -230,12 +249,13 @@ Evaluate if these results match the image. If they do (same type of product), ro
         const evaluation: P2EvaluationResult = response;
         console.log({ evaluation });
 
-        let mappedOptions = evaluation?.options?.map(opt => ({
+        let mappedOptions = (evaluation?.options || []).map(opt => ({
           label: opt.label,
           action_type: opt.action_type as
             | 'filter'
             | 'clarify'
-            | 'text_search_prompt',
+            | 'text_search_prompt'
+            | 'find_related_parts',
           key: (opt as any).key,
           value: (opt as any).value,
         }));
@@ -245,6 +265,37 @@ Evaluate if these results match the image. If they do (same type of product), ro
           key: 'text_search',
           value: 'text_search',
         });
+
+        const productDesc = [
+          imageAnalysis?.imageDescription,
+          imageAnalysis?.optimizedSearchQuery,
+          Object.entries(specification || {})
+            .map(([k, v]) => `${k}: ${v}`)
+            .join(', '),
+        ]
+          .filter(Boolean)
+          .join('. ');
+
+        // Check lookup table for related parts on fresh image searches and store globally.
+        const table = await loadRelatedPartsTable();
+        const requestImageKeyword = evaluation.keyword;
+        const tableSuggestions = lookupRelatedParts(
+          table,
+          requestImageKeyword || productDesc || '',
+        );
+        const hasTableSuggestions =
+          !!tableSuggestions && tableSuggestions.length > 0;
+        setRelatedPartsTableSuggestions(tableSuggestions || []);
+
+        // GC Gruppe: offer "Find related parts" in initial P2 response
+        if (window.settings.vizo?.findRelatedParts && hasTableSuggestions) {
+          mappedOptions.push({
+            label: `Find parts related to ${evaluation.keyword || 'request image'}`,
+            action_type: 'find_related_parts',
+            key: 'find_related',
+            value: 'find_related_parts',
+          });
+        }
 
         // Enforce ≤5 rule: if initial results are ≤5, strip filter options, keep only text_search_prompt
         if (activeProducts.length <= 5 && activeProducts.length > 0) {
@@ -256,24 +307,33 @@ Evaluate if these results match the image. If they do (same type of product), ro
               value: 'text_search',
             },
           ];
+
+          if (window.settings.vizo?.findRelatedParts && hasTableSuggestions) {
+            mappedOptions.push({
+              label: `Find parts related to ${evaluation.keyword || 'request image'}`,
+              action_type: 'find_related_parts',
+              key: 'find_related',
+              value: 'find_related_parts',
+            });
+          }
         }
 
         setEvaluationResult(
           evaluation.quality,
           evaluation.route,
-          evaluation.failure_mode,
           evaluation.opening_message,
           mappedOptions,
+          evaluation.keyword,
         );
       } catch (err: any) {
         console.error('result_evaluator_prompt', err);
+        setRelatedPartsTableSuggestions([]);
         setError(err.message || 'Failed to evaluate results');
 
         // Fallback to good results on error
         setEvaluationResult(
           'good',
           'P3',
-          null,
           "I found some results for your image. How can I help you find what you're looking for?",
           [
             { label: 'Show me options', action_type: 'filter' as const },
@@ -290,7 +350,14 @@ Evaluate if these results match the image. If they do (same type of product), ro
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [setIsLoading, setError, filters, orgProfile, setEvaluationResult],
+    [
+      setIsLoading,
+      setError,
+      setRelatedPartsTableSuggestions,
+      filters,
+      orgProfile,
+      setEvaluationResult,
+    ],
   );
 
   // Reset the guard ref when a new session starts (isEvaluated goes back to false)

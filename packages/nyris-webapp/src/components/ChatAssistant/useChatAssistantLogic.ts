@@ -6,11 +6,15 @@ import useRequestStore from 'stores/request/requestStore';
 import { useGoodResultsChat } from 'hooks/useGoodResultsChat';
 import { useBadResultsRecovery } from 'hooks/useBadResultsRecovery';
 import { chatAnalysis } from 'services/vizo';
+import { compressImage } from 'utils/compressImage';
+import { loadRelatedPartsTable, lookupRelatedParts } from 'utils/relatedParts';
 
 export function useChatAssistantLogic() {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const [findingRelatedParts, setFindingRelatedParts] = useState(false);
 
   // Conversation store
   const isEvaluated = useConversationStore(s => s.isEvaluated);
@@ -40,6 +44,7 @@ export function useChatAssistantLogic() {
   );
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
   const setFullResultPool = useResultStore(state => state.setFullResultPool);
+  const imageAnalysis = useResultStore(state => state.imageAnalysis);
 
   const isAlgoliaEnabled = !!(window as any).settings?.algolia?.enabled;
   const activeProducts = isAlgoliaEnabled
@@ -80,38 +85,6 @@ export function useChatAssistantLogic() {
     setFindApiProducts,
   ]);
 
-  // ── Lifecycle effects ──
-
-  // On mount, clear stale conversation state only if there are no messages.
-  // If isEvaluated=true but messages exist, evaluateResults fired before this
-  // component mounted (e.g. from useImageSearch) — those messages are fresh and
-  // must not be wiped. The firstSearchResults effect handles resets on new searches.
-  // useEffect(() => {
-  //   if (!hasMountedRef.current) {
-  //     hasMountedRef.current = true;
-  //     if (isEvaluated && messages.length === 0) {
-  //       startNewSession();
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // Reset conversation when new search results arrive
-  // useEffect(() => {
-  //   if (firstSearchResults.length === 0) return;
-  //   const resultsSignature = firstSearchResults
-  //     .slice(0, 5)
-  //     .map((p: any) => p.sku || p.objectID || p.title)
-  //     .join('|');
-  //   if (
-  //     previousResultsRef.current !== resultsSignature &&
-  //     previousResultsRef.current !== ''
-  //   ) {
-  //     startNewSession();
-  //   }
-  //   previousResultsRef.current = resultsSignature;
-  // }, [firstSearchResults, startNewSession]);
-
   // Trigger P2 evaluation
   useEffect(() => {
     if (
@@ -151,11 +124,208 @@ export function useChatAssistantLogic() {
 
   // ── Handlers ──
 
+  const handleRelatedPartSearch = useCallback(
+    async (message: string) => {
+      const store = useConversationStore.getState();
+      const relatedPart = store.pendingRelatedPart;
+      if (!relatedPart) return;
+
+      // Empty input → search for the part name as-is
+      if (!message) {
+        store.setPendingRelatedPart(null);
+        store.setAwaitingDescription(false);
+        store.addMessage({ role: 'user', content: relatedPart });
+      } else {
+        store.addMessage({ role: 'user', content: message });
+
+        // Check if user input contains relevant specs for the selected part
+        store.setIsLoading(true);
+        try {
+          const response = await chatAnalysis({
+            promptKey: 'product_tagging_prompt',
+            multimodalInputs: [
+              {
+                metadata: `The user is looking for a "${relatedPart}". They were asked to provide specifications like brand, size, connection type, or model.\n\nThey responded: "${message}"\n\nDoes this response contain actual product specifications, attributes, brand names, model numbers, dimensions, or any useful search criteria for finding a "${relatedPart}"?\n\nReturn JSON only:\n{"relevant": true/false, "suggestion": "If not relevant, a brief helpful hint about what details to provide for a ${relatedPart}"}`,
+              },
+            ],
+          });
+
+          const check = response;
+
+          if (!check.relevant) {
+            store.setIsLoading(false);
+            const hint =
+              check.suggestion ||
+              `Try specifying a brand, size, or connection type for the ${relatedPart}.`;
+            store.addMessage({
+              role: 'assistant',
+              content: `That doesn't seem like product specifications for a **${relatedPart}**. ${hint}\n\nYou can also text search in catalog.`,
+              options: [
+                {
+                  label: 'Text search in catalog',
+                  action_type: 'catalog_search_text' as const,
+                  key: 'catalog_search_text',
+                  value: 'catalog_search_text',
+                },
+              ],
+            });
+            return;
+          }
+        } catch (err) {
+          console.warn(
+            '[RelatedParts] Relevance check failed, proceeding anyway:',
+            err,
+          );
+        } finally {
+          store.setIsLoading(false);
+        }
+
+        store.setPendingRelatedPart(null);
+        store.setAwaitingDescription(false);
+      }
+
+      const combinedQuery = message ? `${relatedPart} ${message}` : relatedPart;
+      store.setIsLoading(true);
+      setCatalogSearching(true);
+
+      try {
+        const settings = (window as any).settings;
+        const nyrisKey = settings?.apiKey || settings?.nyrisApiKey;
+        const baseUrl = settings?.baseUrl || 'https://api.nyris.io';
+
+        let searchQuery = combinedQuery;
+
+        try {
+          const response = await chatAnalysis({
+            promptKey: 'product_tagging_prompt',
+            multimodalInputs: [
+              {
+                metadata: `Extract only the product search keywords from this user message. Remove filler words, conversational phrases, and intent words. Return ONLY the clean search terms.\n\nUser message: "${combinedQuery} return only json {query: "clean search terms here"}"`,
+              },
+            ],
+          });
+
+          const cleaned = response.query;
+          if (cleaned) {
+            searchQuery = cleaned.replace(/^["']|["']$/g, '');
+          }
+        } catch (cleanErr) {
+          console.warn(
+            '[RelatedParts] Query cleaning failed, using raw:',
+            cleanErr,
+          );
+        }
+
+        store.setPreCatalogResults([...activeProducts]);
+
+        const formData = new FormData();
+        formData.append('text', searchQuery);
+        const res = await fetch(`${baseUrl}/find/v1.1`, {
+          method: 'POST',
+          headers: {
+            'X-Api-Key': nyrisKey,
+            Accept: 'application/offers.complete+json',
+          },
+          body: formData,
+        });
+        const data = await res.json();
+        const results = data?.results || [];
+
+        const setProducts = isAlgoliaEnabled
+          ? setAlgoliaProducts
+          : productsFromAlgolia.length > 0
+            ? setAlgoliaProducts
+            : setFindApiProducts;
+
+        if (results.length > 0) {
+          setProducts(results);
+          setFullResultPool(results);
+          store.setIsLoading(false);
+          await sendP3Message(
+            `I searched the catalog for "${searchQuery}" and got ${results.length} results. Suggest filters to help narrow down.`,
+            { silent: true },
+          );
+        } else {
+          const original =
+            firstSearchResults.length > 0
+              ? firstSearchResults
+              : firstAlgoliaProducts;
+          if (original.length > 0) {
+            setProducts(original);
+            setFullResultPool(original);
+          }
+          const freshStore = useConversationStore.getState();
+          freshStore.setPreCatalogResults(null);
+          freshStore.clearFilters();
+          freshStore.addMessage({
+            role: 'assistant',
+            content: `I couldn't find "${searchQuery}" in the catalog. Here are your original results — try different specs or another related part.`,
+            options:
+              freshStore.openingOptions.length > 0
+                ? freshStore.openingOptions
+                : undefined,
+          });
+        }
+      } catch (err) {
+        console.error('[RelatedParts] Catalog search failed:', err);
+        const original =
+          firstSearchResults.length > 0
+            ? firstSearchResults
+            : firstAlgoliaProducts;
+        if (original.length > 0) {
+          const setProducts = isAlgoliaEnabled
+            ? setAlgoliaProducts
+            : productsFromAlgolia.length > 0
+              ? setAlgoliaProducts
+              : setFindApiProducts;
+          setProducts(original);
+          setFullResultPool(original);
+        }
+        const freshStore = useConversationStore.getState();
+        freshStore.setPreCatalogResults(null);
+        freshStore.clearFilters();
+        freshStore.addMessage({
+          role: 'assistant',
+          content:
+            'Something went wrong searching for related parts. Here are your original results.',
+          options:
+            freshStore.openingOptions.length > 0
+              ? freshStore.openingOptions
+              : undefined,
+        });
+      } finally {
+        store.setIsLoading(false);
+        setCatalogSearching(false);
+      }
+    },
+    [
+      activeProducts,
+      firstAlgoliaProducts,
+      firstSearchResults,
+      isAlgoliaEnabled,
+      productsFromAlgolia.length,
+      sendP3Message,
+      setAlgoliaProducts,
+      setFindApiProducts,
+      setFullResultPool,
+    ],
+  );
+
   const handleSendMessage = useCallback(async () => {
     if (!inputValue.trim() || isLoading) return;
     const message = inputValue.trim();
     setInputValue('');
     setCatalogSearchReady(true);
+
+    const store = useConversationStore.getState();
+    const relatedPart = store.pendingRelatedPart;
+
+    // if (relatedPart) {
+    //   await handleRelatedPartSearch(message);
+    //   return;
+    // }
+
+    if (!message) return;
 
     if (route === 'P3') {
       await sendP3Message(message);
@@ -164,7 +334,14 @@ export function useChatAssistantLogic() {
     } else {
       await sendP3Message(message);
     }
-  }, [inputValue, isLoading, route, sendP3Message, sendP5Message]);
+  }, [
+    handleRelatedPartSearch,
+    inputValue,
+    isLoading,
+    route,
+    sendP3Message,
+    sendP5Message,
+  ]);
 
   const handleOptionClick = useCallback(
     async (option: any) => {
@@ -187,6 +364,25 @@ export function useChatAssistantLogic() {
 
       if (option.action_type === 'catalog_search_text') {
         await handleCatalogSearchWithText();
+        return;
+      }
+
+      if (option.action_type === 'find_related_parts') {
+        await handleFindRelatedParts();
+        return;
+      }
+
+      // Related part selected — prompt user for specs, then search catalog
+      if (option.action_type === 'related_part') {
+        const partName = option.value || option.label;
+        const store = useConversationStore.getState();
+        store.setPendingRelatedPart(partName);
+        store.setAwaitingDescription(true);
+        store.addMessage({
+          role: 'assistant',
+          content: `You're looking for a **${partName}**. Can you share any details like brand, size, connection type, or model? The more specific you are, the better results I can find.\n\nOr just press Enter to search for "${partName}" as-is.`,
+        });
+        setInputValue(partName);
         return;
       }
 
@@ -284,14 +480,34 @@ export function useChatAssistantLogic() {
         }
 
         const [newBase64, origBase64] = await Promise.all([
-          typeof file === 'string'
-            ? Promise.resolve(file.includes(',') ? file.split(',')[1] : file)
-            : new Promise<string>(resolve => {
+          (async () => {
+            try {
+              const normalizedInput =
+                typeof file === 'string' &&
+                !file.includes(',') &&
+                !file.startsWith('https:')
+                  ? `data:image/jpeg;base64,${file}`
+                  : file;
+              const compressedDataUrl = await compressImage(normalizedInput);
+              return compressedDataUrl.includes(',')
+                ? compressedDataUrl.split(',')[1] || ''
+                : compressedDataUrl;
+            } catch (compressionError) {
+              console.warn(
+                '[ChatAssistant] Image compression failed, using original image:',
+                compressionError,
+              );
+              if (typeof file === 'string') {
+                return file.includes(',') ? file.split(',')[1] : file;
+              }
+              return await new Promise<string>(resolve => {
                 const reader = new FileReader();
                 reader.onload = () =>
                   resolve((reader.result as string).split(',')[1] || '');
                 reader.readAsDataURL(file);
-              }),
+              });
+            }
+          })(),
           requestImages[0]
             ? Promise.resolve(
                 requestImages[0].toDataURL('image/jpeg', 0.7).split(',')[1] ||
@@ -632,6 +848,61 @@ If NONE of the current results match the new image, return:
     }
   }, [activeProducts, getSetProducts, setFullResultPool, sendP3Message]);
 
+  // Handle "Find related parts" — checks lookup table first, falls back to Gemini
+  const handleFindRelatedParts = async () => {
+    console.log('find_related_parts');
+    const store = useConversationStore.getState();
+    store.setIsLoading(true);
+    // store.setRelatedPartsUsed(true);
+    setFindingRelatedParts(true);
+
+    try {
+      const productDesc = [
+        imageAnalysis.imageDescription,
+        imageAnalysis.optimizedSearchQuery,
+        Object.entries(imageAnalysis.specification || {})
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(', '),
+      ]
+        .filter(Boolean)
+        .join('. ');
+
+      // 1. Try the lookup table first (instant, no API call)
+      const table = await loadRelatedPartsTable();
+      const requestImageKeyword =
+        useConversationStore.getState().requestImageKeyword;
+      const tableSuggestions = lookupRelatedParts(
+        table,
+        requestImageKeyword || productDesc || '',
+      );
+
+      if (tableSuggestions && tableSuggestions.length > 0) {
+        const options = tableSuggestions.map(s => ({
+          label: s.label,
+          action_type: 'related_part' as const,
+          value: s.label,
+          key: `related_${s.label.toLowerCase().replace(/\s+/g, '_')}`,
+        }));
+        store.addMessage({
+          role: 'assistant',
+          content: `Here are some parts and accessories commonly associated with this product. Select one to search the catalog:\n\n${tableSuggestions.map(s => `• **${s.label}** — ${s.description}`).join('\n')}`,
+          options,
+        });
+        return;
+      }
+    } catch (err) {
+      console.error('[RelatedParts] Failed:', err);
+      store.addMessage({
+        role: 'assistant',
+        content:
+          'Something went wrong while looking up related parts. Please try again.',
+      });
+    } finally {
+      store.setIsLoading(false);
+      setFindingRelatedParts(false);
+    }
+  };
+
   return {
     // State
     inputValue,
@@ -648,6 +919,7 @@ If NONE of the current results match the new image, return:
     catalogSearching,
     activeProducts,
     productsFromAlgolia,
+    findingRelatedParts,
 
     // Refs
     messagesEndRef,
@@ -659,5 +931,6 @@ If NONE of the current results match the new image, return:
     handleImageUpload,
     handleCatalogSearchWithImage,
     handleCatalogSearchWithText,
+    handleFindRelatedParts,
   };
 }

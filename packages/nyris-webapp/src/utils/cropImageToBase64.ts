@@ -22,3 +22,12 @@ export function cropImage(
   const croppedCanvas = elementToCanvas(canvas, scaledSize, crop);
   return croppedCanvas;
 }
+
+export function canvasToBase64(
+  canvas: HTMLCanvasElement,
+  type: string = 'image/png',
+  quality?: number,
+): string {
+  const dataUrl = canvas.toDataURL(type, quality);
+  return dataUrl.split(',')[1];
+}
