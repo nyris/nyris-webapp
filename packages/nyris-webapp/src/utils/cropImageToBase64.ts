@@ -13,7 +13,6 @@ export function cropImage(
   maxHeight: number = 1024,
 ): HTMLCanvasElement {
   if (!region) return canvas;
-  console.log({ region });
 
   const crop: RectCoords = region || { x1: 0, x2: 1, y1: 0, y2: 1 };
   const originalSize = getElementSize(canvas);

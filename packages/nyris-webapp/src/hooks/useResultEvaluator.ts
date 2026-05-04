@@ -8,13 +8,11 @@
 
 import { useCallback, useRef } from 'react';
 import useConversationStore, {
-  FailureMode,
   QuickReplyOption,
   ConversationRoute,
   ResultQuality,
 } from 'stores/chat/conversationStore';
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
-import { buildBrandRegex, buildProductTypeRegex } from './promptBuilders';
 import { chatAnalysis } from 'services/vizo';
 import useRequestStore from 'stores/request/requestStore';
 import { canvasToBase64, cropImage } from 'utils/cropImageToBase64';
@@ -36,7 +34,7 @@ export function useResultEvaluator() {
     setError,
     setRelatedPartsTableSuggestions,
   } = useConversationStore();
-  const { filters, orgProfile } = useSmartFiltersStore();
+  const { filters } = useSmartFiltersStore();
 
   const evaluatingRef = useRef(false);
 
@@ -103,13 +101,10 @@ export function useResultEvaluator() {
               if (asteriskMatch && asteriskMatch[1].length <= 20) {
                 metadata.brand = asteriskMatch[1].trim();
               }
-              // Pattern 3: Known brand prefixes in title (from org profile)
-              const brandPatterns = buildBrandRegex(orgProfile);
-              if (brandPatterns) {
-                const brandMatch = titleDesc.match(brandPatterns);
-                if (brandMatch) {
-                  metadata.brand = brandMatch[1].toUpperCase();
-                }
+              // Pattern 3: Generic all-caps token in title/description
+              const tokenMatch = titleDesc.match(/\b([A-Z][A-Z0-9]{2,})\b/);
+              if (tokenMatch) {
+                metadata.brand = tokenMatch[1].toUpperCase();
               }
             }
 
@@ -154,10 +149,11 @@ export function useResultEvaluator() {
               }
             }
 
-            // Extract product type from title (from org profile regex terms)
-            const typeRegex = buildProductTypeRegex(orgProfile);
-            if (typeRegex && !metadata.product_type) {
-              const typeMatch = titleDesc.match(typeRegex);
+            // Extract generic product type keywords from title/description
+            if (!metadata.product_type) {
+              const typeMatch = titleDesc.match(
+                /\b(bearing|ring|relay|sensor|motor|fan|contactor|valve|pump|faucet|thermostat|filter|housing)\b/i,
+              );
               if (typeMatch) {
                 metadata.product_type = typeMatch[1].toUpperCase();
               }
@@ -247,7 +243,6 @@ Evaluate if these results match the image. If they do (same type of product), ro
         });
 
         const evaluation: P2EvaluationResult = response;
-        console.log({ evaluation });
 
         let mappedOptions = (evaluation?.options || []).map(opt => ({
           label: opt.label,
@@ -355,7 +350,6 @@ Evaluate if these results match the image. If they do (same type of product), ro
       setError,
       setRelatedPartsTableSuggestions,
       filters,
-      orgProfile,
       setEvaluationResult,
     ],
   );

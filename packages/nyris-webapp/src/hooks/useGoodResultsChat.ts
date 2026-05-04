@@ -134,8 +134,6 @@ function extractSearchKeywords(description: string): string {
   );
 }
 
-// P3 System Prompt is now dynamically built via buildP3SystemPrompt(orgProfile)
-
 /**
  * Fetch a product image URL and return base64-encoded JPEG (resized to 256px max).
  * Returns null on any failure (CORS, 404, timeout, etc.)
@@ -234,7 +232,7 @@ export function useGoodResultsChat() {
     setError,
   } = useConversationStore();
 
-  const { filters, orgProfile } = useSmartFiltersStore();
+  const { filters } = useSmartFiltersStore();
   const productsFromAlgolia = useResultStore(
     state => state.productsFromAlgolia,
   );
@@ -710,7 +708,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
       messages,
       activeFilters,
       filters,
-      orgProfile,
       activeProducts,
       originalProducts,
       fullResultPool,

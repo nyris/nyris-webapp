@@ -1,9 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import {
-  OrganizationProfile,
-  DEFAULT_ORG_PROFILE,
-} from './organizationProfile';
 
 export interface SmartFilter {
   id: string;
@@ -24,8 +20,6 @@ export interface RerankedResult {
 interface SmartFiltersState {
   // API Keys (persisted in localStorage for admin convenience)
   nyrisApiKeyOverride: string; // Override for nyris API key (empty = use settings.js)
-  filterPrompt: string;
-  rerankPrompt: string;
 
   // Settings
   includeReasoning: boolean; // Toggle for AI reasoning (slower but more informative)
@@ -39,9 +33,6 @@ interface SmartFiltersState {
   googleGroundingEnabled: boolean; // P7: validate bad results via Google Search
   visualRerankEnabled: boolean; // Visual reranking: 1:1 image comparison
   showFilterChips: boolean; // Toggle visibility of Smart Filter chips (independent of Chat Assistant)
-
-  // Organization profile for dynamic prompt tailoring
-  orgProfile: OrganizationProfile;
 
   // Filters
   filters: SmartFilter[];
@@ -66,16 +57,11 @@ interface SmartFiltersState {
 
   // Error
   error: string | null;
-
-  // Admin settings modal
-  showAdminSettings: boolean;
 }
 
 interface SmartFiltersActions {
   // API Key actions
   setNyrisApiKeyOverride: (key: string) => void;
-  setFilterPrompt: (prompt: string) => void;
-  setRerankPrompt: (prompt: string) => void;
 
   // Settings
   setIncludeReasoning: (include: boolean) => void;
@@ -89,9 +75,6 @@ interface SmartFiltersActions {
   setGoogleGroundingEnabled: (enabled: boolean) => void;
   setVisualRerankEnabled: (enabled: boolean) => void;
   setShowFilterChips: (show: boolean) => void;
-
-  // Organization profile
-  setOrgProfile: (profile: OrganizationProfile) => void;
 
   // Filter actions
   setFilters: (filters: SmartFilter[]) => void;
@@ -127,25 +110,12 @@ interface SmartFiltersActions {
   // Error
   setError: (error: string | null) => void;
 
-  // Admin settings
-  setShowAdminSettings: (show: boolean) => void;
-
   // Reset
   reset: () => void;
 }
 
-const getDefaultPrompts = () => {
-  const settings = (window as any).settings;
-  return {
-    filterPrompt: settings?.smartFilters?.filterPrompt || '',
-    rerankPrompt: settings?.smartFilters?.rerankPrompt || '',
-  };
-};
-
 const initialState: SmartFiltersState = {
   nyrisApiKeyOverride: '',
-  filterPrompt: '',
-  rerankPrompt: '',
   includeReasoning: false, // Default: off for faster filtering
   backgroundRemovalEnabled: false, // Default: off (needs rembg server)
   backgroundRemovalModel: 'isnet-general-use', // Default model
@@ -157,7 +127,6 @@ const initialState: SmartFiltersState = {
   googleGroundingEnabled: false, // P7 off by default
   visualRerankEnabled: false, // Visual reranking off by default
   showFilterChips: false, // Smart Filter chips hidden by default
-  orgProfile: DEFAULT_ORG_PROFILE,
   filters: [],
   selectedFilters: [],
   rerankedResults: [],
@@ -169,7 +138,6 @@ const initialState: SmartFiltersState = {
   isGeneratingFilters: false,
   isReranking: false,
   error: null,
-  showAdminSettings: false,
 };
 
 const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
@@ -177,13 +145,7 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
     (set, _get) => ({
       ...initialState,
 
-      // Initialize prompts from settings on first load
-      filterPrompt: getDefaultPrompts().filterPrompt,
-      rerankPrompt: getDefaultPrompts().rerankPrompt,
-
       setNyrisApiKeyOverride: key => set({ nyrisApiKeyOverride: key }),
-      setFilterPrompt: prompt => set({ filterPrompt: prompt }),
-      setRerankPrompt: prompt => set({ rerankPrompt: prompt }),
       setIncludeReasoning: include => set({ includeReasoning: include }),
       setBackgroundRemovalEnabled: enabled =>
         set({ backgroundRemovalEnabled: enabled }),
@@ -199,7 +161,6 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
         set({ googleGroundingEnabled: enabled }),
       setVisualRerankEnabled: enabled => set({ visualRerankEnabled: enabled }),
       setShowFilterChips: show => set({ showFilterChips: show }),
-      setOrgProfile: profile => set({ orgProfile: profile }),
 
       setFilters: filters => set({ filters }),
 
@@ -252,8 +213,6 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
 
       setError: error => set({ error }),
 
-      setShowAdminSettings: show => set({ showAdminSettings: show }),
-
       reset: () =>
         set({
           filters: [],
@@ -271,7 +230,7 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
     }),
     {
       name: 'smart-filters-storage',
-      version: 3.1,
+      version: 3.2,
       migrate: (persisted: unknown, version: number) => {
         const state = persisted as Partial<SmartFiltersState>;
         if (version < 2) {
@@ -284,12 +243,14 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
         // v3.1: removed geminiApiKey and geminiModel
         delete (state as any).geminiApiKey;
         delete (state as any).geminiModel;
+        // v3.2: removed prompt customization and admin modal state
+        delete (state as any).filterPrompt;
+        delete (state as any).rerankPrompt;
+        delete (state as any).showAdminSettings;
         return state;
       },
       partialize: state => ({
         nyrisApiKeyOverride: state.nyrisApiKeyOverride,
-        filterPrompt: state.filterPrompt,
-        rerankPrompt: state.rerankPrompt,
         includeReasoning: state.includeReasoning,
         backgroundRemovalEnabled: state.backgroundRemovalEnabled,
         backgroundRemovalModel: state.backgroundRemovalModel,
@@ -301,7 +262,6 @@ const useSmartFiltersStore = create<SmartFiltersState & SmartFiltersActions>()(
         googleGroundingEnabled: state.googleGroundingEnabled,
         visualRerankEnabled: state.visualRerankEnabled,
         showFilterChips: state.showFilterChips,
-        orgProfile: state.orgProfile,
       }),
     },
   ),

@@ -850,7 +850,6 @@ If NONE of the current results match the new image, return:
 
   // Handle "Find related parts" — checks lookup table first, falls back to Gemini
   const handleFindRelatedParts = async () => {
-    console.log('find_related_parts');
     const store = useConversationStore.getState();
     store.setIsLoading(true);
     // store.setRelatedPartsUsed(true);

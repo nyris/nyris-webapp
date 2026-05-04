@@ -13,10 +13,7 @@ import useConversationStore, {
 } from 'stores/chat/conversationStore';
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import useResultStore from 'stores/result/resultStore';
-import { buildBrandRegex, buildProductTypeRegex } from './promptBuilders';
 import { chatAnalysis } from 'services/vizo';
-
-// P5 System Prompt is now dynamically built via buildP5SystemPrompt(orgProfile)
 
 interface P5Response {
   message: string;
@@ -37,7 +34,7 @@ export function useBadResultsRecovery() {
     setError,
   } = useConversationStore();
 
-  const { filters, orgProfile } = useSmartFiltersStore();
+  const { filters } = useSmartFiltersStore();
   const productsFromAlgolia = useResultStore(
     state => state.productsFromAlgolia,
   );
@@ -147,11 +144,8 @@ export function useBadResultsRecovery() {
               const asteriskMatch = title.match(/^([^*]+)\*/);
               if (asteriskMatch && asteriskMatch[1].length <= 20)
                 metadata.brand = asteriskMatch[1].trim();
-              const brandPatterns = buildBrandRegex(orgProfile);
-              if (brandPatterns) {
-                const brandMatch = titleDesc.match(brandPatterns);
-                if (brandMatch) metadata.brand = brandMatch[1].toUpperCase();
-              }
+              const tokenMatch = titleDesc.match(/\b([A-Z][A-Z0-9]{2,})\b/);
+              if (tokenMatch) metadata.brand = tokenMatch[1].toUpperCase();
             }
 
             // Extract dimensions like "382 mm x 260 mm x 3 mm" or "344 x 221 x 3"
@@ -170,10 +164,11 @@ export function useBadResultsRecovery() {
             if (voltageMatch && !metadata.voltage)
               metadata.voltage = voltageMatch[0];
 
-            // Extract product type from title (from org profile regex terms)
-            const typeRegex = buildProductTypeRegex(orgProfile);
-            if (typeRegex && !metadata.product_type) {
-              const typeMatch = titleDesc.match(typeRegex);
+            // Extract generic product type keywords from title/description
+            if (!metadata.product_type) {
+              const typeMatch = titleDesc.match(
+                /\b(bearing|ring|relay|sensor|motor|fan|contactor|valve|pump|faucet|thermostat|filter|housing)\b/i,
+              );
               if (typeMatch) {
                 metadata.product_type = typeMatch[1].toUpperCase();
               }
@@ -324,7 +319,6 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
       failureMode,
       attemptCounter,
       filters,
-      orgProfile,
       activeProducts,
       firstAlgoliaProducts,
       imageAnalysis,
