@@ -142,31 +142,17 @@ function MobileChatAssistant() {
                       <div className="mt-2 space-y-2.5">
                         <div className="flex flex-wrap gap-1.5">
                           {msg.options
-                            .filter(
-                              o =>
-                                o.action_type !== 'text_search_prompt' &&
-                                o.action_type !== 'catalog_search_text',
-                            )
+                            .filter(o => o.action_type !== 'text_search_prompt')
                             .map((option, optIdx) => (
                               <OptionChip
                                 key={optIdx}
                                 option={option}
                                 onClick={wrappedHandleOptionClick}
-                                disabled={isLoading}
+                                disabled={
+                                  isLoading || i !== messages.length - 1
+                                }
                               />
                             ))}
-
-                          {!(isLoading || !catalogSearchReady) &&
-                            i === messages.length - 1 && (
-                              <OptionChip
-                                option={{
-                                  action_type: 'catalog_search_text',
-                                  label: 'Text search in catalog',
-                                }}
-                                onClick={handleCatalogSearchTextChipClick}
-                                disabled={isLoading || !catalogSearchReady}
-                              />
-                            )}
                         </div>
                       </div>
                     )}

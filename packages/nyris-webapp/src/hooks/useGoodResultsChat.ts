@@ -15,6 +15,10 @@ import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
 import { chatAnalysis } from 'services/vizo';
+import {
+  fetchProductImageBase64,
+  getProductImageUrl,
+} from 'utils/fetchProductImage';
 
 /**
  * Extracts search keywords from a user's natural language description.
@@ -131,80 +135,6 @@ function extractSearchKeywords(description: string): string {
   return (
     prioritized.slice(0, 8).join(' ') ||
     description.trim().split(/\s+/).slice(0, 3).join(' ')
-  );
-}
-
-/**
- * Fetch a product image URL and return base64-encoded JPEG (resized to 256px max).
- * Returns null on any failure (CORS, 404, timeout, etc.)
- */
-async function fetchProductImageBase64(
-  imageUrl: string,
-): Promise<string | null> {
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout per image
-
-    // Route through local proxy to bypass CORS restrictions on external CDN images.
-    // In dev: /api/image-proxy (setupProxy.js). In production: deploy equivalent serverless function.
-    const proxyUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
-    const res = await fetch(proxyUrl, { signal: controller.signal });
-    clearTimeout(timeout);
-
-    if (!res.ok) {
-      console.warn(`[P3] Image proxy failed (${res.status}):`, imageUrl);
-      return null;
-    }
-    const blob = await res.blob();
-
-    return new Promise(resolve => {
-      const img = new Image();
-      img.onload = () => {
-        try {
-          const maxSize = 256; // Small thumbnails to keep request size reasonable
-          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-          const canvas = document.createElement('canvas');
-          canvas.width = Math.round(img.width * scale);
-          canvas.height = Math.round(img.height * scale);
-          const ctx = canvas.getContext('2d');
-          if (!ctx) {
-            resolve(null);
-            return;
-          }
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
-          const b64 = dataUrl.split(',')[1] || '';
-          URL.revokeObjectURL(img.src);
-          resolve(b64 || null);
-        } catch (canvasErr) {
-          console.warn('[P3] Canvas toDataURL failed:', imageUrl, canvasErr);
-          URL.revokeObjectURL(img.src);
-          resolve(null);
-        }
-      };
-      img.onerror = () => {
-        console.warn('[P3] Image element load failed:', imageUrl);
-        resolve(null);
-      };
-      // Blob URL is same-origin — no CORS taint, canvas read will succeed
-      img.src = URL.createObjectURL(blob);
-    });
-  } catch (err) {
-    console.warn('[P3] Image proxy error:', imageUrl, err);
-    return null;
-  }
-}
-
-/**
- * Get the best available image URL for a product.
- */
-function getProductImageUrl(product: any): string | null {
-  return (
-    product.matches?.[0]?.url ||
-    product.main_image_link ||
-    product.image ||
-    product.images?.[0] ||
-    null
   );
 }
 
@@ -374,14 +304,9 @@ export function useGoodResultsChat() {
         const imageResults = await Promise.all(
           productsForImages.map(async (p: any, i: number) => {
             const url = getProductImageUrl(p);
+
             if (!url) return { rank: i + 1, base64: null };
-            // Check cache first
-            if (imageCacheRef.current.has(url)) {
-              return {
-                rank: i + 1,
-                base64: imageCacheRef.current.get(url) || null,
-              };
-            }
+
             const base64 = await fetchProductImageBase64(url);
             imageCacheRef.current.set(url, base64);
             return { rank: i + 1, base64 };
@@ -430,8 +355,7 @@ PRODUCT LIST (up to 50 results — each has a unique ID in [brackets] and AI-gen
           const tagStr = tags
             ? ` | TAGS: type=${tags.productType}, color=${tags.color}, shape=${tags.shape}, material=${tags.material}`
             : '';
-          const metaLine = `[${r.id}] ${r.title} | brand: ${r.brand} | mpn: ${r.mpn} | desc: ${r.description}${tagStr}`;
-          userParts.push({ text: metaLine });
+          const metaLine = `id: ${r.id} | ${r.title} | brand: ${r.brand} | mpn: ${r.mpn} | desc: ${r.description}${tagStr}`;
 
           // Include product image if available
           if (
@@ -440,11 +364,14 @@ PRODUCT LIST (up to 50 results — each has a unique ID in [brackets] and AI-gen
             imageResults[i]?.base64
           ) {
             userParts.push({
+              text: metaLine,
               inlineData: {
                 mimeType: 'image/jpeg',
                 data: imageResults[i].base64,
               },
             });
+          } else {
+            userParts.push({ text: metaLine });
           }
         });
 
@@ -461,10 +388,12 @@ USER MESSAGE: ${userMessage}
 Respond to the user's message with an appropriate action and follow-up options.`,
         });
 
-        const response = await chatAnalysis({
+        const response: P3Response = await chatAnalysis({
           promptKey: 'chat_assistant_prompt',
           multimodalInputs: userParts.map(part => ({
             metadata: part.text,
+            image: part.inlineData?.data,
+            mimeType: part.inlineData?.mimeType,
           })),
         });
 
@@ -607,6 +536,7 @@ Respond to the user's message with an appropriate action and follow-up options.`
             .getState()
             .setPendingCatalogText(p3Response.action?.value || '');
         }
+        let finalOptions = p3Response.options || [];
 
         // Fix count mismatches: AI often says a different number than what was actually resolved.
         // Replace numeric counts in the message with the actual count.
@@ -635,12 +565,32 @@ Respond to the user's message with an appropriate action and follow-up options.`
             /out of the original (\d+)/gi,
             `out of the original ${visibleResults.length}`,
           );
+
+          finalOptions = [
+            ...finalOptions,
+
+            {
+              label: 'Go back to original results',
+              action_type: 'restore_original' as const,
+              key: 'restore',
+              value: 'restore',
+            },
+          ];
         }
 
-        let finalOptions = p3Response.options || [];
+        const {
+          preCatalogResults,
+          relatedPartsUsed,
+          relatedPartsTableSuggestions,
+        } = useConversationStore.getState();
+
+        if (relatedPartsUsed) {
+          finalOptions = finalOptions.filter(
+            opt => opt.action_type !== 'find_related_parts',
+          );
+        }
 
         // If user came from a catalog search, offer to go back to previous results
-        const preCatalog = useConversationStore.getState().preCatalogResults;
         finalOptions = [
           ...finalOptions,
           {
@@ -651,7 +601,7 @@ Respond to the user's message with an appropriate action and follow-up options.`
           },
         ];
 
-        if (preCatalog && preCatalog.length > 0) {
+        if (preCatalogResults && preCatalogResults.length > 0) {
           finalOptions = [
             ...finalOptions,
             {
@@ -663,11 +613,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
           ];
         }
 
-        const {
-          relatedPartsUsed,
-          requestImageKeyword,
-          relatedPartsTableSuggestions,
-        } = useConversationStore.getState();
         if (
           window.settings.vizo?.findRelatedParts &&
           !relatedPartsUsed &&
@@ -676,7 +621,7 @@ Respond to the user's message with an appropriate action and follow-up options.`
           finalOptions = [
             ...finalOptions,
             {
-              label: `Find parts related to ${requestImageKeyword || 'request image'}`,
+              label: `Find parts related to ${imageAnalysis.specification.product_category || 'request image'}`,
               action_type: 'find_related_parts' as const,
               key: 'find_related',
               value: 'find_related_parts',

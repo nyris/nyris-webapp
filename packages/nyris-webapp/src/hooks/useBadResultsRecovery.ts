@@ -7,13 +7,17 @@
  * Maximum 3 attempts before suggesting a new image.
  */
 
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import useConversationStore, {
   QuickReplyOption,
 } from 'stores/chat/conversationStore';
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import useResultStore from 'stores/result/resultStore';
 import { chatAnalysis } from 'services/vizo';
+import {
+  getProductImageUrl,
+  fetchProductImageBase64,
+} from 'utils/fetchProductImage';
 
 interface P5Response {
   message: string;
@@ -47,6 +51,8 @@ export function useBadResultsRecovery() {
   const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
   const imageAnalysis = useResultStore(state => state.imageAnalysis);
+
+  const imageCacheRef = useRef<Map<string, string | null>>(new Map());
 
   const isAlgoliaEnabled = !!(window as any).settings?.algolia?.enabled;
   const activeProducts = isAlgoliaEnabled
@@ -210,7 +216,41 @@ export function useBadResultsRecovery() {
           content: m.content,
         }));
 
-        const userPrompt = `CONTEXT:
+        // Fetch product thumbnails for first 30 results (same limit as P3)
+        const productsForImages = originalProducts.slice(0, 30);
+        const imageResults = await Promise.all(
+          productsForImages.map(async (p: any, i: number) => {
+            const url = getProductImageUrl(p);
+            if (!url) return { index: i, base64: null };
+
+            if (imageCacheRef.current.has(url)) {
+              return {
+                index: i,
+                base64: imageCacheRef.current.get(url) ?? null,
+              };
+            }
+
+            const base64 = await fetchProductImageBase64(url);
+            imageCacheRef.current.set(url, base64);
+            return { index: i, base64 };
+          }),
+        );
+
+        const imagesAvailable = imageResults.filter(
+          r => r.base64 !== null,
+        ).length;
+        const hasVisualContext = imagesAvailable >= 3;
+
+        const visualNotice = hasVisualContext
+          ? `PRODUCT IMAGES: ${imagesAvailable} result thumbnails are included below (first 30 results). Use them to visually compare against the uploaded image when resurfacing better matches.`
+          : `PRODUCT IMAGES: NOT AVAILABLE — thumbnails could not be loaded. Use text metadata only for filtering.`;
+
+        // Build multimodal parts
+        const multimodalParts: any[] = [];
+
+        // Part 1: Text context
+        multimodalParts.push({
+          metadata: `CONTEXT:
 
 IMAGE DESCRIPTION: ${imageDescription}
 
@@ -224,19 +264,55 @@ ${JSON.stringify(attributeFrequency, null, 2)}
 
 CURRENT ATTEMPT: ${attemptCounter} of 3
 
-ALL RESULTS (100 max, for scanning - includes extracted metadata):
-${allResults.map((r: (typeof allResults)[number]) => `[${r.index}] ${r.sku} | ${r.title}${r.metadata ? ` | ${JSON.stringify(r.metadata)}` : ''}`).join('\n')}
+${visualNotice}
 
-CONVERSATION HISTORY:
+PRODUCT LIST (first 30 with thumbnails where available, indices 0-based for filtered_results):`,
+        });
+
+        // Part 2: First 30 results interleaved with thumbnails
+        allResults
+          .slice(0, 30)
+          .forEach((r: (typeof allResults)[number], i: number) => {
+            const metaLine = `index: ${r.index} ${r.sku} | ${r.title}${r.metadata ? ` | ${JSON.stringify(r.metadata)}` : ''}`;
+
+            if (hasVisualContext && imageResults[i]?.base64) {
+              multimodalParts.push({
+                metadata: metaLine,
+                image: imageResults[i].base64,
+                mimeType: 'image/jpeg',
+              });
+            } else {
+              multimodalParts.push({ metadata: metaLine });
+            }
+          });
+
+        // Part 3: Remaining results (31–100) as text only
+        if (allResults.length > 30) {
+          multimodalParts.push({
+            metadata: `REMAINING RESULTS (indices 30–${allResults.length - 1}, text only):
+${allResults
+  .slice(30)
+  .map(
+    (r: (typeof allResults)[number]) =>
+      `index: ${r.index} | sku: ${r.sku} | ${r.title}${r.metadata ? ` | ${JSON.stringify(r.metadata)}` : ''}`,
+  )
+  .join('\n')}`,
+          });
+        }
+
+        // Part 4: Conversation + user message
+        multimodalParts.push({
+          metadata: `CONVERSATION HISTORY:
 ${conversationHistory.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n')}
 
 USER MESSAGE: ${userMessage}
 
-Based on the user's answer and the failure mode strategy, decide whether to ask another question, resurface better matches, or exit.`;
+Based on the user's answer and the failure mode strategy, decide whether to ask another question, resurface better matches, or exit.`,
+        });
 
         const response = await chatAnalysis({
           promptKey: 'recovery_prompt',
-          multimodalInputs: [{ metadata: userPrompt }],
+          multimodalInputs: multimodalParts,
         });
 
         const responseText = response;
@@ -250,7 +326,7 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
           firstAlgoliaProducts.length > 0
             ? firstAlgoliaProducts
             : activeProducts;
-
+        let options = p5Response.options || [];
         switch (p5Response.action) {
           case 'resurface':
             // FILTER products to only show matching ones (not just reorder)
@@ -277,6 +353,16 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
               // Only show filtered products, not all products
               if (filteredProducts.length > 0) {
                 setActiveProducts(filteredProducts);
+
+                options = [
+                  ...options,
+                  {
+                    label: 'Go back to original results',
+                    action_type: 'restore_original' as const,
+                    key: 'restore',
+                    value: 'restore',
+                  },
+                ];
               }
             }
             break;
@@ -298,7 +384,7 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
           role: 'assistant',
           content: p5Response.message,
           action: { type: p5Response.action },
-          options: p5Response.options,
+          options: options,
         });
       } catch (err: any) {
         console.error('[P5] Error:', err);

@@ -16,6 +16,10 @@ import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import { chatAnalysis } from 'services/vizo';
 import useRequestStore from 'stores/request/requestStore';
 import { canvasToBase64, cropImage } from 'utils/cropImageToBase64';
+import {
+  fetchProductImageBase64,
+  getProductImageUrl,
+} from 'utils/fetchProductImage';
 import { loadRelatedPartsTable, lookupRelatedParts } from 'utils/relatedParts';
 
 interface P2EvaluationResult {
@@ -29,6 +33,7 @@ interface P2EvaluationResult {
 export function useResultEvaluator() {
   const {
     isEvaluated,
+    relatedPartsUsed,
     setEvaluationResult,
     setIsLoading,
     setError,
@@ -223,10 +228,51 @@ ${JSON.stringify(attributeFrequency, null, 2)}
 TOTAL RESULTS: ${resultsSummary.length}
 
 Evaluate if these results match the image. If they do (same type of product), route to P3 and suggest filter options based on the COMMON ATTRIBUTES found above (like voltage, size, brand). Do NOT suggest the obvious category match.`;
+
+        const productsForImages = activeProducts.slice(0, 30);
+        const imageResults = await Promise.all(
+          productsForImages.map(async (p: any, i: number) => {
+            const url = getProductImageUrl(p);
+            if (!url) return { rank: i + 1, base64: null };
+
+            const base64 = await fetchProductImageBase64(url);
+
+            return { rank: i + 1, base64 };
+          }),
+        );
+
+        const hasVisualContext =
+          imageResults.filter(r => r.base64 !== null).length >= 1;
+
+        const productImageParts: Array<{
+          metadata: string;
+          image?: string;
+          mimeType?: string;
+        }> = [];
+
+        resultsSummary.forEach((result, i) => {
+          const originalProduct = productsForImages[i];
+          const tags = originalProduct?._tags;
+          const tagStr = tags
+            ? ` | TAGS: type=${tags.productType}, color=${tags.color}, shape=${tags.shape}, material=${tags.material}`
+            : '';
+
+          const metaLine = `${result.rank}. ${result.title}${result.description ? ` - ${result.description}` : ''} (Score: ${result.score})${result.metadata ? ` | Metadata: ${JSON.stringify(result.metadata)}` : ''}${tagStr}`;
+
+          if (hasVisualContext && imageResults[i]?.base64) {
+            productImageParts.push({
+              metadata: metaLine,
+              image: imageResults[i].base64 || '',
+              mimeType: 'image/jpeg',
+            });
+          }
+        });
+
         const requestImage = useRequestStore.getState().requestImages;
         const regions = useRequestStore.getState().regions;
         const croppedCanvas = cropImage(requestImage[0], regions[0]);
         const base64Image = canvasToBase64(croppedCanvas, 'image/jpeg', 1);
+
         const response = await chatAnalysis({
           promptKey: 'result_evaluator_prompt',
           multimodalInputs: [
@@ -234,11 +280,11 @@ Evaluate if these results match the image. If they do (same type of product), ro
               metadata: userPrompt,
             },
             {
-              metadata:
-                'Uploaded request image, find one keyword that describes the product well',
+              metadata: 'request_image',
               mimeType: 'image/jpeg',
               image: base64Image,
             },
+            ...productImageParts,
           ],
         });
 
@@ -254,6 +300,11 @@ Evaluate if these results match the image. If they do (same type of product), ro
           key: (opt as any).key,
           value: (opt as any).value,
         }));
+        if (relatedPartsUsed) {
+          mappedOptions = mappedOptions.filter(
+            opt => opt.action_type !== 'find_related_parts',
+          );
+        }
         mappedOptions.push({
           label: "Describe what you're looking for",
           action_type: 'text_search_prompt',
@@ -261,31 +312,25 @@ Evaluate if these results match the image. If they do (same type of product), ro
           value: 'text_search',
         });
 
-        const productDesc = [
-          imageAnalysis?.imageDescription,
-          imageAnalysis?.optimizedSearchQuery,
-          Object.entries(specification || {})
-            .map(([k, v]) => `${k}: ${v}`)
-            .join(', '),
-        ]
-          .filter(Boolean)
-          .join('. ');
-
         // Check lookup table for related parts on fresh image searches and store globally.
         const table = await loadRelatedPartsTable();
-        const requestImageKeyword = evaluation.keyword;
+
         const tableSuggestions = lookupRelatedParts(
           table,
-          requestImageKeyword || productDesc || '',
+          imageAnalysis.specification.product_category || '',
         );
         const hasTableSuggestions =
           !!tableSuggestions && tableSuggestions.length > 0;
         setRelatedPartsTableSuggestions(tableSuggestions || []);
 
         // GC Gruppe: offer "Find related parts" in initial P2 response
-        if (window.settings.vizo?.findRelatedParts && hasTableSuggestions) {
+        if (
+          window.settings.vizo?.findRelatedParts &&
+          hasTableSuggestions &&
+          !relatedPartsUsed
+        ) {
           mappedOptions.push({
-            label: `Find parts related to ${evaluation.keyword || 'request image'}`,
+            label: `Find parts related to ${imageAnalysis.specification.product_category || 'request image'}`,
             action_type: 'find_related_parts',
             key: 'find_related',
             value: 'find_related_parts',
@@ -303,9 +348,13 @@ Evaluate if these results match the image. If they do (same type of product), ro
             },
           ];
 
-          if (window.settings.vizo?.findRelatedParts && hasTableSuggestions) {
+          if (
+            window.settings.vizo?.findRelatedParts &&
+            hasTableSuggestions &&
+            !relatedPartsUsed
+          ) {
             mappedOptions.push({
-              label: `Find parts related to ${evaluation.keyword || 'request image'}`,
+              label: `Find parts related to ${imageAnalysis.specification.product_category || 'request image'}`,
               action_type: 'find_related_parts',
               key: 'find_related',
               value: 'find_related_parts',
@@ -350,6 +399,7 @@ Evaluate if these results match the image. If they do (same type of product), ro
       setError,
       setRelatedPartsTableSuggestions,
       filters,
+      relatedPartsUsed,
       setEvaluationResult,
     ],
   );

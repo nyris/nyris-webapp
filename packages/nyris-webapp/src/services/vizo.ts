@@ -65,7 +65,7 @@ function buildProductEntry(p: any, index: number): string {
 
   const idStr = idParts.length > 0 ? ` | IDs: ${idParts.join(', ')}` : '';
 
-  return `[${index}] SKU: ${sku} | Brand: ${brand} | ${title} | ${desc}${idStr}`;
+  return `index: ${index} | SKU: ${sku} | Brand: ${brand} | ${title} | ${desc}${idStr}`;
 }
 
 /**
@@ -182,7 +182,7 @@ export async function chatAnalysis({
 }: ChatAnalysisParams): Promise<any> {
   try {
     const response = await axios.post(
-      'https://api.i.nyris.io/api/ai-analysis/chat',
+      'https://api.nyris.io/api/ai-analysis/chat',
       {
         promptKey,
         multimodalInputs,

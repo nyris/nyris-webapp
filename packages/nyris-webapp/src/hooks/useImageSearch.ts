@@ -90,8 +90,8 @@ export const useImageSearch = () => {
       useRequestStore.getState().setGroundingQuery('');
 
       useUiStore.getState().resetBanner();
+      startNewSession();
       if (newSearch) {
-        startNewSession();
       }
 
       let region: RectCoords | undefined = imageRegion;
@@ -207,7 +207,7 @@ export const useImageSearch = () => {
             region,
           );
         }
-        if (window.settings.vizo.chat && newSearch) {
+        if (window.settings.vizo.chat) {
           evaluateResults({
             activeProducts: res?.results || [],
             imageAnalysis: res?.image_analysis,

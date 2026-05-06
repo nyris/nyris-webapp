@@ -7,6 +7,7 @@ import { Icon } from '@nyris/nyris-react-components';
 export type ChatOption = {
   action_type: string;
   label: string;
+  value?: string;
 };
 
 type OptionChipProps = {
@@ -17,14 +18,17 @@ type OptionChipProps = {
 
 function OptionChip({ option, onClick, disabled = false }: OptionChipProps) {
   const isRestoreOriginal = option.action_type === 'restore_original';
+  const isFilter = option.action_type === 'filter';
   const isRelatedPart =
     option.action_type === 'related_part' ||
     option.action_type === 'find_related_parts';
   const isCatalogSearchImage = option.action_type === 'catalog_search_image';
   const isCatalogSearchText = option.action_type === 'catalog_search_text';
+  const displayText =
+    isFilter && option.value?.trim() ? option.value : option.label;
 
   return (
-    <Tooltip content={option.label} disabled={option.label.length <= 32}>
+    <Tooltip content={displayText} disabled={displayText.length <= 32}>
       <button
         onClick={() => onClick(option)}
         disabled={disabled}
@@ -65,7 +69,7 @@ function OptionChip({ option, onClick, disabled = false }: OptionChipProps) {
             <Wrench size={11} className="inline shrink-0" />
           </div>
         )}
-        <span>{option.label}</span>
+        <span>{displayText}</span>
       </button>
     </Tooltip>
   );

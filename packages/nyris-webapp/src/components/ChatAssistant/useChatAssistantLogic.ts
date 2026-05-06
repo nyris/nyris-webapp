@@ -8,6 +8,10 @@ import { useBadResultsRecovery } from 'hooks/useBadResultsRecovery';
 import { chatAnalysis } from 'services/vizo';
 import { compressImage } from 'utils/compressImage';
 import { loadRelatedPartsTable, lookupRelatedParts } from 'utils/relatedParts';
+import {
+  fetchProductImageBase64,
+  getProductImageUrl,
+} from 'utils/fetchProductImage';
 
 export function useChatAssistantLogic() {
   const [inputValue, setInputValue] = useState('');
@@ -124,206 +128,11 @@ export function useChatAssistantLogic() {
 
   // ── Handlers ──
 
-  const handleRelatedPartSearch = useCallback(
-    async (message: string) => {
-      const store = useConversationStore.getState();
-      const relatedPart = store.pendingRelatedPart;
-      if (!relatedPart) return;
-
-      // Empty input → search for the part name as-is
-      if (!message) {
-        store.setPendingRelatedPart(null);
-        store.setAwaitingDescription(false);
-        store.addMessage({ role: 'user', content: relatedPart });
-      } else {
-        store.addMessage({ role: 'user', content: message });
-
-        // Check if user input contains relevant specs for the selected part
-        store.setIsLoading(true);
-        try {
-          const response = await chatAnalysis({
-            promptKey: 'product_tagging_prompt',
-            multimodalInputs: [
-              {
-                metadata: `The user is looking for a "${relatedPart}". They were asked to provide specifications like brand, size, connection type, or model.\n\nThey responded: "${message}"\n\nDoes this response contain actual product specifications, attributes, brand names, model numbers, dimensions, or any useful search criteria for finding a "${relatedPart}"?\n\nReturn JSON only:\n{"relevant": true/false, "suggestion": "If not relevant, a brief helpful hint about what details to provide for a ${relatedPart}"}`,
-              },
-            ],
-          });
-
-          const check = response;
-
-          if (!check.relevant) {
-            store.setIsLoading(false);
-            const hint =
-              check.suggestion ||
-              `Try specifying a brand, size, or connection type for the ${relatedPart}.`;
-            store.addMessage({
-              role: 'assistant',
-              content: `That doesn't seem like product specifications for a **${relatedPart}**. ${hint}\n\nYou can also text search in catalog.`,
-              options: [
-                {
-                  label: 'Text search in catalog',
-                  action_type: 'catalog_search_text' as const,
-                  key: 'catalog_search_text',
-                  value: 'catalog_search_text',
-                },
-              ],
-            });
-            return;
-          }
-        } catch (err) {
-          console.warn(
-            '[RelatedParts] Relevance check failed, proceeding anyway:',
-            err,
-          );
-        } finally {
-          store.setIsLoading(false);
-        }
-
-        store.setPendingRelatedPart(null);
-        store.setAwaitingDescription(false);
-      }
-
-      const combinedQuery = message ? `${relatedPart} ${message}` : relatedPart;
-      store.setIsLoading(true);
-      setCatalogSearching(true);
-
-      try {
-        const settings = (window as any).settings;
-        const nyrisKey = settings?.apiKey || settings?.nyrisApiKey;
-        const baseUrl = settings?.baseUrl || 'https://api.nyris.io';
-
-        let searchQuery = combinedQuery;
-
-        try {
-          const response = await chatAnalysis({
-            promptKey: 'product_tagging_prompt',
-            multimodalInputs: [
-              {
-                metadata: `Extract only the product search keywords from this user message. Remove filler words, conversational phrases, and intent words. Return ONLY the clean search terms.\n\nUser message: "${combinedQuery} return only json {query: "clean search terms here"}"`,
-              },
-            ],
-          });
-
-          const cleaned = response.query;
-          if (cleaned) {
-            searchQuery = cleaned.replace(/^["']|["']$/g, '');
-          }
-        } catch (cleanErr) {
-          console.warn(
-            '[RelatedParts] Query cleaning failed, using raw:',
-            cleanErr,
-          );
-        }
-
-        store.setPreCatalogResults([...activeProducts]);
-
-        const formData = new FormData();
-        formData.append('text', searchQuery);
-        const res = await fetch(`${baseUrl}/find/v1.1`, {
-          method: 'POST',
-          headers: {
-            'X-Api-Key': nyrisKey,
-            Accept: 'application/offers.complete+json',
-          },
-          body: formData,
-        });
-        const data = await res.json();
-        const results = data?.results || [];
-
-        const setProducts = isAlgoliaEnabled
-          ? setAlgoliaProducts
-          : productsFromAlgolia.length > 0
-            ? setAlgoliaProducts
-            : setFindApiProducts;
-
-        if (results.length > 0) {
-          setProducts(results);
-          setFullResultPool(results);
-          store.setIsLoading(false);
-          await sendP3Message(
-            `I searched the catalog for "${searchQuery}" and got ${results.length} results. Suggest filters to help narrow down.`,
-            { silent: true },
-          );
-        } else {
-          const original =
-            firstSearchResults.length > 0
-              ? firstSearchResults
-              : firstAlgoliaProducts;
-          if (original.length > 0) {
-            setProducts(original);
-            setFullResultPool(original);
-          }
-          const freshStore = useConversationStore.getState();
-          freshStore.setPreCatalogResults(null);
-          freshStore.clearFilters();
-          freshStore.addMessage({
-            role: 'assistant',
-            content: `I couldn't find "${searchQuery}" in the catalog. Here are your original results — try different specs or another related part.`,
-            options:
-              freshStore.openingOptions.length > 0
-                ? freshStore.openingOptions
-                : undefined,
-          });
-        }
-      } catch (err) {
-        console.error('[RelatedParts] Catalog search failed:', err);
-        const original =
-          firstSearchResults.length > 0
-            ? firstSearchResults
-            : firstAlgoliaProducts;
-        if (original.length > 0) {
-          const setProducts = isAlgoliaEnabled
-            ? setAlgoliaProducts
-            : productsFromAlgolia.length > 0
-              ? setAlgoliaProducts
-              : setFindApiProducts;
-          setProducts(original);
-          setFullResultPool(original);
-        }
-        const freshStore = useConversationStore.getState();
-        freshStore.setPreCatalogResults(null);
-        freshStore.clearFilters();
-        freshStore.addMessage({
-          role: 'assistant',
-          content:
-            'Something went wrong searching for related parts. Here are your original results.',
-          options:
-            freshStore.openingOptions.length > 0
-              ? freshStore.openingOptions
-              : undefined,
-        });
-      } finally {
-        store.setIsLoading(false);
-        setCatalogSearching(false);
-      }
-    },
-    [
-      activeProducts,
-      firstAlgoliaProducts,
-      firstSearchResults,
-      isAlgoliaEnabled,
-      productsFromAlgolia.length,
-      sendP3Message,
-      setAlgoliaProducts,
-      setFindApiProducts,
-      setFullResultPool,
-    ],
-  );
-
   const handleSendMessage = useCallback(async () => {
     if (!inputValue.trim() || isLoading) return;
     const message = inputValue.trim();
     setInputValue('');
     setCatalogSearchReady(true);
-
-    const store = useConversationStore.getState();
-    const relatedPart = store.pendingRelatedPart;
-
-    // if (relatedPart) {
-    //   await handleRelatedPartSearch(message);
-    //   return;
-    // }
 
     if (!message) return;
 
@@ -334,14 +143,7 @@ export function useChatAssistantLogic() {
     } else {
       await sendP3Message(message);
     }
-  }, [
-    handleRelatedPartSearch,
-    inputValue,
-    isLoading,
-    route,
-    sendP3Message,
-    sendP5Message,
-  ]);
+  }, [inputValue, isLoading, route, sendP3Message, sendP5Message]);
 
   const handleOptionClick = useCallback(
     async (option: any) => {
@@ -368,6 +170,7 @@ export function useChatAssistantLogic() {
       }
 
       if (option.action_type === 'find_related_parts') {
+        useConversationStore.getState().setRelatedPartsUsed(true);
         await handleFindRelatedParts();
         return;
       }
@@ -516,24 +319,37 @@ export function useChatAssistantLogic() {
             : Promise.resolve(''),
         ]);
 
-        const productList = currentProducts
-          .slice(0, 50)
-          .map((p: any, i: number) => ({
-            rank: i + 1,
-            sku: p.sku || p.objectID || `product-${i}`,
-            title: p.title || p.name || 'Untitled',
-            brand: p.brand || '',
-            description: (p.description || '').substring(0, 150),
-            categories: p.categories || [],
-            mpn: p.customIds?.mpn || p.ids?.mpn || '',
-          }));
+        const visibleProducts = currentProducts.slice(0, 30);
+        const productList = visibleProducts.map((p: any, i: number) => ({
+          rank: i + 1,
+          sku: p.sku || p.objectID || `product-${i}`,
+          title: p.title || p.name || 'Untitled',
+          brand: p.brand || '',
+          description: (p.description || '').substring(0, 150),
+          categories: p.categories || [],
+          mpn: p.customIds?.mpn || p.ids?.mpn || '',
+        }));
 
-        const productListText = productList
-          .map(
-            r =>
-              `${r.rank}. [${r.sku}] ${r.title} | brand: ${r.brand} | mpn: ${r.mpn} | categories: ${JSON.stringify(r.categories)}`,
-          )
-          .join('\n');
+        const productImages = await Promise.all(
+          visibleProducts.map(async (product: any, index: number) => {
+            const imageUrl = getProductImageUrl(product);
+            if (!imageUrl) {
+              return { rank: index + 1, base64: null };
+            }
+
+            const base64 = await fetchProductImageBase64(imageUrl);
+            return { rank: index + 1, base64 };
+          }),
+        );
+
+        const imagesAvailable = productImages.filter(
+          image => image.base64 !== null,
+        ).length;
+        const hasVisualContext = imagesAvailable >= 3;
+
+        const productContextNotice = hasVisualContext
+          ? `VISIBLE PRODUCT IMAGES: ${imagesAvailable} result thumbnails are included below. Use them with the metadata to compare the uploaded image against the current results.`
+          : `VISIBLE PRODUCT IMAGES: NOT AVAILABLE. Do not rely on visual attributes from the current result set; use metadata only when deciding whether the uploaded image matches these products.`;
 
         const parts: {
           inlineData?: { mimeType: string; data: string };
@@ -541,40 +357,53 @@ export function useChatAssistantLogic() {
         }[] = [];
         if (origBase64) {
           parts.push({
+            text: 'request_image:',
             inlineData: { mimeType: 'image/jpeg', data: origBase64 },
           });
         }
         parts.push({
+          text: 'new_uploaded_image:',
           inlineData: { mimeType: 'image/jpeg', data: newBase64 },
         });
-        // category: result_evaluator_prompt
+
         parts.push({
-          text: `The user is searching for industrial products. They originally uploaded the first image and got these results. Now they uploaded a NEW image (the ${origBase64 ? 'second' : 'only'} image) to refine their search.
+          text: `CURRENT RESULTS CONTEXT:
 
-CURRENT RESULTS:
-${productListText}
+${productContextNotice}
 
-Based on the NEW image, which of the current results best match what the user is looking for? Consider visual similarity, product type, brand, and specifications.
+PRODUCT LIST:
+Each result includes a unique SKU in brackets. Use the result thumbnails and metadata together when deciding which current results match the uploaded image. Return matched_indices as 1-based ranks from this list.
+`,
+        });
 
-Return JSON only, no markdown:
-{
-  "matched_indices": [1, 3, 7],
-  "message": "Brief explanation of what you matched and why (2-3 sentences)"
-}
+        productList.forEach((product, index) => {
+          const currentProduct = visibleProducts[index];
+          const tags = currentProduct?._tags;
+          const tagStr = tags
+            ? ` | TAGS: type=${tags.productType}, color=${tags.color}, shape=${tags.shape}, material=${tags.material}`
+            : '';
+          const metadata = `${product.rank}. [${product.sku}] ${product.title} | brand: ${product.brand} | mpn: ${product.mpn} | categories: ${JSON.stringify(product.categories)} | desc: ${product.description}${tagStr}`;
 
-If NONE of the current results match the new image, return:
-{
-  "matched_indices": [],
-  "message": "Brief explanation of why none match"
-}`,
+          if (hasVisualContext && productImages[index]?.base64) {
+            parts.push({
+              text: metadata,
+              inlineData: {
+                mimeType: 'image/jpeg',
+                data: productImages[index].base64 || '',
+              },
+            });
+            return;
+          }
+
+          parts.push({ text: metadata });
         });
 
         const response = await chatAnalysis({
-          promptKey: 'product_tagging_prompt',
+          promptKey: 'image_refinement',
           multimodalInputs: parts.map(p =>
             p.inlineData
               ? {
-                  metadata: '',
+                  metadata: p.text || '',
                   mimeType: p.inlineData.mimeType,
                   image: p.inlineData.data,
                 }
@@ -604,6 +433,12 @@ If NONE of the current results match the new image, return:
                   action_type: 'catalog_search_image' as const,
                   key: 'catalog_search',
                   value: 'image',
+                },
+                {
+                  label: 'Go back to original results',
+                  action_type: 'restore_original' as const,
+                  key: 'restore',
+                  value: 'restore',
                 },
               ],
             });
@@ -770,10 +605,10 @@ If NONE of the current results match the new image, return:
       let searchQuery = rawText;
 
       const response = await chatAnalysis({
-        promptKey: 'product_tagging_prompt',
+        promptKey: 'keyword_extraction',
         multimodalInputs: [
           {
-            metadata: `Extract only the product search keywords from this user message. Remove filler words, conversational phrases, and intent words. Return ONLY the clean search terms, nothing else.\n\nExamples:\n"I need to look for a 100v connector" → "100V connector"\n"show me Schneider Electric blue LED lights" → "Schneider Electric blue LED light"\n"search for light block with more than 500 volts" → "light block 500V"\n\nUser message: "${rawText}" return only json {query: "clean search terms here"}`,
+            metadata: `user_message: "${rawText}"`,
           },
         ],
       });
@@ -852,27 +687,15 @@ If NONE of the current results match the new image, return:
   const handleFindRelatedParts = async () => {
     const store = useConversationStore.getState();
     store.setIsLoading(true);
-    // store.setRelatedPartsUsed(true);
     setFindingRelatedParts(true);
 
     try {
-      const productDesc = [
-        imageAnalysis.imageDescription,
-        imageAnalysis.optimizedSearchQuery,
-        Object.entries(imageAnalysis.specification || {})
-          .map(([k, v]) => `${k}: ${v}`)
-          .join(', '),
-      ]
-        .filter(Boolean)
-        .join('. ');
-
       // 1. Try the lookup table first (instant, no API call)
       const table = await loadRelatedPartsTable();
-      const requestImageKeyword =
-        useConversationStore.getState().requestImageKeyword;
+
       const tableSuggestions = lookupRelatedParts(
         table,
-        requestImageKeyword || productDesc || '',
+        imageAnalysis.specification.product_category,
       );
 
       if (tableSuggestions && tableSuggestions.length > 0) {
