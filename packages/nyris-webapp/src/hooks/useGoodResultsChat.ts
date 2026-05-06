@@ -525,13 +525,15 @@ Respond to the user's message with an appropriate action and follow-up options.`
         }
 
         // Use AI's message directly. Only override if AI returned 0 matches for a filter action.
-        let finalMessage = p3Response.message;
+        let finalMessage = p3Response.message?.trim() || '';
         if (
           actualFilteredCount === 0 &&
           (p3Response.action?.type === 'filter_apply' ||
             p3Response.action?.type === 'text_search')
         ) {
-          finalMessage = `I couldn't find any matches for "${p3Response.action?.value || 'your query'}" in the current results. You can try narrowing further or search the full catalog.`;
+          if (!finalMessage) {
+            finalMessage = `I couldn't find any matches for "${p3Response.action?.value || 'your query'}" in the current results. You can try narrowing further or search the full catalog.`;
+          }
           useConversationStore
             .getState()
             .setPendingCatalogText(p3Response.action?.value || '');

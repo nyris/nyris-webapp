@@ -413,7 +413,7 @@ Each result includes a unique SKU in brackets. Use the result thumbnails and met
 
         const parsed = response;
         const matchedIndices: number[] = parsed.matched_indices || [];
-        const aiMessage: string = parsed.message || '';
+        const aiMessage = parsed.message?.trim() || '';
 
         const setProducts = getSetProducts();
 
@@ -445,7 +445,9 @@ Each result includes a unique SKU in brackets. Use the result thumbnails and met
           } else {
             store.addMessage({
               role: 'assistant',
-              content: `${aiMessage}\n\nI couldn't find those items in the current results. Let me search the full catalog for you.`,
+              content:
+                aiMessage ||
+                "I couldn't find those items in the current results. Let me search the full catalog for you.",
               options: [
                 {
                   label: 'Search catalog with this image',
@@ -459,7 +461,9 @@ Each result includes a unique SKU in brackets. Use the result thumbnails and met
         } else {
           store.addMessage({
             role: 'assistant',
-            content: `${aiMessage}\n\nThis doesn't match the current results. Would you like to search the full catalog?`,
+            content:
+              aiMessage ||
+              "This doesn't match the current results. Would you like to search the full catalog?",
             options: [
               {
                 label: 'Search catalog with this image',
