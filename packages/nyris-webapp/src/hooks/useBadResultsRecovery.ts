@@ -39,32 +39,18 @@ export function useBadResultsRecovery() {
   } = useConversationStore();
 
   const { filters } = useSmartFiltersStore();
-  const productsFromAlgolia = useResultStore(
-    state => state.productsFromAlgolia,
-  );
+
   const productsFromFindApi = useResultStore(
     state => state.productsFromFindApi,
   );
-  const firstAlgoliaProducts = useResultStore(
-    state => state.firstAlgoliaProducts,
-  );
-  const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
+
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
   const imageAnalysis = useResultStore(state => state.imageAnalysis);
 
   const imageCacheRef = useRef<Map<string, string | null>>(new Map());
 
-  const isAlgoliaEnabled = !!(window as any).settings?.algolia?.enabled;
-  const activeProducts = isAlgoliaEnabled
-    ? productsFromAlgolia
-    : productsFromAlgolia.length > 0
-      ? productsFromAlgolia
-      : productsFromFindApi;
-  const setActiveProducts = isAlgoliaEnabled
-    ? setAlgoliaProducts
-    : productsFromAlgolia.length > 0
-      ? setAlgoliaProducts
-      : setFindApiProducts;
+  const activeProducts = productsFromFindApi;
+  const setActiveProducts = setFindApiProducts;
 
   const sendMessage = useCallback(
     async (userMessage: string) => {
@@ -108,10 +94,7 @@ export function useBadResultsRecovery() {
         // Get all 100 results with detailed metadata
         // ALWAYS use firstAlgoliaProducts (original) so indices are consistent
         // This allows "show original results" and filtering from original to work correctly
-        const originalProducts =
-          firstAlgoliaProducts.length > 0
-            ? firstAlgoliaProducts
-            : activeProducts;
+        const originalProducts = activeProducts;
         const allResults = originalProducts
           .slice(0, 100)
           .map((p: any, i: number) => {
@@ -322,10 +305,7 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
 
         // Execute the action
         // ALWAYS use firstAlgoliaProducts for index lookup (matches what we sent to LLM)
-        const sourceProducts =
-          firstAlgoliaProducts.length > 0
-            ? firstAlgoliaProducts
-            : activeProducts;
+        const sourceProducts = activeProducts;
         let options = p5Response.options || [];
         switch (p5Response.action) {
           case 'resurface':
@@ -370,8 +350,8 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
             incrementAttempt();
             break;
           case 'reset':
-            if (firstAlgoliaProducts.length > 0) {
-              setActiveProducts(firstAlgoliaProducts);
+            if (activeProducts.length > 0) {
+              setActiveProducts(activeProducts);
             }
             break;
           case 'exit':
@@ -406,7 +386,7 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
       attemptCounter,
       filters,
       activeProducts,
-      firstAlgoliaProducts,
+
       imageAnalysis,
       addMessage,
       incrementAttempt,

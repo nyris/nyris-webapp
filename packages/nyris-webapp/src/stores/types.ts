@@ -88,7 +88,6 @@ export interface ProductsAction {
   setGroundingFilterResult: (result: any[]) => void;
   setShowingGroundingFilterResult: (val?: boolean) => void;
   setGroundingError: (error: string | null) => void;
-  setFirstAlgoliaProducts: (products: any[]) => void;
   setFullResultPool: (products: any[]) => void;
   resetGrounding: () => void;
 }

@@ -163,17 +163,12 @@ export function useGoodResultsChat() {
   } = useConversationStore();
 
   const { filters } = useSmartFiltersStore();
-  const productsFromAlgolia = useResultStore(
-    state => state.productsFromAlgolia,
-  );
+
   const productsFromFindApi = useResultStore(
     state => state.productsFromFindApi,
   );
   const firstSearchResults = useResultStore(state => state.firstSearchResults);
-  const firstAlgoliaProducts = useResultStore(
-    state => state.firstAlgoliaProducts,
-  );
-  const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
+
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
   const fullResultPool = useResultStore(state => state.fullResultPool);
   const setFullResultPool = useResultStore(state => state.setFullResultPool);
@@ -182,16 +177,8 @@ export function useGoodResultsChat() {
   const requestImages = useRequestStore(state => state.requestImages);
 
   const isAlgoliaEnabled = !!(window as any).settings?.algolia?.enabled;
-  const activeProducts = isAlgoliaEnabled
-    ? productsFromAlgolia
-    : productsFromAlgolia.length > 0
-      ? productsFromAlgolia
-      : productsFromFindApi;
-  const setActiveProducts = isAlgoliaEnabled
-    ? setAlgoliaProducts
-    : productsFromAlgolia.length > 0
-      ? setAlgoliaProducts
-      : setFindApiProducts;
+  const activeProducts = productsFromFindApi;
+  const setActiveProducts = setFindApiProducts;
 
   // Original unfiltered results — used for restoring and index-based filtering
   // Prefer fullResultPool (50 items) when available for broader filtering
@@ -200,9 +187,7 @@ export function useGoodResultsChat() {
       ? fullResultPool
       : firstSearchResults.length > 0
         ? firstSearchResults
-        : firstAlgoliaProducts.length > 0
-          ? firstAlgoliaProducts
-          : activeProducts;
+        : activeProducts;
 
   // Image cache: persists across P3 messages within the same search session
   const imageCacheRef = useRef<Map<string, string | null>>(new Map());
@@ -378,7 +363,8 @@ PRODUCT LIST (up to 50 results — each has a unique ID in [brackets] and AI-gen
         // Part 3: Remaining context
         userParts.push({
           text: `
-TOTAL RESULTS: ${visibleResults.length}
+Original_results_count: ${originalProducts.length}          
+Current RESULTS: ${visibleResults.length}
 
 CONVERSATION HISTORY:
 ${conversationHistory.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n')}
@@ -547,27 +533,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
           (p3Response.action?.type === 'filter_apply' ||
             p3Response.action?.type === 'text_search')
         ) {
-          // Replace patterns like "show 14", "found 14", "are 14", "remaining 14 out of"
-          finalMessage = finalMessage.replace(
-            /\b(\d+)\s+(light blocks?|caps?|items?|results?|products?|components?|matches?|parts?|remaining|modules?)/gi,
-            (match, num, noun) => {
-              const n = parseInt(num);
-              if (
-                n !== actualFilteredCount &&
-                n > 1 &&
-                n < visibleResults.length
-              ) {
-                return `${actualFilteredCount} ${noun}`;
-              }
-              return match;
-            },
-          );
-          // Also fix "out of the original X" to use the actual pool size
-          finalMessage = finalMessage.replace(
-            /out of the original (\d+)/gi,
-            `out of the original ${visibleResults.length}`,
-          );
-
           finalOptions = [
             ...finalOptions,
 
@@ -591,17 +556,21 @@ Respond to the user's message with an appropriate action and follow-up options.`
             opt => opt.action_type !== 'find_related_parts',
           );
         }
+        const catalogSearchReady =
+          useConversationStore.getState().catalogSearchReady;
 
         // If user came from a catalog search, offer to go back to previous results
-        finalOptions = [
-          ...finalOptions,
-          {
-            label: 'Text search in catalog',
-            action_type: 'catalog_search_text' as const,
-            key: 'catalog_search_text',
-            value: 'catalog_search_text',
-          },
-        ];
+        if (catalogSearchReady && p3Response.action?.type !== 'filter_clear') {
+          finalOptions = [
+            ...finalOptions,
+            {
+              label: 'Text search in catalog',
+              action_type: 'catalog_search_text' as const,
+              key: 'catalog_search_text',
+              value: 'catalog_search_text',
+            },
+          ];
+        }
 
         if (preCatalogResults && preCatalogResults.length > 0) {
           finalOptions = [

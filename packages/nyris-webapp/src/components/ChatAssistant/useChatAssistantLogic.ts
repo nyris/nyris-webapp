@@ -26,6 +26,10 @@ export function useChatAssistantLogic() {
   const messages = useConversationStore(s => s.messages);
   const isLoading = useConversationStore(s => s.isLoading);
   const error = useConversationStore(s => s.error);
+  const catalogSearchReady = useConversationStore(s => s.catalogSearchReady);
+  const setCatalogSearchReady = useConversationStore(
+    s => s.setCatalogSearchReady,
+  );
   // const startNewSession = useConversationStore(s => s.startNewSession);
 
   // Smart filters store (no longer requires API key)
@@ -39,23 +43,13 @@ export function useChatAssistantLogic() {
     state => state.productsFromFindApi,
   );
   const firstSearchResults = useResultStore(state => state.firstSearchResults);
-  const firstAlgoliaProducts = useResultStore(
-    state => state.firstAlgoliaProducts,
-  );
-  const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
-  const setFirstAlgoliaProducts = useResultStore(
-    state => state.setFirstAlgoliaProducts,
-  );
+
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
   const setFullResultPool = useResultStore(state => state.setFullResultPool);
   const imageAnalysis = useResultStore(state => state.imageAnalysis);
 
   const isAlgoliaEnabled = !!(window as any).settings?.algolia?.enabled;
-  const activeProducts = isAlgoliaEnabled
-    ? productsFromAlgolia
-    : productsFromAlgolia.length > 0
-      ? productsFromAlgolia
-      : productsFromFindApi;
+  const activeProducts = productsFromFindApi;
 
   // Request store
   const requestImages = useRequestStore(state => state.requestImages);
@@ -72,22 +66,12 @@ export function useChatAssistantLogic() {
   const [p7Done, setP7Done] = useState(false);
 
   // Catalog search state
-  const [catalogSearchReady, setCatalogSearchReady] = useState(false);
   const [catalogSearching, setCatalogSearching] = useState(false);
 
   // Helper to get the correct product setter
   const getSetProducts = useCallback(() => {
-    return isAlgoliaEnabled
-      ? setAlgoliaProducts
-      : productsFromAlgolia.length > 0
-        ? setAlgoliaProducts
-        : setFindApiProducts;
-  }, [
-    isAlgoliaEnabled,
-    productsFromAlgolia.length,
-    setAlgoliaProducts,
-    setFindApiProducts,
-  ]);
+    return setFindApiProducts;
+  }, [setFindApiProducts]);
 
   // Trigger P2 evaluation
   useEffect(() => {
@@ -99,17 +83,9 @@ export function useChatAssistantLogic() {
       requestImages[0]
     ) {
       p2TriggeredRef.current = true;
-      setFirstAlgoliaProducts([...activeProducts]);
       // evaluateResults();
     }
-  }, [
-    isEvaluated,
-    activeProducts,
-    hasApiKey,
-    requestImages,
-
-    setFirstAlgoliaProducts,
-  ]);
+  }, [isEvaluated, activeProducts, hasApiKey, requestImages]);
 
   // Reset P7 flags when session resets
   useEffect(() => {
@@ -143,7 +119,14 @@ export function useChatAssistantLogic() {
     } else {
       await sendP3Message(message);
     }
-  }, [inputValue, isLoading, route, sendP3Message, sendP5Message]);
+  }, [
+    inputValue,
+    isLoading,
+    route,
+    sendP3Message,
+    sendP5Message,
+    setCatalogSearchReady,
+  ]);
 
   const handleOptionClick = useCallback(
     async (option: any) => {
@@ -191,13 +174,7 @@ export function useChatAssistantLogic() {
 
       if (option.action_type === 'restore_original') {
         const store = useConversationStore.getState();
-        const originalResults = isAlgoliaEnabled
-          ? firstAlgoliaProducts.length > 0
-            ? firstAlgoliaProducts
-            : firstSearchResults
-          : firstSearchResults.length > 0
-            ? firstSearchResults
-            : firstAlgoliaProducts;
+        const originalResults = firstSearchResults;
 
         const restoreResults =
           originalResults.length > 0
@@ -240,7 +217,7 @@ export function useChatAssistantLogic() {
       getSetProducts,
       setFullResultPool,
       isAlgoliaEnabled,
-      firstAlgoliaProducts,
+
       firstSearchResults,
     ],
   );
@@ -685,7 +662,13 @@ Each result includes a unique SKU in brackets. Use the result thumbnails and met
       store.setIsLoading(false);
       setCatalogSearching(false);
     }
-  }, [activeProducts, getSetProducts, setFullResultPool, sendP3Message]);
+  }, [
+    activeProducts,
+    getSetProducts,
+    setCatalogSearchReady,
+    setFullResultPool,
+    sendP3Message,
+  ]);
 
   // Handle "Find related parts" — checks lookup table first, falls back to Gemini
   const handleFindRelatedParts = async () => {

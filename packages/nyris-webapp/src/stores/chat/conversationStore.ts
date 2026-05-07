@@ -102,6 +102,7 @@ interface ConversationState {
   // Pending catalog search — stored for deferred API search after AI refinement
   pendingCatalogImage: File | string | null;
   pendingCatalogText: string | null;
+  catalogSearchReady: boolean;
 
   // Pre-catalog results — saved before catalog search so user can go back
   preCatalogResults: any[] | null;
@@ -145,6 +146,7 @@ interface ConversationActions {
   setAwaitingDescription: (awaiting: boolean) => void;
   setPendingCatalogImage: (file: File | string | null) => void;
   setPendingCatalogText: (text: string | null) => void;
+  setCatalogSearchReady: (ready: boolean) => void;
   setPreCatalogResults: (results: any[] | null) => void;
   setPendingRelatedPart: (part: string | null) => void;
   setRelatedPartsTableSuggestions: (
@@ -180,6 +182,7 @@ const initialState: ConversationState = {
   awaitingDescription: false,
   pendingCatalogImage: null,
   pendingCatalogText: null,
+  catalogSearchReady: false,
   preCatalogResults: null,
   relatedPartsUsed: false,
   pendingRelatedPart: null,
@@ -280,6 +283,7 @@ const useConversationStore = create<ConversationState & ConversationActions>()(
     setAwaitingDescription: awaiting => set({ awaitingDescription: awaiting }),
     setPendingCatalogImage: file => set({ pendingCatalogImage: file }),
     setPendingCatalogText: text => set({ pendingCatalogText: text }),
+    setCatalogSearchReady: ready => set({ catalogSearchReady: ready }),
     setPreCatalogResults: results => set({ preCatalogResults: results }),
     setRelatedPartsTableSuggestions: suggestions =>
       set({ relatedPartsTableSuggestions: suggestions }),

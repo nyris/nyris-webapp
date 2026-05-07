@@ -33,12 +33,12 @@ function OptionChip({ option, onClick, disabled = false }: OptionChipProps) {
         onClick={() => onClick(option)}
         disabled={disabled}
         className={twMerge(
+          'flex items-center',
           'px-2 py-1.5 text-xs font-medium rounded-full',
           'transition-colors',
           disabled && 'opacity-50 cursor-not-allowed',
           'bg-[#FFFFFF] font-semibold',
           'border border-[#DDDEE7] text-[#767A9F] hover:bg-[#545987] hover:text-[#F3F4F8]',
-          'max-line-1',
           'h-8',
           isRelatedPart &&
             'border border-[#E67E22] text-[#E67E22] bg-[#FFF8F0] hover:bg-[#E67E22] hover:text-white',
@@ -69,7 +69,7 @@ function OptionChip({ option, onClick, disabled = false }: OptionChipProps) {
             <Wrench size={11} className="inline shrink-0" />
           </div>
         )}
-        <span>{displayText}</span>
+        <span className="max-line-1 text-start">{displayText}</span>
       </button>
     </Tooltip>
   );
