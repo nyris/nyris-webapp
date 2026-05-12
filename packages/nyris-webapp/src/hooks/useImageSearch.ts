@@ -91,8 +91,6 @@ export const useImageSearch = () => {
 
       useUiStore.getState().resetBanner();
       startNewSession();
-      if (newSearch) {
-      }
 
       let region: RectCoords | undefined = imageRegion;
       let res: any;

@@ -24,14 +24,12 @@ function MobileChatAssistant() {
     hasApiKey,
     p7Running,
     p7Done,
-    catalogSearchReady,
     catalogSearching,
     messagesEndRef,
     imageInputRef,
     handleSendMessage,
     handleOptionClick,
     handleImageUpload,
-    handleCatalogSearchWithText,
   } = useChatAssistantLogic();
 
   const setIsAiModeOpen = useUiStore(state => state.setIsAiModeOpen);
@@ -51,10 +49,6 @@ function MobileChatAssistant() {
     },
     [handleOptionClick],
   );
-
-  const handleCatalogSearchTextChipClick = useCallback(async () => {
-    await handleCatalogSearchWithText();
-  }, [handleCatalogSearchWithText]);
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[50] flex flex-col justify-end max-h-[50vh]">
