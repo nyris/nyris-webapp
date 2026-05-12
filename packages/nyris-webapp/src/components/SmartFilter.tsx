@@ -1,4 +1,3 @@
-import React from 'react';
 import ItemSpecification from './ItemSpecification';
 import { Icon } from '@nyris/nyris-react-components';
 
@@ -27,6 +26,7 @@ function SmartFilter({
             }
             return (
               <ItemSpecification
+                key={key}
                 attr={key}
                 value={value}
                 specificationFilter={specificationFilter}

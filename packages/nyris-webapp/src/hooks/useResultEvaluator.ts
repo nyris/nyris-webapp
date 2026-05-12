@@ -8,31 +8,38 @@
 
 import { useCallback, useRef } from 'react';
 import useConversationStore, {
-  FailureMode,
   QuickReplyOption,
   ConversationRoute,
   ResultQuality,
 } from 'stores/chat/conversationStore';
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
+import { chatAnalysis } from 'services/vizo';
+import useRequestStore from 'stores/request/requestStore';
+import { canvasToBase64, cropImage } from 'utils/cropImageToBase64';
 import {
-  buildP2SystemPrompt,
-  buildBrandRegex,
-  buildProductTypeRegex,
-} from './promptBuilders';
+  fetchProductImageBase64,
+  getProductImageUrl,
+} from 'utils/fetchProductImage';
+import { loadRelatedPartsTable, lookupRelatedParts } from 'utils/relatedParts';
 
 interface P2EvaluationResult {
   quality: ResultQuality;
-  failure_mode: FailureMode;
   route: ConversationRoute;
   opening_message: string;
   options: QuickReplyOption[];
+  keyword?: string;
 }
 
 export function useResultEvaluator() {
-  const { isEvaluated, setEvaluationResult, setIsLoading, setError } =
-    useConversationStore();
-  const { geminiApiKey, geminiModel, filters, orgProfile } =
-    useSmartFiltersStore();
+  const {
+    isEvaluated,
+    relatedPartsUsed,
+    setEvaluationResult,
+    setIsLoading,
+    setError,
+    setRelatedPartsTableSuggestions,
+  } = useConversationStore();
+  const { filters } = useSmartFiltersStore();
 
   const evaluatingRef = useRef(false);
 
@@ -44,10 +51,9 @@ export function useResultEvaluator() {
       imageAnalysis: any;
       activeProducts: any[];
     }) => {
-      const apiKey = geminiApiKey;
-
       setIsLoading(true);
       setError(null);
+      setRelatedPartsTableSuggestions([]);
 
       try {
         // Build context for P2
@@ -56,6 +62,7 @@ export function useResultEvaluator() {
           imageAnalysis?.imageDescription || 'No description available';
 
         // Get results (up to 30) with DETAILED metadata for finding differentiating attributes
+
         const resultsSummary = activeProducts
           .slice(0, 30)
           .map((p: any, i: number) => {
@@ -99,13 +106,10 @@ export function useResultEvaluator() {
               if (asteriskMatch && asteriskMatch[1].length <= 20) {
                 metadata.brand = asteriskMatch[1].trim();
               }
-              // Pattern 3: Known brand prefixes in title (from org profile)
-              const brandPatterns = buildBrandRegex(orgProfile);
-              if (brandPatterns) {
-                const brandMatch = titleDesc.match(brandPatterns);
-                if (brandMatch) {
-                  metadata.brand = brandMatch[1].toUpperCase();
-                }
+              // Pattern 3: Generic all-caps token in title/description
+              const tokenMatch = titleDesc.match(/\b([A-Z][A-Z0-9]{2,})\b/);
+              if (tokenMatch) {
+                metadata.brand = tokenMatch[1].toUpperCase();
               }
             }
 
@@ -150,10 +154,11 @@ export function useResultEvaluator() {
               }
             }
 
-            // Extract product type from title (from org profile regex terms)
-            const typeRegex = buildProductTypeRegex(orgProfile);
-            if (typeRegex && !metadata.product_type) {
-              const typeMatch = titleDesc.match(typeRegex);
+            // Extract generic product type keywords from title/description
+            if (!metadata.product_type) {
+              const typeMatch = titleDesc.match(
+                /\b(bearing|ring|relay|sensor|motor|fan|contactor|valve|pump|faucet|thermostat|filter|housing)\b/i,
+              );
               if (typeMatch) {
                 metadata.product_type = typeMatch[1].toUpperCase();
               }
@@ -224,73 +229,82 @@ TOTAL RESULTS: ${resultsSummary.length}
 
 Evaluate if these results match the image. If they do (same type of product), route to P3 and suggest filter options based on the COMMON ATTRIBUTES found above (like voltage, size, brand). Do NOT suggest the obvious category match.`;
 
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [
-                {
-                  role: 'user',
-                  parts: [
-                    {
-                      text:
-                        orgProfile.p2Prompt || buildP2SystemPrompt(orgProfile),
-                    },
-                  ],
-                },
-                {
-                  role: 'model',
-                  parts: [
-                    {
-                      text: 'I understand. I will evaluate the results and provide a JSON response.',
-                    },
-                  ],
-                },
-                { role: 'user', parts: [{ text: userPrompt }] },
-              ],
-              generationConfig: {
-                temperature: 0.3,
-                maxOutputTokens: 8192,
-                responseMimeType: 'application/json',
-              },
-            }),
-          },
+        const productsForImages = activeProducts.slice(0, 30);
+        const imageResults = await Promise.all(
+          productsForImages.map(async (p: any, i: number) => {
+            const url = getProductImageUrl(p);
+            if (!url) return { rank: i + 1, base64: null };
+
+            const base64 = await fetchProductImageBase64(url);
+
+            return { rank: i + 1, base64 };
+          }),
         );
 
-        if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(
-            errData.error?.message || `Gemini API error: ${response.status}`,
-          );
-        }
+        const hasVisualContext =
+          imageResults.filter(r => r.base64 !== null).length >= 1;
 
-        const data = await response.json();
+        const productImageParts: Array<{
+          metadata: string;
+          image?: string;
+          mimeType?: string;
+        }> = [];
 
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        resultsSummary.forEach((result, i) => {
+          const originalProduct = productsForImages[i];
+          const tags = originalProduct?._tags;
+          const tagStr = tags
+            ? ` | TAGS: type=${tags.productType}, color=${tags.color}, shape=${tags.shape}, material=${tags.material}`
+            : '';
 
-        if (!responseText) {
-          const finishReason = data.candidates?.[0]?.finishReason;
-          const blockReason = data.promptFeedback?.blockReason;
-          throw new Error(
-            `No response from P2 (finish: ${finishReason || 'none'}, block: ${blockReason || 'none'})`,
-          );
-        }
+          const metaLine = `${result.rank}. ${result.title}${result.description ? ` - ${result.description}` : ''} (Score: ${result.score})${result.metadata ? ` | Metadata: ${JSON.stringify(result.metadata)}` : ''}${tagStr}`;
 
-        // Parse the JSON response
-        const evaluation: P2EvaluationResult = JSON.parse(responseText);
+          if (hasVisualContext && imageResults[i]?.base64) {
+            productImageParts.push({
+              metadata: metaLine,
+              image: imageResults[i].base64 || '',
+              mimeType: 'image/jpeg',
+            });
+          }
+        });
 
-        // Store the evaluation result — append "Describe what you're looking for" as last option
-        let mappedOptions = evaluation.options.map(opt => ({
+        const requestImage = useRequestStore.getState().requestImages;
+        const regions = useRequestStore.getState().regions;
+        const croppedCanvas = cropImage(requestImage[0], regions[0]);
+        const base64Image = canvasToBase64(croppedCanvas, 'image/jpeg', 1);
+
+        const response = await chatAnalysis({
+          promptKey: 'result_evaluator_prompt',
+          multimodalInputs: [
+            {
+              metadata: userPrompt,
+            },
+            {
+              metadata: 'request_image',
+              mimeType: 'image/jpeg',
+              image: base64Image,
+            },
+            ...productImageParts,
+          ],
+        });
+
+        const evaluation: P2EvaluationResult = response;
+
+        let mappedOptions = (evaluation?.options || []).map(opt => ({
           label: opt.label,
           action_type: opt.action_type as
             | 'filter'
             | 'clarify'
-            | 'text_search_prompt',
+            | 'text_search_prompt'
+            | 'find_related_parts',
           key: (opt as any).key,
           value: (opt as any).value,
         }));
+        if (relatedPartsUsed) {
+          mappedOptions = mappedOptions.filter(
+            opt => opt.action_type !== 'find_related_parts',
+          );
+        }
         mappedOptions.push({
           label: "Describe what you're looking for",
           action_type: 'text_search_prompt',
@@ -298,11 +312,33 @@ Evaluate if these results match the image. If they do (same type of product), ro
           value: 'text_search',
         });
 
+        // Check lookup table for related parts on fresh image searches and store globally.
+        const table = await loadRelatedPartsTable();
+
+        const tableSuggestions = lookupRelatedParts(
+          table,
+          imageAnalysis.specification.product_category || '',
+        );
+        const hasTableSuggestions =
+          !!tableSuggestions && tableSuggestions.length > 0;
+        setRelatedPartsTableSuggestions(tableSuggestions || []);
+
+        // GC Gruppe: offer "Find related parts" in initial P2 response
+        if (
+          window.settings.vizo?.findRelatedParts &&
+          hasTableSuggestions &&
+          !relatedPartsUsed
+        ) {
+          mappedOptions.push({
+            label: `Find parts related to ${imageAnalysis.specification.product_category || 'request image'}`,
+            action_type: 'find_related_parts',
+            key: 'find_related',
+            value: 'find_related_parts',
+          });
+        }
+
         // Enforce ≤5 rule: if initial results are ≤5, strip filter options, keep only text_search_prompt
         if (activeProducts.length <= 5 && activeProducts.length > 0) {
-          console.log(
-            `[P2] ≤5 results (${activeProducts.length}) — stripping filter options, keeping only text_search_prompt`,
-          );
           mappedOptions = [
             {
               label: "Describe what you're looking for",
@@ -311,24 +347,37 @@ Evaluate if these results match the image. If they do (same type of product), ro
               value: 'text_search',
             },
           ];
+
+          if (
+            window.settings.vizo?.findRelatedParts &&
+            hasTableSuggestions &&
+            !relatedPartsUsed
+          ) {
+            mappedOptions.push({
+              label: `Find parts related to ${imageAnalysis.specification.product_category || 'request image'}`,
+              action_type: 'find_related_parts',
+              key: 'find_related',
+              value: 'find_related_parts',
+            });
+          }
         }
 
         setEvaluationResult(
           evaluation.quality,
           evaluation.route,
-          evaluation.failure_mode,
           evaluation.opening_message,
           mappedOptions,
+          evaluation.keyword,
         );
       } catch (err: any) {
-        console.error('[P2] Evaluation error:', err);
+        console.error('result_evaluator_prompt', err);
+        setRelatedPartsTableSuggestions([]);
         setError(err.message || 'Failed to evaluate results');
 
         // Fallback to good results on error
         setEvaluationResult(
           'good',
           'P3',
-          null,
           "I found some results for your image. How can I help you find what you're looking for?",
           [
             { label: 'Show me options', action_type: 'filter' as const },
@@ -344,13 +393,13 @@ Evaluate if these results match the image. If they do (same type of product), ro
         setIsLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      geminiApiKey,
       setIsLoading,
       setError,
+      setRelatedPartsTableSuggestions,
       filters,
-      geminiModel,
-      orgProfile,
+      relatedPartsUsed,
       setEvaluationResult,
     ],
   );

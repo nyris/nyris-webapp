@@ -1,0 +1,83 @@
+{
+  "GC Gruppe": [
+    {
+      "keywords": ["faucet", "mixer tap", "basin mixer", "Waschtischarmatur", "Armatur", "Mischer", "Einhandmischer", "Einhandmischbatterie", "Einhebelmischer", "Waschtischbatterie"],
+      "relatedParts": [
+        { "label": "Filter Cartridge", "description": "Replacement ceramic or carbon filter cartridge for water purification" },
+        { "label": "Sealing Tape", "description": "PTFE thread seal tape for leak-proof pipe connections" },
+        { "label": "Aerator", "description": "Flow regulator/strainer insert for the faucet spout" },
+        { "label": "Flexible Hose", "description": "Braided water supply connection hose" },
+        { "label": "Angle Valve", "description": "Shut-off valve for the water supply line beneath the basin" }
+      ]
+    },
+    {
+      "keywords": ["shower", "Brause", "Dusche", "Duschkopf", "Duscharmatur", "Brausekopf", "shower head", "shower enclosure"],
+      "relatedParts": [
+        { "label": "Shower Hose", "description": "Flexible connection hose between mixer and shower head" },
+        { "label": "Wall Bracket", "description": "Mounting bracket or slide bar for the shower head" },
+        { "label": "Sealing Set", "description": "Gaskets and O-rings for shower connections" },
+        { "label": "Shower Filter", "description": "Inline water filter for limescale and chlorine reduction" },
+        { "label": "Diverter Valve", "description": "Valve to switch water flow between tub spout and shower" }
+      ]
+    },
+    {
+      "keywords": ["radiator", "Heizkoerper", "Heizung", "Heizkörper", "Konvektor", "panel radiator"],
+      "relatedParts": [
+        { "label": "Thermostat Valve", "description": "Temperature control valve head for the radiator" },
+        { "label": "Bleed Valve", "description": "Air release valve for radiator maintenance" },
+        { "label": "Wall Bracket", "description": "Mounting bracket set for radiator installation" },
+        { "label": "Lockshield Valve", "description": "Return-side balancing valve for flow regulation" },
+        { "label": "Radiator Plug", "description": "Blanking plug and seal for unused radiator connections" }
+      ]
+    },
+    {
+      "keywords": ["toilet", "WC", "Toilette", "Klosett", "wall-hung WC", "stand-WC"],
+      "relatedParts": [
+        { "label": "Flush Valve", "description": "Internal flush mechanism and valve for the cistern" },
+        { "label": "Toilet Seat", "description": "Replacement seat and lid with hinges" },
+        { "label": "Flush Plate", "description": "Actuator plate for concealed cistern systems" },
+        { "label": "Concealed Cistern", "description": "In-wall cistern frame for wall-hung installations" },
+        { "label": "Connection Set", "description": "Waste pipe connector and seal kit for WC installation" }
+      ]
+    },
+    {
+      "keywords": ["pump", "Pumpe", "Umwälzpumpe", "circulation pump", "Heizungspumpe"],
+      "relatedParts": [
+        { "label": "Check Valve", "description": "Non-return valve to prevent backflow in the system" },
+        { "label": "Pump Flange Set", "description": "Connection flanges and gaskets for pump installation" },
+        { "label": "Insulation Shell", "description": "Thermal insulation jacket for the pump body" },
+        { "label": "Replacement Seal", "description": "Mechanical shaft seal for pump maintenance" },
+        { "label": "Speed Controller", "description": "Electronic controller for variable pump speed" }
+      ]
+    },
+    {
+      "keywords": ["boiler", "Kessel", "Heizkessel", "Brennwertkessel", "Gaskessel", "water heater", "Warmwasserspeicher", "Durchlauferhitzer"],
+      "relatedParts": [
+        { "label": "Expansion Vessel", "description": "Pressure compensation vessel for the heating circuit" },
+        { "label": "Safety Valve", "description": "Pressure relief valve for overpressure protection" },
+        { "label": "Flue Pipe", "description": "Exhaust gas duct for combustion venting" },
+        { "label": "Condensate Trap", "description": "Siphon for condensate drainage from condensing boilers" },
+        { "label": "Ignition Electrode", "description": "Replacement spark electrode for burner ignition" }
+      ]
+    },
+    {
+      "keywords": ["washbasin", "Waschbecken", "basin", "Waschtisch", "Handwaschbecken", "vanity"],
+      "relatedParts": [
+        { "label": "Pop-up Waste", "description": "Click-clack or pop-up drain plug for the basin" },
+        { "label": "Siphon", "description": "Bottle trap or P-trap for basin waste drainage" },
+        { "label": "Basin Mixer", "description": "Single-lever or two-handle mixer tap for the washbasin" },
+        { "label": "Mounting Kit", "description": "Fixing bolts and brackets for basin installation" },
+        { "label": "Overflow Cover", "description": "Decorative cover for the basin overflow hole" }
+      ]
+    },
+    {
+      "keywords": ["valve", "Ventil", "Absperrventil", "Regelventil", "ball valve", "Kugelventil", "gate valve"],
+      "relatedParts": [
+        { "label": "Replacement Seal", "description": "O-ring or flat gasket set for valve maintenance" },
+        { "label": "Handle Extension", "description": "Extended lever or wheel handle for hard-to-reach valves" },
+        { "label": "Insulation Jacket", "description": "Thermal insulation shell for exposed valve bodies" },
+        { "label": "Fitting Adapter", "description": "Thread adapter or compression fitting for pipe connection" }
+      ]
+    }
+  ]
+}

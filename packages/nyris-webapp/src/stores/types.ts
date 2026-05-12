@@ -88,8 +88,8 @@ export interface ProductsAction {
   setGroundingFilterResult: (result: any[]) => void;
   setShowingGroundingFilterResult: (val?: boolean) => void;
   setGroundingError: (error: string | null) => void;
-  setFirstAlgoliaProducts: (products: any[]) => void;
   setFullResultPool: (products: any[]) => void;
+  resetGrounding: () => void;
 }
 
 export interface DetectedRegionsState {
@@ -138,6 +138,17 @@ export interface FeedbackState {
 
 export interface FeedbackAction {
   setShowFeedback: (show: boolean) => void;
+}
+
+export interface BannerState {
+  bannerGoBack: boolean;
+  bannerTextSearch: 'loading' | 'resolved' | 'pending';
+}
+
+export interface BannerAction {
+  setBannerGoBack: (goBack: boolean) => void;
+  setBannerTextSearch: (textSearch: 'loading' | 'resolved' | 'pending') => void;
+  resetBanner: () => void;
 }
 
 export interface SidePanelState {

@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 function PostFilter({
   attribute,
   label,
-  searchable,
+  searchable: _searchable,
   onVisibilityChange,
   isLastVisible,
 }: {

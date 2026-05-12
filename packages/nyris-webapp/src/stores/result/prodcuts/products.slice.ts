@@ -5,34 +5,34 @@ import { ProductsAction, ProductsState } from 'stores/types';
 const productsSlice: StateCreator<ProductsState & ProductsAction> = set => ({
   ...initialState,
   setAlgoliaProducts: products =>
-    set(state => ({ productsFromAlgolia: products })),
+    set(() => ({ productsFromAlgolia: products })),
   setFindApiProducts: products =>
-    set(state => ({ productsFromFindApi: products })),
+    set(() => ({ productsFromFindApi: products })),
   setFirstSearchResults: products =>
-    set(state => ({ firstSearchResults: products })),
+    set(() => ({ firstSearchResults: products })),
   setImageAnalysis: analysis =>
-    set(state => ({
+    set(() => ({
       imageAnalysis: {
         ...analysis,
       },
     })),
   setSpecificationFilteredProducts: products =>
-    set(state => ({
+    set(() => ({
       specificationFilteredProducts: products,
     })),
   setFirstRequestImageAnalysis: analysis =>
-    set(state => ({
+    set(() => ({
       firstRequestImageAnalysis: {
         ...analysis,
       },
     })),
   setGoogleGroundingResponse: result =>
-    set(state => ({
+    set(() => ({
       googleGroundingResponse: result,
     })),
 
   setGroundingFilterResult: result =>
-    set(state => ({
+    set(() => ({
       groundingFilterResult: result,
     })),
   setShowingGroundingFilterResult: (val?: boolean) =>
@@ -42,14 +42,20 @@ const productsSlice: StateCreator<ProductsState & ProductsAction> = set => ({
         : { showingGroundingFilterResult: val },
     ),
   setGroundingError: error =>
-    set(state => ({
+    set(() => ({
       groundingError: error,
     })),
-  setFirstAlgoliaProducts: products =>
-    set(state => ({ firstAlgoliaProducts: products })),
+
   setFullResultPool: products =>
-    set(state => ({
+    set(() => ({
       fullResultPool: products,
+    })),
+  resetGrounding: () =>
+    set(() => ({
+      groundingError: null,
+      groundingFilterResult: [],
+      googleGroundingResponse: null,
+      showingGroundingFilterResult: false,
     })),
 });
 

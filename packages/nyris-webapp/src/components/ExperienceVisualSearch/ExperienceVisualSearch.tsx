@@ -51,7 +51,7 @@ function ExperienceVisualSearch({
         Start your visual search by selecting an image below.
       </div>
       <div className="custom-modal-body-content experience-visual-search-images">
-        {new Array(4).fill(1).map((val, index) => {
+        {new Array(4).fill(1).map((_val, index) => {
           let itemImage: any;
 
           if (index <= experienceVisualSearchBlobs.length - 1) {

@@ -14,7 +14,11 @@ import useConversationStore, {
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
-import { buildP3SystemPrompt } from './promptBuilders';
+import { chatAnalysis } from 'services/vizo';
+import {
+  fetchProductImageBase64,
+  getProductImageUrl,
+} from 'utils/fetchProductImage';
 
 /**
  * Extracts search keywords from a user's natural language description.
@@ -134,98 +138,6 @@ function extractSearchKeywords(description: string): string {
   );
 }
 
-/**
- * Deduplicates incoming products against existing ones by SKU/objectID.
- * Returns only products from `incoming` that are not already in `existing`.
- */
-export function deduplicateProducts(existing: any[], incoming: any[]): any[] {
-  const existingKeys = new Set(
-    existing
-      .map(p => (p.sku || p.objectID || '').toLowerCase())
-      .filter(Boolean),
-  );
-  return incoming.filter(p => {
-    const key = (p.sku || p.objectID || '').toLowerCase();
-    return key && !existingKeys.has(key);
-  });
-}
-
-// P3 System Prompt is now dynamically built via buildP3SystemPrompt(orgProfile)
-
-/**
- * Fetch a product image URL and return base64-encoded JPEG (resized to 256px max).
- * Returns null on any failure (CORS, 404, timeout, etc.)
- */
-async function fetchProductImageBase64(
-  imageUrl: string,
-): Promise<string | null> {
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout per image
-
-    // Route through local proxy to bypass CORS restrictions on external CDN images.
-    // In dev: /api/image-proxy (setupProxy.js). In production: deploy equivalent serverless function.
-    const proxyUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
-    const res = await fetch(proxyUrl, { signal: controller.signal });
-    clearTimeout(timeout);
-
-    if (!res.ok) {
-      console.warn(`[P3] Image proxy failed (${res.status}):`, imageUrl);
-      return null;
-    }
-    const blob = await res.blob();
-
-    return new Promise(resolve => {
-      const img = new Image();
-      img.onload = () => {
-        try {
-          const maxSize = 256; // Small thumbnails to keep request size reasonable
-          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-          const canvas = document.createElement('canvas');
-          canvas.width = Math.round(img.width * scale);
-          canvas.height = Math.round(img.height * scale);
-          const ctx = canvas.getContext('2d');
-          if (!ctx) {
-            resolve(null);
-            return;
-          }
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
-          const b64 = dataUrl.split(',')[1] || '';
-          URL.revokeObjectURL(img.src);
-          resolve(b64 || null);
-        } catch (canvasErr) {
-          console.warn('[P3] Canvas toDataURL failed:', imageUrl, canvasErr);
-          URL.revokeObjectURL(img.src);
-          resolve(null);
-        }
-      };
-      img.onerror = () => {
-        console.warn('[P3] Image element load failed:', imageUrl);
-        resolve(null);
-      };
-      // Blob URL is same-origin — no CORS taint, canvas read will succeed
-      img.src = URL.createObjectURL(blob);
-    });
-  } catch (err) {
-    console.warn('[P3] Image proxy error:', imageUrl, err);
-    return null;
-  }
-}
-
-/**
- * Get the best available image URL for a product.
- */
-function getProductImageUrl(product: any): string | null {
-  return (
-    product.matches?.[0]?.url ||
-    product.main_image_link ||
-    product.image ||
-    product.images?.[0] ||
-    null
-  );
-}
-
 interface P3Response {
   message: string;
   action: {
@@ -250,19 +162,13 @@ export function useGoodResultsChat() {
     setError,
   } = useConversationStore();
 
-  const { geminiApiKey, geminiModel, filters, orgProfile } =
-    useSmartFiltersStore();
-  const productsFromAlgolia = useResultStore(
-    state => state.productsFromAlgolia,
-  );
+  const { filters } = useSmartFiltersStore();
+
   const productsFromFindApi = useResultStore(
     state => state.productsFromFindApi,
   );
   const firstSearchResults = useResultStore(state => state.firstSearchResults);
-  const firstAlgoliaProducts = useResultStore(
-    state => state.firstAlgoliaProducts,
-  );
-  const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
+
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
   const fullResultPool = useResultStore(state => state.fullResultPool);
   const setFullResultPool = useResultStore(state => state.setFullResultPool);
@@ -271,16 +177,8 @@ export function useGoodResultsChat() {
   const requestImages = useRequestStore(state => state.requestImages);
 
   const isAlgoliaEnabled = !!(window as any).settings?.algolia?.enabled;
-  const activeProducts = isAlgoliaEnabled
-    ? productsFromAlgolia
-    : productsFromAlgolia.length > 0
-      ? productsFromAlgolia
-      : productsFromFindApi;
-  const setActiveProducts = isAlgoliaEnabled
-    ? setAlgoliaProducts
-    : productsFromAlgolia.length > 0
-      ? setAlgoliaProducts
-      : setFindApiProducts;
+  const activeProducts = productsFromFindApi;
+  const setActiveProducts = setFindApiProducts;
 
   // Original unfiltered results — used for restoring and index-based filtering
   // Prefer fullResultPool (50 items) when available for broader filtering
@@ -289,9 +187,7 @@ export function useGoodResultsChat() {
       ? fullResultPool
       : firstSearchResults.length > 0
         ? firstSearchResults
-        : firstAlgoliaProducts.length > 0
-          ? firstAlgoliaProducts
-          : activeProducts;
+        : activeProducts;
 
   // Image cache: persists across P3 messages within the same search session
   const imageCacheRef = useRef<Map<string, string | null>>(new Map());
@@ -299,22 +195,11 @@ export function useGoodResultsChat() {
 
   const sendMessage = useCallback(
     async (userMessage: string, options?: { silent?: boolean }) => {
-      const apiKey = geminiApiKey || process.env.REACT_APP_GEMINI_API_KEY;
-
       if (!options?.silent) {
         addMessage({
           role: 'user',
           content: userMessage,
         });
-      }
-
-      if (!apiKey) {
-        addMessage({
-          role: 'assistant',
-          content:
-            'Please configure your Gemini API key in Admin Settings to use the chat assistant.',
-        });
-        return;
       }
 
       setIsLoading(true);
@@ -337,7 +222,7 @@ export function useGoodResultsChat() {
           }
         });
 
-        // Get all results for Gemini context — read fresh from store to avoid stale closure data
+        // Get all results for AI context — read fresh from store to avoid stale closure data
         const freshState = useResultStore.getState();
         const freshFullPool = freshState.fullResultPool;
         const freshFindApi = freshState.productsFromFindApi;
@@ -349,9 +234,9 @@ export function useGoodResultsChat() {
             : freshFindApi;
         const freshOriginal =
           freshFullPool.length > 0 ? freshFullPool : freshActive;
-        const poolForGemini =
+        const poolForAI =
           freshOriginal.length > 0 ? freshOriginal : activeProducts;
-        const visibleResults = poolForGemini
+        const visibleResults = poolForAI
           .slice(0, 30)
           .map((p: any, i: number) => {
             const title = p.title || p.name || '';
@@ -395,44 +280,33 @@ export function useGoodResultsChat() {
 
         // Fetch product thumbnail images with caching — send images for ALL results (up to 50)
         // Cache persists across filter operations; only clears on new search session
-        const productsForImages = poolForGemini.slice(0, 30);
+        const productsForImages = poolForAI.slice(0, 30);
         const currentSessionId = useConversationStore.getState().sessionId;
         if (currentSessionId !== lastSessionIdRef.current) {
           imageCacheRef.current.clear();
           lastSessionIdRef.current = currentSessionId;
-          console.log('[P3] New session — cleared image cache');
         }
         const imageResults = await Promise.all(
           productsForImages.map(async (p: any, i: number) => {
             const url = getProductImageUrl(p);
+
             if (!url) return { rank: i + 1, base64: null };
-            // Check cache first
-            if (imageCacheRef.current.has(url)) {
-              return {
-                rank: i + 1,
-                base64: imageCacheRef.current.get(url) || null,
-              };
-            }
+
             const base64 = await fetchProductImageBase64(url);
             imageCacheRef.current.set(url, base64);
             return { rank: i + 1, base64 };
           }),
         );
-        const cacheHits = productsForImages.filter((p: any) =>
-          imageCacheRef.current.has(getProductImageUrl(p) || ''),
-        ).length;
+
         const imagesAvailable = imageResults.filter(
           r => r.base64 !== null,
         ).length;
         const hasVisualContext = imagesAvailable >= 3;
-        console.log(
-          `[P3] Images: ${imagesAvailable}/${productsForImages.length} available, ${cacheHits} from cache (visual context: ${hasVisualContext ? 'YES' : 'NO'})`,
-        );
 
         // Build multimodal user parts: text context + product images interleaved with metadata
         const userParts: any[] = [];
 
-        // Visual availability notice — prevents Gemini from hallucinating visual attributes
+        // Visual availability notice — prevents AI from hallucinating visual attributes
         const visualNotice = hasVisualContext
           ? `PRODUCT IMAGES: ${imagesAvailable} product thumbnail images are included below. Use them to evaluate visual attributes (color, shape, size, form factor).`
           : `PRODUCT IMAGES: NOT AVAILABLE — product images could not be loaded. Do NOT make claims about visual attributes like color, shape, or appearance. Only use text metadata for filtering. If the user asks about visual properties (color, shape, etc.), tell them you cannot evaluate visual attributes from the current data and suggest they search the full catalog instead.`;
@@ -461,13 +335,12 @@ PRODUCT LIST (up to 50 results — each has a unique ID in [brackets] and AI-gen
         // Part 2: Product entries with interleaved images (for all results up to 50)
         visibleResults.forEach((r, i) => {
           // Include AI-generated tags if available (from useProductTagger)
-          const originalProduct = poolForGemini[i];
+          const originalProduct = poolForAI[i];
           const tags = originalProduct?._tags;
           const tagStr = tags
             ? ` | TAGS: type=${tags.productType}, color=${tags.color}, shape=${tags.shape}, material=${tags.material}`
             : '';
-          const metaLine = `[${r.id}] ${r.title} | brand: ${r.brand} | mpn: ${r.mpn} | desc: ${r.description}${tagStr}`;
-          userParts.push({ text: metaLine });
+          const metaLine = `id: ${r.id} | ${r.title} | brand: ${r.brand} | mpn: ${r.mpn} | desc: ${r.description}${tagStr}`;
 
           // Include product image if available
           if (
@@ -476,18 +349,22 @@ PRODUCT LIST (up to 50 results — each has a unique ID in [brackets] and AI-gen
             imageResults[i]?.base64
           ) {
             userParts.push({
+              text: metaLine,
               inlineData: {
                 mimeType: 'image/jpeg',
                 data: imageResults[i].base64,
               },
             });
+          } else {
+            userParts.push({ text: metaLine });
           }
         });
 
         // Part 3: Remaining context
         userParts.push({
           text: `
-TOTAL RESULTS: ${visibleResults.length}
+Original_results_count: ${originalProducts.length}          
+Current RESULTS: ${visibleResults.length}
 
 CONVERSATION HISTORY:
 ${conversationHistory.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n')}
@@ -497,124 +374,22 @@ USER MESSAGE: ${userMessage}
 Respond to the user's message with an appropriate action and follow-up options.`,
         });
 
-        // Adjust model acknowledgment based on whether images are available
-        const modelAck = hasVisualContext
-          ? 'I understand. I will help the user filter, compare, and identify products within the existing results. I will use both text metadata and product images to evaluate visual attributes like color, shape, and form factor.'
-          : 'I understand. I will help the user filter, compare, and identify products within the existing results using text metadata only. I will NOT make claims about visual attributes like color or shape since product images are not available.';
+        const response: P3Response = await chatAnalysis({
+          promptKey: 'chat_assistant_prompt',
+          multimodalInputs: userParts.map(part => ({
+            metadata: part.text,
+            image: part.inlineData?.data,
+            mimeType: part.inlineData?.mimeType,
+          })),
+        });
 
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [
-                {
-                  role: 'user',
-                  parts: [
-                    {
-                      text:
-                        orgProfile.p3Prompt || buildP3SystemPrompt(orgProfile),
-                    },
-                  ],
-                },
-                { role: 'model', parts: [{ text: modelAck }] },
-                { role: 'user', parts: userParts },
-              ],
-              generationConfig: {
-                temperature: 0.4,
-                maxOutputTokens: 8192,
-                responseMimeType: 'application/json',
-                responseSchema: {
-                  type: 'OBJECT',
-                  properties: {
-                    message: {
-                      type: 'STRING',
-                      description:
-                        'Response message to the user (2-4 sentences)',
-                    },
-                    action: {
-                      type: 'OBJECT',
-                      properties: {
-                        type: {
-                          type: 'STRING',
-                          enum: [
-                            'filter_apply',
-                            'filter_remove',
-                            'filter_clear',
-                            'text_search',
-                            'none',
-                          ],
-                        },
-                        key: {
-                          type: 'STRING',
-                          description:
-                            'What was filtered (e.g. voltage, brand, type)',
-                        },
-                        value: {
-                          type: 'STRING',
-                          description: 'Filter value or search query',
-                        },
-                        matched_ids: {
-                          type: 'ARRAY',
-                          items: { type: 'STRING' },
-                          description:
-                            'Array of product IDs (from [brackets]) that match the filter. Must be exact IDs from the product list.',
-                        },
-                      },
-                      required: ['type', 'matched_ids'],
-                    },
-                    options: {
-                      type: 'ARRAY',
-                      items: {
-                        type: 'OBJECT',
-                        properties: {
-                          label: { type: 'STRING' },
-                          action_type: { type: 'STRING' },
-                          key: { type: 'STRING' },
-                          value: { type: 'STRING' },
-                        },
-                        required: ['label', 'action_type'],
-                      },
-                    },
-                  },
-                  required: ['message', 'action', 'options'],
-                },
-              },
-            }),
-          },
-        );
-
-        if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(
-            errData.error?.message || `Gemini API error: ${response.status}`,
-          );
-        }
-
-        const data = await response.json();
-        console.log(
-          '[P3] Gemini response:',
-          JSON.stringify(data).substring(0, 500),
-        );
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        if (!responseText) {
-          const finishReason = data.candidates?.[0]?.finishReason;
-          const blockReason = data.promptFeedback?.blockReason;
-          throw new Error(
-            `No response from P3 (finish: ${finishReason || 'none'}, block: ${blockReason || 'none'})`,
-          );
-        }
+        const responseText = response;
 
         // Parse the JSON response
-        const p3Response: P3Response = JSON.parse(responseText);
-
-        console.log('[P3] Response:', p3Response);
+        const p3Response: P3Response = responseText;
 
         // Silent mode: only suggest filters, never apply actions
         if (options?.silent && p3Response.action) {
-          console.log('[P3] Silent mode — forcing action to none');
           p3Response.action.type = 'none';
           p3Response.action.matched_ids = [];
           p3Response.action.matched_indices = undefined;
@@ -624,9 +399,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
         const { awaitingDescription, setAwaitingDescription } =
           useConversationStore.getState();
         if (awaitingDescription && p3Response.action) {
-          console.log(
-            '[P3] Forcing text_search — awaitingDescription flag is set',
-          );
           p3Response.action.type = 'text_search';
           p3Response.action.value = extractSearchKeywords(userMessage);
           p3Response.action.matched_indices = undefined;
@@ -640,20 +412,15 @@ Respond to the user's message with an appropriate action and follow-up options.`
         ) {
           const valWords = p3Response.action.value.trim().split(/\s+/);
           if (valWords.length > 8) {
-            console.log(
-              '[P3] Trimming text_search query from:',
-              p3Response.action.value,
-            );
             p3Response.action.value = extractSearchKeywords(
               p3Response.action.value,
             );
-            console.log('[P3] Trimmed to:', p3Response.action.value);
           }
         }
 
         // ===== SIMPLIFIED ACTION HANDLING =====
-        // Gemini returns matched_ids (SKU/ID array). We look up products by ID from the pool.
-        const sourcePool = poolForGemini.slice(0, 30);
+        // AI returns matched_ids (SKU/ID array). We look up products by ID from the pool.
+        const sourcePool = poolForAI.slice(0, 30);
         let actualFilteredCount = 0;
 
         // Build a lookup map: ID → product
@@ -664,28 +431,12 @@ Respond to the user's message with an appropriate action and follow-up options.`
         });
 
         // Debug: log the map keys so we can see what IDs are available
-        const mapKeys = Array.from(productById.keys()).slice(0, 5);
-        console.log(
-          `[P3] Product ID map: ${productById.size} entries, sample keys:`,
-          mapKeys,
-        );
 
         if (p3Response.action) {
           const { type, key, value } = p3Response.action;
           const matchedIds: string[] = p3Response.action.matched_ids || [];
           const matchedIndices: number[] =
             p3Response.action.matched_indices || [];
-
-          console.log(
-            `[P3] Gemini returned matched_ids:`,
-            matchedIds.slice(0, 5),
-            `(${matchedIds.length} total)`,
-          );
-          console.log(
-            `[P3] Gemini returned matched_indices:`,
-            matchedIndices.slice(0, 5),
-            `(${matchedIndices.length} total)`,
-          );
 
           let matchedProducts: any[] = [];
 
@@ -694,14 +445,10 @@ Respond to the user's message with an appropriate action and follow-up options.`
             matchedProducts = matchedIds
               .map(id => {
                 const found = productById.get(String(id));
-                if (!found && matchedIds.length <= 5)
-                  console.log(`[P3] ID "${id}" not found in map`);
+
                 return found;
               })
               .filter(Boolean);
-            console.log(
-              `[P3] Resolved ${matchedProducts.length}/${matchedIds.length} via matched_ids`,
-            );
           }
 
           // 2. Try matched_indices as SKU IDs (convert numbers to strings, look up in map)
@@ -711,9 +458,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
               .filter(Boolean);
             if (asIds.length > 0) {
               matchedProducts = asIds;
-              console.log(
-                `[P3] Resolved ${matchedProducts.length}/${matchedIndices.length} via matched_indices-as-IDs`,
-              );
             }
           }
 
@@ -725,9 +469,6 @@ Respond to the user's message with an appropriate action and follow-up options.`
               .filter(Boolean);
             if (asPositions.length > 0) {
               matchedProducts = asPositions;
-              console.log(
-                `[P3] Resolved ${matchedProducts.length}/${matchedIndices.length} via positional indices`,
-              );
             }
           }
 
@@ -767,59 +508,71 @@ Respond to the user's message with an appropriate action and follow-up options.`
             case 'none':
               break;
           }
-
-          console.log(
-            `[P3] Action: ${type}, matched_ids: ${matchedIds.length}, matched_indices: ${matchedIndices.length}, resolved: ${matchedProducts.length}, pool: ${sourcePool.length}, displayed: ${actualFilteredCount}`,
-          );
         }
 
-        // Use Gemini's message directly. Only override if Gemini returned 0 matches for a filter action.
-        let finalMessage = p3Response.message;
+        // Use AI's message directly. Only override if AI returned 0 matches for a filter action.
+        let finalMessage = p3Response.message?.trim() || '';
         if (
           actualFilteredCount === 0 &&
           (p3Response.action?.type === 'filter_apply' ||
             p3Response.action?.type === 'text_search')
         ) {
-          finalMessage = `I couldn't find any matches for "${p3Response.action?.value || 'your query'}" in the current results. You can try narrowing further or search the full catalog.`;
+          if (!finalMessage) {
+            finalMessage = `I couldn't find any matches for "${p3Response.action?.value || 'your query'}" in the current results. You can try narrowing further or search the full catalog.`;
+          }
           useConversationStore
             .getState()
             .setPendingCatalogText(p3Response.action?.value || '');
         }
+        let finalOptions = p3Response.options || [];
 
-        // Fix count mismatches: Gemini often says a different number than what was actually resolved.
+        // Fix count mismatches: AI often says a different number than what was actually resolved.
         // Replace numeric counts in the message with the actual count.
         if (
           actualFilteredCount > 0 &&
           (p3Response.action?.type === 'filter_apply' ||
             p3Response.action?.type === 'text_search')
         ) {
-          // Replace patterns like "show 14", "found 14", "are 14", "remaining 14 out of"
-          finalMessage = finalMessage.replace(
-            /\b(\d+)\s+(light blocks?|caps?|items?|results?|products?|components?|matches?|parts?|remaining|modules?)/gi,
-            (match, num, noun) => {
-              const n = parseInt(num);
-              if (
-                n !== actualFilteredCount &&
-                n > 1 &&
-                n < visibleResults.length
-              ) {
-                return `${actualFilteredCount} ${noun}`;
-              }
-              return match;
+          finalOptions = [
+            ...finalOptions,
+
+            {
+              label: 'Go back to original results',
+              action_type: 'restore_original' as const,
+              key: 'restore',
+              value: 'restore',
             },
-          );
-          // Also fix "out of the original X" to use the actual pool size
-          finalMessage = finalMessage.replace(
-            /out of the original (\d+)/gi,
-            `out of the original ${visibleResults.length}`,
-          );
+          ];
         }
 
-        let finalOptions = p3Response.options || [];
+        const {
+          preCatalogResults,
+          relatedPartsUsed,
+          relatedPartsTableSuggestions,
+        } = useConversationStore.getState();
+
+        if (relatedPartsUsed) {
+          finalOptions = finalOptions.filter(
+            opt => opt.action_type !== 'find_related_parts',
+          );
+        }
+        const catalogSearchReady =
+          useConversationStore.getState().catalogSearchReady;
 
         // If user came from a catalog search, offer to go back to previous results
-        const preCatalog = useConversationStore.getState().preCatalogResults;
-        if (preCatalog && preCatalog.length > 0) {
+        if (catalogSearchReady && p3Response.action?.type !== 'filter_clear') {
+          finalOptions = [
+            ...finalOptions,
+            {
+              label: 'Text search in catalog',
+              action_type: 'catalog_search_text' as const,
+              key: 'catalog_search_text',
+              value: 'catalog_search_text',
+            },
+          ];
+        }
+
+        if (preCatalogResults && preCatalogResults.length > 0) {
           finalOptions = [
             ...finalOptions,
             {
@@ -827,6 +580,22 @@ Respond to the user's message with an appropriate action and follow-up options.`
               action_type: 'restore_original' as const,
               key: 'restore',
               value: 'restore',
+            },
+          ];
+        }
+
+        if (
+          window.settings.vizo?.findRelatedParts &&
+          !relatedPartsUsed &&
+          relatedPartsTableSuggestions.length > 0
+        ) {
+          finalOptions = [
+            ...finalOptions,
+            {
+              label: `Find parts related to ${imageAnalysis.specification.product_category || 'request image'}`,
+              action_type: 'find_related_parts' as const,
+              key: 'find_related',
+              value: 'find_related_parts',
             },
           ];
         }
@@ -854,9 +623,7 @@ Respond to the user's message with an appropriate action and follow-up options.`
     [
       messages,
       activeFilters,
-      geminiApiKey,
       filters,
-      orgProfile,
       activeProducts,
       originalProducts,
       fullResultPool,

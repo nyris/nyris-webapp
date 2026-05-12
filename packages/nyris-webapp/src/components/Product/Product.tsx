@@ -80,7 +80,7 @@ function Product(props: Props) {
     img.src = url;
   };
 
-  const handlerToggleModal = (item: any) => {
+  const handlerToggleModal = (_item?: any) => {
     setOpenDetailedView('image');
   };
 
@@ -123,7 +123,6 @@ function Product(props: Props) {
         onSearchImage={onSearchImage}
         openDetailedView={openDetailedView}
         setOpenDetailedView={setOpenDetailedView}
-        main_image_link={main_image_link}
         onAddToCart={onAddToCart}
       />
       <div

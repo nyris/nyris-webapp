@@ -188,7 +188,7 @@ function ImagePreviewComponent({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnImageSelectionChange = useCallback(
-    debounce((r: RectCoords, index?: number) => {
+    debounce((r: RectCoords, _index?: number) => {
       findItemsInSelection(r, requestImages[0]);
     }, 0),
     [findItemsInSelection, requestImages, updateRegion],
