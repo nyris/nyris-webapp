@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Dialog, DialogContent, DialogTitle } from 'components/Modal/Dialog';
 import ProductDetailView from './ProductDetailView';
 
@@ -8,7 +8,6 @@ function ProductDetailViewModal({
   dataItem,
   handlerFeedback,
   onSearchImage,
-  main_image_link,
   onAddToCart,
 }: {
   openDetailedView: '3d' | 'image' | undefined;
@@ -16,7 +15,6 @@ function ProductDetailViewModal({
   dataItem: any;
   handlerFeedback: (value: string) => void;
   onSearchImage: (url: string) => void;
-  main_image_link: string;
   onAddToCart: (item: any) => void;
 }) {
   useEffect(() => {
@@ -35,7 +33,7 @@ function ProductDetailViewModal({
   return (
     <Dialog
       open={openDetailedView === '3d' || openDetailedView === 'image'}
-      onOpenChange={(e: any) => {
+      onOpenChange={() => {
         setOpenDetailedView(undefined);
       }}
       modal={true}

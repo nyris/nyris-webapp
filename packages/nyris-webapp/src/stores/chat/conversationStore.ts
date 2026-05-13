@@ -36,6 +36,9 @@ export interface QuickReplyOption {
     | 'text_search_prompt'
     | 'catalog_search_image'
     | 'catalog_search_text'
+    | 'restore_previous'
+    | 'related_part'
+    | 'find_related_parts'
     | 'restore_original';
   value?: string;
   key?: string;
@@ -59,6 +62,11 @@ export interface ChatMessage {
 export interface ActiveFilter {
   key: string;
   value: string;
+}
+
+export interface RelatedPartSuggestion {
+  label: string;
+  description: string;
 }
 
 interface ConversationState {
@@ -90,12 +98,18 @@ interface ConversationState {
   // Description mode — set when user clicks "Describe what you're looking for"
   awaitingDescription: boolean;
 
-  // Pending catalog search — stored for deferred API search after Gemini refinement
+  // Pending catalog search — stored for deferred API search after AI refinement
   pendingCatalogImage: File | string | null;
   pendingCatalogText: string | null;
+  catalogSearchReady: boolean;
 
   // Pre-catalog results — saved before catalog search so user can go back
   preCatalogResults: any[] | null;
+  relatedPartsUsed: boolean;
+  pendingRelatedPart: string | null;
+  relatedPartsTableSuggestions: RelatedPartSuggestion[];
+
+  requestImageKeyword?: string; // Added to track the keyword extracted from the image in P2
 }
 
 interface ConversationActions {
@@ -106,9 +120,9 @@ interface ConversationActions {
   setEvaluationResult: (
     quality: ResultQuality,
     route: ConversationRoute,
-    failureMode: FailureMode,
     openingMessage: string,
     options: QuickReplyOption[],
+    requestImageKeyword?: string,
   ) => void;
 
   // Messages
@@ -131,7 +145,14 @@ interface ConversationActions {
   setAwaitingDescription: (awaiting: boolean) => void;
   setPendingCatalogImage: (file: File | string | null) => void;
   setPendingCatalogText: (text: string | null) => void;
+  setCatalogSearchReady: (ready: boolean) => void;
   setPreCatalogResults: (results: any[] | null) => void;
+  setPendingRelatedPart: (part: string | null) => void;
+  setRelatedPartsTableSuggestions: (
+    suggestions: RelatedPartSuggestion[],
+  ) => void;
+
+  setRelatedPartsUsed: (used: boolean) => void;
 
   // Reset
   reset: () => void;
@@ -160,7 +181,12 @@ const initialState: ConversationState = {
   awaitingDescription: false,
   pendingCatalogImage: null,
   pendingCatalogText: null,
+  catalogSearchReady: false,
   preCatalogResults: null,
+  relatedPartsUsed: false,
+  pendingRelatedPart: null,
+  relatedPartsTableSuggestions: [],
+  requestImageKeyword: '',
 };
 
 const useConversationStore = create<ConversationState & ConversationActions>()(
@@ -178,9 +204,9 @@ const useConversationStore = create<ConversationState & ConversationActions>()(
     setEvaluationResult: (
       quality,
       route,
-      failureMode,
       openingMessage,
       options,
+      requestImageKeyword,
     ) => {
       const state = get();
 
@@ -191,12 +217,12 @@ const useConversationStore = create<ConversationState & ConversationActions>()(
         isEvaluated: true,
         quality,
         route,
-        failureMode,
         openingMessage,
         openingOptions: options,
         attemptCounter: route === 'P5' ? 1 : 0,
         isOpen: false, // Don't auto-open — show notification badge instead
         hasNotification: true,
+        requestImageKeyword,
       });
 
       // Add opening message to chat
@@ -256,7 +282,12 @@ const useConversationStore = create<ConversationState & ConversationActions>()(
     setAwaitingDescription: awaiting => set({ awaitingDescription: awaiting }),
     setPendingCatalogImage: file => set({ pendingCatalogImage: file }),
     setPendingCatalogText: text => set({ pendingCatalogText: text }),
+    setCatalogSearchReady: ready => set({ catalogSearchReady: ready }),
     setPreCatalogResults: results => set({ preCatalogResults: results }),
+    setRelatedPartsTableSuggestions: suggestions =>
+      set({ relatedPartsTableSuggestions: suggestions }),
+    setRelatedPartsUsed: used => set({ relatedPartsUsed: used }),
+    setPendingRelatedPart: part => set({ pendingRelatedPart: part }),
 
     reset: () =>
       set({

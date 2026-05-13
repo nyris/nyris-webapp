@@ -4,17 +4,17 @@ import { initialState } from './filter.initialState';
 
 const filterSlice: StateCreator<FilterState & FilterAction> = set => ({
   ...initialState,
-  setAlgoliaFilter: filter => set(state => ({ algoliaFilter: filter })),
-  setPreFilter: filter => set(state => ({ preFilter: filter })),
+  setAlgoliaFilter: filter => set(() => ({ algoliaFilter: filter })),
+  setPreFilter: filter => set(() => ({ preFilter: filter })),
   setFirstSearchPreFilter: filter =>
-    set(state => ({ firstSearchPreFilter: filter })),
+    set(() => ({ firstSearchPreFilter: filter })),
   setSpecificationFilter: filter =>
-    set(state => ({ specificationFilter: filter })),
-  setPreFilterList: filter => set(state => ({ preFilterList: filter })),
+    set(() => ({ specificationFilter: filter })),
+  setPreFilterList: filter => set(() => ({ preFilterList: filter })),
   setPreFilterLoading: isLoading =>
-    set(state => ({ preFilterLoading: isLoading })),
+    set(() => ({ preFilterLoading: isLoading })),
   setPostFilterSelections: filters =>
-    set(state => ({ postFilterSelections: filters })),
+    set(() => ({ postFilterSelections: filters })),
   togglePostFilterSelection: (attribute, value) =>
     set(state => {
       const current = state.postFilterSelections?.[attribute] || [];
@@ -32,7 +32,7 @@ const filterSlice: StateCreator<FilterState & FilterAction> = set => ({
 
       return { postFilterSelections: nextSelections };
     }),
-  clearPostFilterSelections: () => set(state => ({ postFilterSelections: {} })),
+  clearPostFilterSelections: () => set(() => ({ postFilterSelections: {} })),
 });
 
 export default filterSlice;

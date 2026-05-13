@@ -12,6 +12,7 @@ import Tooltip from './Tooltip/TooltipComponent';
 import { useMediaQuery } from 'react-responsive';
 import ImageUpload from './ImageUpload';
 import useUiStore from 'stores/ui/uiStore';
+import useConversationStore from 'stores/chat/conversationStore';
 
 function TextSearch({
   className,
@@ -37,6 +38,10 @@ function TextSearch({
 
   const toggleAiMode = useUiStore(state => state.toggleAiMode);
   const isAiModeOpen = useUiStore(state => state.isAiModeOpen);
+  const hasAiNotification = useConversationStore(
+    state => state.hasNotification,
+  );
+  const setIsChatOpen = useConversationStore(state => state.setIsOpen);
 
   const preFilter = useRequestStore(state => state.preFilter);
   const requestImages = useRequestStore(state => state.requestImages);
@@ -443,33 +448,50 @@ function TextSearch({
             )}
             {showImageUpload && <ImageUpload onCameraClick={onCameraClick} />}
             {aiMode &&
-              window.settings.vizo.chat &&
+              window.settings.vizo?.chat &&
               requestImages.length !== 0 &&
               !(isMobile && isInputFocused) && (
-                <button
-                  type="button"
-                  className={twMerge(
-                    'px-[10px] h-10 rounded-full text-[14px] text-[#989BB7] flex items-center justify-center gap-2 whitespace-nowrap bg-[#FAFAFA] border border-solid border-transparent',
-                    !isAiModeOpen &&
-                      'hover:bg-gradient-to-r hover:from-white hover:to-[#E4E3FF]',
-                    !isAiModeOpen &&
-                      'hover:border-[#DDDEE7] hover:text-[#3B3E5F]',
-                    isAiModeOpen &&
-                      'bg-[#3B3E5F] text-white hover:bg-[#3B3E5F]',
-                  )}
-                  onClick={() => toggleAiMode()}
-                >
-                  <Icon
-                    name="search_ai"
-                    width={14}
-                    height={14}
+                <div className="relative">
+                  <button
+                    type="button"
                     className={twMerge(
-                      'text-[#3B3E5F]',
-                      isAiModeOpen && 'text-white',
+                      'px-[10px] h-10 rounded-full text-[14px] text-[#989BB7] flex items-center justify-center gap-2 whitespace-nowrap bg-[#FAFAFA] border border-solid border-transparent',
+                      !isAiModeOpen &&
+                        'hover:bg-gradient-to-r hover:from-white hover:to-[#E4E3FF]',
+                      !isAiModeOpen &&
+                        'hover:border-[#DDDEE7] hover:text-[#3B3E5F]',
+                      isAiModeOpen &&
+                        'bg-[#3B3E5F] text-white hover:bg-[#3B3E5F]',
                     )}
-                  />
-                  AI mode
-                </button>
+                    onClick={() => {
+                      const nextIsAiModeOpen = !isAiModeOpen;
+                      toggleAiMode();
+                      setIsChatOpen(nextIsAiModeOpen);
+                    }}
+                  >
+                    <Icon
+                      name="search_ai"
+                      width={14}
+                      height={14}
+                      className={twMerge(
+                        'text-[#3B3E5F]',
+                        isAiModeOpen && 'text-white',
+                      )}
+                    />
+                    AI mode
+                  </button>
+
+                  {hasAiNotification && !isAiModeOpen && (
+                    <>
+                      <span
+                        className="absolute -top-0.5 right-1 w-3 h-3 rounded-full border-2 border-solid border-white"
+                        style={{
+                          background: window.settings?.theme?.primaryColor,
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
               )}
           </div>
         </div>

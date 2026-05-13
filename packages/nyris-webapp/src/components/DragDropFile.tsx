@@ -46,7 +46,7 @@ function DragDropFile(props: Props) {
         file: file,
         settings: window.settings,
         newSearch: true,
-      }).then(res => {});
+      }).then(() => {});
 
       return;
     }

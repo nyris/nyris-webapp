@@ -1,4 +1,19 @@
+import { RectCoords } from '@nyris/nyris-api';
 import axios from 'axios';
+import { cropImage } from 'utils/cropImageToBase64';
+
+export interface ChatMultimodalInput {
+  metadata: string;
+  mimeType?: string;
+  image?: string;
+}
+
+interface ChatAnalysisParams {
+  promptKey: string;
+  multimodalInputs: ChatMultimodalInput[];
+  apiKey?: string;
+}
+
 // Utility: Convert HTMLCanvasElement to Blob
 export function canvasToBlob(
   canvas: HTMLCanvasElement,
@@ -193,7 +208,7 @@ function buildProductEntry(p: any, index: number): string {
 
   const idStr = idParts.length > 0 ? ` | IDs: ${idParts.join(', ')}` : '';
 
-  return `[${index}] SKU: ${sku} | Brand: ${brand} | ${title} | ${desc}${idStr}`;
+  return `index: ${index} | SKU: ${sku} | Brand: ${brand} | ${title} | ${desc}${idStr}`;
 }
 
 /**
@@ -203,18 +218,18 @@ function buildProductEntry(p: any, index: number): string {
  */
 export async function groundedSearch(
   imageInput: File | HTMLCanvasElement,
-  apiKey: string,
+  region?: RectCoords,
 ): Promise<any> {
   const formData = new FormData();
   let imageBlobOrFile: File | Blob;
 
   if (imageInput instanceof HTMLCanvasElement) {
-    imageBlobOrFile = await canvasToBlob(imageInput);
+    const croppedCanvas = cropImage(imageInput, region);
+    imageBlobOrFile = await canvasToBlob(croppedCanvas);
     formData.append('image', imageBlobOrFile, 'canvas.jpg');
   } else {
     formData.append('image', imageInput);
   }
-
   try {
     const response = await axios.post(
       'https://api.nyris.io/api/ai-analysis/grounded-search',
@@ -300,5 +315,35 @@ export async function groundingSearchQuery({
     } else {
       throw new Error(`API error: ${error.message}`);
     }
+  }
+}
+
+export async function chatAnalysis({
+  promptKey,
+  multimodalInputs,
+  apiKey,
+}: ChatAnalysisParams): Promise<any> {
+  try {
+    const response = await axios.post(
+      'https://api.nyris.io/api/ai-analysis/chat',
+      {
+        promptKey,
+        multimodalInputs,
+      },
+      {
+        headers: {
+          'x-api-key': apiKey || window.settings.aiApiKey || '',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw new Error(`API error: ${error.response.statusText}`);
+    }
+
+    throw new Error(`API error: ${error.message}`);
   }
 }

@@ -1,21 +1,24 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 
 import useConversationStore from 'stores/chat/conversationStore';
-import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
 import { useGoodResultsChat } from 'hooks/useGoodResultsChat';
 import { useBadResultsRecovery } from 'hooks/useBadResultsRecovery';
+import { chatAnalysis } from 'services/vizo';
+import { compressImage } from 'utils/compressImage';
+import { loadRelatedPartsTable, lookupRelatedParts } from 'utils/relatedParts';
 import {
-  useChatWithDb,
-  looksLikeProductDescription,
-} from 'hooks/useChatWithDb';
-import { useGoogleGrounding } from 'hooks/useGoogleGrounding';
+  fetchProductImageBase64,
+  getProductImageUrl,
+} from 'utils/fetchProductImage';
 
 export function useChatAssistantLogic() {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const [findingRelatedParts, setFindingRelatedParts] = useState(false);
 
   // Conversation store
   const isEvaluated = useConversationStore(s => s.isEvaluated);
@@ -23,17 +26,14 @@ export function useChatAssistantLogic() {
   const messages = useConversationStore(s => s.messages);
   const isLoading = useConversationStore(s => s.isLoading);
   const error = useConversationStore(s => s.error);
+  const catalogSearchReady = useConversationStore(s => s.catalogSearchReady);
+  const setCatalogSearchReady = useConversationStore(
+    s => s.setCatalogSearchReady,
+  );
   // const startNewSession = useConversationStore(s => s.startNewSession);
 
-  // Smart filters store
-  const geminiApiKey = useSmartFiltersStore(s => s.geminiApiKey);
-
-  const geminiModel = useSmartFiltersStore(s => s.geminiModel);
-  const chatWithDbEnabled = useSmartFiltersStore(s => s.chatWithDbEnabled);
-  const googleGroundingEnabled = useSmartFiltersStore(
-    s => s.googleGroundingEnabled,
-  );
-  const hasApiKey = Boolean(geminiApiKey);
+  // Smart filters store (no longer requires API key)
+  const hasApiKey = true;
 
   // Result store
   const productsFromAlgolia = useResultStore(
@@ -43,22 +43,13 @@ export function useChatAssistantLogic() {
     state => state.productsFromFindApi,
   );
   const firstSearchResults = useResultStore(state => state.firstSearchResults);
-  const firstAlgoliaProducts = useResultStore(
-    state => state.firstAlgoliaProducts,
-  );
-  const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
-  const setFirstAlgoliaProducts = useResultStore(
-    state => state.setFirstAlgoliaProducts,
-  );
+
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
   const setFullResultPool = useResultStore(state => state.setFullResultPool);
+  const imageAnalysis = useResultStore(state => state.imageAnalysis);
 
   const isAlgoliaEnabled = !!(window as any).settings?.algolia?.enabled;
-  const activeProducts = isAlgoliaEnabled
-    ? productsFromAlgolia
-    : productsFromAlgolia.length > 0
-      ? productsFromAlgolia
-      : productsFromFindApi;
+  const activeProducts = productsFromFindApi;
 
   // Request store
   const requestImages = useRequestStore(state => state.requestImages);
@@ -68,8 +59,6 @@ export function useChatAssistantLogic() {
   // Hooks for P2, P3, P5, P6, P7
   const { sendMessage: sendP3Message } = useGoodResultsChat();
   const { sendMessage: sendP5Message } = useBadResultsRecovery();
-  const { sendMessage: sendP6Message } = useChatWithDb();
-  const { runGrounding, applyGroundingResult } = useGoogleGrounding();
 
   // P7 state
   const p7TriggeredRef = useRef(false);
@@ -77,54 +66,12 @@ export function useChatAssistantLogic() {
   const [p7Done, setP7Done] = useState(false);
 
   // Catalog search state
-  const [catalogSearchReady, setCatalogSearchReady] = useState(false);
   const [catalogSearching, setCatalogSearching] = useState(false);
 
   // Helper to get the correct product setter
   const getSetProducts = useCallback(() => {
-    return isAlgoliaEnabled
-      ? setAlgoliaProducts
-      : productsFromAlgolia.length > 0
-        ? setAlgoliaProducts
-        : setFindApiProducts;
-  }, [
-    isAlgoliaEnabled,
-    productsFromAlgolia.length,
-    setAlgoliaProducts,
-    setFindApiProducts,
-  ]);
-
-  // ── Lifecycle effects ──
-
-  // On mount, clear stale conversation state only if there are no messages.
-  // If isEvaluated=true but messages exist, evaluateResults fired before this
-  // component mounted (e.g. from useImageSearch) — those messages are fresh and
-  // must not be wiped. The firstSearchResults effect handles resets on new searches.
-  // useEffect(() => {
-  //   if (!hasMountedRef.current) {
-  //     hasMountedRef.current = true;
-  //     if (isEvaluated && messages.length === 0) {
-  //       startNewSession();
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // Reset conversation when new search results arrive
-  // useEffect(() => {
-  //   if (firstSearchResults.length === 0) return;
-  //   const resultsSignature = firstSearchResults
-  //     .slice(0, 5)
-  //     .map((p: any) => p.sku || p.objectID || p.title)
-  //     .join('|');
-  //   if (
-  //     previousResultsRef.current !== resultsSignature &&
-  //     previousResultsRef.current !== ''
-  //   ) {
-  //     startNewSession();
-  //   }
-  //   previousResultsRef.current = resultsSignature;
-  // }, [firstSearchResults, startNewSession]);
+    return setFindApiProducts;
+  }, [setFindApiProducts]);
 
   // Trigger P2 evaluation
   useEffect(() => {
@@ -136,38 +83,9 @@ export function useChatAssistantLogic() {
       requestImages[0]
     ) {
       p2TriggeredRef.current = true;
-      setFirstAlgoliaProducts([...activeProducts]);
       // evaluateResults();
     }
-  }, [
-    isEvaluated,
-    activeProducts,
-    hasApiKey,
-    requestImages,
-
-    setFirstAlgoliaProducts,
-  ]);
-
-  // P7 Google Grounding
-  useEffect(() => {
-    if (isEvaluated && !p7TriggeredRef.current && googleGroundingEnabled) {
-      p7TriggeredRef.current = true;
-      setP7Running(true);
-      runGrounding().then(async result => {
-        setP7Running(false);
-        setP7Done(true);
-        if (result) {
-          await applyGroundingResult(result);
-        }
-      });
-    }
-  }, [
-    isEvaluated,
-    route,
-    googleGroundingEnabled,
-    runGrounding,
-    applyGroundingResult,
-  ]);
+  }, [isEvaluated, activeProducts, hasApiKey, requestImages]);
 
   // Reset P7 flags when session resets
   useEffect(() => {
@@ -192,10 +110,7 @@ export function useChatAssistantLogic() {
     setInputValue('');
     setCatalogSearchReady(true);
 
-    if (chatWithDbEnabled && looksLikeProductDescription(message)) {
-      await sendP6Message(message);
-      return;
-    }
+    if (!message) return;
 
     if (route === 'P3') {
       await sendP3Message(message);
@@ -207,11 +122,10 @@ export function useChatAssistantLogic() {
   }, [
     inputValue,
     isLoading,
-    chatWithDbEnabled,
     route,
     sendP3Message,
     sendP5Message,
-    sendP6Message,
+    setCatalogSearchReady,
   ]);
 
   const handleOptionClick = useCallback(
@@ -238,15 +152,29 @@ export function useChatAssistantLogic() {
         return;
       }
 
+      if (option.action_type === 'find_related_parts') {
+        useConversationStore.getState().setRelatedPartsUsed(true);
+        await handleFindRelatedParts();
+        return;
+      }
+
+      // Related part selected — prompt user for specs, then search catalog
+      if (option.action_type === 'related_part') {
+        const partName = option.value || option.label;
+        const store = useConversationStore.getState();
+        store.setPendingRelatedPart(partName);
+        store.setAwaitingDescription(true);
+        store.addMessage({
+          role: 'assistant',
+          content: `You're looking for a **${partName}**. Can you share any details like brand, size, connection type, or model? The more specific you are, the better results I can find.\n\nOr just press Enter to search for "${partName}" as-is.`,
+        });
+        setInputValue(partName);
+        return;
+      }
+
       if (option.action_type === 'restore_original') {
         const store = useConversationStore.getState();
-        const originalResults = isAlgoliaEnabled
-          ? firstAlgoliaProducts.length > 0
-            ? firstAlgoliaProducts
-            : firstSearchResults
-          : firstSearchResults.length > 0
-            ? firstSearchResults
-            : firstAlgoliaProducts;
+        const originalResults = firstSearchResults;
 
         const restoreResults =
           originalResults.length > 0
@@ -289,7 +217,7 @@ export function useChatAssistantLogic() {
       getSetProducts,
       setFullResultPool,
       isAlgoliaEnabled,
-      firstAlgoliaProducts,
+
       firstSearchResults,
     ],
   );
@@ -310,10 +238,9 @@ export function useChatAssistantLogic() {
       store.setPendingCatalogImage(file);
 
       try {
-        const geminiKey = geminiApiKey || process.env.REACT_APP_GEMINI_API_KEY;
         const currentProducts = [...activeProducts];
 
-        if (!geminiKey || currentProducts.length === 0) {
+        if (currentProducts.length === 0) {
           store.addMessage({
             role: 'assistant',
             content:
@@ -333,14 +260,34 @@ export function useChatAssistantLogic() {
         }
 
         const [newBase64, origBase64] = await Promise.all([
-          typeof file === 'string'
-            ? Promise.resolve(file.includes(',') ? file.split(',')[1] : file)
-            : new Promise<string>(resolve => {
+          (async () => {
+            try {
+              const normalizedInput =
+                typeof file === 'string' &&
+                !file.includes(',') &&
+                !file.startsWith('https:')
+                  ? `data:image/jpeg;base64,${file}`
+                  : file;
+              const compressedDataUrl = await compressImage(normalizedInput);
+              return compressedDataUrl.includes(',')
+                ? compressedDataUrl.split(',')[1] || ''
+                : compressedDataUrl;
+            } catch (compressionError) {
+              console.warn(
+                '[ChatAssistant] Image compression failed, using original image:',
+                compressionError,
+              );
+              if (typeof file === 'string') {
+                return file.includes(',') ? file.split(',')[1] : file;
+              }
+              return await new Promise<string>(resolve => {
                 const reader = new FileReader();
                 reader.onload = () =>
                   resolve((reader.result as string).split(',')[1] || '');
                 reader.readAsDataURL(file);
-              }),
+              });
+            }
+          })(),
           requestImages[0]
             ? Promise.resolve(
                 requestImages[0].toDataURL('image/jpeg', 0.7).split(',')[1] ||
@@ -349,77 +296,101 @@ export function useChatAssistantLogic() {
             : Promise.resolve(''),
         ]);
 
-        const productList = currentProducts
-          .slice(0, 50)
-          .map((p: any, i: number) => ({
-            rank: i + 1,
-            sku: p.sku || p.objectID || `product-${i}`,
-            title: p.title || p.name || 'Untitled',
-            brand: p.brand || '',
-            description: (p.description || '').substring(0, 150),
-            categories: p.categories || [],
-            mpn: p.customIds?.mpn || p.ids?.mpn || '',
-          }));
+        const visibleProducts = currentProducts.slice(0, 30);
+        const productList = visibleProducts.map((p: any, i: number) => ({
+          rank: i + 1,
+          sku: p.sku || p.objectID || `product-${i}`,
+          title: p.title || p.name || 'Untitled',
+          brand: p.brand || '',
+          description: (p.description || '').substring(0, 150),
+          categories: p.categories || [],
+          mpn: p.customIds?.mpn || p.ids?.mpn || '',
+        }));
 
-        const productListText = productList
-          .map(
-            r =>
-              `${r.rank}. [${r.sku}] ${r.title} | brand: ${r.brand} | mpn: ${r.mpn} | categories: ${JSON.stringify(r.categories)}`,
-          )
-          .join('\n');
+        const productImages = await Promise.all(
+          visibleProducts.map(async (product: any, index: number) => {
+            const imageUrl = getProductImageUrl(product);
+            if (!imageUrl) {
+              return { rank: index + 1, base64: null };
+            }
 
-        const parts: any[] = [];
+            const base64 = await fetchProductImageBase64(imageUrl);
+            return { rank: index + 1, base64 };
+          }),
+        );
+
+        const imagesAvailable = productImages.filter(
+          image => image.base64 !== null,
+        ).length;
+        const hasVisualContext = imagesAvailable >= 3;
+
+        const productContextNotice = hasVisualContext
+          ? `VISIBLE PRODUCT IMAGES: ${imagesAvailable} result thumbnails are included below. Use them with the metadata to compare the uploaded image against the current results.`
+          : `VISIBLE PRODUCT IMAGES: NOT AVAILABLE. Do not rely on visual attributes from the current result set; use metadata only when deciding whether the uploaded image matches these products.`;
+
+        const parts: {
+          inlineData?: { mimeType: string; data: string };
+          text?: string;
+        }[] = [];
         if (origBase64) {
           parts.push({
+            text: 'request_image:',
             inlineData: { mimeType: 'image/jpeg', data: origBase64 },
           });
         }
         parts.push({
+          text: 'new_uploaded_image:',
           inlineData: { mimeType: 'image/jpeg', data: newBase64 },
         });
+
         parts.push({
-          text: `The user is searching for industrial products. They originally uploaded the first image and got these results. Now they uploaded a NEW image (the ${origBase64 ? 'second' : 'only'} image) to refine their search.
+          text: `CURRENT RESULTS CONTEXT:
 
-CURRENT RESULTS:
-${productListText}
+${productContextNotice}
 
-Based on the NEW image, which of the current results best match what the user is looking for? Consider visual similarity, product type, brand, and specifications.
-
-Return JSON only, no markdown:
-{
-  "matched_indices": [1, 3, 7],
-  "message": "Brief explanation of what you matched and why (2-3 sentences)"
-}
-
-If NONE of the current results match the new image, return:
-{
-  "matched_indices": [],
-  "message": "Brief explanation of why none match"
-}`,
+PRODUCT LIST:
+Each result includes a unique SKU in brackets. Use the result thumbnails and metadata together when deciding which current results match the uploaded image. Return matched_indices as 1-based ranks from this list.
+`,
         });
 
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ role: 'user', parts }],
-              generationConfig: {
-                temperature: 0.2,
-                maxOutputTokens: 8192,
-                responseMimeType: 'application/json',
-              },
-            }),
-          },
-        );
-        const data = await res.json();
-        const responseText =
-          data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        productList.forEach((product, index) => {
+          const currentProduct = visibleProducts[index];
+          const tags = currentProduct?._tags;
+          const tagStr = tags
+            ? ` | TAGS: type=${tags.productType}, color=${tags.color}, shape=${tags.shape}, material=${tags.material}`
+            : '';
+          const metadata = `${product.rank}. [${product.sku}] ${product.title} | brand: ${product.brand} | mpn: ${product.mpn} | categories: ${JSON.stringify(product.categories)} | desc: ${product.description}${tagStr}`;
 
-        const parsed = JSON.parse(responseText);
+          if (hasVisualContext && productImages[index]?.base64) {
+            parts.push({
+              text: metadata,
+              inlineData: {
+                mimeType: 'image/jpeg',
+                data: productImages[index].base64 || '',
+              },
+            });
+            return;
+          }
+
+          parts.push({ text: metadata });
+        });
+
+        const response = await chatAnalysis({
+          promptKey: 'image_refinement',
+          multimodalInputs: parts.map(p =>
+            p.inlineData
+              ? {
+                  metadata: p.text || '',
+                  mimeType: p.inlineData.mimeType,
+                  image: p.inlineData.data,
+                }
+              : { metadata: p.text || '' },
+          ),
+        });
+
+        const parsed = response;
         const matchedIndices: number[] = parsed.matched_indices || [];
-        const geminiMessage: string = parsed.message || '';
+        const aiMessage = parsed.message?.trim() || '';
 
         const setProducts = getSetProducts();
 
@@ -432,7 +403,7 @@ If NONE of the current results match the new image, return:
             setProducts(filteredProducts);
             store.addMessage({
               role: 'assistant',
-              content: `${geminiMessage}\n\nI found ${filteredProducts.length} matching product${filteredProducts.length === 1 ? '' : 's'} from the current results. Want me to search the full catalog for more options?`,
+              content: `${aiMessage}\n\nI found ${filteredProducts.length} matching product${filteredProducts.length === 1 ? '' : 's'} from the current results. Want me to search the full catalog for more options?`,
               options: [
                 {
                   label: 'Search catalog with this image',
@@ -440,12 +411,20 @@ If NONE of the current results match the new image, return:
                   key: 'catalog_search',
                   value: 'image',
                 },
+                {
+                  label: 'Go back to original results',
+                  action_type: 'restore_original' as const,
+                  key: 'restore',
+                  value: 'restore',
+                },
               ],
             });
           } else {
             store.addMessage({
               role: 'assistant',
-              content: `${geminiMessage}\n\nI couldn't find those items in the current results. Let me search the full catalog for you.`,
+              content:
+                aiMessage ||
+                "I couldn't find those items in the current results. Let me search the full catalog for you.",
               options: [
                 {
                   label: 'Search catalog with this image',
@@ -459,7 +438,9 @@ If NONE of the current results match the new image, return:
         } else {
           store.addMessage({
             role: 'assistant',
-            content: `${geminiMessage}\n\nThis doesn't match the current results. Would you like to search the full catalog?`,
+            content:
+              aiMessage ||
+              "This doesn't match the current results. Would you like to search the full catalog?",
             options: [
               {
                 label: 'Search catalog with this image',
@@ -489,7 +470,7 @@ If NONE of the current results match the new image, return:
         store.setIsLoading(false);
       }
     },
-    [geminiApiKey, geminiModel, activeProducts, requestImages, getSetProducts],
+    [activeProducts, requestImages, getSetProducts],
   );
 
   const handleCatalogSearchWithImage = useCallback(async () => {
@@ -601,43 +582,28 @@ If NONE of the current results match the new image, return:
       const settings = (window as any).settings;
       const nyrisKey = settings?.apiKey || settings?.nyrisApiKey;
       const baseUrl = settings?.baseUrl || 'https://api.nyris.io';
-      const geminiKey = geminiApiKey || settings?.smartFilters?.geminiApiKey;
 
       let searchQuery = rawText;
-      if (geminiKey) {
-        try {
-          const cleanRes = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [
-                  {
-                    role: 'user',
-                    parts: [
-                      {
-                        text: `Extract only the product search keywords from this user message. Remove filler words, conversational phrases, and intent words. Return ONLY the clean search terms, nothing else.\n\nExamples:\n"I need to look for a 100v connector" → "100V connector"\n"show me Schneider Electric blue LED lights" → "Schneider Electric blue LED light"\n"search for light block with more than 500 volts" → "light block 500V"\n\nUser message: "${rawText}"`,
-                      },
-                    ],
-                  },
-                ],
-                generationConfig: { temperature: 0, maxOutputTokens: 100 },
-              }),
-            },
-          );
-          const cleanData = await cleanRes.json();
-          const cleaned =
-            cleanData.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-          if (cleaned) {
-            searchQuery = cleaned.replace(/^["']|["']$/g, '');
-          }
-        } catch (cleanErr) {
-          console.warn(
-            '[ChatAssistant] Gemini cleaning failed, using raw text:',
-            cleanErr,
-          );
+
+      const response = await chatAnalysis({
+        promptKey: 'keyword_extraction',
+        multimodalInputs: [
+          {
+            metadata: `user_message: "${rawText}"`,
+          },
+        ],
+      });
+
+      try {
+        const cleaned = response?.query.trim();
+        if (cleaned) {
+          searchQuery = cleaned.replace(/^["']|["']$/g, '');
         }
+      } catch (cleanErr) {
+        console.warn(
+          '[ChatAssistant] Query cleaning failed, using raw text:',
+          cleanErr,
+        );
       }
 
       store.setPreCatalogResults([...activeProducts]);
@@ -697,13 +663,54 @@ If NONE of the current results match the new image, return:
       setCatalogSearching(false);
     }
   }, [
-    geminiApiKey,
-    geminiModel,
     activeProducts,
     getSetProducts,
+    setCatalogSearchReady,
     setFullResultPool,
     sendP3Message,
   ]);
+
+  // Handle "Find related parts" — checks lookup table first, falls back to Gemini
+  const handleFindRelatedParts = async () => {
+    const store = useConversationStore.getState();
+    store.setIsLoading(true);
+    setFindingRelatedParts(true);
+
+    try {
+      // 1. Try the lookup table first (instant, no API call)
+      const table = await loadRelatedPartsTable();
+
+      const tableSuggestions = lookupRelatedParts(
+        table,
+        imageAnalysis.specification.product_category,
+      );
+
+      if (tableSuggestions && tableSuggestions.length > 0) {
+        const options = tableSuggestions.map(s => ({
+          label: s.label,
+          action_type: 'related_part' as const,
+          value: s.label,
+          key: `related_${s.label.toLowerCase().replace(/\s+/g, '_')}`,
+        }));
+        store.addMessage({
+          role: 'assistant',
+          content: `Here are some parts and accessories commonly associated with this product. Select one to search the catalog:\n\n${tableSuggestions.map(s => `• **${s.label}** — ${s.description}`).join('\n')}`,
+          options,
+        });
+        return;
+      }
+    } catch (err) {
+      console.error('[RelatedParts] Failed:', err);
+      store.addMessage({
+        role: 'assistant',
+        content:
+          'Something went wrong while looking up related parts. Please try again.',
+      });
+    } finally {
+      store.setIsLoading(false);
+      setFindingRelatedParts(false);
+    }
+  };
 
   return {
     // State
@@ -721,6 +728,7 @@ If NONE of the current results match the new image, return:
     catalogSearching,
     activeProducts,
     productsFromAlgolia,
+    findingRelatedParts,
 
     // Refs
     messagesEndRef,
@@ -732,5 +740,6 @@ If NONE of the current results match the new image, return:
     handleImageUpload,
     handleCatalogSearchWithImage,
     handleCatalogSearchWithText,
+    handleFindRelatedParts,
   };
 }

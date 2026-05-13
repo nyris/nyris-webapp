@@ -4,8 +4,8 @@ import { SessionAction, SessionState } from 'stores/types';
 
 const sessionSlice: StateCreator<SessionState & SessionAction> = set => ({
   ...initialState,
-  setSessionId: (sessionId: string) => set(state => ({ sessionId })),
-  setRequestId: (requestId: string) => set(state => ({ requestId })),
+  setSessionId: (sessionId: string) => set(() => ({ sessionId })),
+  setRequestId: (requestId: string) => set(() => ({ requestId })),
 });
 
 export default sessionSlice;

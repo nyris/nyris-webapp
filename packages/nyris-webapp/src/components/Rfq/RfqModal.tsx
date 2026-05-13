@@ -81,7 +81,7 @@ export default function RfqModal({
         setRfqStatus('inactive');
 
         toast(
-          t => {
+          () => {
             return (
               <div
                 style={{

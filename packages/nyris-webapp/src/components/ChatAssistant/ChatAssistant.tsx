@@ -4,13 +4,12 @@
 
 import { memo, useRef, useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { Sparkles, Send, Loader2, AlertCircle, Globe } from 'lucide-react';
+import { Sparkles, Send, Loader2, Globe } from 'lucide-react';
 
 import useConversationStore from 'stores/chat/conversationStore';
-import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import { Icon } from '@nyris/nyris-react-components';
-import Tooltip from 'components/Tooltip/TooltipComponent';
 import useUiStore from 'stores/ui/uiStore';
+import OptionChip, { ChatOption } from './OptionChip';
 import { useChatAssistantLogic } from './useChatAssistantLogic';
 
 function ChatAssistant() {
@@ -22,7 +21,6 @@ function ChatAssistant() {
     messages,
     isLoading,
     isEvaluated,
-    error,
     hasApiKey,
     p7Running,
     p7Done,
@@ -37,21 +35,26 @@ function ChatAssistant() {
   } = useChatAssistantLogic();
 
   const setIsOpen = useConversationStore(s => s.setIsOpen);
-  const setShowAdminSettings = useSmartFiltersStore(
-    s => s.setShowAdminSettings,
-  );
+
   const toggleAiMode = useUiStore(state => state.toggleAiMode);
 
   // Focus input on text_search_prompt option click
   const wrappedHandleOptionClick = useCallback(
-    async (option: any) => {
+    async (option: ChatOption) => {
       if (option.action_type === 'text_search_prompt') {
+        inputRef.current?.focus();
+      }
+      if (option.action_type === 'related_part') {
         inputRef.current?.focus();
       }
       await handleOptionClick(option);
     },
     [handleOptionClick],
   );
+
+  const handleCatalogSearchTextChipClick = useCallback(async () => {
+    await handleCatalogSearchWithText();
+  }, [handleCatalogSearchWithText]);
 
   return (
     <div
@@ -64,7 +67,7 @@ function ChatAssistant() {
       ])}
     >
       <div
-        className="absolute top-5 right-6 bg-[#FAFAFA] w-7 h-7 flex justify-center items-center rounded-lg cursor-pointer"
+        className="absolute top-3 right-4 bg-[#FAFAFA] w-7 h-7 flex justify-center items-center rounded-lg cursor-pointer"
         onClick={() => {
           toggleAiMode();
           setIsOpen(false);
@@ -73,26 +76,12 @@ function ChatAssistant() {
         <Icon name="close" className="fill-[#BBBDCF] text-[#BBBDCF]" />
       </div>
 
-      {!hasApiKey && (
-        <div className="flex-shrink-0 mx-3 mt-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg">
-          <p className="text-[11px] text-amber-700">
-            Gemini API key required.{' '}
-            <button
-              onClick={() => setShowAdminSettings(true)}
-              className="underline font-semibold"
-            >
-              Configure
-            </button>
-          </p>
-        </div>
-      )}
-
-      {error && (
+      {/* {error && (
         <div className="flex-shrink-0 mx-3 mt-2 p-2.5 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
           <AlertCircle size={12} className="text-red-500 flex-shrink-0" />
           <p className="text-[11px] text-red-700">{error}</p>
         </div>
-      )}
+      )} */}
 
       {/* ── Messages ── */}
       <div className="flex-1 min-h-0 overflow-y-auto px-5 py-3 space-y-3">
@@ -102,118 +91,80 @@ function ChatAssistant() {
               <Sparkles size={20} className="text-[#3E36DC]" />
             </div>
             <p className="text-sm font-semibold text-[#2B2C46] mb-1">
-              {hasApiKey ? 'Vizo Search Assistant' : 'API Key Required'}
+              Vizo Search Assistant
             </p>
             <p className="text-[11px] text-[#999] leading-relaxed max-w-[200px]">
-              {hasApiKey
-                ? 'Upload an image to get started, or search for a product'
-                : 'Configure your Gemini API key in settings to use the assistant'}
+              Upload an image to get started, or search for a product
             </p>
           </div>
         ) : (
-          messages.map((msg, i) => (
-            <div
-              key={msg.id || i}
-              className={twMerge(
-                'flex',
-                msg.role === 'user' ? 'justify-end' : 'justify-start',
-              )}
-            >
-              <div className="">
-                {/* Bubble */}
-                <div
-                  className={twMerge(
-                    'py-3 pr-4 text-sm leading-relaxed',
-                    msg.role === 'user'
-                      ? 'bg-[#E7E8F1] text-[#3B3E5F] rounded-tl-[16px] rounded-tr-[8px] rounded-br-[16px] rounded-bl-[16px] px-4 py-3 font-medium'
-                      : msg.content.startsWith('[P7')
-                        ? 'bg-[#EEF2FF] border border-[#C7D2FE] text-[#2B2C46] rounded-2xl rounded-bl-sm'
-                        : ' text-[#2B2C46] rounded-2xl rounded-bl-sm',
-                  )}
-                >
-                  {msg.imageUrl && (
-                    <img
-                      src={msg.imageUrl}
-                      alt="Uploaded"
-                      className="w-[48px] h-[48px] rounded-lg object-cover mb-2"
-                    />
-                  )}
-                  {msg.content.startsWith('[P7') && (
-                    <div className="flex items-center gap-1 mb-1.5 text-indigo-600 font-semibold text-[10px]">
-                      <Globe size={10} /> Google Grounding
-                    </div>
-                  )}
-                  <pre className="whitespace-pre-wrap font-sans text-sm leading-4 tracking-[0.16px]">
-                    {msg.content.startsWith('[P7')
-                      ? msg.content.replace(/^\[P7[^\]]*\]\s*/, '')
-                      : msg.content}
-                  </pre>
-                </div>
-
-                {/* Quick reply options */}
-                {msg.role === 'assistant' &&
-                  msg.options &&
-                  msg.options.length > 0 && (
-                    <div className="mt-2 space-y-2.5">
-                      {/* Option chips */}
-                      <div className="flex flex-wrap gap-1.5">
-                        {msg.options
-                          .filter(
-                            o =>
-                              o.action_type !== 'text_search_prompt' &&
-                              o.action_type !== 'catalog_search_text',
-                          )
-                          .map((option, optIdx) => (
-                            <Tooltip
-                              key={optIdx}
-                              content={option.label}
-                              disabled={option.label.length <= 32}
-                            >
-                              <button
-                                key={optIdx}
-                                onClick={() => wrappedHandleOptionClick(option)}
-                                disabled={isLoading}
-                                className={twMerge(
-                                  'px-2.5 py-1.5 text-sm font-medium rounded-full',
-                                  'transition-colors',
-                                  isLoading && 'opacity-50 cursor-not-allowed',
-                                  'bg-[#FFFFFF] font-semibold',
-                                  'border border-[#DDDEE7] text-[#767A9F] hover:bg-[#545987] hover:text-[#F3F4F8]',
-                                  'max-line-1',
-                                  'h-8',
-                                )}
-                              >
-                                {option.label}
-                              </button>
-                            </Tooltip>
-                          ))}
-
-                        {!(isLoading || !catalogSearchReady) &&
-                          i === messages.length - 1 && (
-                            <button
-                              onClick={handleCatalogSearchWithText}
-                              disabled={isLoading || !catalogSearchReady}
-                              className={twMerge(
-                                'px-2.5 py-1.5 text-sm font-medium rounded-full flex justify-center items-center gap-2',
-                                'transition-colors',
-                                isLoading && 'opacity-50 cursor-not-allowed',
-                                'bg-[#FFFFFF] font-semibold',
-                                'border border-[#DDDEE7] text-[#767A9F] hover:bg-[#545987] hover:text-[#F3F4F8]',
-                              )}
-                            >
-                              <span>Text search in catalog</span>
-                              <Icon
-                                name="search"
-                                className="text-[10px] w-[10px] h-[10px] fill-[#767A9F]"
-                              />
-                            </button>
-                          )}
+          messages.map((msg, i) => {
+            return (
+              <div
+                key={msg.id || i}
+                className={twMerge(
+                  'flex',
+                  msg.role === 'user' ? 'justify-end' : 'justify-start',
+                )}
+              >
+                <div className="">
+                  {/* Bubble */}
+                  <div
+                    className={twMerge(
+                      'py-3 pr-4 text-sm leading-relaxed',
+                      msg.role === 'user'
+                        ? 'bg-[#E7E8F1] text-[#3B3E5F] rounded-tl-[16px] rounded-tr-[8px] rounded-br-[16px] rounded-bl-[16px] px-4 py-3 font-medium'
+                        : msg?.content?.startsWith('[P7')
+                          ? 'bg-[#EEF2FF] border border-[#C7D2FE] text-[#2B2C46] rounded-2xl rounded-bl-sm'
+                          : ' text-[#2B2C46] rounded-2xl rounded-bl-sm',
+                      i === 0 && 'pr-6',
+                    )}
+                  >
+                    {msg.imageUrl && (
+                      <img
+                        src={msg.imageUrl}
+                        alt="Uploaded"
+                        className="w-[48px] h-[48px] rounded-lg object-cover mb-2"
+                      />
+                    )}
+                    {msg?.content?.startsWith('[P7') && (
+                      <div className="flex items-center gap-1 mb-1.5 text-indigo-600 font-semibold text-[10px]">
+                        <Globe size={10} /> Google Grounding
                       </div>
-                    </div>
-                  )}
+                    )}
+                    <pre className="whitespace-pre-wrap font-sans text-sm leading-4 tracking-[0.16px]">
+                      {msg?.content?.startsWith('[P7')
+                        ? msg.content.replace(/^\[P7[^\]]*\]\s*/, '')
+                        : msg.content}
+                    </pre>
+                  </div>
+
+                  {/* Quick reply options */}
+                  {msg.role === 'assistant' &&
+                    msg.options &&
+                    msg.options.length > 0 && (
+                      <div className="mt-2 space-y-2.5">
+                        {/* Option chips */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {msg.options
+                            .filter(o => o.action_type !== 'text_search_prompt')
+                            .map((option, optIdx) => (
+                              <OptionChip
+                                key={optIdx}
+                                option={option}
+                                onClick={wrappedHandleOptionClick}
+                                disabled={
+                                  isLoading || i !== messages.length - 1
+                                }
+                              />
+                            ))}
+                        </div>
+                      </div>
+                    )}
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
 
         {/* Loading indicator */}
@@ -258,7 +209,7 @@ function ChatAssistant() {
             onClick={() => imageInputRef.current?.click()}
             disabled={isLoading}
             className={twMerge(
-              'w-full h-14 rounded-[32px] bg-[#3B3E5F] mb-2',
+              'w-full h-12 rounded-[32px] bg-[#3B3E5F] mb-2',
               'flex items-center justify-center gap-2 text-white cursor-pointer',
               'hover:bg-[#333653] transition-colors',
               isLoading && 'opacity-50 cursor-not-allowed',
@@ -291,13 +242,9 @@ function ChatAssistant() {
             }
           }}
           placeholder={
-            !hasApiKey
-              ? 'Configure API key first...'
-              : isLoading
-                ? 'Please wait...'
-                : 'Ask about the results...'
+            isLoading ? 'Please wait...' : 'Ask about the results...'
           }
-          disabled={!hasApiKey || isLoading}
+          disabled={isLoading}
           rows={1}
           className={twMerge(
             'flex-1 resize-none rounded-xl px-3 py-2.5 text-sm pr-14',

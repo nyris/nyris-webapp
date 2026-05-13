@@ -10,7 +10,7 @@ const detectedRegionsSlice: StateCreator<
     const detectedObject = get().detectedRegions;
     let updatedDetectedObject = { ...detectedObject };
     updatedDetectedObject[index] = region;
-    set(state => ({ detectedRegions: updatedDetectedObject }));
+    set(() => ({ detectedRegions: updatedDetectedObject }));
   },
 });
 

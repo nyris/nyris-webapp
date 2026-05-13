@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
 import { filterProducts } from 'utils/specificationFilter';
 import { filterProductsByText } from 'utils/textSearchFilter';
+import { useEffectiveGroundingResults } from 'hooks/useEffectiveGroundingResults';
 
 interface Props {
   sendFeedBackAction?: any;
@@ -25,13 +26,11 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
     state => state.productsFromFindApi,
   );
 
-  const groundingFilterResult = useResultStore(
-    state => state.groundingFilterResult,
-  );
-
   const showingGroundingFilterResult = useResultStore(
     state => state.showingGroundingFilterResult,
   );
+
+  const effectiveGroundingResults = useEffectiveGroundingResults();
 
   const isAlgoliaLoading = useUiStore(state => state.isAlgoliaLoading);
   const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
@@ -133,9 +132,11 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   }, [baseProducts, specificationFilter]);
 
   const groundedFilteredProducts = useMemo(() => {
-    if (groundingFilterResult && groundingFilterResult.length > 0) {
+    if (effectiveGroundingResults && effectiveGroundingResults.length > 0) {
       const filtered = products.filter((product: any) =>
-        groundingFilterResult.some((result: any) => product.sku === result.sku),
+        effectiveGroundingResults.some(
+          (result: any) => product.sku === result.sku,
+        ),
       );
       if (filtered.length > 0) {
         return filtered;
@@ -143,8 +144,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       return products;
     }
     return products;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groundingFilterResult]);
+  }, [effectiveGroundingResults, products]);
 
   const renderItem = useMemo(() => {
     const productsToRender: any[] =

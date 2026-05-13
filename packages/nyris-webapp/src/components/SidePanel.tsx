@@ -7,6 +7,7 @@ import useResultStore from 'stores/result/resultStore';
 import useUiStore from 'stores/ui/uiStore';
 import GroundingSpecs from './GroundingSpecs';
 import SmartFilter from './SmartFilter';
+import { useEffectiveGroundingResults } from 'hooks/useEffectiveGroundingResults';
 
 export default function SidePanel({ className }: { className?: string }) {
   const settings = window.settings;
@@ -36,14 +37,13 @@ export default function SidePanel({ className }: { className?: string }) {
   const googleGroundingResponse = useResultStore(
     state => state.googleGroundingResponse,
   );
-  const groundingFilterResult = useResultStore(
-    state => state.groundingFilterResult,
-  );
   const groundingError = useResultStore(state => state.groundingError);
   const groundingProduct =
     googleGroundingResponse?.identified_product ||
     googleGroundingResponse ||
     null;
+
+  const effectiveGroundingResults = useEffectiveGroundingResults();
 
   if (!showPostFilter && requestImages.length === 0) {
     return <></>;
@@ -243,7 +243,7 @@ export default function SidePanel({ className }: { className?: string }) {
                       </div>
                     </>
                   )}
-                {groundingFilterResult?.length > 0 &&
+                {effectiveGroundingResults?.length > 0 &&
                   showingGroundingFilterResult &&
                   !groundingError &&
                   !isGoogleGroundingLoading && (
@@ -258,12 +258,12 @@ export default function SidePanel({ className }: { className?: string }) {
                       <div className="text-xs text-[#22C55E] mb-1 mt-1">
                         Found{' '}
                         <span className="font-bold leading-4">
-                          {groundingFilterResult?.length} matching{' '}
+                          {effectiveGroundingResults?.length} matching{' '}
                         </span>{' '}
                         product
                       </div>
                       <div className="flex flex-col gap-2">
-                        {groundingFilterResult?.map(
+                        {effectiveGroundingResults?.map(
                           (item: any, index: number) => (
                             <div
                               key={`${item?.sku || 'sku'}-${index}`}

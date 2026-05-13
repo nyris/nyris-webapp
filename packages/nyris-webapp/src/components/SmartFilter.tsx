@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react';
+import ItemSpecification from './ItemSpecification';
 import { Icon } from '@nyris/nyris-react-components';
 import useRequestStore from 'stores/request/requestStore';
 import useResultStore from 'stores/result/resultStore';
 import { rerankSmartFilters, SmartFilterRerankItem } from 'services/vizo';
 
 function SmartFilter({
-  imageAnalysis: _imageAnalysis,
-  specificationFilter: _specificationFilter,
+  imageAnalysis,
+  specificationFilter,
   variant = 'results',
 }: {
   imageAnalysis?: any;
@@ -222,6 +223,25 @@ function SmartFilter({
           Smart generated filters
         </div>
         <Icon name="smart_filter_indication" className="mt-1" />
+      </div>
+      <div className="flex flex-wrap mx-4 gap-2 mt-4">
+        {Object.keys(imageAnalysis?.specification || {})
+          .filter(key => key !== 'is_nameplate' && key !== 'prefilter_value')
+          .map(key => {
+            const value = imageAnalysis?.specification[key];
+            if (!value) {
+              return null;
+            }
+            return (
+              <ItemSpecification
+                key={key}
+                attr={key}
+                value={value}
+                specificationFilter={specificationFilter}
+                imageAnalysis={imageAnalysis}
+              />
+            );
+          })}
       </div>
       {smartFilters.status === 'loading' && (
         <div className="mx-4 mt-3 text-xs text-[#3E36DC]">

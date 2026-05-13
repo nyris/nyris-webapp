@@ -7,54 +7,17 @@
  * Maximum 3 attempts before suggesting a new image.
  */
 
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import useConversationStore, {
   QuickReplyOption,
 } from 'stores/chat/conversationStore';
 import useSmartFiltersStore from 'stores/smartFilters/smartFiltersStore';
 import useResultStore from 'stores/result/resultStore';
+import { chatAnalysis } from 'services/vizo';
 import {
-  buildP5SystemPrompt,
-  buildBrandRegex,
-  buildProductTypeRegex,
-} from './promptBuilders';
-
-// Helper function to normalize text for fuzzy matching
-// Handles umlauts (ö→o, ü→u, ä→a, ß→ss) and other diacritics
-const normalizeText = (text: string): string => {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-    .replace(/ö/g, 'o')
-    .replace(/ü/g, 'u')
-    .replace(/ä/g, 'a')
-    .replace(/ß/g, 'ss')
-    .replace(/[^a-z0-9\s]/g, ' ') // Replace special chars with space
-    .replace(/\s+/g, ' ')
-    .trim();
-};
-
-// Fuzzy match helper - checks if searchTerm is contained in text with normalization (reserved for future use)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const fuzzyMatch = (text: string, searchTerm: string): boolean => {
-  const normalizedText = normalizeText(text);
-  const normalizedSearch = normalizeText(searchTerm);
-
-  // Direct containment check
-  if (normalizedText.includes(normalizedSearch)) return true;
-
-  // Check individual words from search term
-  const searchWords = normalizedSearch.split(' ').filter(w => w.length > 2);
-  if (searchWords.length > 1) {
-    // All significant words must be present
-    return searchWords.every(word => normalizedText.includes(word));
-  }
-
-  return false;
-};
-
-// P5 System Prompt is now dynamically built via buildP5SystemPrompt(orgProfile)
+  getProductImageUrl,
+  fetchProductImageBase64,
+} from 'utils/fetchProductImage';
 
 interface P5Response {
   message: string;
@@ -75,51 +38,27 @@ export function useBadResultsRecovery() {
     setError,
   } = useConversationStore();
 
-  const { geminiApiKey, geminiModel, filters, orgProfile } =
-    useSmartFiltersStore();
-  const productsFromAlgolia = useResultStore(
-    state => state.productsFromAlgolia,
-  );
+  const { filters } = useSmartFiltersStore();
+
   const productsFromFindApi = useResultStore(
     state => state.productsFromFindApi,
   );
-  const firstAlgoliaProducts = useResultStore(
-    state => state.firstAlgoliaProducts,
-  );
-  const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
+
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
   const imageAnalysis = useResultStore(state => state.imageAnalysis);
 
-  const isAlgoliaEnabled = !!(window as any).settings?.algolia?.enabled;
-  const activeProducts = isAlgoliaEnabled
-    ? productsFromAlgolia
-    : productsFromAlgolia.length > 0
-      ? productsFromAlgolia
-      : productsFromFindApi;
-  const setActiveProducts = isAlgoliaEnabled
-    ? setAlgoliaProducts
-    : productsFromAlgolia.length > 0
-      ? setAlgoliaProducts
-      : setFindApiProducts;
+  const imageCacheRef = useRef<Map<string, string | null>>(new Map());
+
+  const activeProducts = productsFromFindApi;
+  const setActiveProducts = setFindApiProducts;
 
   const sendMessage = useCallback(
     async (userMessage: string) => {
-      const apiKey = geminiApiKey || process.env.REACT_APP_GEMINI_API_KEY;
-
       // Add user message to chat
       addMessage({
         role: 'user',
         content: userMessage,
       });
-
-      if (!apiKey) {
-        addMessage({
-          role: 'assistant',
-          content:
-            'Please configure your Gemini API key in Admin Settings to use the recovery assistant.',
-        });
-        return;
-      }
 
       // Check if we've exceeded max attempts
       if (attemptCounter >= 3) {
@@ -155,10 +94,7 @@ export function useBadResultsRecovery() {
         // Get all 100 results with detailed metadata
         // ALWAYS use firstAlgoliaProducts (original) so indices are consistent
         // This allows "show original results" and filtering from original to work correctly
-        const originalProducts =
-          firstAlgoliaProducts.length > 0
-            ? firstAlgoliaProducts
-            : activeProducts;
+        const originalProducts = activeProducts;
         const allResults = originalProducts
           .slice(0, 100)
           .map((p: any, i: number) => {
@@ -197,11 +133,8 @@ export function useBadResultsRecovery() {
               const asteriskMatch = title.match(/^([^*]+)\*/);
               if (asteriskMatch && asteriskMatch[1].length <= 20)
                 metadata.brand = asteriskMatch[1].trim();
-              const brandPatterns = buildBrandRegex(orgProfile);
-              if (brandPatterns) {
-                const brandMatch = titleDesc.match(brandPatterns);
-                if (brandMatch) metadata.brand = brandMatch[1].toUpperCase();
-              }
+              const tokenMatch = titleDesc.match(/\b([A-Z][A-Z0-9]{2,})\b/);
+              if (tokenMatch) metadata.brand = tokenMatch[1].toUpperCase();
             }
 
             // Extract dimensions like "382 mm x 260 mm x 3 mm" or "344 x 221 x 3"
@@ -220,10 +153,11 @@ export function useBadResultsRecovery() {
             if (voltageMatch && !metadata.voltage)
               metadata.voltage = voltageMatch[0];
 
-            // Extract product type from title (from org profile regex terms)
-            const typeRegex = buildProductTypeRegex(orgProfile);
-            if (typeRegex && !metadata.product_type) {
-              const typeMatch = titleDesc.match(typeRegex);
+            // Extract generic product type keywords from title/description
+            if (!metadata.product_type) {
+              const typeMatch = titleDesc.match(
+                /\b(bearing|ring|relay|sensor|motor|fan|contactor|valve|pump|faucet|thermostat|filter|housing)\b/i,
+              );
               if (typeMatch) {
                 metadata.product_type = typeMatch[1].toUpperCase();
               }
@@ -265,7 +199,41 @@ export function useBadResultsRecovery() {
           content: m.content,
         }));
 
-        const userPrompt = `CONTEXT:
+        // Fetch product thumbnails for first 30 results (same limit as P3)
+        const productsForImages = originalProducts.slice(0, 30);
+        const imageResults = await Promise.all(
+          productsForImages.map(async (p: any, i: number) => {
+            const url = getProductImageUrl(p);
+            if (!url) return { index: i, base64: null };
+
+            if (imageCacheRef.current.has(url)) {
+              return {
+                index: i,
+                base64: imageCacheRef.current.get(url) ?? null,
+              };
+            }
+
+            const base64 = await fetchProductImageBase64(url);
+            imageCacheRef.current.set(url, base64);
+            return { index: i, base64 };
+          }),
+        );
+
+        const imagesAvailable = imageResults.filter(
+          r => r.base64 !== null,
+        ).length;
+        const hasVisualContext = imagesAvailable >= 3;
+
+        const visualNotice = hasVisualContext
+          ? `PRODUCT IMAGES: ${imagesAvailable} result thumbnails are included below (first 30 results). Use them to visually compare against the uploaded image when resurfacing better matches.`
+          : `PRODUCT IMAGES: NOT AVAILABLE — thumbnails could not be loaded. Use text metadata only for filtering.`;
+
+        // Build multimodal parts
+        const multimodalParts: any[] = [];
+
+        // Part 1: Text context
+        multimodalParts.push({
+          metadata: `CONTEXT:
 
 IMAGE DESCRIPTION: ${imageDescription}
 
@@ -279,85 +247,66 @@ ${JSON.stringify(attributeFrequency, null, 2)}
 
 CURRENT ATTEMPT: ${attemptCounter} of 3
 
-ALL RESULTS (100 max, for scanning - includes extracted metadata):
-${allResults.map((r: (typeof allResults)[number]) => `[${r.index}] ${r.sku} | ${r.title}${r.metadata ? ` | ${JSON.stringify(r.metadata)}` : ''}`).join('\n')}
+${visualNotice}
 
-CONVERSATION HISTORY:
+PRODUCT LIST (first 30 with thumbnails where available, indices 0-based for filtered_results):`,
+        });
+
+        // Part 2: First 30 results interleaved with thumbnails
+        allResults
+          .slice(0, 30)
+          .forEach((r: (typeof allResults)[number], i: number) => {
+            const metaLine = `index: ${r.index} ${r.sku} | ${r.title}${r.metadata ? ` | ${JSON.stringify(r.metadata)}` : ''}`;
+
+            if (hasVisualContext && imageResults[i]?.base64) {
+              multimodalParts.push({
+                metadata: metaLine,
+                image: imageResults[i].base64,
+                mimeType: 'image/jpeg',
+              });
+            } else {
+              multimodalParts.push({ metadata: metaLine });
+            }
+          });
+
+        // Part 3: Remaining results (31–100) as text only
+        if (allResults.length > 30) {
+          multimodalParts.push({
+            metadata: `REMAINING RESULTS (indices 30–${allResults.length - 1}, text only):
+${allResults
+  .slice(30)
+  .map(
+    (r: (typeof allResults)[number]) =>
+      `index: ${r.index} | sku: ${r.sku} | ${r.title}${r.metadata ? ` | ${JSON.stringify(r.metadata)}` : ''}`,
+  )
+  .join('\n')}`,
+          });
+        }
+
+        // Part 4: Conversation + user message
+        multimodalParts.push({
+          metadata: `CONVERSATION HISTORY:
 ${conversationHistory.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n')}
 
 USER MESSAGE: ${userMessage}
 
-Based on the user's answer and the failure mode strategy, decide whether to ask another question, resurface better matches, or exit.`;
+Based on the user's answer and the failure mode strategy, decide whether to ask another question, resurface better matches, or exit.`,
+        });
 
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [
-                {
-                  role: 'user',
-                  parts: [
-                    {
-                      text:
-                        orgProfile.p5Prompt || buildP5SystemPrompt(orgProfile),
-                    },
-                  ],
-                },
-                {
-                  role: 'model',
-                  parts: [
-                    {
-                      text: 'I understand. I will help recover from poor search results by asking clarifying questions and resurfacing better matches.',
-                    },
-                  ],
-                },
-                { role: 'user', parts: [{ text: userPrompt }] },
-              ],
-              generationConfig: {
-                temperature: 0.4,
-                maxOutputTokens: 8192,
-                responseMimeType: 'application/json',
-              },
-            }),
-          },
-        );
+        const response = await chatAnalysis({
+          promptKey: 'recovery_prompt',
+          multimodalInputs: multimodalParts,
+        });
 
-        if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(
-            errData.error?.message || `Gemini API error: ${response.status}`,
-          );
-        }
-
-        const data = await response.json();
-        console.log(
-          '[P5] Gemini response:',
-          JSON.stringify(data).substring(0, 500),
-        );
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        if (!responseText) {
-          const finishReason = data.candidates?.[0]?.finishReason;
-          const blockReason = data.promptFeedback?.blockReason;
-          throw new Error(
-            `No response from P5 (finish: ${finishReason || 'none'}, block: ${blockReason || 'none'})`,
-          );
-        }
+        const responseText = response;
 
         // Parse the JSON response
-        const p5Response: P5Response = JSON.parse(responseText);
-
-        console.log('[P5] Response:', p5Response);
+        const p5Response: P5Response = responseText;
 
         // Execute the action
         // ALWAYS use firstAlgoliaProducts for index lookup (matches what we sent to LLM)
-        const sourceProducts =
-          firstAlgoliaProducts.length > 0
-            ? firstAlgoliaProducts
-            : activeProducts;
-
+        const sourceProducts = activeProducts;
+        let options = p5Response.options || [];
         switch (p5Response.action) {
           case 'resurface':
             // FILTER products to only show matching ones (not just reorder)
@@ -384,6 +333,16 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
               // Only show filtered products, not all products
               if (filteredProducts.length > 0) {
                 setActiveProducts(filteredProducts);
+
+                options = [
+                  ...options,
+                  {
+                    label: 'Go back to original results',
+                    action_type: 'restore_original' as const,
+                    key: 'restore',
+                    value: 'restore',
+                  },
+                ];
               }
             }
             break;
@@ -391,8 +350,8 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
             incrementAttempt();
             break;
           case 'reset':
-            if (firstAlgoliaProducts.length > 0) {
-              setActiveProducts(firstAlgoliaProducts);
+            if (activeProducts.length > 0) {
+              setActiveProducts(activeProducts);
             }
             break;
           case 'exit':
@@ -405,7 +364,7 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
           role: 'assistant',
           content: p5Response.message,
           action: { type: p5Response.action },
-          options: p5Response.options,
+          options: options,
         });
       } catch (err: any) {
         console.error('[P5] Error:', err);
@@ -425,11 +384,9 @@ Based on the user's answer and the failure mode strategy, decide whether to ask 
       messages,
       failureMode,
       attemptCounter,
-      geminiApiKey,
       filters,
-      orgProfile,
       activeProducts,
-      firstAlgoliaProducts,
+
       imageAnalysis,
       addMessage,
       incrementAttempt,

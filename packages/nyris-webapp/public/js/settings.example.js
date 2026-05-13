@@ -46,7 +46,8 @@ var settings = {
   vizo: {
     groundingEnabled: false,
     fallbackToElasticSearch: false,
-    chat: false,
+    chat: true,
+    findRelatedParts: true,
   },
   // UI - theme
   theme: {

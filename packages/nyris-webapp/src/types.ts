@@ -91,6 +91,7 @@ export interface AppSettings extends NyrisAPISettings {
     groundingEnabled?: boolean;
     fallbackToElasticSearch?: boolean;
     chat?: boolean;
+    findRelatedParts?: boolean;
   };
   headerText?: string;
   instantRedirectPatterns: string[];
@@ -136,26 +137,8 @@ export interface SearchSuiteSettings {
   primaryColor?: string;
   secondaryColor?: string;
 }
-export interface CanvasWithId {
-  canvas: HTMLCanvasElement;
-  id: string;
-}
-
 declare global {
   interface Window {
     settings: AppSettings;
   }
 }
-
-export enum MessageType {
-  AI = 'AI',
-  USER = 'USER',
-}
-
-export type Chat = {
-  message: string;
-  type: MessageType.AI | MessageType.USER;
-  responseType?: 'OCR' | 'filter' | 'upload_new_image' | 'LLM_response';
-};
-
-export type CadenasScriptStatus = 'ready' | 'loading' | 'failed' | 'disabled';
