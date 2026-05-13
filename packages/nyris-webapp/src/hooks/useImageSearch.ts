@@ -17,6 +17,10 @@ import { isHEIC } from 'utils/misc';
 import useResultEvaluator from './useResultEvaluator';
 import useConversationStore from 'stores/chat/conversationStore';
 import { useGroundedSearch } from './useGroundedSearch';
+import { generateSmartFilters } from '../services/vizo';
+
+const DEFAULT_SMART_FILTER_PROMPT =
+  'Extract at most 4 relevant product intent filters from the request image. Return strict JSON only.';
 
 export const useImageSearch = () => {
   const setRegions = useRequestStore(state => state.setRegions);
@@ -58,6 +62,17 @@ export const useImageSearch = () => {
     state => state.setFirstSearchResults,
   );
 
+  const setGoogleGroundingResponse = useResultStore(
+    state => state.setGoogleGroundingResponse,
+  );
+
+  const setGroundingFilterResult = useResultStore(
+    state => state.setGroundingFilterResult,
+  );
+  const setSmartFilters = useResultStore(state => state.setSmartFilters);
+
+  const setGroundingError = useResultStore(state => state.setGroundingError);
+
   const { refine } = useClearRefinements();
   const { evaluateResults } = useResultEvaluator();
   const { groundedSearch } = useGroundedSearch();
@@ -85,12 +100,33 @@ export const useImageSearch = () => {
       clearPostFilter?: boolean;
       text?: string;
     }) => {
+      const isSmartFiltersEnabled = !!settings.useSmartFilters;
       setIsFindApiLoading(true);
       // setAlgoliaProducts([]);
       useRequestStore.getState().setGroundingQuery('');
 
       useUiStore.getState().resetBanner();
       startNewSession();
+
+      if (newSearch) {
+        setGroundingFilterResult([]);
+        setGoogleGroundingResponse(null);
+        setGroundingError(null);
+          if (isSmartFiltersEnabled) {
+              setSmartFilters({
+                  status: 'idle',
+                  filters: [],
+                  selectedFilterKey: null,
+                  selectedFilterValue: null,
+                  rerankedSkus: [],
+                  rerankStatus: 'idle',
+                  errorMessage: null,
+              });
+          }
+        useRequestStore.getState().setGroundingQuery('');
+        useResultStore.getState().setShowingGroundingFilterResult(false);
+        startNewSession();
+      }
 
       let region: RectCoords | undefined = imageRegion;
       let res: any;
@@ -157,6 +193,87 @@ export const useImageSearch = () => {
           values: Object.keys(preFilterParams || preFilter),
         },
       ];
+
+      let smartFilterPromise: Promise<void> | null = null;
+      if (isSmartFiltersEnabled && requestImage && newSearch) {
+        setSmartFilters({
+          status: 'loading',
+          filters: [],
+          selectedFilterKey: null,
+          selectedFilterValue: null,
+          rerankedSkus: [],
+          rerankStatus: 'idle',
+          errorMessage: null,
+        });
+
+        smartFilterPromise = generateSmartFilters({
+          image: requestImage,
+          prompt: DEFAULT_SMART_FILTER_PROMPT,
+        })
+          .then(response => {
+            const rawFilters = response?.filters;
+            if (!rawFilters || typeof rawFilters !== 'object') {
+              setSmartFilters({
+                status: 'error',
+                filters: [],
+                selectedFilterKey: null,
+                selectedFilterValue: null,
+                rerankedSkus: [],
+                rerankStatus: 'idle',
+                errorMessage: 'Could not generate smart filters.',
+              });
+              return;
+            }
+
+            const normalizedFilters = Object.entries(rawFilters)
+              .slice(0, 4)
+              .map(([key, value]) => {
+                const normalizedValue = Array.isArray(value)
+                  ? String(value[0] || '')
+                  : String(value || '');
+                return {
+                  key: String(key),
+                  label: String(key),
+                  value: normalizedValue,
+                  selected: false,
+                };
+              })
+              .filter(filter => filter.value.trim().length > 0);
+
+            const rerankedSkus =
+              response?.rerankedSkus ||
+              response?.filtered_items?.map(item => String(item.sku)) ||
+              [];
+            const rerankingApplied =
+              response?.rerankingApplied ?? (rerankedSkus.length > 0 ? true : false);
+
+            setSmartFilters({
+              status: 'success',
+              filters: normalizedFilters,
+              selectedFilterKey: null,
+              selectedFilterValue: null,
+              rerankedSkus,
+              rerankStatus: 'idle',
+              errorMessage: null,
+            });
+          })
+          .catch(error => {
+            const timeout = String(error?.message || '').includes(
+              'SMART_FILTER_TIMEOUT',
+            );
+            setSmartFilters({
+              status: 'error',
+              filters: [],
+              selectedFilterKey: null,
+              selectedFilterValue: null,
+              rerankedSkus: [],
+              rerankStatus: 'idle',
+              errorMessage: timeout
+                ? 'Smart filters are unavailable right now.'
+                : 'Could not generate smart filters.',
+            });
+          });
+      }
 
       try {
         res = await find({
@@ -239,6 +356,10 @@ export const useImageSearch = () => {
         setIsFindApiLoading(false);
       }
 
+      if (smartFilterPromise) {
+        void smartFilterPromise;
+      }
+
       return res;
     },
     [
@@ -266,6 +387,7 @@ export const useImageSearch = () => {
       setFirstSearchImage,
       setFirstSearchPreFilter,
       setFirstRequestImageAnalysis,
+      setSmartFilters,
     ],
   );
 

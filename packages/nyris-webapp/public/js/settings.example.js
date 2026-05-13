@@ -105,6 +105,7 @@ var settings = {
   experienceVisualSearchImages: [],
   simpleCardView: false,
   noSimilarSearch: false,
+  useSmartFilters: false,
   showFeedback: false,
   geoLocation: false,
   geoLocationMessage: '',

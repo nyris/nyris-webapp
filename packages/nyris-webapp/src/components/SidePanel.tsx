@@ -10,6 +10,8 @@ import SmartFilter from './SmartFilter';
 import { useEffectiveGroundingResults } from 'hooks/useEffectiveGroundingResults';
 
 export default function SidePanel({ className }: { className?: string }) {
+  const settings = window.settings;
+  const isSmartFiltersEnabled = !!settings.useSmartFilters;
   const requestImages = useRequestStore(state => state.requestImages);
 
   const specificationFilter = useRequestStore(
@@ -21,6 +23,7 @@ export default function SidePanel({ className }: { className?: string }) {
   const showSidePanel = useUiStore(state => state.showSidePanel);
 
   const imageAnalysis = useResultStore(state => state.imageAnalysis);
+  const smartFilters = useResultStore(state => state.smartFilters);
 
   const showPostFilter = window.settings?.postFilterOption;
 
@@ -101,12 +104,15 @@ export default function SidePanel({ className }: { className?: string }) {
             {requestImages[0] && <ImagePreview />}
           </div>
           <div className="pb-4 flex flex-col gap-6">
-            {window.settings.showImageDetails &&
+            {isSmartFiltersEnabled &&
+              window.settings.showImageDetails &&
               (imageAnalysis?.imageDescription ||
-                Object.keys(imageAnalysis?.specification || {}).length > 0) && (
+                Object.keys(imageAnalysis?.specification || {}).length > 0 ||
+                smartFilters.status !== 'idle') && (
                 <SmartFilter
                   imageAnalysis={imageAnalysis}
                   specificationFilter={specificationFilter}
+                  variant="sidepanel"
                 />
               )}
 

@@ -71,6 +71,20 @@ export interface ProductsState {
   groundingError: string | null;
   firstAlgoliaProducts: any[];
   fullResultPool: any[];
+    smartFilters: {
+        status: 'idle' | 'loading' | 'success' | 'error';
+        filters: Array<{
+            key: string;
+            label: string;
+            value: string;
+            selected?: boolean;
+        }>;
+        selectedFilterKey: string | null;
+        selectedFilterValue: string | null;
+        rerankedSkus: string[];
+        rerankStatus: 'idle' | 'loading' | 'success' | 'error';
+        errorMessage: string | null;
+    };
 }
 
 export interface ProductsAction {
@@ -90,6 +104,7 @@ export interface ProductsAction {
   setGroundingError: (error: string | null) => void;
   setFullResultPool: (products: any[]) => void;
   resetGrounding: () => void;
+  setSmartFilters: (smartFilters: ProductsState['smartFilters']) => void;
 }
 
 export interface DetectedRegionsState {

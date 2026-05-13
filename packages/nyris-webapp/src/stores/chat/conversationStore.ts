@@ -72,8 +72,7 @@ export interface RelatedPartSuggestion {
 interface ConversationState {
   // Session state
   sessionId: string;
-  isEvaluated: boolean; // P2 has fired
-
+  isEvaluated: boolean;  // P2 has fired
   // Routing
   route: ConversationRoute;
   quality: ResultQuality;

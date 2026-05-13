@@ -57,6 +57,10 @@ const productsSlice: StateCreator<ProductsState & ProductsAction> = set => ({
       googleGroundingResponse: null,
       showingGroundingFilterResult: false,
     })),
+  setSmartFilters: smartFilters =>
+    set(() => ({
+      smartFilters,
+    })),
 });
 
 export default productsSlice;

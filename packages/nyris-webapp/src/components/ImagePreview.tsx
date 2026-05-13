@@ -108,7 +108,7 @@ function ImagePreviewComponent({
         compress: false,
       }).then((res: any) => {
         const specificationPrefilter =
-          res.image_analysis?.specification?.prefilter_value || null;
+          res?.image_analysis?.specification?.prefilter_value || null;
         const hasPrefilter = preFilterList.filter((filter: any) =>
           filter.values.includes(specificationPrefilter),
         );

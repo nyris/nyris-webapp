@@ -219,8 +219,7 @@ ${resultsSummary
   .map(
     r =>
       `${r.rank}. ${r.title}${r.description ? ` - ${r.description}` : ''} (Score: ${r.score})${r.metadata ? `\n   Metadata: ${JSON.stringify(r.metadata)}` : ''}`,
-  )
-  .join('\n')}
+  ).join('\n')}
 
 COMMON ATTRIBUTES FOUND IN RESULTS (for filter suggestions):
 ${JSON.stringify(attributeFrequency, null, 2)}

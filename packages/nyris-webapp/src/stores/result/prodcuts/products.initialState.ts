@@ -22,4 +22,13 @@ export const initialState: ProductsState = {
   groundingError: null,
   firstAlgoliaProducts: [],
   fullResultPool: [],
+  smartFilters: {
+    status: 'idle',
+    filters: [],
+    selectedFilterKey: null,
+    selectedFilterValue: null,
+    rerankedSkus: [],
+    rerankStatus: 'idle',
+    errorMessage: null,
+  },
 };
