@@ -112,17 +112,17 @@ export const useImageSearch = () => {
         setGroundingFilterResult([]);
         setGoogleGroundingResponse(null);
         setGroundingError(null);
-          if (isSmartFiltersEnabled) {
-              setSmartFilters({
-                  status: 'idle',
-                  filters: [],
-                  selectedFilterKey: null,
-                  selectedFilterValue: null,
-                  rerankedSkus: [],
-                  rerankStatus: 'idle',
-                  errorMessage: null,
-              });
-          }
+        if (isSmartFiltersEnabled) {
+          setSmartFilters({
+            status: 'idle',
+            filters: [],
+            selectedFilterKey: null,
+            selectedFilterValue: null,
+            rerankedSkus: [],
+            rerankStatus: 'idle',
+            errorMessage: null,
+          });
+        }
         useRequestStore.getState().setGroundingQuery('');
         useResultStore.getState().setShowingGroundingFilterResult(false);
         startNewSession();
@@ -245,7 +245,8 @@ export const useImageSearch = () => {
               response?.filtered_items?.map(item => String(item.sku)) ||
               [];
             const rerankingApplied =
-              response?.rerankingApplied ?? (rerankedSkus.length > 0 ? true : false);
+              response?.rerankingApplied ??
+              (rerankedSkus.length > 0 ? true : false);
 
             setSmartFilters({
               status: 'success',
@@ -362,6 +363,7 @@ export const useImageSearch = () => {
 
       return res;
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       setIsFindApiLoading,
       preFilter,

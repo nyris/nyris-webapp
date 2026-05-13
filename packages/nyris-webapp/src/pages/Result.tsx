@@ -57,7 +57,6 @@ function Results() {
 
   const requestId = useResultStore(state => state.requestId);
   const imageAnalysis = useResultStore(state => state.imageAnalysis);
-  const smartFilters = useResultStore(state => state.smartFilters);
 
   const specificationFilter = useRequestStore(
     state => state.specificationFilter,
@@ -223,7 +222,8 @@ function Results() {
               >
                 <div className="block desktop:hidden desktop:mb-0 mx-2">
                   {requestImages[0] && <ImagePreview />}
-                  {isSmartFiltersEnabled && window.settings.showImageDetails &&
+                  {isSmartFiltersEnabled &&
+                    window.settings.showImageDetails &&
                     (imageAnalysis?.imageDescription ||
                       Object.keys(imageAnalysis?.specification || {}).length >
                         0) && (
