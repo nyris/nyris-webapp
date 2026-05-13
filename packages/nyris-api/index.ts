@@ -238,6 +238,7 @@ export default class NyrisAPI {
     options: ImageSearchOptions,
     canvas?: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement,
     filters?: Filter[],
+    exacts?: string[],
     xOptions?: any,
   ): Promise<SearchResult> {
     var requestBody = new FormData();
@@ -283,6 +284,13 @@ export default class NyrisAPI {
         }
       }
     }
+
+    if (exacts && exacts.length > 0) {
+      for (let i = 0; i < exacts.length; i++) {
+        requestBody.append(`exact[${i}]`, exacts[i]);
+      }
+    }
+
     const { lat, lon, ...restParams } = params;
 
     let { res }: any = await timePromise(
