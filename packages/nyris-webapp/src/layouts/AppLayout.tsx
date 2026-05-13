@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router';
 
 import { useAuth0 } from '@auth0/auth0-react';
@@ -18,6 +18,7 @@ import useRequestStore from 'stores/request/requestStore';
 import useResultStore from 'stores/result/resultStore';
 import useUiStore from 'stores/ui/uiStore';
 import { Toaster } from 'components/Toaster';
+import { getFilters } from 'services/filter';
 
 i18n.use(initReactI18next).init({
   resources: translations,
@@ -91,6 +92,56 @@ function AppLayout(): JSX.Element {
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  const user = useAuth0().user;
+
+  const setPreFilterList = useRequestStore(state => state.setPreFilterList);
+  const setPreFilterLoading = useRequestStore(
+    state => state.setPreFilterLoading,
+  );
+
+  const settings = window.settings;
+  const setMetaFilter = useRequestStore(state => state.setMetaFilter);
+
+  const showPreFilter = useMemo(() => {
+    if (settings.shouldUseUserMetadata && user) {
+      if (user['/user_metadata'].value) {
+        setMetaFilter(user['/user_metadata'].value);
+      }
+    }
+
+    if (settings.shouldUseUserMetadata && user) {
+      if (settings.preFilterOption && !user['/user_metadata'].value) {
+        return true;
+      }
+      return false;
+    }
+
+    return settings.preFilterOption;
+  }, [
+    setMetaFilter,
+    settings.preFilterOption,
+    settings.shouldUseUserMetadata,
+    user,
+  ]);
+
+  const getPreFilters = useCallback(async () => {
+    setPreFilterLoading(true);
+    try {
+      const res = await getFilters(1000, settings);
+      setPreFilterList(res);
+    } catch (e: any) {
+      console.log('err getDataFilterDesktop', e);
+    } finally {
+      setPreFilterLoading(false);
+    }
+  }, [settings, setPreFilterList, setPreFilterLoading]);
+
+  useEffect(() => {
+    if (showPreFilter) {
+      getPreFilters();
+    }
+  }, [getPreFilters, showPreFilter]);
 
   if (!showLayout) {
     return <Outlet />;

@@ -40,6 +40,7 @@ const PreFilterComponent = (props: Props) => {
   const specification = useRequestStore(state => state.specifications);
   const setSpecifications = useRequestStore(state => state.setSpecifications);
   const setImageAnalysis = useResultStore(state => state.setImageAnalysis);
+  const regions = useRequestStore(state => state.regions);
 
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
@@ -156,6 +157,18 @@ const PreFilterComponent = (props: Props) => {
     }
 
     handleClose();
+    const query = useRequestStore.getState().query;
+    if (!window.settings?.algolia.enabled && requestImages.length === 0) {
+      singleImageSearch({
+        image: requestImages[0],
+        imageRegion: regions[0],
+        text: query,
+        settings,
+        showFeedback: false,
+        newSearch: false,
+        preFilterParams: preFilter,
+      });
+    }
 
     if (requestImages.length === 0) {
       return;
