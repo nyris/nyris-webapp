@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import DragDropFile from 'components/DragDropFile';
@@ -12,11 +11,10 @@ import LocationInfoPopup from '../components/LocationInfoPopup';
 import Hint from '../components/Hint';
 import Loading from '../components/Loading';
 import useRequestStore from '../stores/request/requestStore';
-import { getFilters } from '../services/filter';
+import ImageUpload from 'components/ImageUpload';
 
 function Home() {
   const settings = window.settings;
-  const user = useAuth0().user;
   const { experienceVisualSearch, experienceVisualSearchImages, geoLocation } =
     settings;
   const navigate = useNavigate();
@@ -25,33 +23,6 @@ function Home() {
     useState<Blob[]>([]);
   const [isOpenModalCamera, setOpenModalCamera] = useState<boolean>(false);
   const showLoading = useRequestStore(store => store.showLoading);
-  const setPreFilterList = useRequestStore(state => state.setPreFilterList);
-  const setPreFilterLoading = useRequestStore(
-    state => state.setPreFilterLoading,
-  );
-  const setMetaFilter = useRequestStore(state => state.setMetaFilter);
-
-  const showPreFilter = useMemo(() => {
-    if (settings.shouldUseUserMetadata && user) {
-      if (user['/user_metadata'].value) {
-        setMetaFilter(user['/user_metadata'].value);
-      }
-    }
-
-    if (settings.shouldUseUserMetadata && user) {
-      if (settings.preFilterOption && !user['/user_metadata'].value) {
-        return true;
-      }
-      return false;
-    }
-
-    return settings.preFilterOption;
-  }, [
-    setMetaFilter,
-    settings.preFilterOption,
-    settings.shouldUseUserMetadata,
-    user,
-  ]);
 
   const fetchImage = async (url: string) => {
     const response = await fetch(url, { cache: 'force-cache' });
@@ -98,24 +69,6 @@ function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getPreFilters = useCallback(async () => {
-    setPreFilterLoading(true);
-    try {
-      const res = await getFilters(1000, settings);
-      setPreFilterList(res);
-    } catch (e: any) {
-      console.log('err getDataFilterDesktop', e);
-    } finally {
-      setPreFilterLoading(false);
-    }
-  }, [settings, setPreFilterList, setPreFilterLoading]);
-
-  useEffect(() => {
-    if (showPreFilter) {
-      getPreFilters();
-    }
-  }, [getPreFilters, showPreFilter]);
-
   return (
     <>
       {showLoading && (
@@ -149,8 +102,15 @@ function Home() {
             </div>
           )}
 
-          <TextSearch />
-          {/* <ImageUpload /> */}
+          <TextSearch className="h-[56px]" showImageUpload={false} />
+          <div
+            className={twMerge(
+              'h-14 w-14 flex items-center justify-center rounded-full bg-[#FFFFFF] hover:bg-[#F3F4F8] border border-solid border-[#DDDEE7]',
+              'shadow-ds-2',
+            )}
+          >
+            <ImageUpload />
+          </div>
         </div>
         <div className="max-w-[532px] relative w-full">
           <DragDropFile />
@@ -190,7 +150,6 @@ function Home() {
 
         <div className="flex desktop:hidden w-full fixed bottom-12 px-2 gap-2">
           <TextSearch className="flex md:hidden w-full " />
-          {/* <ImageUpload /> */}
         </div>
       </div>
     </>

@@ -46,6 +46,8 @@ var settings = {
   vizo: {
     groundingEnabled: false,
     fallbackToElasticSearch: false,
+    chat: true,
+    findRelatedParts: true,
   },
   // UI - theme
   theme: {
@@ -103,6 +105,7 @@ var settings = {
   experienceVisualSearchImages: [],
   simpleCardView: false,
   noSimilarSearch: false,
+  useSmartFilters: false,
   showFeedback: false,
   geoLocation: false,
   geoLocationMessage: '',

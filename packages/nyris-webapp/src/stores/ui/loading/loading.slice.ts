@@ -5,13 +5,13 @@ import { LoadingAction, LoadingState } from 'stores/types';
 const loadingSlice: StateCreator<LoadingState & LoadingAction> = set => ({
   ...initialState,
   setIsAlgoliaLoading: (isLoading: boolean) =>
-    set(state => ({ isAlgoliaLoading: isLoading })),
+    set(() => ({ isAlgoliaLoading: isLoading })),
   setIsFindApiLoading: (isLoading: boolean) =>
-    set(state => ({ isFindApiLoading: isLoading })),
+    set(() => ({ isFindApiLoading: isLoading })),
   setIsCadenasLoaded: (isLoading: boolean) =>
-    set(state => ({ isCadenasLoaded: isLoading })),
+    set(() => ({ isCadenasLoaded: isLoading })),
   setIsGoogleGroundingLoading: isLoading =>
-    set(state => ({
+    set(() => ({
       isGoogleGroundingLoading: isLoading,
     })),
 });

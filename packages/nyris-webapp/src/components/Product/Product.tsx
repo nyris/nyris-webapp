@@ -80,7 +80,7 @@ function Product(props: Props) {
     img.src = url;
   };
 
-  const handlerToggleModal = (item: any) => {
+  const handlerToggleModal = (_item?: any) => {
     setOpenDetailedView('image');
   };
 
@@ -123,10 +123,18 @@ function Product(props: Props) {
         onSearchImage={onSearchImage}
         openDetailedView={openDetailedView}
         setOpenDetailedView={setOpenDetailedView}
-        main_image_link={main_image_link}
         onAddToCart={onAddToCart}
       />
-      <div className="wrap-main-item-result max-w-[190px] w-[180px] desktop:w-[190px] border border-solid border-[#E0E0E0] scroll-pt-5">
+      <div
+        className={twMerge(
+          'wrap-main-item-result',
+          'max-w-[190px] w-[180px] desktop:w-[190px]',
+          'border border-solid border-[#E7E8F1]',
+          'scroll-pt-5',
+          'shadow-ds-1',
+          'rounded-2xl',
+        )}
+      >
         <div className="relative h-fit">
           {!isHover && main_image_link && !settings.noSimilarSearch && (
             <div
@@ -434,7 +442,7 @@ function Product(props: Props) {
                             ? 8
                             : 0,
                         gridGap: 8,
-                        color: '#2B2C46',
+                        color: '#3B3E5F',
                       }}
                     >
                       {settings.attributes?.attributeOneValue && (
@@ -445,7 +453,6 @@ function Product(props: Props) {
                             settings.attributes?.attributeOneValue || '',
                           )}
                           padding={'4px 8px'}
-                          backgroundColor={'#E0E0E0'}
                           isTitleVisible={
                             !!settings.attributes?.attributeOneLabelValue
                           }
@@ -459,7 +466,6 @@ function Product(props: Props) {
                             settings.attributes?.attributeTwoValue || '',
                           )}
                           padding={'4px 8px'}
-                          backgroundColor={'#E0E0E0'}
                           isTitleVisible={
                             !!settings.attributes?.attributeTwoLabelValue
                           }
@@ -473,7 +479,6 @@ function Product(props: Props) {
                             settings.attributes?.attributeThreeValue || '',
                           )}
                           padding={'4px 8px'}
-                          backgroundColor={'#E0E0E0'}
                           isTitleVisible={
                             !!settings.attributes?.attributeThreeLabelValue
                           }
@@ -488,7 +493,6 @@ function Product(props: Props) {
                             settings.attributes?.attributeFourValue || '',
                           )}
                           padding={'4px 8px'}
-                          backgroundColor={'#E0E0E0'}
                           isTitleVisible={
                             !!settings.attributes?.attributeFourLabelValue
                           }
@@ -507,7 +511,7 @@ function Product(props: Props) {
                     background:
                       settings.secondaryCTAButton?.secondaryCTAButtonColor ||
                       '#2B2C46',
-                    borderRadius: 4,
+                    borderRadius: 6,
                     paddingLeft: '8px',
                     marginBottom: settings.CTAButton?.CTAButton ? 8 : 0,
                     display: 'flex',
@@ -591,7 +595,7 @@ function Product(props: Props) {
                     background:
                       settings.CTAButton?.CTAButtonColor ||
                       settings.theme?.primaryColor,
-                    borderRadius: 4,
+                    borderRadius: 6,
                     paddingLeft: '8px',
                     display: 'flex',
                     justifyItems: 'center',
@@ -677,7 +681,7 @@ function Product(props: Props) {
                     background:
                       settings.CTAButton?.CTAButtonColor ||
                       settings.theme?.primaryColor,
-                    borderRadius: 4,
+                    borderRadius: 6,
                     paddingLeft: '8px',
                     display: 'flex',
                     justifyItems: 'center',

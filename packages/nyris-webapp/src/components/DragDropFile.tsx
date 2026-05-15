@@ -46,7 +46,7 @@ function DragDropFile(props: Props) {
         file: file,
         settings: window.settings,
         newSearch: true,
-      }).then(res => {});
+      }).then(() => {});
 
       return;
     }
@@ -61,7 +61,7 @@ function DragDropFile(props: Props) {
       newSearch: true,
     }).then(singleImageResp => {
       const specificationPrefilter =
-        singleImageResp.image_analysis?.specification?.prefilter_value || null;
+        singleImageResp?.image_analysis?.specification?.prefilter_value || null;
       const hasPrefilter = preFilterList.filter((filter: any) =>
         filter.values.includes(specificationPrefilter),
       );
@@ -154,9 +154,9 @@ function DragDropFile(props: Props) {
           <div
             className={twMerge([
               'drag-n-drop-inner',
-              'flex flex-col items-center w-full cursor-pointer pb-4 pt-4 rounded-[12px]',
-              'text-[#cacad1] hover:text-primary',
-              'border-2 border-dashed border-transparent hover:border-[#e0e0e0]',
+              'flex flex-col items-center w-full cursor-pointer py-10 rounded-[12px]',
+              'text-[#767A9F] hover:text-primary',
+              'border-2 border-dashed border-[#BBBDCF]',
               isDragging && 'text-primary border-[#e0e0e0]',
             ])}
           >

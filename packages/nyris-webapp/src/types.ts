@@ -90,6 +90,8 @@ export interface AppSettings extends NyrisAPISettings {
     enabled?: boolean;
     groundingEnabled?: boolean;
     fallbackToElasticSearch?: boolean;
+    chat?: boolean;
+    findRelatedParts?: boolean;
   };
   headerText?: string;
   instantRedirectPatterns: string[];
@@ -117,6 +119,7 @@ export interface AppSettings extends NyrisAPISettings {
   showFeedbackAndShare?: boolean;
   showGroup?: boolean;
   showImageDetails?: boolean;
+  useSmartFilters?: boolean;
   showPoweredByNyris?: boolean;
   simpleCardView?: boolean;
   support: Support;
@@ -134,15 +137,8 @@ export interface SearchSuiteSettings {
   primaryColor?: string;
   secondaryColor?: string;
 }
-export interface CanvasWithId {
-  canvas: HTMLCanvasElement;
-  id: string;
-}
-
 declare global {
   interface Window {
     settings: AppSettings;
   }
 }
-
-export type CadenasScriptStatus = 'ready' | 'loading' | 'failed' | 'disabled';

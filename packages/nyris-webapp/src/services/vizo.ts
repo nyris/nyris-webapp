@@ -1,4 +1,19 @@
+import { RectCoords } from '@nyris/nyris-api';
 import axios from 'axios';
+import { cropImage } from 'utils/cropImageToBase64';
+
+export interface ChatMultimodalInput {
+  metadata: string;
+  mimeType?: string;
+  image?: string;
+}
+
+interface ChatAnalysisParams {
+  promptKey: string;
+  multimodalInputs: ChatMultimodalInput[];
+  apiKey?: string;
+}
+
 // Utility: Convert HTMLCanvasElement to Blob
 export function canvasToBlob(
   canvas: HTMLCanvasElement,
@@ -18,6 +33,149 @@ export function canvasToBlob(
       quality,
     );
   });
+}
+
+export interface SmartFilterRerankItemMetadata {
+  title: string;
+  description: string;
+  language: string;
+  sku: string;
+  score: number | null;
+}
+
+export interface SmartFilterRerankItem {
+  sku: string;
+  metadata: SmartFilterRerankItemMetadata;
+  imageUrl: string;
+}
+
+export interface SmartFilterRerankPayload {
+  filters: Record<string, string>;
+  items: SmartFilterRerankItem[];
+}
+
+export interface SmartFilterRerankParams {
+  image: File | HTMLCanvasElement;
+  payload: SmartFilterRerankPayload;
+  timeoutMs?: number;
+  apiKey?: string;
+}
+
+export interface SmartFilterRerankResponse {
+  filtered_items: Array<{ sku: string }>;
+  // TODO: confirm final backend field name; some responses use `reranked`.
+  reranked?: boolean;
+  rerankingApplied?: boolean;
+  message?: string;
+}
+
+export interface SmartFilterGenerateParams {
+  image: File | HTMLCanvasElement;
+  prompt: string;
+  model?: string;
+  timeoutMs?: number;
+  apiKey?: string;
+}
+
+export interface SmartFilterGenerateResponse {
+  filters: Record<string, string | string[]>;
+  rerankingApplied?: boolean;
+  filtered_items?: Array<{ sku: string }>;
+  rerankedSkus?: string[];
+  message?: string;
+}
+
+export async function rerankSmartFilters({
+  image,
+  payload,
+  apiKey,
+}: SmartFilterRerankParams): Promise<SmartFilterRerankResponse> {
+  const settings = window.settings;
+  const isSmartFiltersEnabled = !!settings.useSmartFilters;
+  if (!isSmartFiltersEnabled) {
+    return {
+      filtered_items: [],
+      rerankingApplied: false,
+      message: 'SMART_FILTERS_DISABLED',
+    };
+  }
+
+  const formData = new FormData();
+  if (image instanceof HTMLCanvasElement) {
+    const imageBlob = await canvasToBlob(image);
+    formData.append('image', imageBlob, 'smart-filters-rerank.jpg');
+  } else {
+    formData.append('image', image);
+  }
+  formData.append('payload', JSON.stringify(payload));
+
+  try {
+    const response = await axios.post<SmartFilterRerankResponse>(
+      `${window.settings.baseUrl}/api/ai-analysis/smart-filters/rerank`,
+      formData,
+      {
+        headers: {
+          'x-api-key': apiKey || window.settings.aiApiKey || window.settings.apiKey,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error: any) {
+    if (error?.code === 'ECONNABORTED') {
+      throw new Error('SMART_FILTER_TIMEOUT');
+    }
+    if (error.response) {
+      throw new Error(`API error: ${error.response.statusText}`);
+    } else {
+      throw new Error(`API error: ${error.message}`);
+    }
+  }
+}
+
+export async function generateSmartFilters({
+  image,
+  prompt,
+}: SmartFilterGenerateParams): Promise<SmartFilterGenerateResponse> {
+  const settings = window.settings;
+  const isSmartFiltersEnabled = !!settings.useSmartFilters;
+  if (!isSmartFiltersEnabled) {
+    return {
+      filters: {},
+      rerankingApplied: false,
+      message: 'SMART_FILTERS_DISABLED',
+    };
+  }
+
+  const formData = new FormData();
+  if (image instanceof HTMLCanvasElement) {
+    const imageBlob = await canvasToBlob(image);
+    formData.append('image', imageBlob, 'smart-filters-generate.jpg');
+  } else {
+    formData.append('image', image);
+  }
+  formData.append('prompt', prompt);
+
+  try {
+    const response = await axios.post<SmartFilterGenerateResponse>(
+      `${window.settings.baseUrl}/api/ai-analysis/smart-filters/generate`,
+      formData,
+      {
+        headers: {
+          'x-api-key':  window.settings.aiApiKey || window.settings.apiKey,
+        },
+      },
+    );
+    return response.data;
+  } catch (error: any) {
+    if (error?.code === 'ECONNABORTED') {
+      throw new Error('SMART_FILTER_TIMEOUT');
+    }
+    if (error.response) {
+      throw new Error(`API error: ${error.response.statusText}`);
+    }
+    throw new Error(`API error: ${error.message}`);
+  }
 }
 
 function buildProductEntry(p: any, index: number): string {
@@ -50,7 +208,7 @@ function buildProductEntry(p: any, index: number): string {
 
   const idStr = idParts.length > 0 ? ` | IDs: ${idParts.join(', ')}` : '';
 
-  return `[${index}] SKU: ${sku} | Brand: ${brand} | ${title} | ${desc}${idStr}`;
+  return `index: ${index} | SKU: ${sku} | Brand: ${brand} | ${title} | ${desc}${idStr}`;
 }
 
 /**
@@ -60,18 +218,18 @@ function buildProductEntry(p: any, index: number): string {
  */
 export async function groundedSearch(
   imageInput: File | HTMLCanvasElement,
-  apiKey: string,
+  region?: RectCoords,
 ): Promise<any> {
   const formData = new FormData();
   let imageBlobOrFile: File | Blob;
 
   if (imageInput instanceof HTMLCanvasElement) {
-    imageBlobOrFile = await canvasToBlob(imageInput);
+    const croppedCanvas = cropImage(imageInput, region);
+    imageBlobOrFile = await canvasToBlob(croppedCanvas);
     formData.append('image', imageBlobOrFile, 'canvas.jpg');
   } else {
     formData.append('image', imageInput);
   }
-
   try {
     const response = await axios.post(
       'https://api.nyris.io/api/ai-analysis/grounded-search',
@@ -157,5 +315,35 @@ export async function groundingSearchQuery({
     } else {
       throw new Error(`API error: ${error.message}`);
     }
+  }
+}
+
+export async function chatAnalysis({
+  promptKey,
+  multimodalInputs,
+  apiKey,
+}: ChatAnalysisParams): Promise<any> {
+  try {
+    const response = await axios.post(
+      'https://api.nyris.io/api/ai-analysis/chat',
+      {
+        promptKey,
+        multimodalInputs,
+      },
+      {
+        headers: {
+          'x-api-key': apiKey || window.settings.aiApiKey || '',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw new Error(`API error: ${error.response.statusText}`);
+    }
+
+    throw new Error(`API error: ${error.message}`);
   }
 }

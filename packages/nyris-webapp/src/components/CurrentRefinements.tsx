@@ -30,7 +30,7 @@ function CurrentRefinements({ className }: { className?: string }) {
             key={value}
             className="h-6 pl-2 pr-0.5 py-0.5 bg-[#f3f3f5] rounded-[1px] border border-solid border-[#e0e0e0] justify-start items-center gap-2 inline-flex"
           >
-            <div className="text-[#2b2c46] text-xs font-normal ">{value}</div>
+            <div className="text-[#3B3E5F] text-xs font-normal ">{value}</div>
             <div className="w-5 h-5 rounded-sm justify-center items-center flex cursor-pointer">
               <Icon
                 name="close"
@@ -60,7 +60,7 @@ function CurrentRefinements({ className }: { className?: string }) {
               key={refinement.label}
               className="h-6 pl-2 pr-0.5 py-0.5 bg-[#f3f3f5] rounded-[1px] border border-solid border-[#e0e0e0] justify-start items-center gap-2 inline-flex"
             >
-              <div className="text-[#2b2c46] text-xs font-normal ">
+              <div className="text-[#3B3E5F] text-xs font-normal ">
                 {refinement.label}
               </div>
               <div className="w-5 h-5 rounded-sm justify-center items-center flex cursor-pointer">

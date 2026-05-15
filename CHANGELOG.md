@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.92 - 2026-05-13
+
+### Added
+- Vizo Search Assistant for evaluating search quality, refining good results, recovering from bad matches, and running follow-up catalog searches by text or image
+- Smart generated filters with AI-generated product attributes and reranking support
+- Grounded search improvements for cropped searches, result filtering, and optional fallback query generation
+- exact support for find API to get items by sku's
+
+### Updated
+- Refreshed search/result UI, including the header, side panel, text search, image preview, chat, and product detail views
+- Updated settings example with `aiApiKey`, Vizo chat options, related-parts support, and `useSmartFilters`
+- Improved image upload conversion flow for PDF, TIFF, HEIC, and compressed search images
+
+### Fixed
+- Text search with pre-filter when Algolia is disabled
+- Visual search text requests now send multipart text in the request body and skip empty request bodies when no image, filters, or text are present
+- Grounding UI now shows the API response message instead of a hardcoded message
+- Widget modal content class renamed to avoid generic CSS collisions
+
 ## 0.3.91 - 2026-04-13
 ### Updated
 - Updated readme file of the widget

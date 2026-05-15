@@ -33,6 +33,15 @@ export interface LoadingState {
   isGoogleGroundingLoading: boolean;
 }
 
+export interface AiUiState {
+  isAiModeOpen: boolean;
+}
+
+export interface AiUiAction {
+  setIsAiModeOpen: (isOpen: boolean) => void;
+  toggleAiMode: () => void;
+}
+
 export interface LoadingAction {
   setIsFindApiLoading: (isLoading: boolean) => void;
   setIsAlgoliaLoading: (isLoading: boolean) => void;
@@ -59,6 +68,23 @@ export interface ProductsState {
   googleGroundingResponse: Record<string, any> | null;
   groundingFilterResult: any[];
   showingGroundingFilterResult: boolean;
+  groundingError: string | null;
+  firstAlgoliaProducts: any[];
+  fullResultPool: any[];
+    smartFilters: {
+        status: 'idle' | 'loading' | 'success' | 'error';
+        filters: Array<{
+            key: string;
+            label: string;
+            value: string;
+            selected?: boolean;
+        }>;
+        selectedFilterKey: string | null;
+        selectedFilterValue: string | null;
+        rerankedSkus: string[];
+        rerankStatus: 'idle' | 'loading' | 'success' | 'error';
+        errorMessage: string | null;
+    };
 }
 
 export interface ProductsAction {
@@ -75,6 +101,10 @@ export interface ProductsAction {
   setGoogleGroundingResponse: (result: any | null) => void;
   setGroundingFilterResult: (result: any[]) => void;
   setShowingGroundingFilterResult: (val?: boolean) => void;
+  setGroundingError: (error: string | null) => void;
+  setFullResultPool: (products: any[]) => void;
+  resetGrounding: () => void;
+  setSmartFilters: (smartFilters: ProductsState['smartFilters']) => void;
 }
 
 export interface DetectedRegionsState {
@@ -123,6 +153,17 @@ export interface FeedbackState {
 
 export interface FeedbackAction {
   setShowFeedback: (show: boolean) => void;
+}
+
+export interface BannerState {
+  bannerGoBack: boolean;
+  bannerTextSearch: 'loading' | 'resolved' | 'pending';
+}
+
+export interface BannerAction {
+  setBannerGoBack: (goBack: boolean) => void;
+  setBannerTextSearch: (textSearch: 'loading' | 'resolved' | 'pending') => void;
+  resetBanner: () => void;
 }
 
 export interface SidePanelState {

@@ -19,4 +19,16 @@ export const initialState: ProductsState = {
   googleGroundingResponse: null,
   groundingFilterResult: [],
   showingGroundingFilterResult: false,
+  groundingError: null,
+  firstAlgoliaProducts: [],
+  fullResultPool: [],
+  smartFilters: {
+    status: 'idle',
+    filters: [],
+    selectedFilterKey: null,
+    selectedFilterValue: null,
+    rerankedSkus: [],
+    rerankStatus: 'idle',
+    errorMessage: null,
+  },
 };

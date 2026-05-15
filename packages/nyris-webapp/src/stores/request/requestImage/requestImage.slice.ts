@@ -10,9 +10,9 @@ const requestImageSlice: StateCreator<
   addRequestImage: image =>
     set(state => ({ requestImages: [...state.requestImages, image] })),
 
-  setRequestImages: images => set(state => ({ requestImages: images })),
+  setRequestImages: images => set(() => ({ requestImages: images })),
 
-  setFirstSearchImage: image => set(state => ({ firstSearchImage: image })),
+  setFirstSearchImage: image => set(() => ({ firstSearchImage: image })),
 
   removeImage: index => {
     const images = get().requestImages;
@@ -22,7 +22,7 @@ const requestImageSlice: StateCreator<
       return;
     }
     updatedImages.splice(index, 1);
-    set(state => ({ requestImages: updatedImages }));
+    set(() => ({ requestImages: updatedImages }));
   },
 
   updateRegion: (region, index) => {
@@ -30,12 +30,12 @@ const requestImageSlice: StateCreator<
     let updatedRegions = [...regions];
     updatedRegions[index] = region;
 
-    set(state => ({ regions: updatedRegions }));
+    set(() => ({ regions: updatedRegions }));
   },
 
-  setRegions: regions => set(state => ({ regions: regions })),
+  setRegions: regions => set(() => ({ regions: regions })),
   resetRegions: () =>
-    set(state => ({
+    set(() => ({
       regions: [Array(3)].map(() => {
         return { x1: 0, x2: 1, y1: 0, y2: 1 };
       }),

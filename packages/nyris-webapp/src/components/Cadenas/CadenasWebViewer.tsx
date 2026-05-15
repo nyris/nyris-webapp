@@ -119,7 +119,7 @@ function CadenasWebViewer({
             .then(() => {
               setStatus3dView('loaded');
             })
-            .catch((err: any) => {
+            .catch(() => {
               setStatus3dView('not-found');
             });
         });

@@ -12,7 +12,13 @@ import { useCadSearch } from 'hooks/useCadSearch';
 import { isCadFile } from '@nyris/nyris-api';
 import UploadDisclaimer from './UploadDisclaimer';
 
-function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
+function ImageUpload({
+  onCameraClick,
+  disableDisclaimer,
+}: {
+  onCameraClick?: () => void;
+  disableDisclaimer?: boolean;
+}) {
   const settings = window.settings;
   const user = useAuth0().user;
 
@@ -66,12 +72,13 @@ function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
   ]);
 
   const showDisclaimerDisabled = useMemo(() => {
+    if (disableDisclaimer) return true;
     const disclaimer = localStorage.getItem('upload-disclaimer-suite');
     if (requestImages.length === 0) return true;
     if (!disclaimer) return false;
     return disclaimer === 'dont-show';
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDisclaimer, requestImages]);
+  }, [showDisclaimer, requestImages, disableDisclaimer]);
 
   const { singleImageSearch } = useImageSearch();
   const { cadSearch } = useCadSearch();
@@ -81,7 +88,7 @@ function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
     setQuery('');
 
     if (isCadFile(files[0])) {
-      cadSearch({ file: files[0], settings, newSearch: true }).then(res => {});
+      cadSearch({ file: files[0], settings, newSearch: true }).then(() => {});
 
       return;
     }
@@ -191,14 +198,15 @@ function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
         <Tooltip content={t('Search with an image')}>
           <label
             className={twMerge(
-              'mr-2 desktop:mr-1',
-              'w-10 h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-100 desktop:bg-transparent hover:bg-gray-100',
+              'min-w-10 min-h-10 flex justify-center items-center cursor-pointer rounded-full bg-gray-100 desktop:bg-transparent hover:bg-gray-100',
               location.pathname === '/result' && 'desktop:w-8 desktop:h-8',
+              location.pathname !== '/result' &&
+                'desktop:bg-[#FAFAFA] desktop:hover:bg-[#FAFAFA]',
             )}
             htmlFor={
               showDisclaimerDisabled && !onCameraClick ? 'icon-button-file' : ''
             }
-            onClick={e => {
+            onClick={() => {
               if (!showDisclaimerDisabled) {
                 // disclaimer
                 setShowDisclaimer(true);
@@ -207,12 +215,12 @@ function ImageUpload({ onCameraClick }: { onCameraClick?: () => void }) {
               }
             }}
           >
-            <Icon name="camera_simple" width={16} height={16} fill="#2B2C46" />
+            <Icon name="camera_ai" width={16} height={16} fill="#3B3E5F" />
           </label>
         </Tooltip>
       </div>
 
-      {showDisclaimer && (
+      {showDisclaimer && !disableDisclaimer && (
         <UploadDisclaimer
           onClose={() => {
             setShowDisclaimer(false);

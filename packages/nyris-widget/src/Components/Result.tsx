@@ -130,7 +130,9 @@ export const Result = ({
         <div className="nyris__main-heading ">
           {noResult ? labels['Let’s try that again'] : labels['Success!']}
         </div>
-        <div className={`nyris__main-description ${noResult ? 'no-results' : ''}`}>
+        <div
+          className={`nyris__main-description ${noResult ? 'no-results' : ''}`}
+        >
           {noResult &&
             selectedPreFiltersLabel.length > 0 &&
             labels["We couldn't find matches based on <prefilters>"]({
@@ -335,7 +337,12 @@ export const Result = ({
                         onClick={() => setIsInquiryModalOpen(true)}
                       >
                         {labels['Inquiry']}
-                        <Icon name="email" color="#fff" width={16} height={12} />
+                        <Icon
+                          name="email"
+                          color="#fff"
+                          width={16}
+                          height={12}
+                        />
                       </button>
                     </div>
                   </div>

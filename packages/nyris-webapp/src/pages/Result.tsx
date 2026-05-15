@@ -26,11 +26,14 @@ import { useCurrentRefinements } from 'react-instantsearch';
 import CustomCamera from 'components/CustomCameraDrawer';
 import { useTranslation } from 'react-i18next';
 import { useImageSearch } from 'hooks/useImageSearch';
-import ItemSpecification from 'components/ItemSpecification';
 import MatchNotificationBanner from 'components/MatchNotificationBanner';
+import ImageUpload from 'components/ImageUpload';
+import SmartFilter from 'components/SmartFilter';
+import { ChatAssistant, MobileChatAssistant } from 'components/ChatAssistant';
 
 function Results() {
   const settings = window.settings;
+  const isSmartFiltersEnabled = !!settings.useSmartFilters;
   const cadenas = settings.cadenas;
 
   const [feedbackStatus, setFeedbackStatus] = useState<
@@ -50,6 +53,7 @@ function Results() {
   const setShowFeedback = useUiStore(state => state.setShowFeedback);
   const showFeedback = useUiStore(state => state.showFeedback);
   const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
+  const isAiModeOpen = useUiStore(state => state.isAiModeOpen);
 
   const requestId = useResultStore(state => state.requestId);
   const imageAnalysis = useResultStore(state => state.imageAnalysis);
@@ -169,6 +173,10 @@ function Results() {
   ]);
 
   const disablePostFilter = useMemo(() => {
+    if (!settings.algolia.enabled) {
+      return false;
+    }
+
     return settings.postFilterOption && productsFromAlgolia.length > 0
       ? false
       : true;
@@ -183,245 +191,218 @@ function Results() {
           <Loading />
         </div>
       )}
-      <div className="h-full">
+      <div className="h-full overflow-y-auto overflow-x-hidden desktop:overflow-hidden">
         <div
           className={twMerge([
             'flex',
             'flex-col',
             'desktop:flex-row',
-            'justify-between',
-            'relative',
             'h-full',
+            'desktop:min-h-0',
           ])}
         >
-          <SidePanel className="hidden desktop:flex" />
-
-          <div className="w-full h-full flex flex-col">
-            <div
-              className={twMerge([
-                requestImages[0] ? 'pt-0' : 'pt-3',
-                'desktop:pt-0',
-                'desktop:mt-0',
-                'flex',
-                'flex-col',
-                'relative',
-                'w-full',
-                'mr-auto',
-                'ml-auto',
-                'max-h-full',
-                'flex-1',
-                'overflow-y-auto',
-              ])}
-            >
-              <div className="block desktop:hidden desktop:mb-0">
-                {requestImages[0] && <ImagePreview />}
-                {window.settings.showImageDetails &&
-                  (imageAnalysis?.imageDescription ||
-                    Object.keys(imageAnalysis?.specification || {}).length >
-                      0) && (
-                    <div className="p-2">
-                      <div className="self-stretch p-4 bg-[#f3f3f5] rounded flex justify-start flex-col items-start gap-2 flex-wrap content-start w-full">
-                        {imageAnalysis?.imageDescription !==
-                          'No description available' && (
-                          <div className="self-stretch flex flex-col justify-start items-start">
-                            <div className="justify-start text-black text-base font-semibold">
-                              Image description
-                            </div>
-                            <div className="self-stretch justify-start text-black text-sm font-normal">
-                              {imageAnalysis?.imageDescription || ''}
-                            </div>
-                          </div>
-                        )}
-
-                        {Object.keys(imageAnalysis?.specification || {})
-                          .filter(
-                            key =>
-                              key !== 'is_nameplate' &&
-                              key !== 'prefilter_value',
-                          )
-                          .some(key => !!imageAnalysis?.specification[key]) && (
-                          <div className="justify-start text-[#2b2c46] text-base font-semibold mt-1">
-                            Identified Attributes
-                          </div>
-                        )}
-                        <div className="flex justify-start items-start gap-4 flex-wrap content-start">
-                          {Object.keys(imageAnalysis?.specification || {})
-                            .filter(
-                              key =>
-                                key !== 'is_nameplate' &&
-                                key !== 'prefilter_value',
-                            )
-                            .map(key => {
-                              const value = imageAnalysis?.specification[key];
-                              if (!value) {
-                                return null;
-                              }
-                              return (
-                                <ItemSpecification
-                                  attr={key}
-                                  value={value}
-                                  specificationFilter={specificationFilter}
-                                  imageAnalysis={imageAnalysis}
-                                />
-                              );
-                            })}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-              </div>
+          <SidePanel className="hidden desktop:flex h-full max-h-full min-h-0" />
+          {/* Scrollable area: results + sticky chat. Scrollbar lands at far right. */}
+          <div className="flex-1 flex flex-col desktop:flex-row desktop:h-full desktop:min-h-0 desktop:overflow-y-auto">
+            {/* Result content */}
+            <div className="w-full min-h-full flex flex-col desktop:min-h-0 flex-1">
               <div
                 className={twMerge([
-                  requestImages[0] ? 'pt-0' : 'pt-3',
-                  'desktop:pt-4',
-                  'desktop:overflow-hidden',
-                  'desktop:overflow-y-auto',
+                  requestImages[0] && 'pt-0',
+                  'desktop:pt-0',
+                  'desktop:mt-0',
                   'flex',
                   'flex-col',
                   'relative',
                   'w-full',
                   'mr-auto',
                   'ml-auto',
-                  'h-full',
+                  'flex-1',
                 ])}
               >
+                <div className="block desktop:hidden desktop:mb-0 mx-2">
+                  {requestImages[0] && <ImagePreview />}
+                  {isSmartFiltersEnabled &&
+                    window.settings.showImageDetails &&
+                    (imageAnalysis?.imageDescription ||
+                      Object.keys(imageAnalysis?.specification || {}).length >
+                        0) && (
+                      <div className="my-4">
+                        <SmartFilter
+                          imageAnalysis={imageAnalysis}
+                          specificationFilter={specificationFilter}
+                        />
+                      </div>
+                    )}
+                </div>
                 <div
                   className={twMerge([
+                    requestImages[0] && 'pt-0',
+                    'desktop:pt-4',
                     'flex',
                     'flex-col',
+                    'relative',
+                    'w-full',
+                    'mr-auto',
+                    'ml-auto',
                     'flex-grow',
-                    'desktop:mt-0',
                   ])}
                 >
                   <div
-                    style={{
-                      fontWeight: 700,
-                      fontSize: 16,
-                      marginLeft: 16,
-                      marginBottom: 16,
-                    }}
+                    className={twMerge([
+                      'flex',
+                      'flex-col',
+                      'flex-grow',
+                      'desktop:mt-0',
+                    ])}
                   >
                     {!specifications?.specificationPrefilter &&
                       specifications?.prefilter_value &&
-                      window.settings.algolia.enabled &&
-                      t('Showing results for machine', {
-                        prefilter_title:
-                          window.settings.preFilterTitle?.toLocaleLowerCase(),
-                        prefilter_value: specifications.prefilter_value,
-                      })}
-                  </div>
-                  <div
-                    className={twMerge([
-                      'h-full',
-                      'relative',
-                      'flex',
-                      'justify-center',
-                      'mx-0.5',
-                      'mobile-md:mx-2',
-                      'desktop:mx-4',
-                    ])}
-                  >
-                    <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20 desktop:mb-0">
-                      <div
-                        className={twMerge(
-                          'grid grid-cols-[repeat(auto-fit,_minmax(180px,_0px))] desktop:grid-cols-[repeat(auto-fit,_minmax(190px,_0px))]',
-                          'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
-                          'w-full',
-                        )}
-                      >
-                        <GoBackButton className="col-span-full mb-2 desktop:mb-0" />
-                        <CurrentRefinements className="col-span-full" />
-                        <MatchNotificationBanner className="col-span-full" />
-                        <ProductList />
-                      </div>
-
-                      {showFeedbackSuccess && (
-                        <div className={'feedback-floating'}>
-                          <div className="feedback-section">
-                            <div className="feedback-success">
-                              {t('Thank you for your feedback')}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {feedbackStatus === 'visible' &&
-                        !showFeedbackSuccess &&
-                        productsFromAlgolia.length > 0 && (
-                          <div className={'feedback-floating'}>
-                            <div className="feedback-section feedback-backdrop-blur" />
-
-                            <div className="feedback-section">
-                              <Feedback
-                                submitFeedback={submitFeedback}
-                                onFeedbackClose={() => {
-                                  setFeedbackStatus('submitted');
-                                  setShowFeedback(false);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        )}
-                      <div>
-                        <Pagination
-                          isLoading={isFindApiLoading || isAlgoliaLoading}
-                          className={
-                            productsFromAlgolia.length === 0 &&
-                            !isAlgoliaLoading
-                              ? 'opacity-0'
-                              : ''
-                          }
-                        />
+                      window.settings.algolia.enabled && (
                         <div
                           style={{
-                            display: 'flex',
-                            flexGrow: 1,
+                            fontWeight: 700,
+                            fontSize: 16,
+                            marginLeft: 16,
+                            marginBottom: 16,
                           }}
                         >
-                          {requestImages.length > 0 &&
-                            !isAlgoliaLoading &&
-                            !isFindApiLoading &&
-                            window.settings.rfq &&
-                            window.settings.rfq.enabled && (
-                              <RfqBanner
-                                requestImage={requestImages[0]}
-                                selectedRegion={regions[0]}
-                              />
-                            )}
-                          {!isFindApiLoading &&
-                            window.settings.support &&
-                            window.settings.support.enabled &&
-                            (query || requestImages[0] || specifications) && (
-                              <InquiryBanner
-                                requestImage={requestImages[0]}
-                                selectedRegion={regions[0]}
-                                query={query}
-                              />
-                            )}
+                          {t('Showing results for machine', {
+                            prefilter_title:
+                              window.settings.preFilterTitle?.toLocaleLowerCase(),
+                            prefilter_value: specifications.prefilter_value,
+                          })}
                         </div>
-                        {settings.showPoweredByNyris && (
-                          <PoweredBy
+                      )}
+                    <div
+                      className={twMerge([
+                        'relative',
+                        'flex',
+                        'justify-center',
+                        'mx-0.5',
+                        'mobile-md:mx-2',
+                        'desktop:mx-4',
+                      ])}
+                    >
+                      <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20 desktop:mb-0">
+                        <div
+                          className={twMerge(
+                            'grid grid-cols-[repeat(auto-fit,_minmax(180px,_0px))] desktop:grid-cols-[repeat(auto-fit,_minmax(190px,_0px))]',
+                            'gap-2 desktop:gap-6 justify-center max-w-[100%] mx-auto',
+                            'w-full',
+                          )}
+                        >
+                          <GoBackButton className="col-span-full mb-2 desktop:mb-0 mt-2 desktop:mt-0" />
+                          <CurrentRefinements className="col-span-full" />
+                          <MatchNotificationBanner className="col-span-full" />
+                          <ProductList />
+                        </div>
+
+                        {showFeedbackSuccess && (
+                          <div className={'feedback-floating'}>
+                            <div className="feedback-section">
+                              <div className="feedback-success">
+                                {t('Thank you for your feedback')}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {feedbackStatus === 'visible' &&
+                          !showFeedbackSuccess &&
+                          productsFromAlgolia.length > 0 && (
+                            <div className={'feedback-floating'}>
+                              <div className="feedback-section feedback-backdrop-blur" />
+
+                              <div className="feedback-section">
+                                <Feedback
+                                  submitFeedback={submitFeedback}
+                                  onFeedbackClose={() => {
+                                    setFeedbackStatus('submitted');
+                                    setShowFeedback(false);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+                        <div>
+                          <Pagination
+                            isLoading={isFindApiLoading || isAlgoliaLoading}
                             className={
-                              'flex desktop:w-0 desktop:h-0 w-full justify-center items-center mb-2'
+                              productsFromAlgolia.length === 0 &&
+                              !isAlgoliaLoading
+                                ? 'opacity-0 hidden'
+                                : ''
                             }
                           />
-                        )}
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexGrow: 1,
+                            }}
+                          >
+                            {requestImages.length > 0 &&
+                              !isAlgoliaLoading &&
+                              !isFindApiLoading &&
+                              window.settings.rfq &&
+                              window.settings.rfq.enabled && (
+                                <RfqBanner
+                                  requestImage={requestImages[0]}
+                                  selectedRegion={regions[0]}
+                                />
+                              )}
+                            {!isFindApiLoading &&
+                              window.settings.support &&
+                              window.settings.support.enabled &&
+                              (query || requestImages[0] || specifications) && (
+                                <InquiryBanner
+                                  requestImage={requestImages[0]}
+                                  selectedRegion={regions[0]}
+                                  query={query}
+                                />
+                              )}
+                          </div>
+                          {settings.showPoweredByNyris && (
+                            <PoweredBy
+                              className={
+                                'flex desktop:w-0 desktop:h-0 w-full justify-center items-center mb-2'
+                              }
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
+                  <div className="mt-[6px] px-6  mb-6">
+                    <HitsPerPage
+                      items={[
+                        { label: '10', value: 10 },
+                        { label: '20', value: 20, default: true },
+                        { label: '30', value: 30 },
+                        { label: '40', value: 40 },
+                        { label: '50', value: 50 },
+                      ]}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="mt-[6px]">
-                <HitsPerPage
-                  items={[
-                    { label: '10', value: 10 },
-                    { label: '20', value: 20, default: true },
-                    { label: '30', value: 30 },
-                    { label: '40', value: 40 },
-                    { label: '50', value: 50 },
-                  ]}
-                />
-              </div>
+            </div>
+
+            <div
+              className={twMerge(
+                'hidden desktop:flex flex-col sticky top-0 self-start',
+                'overflow-hidden transition-all duration-300',
+                'h-screen max-h-full',
+                isAiModeOpen
+                  ? 'w-[325px] min-w-[325px] max-w-[325px]'
+                  : 'w-0 min-w-0 max-w-0',
+                'rounded-3xl',
+
+                isAiModeOpen && 'pb-4 pr-4',
+                'shadow-ds-2',
+              )}
+            >
+              <ChatAssistant />
             </div>
           </div>
         </div>
@@ -430,20 +411,24 @@ function Results() {
           <TextSearch
             className="flex desktop:hidden w-full gap-2"
             onCameraClick={() => setOpenModalCamera(true)}
+            showImageUpload={false}
+            aiMode={true}
           />
-          {/* <ImageUpload onCameraClick={() => setOpenModalCamera(true)} /> */}
+
           {isShowFilter && settings.postFilterOption && (
             <div
               style={{
                 position: 'relative',
-                width: '48px',
-                height: '48px',
                 padding: ' 8px',
                 flexShrink: 0,
                 borderRadius: '32px',
                 background: '#FAFAFA',
-                boxShadow: ' 0px 0px 8px 0px rgba(0, 0, 0, 0.15)',
               }}
+              className={twMerge(
+                'h-14 min-w-14 flex items-center justify-center ',
+                'border border-solid border-[#DDDEE7]',
+                'shadow-ds-2',
+              )}
               onClick={() => {
                 if (disablePostFilter && !isPostFilterApplied) return;
                 setShowPostFilter(true);
@@ -462,8 +447,8 @@ function Results() {
                         : '#F3F3F5'
                   }`,
                   borderRadius: '40px',
-                  width: '32px',
-                  height: '32px',
+                  width: '40px',
+                  height: '40px',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
@@ -513,6 +498,14 @@ function Results() {
               )}
             </div>
           )}
+          <div
+            className={twMerge(
+              'h-14 min-w-14 flex items-center justify-center rounded-full bg-[#FFFFFF] border border-solid border-[#DDDEE7]',
+              'shadow-ds-2',
+            )}
+          >
+            <ImageUpload onCameraClick={() => setOpenModalCamera(true)} />
+          </div>
         </div>
         <PostFilterDrawer
           openModal={showPostFilter}
@@ -524,6 +517,11 @@ function Results() {
             setOpenModalCamera(s => !s);
           }}
         />
+        {isAiModeOpen && (
+          <div className="desktop:hidden">
+            <MobileChatAssistant />
+          </div>
+        )}
       </div>
     </>
   );

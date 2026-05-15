@@ -169,7 +169,7 @@ export default class NyrisAPI {
           dist: options.geoLocation.dist?.toString(),
         }
       : {};
-    params = { ...params, text: options.text };
+    params = { ...params };
     return params;
   }
 
@@ -238,6 +238,7 @@ export default class NyrisAPI {
     options: ImageSearchOptions,
     canvas?: HTMLCanvasElement | HTMLImageElement | HTMLVideoElement,
     filters?: Filter[],
+    exacts?: string[],
     xOptions?: any,
   ): Promise<SearchResult> {
     var requestBody = new FormData();
@@ -262,6 +263,9 @@ export default class NyrisAPI {
     // }
     params = this.getParams(options);
 
+    if (options.text && this.requestContentType === 'multipart/form-data') {
+      requestBody.append('text', options.text);
+    }
     if (canvas) {
       const imageBytes = await this.prepareImage(canvas, options.cropRect);
       if (this.customSearchRequest)
@@ -280,6 +284,13 @@ export default class NyrisAPI {
         }
       }
     }
+
+    if (exacts && exacts.length > 0) {
+      for (let i = 0; i < exacts.length; i++) {
+        requestBody.append(`exact[${i}]`, exacts[i]);
+      }
+    }
+
     const { lat, lon, ...restParams } = params;
 
     let { res }: any = await timePromise(
@@ -289,7 +300,7 @@ export default class NyrisAPI {
         params: restParams,
         headers,
         responseType: 'json',
-        ...(canvas || (filters && filters.length)
+        ...(canvas || (filters && filters.length) || options.text
           ? { data: requestBody }
           : { data: null }),
       }),

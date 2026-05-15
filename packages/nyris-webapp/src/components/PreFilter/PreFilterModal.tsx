@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dialog, DialogContent, DialogTitle } from '../Modal/Dialog';
 import PreFilterComponent from './PreFilter';
 import { useMediaQuery } from 'react-responsive';

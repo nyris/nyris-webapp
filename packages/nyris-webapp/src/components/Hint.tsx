@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icon } from '@nyris/nyris-react-components';
 import { useTranslation } from 'react-i18next';
 
