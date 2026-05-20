@@ -244,9 +244,9 @@ export const useImageSearch = () => {
               response?.rerankedSkus ||
               response?.filtered_items?.map(item => String(item.sku)) ||
               [];
-            const rerankingApplied =
-              response?.rerankingApplied ??
-              (rerankedSkus.length > 0 ? true : false);
+            // const rerankingApplied =
+            //   response?.rerankingApplied ??
+            //   (rerankedSkus.length > 0 ? true : false);
 
             setSmartFilters({
               status: 'success',
@@ -323,7 +323,7 @@ export const useImageSearch = () => {
             region,
           );
         }
-        if (window.settings.vizo.chat) {
+        if (window.settings.vizo?.chat) {
           evaluateResults({
             activeProducts: res?.results || [],
             imageAnalysis: res?.image_analysis,
