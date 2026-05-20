@@ -86,7 +86,7 @@ export interface AppSettings extends NyrisAPISettings {
   experienceVisualSearchImages?: string[];
   geoLocation?: boolean;
   geoLocationMessage?: string;
-  vizo: {
+  vizo?: {
     enabled?: boolean;
     groundingEnabled?: boolean;
     fallbackToElasticSearch?: boolean;
