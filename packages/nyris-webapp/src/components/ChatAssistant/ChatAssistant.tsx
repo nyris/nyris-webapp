@@ -1,7 +1,3 @@
-/**
- * Chat Assistant Component — Vizo Search Assistant (Desktop)
- */
-
 import { memo, useRef, useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Sparkles, Send, Loader2, Globe } from 'lucide-react';
@@ -24,14 +20,12 @@ function ChatAssistant() {
     hasApiKey,
     p7Running,
     p7Done,
-    catalogSearchReady,
     catalogSearching,
     messagesEndRef,
     imageInputRef,
     handleSendMessage,
     handleOptionClick,
     handleImageUpload,
-    handleCatalogSearchWithText,
   } = useChatAssistantLogic();
 
   const setIsOpen = useConversationStore(s => s.setIsOpen);
@@ -51,10 +45,6 @@ function ChatAssistant() {
     },
     [handleOptionClick],
   );
-
-  const handleCatalogSearchTextChipClick = useCallback(async () => {
-    await handleCatalogSearchWithText();
-  }, [handleCatalogSearchWithText]);
 
   return (
     <div

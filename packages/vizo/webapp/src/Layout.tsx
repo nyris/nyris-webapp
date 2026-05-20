@@ -126,7 +126,6 @@ function Layout() {
               },
             ]
           : undefined,
-        '+ocr.text',
       );
     } catch (error) {}
 
