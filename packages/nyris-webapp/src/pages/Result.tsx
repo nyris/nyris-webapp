@@ -30,6 +30,7 @@ import MatchNotificationBanner from 'components/MatchNotificationBanner';
 import ImageUpload from 'components/ImageUpload';
 import SmartFilter from 'components/SmartFilter';
 import { ChatAssistant, MobileChatAssistant } from 'components/ChatAssistant';
+import IdentifiedAttributes from 'components/IdentifiedAttributes';
 
 function Results() {
   const settings = window.settings;
@@ -223,7 +224,6 @@ function Results() {
                 <div className="block desktop:hidden desktop:mb-0 mx-2">
                   {requestImages[0] && <ImagePreview />}
                   {isSmartFiltersEnabled &&
-                    window.settings.showImageDetails &&
                     (imageAnalysis?.imageDescription ||
                       Object.keys(imageAnalysis?.specification || {}).length >
                         0) && (
@@ -232,6 +232,62 @@ function Results() {
                           imageAnalysis={imageAnalysis}
                           specificationFilter={specificationFilter}
                         />
+                      </div>
+                    )}
+                  {window.settings.showImageDetails &&
+                    (imageAnalysis?.imageDescription ||
+                      Object.keys(imageAnalysis?.specification || {}).length >
+                        0) && (
+                      <div className="p-2">
+                        <div className="self-stretch p-4 bg-[#e9e9ef] rounded-[32px] flex justify-start flex-col items-start gap-2 flex-wrap content-start w-full">
+                          {imageAnalysis?.imageDescription !==
+                            'No description available' && (
+                            <div className="self-stretch flex flex-col justify-start items-start">
+                              <div className="justify-start text-black text-base font-semibold">
+                                Image description
+                              </div>
+                              <div className="self-stretch justify-start text-black text-sm font-normal">
+                                {imageAnalysis?.imageDescription || ''}
+                              </div>
+                            </div>
+                          )}
+
+                          {Object.keys(imageAnalysis?.specification || {})
+                            .filter(
+                              key =>
+                                key !== 'is_nameplate' &&
+                                key !== 'prefilter_value',
+                            )
+                            .some(
+                              key => !!imageAnalysis?.specification[key],
+                            ) && (
+                            <div className="justify-start text-[#2b2c46] text-base font-semibold mt-1">
+                              Identified Attributes
+                            </div>
+                          )}
+                          <div className="flex justify-start items-start gap-4 flex-wrap content-start">
+                            {Object.keys(imageAnalysis?.specification || {})
+                              .filter(
+                                key =>
+                                  key !== 'is_nameplate' &&
+                                  key !== 'prefilter_value',
+                              )
+                              .map(key => {
+                                const value = imageAnalysis?.specification[key];
+                                if (!value) {
+                                  return null;
+                                }
+                                return (
+                                  <IdentifiedAttributes
+                                    attr={key}
+                                    value={value}
+                                    specificationFilter={specificationFilter}
+                                    imageAnalysis={imageAnalysis}
+                                  />
+                                );
+                              })}
+                          </div>
+                        </div>
                       </div>
                     )}
                 </div>

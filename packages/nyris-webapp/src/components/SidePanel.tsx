@@ -8,6 +8,7 @@ import useUiStore from 'stores/ui/uiStore';
 import GroundingSpecs from './GroundingSpecs';
 import SmartFilter from './SmartFilter';
 import { useEffectiveGroundingResults } from 'hooks/useEffectiveGroundingResults';
+import IdentifiedAttributes from './IdentifiedAttributes';
 
 export default function SidePanel({ className }: { className?: string }) {
   const settings = window.settings;
@@ -105,7 +106,6 @@ export default function SidePanel({ className }: { className?: string }) {
           </div>
           <div className="pb-4 flex flex-col gap-6">
             {isSmartFiltersEnabled &&
-              window.settings.showImageDetails &&
               (imageAnalysis?.imageDescription ||
                 Object.keys(imageAnalysis?.specification || {}).length > 0 ||
                 smartFilters.status !== 'idle') && (
@@ -114,6 +114,55 @@ export default function SidePanel({ className }: { className?: string }) {
                   specificationFilter={specificationFilter}
                   variant="sidepanel"
                 />
+              )}
+
+            {window.settings.showImageDetails &&
+              (imageAnalysis?.imageDescription ||
+                Object.keys(imageAnalysis?.specification || {}).length > 0) && (
+                <div className="self-stretch p-3.5 bg-[#F3F4F8] rounded-3xl inline-flex flex-col justify-start items-start gap-1.5 mt-4 mx-4 ">
+                  {imageAnalysis?.imageDescription !==
+                    'No description available' && (
+                    <div className="self-stretch flex flex-col justify-start items-start">
+                      <div className="justify-start text-[#3B3E5F] text-base font-semibold">
+                        Image description
+                      </div>
+                      <div className="self-stretch justify-start text-[#3B3E5F] text-xs font-normal">
+                        {imageAnalysis?.imageDescription || ''}
+                      </div>
+                    </div>
+                  )}
+
+                  {Object.keys(imageAnalysis?.specification || {})
+                    .filter(
+                      key =>
+                        key !== 'is_nameplate' && key !== 'prefilter_value',
+                    )
+                    .some(key => !!imageAnalysis?.specification[key]) && (
+                    <div className="justify-start text-[#3B3E5F] text-base font-semibold mt-2">
+                      Identified Attributes
+                    </div>
+                  )}
+
+                  {Object.keys(imageAnalysis?.specification || {})
+                    .filter(
+                      key =>
+                        key !== 'is_nameplate' && key !== 'prefilter_value',
+                    )
+                    .map(key => {
+                      const value = imageAnalysis?.specification[key];
+                      if (!value) {
+                        return null;
+                      }
+                      return (
+                        <IdentifiedAttributes
+                          attr={key}
+                          value={value}
+                          specificationFilter={specificationFilter}
+                          imageAnalysis={imageAnalysis}
+                        />
+                      );
+                    })}
+                </div>
               )}
 
             {(isGoogleGroundingLoading ||
