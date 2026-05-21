@@ -223,10 +223,7 @@ function Results() {
               >
                 <div className="block desktop:hidden desktop:mb-0 mx-2">
                   {requestImages[0] && <ImagePreview />}
-                  {isSmartFiltersEnabled &&
-                    (imageAnalysis?.imageDescription ||
-                      Object.keys(imageAnalysis?.specification || {}).length >
-                        0) && (
+                  {isSmartFiltersEnabled && (
                       <div className="my-4">
                         <SmartFilter
                           imageAnalysis={imageAnalysis}

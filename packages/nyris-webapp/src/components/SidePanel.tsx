@@ -105,10 +105,7 @@ export default function SidePanel({ className }: { className?: string }) {
             {requestImages[0] && <ImagePreview />}
           </div>
           <div className="pb-4 flex flex-col gap-6">
-            {isSmartFiltersEnabled &&
-              (imageAnalysis?.imageDescription ||
-                Object.keys(imageAnalysis?.specification || {}).length > 0 ||
-                smartFilters.status !== 'idle') && (
+            {isSmartFiltersEnabled && (
                 <SmartFilter
                   imageAnalysis={imageAnalysis}
                   specificationFilter={specificationFilter}
