@@ -105,13 +105,7 @@ export default function SidePanel({ className }: { className?: string }) {
             {requestImages[0] && <ImagePreview />}
           </div>
           <div className="pb-4 flex flex-col gap-6">
-            {isSmartFiltersEnabled && (
-                <SmartFilter
-                  imageAnalysis={imageAnalysis}
-                  specificationFilter={specificationFilter}
-                  variant="sidepanel"
-                />
-              )}
+            
 
             {window.settings.showImageDetails &&
               (imageAnalysis?.imageDescription ||
@@ -161,6 +155,14 @@ export default function SidePanel({ className }: { className?: string }) {
                     })}
                 </div>
               )}
+            
+            {isSmartFiltersEnabled && (
+              <SmartFilter
+                imageAnalysis={imageAnalysis}
+                specificationFilter={specificationFilter}
+                variant="sidepanel"
+              />
+            )}
 
             {(isGoogleGroundingLoading ||
               googleGroundingResponse ||

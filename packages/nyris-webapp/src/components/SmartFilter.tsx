@@ -224,7 +224,7 @@ function SmartFilter({
         </div>
         <Icon name="smart_filter_indication" className="mt-1" />
       </div>
-      <div className="flex flex-wrap mx-4 gap-2 mt-4">
+      <div className={`flex flex-wrap mx-4 gap-2 ${imageAnalysis?.specification ? 'mt-4' : ''}`}>
         {Object.keys(imageAnalysis?.specification || {})
           .filter(key => key !== 'is_nameplate' && key !== 'prefilter_value')
           .map(key => {
@@ -307,7 +307,7 @@ function SmartFilter({
                 });
               }}
             >
-              {filter.label}: {filter.value}
+              {filter.value}
             </button>
           );
         })}

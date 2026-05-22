@@ -19,9 +19,6 @@ import useConversationStore from 'stores/chat/conversationStore';
 import { useGroundedSearch } from './useGroundedSearch';
 import { generateSmartFilters } from '../services/vizo';
 
-const DEFAULT_SMART_FILTER_PROMPT =
-  'Extract at most 4 relevant product intent filters from the request image. Return strict JSON only.';
-
 export const useImageSearch = () => {
   const setRegions = useRequestStore(state => state.setRegions);
   const query = useRequestStore(state => state.query);
@@ -206,10 +203,7 @@ export const useImageSearch = () => {
           errorMessage: null,
         });
 
-        smartFilterPromise = generateSmartFilters({
-          image: requestImage,
-          prompt: DEFAULT_SMART_FILTER_PROMPT,
-        })
+        smartFilterPromise = generateSmartFilters({ image: requestImage })
           .then(response => {
             const rawFilters = response?.filters;
             if (!rawFilters || typeof rawFilters !== 'object') {
