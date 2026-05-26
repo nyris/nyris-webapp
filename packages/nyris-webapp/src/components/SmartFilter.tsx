@@ -3,6 +3,7 @@ import ItemSpecification from './ItemSpecification';
 import { Icon } from '@nyris/nyris-react-components';
 import useRequestStore from 'stores/request/requestStore';
 import useResultStore from 'stores/result/resultStore';
+import useUiStore from 'stores/ui/uiStore';
 import { rerankSmartFilters, SmartFilterRerankItem } from 'services/vizo';
 
 function SmartFilter({
@@ -25,6 +26,7 @@ function SmartFilter({
   const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
   const requestImages = useRequestStore(state => state.requestImages);
   const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
+  const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
   const isAlgoliaEnabled = !!window.settings?.algolia?.enabled;
 
   const activeProducts =
@@ -32,10 +34,20 @@ function SmartFilter({
       ? productsFromAlgolia
       : productsFromFindApi;
 
-  const rerankItems: SmartFilterRerankItem[] = useMemo(() => {
-    return (activeProducts || [])
-      .slice(0, 50)
-      .map((product: any): SmartFilterRerankItem | null => {
+  // Always rerank against the original, unfiltered result set. Reranking
+  // mutates `productsFromFindApi`/`productsFromAlgolia`, so deriving items
+  // from those would shrink the payload on every subsequent rerank.
+  const originalResults = useMemo(
+    () =>
+      firstSearchResults && firstSearchResults.length > 0
+        ? firstSearchResults
+        : activeProducts || [],
+    [firstSearchResults, activeProducts],
+  );
+
+  const rerankItems: any[] = useMemo(() => {
+    return originalResults
+      .map((product: any): any | null => {
         const sku = product?.sku || product?.objectID;
         const imageUrl =
           product?.matches?.[0]?.url ||
@@ -49,31 +61,39 @@ function SmartFilter({
         }
 
         return {
-          sku: String(sku),
+          ...product,
           imageUrl: String(imageUrl),
-          metadata: {
-            title: product?.title || product?.name || product?.Bezeichnung || '',
-            description:
-              product?.description ||
-              product?.VK_Text_Englisch ||
-              product?.VK_Text_Deutsch ||
-              '',
-            language: window.settings.language || 'en',
-            sku: String(sku),
-            score:
-              typeof (product?.score ?? product?.similarity) === 'number'
-                ? Number(product?.score ?? product?.similarity)
-                : null,
-          },
         };
       })
       .filter((item): item is SmartFilterRerankItem => item !== null);
-  }, [activeProducts]);
+  }, [originalResults]);
+
+  const buildAlgoliaSkuFilter = (skus: string[]) => {
+    const nonEmptyFilter: string[] = ['sku:DOES_NOT_EXIST<score=1> '];
+    const rankedFilters = skus
+      .slice()
+      .reverse()
+      .map((sku, i) => `sku:'${sku}'<score=${i}> `);
+    return [...nonEmptyFilter, ...rankedFilters].join('OR ');
+  };
+
+  const restoreOriginalResults = () => {
+    if (originalResults.length === 0) {
+      return;
+    }
+    setFindApiProducts(originalResults);
+    if (isAlgoliaEnabled) {
+      setAlgoliaProducts(originalResults);
+      const skus = originalResults
+        .map((p: any) => String(p?.sku || p?.objectID || '').trim())
+        .filter(Boolean);
+      setAlgoliaFilter(buildAlgoliaSkuFilter(skus));
+    }
+  };
 
   const applySkuOrderingToCurrentResults = (orderedSkus: string[]) => {
-    const sourceResults = activeProducts || [];
     const map = new Map<string, any>(
-      sourceResults.map((item: any) => [
+      originalResults.map((item: any) => [
         String(item?.sku || item?.objectID || '').trim(),
         item,
       ]),
@@ -90,12 +110,7 @@ function SmartFilter({
     setFindApiProducts(reordered);
     if (isAlgoliaEnabled) {
       setAlgoliaProducts(reordered);
-      const nonEmptyFilter: string[] = ['sku:DOES_NOT_EXIST<score=1> '];
-      const rankedFilters = orderedSkus
-        .slice()
-        .reverse()
-        .map((sku, i) => `sku:'${sku}'<score=${i}> `);
-      setAlgoliaFilter([...nonEmptyFilter, ...rankedFilters].join('OR '));
+      setAlgoliaFilter(buildAlgoliaSkuFilter(orderedSkus));
     }
     return true;
   };
@@ -112,12 +127,11 @@ function SmartFilter({
         ...smartFilters,
         selectedFilterKey: null,
         selectedFilterValue: null,
+        rerankedSkus: [],
         rerankStatus: 'idle',
         errorMessage: null,
       });
-      if (firstSearchResults.length > 0) {
-        setFindApiProducts(firstSearchResults);
-      }
+      restoreOriginalResults();
       return;
     }
 
@@ -139,6 +153,7 @@ function SmartFilter({
       rerankStatus: 'loading',
       errorMessage: null,
     });
+    setIsFindApiLoading(true);
 
     try {
       const rerankResponse = await rerankSmartFilters({
@@ -209,6 +224,8 @@ function SmartFilter({
           ? 'Smart filters are unavailable right now.'
           : 'Could not rerank results.',
       });
+    } finally {
+      setIsFindApiLoading(false);
     }
   };
 
@@ -244,22 +261,19 @@ function SmartFilter({
           })}
       </div>
       {smartFilters.status === 'loading' && (
-        <div className="mx-4 mt-3 text-xs text-[#3E36DC]">
+        <div className="ml-[30px] mt-3 text-xs text-[#3E36DC]">
           Loading smart filters...
         </div>
       )}
       {smartFilters.status === 'error' && (
-        <div className="mx-4 mt-3 text-xs text-[#D14343]">
+        <div className="ml-[30px] mt-3 text-xs text-[#D14343]">
           {smartFilters.errorMessage || 'Could not generate smart filters.'}
         </div>
       )}
       {smartFilters.status === 'success' && smartFilters.filters.length === 0 && (
-        <div className="mx-4 mt-3 text-xs text-[#767A9F]">
+        <div className="ml-[30px] mt-3 text-xs text-[#767A9F]">
           No smart filters available for this image.
         </div>
-      )}
-      {smartFilters.rerankStatus === 'loading' && (
-        <div className="mx-4 mt-1 text-xs text-[#3E36DC]">Applying rerank...</div>
       )}
       <div
         className={
@@ -290,24 +304,38 @@ function SmartFilter({
           const isSelected =
             smartFilters.selectedFilterKey === filter.key &&
             smartFilters.selectedFilterValue === filter.value;
+          const hasSelection =
+            !!smartFilters.selectedFilterKey &&
+            !!smartFilters.selectedFilterValue;
+          const isRerankLoading = smartFilters.rerankStatus === 'loading';
+          const isDisabled = !isSelected && (hasSelection || isRerankLoading);
           return (
             <button
               key={`${filter.key}-${filter.value}-${index}`}
+              type="button"
+              disabled={isDisabled}
+              aria-pressed={isSelected}
               style={variant === 'results' ? { flex: '0 0 auto' } : undefined}
-              className={`px-3.5 py-2 rounded-lg border text-sm ${
+              className={`px-3.5 py-2 rounded-lg border text-sm inline-flex items-center gap-1.5 ${
                 isSelected
                   ? 'bg-[#545987] text-white border-[#545987]'
                   : 'bg-[#E7E8F1] text-[#767A9F] border-transparent'
-              }`}
+              } ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
               onClick={() => {
-                if (smartFilters.rerankStatus === 'loading') return;
+                if (isRerankLoading) return;
                 void onFilterClick({
                   key: filter.key,
                   value: filter.value,
                 });
               }}
             >
-              {filter.value}
+              <span>{filter.value}</span>
+              {isSelected && (
+                <Icon
+                  name="close"
+                  className="w-3 h-3 text-white"
+                />
+              )}
             </button>
           );
         })}
