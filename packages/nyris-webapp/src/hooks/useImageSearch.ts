@@ -18,6 +18,7 @@ import useResultEvaluator from './useResultEvaluator';
 import useConversationStore from 'stores/chat/conversationStore';
 import { useGroundedSearch } from './useGroundedSearch';
 import { generateSmartFilters } from '../services/vizo';
+import { cropImage } from 'utils/cropImageToBase64';
 
 export const useImageSearch = () => {
   const setRegions = useRequestStore(state => state.setRegions);
@@ -192,7 +193,7 @@ export const useImageSearch = () => {
       ];
 
       let smartFilterPromise: Promise<void> | null = null;
-      if (isSmartFiltersEnabled && requestImage && newSearch) {
+      if (isSmartFiltersEnabled && requestImage && (newSearch || imageRegion)) {
         setSmartFilters({
           status: 'loading',
           filters: [],
@@ -203,7 +204,8 @@ export const useImageSearch = () => {
           errorMessage: null,
         });
 
-        smartFilterPromise = generateSmartFilters({ image: requestImage })
+        const smartFilterImage = cropImage(requestImage, region);
+        smartFilterPromise = generateSmartFilters({ image: smartFilterImage })
           .then(response => {
             const rawFilters = response?.filters;
             if (!rawFilters || typeof rawFilters !== 'object') {
