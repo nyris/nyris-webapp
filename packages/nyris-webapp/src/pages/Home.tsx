@@ -84,7 +84,7 @@ function Home() {
           'items-center',
           'justify-center',
           'h-auto',
-          'mt-[calc(50vh-110px)]',
+          !window.settings.experienceVisualSearch ? 'mt-[calc(50vh-110px)]' : 'mt-[calc(50vh-156px)]',
         ])}
       >
         {geoLocation && <LocationInfoPopup />}
@@ -122,7 +122,7 @@ function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col desktop:hidden justify-center items-center w-full h-full ">
+      <div className="flex flex-col desktop:hidden justify-center items-center w-full h-full overflow-y-auto">
         <MobileCameraCTA setOpenModalCamera={setOpenModalCamera} />
         <div className="box-screenshot-camera">
           <CustomCamera
