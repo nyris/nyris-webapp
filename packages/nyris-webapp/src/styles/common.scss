@@ -143,6 +143,7 @@
   justify-content: center;
   background-color: #16161680;
   &-body {
+    overflow-y: auto;
     padding: 32px;
     background: #F3F3F5;
     &.geolocation {
