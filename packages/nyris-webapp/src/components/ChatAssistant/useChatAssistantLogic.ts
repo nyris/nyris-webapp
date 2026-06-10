@@ -682,7 +682,7 @@ Each result includes a unique SKU in brackets. Use the result thumbnails and met
 
       const tableSuggestions = lookupRelatedParts(
         table,
-        imageAnalysis.specification.product_category,
+        imageAnalysis?.specification?.product_category,
       );
 
       if (tableSuggestions && tableSuggestions.length > 0) {

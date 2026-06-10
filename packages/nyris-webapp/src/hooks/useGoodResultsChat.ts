@@ -592,7 +592,7 @@ Respond to the user's message with an appropriate action and follow-up options.`
           finalOptions = [
             ...finalOptions,
             {
-              label: `Find parts related to ${imageAnalysis.specification.product_category || 'request image'}`,
+              label: `Find parts related to ${imageAnalysis?.specification?.product_category || 'request image'}`,
               action_type: 'find_related_parts' as const,
               key: 'find_related',
               value: 'find_related_parts',
