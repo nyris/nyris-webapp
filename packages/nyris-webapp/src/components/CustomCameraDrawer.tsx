@@ -95,7 +95,7 @@ function CustomCamera(props: Props) {
       showFeedback: true,
     }).then(singleImageResp => {
       const specificationPrefilter =
-        singleImageResp.image_analysis?.specification?.prefilter_value || null;
+        singleImageResp?.image_analysis?.specification?.prefilter_value || null;
 
       const hasPrefilter = preFilterList.filter((filter: any) =>
         filter.values.includes(specificationPrefilter),
@@ -105,15 +105,15 @@ function CustomCamera(props: Props) {
         setShowNotMatchedError(false);
         if (hasPrefilter.length) {
           setSpecifications(
-            clone(singleImageResp.image_analysis.specification),
+            clone(singleImageResp?.image_analysis?.specification),
           );
           setNameplateImage(image);
           setPreFilter({
-            [singleImageResp.image_analysis?.specification?.prefilter_value]:
+            [singleImageResp?.image_analysis?.specification?.prefilter_value]:
               true,
           });
           setAlgoliaFilter(
-            `${settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`,
+            `${settings.alogoliaFilterField}:'${singleImageResp?.image_analysis?.specification?.prefilter_value}'`,
           );
 
           setShowLoading(false);
@@ -133,7 +133,7 @@ function CustomCamera(props: Props) {
         if (!hasPrefilter.length && window.settings.preFilterOption) {
           setSpecifications(
             clone({
-              ...singleImageResp.image_analysis.specification,
+              ...singleImageResp?.image_analysis?.specification,
               specificationPrefilter,
             }),
           );

@@ -116,13 +116,13 @@ function ImagePreviewComponent({
           setRequestImages([]);
           setShowNotMatchedError(false);
           if (hasPrefilter.length) {
-            setSpecifications(clone(res.image_analysis.specification));
+            setSpecifications(clone(res?.image_analysis?.specification));
             setNameplateImage(image);
             setPreFilter({
-              [res.image_analysis?.specification?.prefilter_value]: true,
+              [res?.image_analysis?.specification?.prefilter_value]: true,
             });
             setAlgoliaFilter(
-              `${settings.alogoliaFilterField}:'${res.image_analysis?.specification?.prefilter_value}'`,
+              `${settings.alogoliaFilterField}:'${res?.image_analysis?.specification?.prefilter_value}'`,
             );
 
             setShowLoading(false);
@@ -144,7 +144,7 @@ function ImagePreviewComponent({
           if (!hasPrefilter.length && window.settings.preFilterOption) {
             setSpecifications(
               clone({
-                ...res.image_analysis.specification,
+                ...res?.image_analysis?.specification,
                 specificationPrefilter,
               }),
             );
