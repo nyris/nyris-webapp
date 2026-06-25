@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from 'react';
 
 import eye from './eye.svg';
 import { ReactComponent as Camera } from './images/camera.svg';
@@ -6,7 +12,7 @@ import { ReactComponent as CloseButton } from './images/close.svg';
 import { ReactComponent as Plus } from './images/plus.svg';
 import { ReactComponent as Down } from './images/chevron_down.svg';
 import { ReactComponent as Triangle } from './images/triangle_down.svg';
-import { ReactComponent as FrenchLogo} from './images/French.svg';
+import { ReactComponent as FrenchLogo } from './images/French.svg';
 import { ReactComponent as DeutscheLogo } from './images/deutsche_logo.svg';
 import { ReactComponent as Logo } from './images/logo.svg';
 import { ReactComponent as DanishLogo } from './images/Danish.svg';
@@ -31,6 +37,7 @@ import { Result } from './Components/Result';
 import { AppProps, CadenasScriptStatus, Language, WidgetScreen } from './types';
 import { WebCameraModal } from './Components/WebCameraModal';
 import { Toaster } from 'react-hot-toast';
+import { ToastHelper } from './Components/ToastNotification';
 
 const assets_base_url =
   'https://assets.nyris.io/nyris-widget/cadenas/8.1.0/api';
@@ -79,9 +86,30 @@ const languages = [
   },
   {
     label: 'Руский (RU)',
-    value: 'ru'
+    value: 'ru',
   },
-]
+];
+
+const getImageFromClipboard = (event: ClipboardEvent): File | null => {
+  const clipboardData = event.clipboardData;
+  if (!clipboardData) {
+    return null;
+  }
+
+  const imageItem = Array.from(clipboardData.items || []).find(
+    item => item.kind === 'file' && item.type.startsWith('image/'),
+  );
+
+  if (imageItem) {
+    return imageItem.getAsFile();
+  }
+
+  return (
+    Array.from(clipboardData.files || []).find(file =>
+      file.type.startsWith('image/'),
+    ) || null
+  );
+};
 
 const Wait = ({ labels }: any) => (
   <div className="nyris__screen nyris__wait">
@@ -113,7 +141,9 @@ const Fail = ({
 
   return (
     <div className="nyris__screen nyris__fail">
-      <div className="nyris__main-heading">{labels['Something went wrong']}</div>
+      <div className="nyris__main-heading">
+        {labels['Something went wrong']}
+      </div>
       <div className="nyris__main-description">
         <div>{labels['Oops!']}</div>
       </div>
@@ -166,20 +196,37 @@ const Hello = ({
 
   const logos: Record<string, any> = {
     en: <Logo fill={window.nyrisSettings.primaryColor} />,
-    fr: <FrenchLogo style={{ color: window.nyrisSettings.primaryColor}} width={380} />,
+    fr: (
+      <FrenchLogo
+        style={{ color: window.nyrisSettings.primaryColor }}
+        width={380}
+      />
+    ),
     de: <DeutscheLogo fill={window.nyrisSettings.primaryColor} />,
-    da: <DanishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
-    nl: <DutchLogo style={{ color: window.nyrisSettings.primaryColor}} />,
-    it: <ItalianLogo style={{ color: window.nyrisSettings.primaryColor}} />,
-    no: <NorwegianLogo style={{ color: window.nyrisSettings.primaryColor}} />,
-    pl: <PolishLogo style={{ color: window.nyrisSettings.primaryColor}} width={380}/>,
-    es: <SpanishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
-    se: <SwedishLogo style={{ color: window.nyrisSettings.primaryColor}} />,
-    ru: <RussianLogo style={{ color: window.nyrisSettings.primaryColor}} width={380} />,
+    da: <DanishLogo style={{ color: window.nyrisSettings.primaryColor }} />,
+    nl: <DutchLogo style={{ color: window.nyrisSettings.primaryColor }} />,
+    it: <ItalianLogo style={{ color: window.nyrisSettings.primaryColor }} />,
+    no: <NorwegianLogo style={{ color: window.nyrisSettings.primaryColor }} />,
+    pl: (
+      <PolishLogo
+        style={{ color: window.nyrisSettings.primaryColor }}
+        width={380}
+      />
+    ),
+    es: <SpanishLogo style={{ color: window.nyrisSettings.primaryColor }} />,
+    se: <SwedishLogo style={{ color: window.nyrisSettings.primaryColor }} />,
+    ru: (
+      <RussianLogo
+        style={{ color: window.nyrisSettings.primaryColor }}
+        width={380}
+      />
+    ),
   };
 
-  const logoElement = useMemo(() => logos[language] || logos[window.nyrisSettings.language], [language]);
-
+  const logoElement = useMemo(
+    () => logos[language] || logos[window.nyrisSettings.language],
+    [language],
+  );
 
   return (
     <div className="nyris__screen nyris__hello">
@@ -284,9 +331,10 @@ const Hello = ({
         </Modal>
 
         <div className="nyris__main-content nyris__main-content--desktop">
-
           {window.nyrisSettings.showHelperText && (
-            <div className="nyris__main-content--desktop-info">{labels['Need a spare part reference?']}</div>
+            <div className="nyris__main-content--desktop-info">
+              {labels['Need a spare part reference?']}
+            </div>
           )}
           {/* <label
             className="nyris__hello-upload"
@@ -380,19 +428,43 @@ export const App = (props: AppProps) => {
     onToggle,
     results,
     onFile,
+    onFileDropped,
     showVisualSearchIcon,
+    loading,
   } = props;
 
   let content = null;
   let wide = false;
   let resultsSingle = false;
   let resultsMultiple = false;
-  const [language, setLanguage] = useState<any>(window.nyrisSettings.language.toLowerCase());
+  const [language, setLanguage] = useState<any>(
+    window.nyrisSettings.language.toLowerCase(),
+  );
   const [selectedPreFilters, setSelectedPreFilters] = useState<string[]>([]);
   const [postFilter, setPostFilter] = useState<any>({});
   const [isLanguagesOpen, setIsLanguagesOpen] = useState(false);
   const languageDropdownRef = useRef<HTMLDivElement>(null);
   const labels = translations(language);
+
+  const handleClipboardPaste = useCallback(
+    (event: ClipboardEvent) => {
+      if (loading || showScreen === WidgetScreen.Wait) {
+        return;
+      }
+
+      const imageFile = getImageFromClipboard(event);
+      if (!imageFile) {
+        return;
+      }
+
+      event.preventDefault();
+      ToastHelper.clipboardImageSearch(
+        labels['Image pasted from clipboard. Starting visual search.'],
+      );
+      onFileDropped(imageFile, Object.keys(selectedPreFilters));
+    },
+    [labels, loading, onFileDropped, selectedPreFilters, showScreen],
+  );
 
   const [cadenasScriptStatus, setCadenasScriptStatus] =
     useState<CadenasScriptStatus>('disabled');
@@ -443,6 +515,18 @@ export const App = (props: AppProps) => {
       document.removeEventListener('click', handleClick);
     };
   }, []);
+
+  useEffect(() => {
+    if (showScreen === WidgetScreen.Hidden) {
+      return;
+    }
+
+    document.addEventListener('paste', handleClipboardPaste);
+
+    return () => {
+      document.removeEventListener('paste', handleClipboardPaste);
+    };
+  }, [handleClipboardPaste, showScreen]);
 
   switch (showScreen) {
     case WidgetScreen.Hello:
@@ -525,22 +609,30 @@ export const App = (props: AppProps) => {
                   >
                     <div
                       className={`nyris__header-language-label ${isLanguagesOpen ? 'open' : ''}`}
-                      style={{ '--border-color': window.nyrisSettings.primaryColor } as React.CSSProperties}
-                      onClick={() => setIsLanguagesOpen((prev) => !prev)}
+                      style={
+                        {
+                          '--border-color': window.nyrisSettings.primaryColor,
+                        } as React.CSSProperties
+                      }
+                      onClick={() => setIsLanguagesOpen(prev => !prev)}
                     >
                       {language.toUpperCase()}
                       {isLanguagesOpen ? (
-                        <Triangle style={{ transform: 'rotate(180deg)'}} />
+                        <Triangle style={{ transform: 'rotate(180deg)' }} />
                       ) : (
                         <Triangle />
                       )}
                     </div>
                     {isLanguagesOpen ? (
                       <div
-                          className="nyris__header-language-list"
-                          style={{ '--hover-color': window.nyrisSettings.primaryColor } as React.CSSProperties}
+                        className="nyris__header-language-list"
+                        style={
+                          {
+                            '--hover-color': window.nyrisSettings.primaryColor,
+                          } as React.CSSProperties
+                        }
                       >
-                        {languages.map((languageItem) => (
+                        {languages.map(languageItem => (
                           <div
                             className="nyris__header-language-list-item"
                             onClick={() => {

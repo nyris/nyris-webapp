@@ -2,7 +2,10 @@ import React from 'react';
 import { Language } from './types';
 
 const translations = (language: Language) => {
-  const dictionaries: Record<'de' | 'en' | 'fr' | 'pl' | 'it' | 'se' | 'es' | 'da' | 'nl' | 'no' | 'ru', any> = {
+  const dictionaries: Record<
+    'de' | 'en' | 'fr' | 'pl' | 'it' | 'se' | 'es' | 'da' | 'nl' | 'no' | 'ru',
+    any
+  > = {
     de: {
       Search: 'Suche',
       'Analyzing image...': 'Bild wird analysiert...',
@@ -20,6 +23,8 @@ const translations = (language: Language) => {
       'Drag and drop an image here': 'Bild hierher ziehen',
       'Browse gallery': 'Galerie durchsuchen',
       'Take a photo': 'Foto aufnehmen',
+      'Image pasted from clipboard. Starting visual search.':
+        'Bild aus der Zwischenablage eingefügt. Visuelle Suche gestartet.',
       'Test Visual Search Widget': 'Testen Sie das visuelle Such-Widget',
       'Enter your api key and submit': 'Geben Sie Ihren API-Key ein',
       'API key': 'API-Key',
@@ -47,17 +52,19 @@ const translations = (language: Language) => {
       Cancel: 'Abbrechen',
       Apply: 'Anwenden',
       'Submit your image for inquiry': 'Senden Sie Ihr Bild zur Anfrage',
-      'Inquiry': 'Anfrage',
+      Inquiry: 'Anfrage',
       'Additional information': 'Zusätzliche Informationen',
       'Your email': 'Deine E-Mail',
       'Search criteria': 'Suchkriterien',
       'Search criteria is not selected': 'Suchkriterien sind nicht ausgewählt',
       'No results found for your query?': 'Keine Ergebnisse gefunden?',
       'Share it with the team': 'Teile es mit dem Team',
-      'Send': 'Senden',
+      Send: 'Senden',
       'Request sent successfully': 'Anfrage erfolgreich gesendet',
-      'Request not sent, please try again': 'Anfrage nicht gesendet, bitte versuchen Sie es erneut.',
-      'Need a spare part reference?': 'Benötigen Sie eine Ersatzteilreferenz? Ziehen Sie einfach ein Foto des Teils per Drag & Drop in unsere KI-gestützte Smart Search, und schon werden Ihnen die richtigen Referenzen vorgeschlagen.',
+      'Request not sent, please try again':
+        'Anfrage nicht gesendet, bitte versuchen Sie es erneut.',
+      'Need a spare part reference?':
+        'Benötigen Sie eine Ersatzteilreferenz? Ziehen Sie einfach ein Foto des Teils per Drag & Drop in unsere KI-gestützte Smart Search, und schon werden Ihnen die richtigen Referenzen vorgeschlagen.',
     },
     en: {
       Search: 'Search',
@@ -76,6 +83,8 @@ const translations = (language: Language) => {
       'Drag and drop an image here': 'Drag and drop an image here',
       'Browse gallery': 'Browse gallery',
       'Take a photo': 'Take a photo',
+      'Image pasted from clipboard. Starting visual search.':
+        'Image pasted from clipboard. Starting visual search.',
       'Test Visual Search Widget': 'Test Visual Search Widget',
       'Enter your api key and submit': 'Enter your api key and submit',
       'API key': 'API key',
@@ -101,35 +110,39 @@ const translations = (language: Language) => {
       Cancel: 'Cancel',
       Apply: 'Apply',
       'Submit your image for inquiry': 'Submit your image for inquiry',
-      'Inquiry': 'Inquiry',
+      Inquiry: 'Inquiry',
       'Additional information': 'Additional information',
       'Your email': 'Your email',
       'Search criteria': 'Search criteria',
       'Search criteria is not selected': 'Search criteria is not selected',
       'No results found for your query?': 'No results found for your query?',
       'Share it with the team': 'Share it with the team',
-      'Send': 'Send',
+      Send: 'Send',
       'Request sent successfully': 'Request sent successfully',
-      'Request not sent, please try again': 'Request not sent, please try again.',
-      'Need a spare part reference?': 'Need a spare part reference? Simply drag and drop a photo of the part into our AI-powered Smart Search, and it will instantly suggest the correct references.',
+      'Request not sent, please try again':
+        'Request not sent, please try again.',
+      'Need a spare part reference?':
+        'Need a spare part reference? Simply drag and drop a photo of the part into our AI-powered Smart Search, and it will instantly suggest the correct references.',
     },
     fr: {
       Search: 'Recherche',
-      'Analyzing image...': 'Analyse de l\'image...',
+      'Analyzing image...': "Analyse de l'image...",
       'Hold on': 'Attendez',
       'We are working hard on finding the product':
-        'Nous travaillons d\'arrache-pied pour trouver le produit',
+        "Nous travaillons d'arrache-pied pour trouver le produit",
       'Success!': 'Succès!',
       'matches found': 'correspondances trouvées',
       'match found': 'correspondance trouvée',
       'View more': 'Voir plus',
-      'Something went wrong': 'Quelque chose n\'a pas fonctionné',
+      'Something went wrong': "Quelque chose n'a pas fonctionné",
       'Oops!':
         'Oups ! Nous avons rencontré un problème lors de la recherche. Veuillez vous assurer que votre image est conforme aux lignes directrices et réessayez.',
       'Upload a picture': 'Télécharger une image',
       'Drag and drop an image here': 'Glisser-déposer une image ici',
       'Browse gallery': 'Parcourir la galerie',
       'Take a photo': 'Prendre une photo',
+      'Image pasted from clipboard. Starting visual search.':
+        'Image collée depuis le presse-papiers. Recherche visuelle lancée.',
       'Test Visual Search Widget': 'Test du widget de recherche visuelle',
       'Enter your api key and submit': 'Saisissez votre clé api et validez',
       'API key': 'Clé API',
@@ -137,13 +150,15 @@ const translations = (language: Language) => {
       Submit: 'Soumettre',
       'Open visual search': 'Recherche visuelle ouverte',
       'Let’s try that again': 'Essayons encore une fois',
-      'We couldn’t find matches': 'Nous n\'avons pas trouvé de correspondance cette fois-ci.',
+      'We couldn’t find matches':
+        "Nous n'avons pas trouvé de correspondance cette fois-ci.",
       'For the best results, please use':
         'Pour obtenir les meilleurs résultats, utilisez une photo nette, bien éclairée et centrée, avec un arrière-plan propre, et recommencez !',
       'Click a picture': 'Cliquez sur une image',
-      'Back to request image': 'Retour à la demande d\'image',
+      'Back to request image': "Retour à la demande d'image",
       'View full description': 'Voir la description complète',
-      'Drag an image or click to upload': 'Faites glisser une image ou cliquez pour la télécharger',
+      'Drag an image or click to upload':
+        'Faites glisser une image ou cliquez pour la télécharger',
       "We couldn't find matches based on <prefilters>":
         "Nous n'avons pas trouvé de correspondance basée sur <prefilters>.",
       'based on': 'sur la base de',
@@ -154,18 +169,22 @@ const translations = (language: Language) => {
       'Clear all': 'tout effacer',
       Cancel: 'Annuler',
       Apply: 'Appliquer',
-      'Submit your image for inquiry': 'Soumettez votre image pour demande de renseignements',
-      'Inquiry': 'Enquête',
+      'Submit your image for inquiry':
+        'Soumettez votre image pour demande de renseignements',
+      Inquiry: 'Enquête',
       'Additional information': 'Informations supplémentaires',
       'Your email': 'Votre email',
       'Search criteria': 'Critères de recherche',
-      'Search criteria is not selected': 'Les critères de recherche ne sont pas sélectionnés',
+      'Search criteria is not selected':
+        'Les critères de recherche ne sont pas sélectionnés',
       'No results found for your query?': 'Aucun résultat trouvé ?',
       'Share it with the team': 'Partagez-le avec l’équipe',
-      'Send': 'Envoyer',
+      Send: 'Envoyer',
       'Request sent successfully': 'Demande envoyée avec succès',
-      'Request not sent, please try again': 'Demande non envoyée, veuillez réessayer.',
-      'Need a spare part reference?': 'Vous avez besoin d\'une référence de pièce détachée ? Il vous suffit de glisser-déposer une photo de la pièce dans notre outil de recherche intelligente alimenté par l\'IA, qui vous proposera instantanément les références correctes.',
+      'Request not sent, please try again':
+        'Demande non envoyée, veuillez réessayer.',
+      'Need a spare part reference?':
+        "Vous avez besoin d'une référence de pièce détachée ? Il vous suffit de glisser-déposer une photo de la pièce dans notre outil de recherche intelligente alimenté par l'IA, qui vous proposera instantanément les références correctes.",
     },
     pl: {
       Search: 'Wyszukiwanie',
@@ -184,6 +203,8 @@ const translations = (language: Language) => {
       'Drag and drop an image here': '',
       'Browse gallery': 'Przeglądaj galerię',
       'Take a photo': 'Zrób zdjęcie',
+      'Image pasted from clipboard. Starting visual search.':
+        'Obraz wklejony ze schowka. Rozpoczynam wyszukiwanie wizualne.',
       'Test Visual Search Widget': '',
       'Enter your api key and submit': '',
       'API key': '',
@@ -192,14 +213,14 @@ const translations = (language: Language) => {
       'Open visual search': '',
       'Let’s try that again': 'Spróbujmy jeszcze raz',
       'We couldn’t find matches': 'Nie mogliśmy znaleźć dopasowań',
-      'For the best results, please use':
-        '',
+      'For the best results, please use': '',
       'Click a picture': '',
       'Back to request image': 'Powrót do żądanego obrazu',
       'View full description': '',
-      'Drag an image or click to upload': 'Przeciągnij obraz lub kliknij, aby go przesłać',
+      'Drag an image or click to upload':
+        'Przeciągnij obraz lub kliknij, aby go przesłać',
       "We couldn't find matches based on <prefilters>":
-        "Nie mogliśmy znaleźć dopasowań na podstawie <prefilters>.",
+        'Nie mogliśmy znaleźć dopasowań na podstawie <prefilters>.',
       'based on': 'na podstawie',
       'Refine your search results': 'Uściślij wyniki wyszukiwania',
       'Are these results useful?': 'Czy te wyniki są przydatne?',
@@ -209,17 +230,20 @@ const translations = (language: Language) => {
       Cancel: 'Anuluj',
       Apply: 'Zastosuj',
       'Submit your image for inquiry': 'Prześlij swój obraz do zapytania',
-      'Inquiry': 'Zapytanie',
+      Inquiry: 'Zapytanie',
       'Additional information': 'Dodatkowe informacje',
       'Your email': 'Twój e-mail',
       'Search criteria': 'Kryteria wyszukiwania',
-      'Search criteria is not selected': 'Kryteria wyszukiwania nie zostały wybrane',
+      'Search criteria is not selected':
+        'Kryteria wyszukiwania nie zostały wybrane',
       'No results found for your query?': 'Nie znaleziono wyników?',
       'Share it with the team': 'Udostępnij to zespołowi',
-      'Send': 'Wyślij',
+      Send: 'Wyślij',
       'Request sent successfully': 'Żądanie zostało pomyślnie wysłane',
-      'Request not sent, please try again': 'Żądanie nie zostało wysłane. Spróbuj ponownie.',
-      'Need a spare part reference?': 'Potrzebujesz numeru referencyjnego części zamiennej? Po prostu przeciągnij i upuść zdjęcie części do naszej inteligentnej wyszukiwarki opartej na sztucznej inteligencji, a natychmiast wyświetli ona odpowiednie numery referencyjne.',
+      'Request not sent, please try again':
+        'Żądanie nie zostało wysłane. Spróbuj ponownie.',
+      'Need a spare part reference?':
+        'Potrzebujesz numeru referencyjnego części zamiennej? Po prostu przeciągnij i upuść zdjęcie części do naszej inteligentnej wyszukiwarki opartej na sztucznej inteligencji, a natychmiast wyświetli ona odpowiednie numery referencyjne.',
     },
     it: {
       Search: 'Cerca',
@@ -238,6 +262,8 @@ const translations = (language: Language) => {
       'Drag and drop an image here': '',
       'Browse gallery': 'Sfoglia la galleria',
       'Take a photo': 'Scatta una foto',
+      'Image pasted from clipboard. Starting visual search.':
+        'Immagine incollata dagli appunti. Avvio della ricerca visiva.',
       'Test Visual Search Widget': '',
       'Enter your api key and submit': '',
       'API key': '',
@@ -246,14 +272,14 @@ const translations = (language: Language) => {
       'Open visual search': '',
       'Let’s try that again': 'Riprova',
       'We couldn’t find matches': 'Non abbiamo trovato corrispondenze',
-      'For the best results, please use':
-        '',
+      'For the best results, please use': '',
       'Click a picture': '',
       'Back to request image': 'Torna alla richiesta di immagine',
       'View full description': '',
-      'Drag an image or click to upload': 'Trascina un\'immagine o fai clic per caricarla',
+      'Drag an image or click to upload':
+        "Trascina un'immagine o fai clic per caricarla",
       "We couldn't find matches based on <prefilters>":
-        "Non siamo riusciti a trovare corrispondenze basate su <prefilters>.",
+        'Non siamo riusciti a trovare corrispondenze basate su <prefilters>.',
       'based on': '',
       'Refine your search results': 'Ridefinisci i risultati della ricerca',
       'Are these results useful?': 'Questi risultati sono utili?',
@@ -263,17 +289,19 @@ const translations = (language: Language) => {
       Cancel: 'Cancella',
       Apply: 'Applica',
       'Submit your image for inquiry': 'Invia la tua immagine per la richiesta',
-      'Inquiry': 'Richiesta di informazioni',
+      Inquiry: 'Richiesta di informazioni',
       'Additional information': 'Informazioni aggiuntive',
       'Your email': 'La tua email',
       'Search criteria': 'Criteri di ricerca',
-      'Search criteria is not selected': 'I criteri di ricerca non sono selezionati',
+      'Search criteria is not selected':
+        'I criteri di ricerca non sono selezionati',
       'No results found for your query?': 'Nessun risultato trovato?',
       'Share it with the team': 'Condividilo con il team',
-      'Send': 'Invia',
+      Send: 'Invia',
       'Request sent successfully': 'Richiesta inviata con successo.',
       'Request not sent, please try again': 'Richiesta non inviata, riprova.',
-      'Need a spare part reference?': 'Hai bisogno di un riferimento per un pezzo di ricambio? Basta trascinare una foto del pezzo nella nostra ricerca intelligente basata sull\'intelligenza artificiale e ti suggerirà immediatamente i riferimenti corretti.',
+      'Need a spare part reference?':
+        "Hai bisogno di un riferimento per un pezzo di ricambio? Basta trascinare una foto del pezzo nella nostra ricerca intelligente basata sull'intelligenza artificiale e ti suggerirà immediatamente i riferimenti corretti.",
     },
     se: {
       Search: 'Sök',
@@ -292,6 +320,8 @@ const translations = (language: Language) => {
       'Drag and drop an image here': '',
       'Browse gallery': 'Bläddra i galleri',
       'Take a photo': 'Ta en bild',
+      'Image pasted from clipboard. Starting visual search.':
+        'Bild inklistrad från urklipp. Startar visuell sökning.',
       'Test Visual Search Widget': '',
       'Enter your api key and submit': '',
       'API key': '',
@@ -299,15 +329,16 @@ const translations = (language: Language) => {
       Submit: '',
       'Open visual search': '',
       'Let’s try that again': 'Låt oss försöka igen.',
-      'We couldn’t find matches': 'Vi kunde inte hitta några matchningar den här gången.',
-      'For the best results, please use':
-        '',
+      'We couldn’t find matches':
+        'Vi kunde inte hitta några matchningar den här gången.',
+      'For the best results, please use': '',
       'Click a picture': '',
       'Back to request image': 'Tillbaka för att begära bild',
       'View full description': '',
-      'Drag an image or click to upload': 'Dra en bild eller klicka för att ladda upp den',
+      'Drag an image or click to upload':
+        'Dra en bild eller klicka för att ladda upp den',
       "We couldn't find matches based on <prefilters>":
-        "Vi kunde inte hitta några matchningar baserade på <prefilters>.",
+        'Vi kunde inte hitta några matchningar baserade på <prefilters>.',
       'based on': 'baserat på ',
       'Refine your search results': 'Förfina dina sökresultat',
       'Are these results useful?': 'Är dessa resultat användbara?',
@@ -317,17 +348,19 @@ const translations = (language: Language) => {
       Cancel: 'Avbryt',
       Apply: 'Tillämpa',
       'Submit your image for inquiry': 'Skicka in din bild för förfrågan',
-      'Inquiry': 'Förfrågan',
+      Inquiry: 'Förfrågan',
       'Additional information': 'Ytterligare information',
       'Your email': 'Din e-post',
       'Search criteria': 'Sök kriterier',
       'Search criteria is not selected': 'Sökkriterierna är inte valda',
       'No results found for your query?': 'Inga resultat hittades?',
       'Share it with the team': 'Dela det med teamet',
-      'Send': 'Skicka',
+      Send: 'Skicka',
       'Request sent successfully': 'Begäran har skickats.',
-      'Request not sent, please try again': 'Förfrågan har inte skickats, försök igen.',
-      'Need a spare part reference?': 'Behöver du en reservdelsreferens? Dra och släpp helt enkelt en bild av delen i vår AI-drivna smarta sökfunktion så föreslår den omedelbart rätt referenser.',
+      'Request not sent, please try again':
+        'Förfrågan har inte skickats, försök igen.',
+      'Need a spare part reference?':
+        'Behöver du en reservdelsreferens? Dra och släpp helt enkelt en bild av delen i vår AI-drivna smarta sökfunktion så föreslår den omedelbart rätt referenser.',
     },
     es: {
       Search: 'Buscar',
@@ -346,6 +379,8 @@ const translations = (language: Language) => {
       'Drag and drop an image here': '',
       'Browse gallery': 'Mirar galería',
       'Take a photo': 'Hacer fotografía',
+      'Image pasted from clipboard. Starting visual search.':
+        'Imagen pegada desde el portapapeles. Iniciando búsqueda visual.',
       'Test Visual Search Widget': '',
       'Enter your api key and submit': '',
       'API key': '',
@@ -354,14 +389,13 @@ const translations = (language: Language) => {
       'Open visual search': '',
       'Let’s try that again': '¡Intentémoslo de nuevo!',
       'We couldn’t find matches': 'No pudimos encontrar coincidencias',
-      'For the best results, please use':
-        '',
+      'For the best results, please use': '',
       'Click a picture': '',
       'Back to request image': 'Solicitar imagen de nuevo',
       'View full description': '',
       'Drag an image or click to upload': 'Arrastre imagen o suba imagen',
       "We couldn't find matches based on <prefilters>":
-        "No pudimos encontrar coincidencias basadas en <prefilters>.",
+        'No pudimos encontrar coincidencias basadas en <prefilters>.',
       'based on': 'basadas en',
       'Refine your search results': 'Acotar los resultados de búsqueda',
       'Are these results useful?': '¿Son útiles estos resultados?',
@@ -371,24 +405,26 @@ const translations = (language: Language) => {
       Cancel: 'Cancelar',
       Apply: 'Solicitar',
       'Submit your image for inquiry': 'Envíe su imagen para consulta',
-      'Inquiry': 'Consulta',
+      Inquiry: 'Consulta',
       'Additional information': 'Información adicional',
       'Your email': 'Tu correo electrónico',
       'Search criteria': 'Criterios de búsqueda',
-      'Search criteria is not selected': 'Criterios de búsqueda no seleccionados',
+      'Search criteria is not selected':
+        'Criterios de búsqueda no seleccionados',
       'No results found for your query?': '¿No se encontraron resultados?',
       'Share it with the team': 'Compártelo con el equipo',
-      'Send': 'Enviar',
+      Send: 'Enviar',
       'Request sent successfully': 'Solicitud enviada exitosamente.',
-      'Request not sent, please try again': 'Solicitud no enviada, por favor inténtelo nuevamente.',
-      'Need a spare part reference?': '¿Necesita una referencia de pieza de repuesto? Simplemente arrastre y suelte una foto de la pieza en nuestra búsqueda inteligente con tecnología de inteligencia artificial, y le sugerirá al instante las referencias correctas.',
+      'Request not sent, please try again':
+        'Solicitud no enviada, por favor inténtelo nuevamente.',
+      'Need a spare part reference?':
+        '¿Necesita una referencia de pieza de repuesto? Simplemente arrastre y suelte una foto de la pieza en nuestra búsqueda inteligente con tecnología de inteligencia artificial, y le sugerirá al instante las referencias correctas.',
     },
     da: {
       Search: 'Søg',
       'Analyzing image...': 'Analysere image...',
       'Hold on': 'Vent venligst',
-      'We are working hard on finding the product':
-        'Vi arbejder på det',
+      'We are working hard on finding the product': 'Vi arbejder på det',
       'Success!': 'Det lykkedes!',
       'matches found': 'match er fundet',
       'match found': 'match er fundet',
@@ -400,6 +436,8 @@ const translations = (language: Language) => {
       'Drag and drop an image here': '',
       'Browse gallery': 'Gennemse billeder',
       'Take a photo': 'Tag et foto',
+      'Image pasted from clipboard. Starting visual search.':
+        'Billede indsat fra udklipsholderen. Starter visuel søgning.',
       'Test Visual Search Widget': '',
       'Enter your api key and submit': '',
       'API key': '',
@@ -407,15 +445,16 @@ const translations = (language: Language) => {
       Submit: '',
       'Open visual search': '',
       'Let’s try that again': '',
-      'We couldn’t find matches': 'Lad os prøve igen, vi kunne ikke finde nogle resultater denne gang.',
-      'For the best results, please use':
-        '',
+      'We couldn’t find matches':
+        'Lad os prøve igen, vi kunne ikke finde nogle resultater denne gang.',
+      'For the best results, please use': '',
       'Click a picture': '',
       'Back to request image': 'Tilbage til anmod om image',
       'View full description': '',
-      'Drag an image or click to upload': 'Træk et billede eller klik for at uploade',
+      'Drag an image or click to upload':
+        'Træk et billede eller klik for at uploade',
       "We couldn't find matches based on <prefilters>":
-        "Lad os prøve igen, vi kunne ikke finde nogle resultater på <prefilters>.",
+        'Lad os prøve igen, vi kunne ikke finde nogle resultater på <prefilters>.',
       'based on': 'på baggrund af',
       'Refine your search results': 'Forbedre dine søgeresultater',
       'Are these results useful?': 'Er disse resultater nyttige?',
@@ -425,17 +464,19 @@ const translations = (language: Language) => {
       Cancel: 'Annuller',
       Apply: 'Anvend',
       'Submit your image for inquiry': 'Send dit billede til forespørgsel',
-      'Inquiry': 'Forespørgsel',
+      Inquiry: 'Forespørgsel',
       'Additional information': 'Yderligere oplysninger',
       'Your email': 'Din e-mail',
       'Search criteria': 'Søgekriterier',
       'Search criteria is not selected': 'Søgekriterier er ikke valgt',
       'No results found for your query?': 'Ingen resultater fundet?',
       'Share it with the team': 'Del det med teamet',
-      'Send': 'Send',
+      Send: 'Send',
       'Request sent successfully': 'Anmodningen blev sendt.',
-      'Request not sent, please try again': 'Anmodningen er ikke sendt, prøv venligst igen.',
-      'Need a spare part reference?': 'Har du brug for en reservedelsreference? Du skal blot trække og slippe et foto af delen ind i vores AI-drevne Smart Search, så vil den straks foreslå de korrekte referencer.',
+      'Request not sent, please try again':
+        'Anmodningen er ikke sendt, prøv venligst igen.',
+      'Need a spare part reference?':
+        'Har du brug for en reservedelsreference? Du skal blot trække og slippe et foto af delen ind i vores AI-drevne Smart Search, så vil den straks foreslå de korrekte referencer.',
     },
     nl: {
       Search: 'Zoek',
@@ -454,6 +495,8 @@ const translations = (language: Language) => {
       'Drag and drop an image here': '',
       'Browse gallery': 'Zoek in galerij',
       'Take a photo': 'Maak een foto',
+      'Image pasted from clipboard. Starting visual search.':
+        'Afbeelding geplakt vanaf het klembord. Visuele zoekopdracht gestart.',
       'Test Visual Search Widget': '',
       'Enter your api key and submit': '',
       'API key': '',
@@ -461,15 +504,16 @@ const translations = (language: Language) => {
       Submit: '',
       'Open visual search': '',
       'Let’s try that again': '',
-      'We couldn’t find matches': 'Laten we dat nog eens proberen. Deze keer konden we geen overeenkomsten vinden.',
-      'For the best results, please use':
-        '',
+      'We couldn’t find matches':
+        'Laten we dat nog eens proberen. Deze keer konden we geen overeenkomsten vinden.',
+      'For the best results, please use': '',
       'Click a picture': '',
       'Back to request image': 'Terug naar de afbeelding opvragen',
       'View full description': '',
-      'Drag an image or click to upload': 'Sleep een afbeelding of klik om te uploaden',
+      'Drag an image or click to upload':
+        'Sleep een afbeelding of klik om te uploaden',
       "We couldn't find matches based on <prefilters>":
-        "Laten we dat nog eens proberen. We konden geen overeenkomsten vinden op basis van <prefilters>.",
+        'Laten we dat nog eens proberen. We konden geen overeenkomsten vinden op basis van <prefilters>.',
       'based on': 'op basis van',
       'Refine your search results': 'Verfijn zoekresultaten',
       'Are these results useful?': 'Zijn deze resultaten nuttig?',
@@ -478,25 +522,27 @@ const translations = (language: Language) => {
       'Clear all': 'Wis alles',
       Cancel: 'Annuleer',
       Apply: 'Toepassen',
-      'Submit your image for inquiry': 'Dien uw afbeelding in voor een aanvraag',
-      'Inquiry': 'Navraag',
+      'Submit your image for inquiry':
+        'Dien uw afbeelding in voor een aanvraag',
+      Inquiry: 'Navraag',
       'Additional information': 'Aanvullende informatie',
       'Your email': 'Jouw e-mail',
       'Search criteria': 'Zoekcriteria',
       'Search criteria is not selected': 'Zoekcriteria niet geselecteerd',
       'No results found for your query?': 'Geen resultaten gevonden?',
       'Share it with the team': 'Deel het met het team',
-      'Send': 'Verzenden',
+      Send: 'Verzenden',
       'Request sent successfully': 'Aanvraag succesvol verzonden.',
-      'Request not sent, please try again': 'Verzoek niet verzonden, probeer het opnieuw.',
-      'Need a spare part reference?': 'Heb je een referentie voor een reserveonderdeel nodig? Sleep gewoon een foto van het onderdeel naar onze AI-aangedreven Smart Search en deze zal onmiddellijk de juiste referenties voorstellen.',
+      'Request not sent, please try again':
+        'Verzoek niet verzonden, probeer het opnieuw.',
+      'Need a spare part reference?':
+        'Heb je een referentie voor een reserveonderdeel nodig? Sleep gewoon een foto van het onderdeel naar onze AI-aangedreven Smart Search en deze zal onmiddellijk de juiste referenties voorstellen.',
     },
     no: {
       Search: 'Søk',
       'Analyzing image...': 'Analyserer bilde...',
       'Hold on': 'Vennligst vent',
-      'We are working hard on finding the product':
-        'vi jobber med saken',
+      'We are working hard on finding the product': 'vi jobber med saken',
       'Success!': 'Suksess!',
       'matches found': 'treff funnet',
       'match found': 'treff funnet',
@@ -508,6 +554,8 @@ const translations = (language: Language) => {
       'Drag and drop an image here': '',
       'Browse gallery': 'Bla gjennom galleriet',
       'Take a photo': 'Ta Bilde',
+      'Image pasted from clipboard. Starting visual search.':
+        'Bilde limt inn fra utklippstavlen. Starter visuelt søk.',
       'Test Visual Search Widget': '',
       'Enter your api key and submit': '',
       'API key': '',
@@ -516,14 +564,14 @@ const translations = (language: Language) => {
       'Open visual search': '',
       'Let’s try that again': 'La oss prøve det igjen',
       'We couldn’t find matches': 'Vi fant ingen treff denne gangen.',
-      'For the best results, please use':
-        '',
+      'For the best results, please use': '',
       'Click a picture': '',
       'Back to request image': 'Tilbake til forespørsel om bilde',
       'View full description': '',
-      'Drag an image or click to upload': 'Dra et bilde eller klikk for å laste det opp',
+      'Drag an image or click to upload':
+        'Dra et bilde eller klikk for å laste det opp',
       "We couldn't find matches based on <prefilters>":
-        "Vi kunne ikke finne treff basert på <prefilters>.",
+        'Vi kunne ikke finne treff basert på <prefilters>.',
       'based on': 'basert på',
       'Refine your search results': 'Avgrens søkeresultatene dine',
       'Are these results useful?': 'Er disse resultatene nyttige?',
@@ -533,17 +581,19 @@ const translations = (language: Language) => {
       Cancel: 'Avbryt',
       Apply: 'Søke',
       'Submit your image for inquiry': 'Send inn bildet ditt for forespørsel',
-      'Inquiry': 'Forespørsel',
+      Inquiry: 'Forespørsel',
       'Additional information': 'Tilleggsinformasjon',
       'Your email': 'Din e-post',
       'Search criteria': 'Søkekriterier',
       'Search criteria is not selected': 'Søkekriterier er ikke valgt',
       'No results found for your query?': 'Fant ingen resultater?',
       'Share it with the team': 'Del det med teamet',
-      'Send': 'Send',
+      Send: 'Send',
       'Request sent successfully': 'Forespørselen ble sendt.',
-      'Request not sent, please try again': 'Forespørsel ikke sendt, vennligst prøv igjen.',
-      'Need a spare part reference?': 'Trenger du en reservedelsreferanse? Bare dra og slipp et bilde av delen inn i vår AI-drevne Smart Search, så vil den umiddelbart foreslå de riktige referansene.',
+      'Request not sent, please try again':
+        'Forespørsel ikke sendt, vennligst prøv igjen.',
+      'Need a spare part reference?':
+        'Trenger du en reservedelsreferanse? Bare dra og slipp et bilde av delen inn i vår AI-drevne Smart Search, så vil den umiddelbart foreslå de riktige referansene.',
     },
     ru: {
       Search: 'Поиск',
@@ -562,6 +612,8 @@ const translations = (language: Language) => {
       'Drag and drop an image here': '',
       'Browse gallery': 'Смотреть галерею',
       'Take a photo': 'Сделать фото',
+      'Image pasted from clipboard. Starting visual search.':
+        'Изображение вставлено из буфера обмена. Запуск визуального поиска.',
       'Test Visual Search Widget': '',
       'Enter your api key and submit': '',
       'API key': '',
@@ -570,14 +622,14 @@ const translations = (language: Language) => {
       'Open visual search': '',
       'Let’s try that again': 'Давайте попробуем еще раз',
       'We couldn’t find matches': 'Мы не смогли найти совпадения в этот раз.',
-      'For the best results, please use':
-        '',
+      'For the best results, please use': '',
       'Click a picture': '',
       'Back to request image': 'Вернуться к запросу изображения',
       'View full description': '',
-      'Drag an image or click to upload': 'Перетащите изображение или нажмите для загрузки',
+      'Drag an image or click to upload':
+        'Перетащите изображение или нажмите для загрузки',
       "We couldn't find matches based on <prefilters>":
-        "Мы не смогли найти совпадения на основе <prefilters>.",
+        'Мы не смогли найти совпадения на основе <prefilters>.',
       'based on': '',
       'Refine your search results': 'Уточните результаты поиска',
       'Are these results useful?': 'Полезны ли эти результаты?',
@@ -587,18 +639,20 @@ const translations = (language: Language) => {
       Cancel: 'Отменить',
       Apply: 'Применить',
       'Submit your image for inquiry': 'Отправьте свое изображение для запроса',
-      'Inquiry': 'Запрос',
+      Inquiry: 'Запрос',
       'Additional information': 'Дополнительная информация',
       'Your email': 'Электронная почта',
       'Search criteria': 'Критерии поиска ',
       'Search criteria is not selected': 'Критерии поиска не выбраны',
       'No results found for your query?': 'Результатов не найдено?',
       'Share it with the team': 'Поделитесь с командой',
-      'Send': 'Отправить',
+      Send: 'Отправить',
       'Request sent successfully': 'Запрос успешно отправлен.',
-      'Request not sent, please try again': 'Запрос не отправлен, попробуйте еще раз.',
-      'Need a spare part reference?': 'Нужна информация о запасной части? Просто перетащите фотографию детали в наш интеллектуальный поиск на базе искусственного интеллекта, и он мгновенно предложит вам правильные ссылки.',
-    }
+      'Request not sent, please try again':
+        'Запрос не отправлен, попробуйте еще раз.',
+      'Need a spare part reference?':
+        'Нужна информация о запасной части? Просто перетащите фотографию детали в наш интеллектуальный поиск на базе искусственного интеллекта, и он мгновенно предложит вам правильные ссылки.',
+    },
   };
 
   const dictionary = dictionaries[language] || dictionaries.en;
