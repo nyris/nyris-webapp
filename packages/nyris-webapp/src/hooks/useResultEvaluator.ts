@@ -219,7 +219,8 @@ ${resultsSummary
   .map(
     r =>
       `${r.rank}. ${r.title}${r.description ? ` - ${r.description}` : ''} (Score: ${r.score})${r.metadata ? `\n   Metadata: ${JSON.stringify(r.metadata)}` : ''}`,
-  ).join('\n')}
+  )
+  .join('\n')}
 
 COMMON ATTRIBUTES FOUND IN RESULTS (for filter suggestions):
 ${JSON.stringify(attributeFrequency, null, 2)}
@@ -316,7 +317,7 @@ Evaluate if these results match the image. If they do (same type of product), ro
 
         const tableSuggestions = lookupRelatedParts(
           table,
-          imageAnalysis.specification.product_category || '',
+          imageAnalysis?.specification?.product_category || '',
         );
         const hasTableSuggestions =
           !!tableSuggestions && tableSuggestions.length > 0;
@@ -329,7 +330,7 @@ Evaluate if these results match the image. If they do (same type of product), ro
           !relatedPartsUsed
         ) {
           mappedOptions.push({
-            label: `Find parts related to ${imageAnalysis.specification.product_category || 'request image'}`,
+            label: `Find parts related to ${imageAnalysis?.specification?.product_category || 'request image'}`,
             action_type: 'find_related_parts',
             key: 'find_related',
             value: 'find_related_parts',
@@ -353,7 +354,7 @@ Evaluate if these results match the image. If they do (same type of product), ro
             !relatedPartsUsed
           ) {
             mappedOptions.push({
-              label: `Find parts related to ${imageAnalysis.specification.product_category || 'request image'}`,
+              label: `Find parts related to ${imageAnalysis?.specification?.product_category || 'request image'}`,
               action_type: 'find_related_parts',
               key: 'find_related',
               value: 'find_related_parts',

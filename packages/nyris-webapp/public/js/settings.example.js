@@ -110,6 +110,7 @@ var settings = {
   geoLocation: false,
   geoLocationMessage: '',
   showImageDetails: false,
+  supportButtonLabel: 'Request a Quote',
   rfq: {
     enabled: '',
     emailTemplateId: '',

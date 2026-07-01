@@ -4,7 +4,7 @@ import '../styles/mobileCameraCTA.scss';
 
 function MobileCameraCTA({ setOpenModalCamera }: { setOpenModalCamera: any }) {
   return (
-    <div className="take-photo">
+    <div className={`take-photo ${window.settings.experienceVisualSearch ? 'mt-[180px]' : ''}`}>
       <div
         className="take-photo-wrapper"
       >

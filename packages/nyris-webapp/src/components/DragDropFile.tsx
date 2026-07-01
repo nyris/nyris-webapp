@@ -70,15 +70,15 @@ function DragDropFile(props: Props) {
         setShowNotMatchedError(false);
         if (hasPrefilter.length) {
           setSpecifications(
-            clone(singleImageResp.image_analysis.specification),
+            clone(singleImageResp?.image_analysis?.specification),
           );
           setNameplateImage(file);
           setPreFilter({
-            [singleImageResp.image_analysis?.specification?.prefilter_value]:
+            [singleImageResp?.image_analysis?.specification?.prefilter_value]:
               true,
           });
           setAlgoliaFilter(
-            `${window.settings.alogoliaFilterField}:'${singleImageResp.image_analysis?.specification?.prefilter_value}'`,
+            `${window.settings.alogoliaFilterField}:'${singleImageResp?.image_analysis?.specification?.prefilter_value}'`,
           );
 
           setShowLoading(false);
@@ -100,7 +100,7 @@ function DragDropFile(props: Props) {
         if (!hasPrefilter.length && window.settings.preFilterOption) {
           setSpecifications(
             clone({
-              ...singleImageResp.image_analysis.specification,
+              ...singleImageResp?.image_analysis?.specification,
               specificationPrefilter,
             }),
           );

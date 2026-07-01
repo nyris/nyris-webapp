@@ -71,10 +71,6 @@ export interface SmartFilterRerankResponse {
 
 export interface SmartFilterGenerateParams {
   image: File | HTMLCanvasElement;
-  prompt: string;
-  model?: string;
-  timeoutMs?: number;
-  apiKey?: string;
 }
 
 export interface SmartFilterGenerateResponse {
@@ -135,7 +131,6 @@ export async function rerankSmartFilters({
 
 export async function generateSmartFilters({
   image,
-  prompt,
 }: SmartFilterGenerateParams): Promise<SmartFilterGenerateResponse> {
   const settings = window.settings;
   const isSmartFiltersEnabled = !!settings.useSmartFilters;
@@ -154,7 +149,6 @@ export async function generateSmartFilters({
   } else {
     formData.append('image', image);
   }
-  formData.append('prompt', prompt);
 
   try {
     const response = await axios.post<SmartFilterGenerateResponse>(

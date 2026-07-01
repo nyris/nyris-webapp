@@ -46,7 +46,7 @@ function ExperienceVisualSearchTrigger({
 
   return (
     <>
-      <div className="flex flex-col items-center">
+      <div className={`flex flex-col items-center ${window.settings.experienceVisualSearch ? 'mb-[80px]' : ''}`}>
         <div
           className={`group bg-[#3E36DC] w-10 hover:w-[215px] hover:gap-2 ${
             expand ? 'w-[215px] gap-2' : ''
