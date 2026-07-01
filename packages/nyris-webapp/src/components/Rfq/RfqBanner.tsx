@@ -29,7 +29,6 @@ function RfqBanner({
       <div
         style={{
           padding: '0px 16px 0px 16px',
-          backgroundColor: '#F6F3F1',
           width: '100%',
           alignSelf: 'end',
           height: '248px',
@@ -72,9 +71,9 @@ function RfqBanner({
                   fontWeight: 'bold',
                 }}
               >
-                <p className="desktop:hidden">{`${t('No matches found')}?`}</p>
+                <p className="desktop:hidden">{`${t('No matches found')}`}?</p>
                 <p className="hidden desktop:block">
-                  `${t('No matches found for your request')}?`
+                  {`${t('No matches found for your request')}`}?
                 </p>
               </div>
               <div
@@ -112,7 +111,7 @@ function RfqBanner({
                 setIsRfqModalOpen(true);
               }}
             >
-              Request a Quote
+              {window.settings.supportButtonLabel}
             </button>
           </div>
         </div>
