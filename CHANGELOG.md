@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.94 - 2026-07-01
+### Added
+- Settings for Support section CTA button
+### Fixes
+- Useless background for Support Section background
+- Support Section Header
+
 ## 0.3.93 - 2026-05-20
 ### Added
 - Specification and imageDescription feature
