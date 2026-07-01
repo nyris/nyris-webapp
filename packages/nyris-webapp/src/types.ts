@@ -126,7 +126,7 @@ export interface AppSettings extends NyrisAPISettings {
   textSearchScoring?: Record<string, Record<string, number>>;
   theme: SearchSuiteSettings;
   visualSearchFilterKey?: string;
-  rfqBannerCTALabel?: string;
+  supportButtonLabel?: string;
 }
 
 export interface SearchSuiteSettings {

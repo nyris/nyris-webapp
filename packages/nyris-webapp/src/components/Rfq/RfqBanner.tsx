@@ -111,7 +111,7 @@ function RfqBanner({
                 setIsRfqModalOpen(true);
               }}
             >
-              {window.settings.rfqBannerCTALabel}
+              {window.settings.supportButtonLabel}
             </button>
           </div>
         </div>
