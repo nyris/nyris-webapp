@@ -23,7 +23,7 @@ function ExperienceVisualSearchModal(props: Props) {
     return (
       <Dialog open={openModal} onOpenChange={handleClose}>
         <DialogContent
-          className="bg-white p-0 max-w-[1500px] w-fit max-h-[95vh] h-fit m-auto overflow-y-hidden rounded-lg"
+          className="bg-white p-0 max-w-[1500px] w-fit max-h-[95vh] m-auto overflow-y-hidden rounded-lg"
           closeButton={false}
         >
           <DialogTitle className="h-0 w-0 hidden">

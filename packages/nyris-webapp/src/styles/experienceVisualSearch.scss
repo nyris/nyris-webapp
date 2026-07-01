@@ -65,6 +65,7 @@ body.overflow-hidden {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: center;
         gap: 16px;
         width: 376px;
         .experience-visual-search-image-container {
@@ -166,6 +167,7 @@ body.overflow-hidden {
       padding: 32px 8px;
       &-content {
         &.experience-visual-search-images {
+          max-width: calc(100vw - 32px);
           width: 300px;
           gap: 8px;
           .experience-visual-search-image-container {
