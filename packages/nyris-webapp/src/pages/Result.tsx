@@ -224,13 +224,13 @@ function Results() {
                 <div className="block desktop:hidden desktop:mb-0 mx-2">
                   {requestImages[0] && <ImagePreview />}
                   {isSmartFiltersEnabled && (
-                      <div className="my-4">
-                        <SmartFilter
-                          imageAnalysis={imageAnalysis}
-                          specificationFilter={specificationFilter}
-                        />
-                      </div>
-                    )}
+                    <div className="my-4">
+                      <SmartFilter
+                        imageAnalysis={imageAnalysis}
+                        specificationFilter={specificationFilter}
+                      />
+                    </div>
+                  )}
                   {window.settings.showImageDetails &&
                     (imageAnalysis?.imageDescription ||
                       Object.keys(imageAnalysis?.specification || {}).length >
@@ -335,6 +335,7 @@ function Results() {
                         'mx-0.5',
                         'mobile-md:mx-2',
                         'desktop:mx-4',
+                        'h-full',
                       ])}
                     >
                       <div className="max-w-[840px] w-full relative flex flex-col justify-between mb-20 desktop:mb-0">
