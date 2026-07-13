@@ -15,8 +15,9 @@ export const Toaster = () => {
     <ReactHotToaster
       position={isMobile ? 'bottom-center' : 'top-right'}
       containerStyle={{
-        top: 80,
-        bottom: isMobile ? 80 : 'auto',
+        top: 100,
+        bottom: isMobile ? 90 : 'auto',
+        right: isMobile ? 15 : 25,
       }}
     >
       {t => (

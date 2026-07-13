@@ -19,6 +19,9 @@ import useResultStore from 'stores/result/resultStore';
 import useUiStore from 'stores/ui/uiStore';
 import { Toaster } from 'components/Toaster';
 import { getFilters } from 'services/filter';
+import { useUploadSearch } from 'hooks/useUploadSearch';
+import { ToastHelper } from 'helpers/ToastHelper';
+import { useTranslation } from 'react-i18next';
 
 i18n.use(initReactI18next).init({
   resources: translations,
@@ -31,7 +34,9 @@ i18n.use(initReactI18next).init({
 
 function AppLayout(): JSX.Element {
   const { isAuthenticated } = useAuth0();
+  const { t } = useTranslation();
   const { auth0, alogoliaFilterField, showPoweredByNyris } = window.settings;
+  const { uploadFile } = useUploadSearch();
 
   const showLayout = !auth0.enabled || (auth0.enabled && isAuthenticated);
   const location = useLocation();
@@ -47,10 +52,12 @@ function AppLayout(): JSX.Element {
 
   const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
   const setIsAlgoliaLoading = useUiStore(state => state.setIsAlgoliaLoading);
+  const isFindApiLoading = useUiStore(state => state.isFindApiLoading);
 
   const setIsCadenasLoaded = useUiStore(state => state.setIsCadenasLoaded);
   const specifications = useRequestStore(state => state.specifications);
   const requestImages = useRequestStore(state => state.requestImages);
+  const showLoading = useRequestStore(state => state.showLoading);
 
   const { status } = useInstantSearch();
   const { items } = useHits();
@@ -142,6 +149,69 @@ function AppLayout(): JSX.Element {
       getPreFilters();
     }
   }, [getPreFilters, showPreFilter]);
+
+  const getImageFromClipboard = useCallback(
+    (event: ClipboardEvent): File | null => {
+      const clipboardData = event.clipboardData;
+      if (!clipboardData) {
+        return null;
+      }
+
+      const imageItem = Array.from(clipboardData.items || []).find(
+        item => item.kind === 'file' && item.type.startsWith('image/'),
+      );
+
+      if (imageItem) {
+        return imageItem.getAsFile();
+      }
+
+      return (
+        Array.from(clipboardData.files || []).find(file =>
+          file.type.startsWith('image/'),
+        ) || null
+      );
+    },
+    [],
+  );
+
+  const handleClipboardPaste = useCallback(
+    (event: ClipboardEvent) => {
+      if (isFindApiLoading || showLoading) {
+        return;
+      }
+
+      const imageFile = getImageFromClipboard(event);
+      if (!imageFile) {
+        return;
+      }
+
+      event.preventDefault();
+      ToastHelper.success(
+        t('Image pasted from clipboard. Starting visual search.'),
+      );
+      uploadFile(imageFile, { showPreFilter });
+    },
+    [
+      getImageFromClipboard,
+      isFindApiLoading,
+      showLoading,
+      showPreFilter,
+      t,
+      uploadFile,
+    ],
+  );
+
+  useEffect(() => {
+    if (!showLayout) {
+      return;
+    }
+
+    document.addEventListener('paste', handleClipboardPaste);
+
+    return () => {
+      document.removeEventListener('paste', handleClipboardPaste);
+    };
+  }, [handleClipboardPaste, showLayout]);
 
   if (!showLayout) {
     return <Outlet />;

@@ -4,13 +4,10 @@ import { twMerge } from 'tailwind-merge';
 import Tooltip from './Tooltip/TooltipComponent';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation } from 'react-router';
 import useRequestStore from 'stores/request/requestStore';
-import { useImageSearch } from 'hooks/useImageSearch';
-import { clone } from 'lodash';
-import { useCadSearch } from 'hooks/useCadSearch';
-import { isCadFile } from '@nyris/nyris-api';
 import UploadDisclaimer from './UploadDisclaimer';
+import { useUploadSearch } from 'hooks/useUploadSearch';
 
 function ImageUpload({
   onCameraClick,
@@ -25,27 +22,10 @@ function ImageUpload({
   const { t } = useTranslation();
 
   const location = useLocation();
-  const navigate = useNavigate();
+  const { uploadFile } = useUploadSearch();
 
-  const preFilterList = useRequestStore(state => state.preFilterList);
   const requestImages = useRequestStore(state => state.requestImages);
-  const setQuery = useRequestStore(state => state.setQuery);
-  const setValueInput = useRequestStore(state => state.setValueInput);
   const setMetaFilter = useRequestStore(state => state.setMetaFilter);
-  const specifications = useRequestStore(state => state.specifications);
-
-  const setRequestImages = useRequestStore(state => state.setRequestImages);
-  const setSpecifications = useRequestStore(state => state.setSpecifications);
-  const setShowLoading = useRequestStore(state => state.setShowLoading);
-  const setNameplateNotificationText = useRequestStore(
-    state => state.setNameplateNotificationText,
-  );
-  const setShowNotMatchedError = useRequestStore(
-    state => state.setShowNotMatchedError,
-  );
-  const setAlgoliaFilter = useRequestStore(state => state.setAlgoliaFilter);
-  const setPreFilter = useRequestStore(state => state.setPreFilter);
-  const setNameplateImage = useRequestStore(state => state.setNameplateImage);
 
   const [showDisclaimer, setShowDisclaimer] = useState(false);
 
@@ -80,97 +60,13 @@ function ImageUpload({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDisclaimer, requestImages, disableDisclaimer]);
 
-  const { singleImageSearch } = useImageSearch();
-  const { cadSearch } = useCadSearch();
-
   const handleUpload = (files: File[]) => {
-    setValueInput('');
-    setQuery('');
-
-    if (isCadFile(files[0])) {
-      cadSearch({ file: files[0], settings, newSearch: true }).then(() => {});
-
+    const file = files[0];
+    if (!file) {
       return;
     }
 
-    setShowLoading(true);
-
-    singleImageSearch({
-      image: files[0],
-      settings: window.settings,
-      showFeedback: true,
-      newSearch: true,
-      clearPostFilter: true,
-    }).then(singleImageResp => {
-      const specificationPrefilter =
-        singleImageResp?.image_analysis?.specification?.prefilter_value || null;
-      const hasPrefilter = preFilterList.filter((filter: any) =>
-        filter.values.includes(specificationPrefilter),
-      );
-      if (specificationPrefilter) {
-        setRequestImages([]);
-        setShowNotMatchedError(false);
-        if (hasPrefilter.length) {
-          setSpecifications(
-            clone(singleImageResp?.image_analysis?.specification),
-          );
-          setNameplateImage(files[0]);
-          setPreFilter({
-            [singleImageResp?.image_analysis?.specification?.prefilter_value]:
-              true,
-          });
-          setAlgoliaFilter(
-            `${settings.alogoliaFilterField}:'${singleImageResp?.image_analysis?.specification?.prefilter_value}'`,
-          );
-
-          setShowLoading(false);
-          navigate('/result');
-
-          setTimeout(() => {
-            setNameplateNotificationText(
-              t('We have successfully defined the search criteria', {
-                prefilter_value: specificationPrefilter,
-                preFilterTitle:
-                  window.settings.preFilterTitle?.toLocaleLowerCase(),
-              }),
-            );
-          }, 1000);
-          setTimeout(() => {
-            setNameplateNotificationText('');
-          }, 10000);
-        }
-        if (!hasPrefilter.length && showPreFilter) {
-          setSpecifications(
-            clone({
-              ...singleImageResp?.image_analysis?.specification,
-              specificationPrefilter,
-            }),
-          );
-          navigate('/result');
-          setPreFilter({});
-          setAlgoliaFilter('');
-          setShowLoading(false);
-          setShowNotMatchedError(true);
-          setTimeout(() => {
-            setNameplateNotificationText(
-              t('Extracted details from the nameplate could not be matched', {
-                preFilterTitle:
-                  window.settings.preFilterTitle?.toLocaleLowerCase(),
-              }),
-            );
-          }, 1000);
-          setTimeout(() => {
-            setNameplateNotificationText('');
-          }, 15000);
-        }
-      } else {
-        if (!specifications?.is_nameplate) {
-          setSpecifications({ ...specifications, is_nameplate: false });
-        }
-        setShowLoading(false);
-        navigate('/result');
-      }
-    });
+    uploadFile(file, { showPreFilter });
   };
 
   return (
