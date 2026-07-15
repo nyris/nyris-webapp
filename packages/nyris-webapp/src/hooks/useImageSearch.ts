@@ -19,6 +19,7 @@ import useConversationStore from 'stores/chat/conversationStore';
 import { useGroundedSearch } from './useGroundedSearch';
 import { generateSmartFilters } from '../services/vizo';
 import { cropImage } from 'utils/cropImageToBase64';
+import { invalidatePostFilterRequests } from 'components/PostFilter/PostFilterFindApi';
 
 export const useImageSearch = () => {
   const setRegions = useRequestStore(state => state.setRegions);
@@ -68,6 +69,10 @@ export const useImageSearch = () => {
     state => state.setGroundingFilterResult,
   );
   const setSmartFilters = useResultStore(state => state.setSmartFilters);
+  const setPostFilterFacets = useResultStore(state => state.setPostFilterFacets);
+  const setInitialFindSearchSnapshot = useResultStore(
+    state => state.setInitialFindSearchSnapshot,
+  );
 
   const setGroundingError = useResultStore(state => state.setGroundingError);
 
@@ -110,6 +115,8 @@ export const useImageSearch = () => {
         setGroundingFilterResult([]);
         setGoogleGroundingResponse(null);
         setGroundingError(null);
+        setPostFilterFacets([]);
+        setInitialFindSearchSnapshot(null);
         if (isSmartFiltersEnabled) {
           setSmartFilters({
             status: 'idle',
@@ -185,9 +192,17 @@ export const useImageSearch = () => {
         }
       }
 
+      const preFilterList = useRequestStore.getState().preFilterList;
+      const preFilterApiKey =
+        preFilterList.find(
+          filter =>
+            filter.key?.toLocaleLowerCase() ===
+            settings.visualSearchFilterKey?.toLocaleLowerCase(),
+        )?.key ?? settings.visualSearchFilterKey;
+
       const preFilterValues = [
         {
-          key: settings.visualSearchFilterKey,
+          key: preFilterApiKey,
           values: Object.keys(preFilterParams || preFilter),
         },
       ];
@@ -272,6 +287,22 @@ export const useImageSearch = () => {
           });
       }
 
+      const shouldResetPostFilters =
+        clearPostFilter ||
+        (!settings.algolia?.enabled &&
+          !requestImage &&
+          settings.postFilterOption);
+
+      if (shouldResetPostFilters) {
+        invalidatePostFilterRequests();
+        refine();
+        clearPostFilterSelections();
+        if (clearPostFilter) {
+          setPostFilterFacets([]);
+          setInitialFindSearchSnapshot(null);
+        }
+      }
+
       try {
         res = await find({
           image: requestImage,
@@ -281,7 +312,7 @@ export const useImageSearch = () => {
             : metaFilter
               ? [
                   {
-                    key: settings.visualSearchFilterKey,
+                    key: preFilterApiKey,
                     values: [metaFilter],
                   },
                 ]
@@ -295,12 +326,14 @@ export const useImageSearch = () => {
               : undefined,
         });
         useResultStore.getState().resetGrounding();
-        if (clearPostFilter) {
-          refine();
-          clearPostFilterSelections();
-        }
 
         setFindApiProducts(res?.results);
+        const initialFacets = res?.facets || [];
+        setPostFilterFacets(initialFacets);
+        setInitialFindSearchSnapshot({
+          results: res?.results || [],
+          postFilterFacets: initialFacets,
+        });
         setImageAnalysis(res?.image_analysis);
         setSessionId(res?.session);
         setRequestId(res?.id);
@@ -386,6 +419,8 @@ export const useImageSearch = () => {
       setFirstSearchPreFilter,
       setFirstRequestImageAnalysis,
       setSmartFilters,
+      setPostFilterFacets,
+      setInitialFindSearchSnapshot,
     ],
   );
 

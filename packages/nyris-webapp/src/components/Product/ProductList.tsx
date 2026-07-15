@@ -63,6 +63,10 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   }, [productsFromFindApi, query, requestImages]);
 
   const postFilteredProducts = useMemo(() => {
+    if (!window.settings.algolia?.enabled && window.settings.postFilterOption) {
+      return textFilteredProducts;
+    }
+
     const entries = Object.entries(postFilterSelections || {}).filter(
       ([, values]) => values?.length,
     );
