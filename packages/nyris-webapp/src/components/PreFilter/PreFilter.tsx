@@ -76,10 +76,16 @@ const PreFilterComponent = (props: Props) => {
     };
   }, []);
 
+  const matchedPreFilter = preFilterList.find(
+    value =>
+      value.key?.toLocaleLowerCase() ===
+      settings.visualSearchFilterKey?.toLocaleLowerCase(),
+  );
+  const preFilterApiKey =
+    matchedPreFilter?.key ?? settings.visualSearchFilterKey;
+
   const getDataFilterDesktop = () => {
-    const arrResult =
-      preFilterList.find(value => value.key === settings.visualSearchFilterKey)
-        ?.values || [];
+    const arrResult = matchedPreFilter?.values || [];
 
     const newResult = arrResult.sort().reduce((a: any, c: any) => {
       if (!c[0]) return a;
@@ -100,7 +106,7 @@ const PreFilterComponent = (props: Props) => {
     }
     setLoading(true);
     const data = await searchFilters(
-      settings.visualSearchFilterKey,
+      preFilterApiKey,
       encodeURIComponent(value),
       settings,
     )

@@ -85,6 +85,11 @@ export interface ProductsState {
         rerankStatus: 'idle' | 'loading' | 'success' | 'error';
         errorMessage: string | null;
     };
+  postFilterFacets: any[];
+  initialFindSearchSnapshot: {
+    results: any[];
+    postFilterFacets: any[];
+  } | null;
 }
 
 export interface ProductsAction {
@@ -105,6 +110,10 @@ export interface ProductsAction {
   setFullResultPool: (products: any[]) => void;
   resetGrounding: () => void;
   setSmartFilters: (smartFilters: ProductsState['smartFilters']) => void;
+  setPostFilterFacets: (facets: any[]) => void;
+  setInitialFindSearchSnapshot: (
+    snapshot: ProductsState['initialFindSearchSnapshot'],
+  ) => void;
 }
 
 export interface DetectedRegionsState {

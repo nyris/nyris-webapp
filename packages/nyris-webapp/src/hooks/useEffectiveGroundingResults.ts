@@ -26,7 +26,12 @@ export function useEffectiveGroundingResults() {
     const postEntries = Object.entries(postFilterSelections || {}).filter(
       ([, values]) => values?.length,
     );
-    if (postEntries.length > 0) {
+    if (
+      postEntries.length > 0 &&
+      !(
+        !window.settings.algolia?.enabled && window.settings.postFilterOption
+      )
+    ) {
       filteredProducts = filteredProducts.filter((product: any) => {
         const productFilters = product?.filters || {};
         return postEntries.every(([attribute, selectedValues]) => {

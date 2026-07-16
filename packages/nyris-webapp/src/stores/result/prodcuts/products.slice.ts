@@ -61,6 +61,14 @@ const productsSlice: StateCreator<ProductsState & ProductsAction> = set => ({
     set(() => ({
       smartFilters,
     })),
+  setPostFilterFacets: facets =>
+    set(() => ({
+      postFilterFacets: facets,
+    })),
+  setInitialFindSearchSnapshot: snapshot =>
+    set(() => ({
+      initialFindSearchSnapshot: snapshot,
+    })),
 });
 
 export default productsSlice;

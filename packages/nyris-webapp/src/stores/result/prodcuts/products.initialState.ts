@@ -31,4 +31,6 @@ export const initialState: ProductsState = {
     rerankStatus: 'idle',
     errorMessage: null,
   },
+  postFilterFacets: [],
+  initialFindSearchSnapshot: null,
 };
