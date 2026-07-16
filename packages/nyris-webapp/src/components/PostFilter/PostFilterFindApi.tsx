@@ -6,9 +6,17 @@ import {
 } from 'components/Accordion';
 import { Icon } from '@nyris/nyris-react-components';
 import { useTranslation } from 'react-i18next';
+import { isEmpty } from 'lodash';
 import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
-import { filterProductsByText } from 'utils/textSearchFilter';
+import useUiStore from 'stores/ui/uiStore';
+import { find } from 'services/visualSearch';
+
+let postFilterRequestCounter = 0;
+
+export function invalidatePostFilterRequests() {
+  postFilterRequestCounter += 1;
+}
 
 function PostFilterFindApi({
   attribute,
@@ -26,84 +34,53 @@ function PostFilterFindApi({
   const [itemsLimit, setItemsLimit] = useState(10);
   const [searchInput, setSearchInput] = useState<string>('');
 
-  const productsFromFindApi = useResultStore(
-    state => state.productsFromFindApi,
+  const postFilterFacets = useResultStore(state => state.postFilterFacets);
+  const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
+  const setPostFilterSelections = useRequestStore(
+    state => state.setPostFilterSelections,
   );
-  const groundingFilterResult = useResultStore(
-    state => state.groundingFilterResult,
-  );
-  const showingGroundingFilterResult = useResultStore(
-    state => state.showingGroundingFilterResult,
-  );
-  const query = useRequestStore(state => state.query);
-  const requestImages = useRequestStore(state => state.requestImages);
   const postFilterSelections = useRequestStore(
     state => state.postFilterSelections,
   );
-  const togglePostFilterSelection = useRequestStore(
-    state => state.togglePostFilterSelection,
-  );
+  const query = useRequestStore(state => state.query);
+  const requestImages = useRequestStore(state => state.requestImages);
+  const regions = useRequestStore(state => state.regions);
+  const preFilter = useRequestStore(state => state.preFilter);
+  const preFilterList = useRequestStore(state => state.preFilterList);
+  const metaFilter = useRequestStore(state => state.metaFilter);
+  const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
   const { t } = useTranslation();
+  const settings = window.settings;
 
-  const productsForFilters = useMemo(() => {
-    let baseProducts = productsFromFindApi;
-
-    if (requestImages?.length && query?.trim()) {
-      baseProducts = filterProductsByText(query, productsFromFindApi);
-    }
-
-    if (showingGroundingFilterResult && groundingFilterResult?.length > 0) {
-      const grounded = baseProducts.filter((product: any) =>
-        groundingFilterResult.some((result: any) => product.sku === result.sku),
-      );
-      if (grounded.length > 0) {
-        return grounded;
-      }
-    }
-
-    return baseProducts;
-  }, [
-    productsFromFindApi,
-    query,
-    requestImages,
-    showingGroundingFilterResult,
-    groundingFilterResult,
-  ]);
-
-  const filteredProductsForCounts = useMemo(() => {
-    const selections = postFilterSelections || {};
-    const activeSelections = Object.entries(selections).filter(
-      ([attr, values]) => attr !== attribute && Array.isArray(values),
+  const matchedFacet = useMemo(() => {
+    const facets = Array.isArray(postFilterFacets) ? postFilterFacets : [];
+    return facets.find(
+      (entry: { name?: string }) =>
+        entry.name?.toLocaleLowerCase() === attribute.toLocaleLowerCase(),
     );
+  }, [attribute, postFilterFacets]);
 
-    if (!activeSelections.length) {
-      return productsForFilters;
-    }
-
-    return productsForFilters.filter((product: any) =>
-      activeSelections.every(([attr, values]) => {
-        const filterValues = product.filters?.[attr];
-        if (!Array.isArray(filterValues) || filterValues.length === 0) {
-          return false;
-        }
-        return values.some(value => filterValues.includes(value));
-      }),
-    );
-  }, [attribute, postFilterSelections, productsForFilters]);
+  const preFilterApiKey =
+    preFilterList.find(
+      filter =>
+        filter.key?.toLocaleLowerCase() ===
+        settings.visualSearchFilterKey?.toLocaleLowerCase(),
+    )?.key ?? settings.visualSearchFilterKey;
 
   const valueCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    filteredProductsForCounts?.forEach((product: any) => {
-      const filterValues = product.filters?.[attribute];
-      if (Array.isArray(filterValues)) {
-        filterValues.forEach((val: string) => {
-          if (val) counts[val] = (counts[val] || 0) + 1;
-        });
-      }
-    });
+
+    (matchedFacet?.values || []).forEach(
+      (entry: { value?: string; count?: number }) => {
+        const value = entry?.value;
+        if (value) {
+          counts[value] = entry.count ?? 0;
+        }
+      },
+    );
 
     return counts;
-  }, [attribute, filteredProductsForCounts]);
+  }, [matchedFacet]);
 
   const items = useMemo(() => {
     const selectedValues = postFilterSelections?.[attribute] || [];
@@ -137,6 +114,85 @@ function PostFilterFindApi({
   useEffect(() => {
     onVisibilityChange?.(attribute, isVisible);
   }, [attribute, isVisible, onVisibilityChange]);
+
+  const handleFilterClick = (value: string, isRefined: boolean) => {
+    const currentSelections =
+      useRequestStore.getState().postFilterSelections || {};
+    const currentAttributeValues = currentSelections[attribute] || [];
+    const nextAttributeValues = isRefined
+      ? currentAttributeValues.filter(item => item !== value)
+      : [...currentAttributeValues, value];
+
+    const nextSelections = { ...currentSelections };
+    if (nextAttributeValues.length > 0) {
+      nextSelections[attribute] = nextAttributeValues;
+    } else {
+      delete nextSelections[attribute];
+    }
+
+    setPostFilterSelections(nextSelections);
+
+    const hasAnySelection = Object.values(nextSelections).some(
+      values => values.length > 0,
+    );
+
+    if (!hasAnySelection) {
+      const snapshot = useResultStore.getState().initialFindSearchSnapshot;
+      if (snapshot) {
+        setFindApiProducts(snapshot.results);
+      }
+      return;
+    }
+
+    const facets = useResultStore.getState().postFilterFacets || [];
+    const filters = [];
+
+    if (!isEmpty(preFilter)) {
+      filters.push({
+        key: preFilterApiKey,
+        values: Object.keys(preFilter).filter(key => preFilter[key]),
+      });
+    } else if (metaFilter) {
+      filters.push({
+        key: preFilterApiKey,
+        values: [metaFilter],
+      });
+    }
+
+    Object.entries(nextSelections).forEach(([attr, values]) => {
+      if (values.length > 0) {
+        const facet = facets.find(
+          (entry: { name?: string }) =>
+            entry.name?.toLocaleLowerCase() === attr.toLocaleLowerCase(),
+        );
+        filters.push({
+          key: facet?.name ?? attr,
+          values,
+        });
+      }
+    });
+
+    const requestId = ++postFilterRequestCounter;
+    setIsFindApiLoading(true);
+    void find({
+      image: requestImages[0],
+      settings,
+      region: regions[0],
+      filters,
+      text: !requestImages[0] ? query : undefined,
+    })
+      .then(response => {
+        if (requestId !== postFilterRequestCounter) {
+          return;
+        }
+        setFindApiProducts(response?.results || []);
+      })
+      .finally(() => {
+        if (requestId === postFilterRequestCounter) {
+          setIsFindApiLoading(false);
+        }
+      });
+  };
 
   if (!isVisible) {
     return null;
@@ -208,9 +264,7 @@ function PostFilterFindApi({
                   <input
                     type="checkbox"
                     checked={item.isRefined}
-                    onChange={() =>
-                      togglePostFilterSelection(attribute, item.value)
-                    }
+                    onChange={() => handleFilterClick(item.value, item.isRefined)}
                     className="cursor-pointer"
                   />
                   <span className="text-xs font-normal pl-2 pr-1">
