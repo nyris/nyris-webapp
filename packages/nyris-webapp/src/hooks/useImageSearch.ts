@@ -69,7 +69,9 @@ export const useImageSearch = () => {
     state => state.setGroundingFilterResult,
   );
   const setSmartFilters = useResultStore(state => state.setSmartFilters);
-  const setPostFilterFacets = useResultStore(state => state.setPostFilterFacets);
+  const setPostFilterFacets = useResultStore(
+    state => state.setPostFilterFacets,
+  );
   const setInitialFindSearchSnapshot = useResultStore(
     state => state.setInitialFindSearchSnapshot,
   );
@@ -208,6 +210,7 @@ export const useImageSearch = () => {
       ];
 
       let smartFilterPromise: Promise<void> | null = null;
+
       if (isSmartFiltersEnabled && requestImage && (newSearch || imageRegion)) {
         setSmartFilters({
           status: 'loading',

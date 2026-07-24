@@ -570,6 +570,7 @@ function Results() {
           onClose={() => {
             setOpenModalCamera(s => !s);
           }}
+          newSearch={true}
         />
         {isAiModeOpen && (
           <div className="desktop:hidden">
