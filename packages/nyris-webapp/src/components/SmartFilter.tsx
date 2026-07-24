@@ -19,8 +19,12 @@ function SmartFilter({
   const isSmartFiltersEnabled = !!settings.useSmartFilters;
   const smartFilters = useResultStore(state => state.smartFilters);
   const setSmartFilters = useResultStore(state => state.setSmartFilters);
-  const productsFromFindApi = useResultStore(state => state.productsFromFindApi);
-  const productsFromAlgolia = useResultStore(state => state.productsFromAlgolia);
+  const productsFromFindApi = useResultStore(
+    state => state.productsFromFindApi,
+  );
+  const productsFromAlgolia = useResultStore(
+    state => state.productsFromAlgolia,
+  );
   const firstSearchResults = useResultStore(state => state.firstSearchResults);
   const setFindApiProducts = useResultStore(state => state.setFindApiProducts);
   const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
@@ -194,7 +198,10 @@ function SmartFilter({
         return;
       }
 
-      if (rerankedSkus.length === 0 || !applySkuOrderingToCurrentResults(rerankedSkus)) {
+      if (
+        rerankedSkus.length === 0 ||
+        !applySkuOrderingToCurrentResults(rerankedSkus)
+      ) {
         setSmartFilters({
           ...smartFilters,
           selectedFilterKey: filter.key,
@@ -214,7 +221,9 @@ function SmartFilter({
         errorMessage: null,
       });
     } catch (error: any) {
-      const timeout = String(error?.message || '').includes('SMART_FILTER_TIMEOUT');
+      const timeout = String(error?.message || '').includes(
+        'SMART_FILTER_TIMEOUT',
+      );
       setSmartFilters({
         ...smartFilters,
         selectedFilterKey: filter.key,
@@ -241,25 +250,7 @@ function SmartFilter({
         </div>
         <Icon name="smart_filter_indication" className="mt-1" />
       </div>
-      <div className={`flex flex-wrap mx-4 gap-2 ${imageAnalysis?.specification ? 'mt-4' : ''}`}>
-        {Object.keys(imageAnalysis?.specification || {})
-          .filter(key => key !== 'is_nameplate' && key !== 'prefilter_value')
-          .map(key => {
-            const value = imageAnalysis?.specification[key];
-            if (!value) {
-              return null;
-            }
-            return (
-              <ItemSpecification
-                key={key}
-                attr={key}
-                value={value}
-                specificationFilter={specificationFilter}
-                imageAnalysis={imageAnalysis}
-              />
-            );
-          })}
-      </div>
+
       {smartFilters.status === 'loading' && (
         <div className="ml-[30px] mt-3 text-xs text-[#3E36DC]">
           Loading smart filters...
@@ -270,11 +261,12 @@ function SmartFilter({
           {smartFilters.errorMessage || 'Could not generate smart filters.'}
         </div>
       )}
-      {smartFilters.status === 'success' && smartFilters.filters.length === 0 && (
-        <div className="ml-[30px] mt-3 text-xs text-[#767A9F]">
-          No smart filters available for this image.
-        </div>
-      )}
+      {smartFilters.status === 'success' &&
+        smartFilters.filters.length === 0 && (
+          <div className="ml-[30px] mt-3 text-xs text-[#767A9F]">
+            No smart filters available for this image.
+          </div>
+        )}
       <div
         className={
           variant === 'results'
@@ -298,47 +290,46 @@ function SmartFilter({
               ? 'flex flex-row flex-nowrap gap-2 pb-1'
               : 'flex flex-row flex-wrap gap-2 pb-1'
           }
-          style={variant === 'results' ? { width: 'max-content' } : { width: 'auto' }}
+          style={
+            variant === 'results' ? { width: 'max-content' } : { width: 'auto' }
+          }
         >
-        {smartFilters.filters.map((filter, index) => {
-          const isSelected =
-            smartFilters.selectedFilterKey === filter.key &&
-            smartFilters.selectedFilterValue === filter.value;
-          const hasSelection =
-            !!smartFilters.selectedFilterKey &&
-            !!smartFilters.selectedFilterValue;
-          const isRerankLoading = smartFilters.rerankStatus === 'loading';
-          const isDisabled = !isSelected && (hasSelection || isRerankLoading);
-          return (
-            <button
-              key={`${filter.key}-${filter.value}-${index}`}
-              type="button"
-              disabled={isDisabled}
-              aria-pressed={isSelected}
-              style={variant === 'results' ? { flex: '0 0 auto' } : undefined}
-              className={`px-3.5 py-2 rounded-lg border text-sm inline-flex items-center gap-1.5 ${
-                isSelected
-                  ? 'bg-[#545987] text-white border-[#545987]'
-                  : 'bg-[#E7E8F1] text-[#767A9F] border-transparent'
-              } ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-              onClick={() => {
-                if (isRerankLoading) return;
-                void onFilterClick({
-                  key: filter.key,
-                  value: filter.value,
-                });
-              }}
-            >
-              <span>{filter.value}</span>
-              {isSelected && (
-                <Icon
-                  name="close"
-                  className="w-3 h-3 text-white"
-                />
-              )}
-            </button>
-          );
-        })}
+          {smartFilters.filters.map((filter, index) => {
+            const isSelected =
+              smartFilters.selectedFilterKey === filter.key &&
+              smartFilters.selectedFilterValue === filter.value;
+            const hasSelection =
+              !!smartFilters.selectedFilterKey &&
+              !!smartFilters.selectedFilterValue;
+            const isRerankLoading = smartFilters.rerankStatus === 'loading';
+            const isDisabled = !isSelected && (hasSelection || isRerankLoading);
+            return (
+              <button
+                key={`${filter.key}-${filter.value}-${index}`}
+                type="button"
+                disabled={isDisabled}
+                aria-pressed={isSelected}
+                style={variant === 'results' ? { flex: '0 0 auto' } : undefined}
+                className={`px-3.5 py-2 rounded-lg border text-sm inline-flex items-center gap-1.5 ${
+                  isSelected
+                    ? 'bg-[#545987] text-white border-[#545987]'
+                    : 'bg-[#E7E8F1] text-[#767A9F] border-transparent'
+                } ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                onClick={() => {
+                  if (isRerankLoading) return;
+                  void onFilterClick({
+                    key: filter.key,
+                    value: filter.value,
+                  });
+                }}
+              >
+                <span>{filter.value}</span>
+                {isSelected && (
+                  <Icon name="close" className="w-3 h-3 text-white" />
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
