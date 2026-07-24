@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import ItemSpecification from './ItemSpecification';
 import { Icon } from '@nyris/nyris-react-components';
 import useRequestStore from 'stores/request/requestStore';
 import useResultStore from 'stores/result/resultStore';
