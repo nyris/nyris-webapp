@@ -339,14 +339,14 @@ Evaluate if these results match the image. If they do (same type of product), ro
 
         // Enforce ≤5 rule: if initial results are ≤5, strip filter options, keep only text_search_prompt
         if (activeProducts.length <= 5 && activeProducts.length > 0) {
-          mappedOptions = [
-            {
-              label: "Describe what you're looking for",
-              action_type: 'text_search_prompt' as const,
-              key: 'text_search',
-              value: 'text_search',
-            },
-          ];
+          // mappedOptions = [
+          //   {
+          //     label: "Describe what you're looking for",
+          //     action_type: 'text_search_prompt' as const,
+          //     key: 'text_search',
+          //     value: 'text_search',
+          //   },
+          // ];
 
           if (
             window.settings.vizo?.findRelatedParts &&
