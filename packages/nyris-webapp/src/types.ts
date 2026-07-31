@@ -93,6 +93,10 @@ export interface AppSettings extends NyrisAPISettings {
     chat?: boolean;
     findRelatedParts?: boolean;
   };
+  cartEmail?: {
+    enabled?: boolean;
+    emailTemplateId?: string;
+  };
   headerText?: string;
   instantRedirectPatterns: string[];
   isBrandNameTitleVisible?: boolean;
