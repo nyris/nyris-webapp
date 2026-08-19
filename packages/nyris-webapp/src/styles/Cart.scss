@@ -205,6 +205,28 @@
           margin-right: 8px;
         }
       }
+      .cart-email-button {
+        background-color: #fff;
+        color: #3e36dc;
+        border: 1px solid #3e36dc;
+        width: 100%;
+        height: 48px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 16px;
+        border-radius: 8px;
+        margin-top: 8px;
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+        svg {
+          margin-right: 8px;
+        }
+      }
     }
   }
 }
