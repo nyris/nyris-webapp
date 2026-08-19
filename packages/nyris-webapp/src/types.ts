@@ -114,6 +114,7 @@ export interface AppSettings extends NyrisAPISettings {
   refinements?: any;
   regions: boolean;
   rfq?: Rfq;
+  scopeFilter?: boolean;
   secondaryCTAButton?: SecondaryCTAButton;
   secondaryCTAButtonText?: string;
   secondaryTitle: string;

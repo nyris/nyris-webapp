@@ -10,6 +10,7 @@ import { truncateString } from 'utils/truncateString';
 import { twMerge } from 'tailwind-merge';
 import Tooltip from 'components/Tooltip/TooltipComponent';
 import useResultStore from '../../stores/result/resultStore';
+import useScopeStore from 'stores/scope/scopeStore';
 
 interface Props {
   handleClose?: any;
@@ -42,6 +43,9 @@ const PreFilterComponent = (props: Props) => {
   const setImageAnalysis = useResultStore(state => state.setImageAnalysis);
   const regions = useRequestStore(state => state.regions);
 
+  const scopeFilterEnabled = !!settings.scopeFilter;
+  const scopeFilterAttributes = useScopeStore(state => state.filterAttributes);
+
   const [keyFilter, setKeyFilter] = useState<Record<string, boolean>>(
     keyFilterState || {},
   );
@@ -66,7 +70,7 @@ const PreFilterComponent = (props: Props) => {
     setLoading(true);
     getDataFilterDesktop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preFilterList, searchKey]);
+  }, [preFilterList, scopeFilterAttributes, searchKey]);
 
   useEffect(() => {
     return () => {
@@ -76,7 +80,11 @@ const PreFilterComponent = (props: Props) => {
     };
   }, []);
 
-  const matchedPreFilter = preFilterList.find(
+  const activeFilterList = scopeFilterEnabled
+    ? scopeFilterAttributes
+    : preFilterList;
+
+  const matchedPreFilter = activeFilterList.find(
     value =>
       value.key?.toLocaleLowerCase() ===
       settings.visualSearchFilterKey?.toLocaleLowerCase(),
@@ -105,6 +113,26 @@ const PreFilterComponent = (props: Props) => {
       return;
     }
     setLoading(true);
+
+    if (scopeFilterEnabled) {
+      const arrResult = matchedPreFilter?.values || [];
+      const lowerValue = String(value).toLocaleLowerCase();
+      const res = arrResult.filter(item =>
+        String(item).toLocaleLowerCase().includes(lowerValue),
+      );
+      if (res.length > 0) {
+        setResultFilter({ [res[0][0].toLocaleUpperCase()]: res });
+        if (res.length <= 20) setColumns(1);
+        else if (res.length <= 40) setColumns(2);
+        else setColumns(4);
+      } else {
+        setResultFilter({});
+        setColumns(4);
+      }
+      setLoading(false);
+      return;
+    }
+
     const data = await searchFilters(
       preFilterApiKey,
       encodeURIComponent(value),

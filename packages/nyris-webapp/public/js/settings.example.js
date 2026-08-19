@@ -115,6 +115,7 @@ var settings = {
     enabled: '',
     emailTemplateId: '',
   },
+  scopeFilter: true,
   support: {
     enabled: '',
     emailInquiry: '',

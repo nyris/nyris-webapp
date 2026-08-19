@@ -58,12 +58,14 @@ export const find = async ({
   region,
   filters,
   text,
+  scopeIds,
 }: {
   image?: HTMLCanvasElement;
   settings: NyrisAPISettings;
   region?: RectCoords;
   filters?: Filter[];
   text?: string;
+  scopeIds?: string;
 }) => {
   const nyrisApi = new NyrisAPI(settings);
   let options: ImageSearchOptions = text ? { text } : {};
@@ -82,7 +84,14 @@ export const find = async ({
   if (region) {
     options = { ...options, cropRect: region };
   }
-  return nyrisApi.find(options, image, filters);
+  return nyrisApi.find(
+    options,
+    image,
+    filters,
+    undefined,
+    undefined,
+    scopeIds ? [scopeIds] : [],
+  );
 };
 
 export const findCad = ({

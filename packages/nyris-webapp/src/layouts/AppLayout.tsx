@@ -145,10 +145,10 @@ function AppLayout(): JSX.Element {
   }, [settings, setPreFilterList, setPreFilterLoading]);
 
   useEffect(() => {
-    if (showPreFilter) {
+    if (showPreFilter && !settings.scopeFilter) {
       getPreFilters();
     }
-  }, [getPreFilters, showPreFilter]);
+  }, [getPreFilters, showPreFilter, settings.scopeFilter]);
 
   const getImageFromClipboard = useCallback(
     (event: ClipboardEvent): File | null => {
