@@ -1,7 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import EmailVerification from 'components/EmailVerification';
 import ScopeMissing from 'components/ScopeMissing';
-import { useEffect, useRef, ReactElement } from 'react';
+import { useEffect, ReactElement } from 'react';
 import { getScopes } from 'services/filter';
 import useScopeStore from 'stores/scope/scopeStore';
 
@@ -18,8 +18,8 @@ export default function ProtectedRoute({
 
   const setScopeLoading = useScopeStore(state => state.setScopeLoading);
   const scopeIsLoading = useScopeStore(state => state.isLoading);
-
-  const hasFetchedScope = useRef(false);
+  const hasFetchedScope = useScopeStore(state => state.hasFetched);
+  const setScopeFetched = useScopeStore(state => state.setScopeFetched);
 
   useEffect(() => {
     if (!isLoading && !user && !isAuthenticated && auth0.enabled) {
@@ -28,15 +28,10 @@ export default function ProtectedRoute({
   }, [loginWithRedirect, isLoading, user, isAuthenticated, auth0]);
 
   useEffect(() => {
-    if (
-      !scopeFilter ||
-      !isAuthenticated ||
-      !user?.email ||
-      hasFetchedScope.current
-    ) {
+    if (!scopeFilter || !isAuthenticated || !user?.email || hasFetchedScope) {
       return;
     }
-    hasFetchedScope.current = true;
+    setScopeFetched(true);
     setScopeLoading(true);
     getScopes(user.email, window.settings)
       .then(response => {
@@ -48,7 +43,15 @@ export default function ProtectedRoute({
       .finally(() => {
         setScopeLoading(false);
       });
-  }, [scopeFilter, isAuthenticated, user, setScope, setScopeLoading]);
+  }, [
+    scopeFilter,
+    isAuthenticated,
+    user,
+    hasFetchedScope,
+    setScope,
+    setScopeLoading,
+    setScopeFetched,
+  ]);
 
   if (!auth0.enabled) {
     return children;
@@ -64,7 +67,7 @@ export default function ProtectedRoute({
 
   if (scopeFilter) {
     // wait for the scope fetch to finish before deciding access, otherwise ScopeMissing flashes early
-    if (scopeIsLoading || !hasFetchedScope.current) {
+    if (scopeIsLoading || !hasFetchedScope) {
       return <div></div>;
     }
 
