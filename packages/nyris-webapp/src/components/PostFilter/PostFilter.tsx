@@ -44,6 +44,7 @@ function PostFilter({
     if (!scopeFilterEnabled || !window.settings.auth0.enabled) {
       return null;
     }
+    // todo: support multiple attributes in the future
     const scopeAttribute = scopeFilterAttributes[0];
     if (!scopeAttribute) {
       return new Set<string>();

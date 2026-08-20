@@ -428,6 +428,7 @@ export const useImageSearch = () => {
       setSmartFilters,
       setPostFilterFacets,
       setInitialFindSearchSnapshot,
+      user,
     ],
   );
 

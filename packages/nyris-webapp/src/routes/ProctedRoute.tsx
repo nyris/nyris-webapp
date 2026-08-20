@@ -54,27 +54,24 @@ export default function ProtectedRoute({
     return children;
   }
 
-  if (
-    !scopeIsLoading &&
-    !isLoading &&
-    window.settings.scopeFilter &&
-    filterAttributes.length === 0
-  ) {
-    return <ScopeMissing />;
+  if (isLoading || !isAuthenticated) {
+    return <div></div>;
   }
 
-  if (
-    !isLoading &&
-    isAuthenticated &&
-    user?.email_verified &&
-    !scopeIsLoading
-  ) {
-    return children;
-  }
-
-  if (!isLoading && isAuthenticated && !user?.email_verified) {
+  if (!user?.email_verified) {
     return <EmailVerification />;
   }
 
-  return <div></div>;
+  if (scopeFilter) {
+    // wait for the scope fetch to finish before deciding access, otherwise ScopeMissing flashes early
+    if (scopeIsLoading || !hasFetchedScope.current) {
+      return <div></div>;
+    }
+
+    if (filterAttributes.length === 0) {
+      return <ScopeMissing />;
+    }
+  }
+
+  return children;
 }

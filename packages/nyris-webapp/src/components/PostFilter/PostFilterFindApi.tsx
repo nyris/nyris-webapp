@@ -12,6 +12,7 @@ import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
 import useScopeStore from 'stores/scope/scopeStore';
 import { find } from 'services/visualSearch';
+import { useAuth0 } from '@auth0/auth0-react';
 
 let postFilterRequestCounter = 0;
 
@@ -32,6 +33,8 @@ function PostFilterFindApi({
   onVisibilityChange?: (attribute: string, isVisible: boolean) => void;
   isLastVisible?: boolean;
 }) {
+  const { user } = useAuth0();
+
   const [itemsLimit, setItemsLimit] = useState(10);
   const [searchInput, setSearchInput] = useState<string>('');
 
@@ -60,6 +63,7 @@ function PostFilterFindApi({
     if (!scopeFilterEnabled || !window.settings.auth0?.enabled) {
       return null;
     }
+    // todo: support multiple attributes in the future
     const scopeAttribute = scopeFilterAttributes[0];
     if (!scopeAttribute) {
       return new Set<string>();
@@ -211,6 +215,7 @@ function PostFilterFindApi({
       region: regions[0],
       filters,
       text: !requestImages[0] ? query : undefined,
+      scopeIds: window.settings?.scopeFilter ? user?.email : undefined,
     })
       .then(response => {
         if (requestId !== postFilterRequestCounter) {
