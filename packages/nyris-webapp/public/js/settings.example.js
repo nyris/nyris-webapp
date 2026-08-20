@@ -97,7 +97,11 @@ var settings = {
     },
   ],
   // features
-  cart: false,
+  cart: {
+    enabled: true,
+    buttonText: 'Add to cart',
+    emailTemplateId: 'template_h3rt2pi',
+  },
   showPoweredByNyris: '',
   postFilterOption: '',
   preFilterOption: '',

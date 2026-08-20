@@ -330,9 +330,7 @@ export const useImageSearch = () => {
                 ? query
                 : text
               : undefined,
-          scopeIds: window.settings?.scopeFilter
-            ? 'ishaan1090@gmail.com'
-            : undefined,
+          scopeIds: window.settings?.scopeFilter ? user?.email : undefined,
         });
         useResultStore.getState().resetGrounding();
 

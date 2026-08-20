@@ -10,7 +10,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import NoImage from '../common/assets/images/no-image.svg';
 
 const EMAILJS_SERVICE_ID = 'service_zfsxshi';
-const EMAILJS_TEMPLATE_ID = window.settings.cartEmail?.emailTemplateId || '';
+const EMAILJS_TEMPLATE_ID = window.settings.cart?.emailTemplateId || '';
 const EMAILJS_PUBLIC_KEY = 'SMGihPnuEGcYLm0V4';
 
 const Cart = () => {
@@ -126,7 +126,10 @@ const Cart = () => {
     toast.success('Your data has been downloaded.');
   };
 
-  const sendCSVByEmail = async (e?: React.FormEvent, emailOverride?: string) => {
+  const sendCSVByEmail = async (
+    e?: React.FormEvent,
+    emailOverride?: string,
+  ) => {
     if (e) {
       e.preventDefault();
     }
@@ -384,7 +387,8 @@ const Cart = () => {
                   ) : (
                     ''
                   )}
-                  {amountOfParts > 0 && window.settings.cartEmail?.enabled ? (
+                  {amountOfParts > 0 &&
+                  window.settings.cart?.emailTemplateId ? (
                     auth0Email ? (
                       <button
                         className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-solid border-[#3E36DC] bg-white text-base font-semibold text-[#3E36DC] disabled:cursor-not-allowed disabled:opacity-60"

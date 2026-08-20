@@ -10,6 +10,7 @@ import { isEmpty } from 'lodash';
 import useResultStore from 'stores/result/resultStore';
 import useRequestStore from 'stores/request/requestStore';
 import useUiStore from 'stores/ui/uiStore';
+import useScopeStore from 'stores/scope/scopeStore';
 import { find } from 'services/visualSearch';
 
 let postFilterRequestCounter = 0;
@@ -51,6 +52,22 @@ function PostFilterFindApi({
   const setIsFindApiLoading = useUiStore(state => state.setIsFindApiLoading);
   const { t } = useTranslation();
   const settings = window.settings;
+
+  const scopeFilterEnabled = !!settings.scopeFilter;
+  const scopeFilterAttributes = useScopeStore(state => state.filterAttributes);
+
+  const scopedAllowedValues = useMemo(() => {
+    if (!scopeFilterEnabled) {
+      return null;
+    }
+    const scopeAttribute = scopeFilterAttributes[0];
+    if (!scopeAttribute) {
+      return new Set<string>();
+    }
+    return new Set(
+      scopeAttribute.values.map(value => value.toLocaleLowerCase()),
+    );
+  }, [scopeFilterEnabled, scopeFilterAttributes]);
 
   const matchedFacet = useMemo(() => {
     const facets = Array.isArray(postFilterFacets) ? postFilterFacets : [];
@@ -98,18 +115,32 @@ function PostFilterFindApi({
       }))
       .filter(
         item =>
+          !scopedAllowedValues ||
+          scopedAllowedValues.has(item.value.toLocaleLowerCase()),
+      )
+      .filter(
+        item =>
           !searchInput ||
           item.label.toLowerCase().includes(searchInput.toLowerCase()),
       )
       .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
       .slice(0, itemsLimit);
-  }, [attribute, itemsLimit, postFilterSelections, searchInput, valueCounts]);
+  }, [
+    attribute,
+    itemsLimit,
+    postFilterSelections,
+    scopedAllowedValues,
+    searchInput,
+    valueCounts,
+  ]);
 
   const selectedValues = postFilterSelections?.[attribute] || [];
   const hasSelection = selectedValues.length > 0;
   const hasAvailableValues = Object.keys(valueCounts).length > 0;
   const hasSearch = searchable && searchInput.length > 0;
-  const isVisible = hasAvailableValues || hasSelection || hasSearch;
+  const isVisible =
+    (!scopedAllowedValues || scopedAllowedValues.size > 0) &&
+    (hasAvailableValues || hasSelection || hasSearch);
 
   useEffect(() => {
     onVisibilityChange?.(attribute, isVisible);
@@ -264,7 +295,9 @@ function PostFilterFindApi({
                   <input
                     type="checkbox"
                     checked={item.isRefined}
-                    onChange={() => handleFilterClick(item.value, item.isRefined)}
+                    onChange={() =>
+                      handleFilterClick(item.value, item.isRefined)
+                    }
                     className="cursor-pointer"
                   />
                   <span className="text-xs font-normal pl-2 pr-1">

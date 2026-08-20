@@ -1,5 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import EmailVerification from 'components/EmailVerification';
+import ScopeMissing from 'components/ScopeMissing';
 import { useEffect, useRef, ReactElement } from 'react';
 import { getScopes } from 'services/filter';
 import useScopeStore from 'stores/scope/scopeStore';
@@ -13,7 +14,11 @@ export default function ProtectedRoute({
 
   const { user, isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
   const setScope = useScopeStore(state => state.setScope);
+  const filterAttributes = useScopeStore(state => state.filterAttributes);
+
   const setScopeLoading = useScopeStore(state => state.setScopeLoading);
+  const scopeIsLoading = useScopeStore(state => state.isLoading);
+
   const hasFetchedScope = useRef(false);
 
   useEffect(() => {
@@ -33,7 +38,7 @@ export default function ProtectedRoute({
     }
     hasFetchedScope.current = true;
     setScopeLoading(true);
-    getScopes('ishaan1090@gmail.com', window.settings)
+    getScopes(user.email, window.settings)
       .then(response => {
         setScope(response.itemKeys || [], response.filterAttributes || []);
       })
@@ -49,11 +54,21 @@ export default function ProtectedRoute({
     return children;
   }
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (
+    !scopeIsLoading &&
+    !isLoading &&
+    window.settings.scopeFilter &&
+    filterAttributes.length === 0
+  ) {
+    return <ScopeMissing />;
+  }
 
-  if (!isLoading && isAuthenticated && user?.email_verified) {
+  if (
+    !isLoading &&
+    isAuthenticated &&
+    user?.email_verified &&
+    !scopeIsLoading
+  ) {
     return children;
   }
 

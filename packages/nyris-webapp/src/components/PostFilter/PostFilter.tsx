@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   AccordionContent,
   AccordionItem,
@@ -7,6 +7,7 @@ import {
 import { useRefinementList } from 'react-instantsearch';
 import { Icon } from '@nyris/nyris-react-components';
 import { useTranslation } from 'react-i18next';
+import useScopeStore from 'stores/scope/scopeStore';
 
 function PostFilter({
   attribute,
@@ -23,7 +24,11 @@ function PostFilter({
 }) {
   const [itemsLimit, setItemsLimit] = useState(10);
   const [searchInput, setSearchInput] = useState<string>('');
-  const { items, refine, searchForItems } = useRefinementList({
+  const {
+    items: allItems,
+    refine,
+    searchForItems,
+  } = useRefinementList({
     attribute: attribute,
     operator: 'or',
     showMore: false,
@@ -32,6 +37,31 @@ function PostFilter({
 
   const { t } = useTranslation();
 
+  const scopeFilterEnabled = !!window.settings.scopeFilter;
+  const scopeFilterAttributes = useScopeStore(state => state.filterAttributes);
+
+  const scopedAllowedValues = useMemo(() => {
+    if (!scopeFilterEnabled) {
+      return null;
+    }
+    const scopeAttribute = scopeFilterAttributes[0];
+    if (!scopeAttribute) {
+      return new Set<string>();
+    }
+    return new Set(
+      scopeAttribute.values.map(value => value.toLocaleLowerCase()),
+    );
+  }, [scopeFilterEnabled, scopeFilterAttributes]);
+
+  const items = useMemo(() => {
+    if (!scopedAllowedValues) {
+      return allItems;
+    }
+    return allItems.filter(item =>
+      scopedAllowedValues.has(item.value.toLocaleLowerCase()),
+    );
+  }, [allItems, scopedAllowedValues]);
+
   useEffect(() => {
     searchForItems(searchInput);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,7 +69,9 @@ function PostFilter({
 
   const hasSelection = items.some(item => item.isRefined);
   const hasAvailableValues = items.length > 0 || searchInput.length > 0;
-  const isVisible = hasAvailableValues || hasSelection;
+  const isVisible =
+    (!scopedAllowedValues || scopedAllowedValues.size > 0) &&
+    (hasAvailableValues || hasSelection);
 
   useEffect(() => {
     onVisibilityChange?.(attribute, isVisible);
