@@ -322,7 +322,7 @@ function Results() {
                         >
                           {t('Showing results for machine', {
                             prefilter_title:
-                              window.settings.preFilterTitle?.toLocaleLowerCase(),
+                              window.settings.visualSearchFilterKey,
                             prefilter_value: specifications.prefilter_value,
                           })}
                         </div>

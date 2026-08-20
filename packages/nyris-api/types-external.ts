@@ -47,6 +47,11 @@ export interface Filter {
   values: string[];
 }
 
+export interface ScopeResponse {
+  itemKeys: string[];
+  filterAttributes: Filter[];
+}
+
 export interface FeedbackData {
   success: boolean;
 }

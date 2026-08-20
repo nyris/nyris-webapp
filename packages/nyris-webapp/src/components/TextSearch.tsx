@@ -204,7 +204,9 @@ function TextSearch({
                         !isEmpty(preFilter)
                           ? 'fill-theme-primary'
                           : 'fill-[#2B2C46]',
-                        `desktop:fill-[#3B3E5F]`,
+                        !isEmpty(preFilter)
+                          ? 'desktop:fill-white'
+                          : 'desktop:fill-[#2B2C46]',
                       )}
                     />
                   </div>

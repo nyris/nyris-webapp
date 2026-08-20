@@ -22,6 +22,7 @@ import { getFilters } from 'services/filter';
 import { useUploadSearch } from 'hooks/useUploadSearch';
 import { ToastHelper } from 'helpers/ToastHelper';
 import { useTranslation } from 'react-i18next';
+import useScopeStore from 'stores/scope/scopeStore';
 
 i18n.use(initReactI18next).init({
   resources: translations,
@@ -49,6 +50,7 @@ function AppLayout(): JSX.Element {
 
   const algoliaFilter = useRequestStore(state => state.algoliaFilter);
   const metaFilter = useRequestStore(state => state.metaFilter);
+  const scopeItemKeys = useScopeStore(state => state.filterAttributes);
 
   const setAlgoliaProducts = useResultStore(state => state.setAlgoliaProducts);
   const setIsAlgoliaLoading = useUiStore(state => state.setIsAlgoliaLoading);
@@ -88,7 +90,7 @@ function AppLayout(): JSX.Element {
   useEffect(() => {
     setAlgoliaProducts(items);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items]);
+  }, [items, scopeItemKeys]);
 
   useEffect(() => {
     if (status === 'loading' || status === 'stalled') {
@@ -145,10 +147,10 @@ function AppLayout(): JSX.Element {
   }, [settings, setPreFilterList, setPreFilterLoading]);
 
   useEffect(() => {
-    if (showPreFilter) {
+    if (showPreFilter && !settings.scopeFilter) {
       getPreFilters();
     }
-  }, [getPreFilters, showPreFilter]);
+  }, [getPreFilters, showPreFilter, settings.scopeFilter]);
 
   const getImageFromClipboard = useCallback(
     (event: ClipboardEvent): File | null => {
@@ -213,6 +215,25 @@ function AppLayout(): JSX.Element {
     };
   }, [handleClipboardPaste, showLayout]);
 
+  const applyScopeFilter = (filters: string | undefined) => {
+    const scopeFilterClause =
+      window.settings.scopeFilter && scopeItemKeys.length
+        ? `(${scopeItemKeys[0].values.map(key => `${window.settings.alogoliaFilterField}:'${key}'`).join(' OR ')})`
+        : '';
+
+    if (!window.settings.scopeFilter || !window.settings.auth0?.enabled) {
+      return filters;
+    }
+
+    if (!scopeFilterClause) {
+      return `sku:NOT_FOUND`;
+    }
+
+    return filters
+      ? `${scopeFilterClause} AND (${filters})`
+      : scopeFilterClause;
+  };
+
   if (!showLayout) {
     return <Outlet />;
   }
@@ -226,7 +247,7 @@ function AppLayout(): JSX.Element {
       {window.settings?.algolia.enabled && (
         <Configure
           query={query}
-          filters={
+          filters={applyScopeFilter(
             specifications && !requestImages.length
               ? `${alogoliaFilterField}:'${specifications.prefilter_value}'`
               : !query && !algoliaFilter.includes('score=1')
@@ -237,8 +258,8 @@ function AppLayout(): JSX.Element {
                           algoliaFilter ? 'AND ' : ''
                         }${alogoliaFilterField}:'${metaFilter}'`
                       : ''
-                  }`
-          }
+                  }`,
+          )}
           // facets={['brand', 'keyword_0']}
           hitsPerPage={20}
         />

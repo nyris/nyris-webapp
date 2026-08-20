@@ -6,10 +6,11 @@ import toast from 'react-hot-toast';
 import { Icon } from '@nyris/nyris-react-components';
 import { Send } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+import { useAuth0 } from '@auth0/auth0-react';
 import NoImage from '../common/assets/images/no-image.svg';
 
 const EMAILJS_SERVICE_ID = 'service_zfsxshi';
-const EMAILJS_TEMPLATE_ID = window.settings.cartEmail?.emailTemplateId || '';
+const EMAILJS_TEMPLATE_ID = window.settings.cart?.emailTemplateId || '';
 const EMAILJS_PUBLIC_KEY = 'SMGihPnuEGcYLm0V4';
 
 const Cart = () => {
@@ -19,6 +20,9 @@ const Cart = () => {
   const [quantityEdits, setQuantityEdits] = useState<Record<string, string>>(
     {},
   );
+
+  const { user } = useAuth0();
+  const auth0Email = window.settings.auth0?.enabled ? user?.email : undefined;
 
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isEmailInputVisible, setIsEmailInputVisible] = useState(false);
@@ -122,11 +126,15 @@ const Cart = () => {
     toast.success('Your data has been downloaded.');
   };
 
-  const sendCSVByEmail = async (e?: React.FormEvent) => {
+  const sendCSVByEmail = async (
+    e?: React.FormEvent,
+    emailOverride?: string,
+  ) => {
     if (e) {
       e.preventDefault();
     }
-    if (!userEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail)) {
+    const emailToSend = emailOverride ?? userEmail;
+    if (!emailToSend || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailToSend)) {
       toast.error('Please enter a valid email address.');
       return;
     }
@@ -141,7 +149,7 @@ const Cart = () => {
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
         {
-          email_id: userEmail,
+          email_id: emailToSend,
           // machine_name: getMachineName(),
           date: new Date().toLocaleDateString(),
           item_count: amountOfParts,
@@ -379,8 +387,19 @@ const Cart = () => {
                   ) : (
                     ''
                   )}
-                  {amountOfParts > 0 && window.settings.cartEmail?.enabled ? (
-                    isEmailInputVisible ? (
+                  {amountOfParts > 0 &&
+                  window.settings.cart?.emailTemplateId ? (
+                    auth0Email ? (
+                      <button
+                        className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-solid border-[#3E36DC] bg-white text-base font-semibold text-[#3E36DC] disabled:cursor-not-allowed disabled:opacity-60"
+                        type="button"
+                        onClick={() => sendCSVByEmail(undefined, auth0Email)}
+                        disabled={isSendingEmail}
+                      >
+                        <Icon name="email" />
+                        Send by email
+                      </button>
+                    ) : isEmailInputVisible ? (
                       <form
                         className="cart-email-form flex items-center relative mt-2 h-12 w-full"
                         onSubmit={sendCSVByEmail}

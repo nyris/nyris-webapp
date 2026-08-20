@@ -673,7 +673,7 @@ function Product(props: Props) {
                 </div>
               )}
 
-              {settings.cart && (
+              {settings.cart?.enabled && (
                 <div
                   style={{
                     boxShadow: '-2px 2px 4px rgba(170, 171, 181, 0.5)',
@@ -717,7 +717,7 @@ function Product(props: Props) {
                         paddingRight: '8px',
                       }}
                     >
-                      Add to cart
+                      {settings.cart?.buttonText || 'Add to cart'}
                     </div>
                     <div style={{ width: '16px' }}>
                       <Icon

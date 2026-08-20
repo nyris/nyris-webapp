@@ -456,7 +456,7 @@ function ProductDetailView(props: Props) {
                       </div>
                     )}
                   </div>
-                  {settings.cart && (
+                  {settings.cart?.enabled && (
                     <div
                       className="bg-[#2B2C46] rounded mt-2 flex justify-between items-center h-8 desktop:h-12 w-full btn-detail-item"
                       style={{
@@ -472,7 +472,7 @@ function ProductDetailView(props: Props) {
                         }}
                       >
                         <div className="text-f16 fw-600 max-line-1 text-white pr-1.5">
-                          Add to cart
+                          {settings.cart?.buttonText || 'Add to cart'}
                         </div>
                         <div style={{ width: '16px' }}>
                           <Icon

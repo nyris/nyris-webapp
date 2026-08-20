@@ -79,7 +79,11 @@ export interface AppSettings extends NyrisAPISettings {
   brandName?: string;
   cadenas?: Cadenas;
   cadSearch?: boolean;
-  cart?: boolean;
+  cart?: {
+    enabled: boolean;
+    buttonText: string;
+    emailTemplateId: string;
+  };
   clarityId?: string;
   CTAButton?: CTAButtonSettings;
   experienceVisualSearch?: boolean;
@@ -92,10 +96,6 @@ export interface AppSettings extends NyrisAPISettings {
     fallbackToElasticSearch?: boolean;
     chat?: boolean;
     findRelatedParts?: boolean;
-  };
-  cartEmail?: {
-    enabled?: boolean;
-    emailTemplateId?: string;
   };
   headerText?: string;
   instantRedirectPatterns: string[];
@@ -114,6 +114,7 @@ export interface AppSettings extends NyrisAPISettings {
   refinements?: any;
   regions: boolean;
   rfq?: Rfq;
+  scopeFilter?: boolean;
   secondaryCTAButton?: SecondaryCTAButton;
   secondaryCTAButtonText?: string;
   secondaryTitle: string;
