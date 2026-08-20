@@ -221,7 +221,7 @@ function AppLayout(): JSX.Element {
         ? `(${scopeItemKeys[0].values.map(key => `${window.settings.alogoliaFilterField}:'${key}'`).join(' OR ')})`
         : '';
 
-    if (!window.settings.scopeFilter) {
+    if (!window.settings.scopeFilter || !window.settings.auth0?.enabled) {
       return filters;
     }
 

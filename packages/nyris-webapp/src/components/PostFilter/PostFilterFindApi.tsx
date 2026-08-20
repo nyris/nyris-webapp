@@ -53,11 +53,11 @@ function PostFilterFindApi({
   const { t } = useTranslation();
   const settings = window.settings;
 
-  const scopeFilterEnabled = !!settings.scopeFilter;
+  const scopeFilterEnabled = settings.scopeFilter;
   const scopeFilterAttributes = useScopeStore(state => state.filterAttributes);
 
   const scopedAllowedValues = useMemo(() => {
-    if (!scopeFilterEnabled) {
+    if (!scopeFilterEnabled || !window.settings.auth0?.enabled) {
       return null;
     }
     const scopeAttribute = scopeFilterAttributes[0];

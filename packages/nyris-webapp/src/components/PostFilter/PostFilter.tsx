@@ -37,11 +37,11 @@ function PostFilter({
 
   const { t } = useTranslation();
 
-  const scopeFilterEnabled = !!window.settings.scopeFilter;
+  const scopeFilterEnabled = window.settings.scopeFilter;
   const scopeFilterAttributes = useScopeStore(state => state.filterAttributes);
 
   const scopedAllowedValues = useMemo(() => {
-    if (!scopeFilterEnabled) {
+    if (!scopeFilterEnabled || !window.settings.auth0.enabled) {
       return null;
     }
     const scopeAttribute = scopeFilterAttributes[0];
