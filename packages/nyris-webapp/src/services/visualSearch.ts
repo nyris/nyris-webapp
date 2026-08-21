@@ -9,6 +9,7 @@ import { isEqual } from 'lodash';
 
 import { DEFAULT_REGION } from '../constants';
 import { getUserLocation } from 'helpers/getGeoLocation';
+import { getNyrisSettings } from 'utils/nyrisApiKey';
 
 export interface Filter {
   key?: string;
@@ -41,7 +42,7 @@ export const findRegions = async (
   image: HTMLCanvasElement,
   settings: NyrisAPISettings,
 ) => {
-  const nyrisApi = new NyrisAPI(settings);
+  const nyrisApi = new NyrisAPI(getNyrisSettings(settings));
   let regions = await nyrisApi.findRegions(image);
   const selectedRegion = getRegionByMaxConfidence(regions);
   return {
@@ -65,7 +66,7 @@ export const find = async ({
   filters?: Filter[];
   text?: string;
 }) => {
-  const nyrisApi = new NyrisAPI(settings);
+  const nyrisApi = new NyrisAPI(getNyrisSettings(settings));
   let options: ImageSearchOptions = text ? { text } : {};
 
   if (window.settings?.geoLocation) {
@@ -94,7 +95,7 @@ export const findCad = ({
   settings: NyrisAPISettings;
   filters?: Filter[];
 }) => {
-  const nyrisApi = new NyrisAPI(settings);
+  const nyrisApi = new NyrisAPI(getNyrisSettings(settings));
 
   return nyrisApi.findByCad(file, {}, filters);
 };
@@ -106,7 +107,7 @@ export const getRequestImage = ({
   url: string;
   settings: NyrisAPISettings;
 }) => {
-  const nyrisApi = new NyrisAPI(settings);
+  const nyrisApi = new NyrisAPI(getNyrisSettings(settings));
 
   return nyrisApi.getCadRequestImage(url);
 };

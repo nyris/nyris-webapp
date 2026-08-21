@@ -12,6 +12,7 @@ import {
   fetchProductImageBase64,
   getProductImageUrl,
 } from 'utils/fetchProductImage';
+import { getEffectiveApiKey } from 'utils/nyrisApiKey';
 
 export function useChatAssistantLogic() {
   const [inputValue, setInputValue] = useState('');
@@ -482,7 +483,7 @@ Each result includes a unique SKU in brackets. Use the result thumbnails and met
     setCatalogSearching(true);
     try {
       const settings = (window as any).settings;
-      const nyrisKey = settings?.apiKey || settings?.nyrisApiKey;
+      const nyrisKey = getEffectiveApiKey();
       const baseUrl = settings?.baseUrl || 'https://api.nyris.io';
 
       store.setPreCatalogResults([...activeProducts]);
@@ -580,7 +581,7 @@ Each result includes a unique SKU in brackets. Use the result thumbnails and met
 
     try {
       const settings = (window as any).settings;
-      const nyrisKey = settings?.apiKey || settings?.nyrisApiKey;
+      const nyrisKey = getEffectiveApiKey();
       const baseUrl = settings?.baseUrl || 'https://api.nyris.io';
 
       let searchQuery = rawText;

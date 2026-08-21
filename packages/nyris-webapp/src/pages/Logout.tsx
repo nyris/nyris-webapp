@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { clearAuthApiKey } from 'utils/nyrisApiKey';
 
 const Logout = () => {
   const { user, isAuthenticated, isLoading, loginWithRedirect, logout } =
@@ -10,6 +11,7 @@ const Logout = () => {
     if (!isLoading && !user && !isAuthenticated && auth0.enabled) {
       loginWithRedirect();
     } else if (isAuthenticated) {
+      clearAuthApiKey();
       logout({ logoutParams: { returnTo: window.location.origin } });
     } else if (!auth0.enabled) {
       window.location.href = '/';

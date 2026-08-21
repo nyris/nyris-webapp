@@ -1,6 +1,17 @@
 import { RectCoords } from '@nyris/nyris-api';
 import axios from 'axios';
 import { cropImage } from 'utils/cropImageToBase64';
+import { getEffectiveApiKey } from 'utils/nyrisApiKey';
+
+function resolveAiOrNyrisApiKey(explicitApiKey?: string): string {
+  if (explicitApiKey) {
+    return explicitApiKey;
+  }
+  if (window.settings.aiApiKey) {
+    return window.settings.aiApiKey;
+  }
+  return getEffectiveApiKey();
+}
 
 export interface ChatMultimodalInput {
   metadata: string;
@@ -111,7 +122,7 @@ export async function rerankSmartFilters({
       formData,
       {
         headers: {
-          'x-api-key': apiKey || window.settings.aiApiKey || window.settings.apiKey,
+          'x-api-key': resolveAiOrNyrisApiKey(apiKey),
         },
       },
     );
@@ -156,7 +167,7 @@ export async function generateSmartFilters({
       formData,
       {
         headers: {
-          'x-api-key':  window.settings.aiApiKey || window.settings.apiKey,
+          'x-api-key': resolveAiOrNyrisApiKey(),
         },
       },
     );

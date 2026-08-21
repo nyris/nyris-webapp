@@ -22,6 +22,10 @@ import { getFilters } from 'services/filter';
 import { useUploadSearch } from 'hooks/useUploadSearch';
 import { ToastHelper } from 'helpers/ToastHelper';
 import { useTranslation } from 'react-i18next';
+import {
+  isNyrisApiKeyReady,
+  useAuthApiKeyStore,
+} from 'utils/nyrisApiKey';
 
 i18n.use(initReactI18next).init({
   resources: translations,
@@ -132,7 +136,15 @@ function AppLayout(): JSX.Element {
     user,
   ]);
 
+  const authApiKeyVersion = useAuthApiKeyStore(state => state.version);
+  const isMissingAuthApiKey = useAuthApiKeyStore(state => state.isMissingClaim);
+  const isApiKeyReady = isNyrisApiKeyReady();
+
   const getPreFilters = useCallback(async () => {
+    if (!isNyrisApiKeyReady()) {
+      return;
+    }
+
     setPreFilterLoading(true);
     try {
       const res = await getFilters(1000, settings);
@@ -145,10 +157,10 @@ function AppLayout(): JSX.Element {
   }, [settings, setPreFilterList, setPreFilterLoading]);
 
   useEffect(() => {
-    if (showPreFilter) {
+    if (showPreFilter && isApiKeyReady) {
       getPreFilters();
     }
-  }, [getPreFilters, showPreFilter]);
+  }, [getPreFilters, showPreFilter, isApiKeyReady, authApiKeyVersion]);
 
   const getImageFromClipboard = useCallback(
     (event: ClipboardEvent): File | null => {
@@ -215,6 +227,21 @@ function AppLayout(): JSX.Element {
 
   if (!showLayout) {
     return <Outlet />;
+  }
+
+  // Auth0 mode: wait for AuthApiKeySync before rendering search UI / prefilters.
+  if (auth0.enabled && !isApiKeyReady && !isMissingAuthApiKey) {
+    return <div />;
+  }
+
+  if (isMissingAuthApiKey) {
+    return (
+      <div className="full-height flex flex-col items-center justify-center bg-[#F3F4F8] p-6 text-center">
+        <p className="mt-2 max-w-md text-sm text-gray-600">
+          Search is currently unavailable for your account. Please contact your administrator.
+        </p>
+      </div>
+    );
   }
 
   return (

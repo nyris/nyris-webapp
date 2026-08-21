@@ -3,6 +3,7 @@ import NyrisAPI, {
   NyrisAPISettings,
   RectCoords,
 } from '@nyris/nyris-api';
+import { getNyrisSettings } from 'utils/nyrisApiKey';
 
 export const feedbackSuccessEpic = async (
   requestId: string,
@@ -62,7 +63,7 @@ export const sendFeedbackByApi = async (
   requestId: string | undefined,
   payload: FeedbackEventPayload,
 ) => {
-  const api = new NyrisAPI(settings);
+  const api = new NyrisAPI(getNyrisSettings(settings));
   if (requestId) {
     try {
       await api.sendFeedback({ sessionId, requestId, payload }).then(() => {});
