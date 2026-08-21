@@ -23,3 +23,16 @@ export const searchFilters = async (
   const newValue = value ? value : '';
   return nyrisApi.searchFilters(key, newValue);
 };
+
+export interface ScopeResponse {
+  itemKeys: string[];
+  filterAttributes: Filter[];
+}
+
+export const getScopes = async (
+  scopeIds: string,
+  settings: NyrisAPISettings,
+): Promise<ScopeResponse> => {
+  const nyrisApi = new NyrisAPI(settings);
+  return nyrisApi.getScopes(scopeIds);
+};

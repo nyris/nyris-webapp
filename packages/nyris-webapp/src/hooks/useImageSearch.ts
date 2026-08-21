@@ -20,8 +20,11 @@ import { useGroundedSearch } from './useGroundedSearch';
 import { generateSmartFilters } from '../services/vizo';
 import { cropImage } from 'utils/cropImageToBase64';
 import { invalidatePostFilterRequests } from 'components/PostFilter/PostFilterFindApi';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export const useImageSearch = () => {
+  const { user } = useAuth0();
+
   const setRegions = useRequestStore(state => state.setRegions);
   const query = useRequestStore(state => state.query);
 
@@ -327,6 +330,7 @@ export const useImageSearch = () => {
                 ? query
                 : text
               : undefined,
+          scopeIds: window.settings?.scopeFilter ? user?.email : undefined,
         });
         useResultStore.getState().resetGrounding();
 
@@ -424,6 +428,7 @@ export const useImageSearch = () => {
       setSmartFilters,
       setPostFilterFacets,
       setInitialFindSearchSnapshot,
+      user,
     ],
   );
 
