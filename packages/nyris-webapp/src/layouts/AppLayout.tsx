@@ -23,6 +23,7 @@ import { useUploadSearch } from 'hooks/useUploadSearch';
 import { ToastHelper } from 'helpers/ToastHelper';
 import { useTranslation } from 'react-i18next';
 import {
+  clearAuthApiKey,
   isNyrisApiKeyReady,
   useAuthApiKeyStore,
 } from 'utils/nyrisApiKey';
@@ -38,7 +39,7 @@ i18n.use(initReactI18next).init({
 });
 
 function AppLayout(): JSX.Element {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, logout } = useAuth0();
   const { t } = useTranslation();
   const { auth0, alogoliaFilterField, showPoweredByNyris } = window.settings;
   const { uploadFile } = useUploadSearch();
@@ -259,8 +260,21 @@ function AppLayout(): JSX.Element {
     return (
       <div className="full-height flex flex-col items-center justify-center bg-[#F3F4F8] p-6 text-center">
         <p className="mt-2 max-w-md text-sm text-gray-600">
-          Search is currently unavailable for your account. Please contact your administrator.
+          Search is currently unavailable for your account. Please contact your
+          administrator.
         </p>
+        <button
+          type="button"
+          className="mt-6 bg-[#2B2C46] px-6 py-3 text-sm text-white"
+          onClick={() => {
+            clearAuthApiKey();
+            logout({
+              logoutParams: { returnTo: window.location.origin },
+            });
+          }}
+        >
+          {t('Log out')}
+        </button>
       </div>
     );
   }
