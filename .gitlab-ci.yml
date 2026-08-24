@@ -49,9 +49,6 @@ publish to npm:
   script:
     - mkdir -p ~/
     - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-    - echo "Token length ${NPM_TOKEN}" | wc -c
-    - npm whoami --registry=https://registry.npmjs.org/
-    - npm access ls-packages --registry=https://registry.npmjs.org/
     - npm publish ./npm-packages/nyris-nyris-api-*.tgz --access public
     - npm publish ./npm-packages/nyris-nyris-react-components-*.tgz --access public
     - npm publish ./npm-packages/nyris-nyris-widget-*.tgz --access public
