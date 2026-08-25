@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.97 - 2026-08-20
+
+### Added
+- Scope search with auth0 email
+- Cart configuration
+
 ## 0.3.96 - 2026-07-16
 
 ### Added
