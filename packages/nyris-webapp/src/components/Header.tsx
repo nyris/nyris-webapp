@@ -164,7 +164,7 @@ function Header() {
               </div>
             </>
           )}
-        {window.settings.cart && <Cart />}
+        {window.settings.cart?.enabled && <Cart />}
       </div>
 
       <LogoutModal

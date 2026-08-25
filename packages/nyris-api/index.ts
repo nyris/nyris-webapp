@@ -7,6 +7,7 @@ import {
   SearchResult,
   RectCoords,
   Filter,
+  ScopeResponse,
 } from './types-external';
 
 require('blueimp-canvas-to-blob');
@@ -68,6 +69,7 @@ export default class NyrisAPI {
   private readonly apiKey: string;
   private readonly xOptions: string | boolean;
   private readonly findFilters: string;
+  private readonly managementScopesUrl: string;
   private readonly requestContentType: string;
 
   constructor(settings: NyrisAPISettings) {
@@ -87,6 +89,7 @@ export default class NyrisAPI {
     this.feedbackUrl = `${baseUrl}/feedback/v1/`;
     this.regionProposalUrl = `${baseUrl}/find/v2/regions/`;
     this.findFilters = `${baseUrl}/find/v1/filters`;
+    this.managementScopesUrl = `${baseUrl}/manage/v1/scopes`;
     this.requestImageUrl = `${baseUrl}/cad/image`;
     this.responseFormat = 'application/offers.complete+json';
     this.maxHeight = settings.maxHeight || 1024;
@@ -240,6 +243,7 @@ export default class NyrisAPI {
     filters?: Filter[],
     exacts?: string[],
     xOptions?: any,
+    scopeIds?: string[],
   ): Promise<SearchResult> {
     var requestBody = new FormData();
     let params: any = {};
@@ -288,6 +292,12 @@ export default class NyrisAPI {
     if (exacts && exacts.length > 0) {
       for (let i = 0; i < exacts.length; i++) {
         requestBody.append(`exact[${i}]`, exacts[i]);
+      }
+    }
+
+    if (scopeIds && scopeIds.length > 0) {
+      for (let i = 0; i < scopeIds.length; i++) {
+        requestBody.append(`scope[${i}]`, scopeIds[i]);
       }
     }
 
@@ -491,6 +501,20 @@ export default class NyrisAPI {
       headers,
       responseType: 'json',
     });
+
+    return response.data;
+  }
+
+  async getScopes(scopeIds: string): Promise<ScopeResponse> {
+    const headers = this.getSearchRequestHeaders();
+    const response = await this.httpClient.get<ScopeResponse>(
+      this.managementScopesUrl,
+      {
+        headers,
+        params: { scopeIds },
+        responseType: 'json',
+      },
+    );
 
     return response.data;
   }

@@ -66,10 +66,10 @@ export default function InquiryModal({
   useEffect(() => {
     function omitKeys(obj: any, keys: string[]) {
       return Object.fromEntries(
-        Object.entries(obj).filter(([key]) => !keys.includes(key)),
+        Object.entries(obj)?.filter(([key]) => !keys.includes(key)),
       );
     }
-    const omittedSpecification = omitKeys(specifications, [
+    const omittedSpecification = omitKeys(specifications || {}, [
       'is_nameplate',
       'prefilter_value',
     ]);
