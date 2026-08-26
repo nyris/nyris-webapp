@@ -119,13 +119,13 @@ function AppLayout(): JSX.Element {
 
   const showPreFilter = useMemo(() => {
     if (settings.shouldUseUserMetadata && user) {
-      if (user['/user_metadata'].value) {
+      if (user['/user_metadata']?.value) {
         setMetaFilter(user['/user_metadata'].value);
       }
     }
 
     if (settings.shouldUseUserMetadata && user) {
-      if (settings.preFilterOption && !user['/user_metadata'].value) {
+      if (settings.preFilterOption && !user['/user_metadata']?.value) {
         return true;
       }
       return false;
