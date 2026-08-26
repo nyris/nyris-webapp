@@ -1,5 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Dialog, DialogContent } from './Modal/Dialog';
+import { clearAuthApiKey } from 'utils/nyrisApiKey';
 
 function LogoutModal({
   setShowLogoutModal,
@@ -41,6 +42,7 @@ function LogoutModal({
               cursor: 'pointer',
             }}
             onClick={() => {
+              clearAuthApiKey();
               logout({
                 logoutParams: { returnTo: window.location.origin },
               });

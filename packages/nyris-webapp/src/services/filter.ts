@@ -1,4 +1,5 @@
 import NyrisAPI, { NyrisAPISettings } from '@nyris/nyris-api';
+import { getNyrisSettings } from 'utils/nyrisApiKey';
 
 export interface Filter {
   key?: string;
@@ -9,7 +10,7 @@ export const getFilters = async (
   number: number = 10,
   settings: NyrisAPISettings,
 ) => {
-  const nyrisApi = new NyrisAPI(settings);
+  const nyrisApi = new NyrisAPI(getNyrisSettings(settings));
   return nyrisApi.getFilters(number);
 };
 
@@ -18,7 +19,7 @@ export const searchFilters = async (
   value: string,
   settingsNyris: NyrisAPISettings,
 ) => {
-  const nyrisApi = new NyrisAPI(settingsNyris);
+  const nyrisApi = new NyrisAPI(getNyrisSettings(settingsNyris));
   const newValue = value ? value : '';
   return nyrisApi.searchFilters(key, newValue);
 };

@@ -22,6 +22,11 @@ import { getFilters } from 'services/filter';
 import { useUploadSearch } from 'hooks/useUploadSearch';
 import { ToastHelper } from 'helpers/ToastHelper';
 import { useTranslation } from 'react-i18next';
+import {
+  clearAuthApiKey,
+  isNyrisApiKeyReady,
+  useAuthApiKeyStore,
+} from 'utils/nyrisApiKey';
 import useScopeStore from 'stores/scope/scopeStore';
 
 i18n.use(initReactI18next).init({
@@ -34,7 +39,7 @@ i18n.use(initReactI18next).init({
 });
 
 function AppLayout(): JSX.Element {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, logout } = useAuth0();
   const { t } = useTranslation();
   const { auth0, alogoliaFilterField, showPoweredByNyris } = window.settings;
   const { uploadFile } = useUploadSearch();
@@ -114,13 +119,13 @@ function AppLayout(): JSX.Element {
 
   const showPreFilter = useMemo(() => {
     if (settings.shouldUseUserMetadata && user) {
-      if (user['/user_metadata'].value) {
+      if (user['/user_metadata']?.value) {
         setMetaFilter(user['/user_metadata'].value);
       }
     }
 
     if (settings.shouldUseUserMetadata && user) {
-      if (settings.preFilterOption && !user['/user_metadata'].value) {
+      if (settings.preFilterOption && !user['/user_metadata']?.value) {
         return true;
       }
       return false;
@@ -134,7 +139,15 @@ function AppLayout(): JSX.Element {
     user,
   ]);
 
+  const authApiKeyVersion = useAuthApiKeyStore(state => state.version);
+  const isMissingAuthApiKey = useAuthApiKeyStore(state => state.isMissingClaim);
+  const isApiKeyReady = isNyrisApiKeyReady();
+
   const getPreFilters = useCallback(async () => {
+    if (!isNyrisApiKeyReady()) {
+      return;
+    }
+
     setPreFilterLoading(true);
     try {
       const res = await getFilters(1000, settings);
@@ -147,10 +160,10 @@ function AppLayout(): JSX.Element {
   }, [settings, setPreFilterList, setPreFilterLoading]);
 
   useEffect(() => {
-    if (showPreFilter && !settings.scopeFilter) {
+    if (showPreFilter && !settings.scopeFilter && isApiKeyReady) {
       getPreFilters();
     }
-  }, [getPreFilters, showPreFilter, settings.scopeFilter]);
+  }, [getPreFilters, showPreFilter, settings.scopeFilter, isApiKeyReady, authApiKeyVersion]);
 
   const getImageFromClipboard = useCallback(
     (event: ClipboardEvent): File | null => {
@@ -208,12 +221,17 @@ function AppLayout(): JSX.Element {
       return;
     }
 
+    // Auth0: only listen once authApiKey is resolved (not while waiting / missing claim).
+    if (auth0.enabled && !isApiKeyReady) {
+      return;
+    }
+
     document.addEventListener('paste', handleClipboardPaste);
 
     return () => {
       document.removeEventListener('paste', handleClipboardPaste);
     };
-  }, [handleClipboardPaste, showLayout]);
+  }, [auth0.enabled, handleClipboardPaste, isApiKeyReady, showLayout]);
 
   const applyScopeFilter = (filters: string | undefined) => {
     const scopeFilterClause =
@@ -236,6 +254,34 @@ function AppLayout(): JSX.Element {
 
   if (!showLayout) {
     return <Outlet />;
+  }
+
+  // Auth0 mode: wait for AuthApiKeySync before rendering search UI / prefilters.
+  if (auth0.enabled && !isApiKeyReady && !isMissingAuthApiKey) {
+    return <div />;
+  }
+
+  if (isMissingAuthApiKey) {
+    return (
+      <div className="full-height flex flex-col items-center justify-center bg-[#F3F4F8] p-6 text-center">
+        <p className="mt-2 max-w-md text-sm text-gray-600">
+          Search is currently unavailable for your account. Please contact your
+          administrator.
+        </p>
+        <button
+          type="button"
+          className="mt-6 bg-[#2B2C46] px-6 py-3 text-sm text-white"
+          onClick={() => {
+            clearAuthApiKey();
+            logout({
+              logoutParams: { returnTo: window.location.origin },
+            });
+          }}
+        >
+          {t('Log out')}
+        </button>
+      </div>
+    );
   }
 
   return (

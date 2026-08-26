@@ -23,6 +23,7 @@ var settings = {
     },
   ],
   // Nyris - visual search
+  // When auth0.enabled is true, leave apiKey empty — the app uses Auth0 claim
   apiKey: '',
   aiApiKey: '',
   baseUrl: 'https://api.nyris.io',

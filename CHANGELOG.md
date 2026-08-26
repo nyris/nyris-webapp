@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Updated
+- Moved apiKey to auth0 for auth0 login users
+
+
 ## 0.3.97 - 2026-08-20
 
 ### Added

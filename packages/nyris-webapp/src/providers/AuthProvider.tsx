@@ -1,4 +1,8 @@
 import { Auth0Provider } from '@auth0/auth0-react';
+import { AuthApiKeySync } from 'components/AuthApiKeySync';
+import { bootstrapAuth0ApiKeyGuard } from 'utils/nyrisApiKey';
+
+bootstrapAuth0ApiKeyGuard();
 
 const AuthProvider = ({ children }: any) => {
   const settings = window.settings;
@@ -15,6 +19,7 @@ const AuthProvider = ({ children }: any) => {
         redirect_uri: window.location.origin,
       }}
     >
+      <AuthApiKeySync />
       {children}
     </Auth0Provider>
   );
