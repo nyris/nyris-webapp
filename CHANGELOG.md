@@ -7,6 +7,13 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Updated
 - Moved apiKey to auth0 for auth0 login users
 
+
+## 0.3.97 - 2026-08-20
+
+### Added
+- Scope search with auth0 email
+- Cart configuration
+
 ## 0.3.96 - 2026-07-16
 
 ### Added
