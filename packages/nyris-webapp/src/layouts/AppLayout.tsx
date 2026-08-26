@@ -221,12 +221,17 @@ function AppLayout(): JSX.Element {
       return;
     }
 
+    // Auth0: only listen once authApiKey is resolved (not while waiting / missing claim).
+    if (auth0.enabled && !isApiKeyReady) {
+      return;
+    }
+
     document.addEventListener('paste', handleClipboardPaste);
 
     return () => {
       document.removeEventListener('paste', handleClipboardPaste);
     };
-  }, [handleClipboardPaste, showLayout]);
+  }, [auth0.enabled, handleClipboardPaste, isApiKeyReady, showLayout]);
 
   const applyScopeFilter = (filters: string | undefined) => {
     const scopeFilterClause =
