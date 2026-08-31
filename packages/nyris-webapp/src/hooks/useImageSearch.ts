@@ -20,6 +20,7 @@ import { useGroundedSearch } from './useGroundedSearch';
 import { generateSmartFilters } from '../services/vizo';
 import { cropImage } from 'utils/cropImageToBase64';
 import { invalidatePostFilterRequests } from 'components/PostFilter/PostFilterFindApi';
+import { resolvePostFilterFacets } from 'utils/derivePostFilterFacets';
 import { useAuth0 } from '@auth0/auth0-react';
 
 export const useImageSearch = () => {
@@ -335,12 +336,27 @@ export const useImageSearch = () => {
         useResultStore.getState().resetGrounding();
 
         setFindApiProducts(res?.results);
-        const initialFacets = res?.facets || [];
-        setPostFilterFacets(initialFacets);
-        setInitialFindSearchSnapshot({
-          results: res?.results || [],
-          postFilterFacets: initialFacets,
-        });
+
+        // Initialize facets once per visual search; text search refreshes each time.
+        // Cleared by newSearch/clearPostFilter and by result-store reset on image remove.
+        const isVisualSearch = Boolean(requestImage);
+        const existingSnapshot =
+          useResultStore.getState().initialFindSearchSnapshot;
+        const shouldInitializePostFilterFacets =
+          !isVisualSearch || !existingSnapshot;
+
+        if (shouldInitializePostFilterFacets) {
+          const initialFacets = resolvePostFilterFacets(
+            res?.facets,
+            res?.results,
+          );
+          setPostFilterFacets(initialFacets);
+          setInitialFindSearchSnapshot({
+            results: res?.results || [],
+            postFilterFacets: initialFacets,
+          });
+        }
+
         setImageAnalysis(res?.image_analysis);
         setSessionId(res?.session);
         setRequestId(res?.id);
