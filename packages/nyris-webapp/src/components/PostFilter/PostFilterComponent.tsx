@@ -6,7 +6,6 @@ import {
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
-import PostFilter from './PostFilter';
 import PostFilterFindApi from './PostFilterFindApi';
 
 function PostFilterComponent({ className }: { className?: string }) {
@@ -117,27 +116,14 @@ function PostFilterComponent({ className }: { className?: string }) {
               refinement.attribute;
 
             return (
-              <React.Fragment key={index}>
-                {window.settings.algolia.enabled && (
-                  <PostFilter
-                    attribute={refinement.attribute}
-                    label={refinement.header}
-                    searchable={refinement.searchable}
-                    onVisibilityChange={handleVisibilityChange}
-                    isLastVisible={isLastVisible}
-                  />
-                )}
-
-                {!window.settings.algolia.enabled && (
-                  <PostFilterFindApi
-                    attribute={refinement.attribute}
-                    label={refinement.header}
-                    searchable={false}
-                    onVisibilityChange={handleVisibilityChange}
-                    isLastVisible={isLastVisible}
-                  />
-                )}
-              </React.Fragment>
+              <PostFilterFindApi
+                key={index}
+                attribute={refinement.attribute}
+                label={refinement.header}
+                searchable={false}
+                onVisibilityChange={handleVisibilityChange}
+                isLastVisible={isLastVisible}
+              />
             );
           },
         )}
