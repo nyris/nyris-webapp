@@ -63,7 +63,8 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   }, [productsFromFindApi, query, requestImages]);
 
   const postFilteredProducts = useMemo(() => {
-    if (!window.settings.algolia?.enabled && window.settings.postFilterOption) {
+    // Find-API post-filters re-query; do not also client-filter.
+    if (window.settings.postFilterOption) {
       return textFilteredProducts;
     }
 
@@ -106,15 +107,18 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   const baseProducts = useMemo(() => {
     const filter = Object.values(specificationFilter || {})[0];
     const baseFindApiProducts = postFilteredProducts;
+    // Post-filters re-query Find API; show those results even if Algolia is enabled.
+    const useFindApiProducts =
+      !isAlgoliaEnabled || Boolean(window.settings.postFilterOption);
 
     if (filter) {
       return filterProducts(
         filter,
-        isAlgoliaEnabled ? productsFromAlgolia : baseFindApiProducts,
+        useFindApiProducts ? baseFindApiProducts : productsFromAlgolia,
       );
     }
 
-    if (!isAlgoliaEnabled) {
+    if (useFindApiProducts) {
       return baseFindApiProducts;
     }
 

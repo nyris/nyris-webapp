@@ -20,7 +20,7 @@ import { useGroundedSearch } from './useGroundedSearch';
 import { generateSmartFilters } from '../services/vizo';
 import { cropImage } from 'utils/cropImageToBase64';
 import { invalidatePostFilterRequests } from 'components/PostFilter/PostFilterFindApi';
-import { resolvePostFilterFacets } from 'utils/derivePostFilterFacets';
+import { derivePostFilterFacetsFromResults } from 'utils/derivePostFilterFacets';
 import { useAuth0 } from '@auth0/auth0-react';
 
 export const useImageSearch = () => {
@@ -295,16 +295,13 @@ export const useImageSearch = () => {
       }
 
       const shouldResetPostFilters =
-        clearPostFilter ||
-        (!settings.algolia?.enabled &&
-          !requestImage &&
-          settings.postFilterOption);
+        clearPostFilter || (!requestImage && settings.postFilterOption);
 
       if (shouldResetPostFilters) {
         invalidatePostFilterRequests();
         refine();
         clearPostFilterSelections();
-        if (clearPostFilter) {
+        if (clearPostFilter || !requestImage) {
           setPostFilterFacets([]);
           setInitialFindSearchSnapshot(null);
         }
@@ -337,23 +334,29 @@ export const useImageSearch = () => {
 
         setFindApiProducts(res?.results);
 
-        // Initialize facets once per visual search; text search refreshes each time.
-        // Cleared by newSearch/clearPostFilter and by result-store reset on image remove.
-        const isVisualSearch = Boolean(requestImage);
-        const existingSnapshot =
-          useResultStore.getState().initialFindSearchSnapshot;
-        const shouldInitializePostFilterFacets =
-          !isVisualSearch || !existingSnapshot;
+        // Image: API facets if present, else derive from result.filters.
+        // Text: API facets only.
+        // Empty results with no facet payload keep prior facets so filters stay unselectable.
+        const isImageSearch = Boolean(requestImage);
+        const results = res?.results || [];
+        const apiFacets = Array.isArray(res?.facets) ? res.facets : [];
+        const nextFacets = isImageSearch
+          ? apiFacets.length > 0
+            ? apiFacets
+            : derivePostFilterFacetsFromResults(results)
+          : apiFacets;
+        const previousFacets = useResultStore.getState().postFilterFacets;
+        const shouldPreserveFacets =
+          results.length === 0 &&
+          nextFacets.length === 0 &&
+          Array.isArray(previousFacets) &&
+          previousFacets.length > 0;
 
-        if (shouldInitializePostFilterFacets) {
-          const initialFacets = resolvePostFilterFacets(
-            res?.facets,
-            res?.results,
-          );
-          setPostFilterFacets(initialFacets);
+        if (!shouldPreserveFacets) {
+          setPostFilterFacets(nextFacets);
           setInitialFindSearchSnapshot({
-            results: res?.results || [],
-            postFilterFacets: initialFacets,
+            results,
+            postFilterFacets: nextFacets,
           });
         }
 

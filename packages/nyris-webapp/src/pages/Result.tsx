@@ -174,16 +174,22 @@ function Results() {
   ]);
 
   const disablePostFilter = useMemo(() => {
-    if (!settings.algolia.enabled) {
+    // Find-API post-filters do not depend on Algolia hits.
+    if (!settings.algolia.enabled || settings.postFilterOption) {
       return false;
     }
 
-    return settings.postFilterOption && productsFromAlgolia.length > 0
-      ? false
-      : true;
+    return productsFromAlgolia.length > 0 ? false : true;
   }, [settings, productsFromAlgolia]);
 
-  const isPostFilterApplied = items.length > 0;
+  const postFilterSelections = useRequestStore(
+    state => state.postFilterSelections,
+  );
+  const hasFindApiPostFilterSelection = Object.values(
+    postFilterSelections || {},
+  ).some(values => values?.length > 0);
+  const isPostFilterApplied =
+    items.length > 0 || hasFindApiPostFilterSelection;
 
   return (
     <>
