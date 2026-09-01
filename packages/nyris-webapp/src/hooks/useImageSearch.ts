@@ -336,7 +336,8 @@ export const useImageSearch = () => {
 
         // Image: API facets if present, else derive from result.filters.
         // Text: API facets only.
-        // Empty results with no facet payload keep prior facets so filters stay unselectable.
+        // Empty results with no facet payload may keep prior facet UI for unselect,
+        // but the search snapshot always updates to this response.
         const isImageSearch = Boolean(requestImage);
         const results = res?.results || [];
         const apiFacets = Array.isArray(res?.facets) ? res.facets : [];
@@ -352,13 +353,14 @@ export const useImageSearch = () => {
           Array.isArray(previousFacets) &&
           previousFacets.length > 0;
 
+        // Facet UI may stay for recovery; snapshot always matches this search.
         if (!shouldPreserveFacets) {
           setPostFilterFacets(nextFacets);
-          setInitialFindSearchSnapshot({
-            results,
-            postFilterFacets: nextFacets,
-          });
         }
+        setInitialFindSearchSnapshot({
+          results,
+          postFilterFacets: nextFacets,
+        });
 
         setImageAnalysis(res?.image_analysis);
         setSessionId(res?.session);

@@ -26,8 +26,12 @@ export function useEffectiveGroundingResults() {
     const postEntries = Object.entries(postFilterSelections || {}).filter(
       ([, values]) => values?.length,
     );
-    // Find-API post-filters already re-query results; skip client-side filter.
-    if (postEntries.length > 0 && !window.settings.postFilterOption) {
+    if (
+      postEntries.length > 0 &&
+      !(
+        !window.settings.algolia?.enabled && window.settings.postFilterOption
+      )
+    ) {
       filteredProducts = filteredProducts.filter((product: any) => {
         const productFilters = product?.filters || {};
         return postEntries.every(([attribute, selectedValues]) => {
