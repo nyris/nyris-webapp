@@ -103,7 +103,7 @@ function TextSearch({
           imageRegion: regions[0],
           text: value,
           settings,
-          showFeedback: false,
+          showFeedback: true,
           newSearch: false,
         });
       }

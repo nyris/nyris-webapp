@@ -188,8 +188,7 @@ function Results() {
   const hasFindApiPostFilterSelection = Object.values(
     postFilterSelections || {},
   ).some(values => values?.length > 0);
-  const isPostFilterApplied =
-    items.length > 0 || hasFindApiPostFilterSelection;
+  const isPostFilterApplied = items.length > 0 || hasFindApiPostFilterSelection;
 
   return (
     <>
@@ -370,7 +369,8 @@ function Results() {
 
                         {feedbackStatus === 'visible' &&
                           !showFeedbackSuccess &&
-                          productsFromAlgolia.length > 0 && (
+                          (productsFromAlgolia.length > 0 ||
+                            productsFromFindApi.length > 0) && (
                             <div className={'feedback-floating'}>
                               <div className="feedback-section feedback-backdrop-blur" />
 
