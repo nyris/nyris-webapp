@@ -63,6 +63,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
   }, [productsFromFindApi, query, requestImages]);
 
   const postFilteredProducts = useMemo(() => {
+    // Find-API post-filters re-query when Algolia is off; do not also client-filter.
     if (!window.settings.algolia?.enabled && window.settings.postFilterOption) {
       return textFilteredProducts;
     }
@@ -114,6 +115,7 @@ function ProductList({ sendFeedBackAction }: Props): JSX.Element {
       );
     }
 
+    // Product source follows search backend (Algolia vs Find API), not postFilterOption.
     if (!isAlgoliaEnabled) {
       return baseFindApiProducts;
     }

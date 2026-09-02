@@ -18,6 +18,9 @@ export default function SidePanel({ className }: { className?: string }) {
   const specificationFilter = useRequestStore(
     state => state.specificationFilter,
   );
+  const postFilterSelections = useRequestStore(
+    state => state.postFilterSelections,
+  );
 
   const findApiProducts = useResultStore(state => state.productsFromFindApi);
 
@@ -45,13 +48,20 @@ export default function SidePanel({ className }: { className?: string }) {
 
   const effectiveGroundingResults = useEffectiveGroundingResults();
 
+  const hasPostFilterSelections = Object.values(
+    postFilterSelections || {},
+  ).some(values => values?.length > 0);
+
   if (!showPostFilter && requestImages.length === 0) {
     return <></>;
   }
 
+  // Keep the panel when post-filters are applied so the user can unselect
+  // after a filtered find returns zero results.
   if (
     requestImages.length === 0 &&
     findApiProducts.length === 0 &&
+    !hasPostFilterSelections &&
     !window.settings.algolia.enabled
   ) {
     return <></>;

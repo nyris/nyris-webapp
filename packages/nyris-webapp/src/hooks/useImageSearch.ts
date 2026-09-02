@@ -20,6 +20,7 @@ import { useGroundedSearch } from './useGroundedSearch';
 import { generateSmartFilters } from '../services/vizo';
 import { cropImage } from 'utils/cropImageToBase64';
 import { invalidatePostFilterRequests } from 'components/PostFilter/PostFilterFindApi';
+import { derivePostFilterFacetsFromResults } from 'utils/derivePostFilterFacets';
 import { useAuth0 } from '@auth0/auth0-react';
 
 export const useImageSearch = () => {
@@ -293,17 +294,20 @@ export const useImageSearch = () => {
           });
       }
 
+      const usesFindApiPostFilters =
+        !settings.algolia?.enabled && settings.postFilterOption;
+      // Crop/region finds replace results without sending postFilterSelections;
+      // clear stale selections so checkboxes match the new unfiltered grid.
       const shouldResetPostFilters =
         clearPostFilter ||
-        (!settings.algolia?.enabled &&
-          !requestImage &&
-          settings.postFilterOption);
+        (Boolean(imageRegion) && usesFindApiPostFilters) ||
+        (!requestImage && settings.postFilterOption);
 
       if (shouldResetPostFilters) {
         invalidatePostFilterRequests();
         refine();
         clearPostFilterSelections();
-        if (clearPostFilter) {
+        if (clearPostFilter || !requestImage) {
           setPostFilterFacets([]);
           setInitialFindSearchSnapshot(null);
         }
@@ -335,12 +339,35 @@ export const useImageSearch = () => {
         useResultStore.getState().resetGrounding();
 
         setFindApiProducts(res?.results);
-        const initialFacets = res?.facets || [];
-        setPostFilterFacets(initialFacets);
+
+        // Image: API facets if present, else derive from result.filters.
+        // Text: API facets only.
+        // Empty results with no facet payload may keep prior facet UI for unselect,
+        // but the search snapshot always updates to this response.
+        const isImageSearch = Boolean(requestImage);
+        const results = res?.results || [];
+        const apiFacets = Array.isArray(res?.facets) ? res.facets : [];
+        const nextFacets = isImageSearch
+          ? apiFacets.length > 0
+            ? apiFacets
+            : derivePostFilterFacetsFromResults(results)
+          : apiFacets;
+        const previousFacets = useResultStore.getState().postFilterFacets;
+        const shouldPreserveFacets =
+          results.length === 0 &&
+          nextFacets.length === 0 &&
+          Array.isArray(previousFacets) &&
+          previousFacets.length > 0;
+
+        // Facet UI may stay for recovery; snapshot always matches this search.
+        if (!shouldPreserveFacets) {
+          setPostFilterFacets(nextFacets);
+        }
         setInitialFindSearchSnapshot({
-          results: res?.results || [],
-          postFilterFacets: initialFacets,
+          results,
+          postFilterFacets: nextFacets,
         });
+
         setImageAnalysis(res?.image_analysis);
         setSessionId(res?.session);
         setRequestId(res?.id);
