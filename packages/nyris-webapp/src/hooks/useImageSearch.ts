@@ -294,8 +294,14 @@ export const useImageSearch = () => {
           });
       }
 
+      const usesFindApiPostFilters =
+        !settings.algolia?.enabled && settings.postFilterOption;
+      // Crop/region finds replace results without sending postFilterSelections;
+      // clear stale selections so checkboxes match the new unfiltered grid.
       const shouldResetPostFilters =
-        clearPostFilter || (!requestImage && settings.postFilterOption);
+        clearPostFilter ||
+        (Boolean(imageRegion) && usesFindApiPostFilters) ||
+        (!requestImage && settings.postFilterOption);
 
       if (shouldResetPostFilters) {
         invalidatePostFilterRequests();
