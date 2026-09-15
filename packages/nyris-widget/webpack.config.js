@@ -20,7 +20,7 @@ module.exports = {
   },
 
   plugins: [
-    new CopyPlugin([{ from: 'public', to: '' }]),
+    new CopyPlugin([{ from: 'public', to: '', ignore: ['index_local.html'] }]),
     new webpack.DefinePlugin({
       'process.env.IS_ENTERPRISE': JSON.stringify(IS_ENTERPRISE ? true : ''),
     }),

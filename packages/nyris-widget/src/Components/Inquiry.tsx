@@ -5,9 +5,10 @@ import Modal from './Modal';
 import '../styles/inquiry-modal.scss';
 import { Icon } from '@nyris/nyris-react-components';
 import { ToastHelper } from './ToastNotification';
+import { prepareInquiryImage } from '../prepareInquiryImage';
 
 interface IInquiry {
-  imageSource: any;
+  imageSource: HTMLCanvasElement;
   isPopupOpened: boolean;
   labels: any;
   onClose: () => void;
@@ -17,32 +18,37 @@ interface IInquiry {
 // eslint-disable-next-line
 const emailRegex = /.+\@.+\..+$/;
 
+export function isValidInquiryEmail(email: string): boolean {
+  return emailRegex.test(email.trim());
+}
+
 const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: IInquiry) => {
   const [email, setEmail] = useState<string>('');
   const [additionalInfo, setAdditionalInfo] = useState<string>('');
-  const [emailValid, setEmailValid] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (email)
-       setEmailValid(emailRegex.test(email));
-  }, [email]);
+  const emailValid = isValidInquiryEmail(email);
 
   useEffect(() => emailjs.init('SMGihPnuEGcYLm0V4'), []);
 
   const onSend = async () => {
-    if (window.nyrisSettings.emailTemplateId) {
-      await emailjs
-        .send('service_zfsxshi', window.nyrisSettings.emailTemplateId, {
-          email_id: email.trim(),
-          information_text: additionalInfo ? additionalInfo : '<not specified>',
-          request_image: imageSource?.toDataURL(),
-          prefilter_values: prefilters?.length
-            ? prefilters.join(', ')
-            : '<not specified>',
-        })
-        .then(() => ToastHelper.success(labels['Request sent successfully']))
-        .catch(() => ToastHelper.error(labels['Request not sent, please try again']))
-        .finally(() => onClose());
+    if (!window.nyrisSettings.emailTemplateId || !emailValid) {
+      return;
+    }
+
+    try {
+      const requestImage = prepareInquiryImage(imageSource);
+      await emailjs.send('service_zfsxshi', window.nyrisSettings.emailTemplateId, {
+        email_id: email.trim(),
+        information_text: additionalInfo ? additionalInfo : '<not specified>',
+        request_image: requestImage,
+        prefilter_values: prefilters?.length
+          ? prefilters.join(', ')
+          : '<not specified>',
+      });
+      ToastHelper.success(labels['Request sent successfully']);
+    } catch {
+      ToastHelper.error(labels['Request not sent, please try again']);
+    } finally {
+      onClose();
     }
   };
 
@@ -124,6 +130,8 @@ const Inquiry = ({ imageSource, isPopupOpened, labels, onClose, prefilters }: II
         </button>
         <button
           className={`inquiry-modal-buttons-apply ${emailValid ? 'active' : ''}`}
+          disabled={!emailValid}
+          data-nyris-conversion="support_request"
           onClick={() => onSend()}
         >
           {labels['Send']}
