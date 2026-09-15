@@ -31,6 +31,7 @@ export interface NyrisSettings extends NyrisAPISettings {
   searchCriteriaKey?: string;
   filter?: { label: string; field: string }[];
   emailTemplateId?: string;
+  eventsTrackingApiKey?: string;
   productLinkBaseURL?: string; // Base URL for constructing product links (baseURL + sku)
   showHelperText?: boolean;
 }

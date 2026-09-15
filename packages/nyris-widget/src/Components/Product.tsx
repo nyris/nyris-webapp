@@ -49,7 +49,7 @@ export const ProductCard = (r: ProductCardProps) => {
   };
 
   return (
-    <div className="nyris__success-multiple-result">
+    <div className="nyris__success-multiple-result" data-product-id={r.sku}>
       <div className="nyris__success-multiple-result-box">
         <div style={{ position: 'relative' }}>
           {cadenasAPIKey ? (
