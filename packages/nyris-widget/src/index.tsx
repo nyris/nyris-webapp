@@ -20,6 +20,7 @@ import NyrisAPI, {
 import packageJson from '../package.json';
 import { FeedbackStatus } from './type';
 import { AppProps, NyrisSettings, ResultProps, WidgetScreen } from './types';
+import { loadEventsTracker } from './eventsTracker';
 
 const DEFAULT_RECT = { x1: 0, x2: 1, y1: 0, y2: 1 };
 
@@ -416,22 +417,26 @@ declare global {
   }
 }
 
-(window as any).loadWidget = () => {
-  let div = document.createElement('div');
+function createMountPoint(): HTMLDivElement {
+  const div = document.createElement('div');
   div.id = 'nyris-mount-point';
   document.body.appendChild(div);
+  return div;
+}
+
+function initWidget() {
+  createMountPoint();
   if (!window.nyrisSettings.language) {
     window.nyrisSettings.language = 'en';
   }
-  const nyris = new Nyris(window.nyrisSettings);
+  loadEventsTracker(window.nyrisSettings);
+  new Nyris(window.nyrisSettings);
+}
+
+(window as any).loadWidget = () => {
+  initWidget();
 };
 
-window.addEventListener('load', e => {
-  let div = document.createElement('div');
-  div.id = 'nyris-mount-point';
-  document.body.appendChild(div);
-  if (!window.nyrisSettings.language) {
-    window.nyrisSettings.language = 'en';
-  }
-  const nyris = new Nyris(window.nyrisSettings);
+window.addEventListener('load', () => {
+  initWidget();
 });
